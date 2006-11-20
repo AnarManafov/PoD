@@ -1,0 +1,6 @@
+Executable = "proof.sh";
+StdOutput = "proof.out";
+StdError = "proof.err";
+InputSandbox = {"/home/anar/svn/grid/D-Grid/PROOF/proof.sh", "/tmp/x509up_u500"};
+OutputSandbox = {"proof.out","proof.err"};
+
