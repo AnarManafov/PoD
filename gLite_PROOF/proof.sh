@@ -14,7 +14,7 @@ export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 proofd -A -d 3 -p 5151
 
 # Sleeping for a while
-sleep 600
+sleep 1200
 
 # killing PROOFD
 pkill proofd
