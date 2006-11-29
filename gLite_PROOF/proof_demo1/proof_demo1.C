@@ -1,50 +1,56 @@
 
 {
-	//--------------------------------------------------------
-	// connecting to gLite UI provider
-	TGrid::Connect( "glite" );
+  //--------------------------------------------------------
+  // connecting to gLite UI provider
+  TGrid::Connect( "glite" );
 
-	//--------------------------------------------------------
-	// Submitting a job
-	// which will configure environment and start proofd
-	TGridJob *job = gGrid->Submit("/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proof.jdl");
+  //--------------------------------------------------------
+  // Submitting a job
+  // which will configure environment and start proofd
+  TGridJob *job = gGrid->Submit("/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proof.jdl");
 
-	// Quering a status of the job
-	TGridJobStatus *status = job->GetJobStatus();
-	status->GetStatus();
+  // Quering a status of the job
+  TGridJobStatus *status = job->GetJobStatus();
+  status->GetStatus();
 
-	//--------------------------------------------------------
-	// we will proceed further as soon as the status is kRUNNING
-	// waiting for kRUNNING == status->GetStatus() ...
-	//--------------------------------------------------------
+  //-------------------------------
+  // Checking file catalog files
+  gGrid->Cd("/grid/dech/");
+  TGridResult *all_res = gGrid->Ls();
+  all_res->Print("all");
 
+  //--------------------------------------------------------
+  // A query for required "root" files
+  TGridResult *res = gGrid->Query( "/grid/dech", ".*\\.root$" );
 
-	//--------------------------------------------------------
-	// connecting to PROOF master
-	// GLOBUS authentication is used -- pre-initialized by job's script
-	gROOT->Proof("proof://grid24.gsi.de:5151");
+  // Creating a TDset of files to analyze
+  TDSet *set;
 
-	// checking a status of the PROOF connection
-	gProof->Print();
+  set = new TDSet("TTree","h42");
 
+  for ( Int_t i = 0; res->GetKey( i, "sfn0" ); ++i )\
+    set->Add( res->GetKey( i, "sfn0" ) );
 
-	//--------------------------------------------------------
-	// A query for required "root" files
-	TGridResult *res = gGrid->Query( "/grid/dech", ".*\\.root$" );
+  // Checking the TDSet
+  set->GetListOfElements()->Print();
 
-	// Creating a TDset of files to analyze
-	TDSet *set;
+  // Quering a status of the job
+  status->GetStatus();
 
-	set = new TDSet("TTree","h42");
+  //--------------------------------------------------------
+  // we will proceed further as soon as the status is kRUNNING
+  // waiting for kRUNNING == status->GetStatus() ...
+  //--------------------------------------------------------
 
-	for ( Int_t i = 0; res->GetKey( i, "sfn0" ); ++i ) \
-		set->Add( res->GetKey( i, "sfn0" ) );
+  //--------------------------------------------------------
+  // connecting to PROOF master
+  // GLOBUS authentication is used -- pre-initialized by job's script
+  gROOT->Proof("proof://grid24.gsi.de:5151");
 
-	// Checking the TDSet
-	set->GetListOfElements()->Print();
+  // checking a status of the PROOF connection
+  gProof->Print();
 
-
-	//--------------------------------------------------------
-	// Processing our test analysis
-	set->Process("myselector.C");
+  //--------------------------------------------------------
+  // Processing our test analysis
+  set->Process("myselector.C");
 }

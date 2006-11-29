@@ -89,6 +89,9 @@ void myselector::Terminate()
    TIter next(fOutput);
    TObject *obj;
    while(obj=next())
+   {
        obj->Print();
+       obj->Draw();
+   }
 }
 
