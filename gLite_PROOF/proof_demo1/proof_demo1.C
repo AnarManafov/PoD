@@ -17,7 +17,9 @@
   // Checking file catalog files
   gGrid->Cd("/grid/dech/");
   TGridResult *all_res = gGrid->Ls();
-  all_res->Print("all");
+  Int_t i = 0;
+  while( all_res->GetFileName(i)) \
+    cout << "File " << all_res->GetFileName(i++) << endl;
 
   //--------------------------------------------------------
   // A query for required "root" files
