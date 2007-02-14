@@ -47,7 +47,7 @@
   //--------------------------------------------------------
   // connecting to PROOF master
   // GLOBUS authentication is used -- pre-initialized by job's script
-  gROOT->Proof("proof://grid24.gsi.de:5151");
+  TProof::Open("grid24.gsi.de:5151")
 
   // checking a status of the PROOF connection
   gProof->Print();
