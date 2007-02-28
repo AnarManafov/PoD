@@ -1,8 +1,9 @@
 bin_PROGRAMS = proofagent
-proofagent_SOURCES = proofagent.cpp
+proofagent_SOURCES = proofagent.cpp PacketForwarder.cpp
 
 # set the include path found by configure
-INCLUDES= $(all_includes)
+INCLUDES = -I@top_srcdir@/Include $(all_includes)
 
 # the library search path.
 proofagent_LDFLAGS = $(all_libraries) 
+noinst_HEADERS = PacketForwarder.h agent.h AgentImpl.h

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<proofagent_config last_update="" version="1.0.0" xmlns="">
+	<agent>
+		<config
+			logfile="/tmp/proofagent.log"
+			logfile_overwrite="1"
+			agent_mode="server">
+		</config>
+		<agent_server>
+		</agent_server>
+		<agent_client>
+		</agent_client>
+	</agent>
+</proofagent_config>
