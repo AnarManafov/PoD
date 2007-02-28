@@ -12,16 +12,15 @@
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef CLOG_H
-#define CLOG_H
+#ifndef PROOFAGENT_H
+#define PROOFAGENT_H
 
 // PROOFAgent
 #include "agent.h"
 #include "IXMLPersist.h"
-#include "Log.h"
 #include "LogImp.h"
 
-namespace glite_api_wrapper//proofagent
+namespace glite_api_wrapper //proofagent
 {
 
     /** @brief WMSUI data structur. */
@@ -36,7 +35,7 @@ namespace glite_api_wrapper//proofagent
 
     class CPROOFAgent:
                 public glite_api_wrapper::CLogImp<CPROOFAgent>,
-                glite_api_wrapper::IXMLPersist
+                IXMLPersist
     {
         public:
             std::string _GetModuleName() const

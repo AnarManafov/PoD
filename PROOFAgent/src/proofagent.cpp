@@ -19,6 +19,7 @@
 // STD
 #include <stdexcept>
 #include <iostream>
+#include <string>
 // XML parser
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/dom/DOM.hpp>
@@ -30,8 +31,8 @@
 #include "proofagent.h"
 
 using namespace std;
-//using namespace glite_api_wrapper;
-//using namespace glite_api_wrapper::XMLHelper;
+using namespace glite_api_wrapper;
+using namespace glite_api_wrapper::XMLHelper;
 XERCES_CPP_NAMESPACE_USE;
 
 
@@ -177,6 +178,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
 
     return erOK;
 }
+
 ERRORCODE CPROOFAgent::Write( xercesc::DOMNode* _element )
 {
     return erNotImpl;
