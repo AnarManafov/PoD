@@ -1,4 +1,4 @@
-AC_INIT([proofagent], [0.0.1], [A.Manafov@gsi.de])
+AC_INIT([proofagent], [0.1.0], [A.Manafov@gsi.de])
 
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER(config.h)
@@ -9,6 +9,28 @@ AC_PROG_CXX
 AM_PROG_LIBTOOL
 
 AC_PROG_INSTALL
+
+## -----------------------------------------------------------------------
+## ----------------------------- >>> XERCESC <<<----------------------------
+## -----------------------------------------------------------------------
+AC_MSG_CHECKING([for xercesc location])
+AC_ARG_WITH(xercesc-location,
+    [ --with-xercesc-location=<dir> Default is \$XERCESC_LOCATION],
+    xercesc_location="$withval",
+    xercesc_location="$XERCESC_LOCATION")
+if test -d "$xercesc_location" ; then
+    AC_MSG_RESULT([found $xercesc_location])
+    XERCESC_LOCATION=$xercesc_location
+elif test -d /opt/glite/externals ; then
+     AC_MSG_RESULT([found /opt/glite/externals])
+     XERCESC_LOCATION=/opt/glite/externals
+else
+    AC_MSG_ERROR([no such directory $glite_location])
+fi
+
+LDFLAGS="$LDFLAGS -L$XERCESC_LOCATION/lib -lxerces-c"
+CPPFLAGS="$CPPFLAGS -I$XERCESC_LOCATION/include"
+
 
 AC_OUTPUT(
 Doxyfile
