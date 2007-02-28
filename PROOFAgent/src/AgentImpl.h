@@ -20,6 +20,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+// STD
+#include <unistd.h>
+
 // PROOFAgent
 #include "ErrorCode.h"
 

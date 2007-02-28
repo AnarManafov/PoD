@@ -12,8 +12,11 @@
 
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
+
 #include "PROOFAgent.h"
 
+using namespace std;
+using namespace PROOFAgent;
 
 int main( int argc, char *argv[] )
 {

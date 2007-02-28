@@ -28,11 +28,12 @@
 #include <xercesc/sax/HandlerBase.hpp>
 // PROOFAgent
 #include "XMLHelper.h"
-#include "proofagent.h"
+#include "PROOFAgent.h"
 
 using namespace std;
 using namespace glite_api_wrapper;
 using namespace glite_api_wrapper::XMLHelper;
+using namespace PROOFAgent;
 XERCES_CPP_NAMESPACE_USE;
 
 

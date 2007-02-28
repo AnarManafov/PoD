@@ -16,11 +16,11 @@
 #define PROOFAGENT_H
 
 // PROOFAgent
-#include "agent.h"
+#include "Agent.h"
 #include "IXMLPersist.h"
 #include "LogImp.h"
 
-namespace glite_api_wrapper //proofagent
+namespace PROOFAgent
 {
 
     /** @brief WMSUI data structur. */
