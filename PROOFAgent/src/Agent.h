@@ -12,8 +12,8 @@
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef PROOFAGENTAGENT_H
-#define PROOFAGENTAGENT_H
+#ifndef AGENT_H
+#define AGENT_H
 
 #include "AgentImpl.h"
 

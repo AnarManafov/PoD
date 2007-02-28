@@ -22,6 +22,7 @@
 
 namespace PROOFAgent
 {
+    typedef enum{ Server, Client }EAgentMode_t;
 
     /** @brief WMSUI data structur. */
     typedef struct SAgentData
@@ -30,6 +31,7 @@ namespace PROOFAgent
         {}
         std::string m_sLogFileName;     //!< Log filename
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session
+        EAgentMode_t m_AgentMode; 
     }
     SAgentData_t;
 

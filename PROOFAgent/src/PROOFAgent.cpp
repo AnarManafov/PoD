@@ -29,6 +29,7 @@
 // PROOFAgent
 #include "XMLHelper.h"
 #include "PROOFAgent.h"
+#include "MiscUtils.h"
 
 using namespace std;
 using namespace glite_api_wrapper;
@@ -176,6 +177,10 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     string sValTmp;
     get_attr_value( elementConfig, "logfile_overwrite", &sValTmp );
     m_Data.m_bLogFileOverwrite = !( sValTmp.empty() || ( "0" == sValTmp ) );
+    sValTmp.clear();
+    get_attr_value( elementConfig, "agent_mode", &sValTmp );
+    MiscUtils::to_lower( sValTmp );
+    m_Data.m_AgentMode = (sValTmp.find("server") != sValTmp.npos)? Server: Client;
 
     return erOK;
 }
@@ -184,3 +189,4 @@ ERRORCODE CPROOFAgent::Write( xercesc::DOMNode* _element )
 {
     return erNotImpl;
 }
+
