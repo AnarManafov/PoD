@@ -3,12 +3,17 @@
 	<agent>
 		<config
 			logfile="/tmp/proofagent.log"
-			logfile_overwrite="1"
-			agent_mode="server">
+			logfile_overwrite="yes"
+			agent_mode="Server">
 		</config>
-		<agent_server>
+		<agent_server
+            listen_port="5151"
+            >
 		</agent_server>
-		<agent_client>
+		<agent_client
+            connect_port="5151"
+            server_addr="localhost"
+            >
 		</agent_client>
 	</agent>
 </proofagent_config>
