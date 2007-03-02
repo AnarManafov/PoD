@@ -23,19 +23,28 @@
 // STD
 #include <unistd.h>
 
+// XML parser
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
+
 // PROOFAgent
 #include "ErrorCode.h"
 
-namespace proofagent
+namespace PROOFAgent
 {
     typedef int Socket_t;
+    typedef enum{ Unknown, Server, Client }EAgentMode_t;
+
     
     class smart_socket
     {
         public:
             smart_socket() : m_Socket( 0 )
             {}
-            smart_socket(int _domain, int _type, int _protocol)
+            smart_socket( int _domain, int _type, int _protocol )
             {
                 m_Socket = socket( _domain, _type, _protocol );
             }
@@ -46,39 +55,31 @@ namespace proofagent
             }
             Socket_t* operator&()
             {
-                return &m_Socket;
+                return & m_Socket;
             }
 
         private:
             Socket_t m_Socket;
     };
 
-    template <typename _T>
-    class CAgentImpl
+    class CAgentBase
     {
+        enum EMode{Mode = Unknown};
         public:
-            ERRORCODE Init()
+            virtual ERRORCODE Init( xercesc::DOMNode* _element ) = 0;
+            virtual ERRORCODE Start( xercesc::DOMNode* _element ) = 0;
+            virtual ERRORCODE Stop( xercesc::DOMNode* _element ) = 0;
+            EAgentMode_t GetMode()
             {
-                _T * pT = static_cast<_T*>( this );
-                return pT->ReadConfig();
-            }
-            ERRORCODE Start()
-            {
-                _T * pT = static_cast<_T*>( this );
-                return pT->_Start();
-            }
-            ERRORCODE Stop()
-            {
-                _T * pT = static_cast<_T*>( this );
-                return pT->_Stop();
+                return static_cast<EAgentMode_t>(Mode);
             }
     };
 
-    class CAgentServer: public CAgentImpl<CAgentServer>
+    class CAgentServer : public CAgentBase
     {
-            friend class CAgentImpl<CAgentServer>;
-        private:
-            ERRORCODE ReadConfig()
+        enum EMode{Mode = Server};
+        public:
+            ERRORCODE _Init()
             {
                 return erOK;
             }
@@ -92,11 +93,11 @@ namespace proofagent
             }
     };
 
-    class CAgentClient: public CAgentImpl<CAgentClient>
+    class CAgentClient: public CAgentBase
     {
-            friend class CAgentImpl<CAgentClient>;
-        private:
-            ERRORCODE ReadConfig()
+        enum EMode{Mode = Client};
+        public:
+            ERRORCODE _Init()
             {
                 return erNotImpl;
             }

@@ -19,13 +19,10 @@
 // STD
 #include <stdexcept>
 #include <iostream>
-#include <string>
+#include <string> 
 // XML parser
-#include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
+
 // PROOFAgent
 #include "XMLHelper.h"
 #include "PROOFAgent.h"
@@ -39,6 +36,17 @@ XERCES_CPP_NAMESPACE_USE;
 
 
 ERRORCODE CPROOFAgent::Init( const string &_xmlFileName )
+{
+    ERRORCODE er = ReadCfg( _xmlFileName );
+    if ( erOK != er )
+        return er;
+
+    m_Agent.SetMode( m_Data.m_AgentMode );
+
+    return erOK;
+}
+
+ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
 {
     string xmlFileName;
     char *p = getenv( "PROOFAGENT_LOCATION" );
@@ -146,7 +154,6 @@ ERRORCODE CPROOFAgent::Init( const string &_xmlFileName )
         delete errHandler.release();
 
     XMLPlatformUtils::Terminate();
-
     return erOK;
 }
 
@@ -180,7 +187,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     sValTmp.clear();
     get_attr_value( elementConfig, "agent_mode", &sValTmp );
     MiscUtils::to_lower( sValTmp );
-    m_Data.m_AgentMode = (sValTmp.find("server") != sValTmp.npos)? Server: Client;
+    m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;
 
     return erOK;
 }

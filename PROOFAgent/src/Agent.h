@@ -16,23 +16,37 @@
 #define AGENT_H
 
 #include "AgentImpl.h"
+#include <memory>
 
-namespace proofagent
+namespace PROOFAgent
 {
-
-    template <typename _AgentTraits = CAgentServer>
+    typedef std::auto_ptr<CAgentBase*> pAgentBase_t;
     class CAgent
     {
         public:
+            CAgent( EAgentMode_t _Mode = Unknown ) : m_Mode( _Mode )
+            {}
+            void SetMode( EAgentMode_t _Mode )
+            {
+                m_Mode = _Mode;
+            }
             ERRORCODE Init()
             {
-                return m_Agent.Init();
+                return erNotImpl; //m_Agent->Init();
             }
 
         private:
-            _AgentTraits m_Agent;
+            void GetAgent ()
+            {
+                //  if( m_Agent->get() &&  )
+
+            }
+
+        private:
+            pAgentBase_t m_Agent;
+            EAgentMode_t m_Mode;
     };
 
-}
+};
 
 #endif

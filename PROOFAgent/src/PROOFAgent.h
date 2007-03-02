@@ -22,8 +22,6 @@
 
 namespace PROOFAgent
 {
-    typedef enum{ Server, Client }EAgentMode_t;
-
     /** @brief WMSUI data structur. */
     typedef struct SAgentData
     {
@@ -31,7 +29,7 @@ namespace PROOFAgent
         {}
         std::string m_sLogFileName;     //!< Log filename
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session
-        EAgentMode_t m_AgentMode; 
+        EAgentMode_t m_AgentMode;
     }
     SAgentData_t;
 
@@ -40,17 +38,23 @@ namespace PROOFAgent
                 IXMLPersist
     {
         public:
+            CPROOFAgent()
+            {}
             std::string _GetModuleName() const
             {
                 return "PROOFAgent";
             }
 
             ERRORCODE Init( const std::string &_xmlFileName );
+
+        private:
+            ERRORCODE ReadCfg( const std::string &_xmlFileName );
             ERRORCODE Read( xercesc::DOMNode* _element );
             ERRORCODE Write( xercesc::DOMNode* _element );
 
         private:
             SAgentData_t m_Data;
+            CAgent m_Agent;
     };
 
 };
