@@ -31,6 +31,23 @@ fi
 LDFLAGS="$LDFLAGS -L$XERCESC_LOCATION/lib -lxerces-c"
 CPPFLAGS="$CPPFLAGS -I$XERCESC_LOCATION/include"
 
+## -----------------------------------------------------------------------
+## ----------------------------- >>> BOOST <<<----------------------------
+## -----------------------------------------------------------------------
+AC_MSG_CHECKING([for BOOST location])
+AC_ARG_WITH(boost-location,
+    [ --with-boost-location=<dir> Default is \$BOOST_LOCATION],
+    boost_location="$withval",
+    boost_location="$BOOST_LOCATION/lib")
+if test -d "$boost_location" ; then
+    AC_MSG_RESULT([found $boost_location])
+    $BOOSTLOCATION=$boost_location
+else
+    AC_MSG_ERROR([no such directory $boost_location])
+fi
+
+LDFLAGS="$LDFLAGS -L$BOOST_LOCATION/lib -lboost_thread"
+CPPFLAGS="$CPPFLAGS -I$BOOST_LOCATION/include"
 
 AC_OUTPUT(
 Doxyfile

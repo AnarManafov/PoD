@@ -7,11 +7,11 @@
 			agent_mode="Server">
 		</config>
 		<agent_server
-            listen_port="5151"
+            listen_port="51510"
             >
 		</agent_server>
 		<agent_client
-            connect_port="5151"
+            connect_port="51510"
             server_addr="localhost"
             >
 		</agent_client>

@@ -20,6 +20,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+// BOOST
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
+
 // STD
 #include <unistd.h>
 
@@ -39,24 +43,43 @@ namespace PROOFAgent
         public:
             smart_socket() : m_Socket( 0 )
             {}
+            smart_socket( int _Socket ) : m_Socket( _Socket )
+            {}
             smart_socket( int _domain, int _type, int _protocol )
             {
-                m_Socket = socket( _domain, _type, _protocol );
+                m_Socket = ::socket( _domain, _type, _protocol );
             }
             ~smart_socket()
             {
-                if ( m_Socket )
-                    close( m_Socket );
+                close();
             }
             Socket_t* operator&()
             {
                 return & m_Socket;
+            }
+            operator int()
+            {
+                return static_cast<int>( m_Socket );
+            }
+            int operator =( const int &_Val )
+            {
+                close();
+                return m_Socket = _Val;
+            }
+            void close()
+            {
+                if ( m_Socket )
+                    ::close( m_Socket );
             }
 
         private:
             Socket_t m_Socket;
     };
 
+
+    /** @class CAgentBase
+      *  @brief
+     */
     class CAgentBase
     {
         public:
@@ -64,7 +87,6 @@ namespace PROOFAgent
             {}
             virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element ) = 0;
             virtual MiscCommon::ERRORCODE Start() = 0;
-            virtual MiscCommon::ERRORCODE Stop() = 0;
 
         public:
             const EAgentMode_t Mode;
@@ -72,25 +94,45 @@ namespace PROOFAgent
 
     typedef struct SAgentServerData
     {
-        SAgentServerData() : m_Port( 0 )
+        SAgentServerData() : m_nPort( 0 )
         {}
-        unsigned short m_Port;
+        unsigned short m_nPort;
     }
     AgentServerData_t;
     inline std::ostream &operator <<( std::ostream &_stream, const AgentServerData_t &_data )
     {
         _stream
-        << "Listen on Port: " << _data.m_Port << std::endl;
+        << "Listen on Port: " << _data.m_nPort << std::endl;
         return _stream;
     }
 
+    typedef struct SAgentClientData
+    {
+        SAgentClientData() : m_nPort( 0 )
+        {}
+        unsigned short m_nPort;
+        std::string m_strHost;
+    }
+    AgentClientData_t;
+    inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
+    {
+        _stream
+        << "Connecting to Port: " << _data.m_nPort << "\n"
+        << "on Host: " << _data.m_strHost << std::endl;
+        return _stream;
+    }
+
+    /** @class CAgentServer
+     *  @brief
+     */
     class CAgentServer :
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentServer>,
                 MiscCommon::IXMLPersist
     {
         public:
-            CAgentServer() : Mode( Server )
+            CAgentServer() :
+                    Mode( Server )
             {}
             virtual ~CAgentServer()
             {}
@@ -101,34 +143,43 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Start();
-            MiscCommon::ERRORCODE Stop();
+            void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
+            {
+                boost::mutex::scoped_lock lock ( m_log_mutex );
+                InfoLog( _erCode, _Msg );
+            }
 
 
         public:
             const EAgentMode_t Mode;
             AgentServerData_t m_Data;
+            boost::mutex m_log_mutex;
     };
 
-    class CAgentClient: public CAgentBase
+    /** @class CAgentClient
+      *  @brief
+      */
+    class CAgentClient:
+                public CAgentBase,
+                MiscCommon::CLogImp<CAgentServer>,
+                MiscCommon::IXMLPersist
     {
         public:
             CAgentClient() : Mode( Client )
             {}
-            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
-            {
-                return MiscCommon::erNotImpl;
-            }
-            MiscCommon::ERRORCODE Start()
-            {
-                return MiscCommon::erNotImpl;
-            }
-            MiscCommon::ERRORCODE Stop()
-            {
-                return MiscCommon::erNotImpl;
-            }
+            virtual ~CAgentClient()
+            {}
+            REGISTER_LOG_MODULE( AgentServer )
+
+        public:
+            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Start();
 
         public:
             const EAgentMode_t Mode;
+            AgentClientData_t m_Data;
     };
 
 }
