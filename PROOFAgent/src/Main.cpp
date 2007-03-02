@@ -16,12 +16,11 @@
 #include "PROOFAgent.h"
 
 using namespace std;
+using namespace MiscCommon;
 using namespace PROOFAgent;
 
 int main( int argc, char *argv[] )
 {
-    //CAgent<CAgentServer> server;
-    // cout << server.Init() << endl;
     CPROOFAgent agent;
     cout << agent.Init( "/home/anar/svn/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/documentation/PROOFAgent_config/proofagent.cfg.xml" ) << endl;
 

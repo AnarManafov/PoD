@@ -19,7 +19,7 @@
 // STD
 #include <stdexcept>
 #include <iostream>
-#include <string> 
+#include <string>
 
 // XML parser
 #include <xercesc/dom/DOM.hpp>
@@ -32,8 +32,8 @@
 #include "MiscUtils.h"
 
 using namespace std;
-using namespace glite_api_wrapper;
-using namespace glite_api_wrapper::XMLHelper;
+using namespace MiscCommon;
+using namespace MiscCommon::XMLHelper;
 using namespace PROOFAgent;
 XERCES_CPP_NAMESPACE_USE;
 
@@ -190,7 +190,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     get_attr_value( elementConfig, "logfile_overwrite", &m_Data.m_bLogFileOverwrite );
     string sValTmp;
     get_attr_value( elementConfig, "agent_mode", &sValTmp );
-    MiscUtils::to_lower( sValTmp );
+    MiscCommon::to_lower( sValTmp );
     m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;
 
     return erOK;

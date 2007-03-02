@@ -33,11 +33,11 @@ namespace PROOFAgent
                 m_Mode = _Mode;
                 RefreshAgent ();
             }
-            ERRORCODE Init( xercesc::DOMNode* _element )
+            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
             {
                 return m_Agent->Init( _element );
             }
-            ERRORCODE Start()
+            MiscCommon::ERRORCODE Start()
             {
                 return m_Agent->Start();
             }

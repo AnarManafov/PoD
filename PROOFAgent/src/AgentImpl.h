@@ -62,9 +62,9 @@ namespace PROOFAgent
         public:
             CAgentBase() : Mode( Unknown )
             {}
-            virtual ERRORCODE Init( xercesc::DOMNode* _element ) = 0;
-            virtual ERRORCODE Start() = 0;
-            virtual ERRORCODE Stop() = 0;
+            virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element ) = 0;
+            virtual MiscCommon::ERRORCODE Start() = 0;
+            virtual MiscCommon::ERRORCODE Stop() = 0;
 
         public:
             const EAgentMode_t Mode;
@@ -86,22 +86,22 @@ namespace PROOFAgent
 
     class CAgentServer :
                 public CAgentBase,
-                glite_api_wrapper::CLogImp<CAgentServer>,
-                IXMLPersist
+                MiscCommon::CLogImp<CAgentServer>,
+                MiscCommon::IXMLPersist
     {
         public:
             CAgentServer() : Mode( Server )
             {}
             virtual ~CAgentServer()
             {}
-            REGISTER_LOG_MODULE(AgentServer)
+            REGISTER_LOG_MODULE( AgentServer )
 
         public:
-            ERRORCODE Init( xercesc::DOMNode* _element );
-            ERRORCODE Read( xercesc::DOMNode* _element );
-            ERRORCODE Write( xercesc::DOMNode* _element );
-            ERRORCODE Start();
-            ERRORCODE Stop();
+            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Start();
+            MiscCommon::ERRORCODE Stop();
 
 
         public:
@@ -114,17 +114,17 @@ namespace PROOFAgent
         public:
             CAgentClient() : Mode( Client )
             {}
-            ERRORCODE Init( xercesc::DOMNode* _element )
+            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
             {
-                return erNotImpl;
+                return MiscCommon::erNotImpl;
             }
-            ERRORCODE Start()
+            MiscCommon::ERRORCODE Start()
             {
-                return erNotImpl;
+                return MiscCommon::erNotImpl;
             }
-            ERRORCODE Stop()
+            MiscCommon::ERRORCODE Stop()
             {
-                return erNotImpl;
+                return MiscCommon::erNotImpl;
             }
 
         public:

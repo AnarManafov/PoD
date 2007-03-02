@@ -22,7 +22,7 @@
 
 namespace PROOFAgent
 {
-    /** @brief WMSUI data structur. */
+    /** @brief Agent data structur. */
     typedef struct SAgentData
     {
         SAgentData() : m_bLogFileOverwrite( false )
@@ -34,23 +34,23 @@ namespace PROOFAgent
     SAgentData_t;
 
     class CPROOFAgent:
-                public glite_api_wrapper::CLogImp<CPROOFAgent>,
-                IXMLPersist
+                public MiscCommon::CLogImp<CPROOFAgent>,
+                MiscCommon::IXMLPersist
     {
         public:
             CPROOFAgent()
             {}
             virtual ~CPROOFAgent()
             {}
-            REGISTER_LOG_MODULE(PROOFAgent)
-                    
+            REGISTER_LOG_MODULE( PROOFAgent )
+
         public:
-            ERRORCODE Init( const std::string &_xmlFileName );
+            MiscCommon::ERRORCODE Init( const std::string &_xmlFileName );
 
         private:
-            ERRORCODE ReadCfg( const std::string &_xmlFileName );
-            ERRORCODE Read( xercesc::DOMNode* _element );
-            ERRORCODE Write( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName );
+            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
+            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
 
         private:
             SAgentData_t m_Data;

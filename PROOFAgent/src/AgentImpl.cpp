@@ -27,8 +27,8 @@
 #include "AgentImpl.h"
 
 using namespace std;
-using namespace glite_api_wrapper;
-using namespace glite_api_wrapper::XMLHelper;
+using namespace MiscCommon;
+using namespace MiscCommon::XMLHelper;
 XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
