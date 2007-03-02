@@ -20,8 +20,11 @@
 #include <stdexcept>
 #include <iostream>
 #include <string> 
+
 // XML parser
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/sax/HandlerBase.hpp>
 
 // PROOFAgent
 #include "XMLHelper.h"
@@ -41,9 +44,7 @@ ERRORCODE CPROOFAgent::Init( const string &_xmlFileName )
     if ( erOK != er )
         return er;
 
-    m_Agent.SetMode( m_Data.m_AgentMode );
-
-    return erOK;
+    return m_Agent.Start();
 }
 
 ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
@@ -110,14 +111,19 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
             CLogSinglton::Instance().Init( m_Data.m_sLogFileName, m_Data.m_bLogFileOverwrite );
             InfoLog( erOK, PACKAGE_STRING );
         }
+        // retrieving "version" attribut
+        {
+            smart_XMLCh ATTR_VERSION( "version" );
+            smart_XMLCh xmlTmpStr( elementConfig->getAttribute( ATTR_VERSION ) );
+            string config_version( xmlTmpStr.ToString() );
+            DebugLog( erOK, "PROOFAgent configuration version: " + config_version );
+        }
 
-        //                 // retrieving "version" attribut
-        //                 {
-        //                     smart_XMLCh ATTR_VERSION( "version" );
-        //                     smart_XMLCh xmlTmpStr( elementConfig->getAttribute( ATTR_VERSION ) );
-        //                     string config_version( xmlTmpStr.ToString() );
-        //                     DebugLog( erOK, "GAW configuration version: " + config_version );
-        //                 }
+        {
+            // Spawning new Agent in requasted mode
+            m_Agent.SetMode( m_Data.m_AgentMode );
+            m_Agent.Init( node );
+        }
 
     }
     catch ( const XMLException & toCatch )
@@ -181,10 +187,8 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
 
     // retrieving attributs
     get_attr_value( elementConfig, "logfile", &m_Data.m_sLogFileName );
+    get_attr_value( elementConfig, "logfile_overwrite", &m_Data.m_bLogFileOverwrite );
     string sValTmp;
-    get_attr_value( elementConfig, "logfile_overwrite", &sValTmp );
-    m_Data.m_bLogFileOverwrite = !( sValTmp.empty() || ( "0" == sValTmp ) );
-    sValTmp.clear();
     get_attr_value( elementConfig, "agent_mode", &sValTmp );
     MiscUtils::to_lower( sValTmp );
     m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;

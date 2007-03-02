@@ -20,26 +20,49 @@
 
 namespace PROOFAgent
 {
-    typedef std::auto_ptr<CAgentBase*> pAgentBase_t;
+    typedef std::auto_ptr<CAgentBase> pAgentBase_t;
     class CAgent
     {
         public:
             CAgent( EAgentMode_t _Mode = Unknown ) : m_Mode( _Mode )
-            {}
+            {
+                RefreshAgent ();
+            }
             void SetMode( EAgentMode_t _Mode )
             {
                 m_Mode = _Mode;
+                RefreshAgent ();
             }
-            ERRORCODE Init()
+            ERRORCODE Init( xercesc::DOMNode* _element )
             {
-                return erNotImpl; //m_Agent->Init();
+                return m_Agent->Init( _element );
+            }
+            ERRORCODE Start()
+            {
+                return m_Agent->Start();
             }
 
         private:
-            void GetAgent ()
+            void RefreshAgent ()
             {
-                //  if( m_Agent->get() &&  )
-
+                if ( ( m_Agent.get() && m_Agent->Mode != m_Mode ) || !m_Agent.get() )
+                    m_Agent.reset( Spawn() );
+            }
+            CAgentBase* Spawn()
+            {
+                switch ( m_Mode )
+                {
+                    case Server:
+                        return new CAgentServer;
+                        break;
+                    case Client:
+                        return new CAgentClient;
+                        break;
+                    case Unknown:
+                        return NULL;
+                        break;
+                }
+                return NULL;
             }
 
         private:

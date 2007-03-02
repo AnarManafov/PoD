@@ -40,11 +40,11 @@ namespace PROOFAgent
         public:
             CPROOFAgent()
             {}
-            std::string _GetModuleName() const
-            {
-                return "PROOFAgent";
-            }
-
+            virtual ~CPROOFAgent()
+            {}
+            REGISTER_LOG_MODULE(PROOFAgent)
+                    
+        public:
             ERRORCODE Init( const std::string &_xmlFileName );
 
         private:
