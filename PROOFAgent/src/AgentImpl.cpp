@@ -70,6 +70,9 @@ struct SServerThread
                 return ;
             }
 
+            // TODO: recieve data from client here
+            // TODO: Spawn PortForwarder here
+
         }
     }
 private:
