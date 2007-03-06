@@ -21,8 +21,10 @@ using namespace PROOFAgent;
 
 int main( int argc, char *argv[] )
 {
+    // TODO: Implement application's parameters check
+    // "/home/anar/svn/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/documentation/PROOFAgent_config/proofagent.cfg.xml"
     CPROOFAgent agent;
-    cout << agent.Init( "/home/anar/svn/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/documentation/PROOFAgent_config/proofagent.cfg.xml" ) << endl;
+    cout << agent.Init( argv[1] ) << endl;
 
     return erOK;
 }

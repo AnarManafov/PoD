@@ -15,19 +15,30 @@
 #ifndef PROOFAGENTPACKETFORWARDER_H
 #define PROOFAGENTPACKETFORWARDER_H
 
-namespace proofagent
+// Our
+#include "INet.h"
+#include "LogImp.h"
+
+namespace PROOFAgent
 {
 
-    /**
-    	@author Anar Manafov <A.Manafov@gsi.de>
-    */
-    class CPacketForwarder
+    class CPacketForwarder: MiscCommon::CLogImp<CPacketForwarder>
     {
         public:
-            CPacketForwarder();
+            CPacketForwarder( MiscCommon::INet::Socket_t &_Socket, unsigned short _nPort ) :
+                    m_Socket( _Socket ),
+                    m_nPort( _nPort )
+            {}
+            ~CPacketForwarder()
+            {}
+            REGISTER_LOG_MODULE( PacketForwarder )
 
-            ~CPacketForwarder();
+        public:
+            MiscCommon::ERRORCODE Start( );
 
+        private:
+            MiscCommon::INet::smart_socket m_Socket;
+            unsigned short m_nPort;
     };
 
 }

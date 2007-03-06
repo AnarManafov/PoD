@@ -12,6 +12,9 @@
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
 *************************************************************************/ 
+// API
+#include <sys/types.h>
+
 // XML parser
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/dom/DOM.hpp>
@@ -25,10 +28,12 @@
 // PROOFAgent
 #include "XMLHelper.h"
 #include "AgentImpl.h"
+#include "INet.h"
 
 using namespace std;
 using namespace MiscCommon;
 using namespace MiscCommon::XMLHelper;
+using namespace MiscCommon::INet;
 XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
@@ -39,50 +44,26 @@ struct SServerThread
     {}
     void operator() ()
     {
-        m_pThis->LogThread( "Starting main thread..." );
-        smart_socket SocketListener = ::socket( AF_INET, SOCK_STREAM, 0 );
-        if ( SocketListener < 0 )
+        try
         {
-            m_pThis->LogThread( "Soket error..." ); // TODO: perror( "socket" );
-            return ;
-        }
-
-        sockaddr_in addr;
-        addr.sin_family = AF_INET;
-        addr.sin_port = ::htons( m_pThis->m_Data.m_nPort );
-        addr.sin_addr.s_addr = ::htonl( INADDR_ANY );
-        if ( bind( SocketListener, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
-        {
-            m_pThis->LogThread( "Soket bind error..." ); // TODO: perror( "bind" );
-            return ;
-        }
-
-        ::listen( SocketListener, 1 );
-        std::stringstream ssMsg;
-        ssMsg << "Listenening on port #" << m_pThis->m_Data.m_nPort << " ...";
-        m_pThis->LogThread( ssMsg.str() );
-        while ( true )
-        {
-            smart_socket sock( ::accept( SocketListener, NULL, NULL ) );
-            if ( sock < 0 )
+            CSocketServer server;
+            server.Bind( m_pThis->m_Data.m_nPort );
+            server.Listen( 1 );
+            while ( true )
             {
-                m_pThis->LogThread( "Soket accept error..." ); // TODO: perror("accept");
-                return ;
+                smart_socket socket( server.Accept() );
+                // TODO: recieve data from client here
+                // TODO: Spawn PortForwarder here
             }
-
-            // TODO: recieve data from client here
-            // TODO: Spawn PortForwarder here
-
+        }
+        catch ( exception & e )
+        {
+            m_pThis->LogThread( e.what() );
         }
     }
 private:
-    CAgentServer * m_pThis;
+    CAgentServer *m_pThis;
 };
-
-ERRORCODE CAgentServer::Init( DOMNode* _element )
-{
-    return Read( _element );
-}
 
 ERRORCODE CAgentServer::Read( DOMNode* _element )
 {
@@ -128,10 +109,41 @@ ERRORCODE CAgentServer::Start()
 }
 
 //------------------------- Agent CLIENT ------------------------------------------------------------
-ERRORCODE CAgentClient::Init( xercesc::DOMNode* _element )
+struct SClientThread
 {
-    return erNotImpl;
-}
+    SClientThread( CAgentClient * _pThis ) : m_pThis( _pThis )
+    {}
+    void operator() ()
+    {
+        m_pThis->LogThread( "Starting main thread..." );
+        smart_socket SocketClient( AF_INET, SOCK_STREAM, 0 );
+        if ( SocketClient < 0 )
+        {
+            m_pThis->LogThread( "Soket error..." ); // TODO: perror( "socket" );
+            return ;
+        }
+
+        stringstream ssMsg;
+        ssMsg
+        << "connecting to " << m_pThis->m_Data.m_strHost
+        << "on port " << m_pThis->m_Data.m_nPort << "...";
+        m_pThis->LogThread( ssMsg.str() );
+        sockaddr_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_port = ::htons( m_pThis->m_Data.m_nPort );
+        ::inet_aton( m_pThis->m_Data.m_strHost.c_str(), &addr.sin_addr );
+
+        if ( ::connect( SocketClient, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+        {
+            m_pThis->LogThread( "Soket CONNECT error..." ); // TODO: perror( "connect" );
+            return ;
+        }
+        m_pThis->LogThread( "connected!" );
+
+    }
+private:
+    CAgentClient *m_pThis;
+};
 
 ERRORCODE CAgentClient::Read( DOMNode* _element )
 {
@@ -171,5 +183,7 @@ ERRORCODE CAgentClient::Write( xercesc::DOMNode* _element )
 
 ERRORCODE CAgentClient::Start()
 {
-    return MiscCommon::erNotImpl;
+    boost::thread thrd_client( SClientThread( this ) );
+    thrd_client.join();
+    return erOK;
 }

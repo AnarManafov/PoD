@@ -12,7 +12,7 @@
 		</agent_server>
 		<agent_client
             connect_port="51510"
-            server_addr="localhost"
+            server_addr="127.0.0.1"
             >
 		</agent_client>
 	</agent>

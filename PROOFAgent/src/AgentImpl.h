@@ -15,17 +15,9 @@
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
 
-// API
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-
 // BOOST
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-
-// STD
-#include <unistd.h>
 
 // PROOFAgent
 #include "ErrorCode.h"
@@ -34,58 +26,21 @@
 
 namespace PROOFAgent
 {
-    typedef int Socket_t;
     typedef enum{ Unknown, Server, Client }EAgentMode_t;
-
-
-    class smart_socket
-    {
-        public:
-            smart_socket() : m_Socket( 0 )
-            {}
-            smart_socket( int _Socket ) : m_Socket( _Socket )
-            {}
-            smart_socket( int _domain, int _type, int _protocol )
-            {
-                m_Socket = ::socket( _domain, _type, _protocol );
-            }
-            ~smart_socket()
-            {
-                close();
-            }
-            Socket_t* operator&()
-            {
-                return & m_Socket;
-            }
-            operator int()
-            {
-                return static_cast<int>( m_Socket );
-            }
-            int operator =( const int &_Val )
-            {
-                close();
-                return m_Socket = _Val;
-            }
-            void close()
-            {
-                if ( m_Socket )
-                    ::close( m_Socket );
-            }
-
-        private:
-            Socket_t m_Socket;
-    };
-
-
+    
     /** @class CAgentBase
       *  @brief
      */
-    class CAgentBase
+    class CAgentBase: MiscCommon::IXMLPersist
     {
         public:
             CAgentBase() : Mode( Unknown )
             {}
-            virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element ) = 0;
+            virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
+            {
+                return this->Read( _element );
+            }
+
             virtual MiscCommon::ERRORCODE Start() = 0;
 
         public:
@@ -127,8 +82,7 @@ namespace PROOFAgent
      */
     class CAgentServer :
                 public CAgentBase,
-                MiscCommon::CLogImp<CAgentServer>,
-                MiscCommon::IXMLPersist
+                MiscCommon::CLogImp<CAgentServer>
     {
         public:
             CAgentServer() :
@@ -139,13 +93,11 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( AgentServer )
 
         public:
-            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Start();
             void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
             {
-                boost::mutex::scoped_lock lock ( m_log_mutex );
                 InfoLog( _erCode, _Msg );
             }
 
@@ -153,7 +105,6 @@ namespace PROOFAgent
         public:
             const EAgentMode_t Mode;
             AgentServerData_t m_Data;
-            boost::mutex m_log_mutex;
     };
 
     /** @class CAgentClient
@@ -161,21 +112,23 @@ namespace PROOFAgent
       */
     class CAgentClient:
                 public CAgentBase,
-                MiscCommon::CLogImp<CAgentServer>,
-                MiscCommon::IXMLPersist
+                MiscCommon::CLogImp<CAgentClient>
     {
         public:
             CAgentClient() : Mode( Client )
             {}
             virtual ~CAgentClient()
             {}
-            REGISTER_LOG_MODULE( AgentServer )
+            REGISTER_LOG_MODULE( AgentClient )
 
         public:
-            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Start();
+            void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
+            {
+                InfoLog( _erCode, _Msg );
+            }
 
         public:
             const EAgentMode_t Mode;
