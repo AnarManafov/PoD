@@ -52,6 +52,12 @@ struct SServerThread
             while ( true )
             {
                 smart_socket socket( server.Accept() );
+
+                { // a transfer test
+                    BYTEVector_t buf ( 1024 );
+                    socket >> &buf;
+                    m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>(&buf[ 0 ]) ) );
+                }
                 // TODO: recieve data from client here
                 // TODO: Spawn PortForwarder here
             }
@@ -116,30 +122,32 @@ struct SClientThread
     void operator() ()
     {
         m_pThis->LogThread( "Starting main thread..." );
-        smart_socket SocketClient( AF_INET, SOCK_STREAM, 0 );
-        if ( SocketClient < 0 )
+        CSocketClient client;
+        try
         {
-            m_pThis->LogThread( "Soket error..." ); // TODO: perror( "socket" );
-            return ;
+            CSocketClient client;
+
+            stringstream ssMsg;
+            ssMsg
+            << "connecting to " << m_pThis->m_Data.m_strHost
+            << "on port " << m_pThis->m_Data.m_nPort << "...";
+
+            client.Connect( m_pThis->m_Data.m_nPort, m_pThis->m_Data.m_strHost );
+            m_pThis->LogThread( "connected!" );
+
+            { // a transfer test
+                string sTest( "Test String!" );
+                BYTEVector_t buf;
+                copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
+                m_pThis->LogThread( "Sending: " + string((char*)&buf[0]) );
+                client.GetSocket() << buf;
+            }
+
         }
-
-        stringstream ssMsg;
-        ssMsg
-        << "connecting to " << m_pThis->m_Data.m_strHost
-        << "on port " << m_pThis->m_Data.m_nPort << "...";
-        m_pThis->LogThread( ssMsg.str() );
-        sockaddr_in addr;
-        addr.sin_family = AF_INET;
-        addr.sin_port = ::htons( m_pThis->m_Data.m_nPort );
-        ::inet_aton( m_pThis->m_Data.m_strHost.c_str(), &addr.sin_addr );
-
-        if ( ::connect( SocketClient, ( struct sockaddr * ) & addr, sizeof( addr ) ) < 0 )
+        catch ( exception & e )
         {
-            m_pThis->LogThread( "Soket CONNECT error..." ); // TODO: perror( "connect" );
-            return ;
+            m_pThis->LogThread( e.what() );
         }
-        m_pThis->LogThread( "connected!" );
-
     }
 private:
     CAgentClient *m_pThis;
