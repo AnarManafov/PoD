@@ -8,3 +8,5 @@ INCLUDES = -I@top_srcdir@/Include $(all_includes)
 proofagent_LDFLAGS = $(all_libraries) 
 noinst_HEADERS = PacketForwarder.h Agent.h AgentImpl.h PROOFAgent.h
 AM_CXXFLAGS = -Wall
+
+SUBDIRS = unit_test
