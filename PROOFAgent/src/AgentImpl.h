@@ -17,17 +17,20 @@
 
 // BOOST
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
+
+// STD
+#include <list>
 
 // PROOFAgent
 #include "ErrorCode.h"
 #include "LogImp.h"
 #include "IXMLPersist.h"
+#include "PacketForwarder.h"
 
 namespace PROOFAgent
 {
     typedef enum{ Unknown, Server, Client }EAgentMode_t;
-    
+
     /** @class CAgentBase
       *  @brief
      */
@@ -77,6 +80,41 @@ namespace PROOFAgent
         return _stream;
     }
 
+    template <class _T>
+    struct SDelete
+    {
+        bool operator() ( _T *_val )
+        {
+            if ( _val )
+                delete _val;
+            return true;
+        }
+    };
+
+    class PF_Container
+    {
+            typedef CPacketForwarder pf_container_value;
+            typedef std::list<pf_container_value *> pf_container_type;
+
+        public:
+            PF_Container()
+            {}
+            ~PF_Container()
+            {
+                std::for_each( m_container.begin(), m_container.end(), SDelete<pf_container_value>() );
+            }
+            void add( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort )
+            {
+                CPacketForwarder *pf = new CPacketForwarder( _ClientSocket, _nNewLocalPort );
+                pf->Start();
+                m_container.push_back( pf );
+            }
+
+        private:
+            pf_container_type m_container;
+
+    };
+
     /** @class CAgentServer
      *  @brief
      */
@@ -100,11 +138,17 @@ namespace PROOFAgent
             {
                 InfoLog( _erCode, _Msg );
             }
-
+            void AddPF( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort )
+            {
+                boost::mutex::scoped_lock lock ( m_PFList_mutex );
+                m_PFList.add( _ClientSocket, _nNewLocalPort );
+            }
 
         public:
             const EAgentMode_t Mode;
             AgentServerData_t m_Data;
+            PF_Container m_PFList;
+            boost::mutex m_PFList_mutex;
     };
 
     /** @class CAgentClient

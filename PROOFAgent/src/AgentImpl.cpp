@@ -25,6 +25,9 @@
 // STD
 #include <stdexcept>
 
+// BOOST
+#include <boost/thread/thread.hpp>
+
 // PROOFAgent
 #include "XMLHelper.h"
 #include "AgentImpl.h"
@@ -36,6 +39,8 @@ using namespace MiscCommon::XMLHelper;
 using namespace MiscCommon::INet;
 XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
+
+const unsigned short NEW_PORT = 51511;
 
 //------------------------- Agent SERVER ------------------------------------------------------------
 struct SServerThread
@@ -56,10 +61,14 @@ struct SServerThread
                 { // a transfer test
                     BYTEVector_t buf ( 1024 );
                     socket >> &buf;
-                    m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>(&buf[ 0 ]) ) );
+                    m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
                 }
                 // TODO: recieve data from client here
-                // TODO: Spawn PortForwarder here
+
+                static unsigned short port = NEW_PORT;
+                // Spwan PortForwarder
+                Socket_t s = socket.deattach();
+                m_pThis->AddPF( s, ++port );
             }
         }
         catch ( exception & e )
@@ -139,10 +148,13 @@ struct SClientThread
                 string sTest( "Test String!" );
                 BYTEVector_t buf;
                 copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
-                m_pThis->LogThread( "Sending: " + string((char*)&buf[0]) );
+                m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
                 client.GetSocket() << buf;
             }
 
+            // Spwan PortForwarder
+            CPacketForwarder pf( client.GetSocket(), NEW_PORT );
+            pf.Start( true );
         }
         catch ( exception & e )
         {

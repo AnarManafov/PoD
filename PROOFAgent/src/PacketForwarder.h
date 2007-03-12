@@ -31,45 +31,39 @@ namespace PROOFAgent
 
     class CPacketForwarder: MiscCommon::CLogImp<CPacketForwarder>
     {
+            CPacketForwarder( const CPacketForwarder &_Obj ); //HACK: Since smart_socket doesn't support copy-constructor and ref. count
+            const CPacketForwarder& operator=( const CPacketForwarder& );
         public:
-            CPacketForwarder( MiscCommon::INet::Socket_t &_Socket, unsigned short _nPort ) :
-                    m_ClientSocket( _Socket ),
-                    m_nPort( _nPort )
+            CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
+                    m_ClientSocket( _ClientSocket ),
+                    m_nPort( _nNewLocalPort )
             {}
             ~CPacketForwarder()
             {}
             REGISTER_LOG_MODULE( PacketForwarder )
-                            
+
             void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
             {
                 InfoLog( _erCode, _Msg );
             }
 
-            MiscCommon::ERRORCODE ReadBuffer( MiscCommon::BYTEVector_t *_Buf )
-            {
-                if ( !_Buf )
-                    MiscCommon::erNULLArg;
-                boost::mutex::scoped_lock lock(m_Buf_mutex);
-                _Buf->clear();
-                std::copy( m_Buf.begin(), m_Buf.end(), std::back_inserter(*_Buf) );
-            }
-            
-            MiscCommon::ERRORCODE WriteBuffer( MiscCommon::BYTEVector_t *_Buf )
-            {
-                if ( !_Buf )
-                    MiscCommon::erNULLArg;
-                boost::mutex::scoped_lock lock(m_Buf_mutex);
-                m_Buf.resize(_Buf->size());
-                std::swap(*_Buf, m_Buf);
-            }
+            //             MiscCommon::ERRORCODE ReadBuffer( MiscCommon::BYTEVector_t *_Buf )
+            //             {
+            //                 if ( !_Buf )
+            //                     MiscCommon::erNULLArg;
+            //                 boost::mutex::scoped_lock lock(m_Buf_mutex);
+            //                 _Buf->clear();
+            //                 std::copy( m_Buf.begin(), m_Buf.end(), std::back_inserter(*_Buf) );
+            //             }
+
+            void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
         public:
-            MiscCommon::ERRORCODE Start( );
+            MiscCommon::ERRORCODE Start( bool _JoinThreads = false );
 
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
             unsigned short m_nPort;
-            MiscCommon::BYTEVector_t m_Buf;
             boost::mutex m_Buf_mutex;
     };
 
