@@ -52,4 +52,5 @@ CPPFLAGS="$CPPFLAGS -I$BOOST_LOCATION/include"
 AC_OUTPUT(
 Doxyfile
 Makefile
-src/Makefile)
+src/Makefile
+src/unit_test/Makefile)

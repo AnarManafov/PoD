@@ -17,17 +17,20 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/PROOFAgent</activetarget>
+      <activetarget>src/proofagent</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/proofagent</mainprogram>
+      <mainprogram>src/unit_test/unit_tests</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
-      <programargs/>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars/>
+      <runarguments>
+        <unit_tests></unit_tests>
+      </runarguments>
     </run>
     <configurations>
       <optimized>

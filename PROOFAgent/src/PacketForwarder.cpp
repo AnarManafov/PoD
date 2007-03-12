@@ -1,13 +1,13 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file PacketForwarder.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
-                           $$date$$
+                                    2007-03-01
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
