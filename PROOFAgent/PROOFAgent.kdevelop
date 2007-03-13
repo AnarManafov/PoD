@@ -21,7 +21,7 @@
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
-      <mainprogram>src/unit_test/unit_tests</mainprogram>
+      <mainprogram>src/proofagent</mainprogram>
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
       <programargs></programargs>
@@ -29,7 +29,7 @@
       <autocompile>true</autocompile>
       <envvars/>
       <runarguments>
-        <unit_tests></unit_tests>
+        <unit_tests/>
       </runarguments>
     </run>
     <configurations>
@@ -181,9 +181,9 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
 </kdevelop>

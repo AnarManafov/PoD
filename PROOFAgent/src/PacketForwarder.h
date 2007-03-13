@@ -59,8 +59,11 @@ namespace PROOFAgent
             void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
         public:
-            MiscCommon::ERRORCODE Start( bool _JoinThreads = false );
+            MiscCommon::ERRORCODE Start();
 
+        private:
+            void Thread_Worker(MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket);
+            
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
             unsigned short m_nPort;

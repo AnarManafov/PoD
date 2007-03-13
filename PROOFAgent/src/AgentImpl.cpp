@@ -58,11 +58,11 @@ struct SServerThread
             {
                 smart_socket socket( server.Accept() );
 
-                { // a transfer test
-                    BYTEVector_t buf ( 1024 );
-                    socket >> &buf;
-                    m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
-                }
+//                 { // a transfer test
+//                     BYTEVector_t buf ( 1024 );
+//                     socket >> &buf;
+//                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
+//                 }
                 // TODO: recieve data from client here
 
                 static unsigned short port = NEW_PORT;
@@ -144,17 +144,17 @@ struct SClientThread
             client.Connect( m_pThis->m_Data.m_nPort, m_pThis->m_Data.m_strHost );
             m_pThis->LogThread( "connected!" );
 
-            { // a transfer test
-                string sTest( "Test String!" );
-                BYTEVector_t buf;
-                copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
-                m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
-                client.GetSocket() << buf;
-            }
+//             { // a transfer test
+//                 string sTest( "Test String!" );
+//                 BYTEVector_t buf;
+//                 copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
+//                 m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
+//                 client.GetSocket() << buf;
+//             }
 
             // Spwan PortForwarder
             CPacketForwarder pf( client.GetSocket(), NEW_PORT );
-            pf.Start( true );
+            pf.Start();
         }
         catch ( exception & e )
         {
