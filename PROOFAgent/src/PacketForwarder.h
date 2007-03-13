@@ -38,15 +38,11 @@ namespace PROOFAgent
                     m_ClientSocket( _ClientSocket ),
                     m_nPort( _nNewLocalPort )
             {}
+                    
             ~CPacketForwarder()
             {}
+                    
             REGISTER_LOG_MODULE( PacketForwarder )
-
-            void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
-            {
-                InfoLog( _erCode, _Msg );
-            }
-
             //             MiscCommon::ERRORCODE ReadBuffer( MiscCommon::BYTEVector_t *_Buf )
             //             {
             //                 if ( !_Buf )
@@ -66,6 +62,7 @@ namespace PROOFAgent
             
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
+            MiscCommon::INet::smart_socket m_ServerCocket;
             unsigned short m_nPort;
             boost::mutex m_Buf_mutex;
     };
