@@ -91,6 +91,9 @@ ERRORCODE CPacketForwarder::Start()
 void CPacketForwarder::WriteBuffer( BYTEVector_t &_Buf, smart_socket &_socket ) throw ( exception )
 {
     //  boost::mutex::scoped_lock lock(m_Buf_mutex);
-    DebugLog( erOK, "PF writes: " + string( reinterpret_cast<char*>( &_Buf[ 0 ] ) ) );
+    string strSocketInfo;
+    socket2string( _socket, &strSocketInfo );
+    DebugLog( erOK, strSocketInfo );
+    DebugLog( erOK, "writes: " + string( reinterpret_cast<char*>( &_Buf[ 0 ] ) ) );
     _socket << _Buf;
 }
