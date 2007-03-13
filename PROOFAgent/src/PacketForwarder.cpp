@@ -27,7 +27,7 @@ using namespace std;
 
 const unsigned int g_BUF_SIZE = 1024;
 
-void CPacketForwarder::Thread_Worker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
+void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
 {
     BYTEVector_t buf( g_BUF_SIZE );
     // Macking non-blocking sockets
@@ -77,8 +77,8 @@ ERRORCODE CPacketForwarder::Start()
         m_ServerCocket = server.Accept();
 
         // executing PF threads
-        boost::thread thrd_clnt( boost::bind( &CPacketForwarder::Thread_Worker, this, &m_ServerCocket, &m_ClientSocket ) );
-        boost::thread thrd_srv( boost::bind( &CPacketForwarder::Thread_Worker, this, &m_ClientSocket, &m_ServerCocket ) );
+        boost::thread thrd_clnt( boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) );
+        boost::thread thrd_srv( boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) );
         thrd_clnt.join();
         thrd_srv.join();
     }

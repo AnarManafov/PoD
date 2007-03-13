@@ -25,9 +25,6 @@
 // STD
 #include <stdexcept>
 
-// BOOST
-#include <boost/thread/thread.hpp>
-
 // PROOFAgent
 #include "XMLHelper.h"
 #include "AgentImpl.h"
@@ -43,43 +40,6 @@ using namespace PROOFAgent;
 const unsigned short NEW_PORT = 51511;
 
 //------------------------- Agent SERVER ------------------------------------------------------------
-struct SServerThread
-{
-    SServerThread( CAgentServer * _pThis ) : m_pThis( _pThis )
-    {}
-    void operator() ()
-    {
-        try
-        {
-            CSocketServer server;
-            server.Bind( m_pThis->m_Data.m_nPort );
-            server.Listen( 1 );
-            while ( true )
-            {
-                smart_socket socket( server.Accept() );
-
-//                 { // a transfer test
-//                     BYTEVector_t buf ( 1024 );
-//                     socket >> &buf;
-//                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
-//                 }
-                // TODO: recieve data from client here
-
-                static unsigned short port = NEW_PORT;
-                // Spwan PortForwarder
-                Socket_t s = socket.deattach();
-                m_pThis->AddPF( s, ++port );
-            }
-        }
-        catch ( exception & e )
-        {
-            m_pThis->LogThread( e.what() );
-        }
-    }
-private:
-    CAgentServer *m_pThis;
-};
-
 ERRORCODE CAgentServer::Read( DOMNode* _element )
 {
     // TODO: Use a "try" block to catch XML exceptions
@@ -115,56 +75,38 @@ ERRORCODE CAgentServer::Write( xercesc::DOMNode* _element )
     return erNotImpl;
 }
 
-ERRORCODE CAgentServer::Start()
+void CAgentServer::ThreadWorker()
 {
-    boost::thread thrd_server( SServerThread( this ) );
-    thrd_server.join();
-
-    return erOK;
-}
-
-//------------------------- Agent CLIENT ------------------------------------------------------------
-struct SClientThread
-{
-    SClientThread( CAgentClient * _pThis ) : m_pThis( _pThis )
-    {}
-    void operator() ()
+    try
     {
-        m_pThis->LogThread( "Starting main thread..." );
-        CSocketClient client;
-        try
+        CSocketServer server;
+        server.Bind( m_Data.m_nPort );
+        server.Listen( 1 );
+        while ( true )
         {
-            CSocketClient client;
+            smart_socket socket( server.Accept() );
 
-            stringstream ssMsg;
-            ssMsg
-            << "connecting to " << m_pThis->m_Data.m_strHost
-            << "on port " << m_pThis->m_Data.m_nPort << "...";
+            //                 { // a transfer test
+            //                     BYTEVector_t buf ( 1024 );
+            //                     socket >> &buf;
+            //                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
+            //                 }
+            // TODO: recieve data from client here
 
-            client.Connect( m_pThis->m_Data.m_nPort, m_pThis->m_Data.m_strHost );
-            m_pThis->LogThread( "connected!" );
-
-//             { // a transfer test
-//                 string sTest( "Test String!" );
-//                 BYTEVector_t buf;
-//                 copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
-//                 m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
-//                 client.GetSocket() << buf;
-//             }
-
+            static unsigned short port = NEW_PORT;
             // Spwan PortForwarder
-            CPacketForwarder pf( client.GetSocket(), NEW_PORT );
-            pf.Start();
-        }
-        catch ( exception & e )
-        {
-            m_pThis->LogThread( e.what() );
+            Socket_t s = socket.deattach();
+            AddPF( s, ++port );
         }
     }
-private:
-    CAgentClient *m_pThis;
-};
+    catch ( exception & e )
+    {
+        FaultLog( erError, e.what() );
+    }
+}
 
+
+//------------------------- Agent CLIENT ------------------------------------------------------------
 ERRORCODE CAgentClient::Read( DOMNode* _element )
 {
     // TODO: Use a "try" block to catch XML exceptions
@@ -201,9 +143,36 @@ ERRORCODE CAgentClient::Write( xercesc::DOMNode* _element )
     return erNotImpl;
 }
 
-ERRORCODE CAgentClient::Start()
+void CAgentClient::ThreadWorker()
 {
-    boost::thread thrd_client( SClientThread( this ) );
-    thrd_client.join();
-    return erOK;
+    DebugLog( erOK, "Starting main thread..." );
+    CSocketClient client;
+    try
+    {
+        CSocketClient client;
+
+        stringstream ssMsg;
+        ssMsg
+        << "connecting to " << m_Data.m_strHost
+        << "on port " << m_Data.m_nPort << "...";
+
+        client.Connect( m_Data.m_nPort, m_Data.m_strHost );
+        DebugLog( erOK, "connected!" );
+
+        //             { // a transfer test
+        //                 string sTest( "Test String!" );
+        //                 BYTEVector_t buf;
+        //                 copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
+        //                 m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
+        //                 client.GetSocket() << buf;
+        //             }
+
+        // Spwan PortForwarder
+        CPacketForwarder pf( client.GetSocket(), NEW_PORT );
+        pf.Start();
+    }
+    catch ( exception & e )
+    {
+        FaultLog( erError, e.what() );
+    }
 }

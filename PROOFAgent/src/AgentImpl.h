@@ -17,6 +17,8 @@
 
 // BOOST
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
 // STD
 #include <list>
@@ -44,7 +46,15 @@ namespace PROOFAgent
                 return this->Read( _element );
             }
 
-            virtual MiscCommon::ERRORCODE Start() = 0;
+            MiscCommon::ERRORCODE Start()
+            {
+                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
+                thrd.join();
+                return MiscCommon::erOK;
+            }
+
+        protected:
+            virtual void ThreadWorker() = 0;
 
         public:
             const EAgentMode_t Mode;
@@ -75,8 +85,7 @@ namespace PROOFAgent
     inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
     {
         _stream
-        << "Connecting to Port: " << _data.m_nPort << "\n"
-        << "on Host: " << _data.m_strHost << std::endl;
+                << "Connecting to: [" << _data.m_strHost << ":"<< _data.m_nPort << "]" << std::endl;
         return _stream;
     }
 
@@ -105,7 +114,7 @@ namespace PROOFAgent
             }
             void add( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort )
             {
-                CPacketForwarder *pf = new CPacketForwarder( _ClientSocket, _nNewLocalPort );
+                CPacketForwarder * pf = new CPacketForwarder( _ClientSocket, _nNewLocalPort );
                 pf->Start();
                 m_container.push_back( pf );
             }
@@ -128,21 +137,20 @@ namespace PROOFAgent
             {}
             virtual ~CAgentServer()
             {}
-            REGISTER_LOG_MODULE( AgentServer )
+            REGISTER_LOG_MODULE( AgentServer );
 
         public:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
-            MiscCommon::ERRORCODE Start();
-            void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
-            {
-                InfoLog( _erCode, _Msg );
-            }
+
             void AddPF( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort )
             {
                 boost::mutex::scoped_lock lock ( m_PFList_mutex );
                 m_PFList.add( _ClientSocket, _nNewLocalPort );
             }
+
+        protected:
+            void ThreadWorker();
 
         public:
             const EAgentMode_t Mode;
@@ -163,16 +171,14 @@ namespace PROOFAgent
             {}
             virtual ~CAgentClient()
             {}
-            REGISTER_LOG_MODULE( AgentClient )
+            REGISTER_LOG_MODULE( AgentClient );
 
         public:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
-            MiscCommon::ERRORCODE Start();
-            void LogThread( const std::string _Msg, MiscCommon::ERRORCODE _erCode = MiscCommon::erOK )
-            {
-                InfoLog( _erCode, _Msg );
-            }
+
+        protected:
+            void ThreadWorker();
 
         public:
             const EAgentMode_t Mode;

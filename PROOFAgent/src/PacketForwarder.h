@@ -47,7 +47,7 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE Start();
 
         protected:
-            void Thread_Worker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
+            void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
 
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
