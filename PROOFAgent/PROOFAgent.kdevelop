@@ -30,6 +30,7 @@
       <envvars/>
       <runarguments>
         <unit_tests/>
+        <proofagent></proofagent>
       </runarguments>
     </run>
     <configurations>
@@ -181,9 +182,9 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem></docsystem>
-      <docurl></docurl>
-      <usermanualurl></usermanualurl>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
 </kdevelop>

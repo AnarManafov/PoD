@@ -18,9 +18,6 @@
 // BOOST
 #include <boost/thread/mutex.hpp>
 
-// STD
-//#include <algorithm>
-
 // Our
 #include "INet.h"
 #include "LogImp.h"
@@ -38,28 +35,20 @@ namespace PROOFAgent
                     m_ClientSocket( _ClientSocket ),
                     m_nPort( _nNewLocalPort )
             {}
-                    
+
             ~CPacketForwarder()
             {}
-                    
+
             REGISTER_LOG_MODULE( PacketForwarder )
-            //             MiscCommon::ERRORCODE ReadBuffer( MiscCommon::BYTEVector_t *_Buf )
-            //             {
-            //                 if ( !_Buf )
-            //                     MiscCommon::erNULLArg;
-            //                 boost::mutex::scoped_lock lock(m_Buf_mutex);
-            //                 _Buf->clear();
-            //                 std::copy( m_Buf.begin(), m_Buf.end(), std::back_inserter(*_Buf) );
-            //             }
 
             void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
         public:
             MiscCommon::ERRORCODE Start();
 
-        private:
-            void Thread_Worker(MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket);
-            
+        protected:
+            void Thread_Worker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
+
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerCocket;

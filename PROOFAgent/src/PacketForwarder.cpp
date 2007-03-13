@@ -45,7 +45,7 @@ void CPacketForwarder::Thread_Worker( smart_socket *_SrvSocket, smart_socket *_C
         timeout.tv_usec = 0;
         if ( ::select( *_SrvSocket + 1, &readset, NULL, NULL, &timeout ) < 0 )
         {
-            FaultLog( erError, "Error while colling \"select\"" );
+            FaultLog( erError, "Error while calling \"select\"" );
             return ;
         }
 
@@ -75,6 +75,8 @@ ERRORCODE CPacketForwarder::Start()
         server.Bind( m_nPort );
         server.Listen( 1 ); // TODO: reuse parent socket socket  here
         m_ServerCocket = server.Accept();
+
+        // executing PF threads
         boost::thread thrd_clnt( boost::bind( &CPacketForwarder::Thread_Worker, this, &m_ServerCocket, &m_ClientSocket ) );
         boost::thread thrd_srv( boost::bind( &CPacketForwarder::Thread_Worker, this, &m_ClientSocket, &m_ServerCocket ) );
         thrd_clnt.join();
@@ -93,7 +95,6 @@ void CPacketForwarder::WriteBuffer( BYTEVector_t &_Buf, smart_socket &_socket ) 
     //  boost::mutex::scoped_lock lock(m_Buf_mutex);
     string strSocketInfo;
     socket2string( _socket, &strSocketInfo );
-    DebugLog( erOK, strSocketInfo );
-    DebugLog( erOK, "writes: " + string( reinterpret_cast<char*>( &_Buf[ 0 ] ) ) );
+    DebugLog( erOK, strSocketInfo + " BEGIN>>>" + string( reinterpret_cast<char*>( &_Buf[ 0 ] ) ) + "<<<END" );
     _socket << _Buf;
 }
