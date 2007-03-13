@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<proofagent_config last_update="" version="1.0.0" xmlns="">
+<proofagent_config last_update="" version="0.1.0" xmlns="">
 	<agent>
 		<config
 			logfile="/tmp/proofagent.log"
 			logfile_overwrite="yes"
+            log_level="0"
 			agent_mode="Server">
 		</config>
 		<agent_server
             listen_port="51510"
+            local_client_port_min = "200000"
+            local_client_port_max = "200010"
             >
 		</agent_server>
 		<agent_client
-            connect_port="51510"
+            server_port="51510"
             server_addr="127.0.0.1"
+            local_client_port="51511"
             >
 		</agent_client>
 	</agent>

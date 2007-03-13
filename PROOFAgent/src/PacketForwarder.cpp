@@ -67,6 +67,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     }
 }
 
+// TODO: Make PF::Start have an option - Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF working)
 ERRORCODE CPacketForwarder::Start()
 {
     try

@@ -37,7 +37,6 @@ using namespace MiscCommon::INet;
 XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
-const unsigned short NEW_PORT = 51511;
 
 //------------------------- Agent SERVER ------------------------------------------------------------
 ERRORCODE CAgentServer::Read( DOMNode* _element )
@@ -64,6 +63,8 @@ ERRORCODE CAgentServer::Read( DOMNode* _element )
 
     // retrieving attributs
     get_attr_value( elementConfig, "listen_port", &m_Data.m_nPort );
+    get_attr_value( elementConfig, "local_client_port_min", &m_Data.m_nLocalClientPortMin );
+    get_attr_value( elementConfig, "local_client_port_max", &m_Data.m_nLocalClientPortMax );
 
     InfoLog( erOK, "Agent Server configuration:" ) << m_Data;
 
@@ -93,7 +94,7 @@ void CAgentServer::ThreadWorker()
             //                 }
             // TODO: recieve data from client here
 
-            static unsigned short port = NEW_PORT;
+            static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumirator - should give next free port by requests
             // Spwan PortForwarder
             Socket_t s = socket.deattach();
             AddPF( s, ++port );
@@ -130,8 +131,9 @@ ERRORCODE CAgentClient::Read( DOMNode* _element )
         throw( runtime_error( "empty XML document" ) );
 
     // retrieving attributs
-    get_attr_value( elementConfig, "connect_port", &m_Data.m_nPort );
-    get_attr_value( elementConfig, "server_addr", &m_Data.m_strHost );
+    get_attr_value( elementConfig, "server_port", &m_Data.m_nServerPort );
+    get_attr_value( elementConfig, "server_addr", &m_Data.m_strServerHost );
+    get_attr_value( elementConfig, "local_client_port", &m_Data.m_nLocalClientPort );
 
     InfoLog( erOK, "Agent Client configuration:" ) << m_Data;
 
@@ -150,13 +152,7 @@ void CAgentClient::ThreadWorker()
     try
     {
         CSocketClient client;
-
-        stringstream ssMsg;
-        ssMsg
-        << "connecting to " << m_Data.m_strHost
-        << "on port " << m_Data.m_nPort << "...";
-
-        client.Connect( m_Data.m_nPort, m_Data.m_strHost );
+        client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
         DebugLog( erOK, "connected!" );
 
         //             { // a transfer test
@@ -168,7 +164,7 @@ void CAgentClient::ThreadWorker()
         //             }
 
         // Spwan PortForwarder
-        CPacketForwarder pf( client.GetSocket(), NEW_PORT );
+        CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
         pf.Start();
     }
     catch ( exception & e )

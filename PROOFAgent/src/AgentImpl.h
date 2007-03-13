@@ -62,9 +62,14 @@ namespace PROOFAgent
 
     typedef struct SAgentServerData
     {
-        SAgentServerData() : m_nPort( 0 )
+        SAgentServerData() :
+                m_nPort( 0 ),
+                m_nLocalClientPortMin( 0 ),
+                m_nLocalClientPortMax( 0 )
         {}
         unsigned short m_nPort;
+        unsigned short m_nLocalClientPortMin;
+        unsigned short m_nLocalClientPortMax;
     }
     AgentServerData_t;
     inline std::ostream &operator <<( std::ostream &_stream, const AgentServerData_t &_data )
@@ -76,16 +81,22 @@ namespace PROOFAgent
 
     typedef struct SAgentClientData
     {
-        SAgentClientData() : m_nPort( 0 )
+        SAgentClientData() :
+                m_nServerPort( 0 ),
+                m_nLocalClientPort( 0 )
         {}
-        unsigned short m_nPort;
-        std::string m_strHost;
+        unsigned short m_nServerPort;
+        std::string m_strServerHost;
+        unsigned short m_nLocalClientPort;
     }
     AgentClientData_t;
     inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
     {
         _stream
-                << "Connecting to: [" << _data.m_strHost << ":"<< _data.m_nPort << "]" << std::endl;
+        << "server info: [" << _data.m_strServerHost << ":" << _data.m_nServerPort << "];"
+        << "\n"
+        << "local listen port: " << _data.m_nLocalClientPort
+        << std::endl;
         return _stream;
     }
 
