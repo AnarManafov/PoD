@@ -9,8 +9,8 @@
 		</config>
 		<agent_server
             listen_port="51510"
-            local_client_port_min = "200000"
-            local_client_port_max = "200010"
+            local_client_port_min = "20000"
+            local_client_port_max = "20010"
             >
 		</agent_server>
 		<agent_client
