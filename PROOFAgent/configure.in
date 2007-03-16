@@ -38,10 +38,10 @@ AC_MSG_CHECKING([for BOOST location])
 AC_ARG_WITH(boost-location,
     [ --with-boost-location=<dir> Default is \$BOOST_LOCATION],
     boost_location="$withval",
-    boost_location="$BOOST_LOCATION/lib")
+    boost_location="$BOOST_LOCATION")
 if test -d "$boost_location" ; then
     AC_MSG_RESULT([found $boost_location])
-    $BOOSTLOCATION=$boost_location
+    $BOOST_LOCATION=$boost_location
 else
     AC_MSG_ERROR([no such directory $boost_location])
 fi
