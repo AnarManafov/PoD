@@ -41,7 +41,7 @@ AC_ARG_WITH(boost-location,
     boost_location="$BOOST_LOCATION")
 if test -d "$boost_location" ; then
     AC_MSG_RESULT([found $boost_location])
-    $BOOST_LOCATION=$boost_location
+    BOOST_LOCATION=$boost_location
 else
     AC_MSG_ERROR([no such directory $boost_location])
 fi
