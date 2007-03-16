@@ -54,6 +54,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             try
             {
                 *_SrvSocket >> &buf;
+                ReportPackage( *_SrvSocket, buf );
                 WriteBuffer( buf, *_CltSocket );
                 buf.clear();
                 buf.resize( g_BUF_SIZE );
@@ -94,8 +95,6 @@ ERRORCODE CPacketForwarder::Start()
 void CPacketForwarder::WriteBuffer( BYTEVector_t &_Buf, smart_socket &_socket ) throw ( exception )
 {
     //  boost::mutex::scoped_lock lock(m_Buf_mutex);
-    string strSocketInfo;
-    socket2string( _socket, &strSocketInfo );
-    DebugLog( erOK, strSocketInfo + " BEGIN>>>" + string( reinterpret_cast<char*>( &_Buf[ 0 ] ) ) + "<<<END" );
+    ReportPackage( _socket, _Buf, false );
     _socket << _Buf;
 }

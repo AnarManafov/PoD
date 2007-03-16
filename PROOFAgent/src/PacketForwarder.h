@@ -22,14 +22,15 @@
 #include "INet.h"
 #include "LogImp.h"
 #include "def.h"
+#include "MiscUtils.h"
 
 namespace PROOFAgent
 {
 
-    class CPacketForwarder: MiscCommon::CLogImp<CPacketForwarder>
+    class CPacketForwarder:
+                public MiscCommon::CLogImp<CPacketForwarder>,
+                MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
     {
-            CPacketForwarder( const CPacketForwarder &_Obj ); //HACK: Since smart_socket doesn't support copy-constructor and ref. count
-            const CPacketForwarder& operator=( const CPacketForwarder& );
         public:
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
@@ -39,7 +40,7 @@ namespace PROOFAgent
             ~CPacketForwarder()
             {}
 
-            REGISTER_LOG_MODULE( PacketForwarder )
+            REGISTER_LOG_MODULE( PacketForwarder );
 
             void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
@@ -48,6 +49,23 @@ namespace PROOFAgent
 
         protected:
             void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
+
+        private:
+            void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*weather package received or submitted*/ )
+            {
+                std::string strSocketInfo;
+                MiscCommon::INet::socket2string( _socket, &strSocketInfo );
+                std::string strSocketPeerInfo;
+                MiscCommon::INet::peer2string( _socket, &strSocketPeerInfo );
+                std::stringstream ss;
+                ss
+                        << (_received? "RECEIVED: ": "FORWARDED: ")
+                        << (_received? strSocketPeerInfo: strSocketInfo) << " |-> " << (_received? strSocketInfo: strSocketPeerInfo) << "\n"
+                        << "BEGIN" << "\n"
+                        << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n"
+                        << "END";
+                DebugLog( MiscCommon::erOK, ss.str() );
+            }
 
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;

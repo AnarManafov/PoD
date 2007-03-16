@@ -93,6 +93,15 @@ void CAgentServer::ThreadWorker()
             //                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
             //                 }
             // TODO: recieve data from client here
+            string strSocketInfo;
+            socket2string( socket, &strSocketInfo );
+            string strSocketPeerInfo;
+            peer2string( socket, &strSocketPeerInfo );
+            stringstream ss;
+            ss
+            << "Accepting connection on : " << strSocketInfo
+            << " for peer: " << strSocketPeerInfo;
+            InfoLog( erOK, ss.str() );
 
             static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumirator - should give next free port by requests
             // Spwan PortForwarder
