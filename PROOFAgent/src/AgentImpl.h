@@ -41,6 +41,8 @@ namespace PROOFAgent
         public:
             CAgentBase() : Mode( Unknown )
             {}
+            virtual ~CAgentBase()
+            {}
             virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
             {
                 return this->Read( _element );
@@ -48,8 +50,8 @@ namespace PROOFAgent
 
             MiscCommon::ERRORCODE Start()
             {
-                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
-               // thrd.join();
+                m_thrd = Thread_PTR_t( new boost::thread(
+                                       boost::bind( &CAgentBase::ThreadWorker, this ) ) );
                 return MiscCommon::erOK;
             }
 
@@ -58,6 +60,7 @@ namespace PROOFAgent
 
         public:
             const EAgentMode_t Mode;
+            Thread_PTR_t m_thrd;
     };
 
     typedef struct SAgentServerData

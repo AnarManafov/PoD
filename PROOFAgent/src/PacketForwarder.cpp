@@ -78,9 +78,9 @@ ERRORCODE CPacketForwarder::Start()
         m_ServerCocket = server.Accept();
 
         // executing PF threads
-        m_thrd_clnt = thread_ptr_t( new boost::thread(
+        m_thrd_clnt = Thread_PTR_t( new boost::thread(
                                       boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
-        m_thrd_srv = thread_ptr_t( new boost::thread(
+        m_thrd_srv = Thread_PTR_t( new boost::thread(
                                      boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
     }
     catch ( exception & e )
