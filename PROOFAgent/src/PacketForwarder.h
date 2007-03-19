@@ -17,6 +17,8 @@
 
 // BOOST
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/shared_ptr.hpp>
 
 // Our
 #include "INet.h"
@@ -27,6 +29,8 @@
 namespace PROOFAgent
 {
 
+    typedef  boost::shared_ptr<boost::thread> thread_ptr_t;
+    
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
                 MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
@@ -71,7 +75,9 @@ namespace PROOFAgent
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerCocket;
             unsigned short m_nPort;
-            boost::mutex m_Buf_mutex;
+            thread_ptr_t m_Buf_mutex;
+            thread_ptr_t m_thrd_clnt;
+            thread_ptr_t m_thrd_srv;
     };
 
 }

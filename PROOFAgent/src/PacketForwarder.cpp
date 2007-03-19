@@ -17,7 +17,6 @@
 #include "PacketForwarder.h"
 
 // BOOST
-#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 
 using namespace MiscCommon;
@@ -44,7 +43,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         timeout.tv_sec = 10;
         timeout.tv_usec = 0;
         if ( ::select( *_SrvSocket + 1, &readset, NULL, NULL, &timeout ) < 0 )
-        {
+        { // TODO: Send errno to log
             FaultLog( erError, "Error while calling \"select\"" );
             return ;
         }
@@ -75,14 +74,14 @@ ERRORCODE CPacketForwarder::Start()
     {
         CSocketServer server;
         server.Bind( m_nPort );
-        server.Listen( 1 ); // TODO: reuse parent socket socket  here
+        server.Listen( 1 );
         m_ServerCocket = server.Accept();
 
         // executing PF threads
-        boost::thread thrd_clnt( boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) );
-        boost::thread thrd_srv( boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) );
-        thrd_clnt.join();
-        thrd_srv.join();
+        m_thrd_clnt = thread_ptr_t( new boost::thread(
+                                      boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+        m_thrd_srv = thread_ptr_t( new boost::thread(
+                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
     }
     catch ( exception & e )
     {
