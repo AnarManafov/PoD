@@ -34,7 +34,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     _CltSocket->set_nonblock();
 
     fd_set readset;
-    while ( 1 )
+    while ( true )
     {
         FD_ZERO( &readset );
         FD_SET( *_SrvSocket, &readset );

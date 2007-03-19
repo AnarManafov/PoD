@@ -49,7 +49,7 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE Start()
             {
                 boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
-                thrd.join();
+               // thrd.join();
                 return MiscCommon::erOK;
             }
 
