@@ -82,7 +82,7 @@ void CAgentServer::ThreadWorker()
     {
         CSocketServer server;
         server.Bind( m_Data.m_nPort );
-        server.Listen( 1 );
+        server.Listen( 10 ); // TODO: Move this number of queued clients to config
         while ( true )
         {
             smart_socket socket( server.Accept() );
