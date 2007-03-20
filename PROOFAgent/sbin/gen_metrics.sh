@@ -1,8 +1,12 @@
 #!/bin/bash
 
 echo ">>> producing log from SVN... <<<"
-svn log https://subversion.gsi.de/grid/D-Grid/Include --xml -v > svn.log
+
+echo '<?xml version="1.0"?>' > svn.log
+echo "<log>" >> svn.log
+svn log https://subversion.gsi.de/grid/D-Grid/Include --incremental --xml -v >> svn.log
 svn log https://subversion.gsi.de/grid/D-Grid/PROOFAgent --incremental --xml -v >> svn.log
+echo "</log>" >> svn.log
 
 echo ">>> setting up DISPLAY... <<<"
 export DISPLAY=:0.0
