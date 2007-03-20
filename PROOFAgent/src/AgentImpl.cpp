@@ -174,7 +174,7 @@ void CAgentClient::ThreadWorker()
 
         // Spwan PortForwarder
         CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
-        pf.Start();
+        pf.Start( true );
     }
     catch ( exception & e )
     {

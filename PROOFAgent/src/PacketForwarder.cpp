@@ -67,8 +67,18 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     }
 }
 
-// TODO: Make PF::Start have an option - Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF working)
-ERRORCODE CPacketForwarder::Start()
+ERRORCODE CPacketForwarder::Start( bool _Join )
+{
+    // executing PF threads
+    m_thrd_serversocket = Thread_PTR_t( new boost::thread(
+                                    boost::bind( &CPacketForwarder::_Start, this, _Join ) ) );
+    if ( _Join ) //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
+        m_thrd_serversocket->join();
+
+    return erOK;
+}
+
+ERRORCODE CPacketForwarder::_Start( bool _Join )
 {
     try
     {
@@ -79,9 +89,14 @@ ERRORCODE CPacketForwarder::Start()
 
         // executing PF threads
         m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                      boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+                                        boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
         m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+                                       boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+        if ( _Join )
+        {
+            m_thrd_clnt->join();
+            m_thrd_srv->join();
+        }
     }
     catch ( exception & e )
     {

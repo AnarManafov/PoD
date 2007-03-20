@@ -28,8 +28,8 @@
 namespace PROOFAgent
 {
 
-    typedef  boost::shared_ptr<boost::thread> Thread_PTR_t; // TODO: Move it to BOOST_Helper.h
-    
+    typedef boost::shared_ptr<boost::thread> Thread_PTR_t; // TODO: Move it to BOOST_Helper.h
+
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
                 MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
@@ -48,12 +48,13 @@ namespace PROOFAgent
             void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
         public:
-            MiscCommon::ERRORCODE Start();
+            MiscCommon::ERRORCODE Start( bool _Join = false );
 
         protected:
             void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
 
         private:
+            MiscCommon::ERRORCODE _Start( bool _Join );
             void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*weather package received or submitted*/ )
             {
                 std::string strSocketInfo;
@@ -62,11 +63,11 @@ namespace PROOFAgent
                 MiscCommon::INet::peer2string( _socket, &strSocketPeerInfo );
                 std::stringstream ss;
                 ss
-                        << (_received? "RECEIVED: ": "FORWARDED: ")
-                        << (_received? strSocketPeerInfo: strSocketInfo) << " |-> " << (_received? strSocketInfo: strSocketPeerInfo) << "\n"
-                        << "BEGIN" << "\n"
-                        << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n"
-                        << "END";
+                << ( _received ? "RECEIVED: " : "FORWARDED: " )
+                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"
+                << "BEGIN" << "\n"
+                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n"
+                << "END";
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
 
@@ -76,6 +77,7 @@ namespace PROOFAgent
             unsigned short m_nPort;
             Thread_PTR_t m_thrd_clnt;
             Thread_PTR_t m_thrd_srv;
+            Thread_PTR_t m_thrd_main;
     };
 
 }

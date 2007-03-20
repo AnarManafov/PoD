@@ -50,8 +50,8 @@ namespace PROOFAgent
 
             MiscCommon::ERRORCODE Start()
             {
-                m_thrd = Thread_PTR_t( new boost::thread(
-                                       boost::bind( &CAgentBase::ThreadWorker, this ) ) );
+                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
+                thrd.join();
                 return MiscCommon::erOK;
             }
 
@@ -60,7 +60,6 @@ namespace PROOFAgent
 
         public:
             const EAgentMode_t Mode;
-            Thread_PTR_t m_thrd;
     };
 
     typedef struct SAgentServerData
