@@ -77,7 +77,7 @@ namespace PROOFAgent
             unsigned short m_nPort;
             Thread_PTR_t m_thrd_clnt;
             Thread_PTR_t m_thrd_srv;
-            Thread_PTR_t m_thrd_main;
+            Thread_PTR_t m_thrd_serversocket;
     };
 
 }
