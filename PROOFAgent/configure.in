@@ -7,7 +7,7 @@ SVN_HEAD_REV=`svn status -u | grep "Status against revision" | head -1 | awk -F:
 # HACK: echo ${SVN_HEAD_REV}  is used to remove leading space
 VERSION=["0.1.0-(r"`echo ${SVN_HEAD_REV}`")"]
 
-AM_INIT_AUTOMAKE([proofagent], [$SVN_HEAD_REV])
+AM_INIT_AUTOMAKE([proofagent], [$VERSION])
 
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER(config.h)
