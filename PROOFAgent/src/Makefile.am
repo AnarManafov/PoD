@@ -20,6 +20,15 @@ INCLUDES = -I@top_srcdir@/Include $(all_includes)
 
 # the library search path.
 proofagent_LDFLAGS = $(all_libraries)
+proofagent_include_HEADERS = \
+	../Include/ErrorCode.h \
+	../Include/IXMLPersist.h \
+	../Include/XMLHelper.h \
+	../Include/LogImp.h \
+	../Include/Log.h \
+	../Include/MiscUtils.h \
+	../Include/def.h \
+	../Include/Res.h
 noinst_HEADERS = PacketForwarder.h Agent.h AgentImpl.h PROOFAgent.h
 AM_CXXFLAGS = -Wall
 
