@@ -2,12 +2,21 @@ AC_PREREQ(2.57)
 AC_INIT
 
 # Geting HEADS's revision number
-SVN_HEAD_REV=`svn status -u | grep "Status against revision" | head -1 | awk -F: '{print $2}'`
+#SVN_HEAD_REV=`svn status -u | grep "Status against revision" | head -1 | awk -F: '{print $2}'`
 
-# HACK: echo ${SVN_HEAD_REV}  is used to remove leading space
-VERSION=["0.1.0-r"`echo ${SVN_HEAD_REV}`]
+# HACK: echo ${SVN_HEAD_REV}  is used to remove leading spacea
+#TMP_VER=`echo ${SVN_HEAD_REV}`
 
-AM_INIT_AUTOMAKE([proofagent], [$VERSION])
+
+SVN_HEAD_REV=`svn info https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/ | grep "Revision: " | head -1 | awk -F: '{print $2}'`
+
+# HACK: echo ${SVN_HEAD_REV}  is used to remove leading spacea
+TMP_VER=`echo ${SVN_HEAD_REV}`
+
+VER=["0.1.0."$TMP_VER]
+
+
+AM_INIT_AUTOMAKE([proofagent], $VER)
 
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER(config.h)
