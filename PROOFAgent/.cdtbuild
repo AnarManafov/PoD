@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<?fileVersion 3.1.0?>
+<ManagedProjectBuildInfo>
+  <project id="PROOFAgent.com.redhat.eclipse.cdt.autotools.projectType.847505113" name="Autotools (Gnu)" projectType="com.redhat.eclipse.cdt.autotools.projectType">
+    <configuration id="com.redhat.eclipse.cdt.autotools.configuration.build.998323177" name="Build (Gnu)" description="" parent="com.redhat.eclipse.cdt.autotools.configuration.build" artifactName="PROOFAgent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" cleanCommand="rm -rf" prebuildStep="">
+      <toolChain superClass="com.redhat.eclipse.cdt.autotools.toolChain" id="com.redhat.eclipse.cdt.autotools.toolChain.1485753718" name="Autotools Toolchain (Gnu)">
+        <tool superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.900673254" name="configure" command="configure"/>
+        <macros expandEnvironmentMacros="true"/>
+      </toolChain>
+    </configuration>
+  </project>
+</ManagedProjectBuildInfo>
