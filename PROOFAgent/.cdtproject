@@ -19,7 +19,19 @@
     
     
     
+    
+    
+    
+    
+    
+    
     <item id="scannerConfiguration">
+      
+      
+      
+      
+      
+      
       
       
       
@@ -53,6 +65,12 @@
       
       
       
+      
+      
+      
+      
+      
+      
       <profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
         
         
@@ -70,7 +88,19 @@
         
         
         
+        
+        
+        
+        
+        
+        
         <buildOutputProvider>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -104,6 +134,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <parser enabled="true"/>
           
           
@@ -113,6 +149,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -122,6 +164,12 @@
         
         
         </buildOutputProvider>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -155,7 +203,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -181,6 +241,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -198,6 +264,12 @@
         
         
         
+        
+        
+        
+      
+      
+      
       
       
       
@@ -207,6 +279,12 @@
       
       
       </profile>
+      
+      
+      
+      
+      
+      
       
       
       
@@ -240,7 +318,19 @@
         
         
         
+        
+        
+        
+        
+        
+        
         <buildOutputProvider>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -274,6 +364,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <parser enabled="true"/>
           
           
@@ -283,6 +379,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -292,6 +394,12 @@
         
         
         </buildOutputProvider>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -325,7 +433,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -351,6 +471,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -368,6 +494,12 @@
         
         
         
+        
+        
+        
+      
+      
+      
       
       
       
@@ -377,6 +509,12 @@
       
       
       </profile>
+      
+      
+      
+      
+      
+      
       
       
       
@@ -410,7 +548,19 @@
         
         
         
+        
+        
+        
+        
+        
+        
         <buildOutputProvider>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -444,6 +594,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <parser enabled="true"/>
           
           
@@ -453,6 +609,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -462,6 +624,12 @@
         
         
         </buildOutputProvider>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -495,7 +663,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -521,6 +701,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -538,6 +724,12 @@
         
         
         
+        
+        
+        
+      
+      
+      
       
       
       
@@ -547,6 +739,12 @@
       
       
       </profile>
+      
+      
+      
+      
+      
+      
       
       
       
@@ -580,7 +778,19 @@
         
         
         
+        
+        
+        
+        
+        
+        
         <buildOutputProvider>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -614,6 +824,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <parser enabled="true"/>
           
           
@@ -623,6 +839,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -632,6 +854,12 @@
         
         
         </buildOutputProvider>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -665,7 +893,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <runAction useDefault="true" command="make" arguments="-f ${project_name}_scd.mk"/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -691,6 +931,12 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -708,6 +954,12 @@
         
         
         
+        
+        
+        
+      
+      
+      
       
       
       
@@ -725,6 +977,12 @@
       
       
       
+      
+      
+      
+    
+    
+    
     
     
     
@@ -734,6 +992,12 @@
     
     
     </item>
+    
+    
+    
+    
+    
+    
     
     
     
@@ -754,6 +1018,7 @@
       <pathentry kind="out" path=""/>
       <pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>
       <pathentry kind="con" path="org.eclipse.cdt.managedbuilder.MANAGED_CONTAINER"/>
+      <pathentry kind="src" path=""/>
     </item>
     
     
@@ -763,15 +1028,27 @@
     
     
     
+    
+    
+    
   
   
   
+    
+    
+    
     
     
     
     
     
     <item id="org.eclipse.cdt.make.core.buildtargets">
+      
+      
+      
+      
+      
+      
       
       
       
@@ -793,7 +1070,19 @@
         
         
         
+        
+        
+        
+        
+        
+        
         <target name="all" targetID="genmakebuilder" path="">
+          
+          
+          
+          
+          
+          
           
           
           
@@ -815,7 +1104,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -837,7 +1138,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -854,12 +1167,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -881,6 +1206,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -892,7 +1223,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -914,7 +1257,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -931,12 +1286,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -958,6 +1325,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -969,7 +1342,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -991,7 +1376,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1008,12 +1405,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1035,6 +1444,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1046,7 +1461,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1068,7 +1495,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1085,12 +1524,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1112,6 +1563,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1123,7 +1580,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1145,7 +1614,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1162,12 +1643,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1189,6 +1682,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1200,7 +1699,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1222,7 +1733,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1239,12 +1762,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1266,6 +1801,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1277,7 +1818,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1299,7 +1852,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1316,12 +1881,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1343,6 +1920,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1354,7 +1937,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1376,7 +1971,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1393,12 +2000,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1420,6 +2039,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1431,7 +2056,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1453,7 +2090,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1470,12 +2119,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1497,6 +2158,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1508,7 +2175,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1530,7 +2209,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1547,12 +2238,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1574,6 +2277,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1585,7 +2294,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1607,7 +2328,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1624,12 +2357,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1651,6 +2396,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1662,7 +2413,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1684,7 +2447,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1701,12 +2476,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1728,6 +2515,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1739,7 +2532,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1761,7 +2566,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1778,12 +2595,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1805,6 +2634,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1816,7 +2651,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1838,7 +2685,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1855,12 +2714,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1882,6 +2753,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1893,7 +2770,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1915,7 +2804,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1932,12 +2833,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -1959,6 +2872,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -1970,7 +2889,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -1992,7 +2923,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2009,12 +2952,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2036,6 +2991,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2047,7 +3008,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2069,7 +3042,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2086,12 +3071,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2113,6 +3110,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2124,7 +3127,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2146,7 +3161,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2163,12 +3190,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2190,6 +3229,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2201,7 +3246,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2223,7 +3280,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2240,12 +3309,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2267,6 +3348,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2278,7 +3365,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2300,7 +3399,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2317,12 +3428,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2344,6 +3467,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2355,7 +3484,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2377,7 +3518,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2394,12 +3547,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2421,6 +3586,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2432,7 +3603,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2454,7 +3637,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2471,12 +3666,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2498,6 +3705,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2509,7 +3722,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2531,7 +3756,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2548,12 +3785,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2575,6 +3824,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2586,7 +3841,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2608,7 +3875,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2625,12 +3904,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2652,6 +3943,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2663,7 +3960,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2685,7 +3994,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2702,12 +4023,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2729,6 +4062,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2740,7 +4079,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2762,7 +4113,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2779,12 +4142,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2806,6 +4181,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2817,7 +4198,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2839,7 +4232,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2856,12 +4261,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2883,6 +4300,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2894,7 +4317,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2916,7 +4351,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2933,12 +4380,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -2960,6 +4419,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -2971,7 +4436,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -2993,7 +4470,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3010,12 +4499,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3037,6 +4538,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3048,7 +4555,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3070,7 +4589,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3087,12 +4618,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3114,6 +4657,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3125,7 +4674,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3147,7 +4708,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3164,12 +4737,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3191,6 +4776,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3202,7 +4793,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3224,7 +4827,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3241,12 +4856,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3268,6 +4895,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3279,7 +4912,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3301,7 +4946,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3318,12 +4975,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3345,6 +5014,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3356,7 +5031,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3378,7 +5065,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3395,12 +5094,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3422,6 +5133,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3433,7 +5150,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3455,7 +5184,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3472,12 +5213,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3499,6 +5252,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3510,7 +5269,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3532,7 +5303,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3549,12 +5332,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3576,6 +5371,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3587,7 +5388,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3609,7 +5422,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3626,12 +5451,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3653,6 +5490,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3664,7 +5507,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3686,7 +5541,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3703,12 +5570,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3730,6 +5609,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3741,7 +5626,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3763,7 +5660,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3780,12 +5689,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3807,6 +5728,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3818,7 +5745,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3840,7 +5779,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3857,12 +5808,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3884,6 +5847,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3895,7 +5864,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3917,7 +5898,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3934,12 +5927,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3961,6 +5966,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -3972,7 +5983,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -3994,7 +6017,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4011,12 +6046,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4038,6 +6085,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4049,7 +6102,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4071,7 +6136,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4088,12 +6165,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4115,6 +6204,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4126,7 +6221,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4148,7 +6255,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4165,12 +6284,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4192,6 +6323,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4203,7 +6340,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4225,7 +6374,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4242,12 +6403,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4269,6 +6442,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4280,7 +6459,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4302,7 +6493,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4319,12 +6522,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4346,6 +6561,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4357,7 +6578,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4379,7 +6612,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4396,12 +6641,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4423,6 +6680,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4434,7 +6697,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4456,7 +6731,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4473,12 +6760,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4500,6 +6799,12 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
           
           
@@ -4511,7 +6816,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildArguments/>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4533,7 +6850,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4550,12 +6879,24 @@
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
         
         
         </target>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -4577,7 +6918,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildCommand>make</buildCommand>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4599,7 +6952,19 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <buildTarget>uninstall-info</buildTarget>
+          
+          
+          
+          
+          
+          
           
           
           
@@ -4621,12 +6986,24 @@
           
           
           
+          
+          
+          
+          
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
           
           
           
           
           
+          
+          
+          
+        
+        
+        
         
         
         
@@ -4638,6 +7015,12 @@
         
         
         
+        
+        
+        
+      
+      
+      
       
       
       
@@ -4649,6 +7032,12 @@
       
       
       
+      
+      
+      
+    
+    
+    
     
     
     
@@ -4660,6 +7049,12 @@
     
     
     
+    
+    
+    
+  
+  
+  
   
   
   
