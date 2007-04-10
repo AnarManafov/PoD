@@ -78,7 +78,7 @@ namespace PROOFAgent
     {
         _stream
         << "Listen on Port: " << _data.m_nPort << "\n"
-                << "a Local Clients Ports: " << _data.m_nLocalClientPortMin << "-" << _data.m_nLocalClientPortMax << std::endl;
+        << "a Local Clients Ports: " << _data.m_nLocalClientPortMin << "-" << _data.m_nLocalClientPortMax << std::endl;
         return _stream;
     }
 
