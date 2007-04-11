@@ -27,7 +27,7 @@ namespace PROOFAgent
     {
         SAgentData() : m_bLogFileOverwrite( false )
         {}
-        std::string m_sLogFileName;     //!< Log filename
+        std::string m_sLogFileName;    //!< Log filename
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session
         EAgentMode_t m_AgentMode;
     }
@@ -45,10 +45,10 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( PROOFAgent )
 
         public:
-            MiscCommon::ERRORCODE Init( const std::string &_xmlFileName );
-
-        private:
             MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName );
+            MiscCommon::ERRORCODE Start();
+                    
+        private:        
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
 

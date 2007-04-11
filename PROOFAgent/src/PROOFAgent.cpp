@@ -37,13 +37,8 @@ using namespace MiscCommon::XMLHelper;
 using namespace PROOFAgent;
 XERCES_CPP_NAMESPACE_USE;
 
-
-ERRORCODE CPROOFAgent::Init( const string &_xmlFileName )
+ERRORCODE CPROOFAgent::Start()
 {
-    ERRORCODE er = ReadCfg( _xmlFileName );
-    if ( erOK != er )
-        return er;
-
     return m_Agent.Start();
 }
 
@@ -154,6 +149,7 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
         return erXMLReadConfig;
     }
 
+    // TODO: Avoid of MemLeaks
     if ( NULL != parser.get() )
         delete parser.release();
     if ( NULL != errHandler.get() )

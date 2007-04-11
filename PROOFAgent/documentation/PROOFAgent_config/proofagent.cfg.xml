@@ -1,23 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<proofagent_config last_update="" version="0.1.0" xmlns="">
-	<agent>
-		<config
-			logfile="/tmp/proofagent.log"
-			logfile_overwrite="yes"
-            log_level="0"
-			agent_mode="Server">
-		</config>
-		<agent_server
-            listen_port="51510"
-            local_client_port_min = "20000"
-            local_client_port_max = "20010"
-            >
-		</agent_server>
-		<agent_client
-            server_port="51510"
-            server_addr="127.0.0.1"
-            local_client_port="51511"
-            >
-		</agent_client>
-	</agent>
+<proofagent_config last_update="" version="1.0.0" xmlns="">
+	<instances>
+		
+		<instance1>
+			<config
+				logfile="/tmp/proofagent.log"
+				logfile_overwrite="yes"
+		        log_level="0"
+        		agent_mode="Server"
+				>
+			</config>
+			<agent_server
+	        	listen_port="51510"
+ 		   	    local_client_port_min = "20000"
+        		local_client_port_max = "20010"
+        		>
+        	</agent_server>
+		</instance1>
+
+		<instance2>
+			<config
+				logfile="/tmp/proofagent.log"
+				logfile_overwrite="yes"
+		    	log_level="0"
+		        agent_mode="Client"
+				>
+			</config>
+			<agent_client
+    			server_port="51510"
+            	server_addr="127.0.0.1"
+		        local_client_port="51511"
+        		>
+			</agent_client>
+		</instance2>
+	
+	</instances>		
 </proofagent_config>
