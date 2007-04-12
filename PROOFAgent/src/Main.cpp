@@ -66,7 +66,8 @@ void ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     ("stop", "stop PROOFAgent daemon")
     ("instance,i", value<string>(), "name of the instance of daemon")
     ;
-
+    
+    // Parsing command-line
     variables_map vm;
     store(parse_command_line(_Argc, _Argv, desc), vm);
     notify(vm);
@@ -83,14 +84,12 @@ void ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     }
     if ( vm.count("file") )
         _Options->m_sConfigFile = vm["file"].as<string>();
-    else
-        throw runtime_error("Options \"file\" is mandatory");
     if ( vm.count("start") )
         _Options->m_Command = SOptions_t::Start;
     if ( vm.count("stop") )
         _Options->m_Command = SOptions_t::Stop;
     if ( vm.count("instance") )
-        _Options->m_sInstanceName = vm["instace"].as<string>();
+        _Options->m_sInstanceName = vm["instance"].as<string>();
 }
 
 int main( int argc, char *argv[] )
@@ -110,7 +109,7 @@ int main( int argc, char *argv[] )
 
     // Daemon-specific initialization goes here
     CPROOFAgent agent;
-    if ( FAILED( agent.ReadCfg( Options.m_sConfigFile ) ) )
+    if ( FAILED( agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName ) ) )
         return erError; // TODO: Log me!
 
 

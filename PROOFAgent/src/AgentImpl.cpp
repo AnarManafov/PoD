@@ -46,22 +46,15 @@ ERRORCODE CAgentServer::Read( DOMNode* _element )
         return erXMLNullNode;
 
     // getting <agent_server> Element
-    smart_XMLCh ElementName( "agent_server" );
-    DOMElement *config_element( dynamic_cast<DOMElement* >( _element ) );
-    if ( NULL == config_element )
-        return erXMLNullNode;
+    DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_server" );
 
-    DOMNodeList *list = config_element->getElementsByTagName( ElementName );
-
-    DOMNode* node = list->item( 0 ) ;
     DOMElement* elementConfig( NULL );
     if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
         elementConfig = dynamic_cast< DOMElement* >( node ) ;
-
     if ( NULL == elementConfig )
         throw( runtime_error( "empty XML document" ) );
 
-    // retrieving attributs
+    // retrieving attributes
     get_attr_value( elementConfig, "listen_port", &m_Data.m_nPort );
     get_attr_value( elementConfig, "local_client_port_min", &m_Data.m_nLocalClientPortMin );
     get_attr_value( elementConfig, "local_client_port_max", &m_Data.m_nLocalClientPortMax );
@@ -71,7 +64,7 @@ ERRORCODE CAgentServer::Read( DOMNode* _element )
     return erOK;
 }
 
-ERRORCODE CAgentServer::Write( xercesc::DOMNode* _element )
+ERRORCODE CAgentServer::Write( DOMNode* _element )
 {
     return erNotImpl;
 }
@@ -124,22 +117,15 @@ ERRORCODE CAgentClient::Read( DOMNode* _element )
         return erXMLNullNode;
 
     // getting <agent_server> Element
-    smart_XMLCh ElementName( "agent_client" );
-    DOMElement *config_element( dynamic_cast<DOMElement* >( _element ) );
-    if ( NULL == config_element )
-        return erXMLNullNode;
-
-    DOMNodeList *list = config_element->getElementsByTagName( ElementName );
-
-    DOMNode* node = list->item( 0 ) ;
+    DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_client" );
+    
     DOMElement* elementConfig( NULL );
     if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
         elementConfig = dynamic_cast< DOMElement* >( node ) ;
-
     if ( NULL == elementConfig )
         throw( runtime_error( "empty XML document" ) );
 
-    // retrieving attributs
+    // retrieving attributes
     get_attr_value( elementConfig, "server_port", &m_Data.m_nServerPort );
     get_attr_value( elementConfig, "server_addr", &m_Data.m_strServerHost );
     get_attr_value( elementConfig, "local_client_port", &m_Data.m_nLocalClientPort );
@@ -149,7 +135,7 @@ ERRORCODE CAgentClient::Read( DOMNode* _element )
     return erOK;
 }
 
-ERRORCODE CAgentClient::Write( xercesc::DOMNode* _element )
+ERRORCODE CAgentClient::Write( DOMNode* _element )
 {
     return erNotImpl;
 }

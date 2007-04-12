@@ -42,7 +42,7 @@ ERRORCODE CPROOFAgent::Start()
     return m_Agent.Start();
 }
 
-ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
+ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance )
 {
     string xmlFileName;
     char *p = getenv( "PROOFAGENT_LOCATION" );
@@ -82,31 +82,33 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
         // Creating DOM document object
         DOMDocument* xmlDoc = parser->getDocument();
 
-        // getting <gaw_config> Element
-        smart_XMLCh ElementName( "proofagent_config" );
-        DOMNodeList *list = xmlDoc->getElementsByTagName( ElementName );
+        // getting <proofagent_config> Element
+        DOMNode *node = GetSingleNodeByName_Ex( xmlDoc, "proofagent_config" );
 
-        DOMNode* node = list->item( 0 ) ;
         DOMElement* elementConfig( NULL );
-        if ( xercesc::DOMNode::ELEMENT_NODE == node->getNodeType() )
+        if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
             elementConfig = dynamic_cast< xercesc::DOMElement* >( node ) ;
 
-        //   DOMElement* elementConfig = xmlDoc->getDocumentElement();
-
-        if ( NULL == elementConfig )
+        if ( !elementConfig )
             throw( runtime_error( "empty XML document" ) );
 
         // Reading Agent's configuration
         {
-            smart_XMLCh ElementName( "agent" );
-            DOMNodeList *list = xmlDoc->getElementsByTagName( ElementName );
-            DOMNode* node = list->item( 0 );
-            Read( node );
+            // <instances>
+            DOMNode *instances_node = GetSingleNodeByName_Ex( node, "instances" );
+
+            // <instance>
+            DOMNode *instance = GetSingleNodeByName_Ex( instances_node, _Instance );
+
+            // reading configuration of a given instance
+            Read( instance );
+
             // Initializing log engine
             CLogSinglton::Instance().Init( m_Data.m_sLogFileName, m_Data.m_bLogFileOverwrite );
-            InfoLog( erOK, PACKAGE_STRING );
+            InfoLog( erOK, PACKAGE + string(" v.") + VERSION );
         }
-        // retrieving "version" attribut
+
+        // retrieving "version" attribute
         {
             smart_XMLCh ATTR_VERSION( "version" );
             smart_XMLCh xmlTmpStr( elementConfig->getAttribute( ATTR_VERSION ) );
@@ -115,7 +117,7 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
         }
 
         {
-            // Spawning new Agent in requasted mode
+            // Spawning new Agent in requested mode
             m_Agent.SetMode( m_Data.m_AgentMode );
             m_Agent.Init( node );
         }
@@ -144,7 +146,7 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName )
     }
     catch ( ... )
     {
-        string errMsg( "Unexpected Exception occured while reading configuration file: " + xmlFileName );
+        string errMsg( "Unexpected Exception occurred while reading configuration file: " + xmlFileName );
         FaultLog( erXMLInit, errMsg );
         return erXMLReadConfig;
     }
@@ -166,22 +168,15 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
         return erXMLNullNode;
 
     // getting <config> Element
-    smart_XMLCh ElementName( "config" );
-    DOMElement *config_element( dynamic_cast<DOMElement* >( _element ) );
-    if ( NULL == config_element )
-        return erXMLNullNode;
+    DOMNode *node = GetSingleNodeByName_Ex( _element, "config" );
 
-    DOMNodeList *list = config_element->getElementsByTagName( ElementName );
-
-    DOMNode* node = list->item( 0 ) ;
     DOMElement* elementConfig( NULL );
     if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
         elementConfig = dynamic_cast< DOMElement* >( node ) ;
-
     if ( NULL == elementConfig )
         throw( runtime_error( "empty XML document" ) );
 
-    // retrieving attributs
+    // retrieving attributes
     get_attr_value( elementConfig, "logfile", &m_Data.m_sLogFileName );
     get_attr_value( elementConfig, "logfile_overwrite", &m_Data.m_bLogFileOverwrite );
     string sValTmp;

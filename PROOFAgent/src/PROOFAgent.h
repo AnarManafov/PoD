@@ -22,7 +22,7 @@
 
 namespace PROOFAgent
 {
-    /** @brief Agent data structur. */
+    /** @brief Agent data structure. */
     typedef struct SAgentData
     {
         SAgentData() : m_bLogFileOverwrite( false )
@@ -45,7 +45,7 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( PROOFAgent )
 
         public:
-            MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName );
+            MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName, const std::string &_Instance );
             MiscCommon::ERRORCODE Start();
                     
         private:        
