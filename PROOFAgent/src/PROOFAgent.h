@@ -46,7 +46,7 @@ namespace PROOFAgent
 
         public:
             MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName, const std::string &_Instance );
-            MiscCommon::ERRORCODE Start();
+            MiscCommon::ERRORCODE Start();            
                     
         private:        
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
