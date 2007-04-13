@@ -19,12 +19,17 @@
 // BOOST
 #include <boost/bind.hpp>
 
+// API
+#include <signal.h>
+
 using namespace MiscCommon;
 using namespace MiscCommon::INet;
 using namespace PROOFAgent;
 using namespace std;
 
 const unsigned int g_BUF_SIZE = 1024;
+
+extern sig_atomic_t graceful_quit;
 
 void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
 {
@@ -46,6 +51,13 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         { // TODO: Send errno to log
             FaultLog( erError, "Error while calling \"select\"" );
             return ;
+        }
+
+        // Checking whether signal has arrived
+        if ( graceful_quit )
+        {
+            InfoLog( erOK, "STOP signal received." );
+            return;
         }
 
         if ( FD_ISSET( *_SrvSocket, &readset ) )
@@ -82,18 +94,46 @@ ERRORCODE CPacketForwarder::_Start( bool _Join )
 {
     try
     {
-        {// need this stack in order to close CSockeServer earlier
+        while ( true )
+        {
             CSocketServer server;
             server.Bind( m_nPort );
             server.Listen( 1 );
-            m_ServerCocket = server.Accept();
+            server.GetSocket().set_nonblock();
 
-            // executing PF threads
-            m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
-            m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+            fd_set readset;
+            FD_ZERO( &readset );
+            FD_SET( server.GetSocket(), &readset );
+            // Setting time-out
+            timeval timeout;
+            timeout.tv_sec = 10;
+            timeout.tv_usec = 0;
+            if ( ::select( server.GetSocket() + 1, &readset, NULL, NULL, &timeout ) < 0 )
+            { // TODO: Send errno to log
+                FaultLog( erError, "Error while calling \"select\"" );
+                return erError;
+            }
+
+            // Checking whether signal has arrived
+            if ( graceful_quit )
+            {
+                InfoLog( erOK, "STOP signal received." );
+                return erOK;
+            }
+
+            if ( FD_ISSET( server.GetSocket(), &readset ) )
+            {
+                m_ServerCocket = server.Accept();
+
+                // executing PF threads
+                m_thrd_clnt = Thread_PTR_t( new boost::thread(
+                                                boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+                m_thrd_srv = Thread_PTR_t( new boost::thread(
+                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+                break;
+            }
         }
+
         if ( _Join )
         {
             m_thrd_clnt->join();

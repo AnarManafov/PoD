@@ -38,6 +38,13 @@ XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
 
+sig_atomic_t graceful_quit = 0;
+
+void PROOFAgent::signal_handler( int _SignalNumber )
+{
+    graceful_quit = 1;
+}
+
 //------------------------- Agent SERVER ------------------------------------------------------------
 ERRORCODE CAgentServer::Read( DOMNode* _element )
 {
@@ -76,30 +83,55 @@ void CAgentServer::ThreadWorker()
         CSocketServer server;
         server.Bind( m_Data.m_nPort );
         server.Listen( 10 ); // TODO: Move this number of queued clients to config
+        server.GetSocket().set_nonblock(); // Nonblocking server socket
+        fd_set readset;
         while ( true )
         {
-            smart_socket socket( server.Accept() );
+            FD_ZERO( &readset );
+            FD_SET( server.GetSocket(), &readset );
+            // Setting time-out
+            timeval timeout;
+            timeout.tv_sec = 10;
+            timeout.tv_usec = 0;
 
-            //                 { // a transfer test
-            //                     BYTEVector_t buf ( 1024 );
-            //                     socket >> &buf;
-            //                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
-            //                 }
-            // TODO: recieve data from client here
-            string strSocketInfo;
-            socket2string( socket, &strSocketInfo );
-            string strSocketPeerInfo;
-            peer2string( socket, &strSocketPeerInfo );
-            stringstream ss;
-            ss
-            << "Accepting connection on : " << strSocketInfo
-            << " for peer: " << strSocketPeerInfo;
-            InfoLog( erOK, ss.str() );
+            if ( ::select( server.GetSocket() + 1, &readset, NULL, NULL, &timeout ) < 0 )
+            { // TODO: Send errno to log
+                FaultLog( erError, "Server socket got error while calling \"select\"" );
+                return ;
+            }
 
-            static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumirator - should give next free port by requests
-            // Spwan PortForwarder
-            Socket_t s = socket.deattach();
-            AddPF( s, ++port );
+            // Checking whether signal has arrived
+            if ( graceful_quit )
+            {
+                InfoLog( erOK, "STOP signal received." );
+                return;
+            }
+
+            if ( FD_ISSET( server.GetSocket(), &readset ) )
+            {
+                smart_socket socket( server.Accept() );
+
+                //                 { // a transfer test
+                //                     BYTEVector_t buf ( 1024 );
+                //                     socket >> &buf;
+                //                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
+                //                 }
+                // TODO: recieve data from client here
+                string strSocketInfo;
+                socket2string( socket, &strSocketInfo );
+                string strSocketPeerInfo;
+                peer2string( socket, &strSocketPeerInfo );
+                stringstream ss;
+                ss
+                << "Accepting connection on : " << strSocketInfo
+                << " for peer: " << strSocketPeerInfo;
+                InfoLog( erOK, ss.str() );
+
+                static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumerator - should give next free port by requests
+                // Spwan PortForwarder
+                Socket_t s = socket.detach();
+                AddPF( s, ++port );
+            }
         }
     }
     catch ( exception & e )
@@ -118,7 +150,7 @@ ERRORCODE CAgentClient::Read( DOMNode* _element )
 
     // getting <agent_server> Element
     DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_client" );
-    
+
     DOMElement* elementConfig( NULL );
     if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
         elementConfig = dynamic_cast< DOMElement* >( node ) ;

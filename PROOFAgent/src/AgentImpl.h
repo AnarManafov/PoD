@@ -15,6 +15,9 @@
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
 
+// API
+#include <signal.h>
+
 // BOOST
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
@@ -33,6 +36,9 @@ namespace PROOFAgent
 {
     typedef enum{ Unknown, Server, Client }EAgentMode_t;
 
+    // declaration of signal handler
+    void signal_handler( int _SignalNumber );
+
     /** @class CAgentBase
       *  @brief
      */
@@ -40,7 +46,18 @@ namespace PROOFAgent
     {
         public:
             CAgentBase() : Mode( Unknown )
-            {}
+            {
+                struct sigaction sa;
+                ::sigemptyset (&sa.sa_mask);
+                sa.sa_flags = 0;
+
+                // Register the handler for SIGINT.
+                sa.sa_handler = signal_handler;
+                ::sigaction (SIGINT, &sa, 0);
+                // Register the handler for SIGTERM
+                sa.sa_handler = signal_handler;
+                ::sigaction (SIGTERM, &sa, 0);
+            }
             virtual ~CAgentBase()
             {}
             virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
@@ -166,7 +183,7 @@ namespace PROOFAgent
         protected:
             void ThreadWorker();
 
-        public:
+        private:
             const EAgentMode_t Mode;
             AgentServerData_t m_Data;
             PF_Container m_PFList;
@@ -194,7 +211,7 @@ namespace PROOFAgent
         protected:
             void ThreadWorker();
 
-        public:
+        private:
             const EAgentMode_t Mode;
             AgentClientData_t m_Data;
     };

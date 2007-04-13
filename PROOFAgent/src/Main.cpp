@@ -39,12 +39,13 @@ void conflicting_options(const variables_map& vm, const char* opt1, const char* 
     }
 }
 
+// PROOFAgent's container of options
 typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop } ECommand_t;
 
-    SOptions():
-            m_Command(Stop),
+    SOptions():  // Default options' values
+            m_Command(Start),
             m_sPidfileDir("/tmp/")
     {}
 
@@ -65,11 +66,11 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     options_description desc("PROOFAgent command line options"); // TODO: Move to the resource file
     desc.add_options()
     ("help,h", "produce help message")
-    ("file,f", value<string>(), "configuration file")
-    ("start", "start PROOFAgent daemon")
+    ("config,c", value<string>(), "configuration file")
+    ("start", "start PROOFAgent daemon (default action)")
     ("stop", "stop PROOFAgent daemon")
     ("instance,i", value<string>(), "name of the instance of daemon")
-    ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)")
+    ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
     ;
 
     // Parsing command-line
@@ -87,8 +88,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         cout << desc << endl;
         return false;
     }
-    if ( vm.count("file") )
-        _Options->m_sConfigFile = vm["file"].as<string>();
+    if ( vm.count("config") )
+        _Options->m_sConfigFile = vm["config"].as<string>();
     if ( vm.count("start") )
         _Options->m_Command = SOptions_t::Start;
     if ( vm.count("stop") )
@@ -124,6 +125,25 @@ int main( int argc, char *argv[] )
         return erError;
     }
 
+    // pidfile name: proofagent.<instance_name>.pid
+    stringstream pidfile_name;
+    pidfile_name
+    << Options.m_sPidfileDir
+    << "proofagent."
+    << Options.m_sInstanceName
+    << ".pid";
+
+    // Checking for "stop" option
+    if ( Options.m_Command == SOptions_t::Stop )
+    {
+        // TODO: make wait for the process here to check for errors
+        pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
+        cout << "PROOFAgent: closing PROOFAgent with pid = " << pid_to_kill << endl;
+        if ( pid_to_kill > 0 )
+            ::kill( pid_to_kill, SIGTERM ); // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
+        return erOK;
+    }
+
     // process ID and Session ID
     pid_t pid;
     pid_t sid;
@@ -145,17 +165,11 @@ int main( int argc, char *argv[] )
     if ( sid < 0 )  // TODO:  Log the failure
         return ( erError );
 
+    // Main object - agent itself
     CPROOFAgent agent;
 
     try
     {
-        // pidfile name: proofagent.<instance_name>.pid
-        stringstream pidfile_name;
-        pidfile_name
-        << Options.m_sPidfileDir
-        << "proofagent."
-        << Options.m_sInstanceName
-        << ".pid";
         CPIDFile pidfile( pidfile_name.str(), ::getpid() );
 
         // Daemon-specific initialization goes here
@@ -168,7 +182,6 @@ int main( int argc, char *argv[] )
         //     couldn't unmount a file system, because it was our current directory.
         if ( ::chdir( "/" ) < 0 ) // TODO: Log the failure
             return ( erError );
-
 
         // Close out the standard file descriptors
         close( STDIN_FILENO );
