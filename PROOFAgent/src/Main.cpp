@@ -96,7 +96,13 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     if ( vm.count("instance") )
         _Options->m_sInstanceName = vm["instance"].as<string>();
     if ( vm.count("pidfile") )
+    {
         _Options->m_sPidfileDir = vm["pidfile"].as<string>();
+        // We need to be sure that there is "/" always at the end of the path
+        smart_append<string>( &_Options->m_sPidfileDir, '/' );
+    }
+    else
+        throw logic_error( "PROOFAgent: option \"pidfile\" is mandatory" );
 
     return true;
 }
@@ -143,8 +149,14 @@ int main( int argc, char *argv[] )
 
     try
     {
-        // TODO: Take path for pidfile from cfg and make name of the pidfile: proofagent.<instance_name>.pid
-        CPIDFile pidfile( "/tmp/proofagent.pid", ::getpid() );
+        // pidfile name: proofagent.<instance_name>.pid
+        stringstream pidfile_name;
+        pidfile_name
+        << Options.m_sPidfileDir
+        << "proofagent."
+        << Options.m_sInstanceName
+        << ".pid";
+        CPIDFile pidfile( pidfile_name.str(), ::getpid() );
 
         // Daemon-specific initialization goes here
         if ( FAILED( agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName ) ) )
