@@ -18,6 +18,9 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 
+// API
+#include <sys/wait.h>
+
 // OUR
 #include "Process.h"
 #include "PROOFAgent.h"
@@ -44,7 +47,7 @@ typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop } ECommand_t;
 
-    SOptions():  // Default options' values
+    SOptions():      // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/")
     {}
@@ -138,9 +141,30 @@ int main( int argc, char *argv[] )
     {
         // TODO: make wait for the process here to check for errors
         pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
-        cout << "PROOFAgent: closing PROOFAgent with pid = " << pid_to_kill << endl;
-        if ( pid_to_kill > 0 )
+        if ( pid_to_kill > 0 && IsProcessExist(pid_to_kill) )
+        {
+            cout << "PROOFAgent: closing PROOFAgent with pid = " << pid_to_kill << endl;
             ::kill( pid_to_kill, SIGTERM ); // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
+
+            // Waiting for the process to finish
+            size_t iter(0);
+            const size_t max_iter = 30;
+            while ( iter <= max_iter )
+            {
+                if ( !IsProcessExist( pid_to_kill ) )
+                {
+                    cout << endl;
+                    break;
+                }
+                cout << ".";
+                cout.flush();
+                sleep(2); // sleeping 2 seconds
+                ++iter;
+            }
+            if ( IsProcessExist( pid_to_kill ) )
+                cerr << "FAILED! PROOFAgent has failed to close the process." << endl;
+        }
+
         return erOK;
     }
 
