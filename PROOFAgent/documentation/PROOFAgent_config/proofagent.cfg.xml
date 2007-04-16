@@ -2,7 +2,7 @@
 <proofagent_config last_update="" version="1.0.0" xmlns="">
 	<instances>
 		
-		<instance1>
+		<server>
 			<config
 				logfile_dir="/tmp/"
 				logfile_overwrite="yes"
@@ -16,9 +16,9 @@
         		local_client_port_max = "20010"
         		>
         	</agent_server>
-		</instance1>
+		</server>
 
-		<instance2>
+		<client1>
 			<config
 				logfile_dir="/tmp/"
 				logfile_overwrite="yes"
@@ -32,7 +32,7 @@
 		        local_client_port="51511"
         		>
 			</agent_client>
-		</instance2>
+		</client1>
 	
 	</instances>		
 </proofagent_config>
