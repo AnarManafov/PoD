@@ -25,8 +25,8 @@ send4 ()                # Usage: send4 [cmd...]
 end_session ()
 {
    # shuting proofaget down
-    ../src/proofagent  --instance server --pidfile /tmp/ --stop
-    ../src/proofagent  --instance client1 --pidfile /tmp/ --stop
+    /home/anar/PROOFAgent/bin/proofagent  --instance server --pidfile /tmp/ --stop
+    /home/anar/PROOFAgent/bin/proofagent  --instance client1 --pidfile /tmp/ --stop
     
       # close file descriptors
     exec 3<&-
@@ -37,10 +37,10 @@ end_session ()
 }
 
 echo "Starting PROOFAgent Server:"
-../src/proofagent --config ../documentation/PROOFAgent_config/proofagent.cfg.xml  --instance server --pidfile /tmp/
+/home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance server --pidfile /tmp/
 
 echo "Starting PROOFAgent Client: "
-../src/proofagent --config ../documentation/PROOFAgent_config/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
+/home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
 echo "processing socket tests..."
 exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
