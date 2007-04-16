@@ -47,7 +47,7 @@ typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop } ECommand_t;
 
-    SOptions():      // Default options' values
+    SOptions():       // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/")
     {}

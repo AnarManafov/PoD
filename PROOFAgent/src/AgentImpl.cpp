@@ -104,7 +104,7 @@ void CAgentServer::ThreadWorker()
             if ( graceful_quit )
             {
                 InfoLog( erOK, "STOP signal received." );
-                return;
+                return ;
             }
 
             if ( FD_ISSET( server.GetSocket(), &readset ) )
