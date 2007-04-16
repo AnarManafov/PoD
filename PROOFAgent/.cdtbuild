@@ -2,11 +2,24 @@
 <?fileVersion 3.1.0?>
 <ManagedProjectBuildInfo>
   <project id="PROOFAgent.com.redhat.eclipse.cdt.autotools.projectType.847505113" name="Autotools (Gnu)" projectType="com.redhat.eclipse.cdt.autotools.projectType">
-    <configuration id="com.redhat.eclipse.cdt.autotools.configuration.build.998323177" name="Build (Gnu)" description="" parent="com.redhat.eclipse.cdt.autotools.configuration.build" artifactName="PROOFAgent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" cleanCommand="rm -rf" prebuildStep="">
-      <toolChain superClass="com.redhat.eclipse.cdt.autotools.toolChain" id="com.redhat.eclipse.cdt.autotools.toolChain.1485753718" name="Autotools Toolchain (Gnu)">
-        <tool superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.900673254" name="configure" command="configure"/>
+    <configuration id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055" name="Release" description="" parent="com.redhat.eclipse.cdt.autotools.configuration.build" artifactName="PROOFAgent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" cleanCommand="rm -rf" prebuildStep="">
+      <toolChain superClass="com.redhat.eclipse.cdt.autotools.toolChain" id="com.redhat.eclipse.cdt.autotools.toolChain.29609052" name="Autotools Toolchain (Gnu)">
+        <tool superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.513633449" name="configure" command="configure">
+          <option superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" id="com.redhat.eclipse.cdt.autotools.option.configure.user.1710713327" value="--enable-debug=no" valueType="string"/>
+          <option superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1784673807" value="release" valueType="string"/>
+        </tool>
         <macros expandEnvironmentMacros="true"/>
       </toolChain>
     </configuration>
+    <configuration id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085" name="Debug" description="" parent="com.redhat.eclipse.cdt.autotools.configuration.build" artifactName="PROOFAgent" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" cleanCommand="rm -rf" prebuildStep="">
+      <toolChain superClass="com.redhat.eclipse.cdt.autotools.toolChain" id="com.redhat.eclipse.cdt.autotools.toolChain.1780915949" name="Autotools Toolchain (Gnu)">
+        <tool superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.1156033175" name="configure" command="configure">
+          <option superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" id="com.redhat.eclipse.cdt.autotools.option.configure.user.748104963" value="--enable-debug=yes" valueType="string"/>
+          <option superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1494674242" value="debug" valueType="string"/>
+        </tool>
+        <macros expandEnvironmentMacros="true"/>
+      </toolChain>
+    </configuration>
+    <macros/>
   </project>
 </ManagedProjectBuildInfo>
