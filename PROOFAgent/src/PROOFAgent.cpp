@@ -103,7 +103,15 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::stri
             Read( instance );
 
             // Initializing log engine
-            CLogSinglton::Instance().Init( m_Data.m_sLogFileName, m_Data.m_bLogFileOverwrite );
+            // log file name: proofagent.<instance_name>.pid
+            stringstream logfile_name;
+            logfile_name
+            << m_Data.m_sLogFileDir
+            << "proofagent."
+            << _Instance
+            << ".log";
+
+            CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
             InfoLog( erOK, PACKAGE + string(" v.") + VERSION );
         }
 
@@ -176,7 +184,9 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
         throw( runtime_error( "empty XML document" ) );
 
     // retrieving attributes
-    get_attr_value( elementConfig, "logfile", &m_Data.m_sLogFileName );
+    get_attr_value( elementConfig, "logfile_dir", &m_Data.m_sLogFileDir );
+    // We need to be sure that there is "/" always at the end of the path
+    smart_append<string>( &m_Data.m_sLogFileDir, '/' );
     get_attr_value( elementConfig, "logfile_overwrite", &m_Data.m_bLogFileOverwrite );
     string sValTmp;
     get_attr_value( elementConfig, "agent_mode", &sValTmp );

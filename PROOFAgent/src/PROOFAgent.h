@@ -27,7 +27,7 @@ namespace PROOFAgent
     {
         SAgentData() : m_bLogFileOverwrite( false )
         {}
-        std::string m_sLogFileName;    //!< Log filename
+        std::string m_sLogFileDir;    //!< Log filename
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session
         EAgentMode_t m_AgentMode;
     }
