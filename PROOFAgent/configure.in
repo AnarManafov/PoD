@@ -4,7 +4,7 @@ AC_INIT
 # Geting HEADS's revision number
 SVN_HEAD_REV=`svn info https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/ | grep "Revision: " | head -1 | awk -F: '{print $2}'`
 
-# HACK: echo ${SVN_HEAD_REV}  is used to remove leading spacea
+# HACK: echo ${SVN_HEAD_REV}  is used to remove leading space
 TMP_VER=`echo ${SVN_HEAD_REV}`
 
 VER=["0.1.0."$TMP_VER]
@@ -34,7 +34,7 @@ AC_SUBST(ENABLE_DEBUG)
 if test "$ENABLE_DEBUG" = "1" ; then
 	CXXFLAGS="$CXXFLAGS -g3 -O0"
 else
-	CXXFLAGS="$CXXFLAGS -O2"
+	CXXFLAGS="$CXXFLAGS -g0 -O2"
 fi
 
 
