@@ -40,12 +40,9 @@ end_session ()
 echo "Starting PROOFAgent Server:"
 /home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance server --pidfile /tmp/
 
-sleep 3
-
 echo "Starting PROOFAgent Client: "
 /home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
-sleep 3
 
 echo "processing socket tests..."
 exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
