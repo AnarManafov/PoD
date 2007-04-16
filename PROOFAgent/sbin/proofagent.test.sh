@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: ADD HEADER
+
 read3 ()                # Usage: read3
 {
     read -r -u3              # read from fd=3
@@ -23,8 +25,8 @@ send4 ()                # Usage: send4 [cmd...]
 end_session ()
 {
    # shuting proofaget down
-    ./proofagent  --instance server --pidfile /tmp/ --stop
-    ./proofagent  --instance client1 --pidfile /tmp/ --stop
+    ../src/proofagent  --instance server --pidfile /tmp/ --stop
+    ../src/proofagent  --instance client1 --pidfile /tmp/ --stop
     
       # close file descriptors
     exec 3<&-
@@ -35,16 +37,10 @@ end_session ()
 }
 
 echo "Starting PROOFAgent Server:"
-./proofagent --config /home/anar/workspace/PROOFAgent/documentation/PROOFAgent_config/proofagent.cfg.xml  --instance server --pidfile /tmp/
-
-# Wait a bit untill proofagent fully loaded
-#sleep 3
+../src/proofagent --config ../documentation/PROOFAgent_config/proofagent.cfg.xml  --instance server --pidfile /tmp/
 
 echo "Starting PROOFAgent Client: "
-./proofagent --config /home/anar/workspace/PROOFAgent/documentation/PROOFAgent_config/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
-
-# Wait a bit untill proofagent fully loaded
-#sleep 3
+../src/proofagent --config ../documentation/PROOFAgent_config/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
 echo "processing socket tests..."
 exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
