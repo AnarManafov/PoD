@@ -24,14 +24,15 @@ send4 ()                # Usage: send4 [cmd...]
 
 end_session ()
 {
-   # shuting proofaget down
+    # shuting proofaget down
     /home/anar/PROOFAgent/bin/proofagent  --instance server --pidfile /tmp/ --stop
     /home/anar/PROOFAgent/bin/proofagent  --instance client1 --pidfile /tmp/ --stop
     
-      # close file descriptors
+    # close file descriptors in both ways
     exec 3<&-
+    exec 3>&-
     exec 4<&-
-    
+    exec 4>&-
     [[ "$*" == "OK" ]] || exit 1
     exit 0
 }
