@@ -8,6 +8,7 @@
 				logfile_overwrite="yes"
 		        log_level="0"
         		agent_mode="Server"
+        		timeout="0"
 				>
 			</config>
 			<agent_server
@@ -24,6 +25,7 @@
 				logfile_overwrite="yes"
 		    	log_level="0"
 		        agent_mode="Client"
+		        timeout="0"
 				>
 			</config>
 			<agent_client

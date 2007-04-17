@@ -29,12 +29,15 @@
 #include "XMLHelper.h"
 #include "PROOFAgent.h"
 #include "MiscUtils.h"
+#include "TimeoutGuard.h"
+
 
 using namespace std;
 using namespace MiscCommon;
 using namespace MiscCommon::XMLHelper;
 using namespace PROOFAgent;
 XERCES_CPP_NAMESPACE_USE;
+
 
 ERRORCODE CPROOFAgent::Start()
 {
@@ -113,6 +116,10 @@ ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::stri
 
             CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
             InfoLog( erOK, PACKAGE + string(" v.") + VERSION );
+
+            // Timeout Guard
+            if ( 0 != m_Data.m_nTimeout )
+                CTimeoutGuard::Instance().Init( getpid(), m_Data.m_nTimeout );
         }
 
         // retrieving "version" attribute
@@ -192,6 +199,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     get_attr_value( elementConfig, "agent_mode", &sValTmp );
     MiscCommon::to_lower( sValTmp );
     m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;
+    get_attr_value( elementConfig, "timeout", &m_Data.m_nTimeout );
 
     return erOK;
 }

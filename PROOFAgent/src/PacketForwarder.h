@@ -15,20 +15,15 @@
 #ifndef PROOFAGENTPACKETFORWARDER_H
 #define PROOFAGENTPACKETFORWARDER_H
 
-// BOOST
-#include <boost/thread/thread.hpp>
-#include <boost/shared_ptr.hpp>
-
 // Our
 #include "INet.h"
 #include "LogImp.h"
 #include "def.h"
 #include "MiscUtils.h"
+#include "BOOSTHelper.h"
 
 namespace PROOFAgent
-{
-
-    typedef boost::shared_ptr<boost::thread> Thread_PTR_t; // TODO: Move it to BOOST_Helper.h
+{    
 
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
@@ -75,9 +70,9 @@ namespace PROOFAgent
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerCocket;
             unsigned short m_nPort;
-            Thread_PTR_t m_thrd_clnt;
-            Thread_PTR_t m_thrd_srv;
-            Thread_PTR_t m_thrd_serversocket;
+            MiscCommon::Thread_PTR_t m_thrd_clnt;
+            MiscCommon::Thread_PTR_t m_thrd_srv;
+            MiscCommon::Thread_PTR_t m_thrd_serversocket;
     };
 
 }
