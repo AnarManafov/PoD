@@ -31,7 +31,9 @@ proofagent_include_HEADERS = \
 	../Include/def.h \
 	../Include/Res.h \
 	../Include/INet.h \
-	../Include/Process.h
+	../Include/Process.h \
+	../Include/TimeoutGuard.h \
+	../Include/BOOSTHelper.h
 noinst_HEADERS = PacketForwarder.h Agent.h AgentImpl.h PROOFAgent.h
 AM_CXXFLAGS = -Wall
 
