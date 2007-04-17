@@ -98,17 +98,20 @@ count=0
 limit_count=1000
 while [ "$count" -lt "$limit_count" ]
 do
-  send3 "HELLO TEST from SERVER";
+  MSG_SERVER="HELLO TEST from SERVER: "$count
+  MSG_CLIENT="HELLO TEST from CLIENT: "$count
+
+  send3 $MSG_SERVER;
   read4
   echo "$* --> $REPLY"
   
-  [[ $REPLY == "HELLO TEST from SERVER" ]]  || end_session "ERROR";
+  [[ $REPLY == $MSG_SERVER ]]  || end_session "ERROR";
   
   
-  send4 "HELLO TEST from CLIENT";
+  send4 $MSG_CLIENT;
   read3
   echo "$* --> $REPLY"
-  [[ $REPLY == "HELLO TEST from CLIENT" ]]  || end_session "ERROR";
+  [[ $REPLY == $MSG_CLIENT ]]  || end_session "ERROR";
   count=`expr $count + 1`
 done
 
