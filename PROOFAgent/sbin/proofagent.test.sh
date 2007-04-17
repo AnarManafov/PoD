@@ -45,8 +45,30 @@ echo "Starting PROOFAgent Client: "
 
 
 echo "processing socket tests..."
-exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
-exec 4<>/dev/tcp/127.0.0.1/51511 || end_session "ERROR";
+#exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
+#exec 4<>/dev/tcp/127.0.0.1/51511 || end_session "ERROR";
+
+
+count=0
+limit_count=20
+exec 3<>/dev/tcp/127.0.0.1/20001
+while [ "$*" != "0" ]
+do
+	sleep 2
+	exec 3<>/dev/tcp/127.0.0.1/20001
+	count=`expr $count + 1`
+	[[ "$count" -lt "$limit_count" ]] || end_session "ERROR";
+done
+
+count=0
+exec 4<>/dev/tcp/127.0.0.1/51511
+while [ "$*" != "0" ]
+do
+        sleep 2
+	exec 4<>/dev/tcp/127.0.0.1/51511
+	count=`expr $count + 1`
+        [[ "$count" -lt "$limit_count" ]] || end_session "ERROR";
+done
 
 
 send3 "HELLO TEST from SERVER";
