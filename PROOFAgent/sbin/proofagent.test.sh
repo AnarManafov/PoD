@@ -43,33 +43,56 @@ echo "Starting PROOFAgent Server:"
 echo "Starting PROOFAgent Client: "
 /home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
+# Let's give PROOFAgent a chance to properly start
+# TODO: Should be fixed. We don't need to sleep!
+sleep 10
+
 
 echo "processing socket tests..."
-#exec 3<>/dev/tcp/127.0.0.1/20001 || end_session "ERROR";
-#exec 4<>/dev/tcp/127.0.0.1/51511 || end_session "ERROR";
+exec 3<>/dev/tcp/127.0.0.1/20001
+RET_VAL=$?
+if [ "X$RET_VAL" = "X0" ]; then
+  echo "Connection successful. Exit code: $RET_VAL"
+  
+else
+  echo "Connection unsuccessful. Exit code: $RET_VAL"
+  end_session "ERROR";
+fi
+
+exec 4<>/dev/tcp/127.0.0.1/51511
+RET_VAL=$?
+if [ "X$RET_VAL" = "X0" ]; then
+  echo "Connection successful. Exit code: $RET_VAL"
+  
+else
+  echo "Connection unsuccessful. Exit code: $RET_VAL"
+  end_session "ERROR";
+fi
 
 
+: <<COMMENT
+EOF
 count=0
 limit_count=20
-exec 3<>/dev/tcp/127.0.0.1/20001
+exec 3<> /dev/tcp/127.0.0.1/20001
 while [ "$*" != "0" ]
 do
 	sleep 2
-	exec 3<>/dev/tcp/127.0.0.1/20001
+	exec 3<> /dev/tcp/127.0.0.1/20001
 	count=`expr $count + 1`
 	[[ "$count" -lt "$limit_count" ]] || end_session "ERROR";
 done
 
 count=0
-exec 4<>/dev/tcp/127.0.0.1/51511
+exec 4<> /dev/tcp/127.0.0.1/51511
 while [ "$*" != "0" ]
 do
         sleep 2
-	exec 4<>/dev/tcp/127.0.0.1/51511
+	exec 4<> /dev/tcp/127.0.0.1/51511
 	count=`expr $count + 1`
         [[ "$count" -lt "$limit_count" ]] || end_session "ERROR";
 done
-
+COMMENT
 
 send3 "HELLO TEST from SERVER";
 read4
