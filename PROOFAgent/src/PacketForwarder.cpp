@@ -48,8 +48,8 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         timeout.tv_sec = 10;
         timeout.tv_usec = 0;
         if ( ::select( *_SrvSocket + 1, &readset, NULL, NULL, &timeout ) < 0 )
-        { // TODO: Send errno to log
-            FaultLog( erError, "Error while calling \"select\"" );
+        {
+            FaultLog( erError, "Error while calling \"select\": " + errno2str() );
             return ;
         }
 
