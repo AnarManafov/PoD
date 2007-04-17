@@ -57,7 +57,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         if ( graceful_quit )
         {
             InfoLog( erOK, "STOP signal received." );
-            return;
+            return ;
         }
 
         if ( FD_ISSET( *_SrvSocket, &readset ) )
@@ -65,8 +65,14 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             try
             {
                 *_SrvSocket >> &buf;
-                ReportPackage( *_SrvSocket, buf );
+                if ( !_SrvSocket->is_valid() )
+                {
+                    InfoLog( erOK, "DISCONNECT has been detected." );
+                    return ;
+                }
+
                 WriteBuffer( buf, *_CltSocket );
+                ReportPackage( *_SrvSocket, buf );
                 buf.clear();
                 buf.resize( g_BUF_SIZE );
             }
@@ -151,6 +157,6 @@ ERRORCODE CPacketForwarder::_Start( bool _Join )
 void CPacketForwarder::WriteBuffer( BYTEVector_t &_Buf, smart_socket &_socket ) throw ( exception )
 {
     //  boost::mutex::scoped_lock lock(m_Buf_mutex);
-    ReportPackage( _socket, _Buf, false );
     _socket << _Buf;
+    ReportPackage( _socket, _Buf, false );
 }
