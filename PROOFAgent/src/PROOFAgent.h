@@ -33,6 +33,7 @@ namespace PROOFAgent
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session
         EAgentMode_t m_AgentMode;
         size_t m_nTimeout;
+        std::string m_sLastExecCmd;
     }
     SAgentData_t;
 
@@ -44,7 +45,9 @@ namespace PROOFAgent
             CPROOFAgent()
             {}
             virtual ~CPROOFAgent()
-            {}
+            {
+                ExecuteLastCmd();
+            }
             REGISTER_LOG_MODULE( PROOFAgent )
 
         public:
@@ -54,6 +57,8 @@ namespace PROOFAgent
         private:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+
+            void ExecuteLastCmd();
 
         private:
             SAgentData_t m_Data;

@@ -40,12 +40,17 @@ end_session ()
 echo "Starting PROOFAgent Server:"
 /home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance server --pidfile /tmp/
 
+# Let's give PROOFAgent a chance to properly start
+# TODO: Should be fixed. We don't need to sleep!
+sleep 5
+
+
 echo "Starting PROOFAgent Client: "
 /home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
 # Let's give PROOFAgent a chance to properly start
 # TODO: Should be fixed. We don't need to sleep!
-sleep 10
+sleep 5
 
 
 echo "processing socket tests..."

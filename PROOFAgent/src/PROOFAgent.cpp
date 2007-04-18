@@ -200,6 +200,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     MiscCommon::to_lower( sValTmp );
     m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;
     get_attr_value( elementConfig, "timeout", &m_Data.m_nTimeout );
+    get_attr_value( elementConfig, "last_execute_cmd", &m_Data.m_sLastExecCmd );
 
     return erOK;
 }
@@ -209,3 +210,12 @@ ERRORCODE CPROOFAgent::Write( xercesc::DOMNode* _element )
     return erNotImpl;
 }
 
+void CPROOFAgent::ExecuteLastCmd()
+{
+    if ( !m_Data.m_sLastExecCmd.empty() )
+    {
+        InfoLog( erOK, "executing last command: " + m_Data.m_sLastExecCmd );
+        if ( -1 == ::system( m_Data.m_sLastExecCmd.c_str() ) )
+            FaultLog( erError, "Can't execute last command: " + m_Data.m_sLastExecCmd );
+    }
+}

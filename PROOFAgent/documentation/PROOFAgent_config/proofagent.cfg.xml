@@ -26,12 +26,13 @@
 		    	log_level="0"
 		        agent_mode="Client"
 		        timeout="0"
+                last_execute_cmd="pkill top"
 				>
 			</config>
 			<agent_client
     			server_port="51510"
             	server_addr="127.0.0.1"
-		        local_client_port="51511"
+		        local_client_port="51511"		       
         		>
 			</agent_client>
 		</client1>
