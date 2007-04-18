@@ -15,8 +15,11 @@
 #ifndef AGENT_H
 #define AGENT_H
 
-#include "AgentImpl.h"
+// STD
 #include <memory>
+
+// OUR
+#include "AgentImpl.h"
 
 namespace PROOFAgent
 {
