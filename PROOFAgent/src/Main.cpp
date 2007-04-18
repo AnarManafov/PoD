@@ -211,10 +211,7 @@ int main( int argc, char *argv[] )
 
     try
     {
-        if ( Options.m_bDaemonize )
-        {
-            CPIDFile pidfile( pidfile_name.str(), ::getpid() );
-        }
+        CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize)? ::getpid(): 0 );
 
         // Daemon-specific initialization goes here
         if ( FAILED( agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName ) ) )
