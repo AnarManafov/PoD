@@ -25,8 +25,8 @@ send4 ()                # Usage: send4 [cmd...]
 end_session ()
 {
     # shuting proofaget down
-    /home/anar/PROOFAgent/bin/proofagent  --instance server --pidfile /tmp/ --stop
-    /home/anar/PROOFAgent/bin/proofagent  --instance client1 --pidfile /tmp/ --stop
+    /home/anar/PROOFAgent/bin/proofagent -d  --instance server --pidfile /tmp/ --stop
+    /home/anar/PROOFAgent/bin/proofagent -d  --instance client1 --pidfile /tmp/ --stop
     
     # close file descriptors in both ways
     exec 3<&-
@@ -38,7 +38,7 @@ end_session ()
 }
 
 echo "Starting PROOFAgent Server:"
-/home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance server --pidfile /tmp/
+/home/anar/PROOFAgent/bin/proofagent -d --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance server --pidfile /tmp/
 
 # Let's give PROOFAgent a chance to properly start
 # TODO: Should be fixed. We don't need to sleep!
@@ -46,7 +46,7 @@ sleep 5
 
 
 echo "Starting PROOFAgent Client: "
-/home/anar/PROOFAgent/bin/proofagent --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
+/home/anar/PROOFAgent/bin/proofagent -d --config /home/anar/PROOFAgent/etc/proofagent.cfg.xml  --instance client1 --pidfile /tmp/
 
 # Let's give PROOFAgent a chance to properly start
 # TODO: Should be fixed. We don't need to sleep!
