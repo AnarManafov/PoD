@@ -56,9 +56,9 @@ void option_dependency(const variables_map &_vm, const char *_for_what, const ch
 // PROOFAgent's container of options
 typedef struct SOptions
 {
-    typedef enum ECommand { Start, Stop } ECommand_t;
+    typedef enum ECommand { Start, Stop, Status } ECommand_t;
 
-    SOptions():               // Default options' values
+    SOptions():                     // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/"),
             m_bDaemonize(false)
@@ -85,6 +85,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     ("config,c", value<string>(), "configuration file")
     ("start", "start PROOFAgent daemon (default action)")
     ("stop", "stop PROOFAgent daemon")
+    ("status", "query current status of PROOFAgent daemon")
     ("instance,i", value<string>(), "name of the instance of PROOFAgent")
     ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
     ("daemonize,d", "run PROOFAgent as a daemon")
@@ -101,10 +102,17 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         return false;
     }
 
+    if ( !vm.count("instance") )
+        throw runtime_error("You need to specify instance name by using \"instance\" option.");
+
     conflicting_options( vm, "start", "stop" );
+    conflicting_options( vm, "start", "status" );
+    conflicting_options( vm, "stop", "status" );
     option_dependency(vm, "start", "daemonize" );
     option_dependency(vm, "stop", "daemonize" );
+    option_dependency(vm, "status", "daemonize" );
     option_dependency(vm, "pidfile", "daemonize" );
+    option_dependency(vm, "daemonize", "pidfile" );
     option_dependency(vm, "start", "pidfile" );
 
     if ( vm.count("config") )
@@ -113,6 +121,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         _Options->m_Command = SOptions_t::Start;
     if ( vm.count("stop") )
         _Options->m_Command = SOptions_t::Stop;
+    if ( vm.count("status") )
+        _Options->m_Command = SOptions_t::Status;
     if ( vm.count("instance") )
         _Options->m_sInstanceName = vm["instance"].as<string>();
     if ( vm.count("pidfile") )
@@ -151,6 +161,25 @@ int main( int argc, char *argv[] )
     << Options.m_sInstanceName
     << ".pid";
 
+    // Checking for "status" option
+    if ( Options.m_Command == SOptions_t::Status )
+    {
+        pid_t pid = CPIDFile::GetPIDFromFile( pidfile_name.str() );
+        if ( pid > 0 && IsProcessExist(pid) )
+        {
+            cout << "PROOFAgent process ("
+            << pid
+            << ") is running..." << endl;
+        }
+        else
+        {
+            cout << "PROOFAgent is not running..." << endl;
+            ;
+        }
+
+        return erOK;
+    }
+
     // Checking for "stop" option
     if ( Options.m_Command == SOptions_t::Stop )
     {
@@ -158,7 +187,10 @@ int main( int argc, char *argv[] )
         pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
         if ( pid_to_kill > 0 && IsProcessExist(pid_to_kill) )
         {
-            cout << "PROOFAgent: closing PROOFAgent with pid = " << pid_to_kill << endl;
+            cout
+            << "PROOFAgent: closing PROOFAgent ("
+            << pid_to_kill
+            << ")..." << endl;
             ::kill( pid_to_kill, SIGTERM ); // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
 
             // Waiting for the process to finish
@@ -211,7 +243,7 @@ int main( int argc, char *argv[] )
 
     try
     {
-        CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize)? ::getpid(): 0 );
+        CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
         if ( FAILED( agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName ) ) )
