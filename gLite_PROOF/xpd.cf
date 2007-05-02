@@ -1,0 +1,57 @@
+#
+# XRD port
+xrd.port 1094
+
+### Load the XrdProofd protocol:
+### using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
+if exec xrootd
+xrd.protocol xproofd:1093 libXrdProofd.so
+fi
+
+# GSI Authentication with the server
+if depc218.gsi.de
+xpd.seclib libXrdSec.so
+xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite-3.0-UI/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
+fi
+
+###
+### Working directory for sessions [<User_Home>/proof]
+#xpd.workdir /home/anar/xrootd_test/proof
+
+###
+### Resource finder
+### NB: 'if <pattern>' not supported for this directive.
+# xpd.resource static [<cfg_file>] [ucfg:<user_cfg_opt>]  [wmx:<max_workers>] [selopt:<selection_mode>]
+# "static", i.e. using a config file
+#   <cfg_file>          path alternative config file
+#                       [$ROOTSYS/proof/etc/proof.conf]
+#   <user_cfg_opt>      if "yes": enable user private config files at
+#                       $HOME/.proof.conf or $HOME/.<usr_def>, where
+#                       <usr_cfg> is the second argument to
+#                       TProof::Open("<master>","<usr_cfg>") ["no"]
+#   <max_workers>       Maximum number of workers to be assigned to user
+#                       session [-1, i.e. all]
+#   <selection_mode>    If <max_workers> != -1, specify the way workers
+#                       are chosen:
+#                       "roundrobin"  round-robin selection in bunches
+#                                     of n(=<max_workers>) workers.
+#                                     Example:
+#                                     N = 10 (available workers), n = 4:
+#                                     1st (session): 1-4, 2nd: 5-8,
+#                                     3rd: 9,10,1,2, 4th: 3-6, ...
+#                         "random"    random choice (a worker is not
+#                                     assigned twice)
+xpd.resource static ~/xrootd_test/proof.conf
+
+###
+### Server role (master, submaster, worker) [default: any]
+### Allows to control the cluster structure.
+xpd.role master if depc218.gsi.de
+xpd.role worker if lxial24.gsi.de
+
+###
+### Master(s) allowed to connect. Directive active only for Worker or
+### Submaster session requests. Multiple 'allow' directives can
+### be specified. By default all connections are allowed.
+xpd.allow depc218.gsi.de
+
