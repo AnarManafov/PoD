@@ -29,6 +29,7 @@
 #include "XMLHelper.h"
 #include "AgentImpl.h"
 #include "INet.h"
+#include "PARes.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -50,7 +51,7 @@ ERRORCODE CAgentServer::Read( DOMNode* _element )
 {
     // TODO: Use a "try" block to catch XML exceptions
     if ( NULL == _element )
-        return erXMLNullNode;
+        throw( invalid_argument( "DOME Node object is NULL" ) );
 
     // getting <agent_server> Element
     DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_server" );
@@ -83,23 +84,9 @@ void CAgentServer::ThreadWorker()
         CSocketServer server;
         server.Bind( m_Data.m_nPort );
         server.Listen( 10 ); // TODO: Move this number of queued clients to config
-        server.GetSocket().set_nonblock(); // Nonblocking server socket
-        fd_set readset;
+        server.GetSocket().set_nonblock(); // Nonblocking server socket        
         while ( true )
-        {
-            FD_ZERO( &readset );
-            FD_SET( server.GetSocket(), &readset );
-            // Setting time-out
-            timeval timeout;
-            timeout.tv_sec = 10;
-            timeout.tv_usec = 0;
-
-            if ( ::select( server.GetSocket() + 1, &readset, NULL, NULL, &timeout ) < 0 )
-            { // TODO: Send errno to log
-                FaultLog( erError, "Server socket got error while calling \"select\"" );
-                return ;
-            }
-
+        {            
             // Checking whether signal has arrived
             if ( graceful_quit )
             {
@@ -107,16 +94,18 @@ void CAgentServer::ThreadWorker()
                 return ;
             }
 
-            if ( FD_ISSET( server.GetSocket(), &readset ) )
+            if ( server.GetSocket().is_read_ready( 10 ) )
             {
                 smart_socket socket( server.Accept() );
 
-                //                 { // a transfer test
-                //                     BYTEVector_t buf ( 1024 );
-                //                     socket >> &buf;
-                //                     m_pThis->LogThread( "Server recieved: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
-                //                 }
-                // TODO: recieve data from client here
+                // checking protocol version
+                {
+                    BYTEVector_t buf( 1024 );
+                    socket >> &buf;
+                    DebugLog( erOK, "Server received: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
+                }
+                // TODO: Implement protocol version check
+
                 string strSocketInfo;
                 socket2string( socket, &strSocketInfo );
                 string strSocketPeerInfo;
@@ -182,13 +171,15 @@ void CAgentClient::ThreadWorker()
         client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
         DebugLog( erOK, "connected!" );
 
-        //             { // a transfer test
-        //                 string sTest( "Test String!" );
-        //                 BYTEVector_t buf;
-        //                 copy( sTest.begin(), sTest.end(), back_inserter( buf ) );
-        //                 m_pThis->LogThread( "Sending: " + string( ( char* ) & buf[ 0 ] ) );
-        //                 client.GetSocket() << buf;
-        //             }
+        // sending protocol version to the server
+        {
+            string sProtocol( PROTOCOL_VERSION );
+            BYTEVector_t buf;
+            copy( sProtocol.begin(), sProtocol.end(), back_inserter( buf ) );
+            DebugLog( erOK, "Sending protocol version: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );
+            client.GetSocket() << buf;
+        }
+        // TODO: Protocol check: Wait for server's response
 
         // Spwan PortForwarder
         CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );

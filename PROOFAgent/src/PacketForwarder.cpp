@@ -38,21 +38,8 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     _SrvSocket->set_nonblock();
     _CltSocket->set_nonblock();
 
-    fd_set readset;
     while ( true )
     {
-        FD_ZERO( &readset );
-        FD_SET( *_SrvSocket, &readset );
-        // Setting time-out
-        timeval timeout;
-        timeout.tv_sec = 10;
-        timeout.tv_usec = 0;
-        if ( ::select( *_SrvSocket + 1, &readset, NULL, NULL, &timeout ) < 0 )
-        {
-            FaultLog( erError, "Error while calling \"select\": " + errno2str() );
-            return ;
-        }
-
         // Checking whether signal has arrived
         if ( graceful_quit )
         {
@@ -60,10 +47,11 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             return ;
         }
 
-        if ( FD_ISSET( *_SrvSocket, &readset ) )
+        try
         {
-            try
+            if ( _SrvSocket->is_read_ready( 10 ) )
             {
+
                 *_SrvSocket >> &buf;
                 if ( !_SrvSocket->is_valid() )
                 {
@@ -76,11 +64,11 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
                 buf.clear();
                 buf.resize( g_BUF_SIZE );
             }
-            catch ( exception & e )
-            {
-                FaultLog( erError, e.what() );
-                return ;
-            }
+        }
+        catch ( exception & e )
+        {
+            FaultLog( erError, e.what() );
+            return ;
         }
     }
 }
@@ -107,19 +95,6 @@ ERRORCODE CPacketForwarder::_Start( bool _Join )
             server.Listen( 1 );
             server.GetSocket().set_nonblock();
 
-            fd_set readset;
-            FD_ZERO( &readset );
-            FD_SET( server.GetSocket(), &readset );
-            // Setting time-out
-            timeval timeout;
-            timeout.tv_sec = 10;
-            timeout.tv_usec = 0;
-            if ( ::select( server.GetSocket() + 1, &readset, NULL, NULL, &timeout ) < 0 )
-            { // TODO: Send errno to log
-                FaultLog( erError, "Error while calling \"select\"" );
-                return erError;
-            }
-
             // Checking whether signal has arrived
             if ( graceful_quit )
             {
@@ -127,7 +102,7 @@ ERRORCODE CPacketForwarder::_Start( bool _Join )
                 return erOK;
             }
 
-            if ( FD_ISSET( server.GetSocket(), &readset ) )
+            if ( server.GetSocket().is_read_ready( 10 ) )
             {
                 m_ServerCocket = server.Accept();
 

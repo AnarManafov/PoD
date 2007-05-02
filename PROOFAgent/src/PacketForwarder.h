@@ -59,10 +59,8 @@ namespace PROOFAgent
                 std::stringstream ss;
                 ss
                 << ( _received ? "RECEIVED: " : "FORWARDED: " )
-                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"
-                << "BEGIN" << "\n"
-                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n"
-                << "END";
+                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"                
+                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n";                
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
 
