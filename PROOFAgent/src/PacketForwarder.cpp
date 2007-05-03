@@ -84,42 +84,67 @@ ERRORCODE CPacketForwarder::Start( bool _Join )
     return erOK;
 }
 
-ERRORCODE CPacketForwarder::_Start( bool _Join )
+void CPacketForwarder::SpawnClientMode()
+{
+    CSocketClient proof_client;
+    proof_client.Connect( m_nPort, "127.0.0.1" );
+
+    // Checking whether signal has arrived
+    if ( graceful_quit )
+    {
+        InfoLog( erOK, "STOP signal received." );
+        return ;
+    }
+    m_ServerCocket = proof_client.GetSocket().detach();
+    // executing PF threads
+    m_thrd_clnt = Thread_PTR_t( new boost::thread(
+                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+    m_thrd_srv = Thread_PTR_t( new boost::thread(
+                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+
+    m_thrd_clnt->join();
+    m_thrd_srv->join();
+}
+
+void CPacketForwarder::SpawnServerMode()
+{
+    while ( true )
+    {
+        CSocketServer server;
+        server.Bind( m_nPort );
+        server.Listen( 1 );
+        server.GetSocket().set_nonblock();
+
+        // Checking whether signal has arrived
+        if ( graceful_quit )
+        {
+            InfoLog( erOK, "STOP signal received." );
+            return ;
+        }
+
+        if ( server.GetSocket().is_read_ready( 10 ) )
+        {
+            m_ServerCocket = server.Accept();
+
+            // executing PF threads
+            m_thrd_clnt = Thread_PTR_t( new boost::thread(
+                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+            m_thrd_srv = Thread_PTR_t( new boost::thread(
+                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+            break;
+        }
+    }
+}
+
+
+ERRORCODE CPacketForwarder::_Start( bool _ClientMode )
 {
     try
     {
-        while ( true )
-        {
-            CSocketServer server;
-            server.Bind( m_nPort );
-            server.Listen( 1 );
-            server.GetSocket().set_nonblock();
-
-            // Checking whether signal has arrived
-            if ( graceful_quit )
-            {
-                InfoLog( erOK, "STOP signal received." );
-                return erOK;
-            }
-
-            if ( server.GetSocket().is_read_ready( 10 ) )
-            {
-                m_ServerCocket = server.Accept();
-
-                // executing PF threads
-                m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                                boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
-                m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
-                break;
-            }
-        }
-
-        if ( _Join )
-        {
-            m_thrd_clnt->join();
-            m_thrd_srv->join();
-        }
+        if ( _ClientMode )
+            SpawnClientMode();
+        else
+            SpawnServerMode();
     }
     catch ( exception & e )
     {

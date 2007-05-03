@@ -23,7 +23,7 @@
 #include "BOOSTHelper.h"
 
 namespace PROOFAgent
-{    
+{
 
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
@@ -43,13 +43,15 @@ namespace PROOFAgent
             void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
 
         public:
-            MiscCommon::ERRORCODE Start( bool _Join = false );
+            MiscCommon::ERRORCODE Start( bool _ClientMode = false );
 
         protected:
             void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
 
         private:
-            MiscCommon::ERRORCODE _Start( bool _Join );
+            MiscCommon::ERRORCODE _Start( bool _ClientMode );
+            void SpawnServerMode();
+            void SpawnClientMode();
             void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*weather package received or submitted*/ )
             {
                 std::string strSocketInfo;
@@ -59,8 +61,8 @@ namespace PROOFAgent
                 std::stringstream ss;
                 ss
                 << ( _received ? "RECEIVED: " : "FORWARDED: " )
-                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"                
-                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n";                
+                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"
+                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n";
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
 

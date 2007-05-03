@@ -84,9 +84,9 @@ void CAgentServer::ThreadWorker()
         CSocketServer server;
         server.Bind( m_Data.m_nPort );
         server.Listen( 10 ); // TODO: Move this number of queued clients to config
-        server.GetSocket().set_nonblock(); // Nonblocking server socket        
+        server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
-        {            
+        {
             // Checking whether signal has arrived
             if ( graceful_quit )
             {
