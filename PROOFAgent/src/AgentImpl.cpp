@@ -149,7 +149,7 @@ ERRORCODE CAgentClient::Read( DOMNode* _element )
     // retrieving attributes
     get_attr_value( elementConfig, "server_port", &m_Data.m_nServerPort );
     get_attr_value( elementConfig, "server_addr", &m_Data.m_strServerHost );
-    get_attr_value( elementConfig, "local_client_port", &m_Data.m_nLocalClientPort );
+    get_attr_value( elementConfig, "local_proofd_port", &m_Data.m_nLocalClientPort );
 
     InfoLog( erOK, "Agent Client configuration:" ) << m_Data;
 
