@@ -181,7 +181,7 @@ void CAgentClient::ThreadWorker()
         }
         // TODO: Protocol check: Wait for server's response
 
-        // Spwan PortForwarder
+        // Spawn PortForwarder
         CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
         pf.Start( true );
     }
