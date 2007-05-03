@@ -65,7 +65,7 @@ namespace PROOFAgent
                 return this->Read( _element );
             }
 
-            MiscCommon::ERRORCODE Start()
+            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir )
             {
                 boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
                 thrd.join();
