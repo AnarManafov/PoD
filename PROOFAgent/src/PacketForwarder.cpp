@@ -34,10 +34,6 @@ extern sig_atomic_t graceful_quit;
 void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
 {
     BYTEVector_t buf( g_BUF_SIZE );
-    // Macking non-blocking sockets
-    _SrvSocket->set_nonblock();
-    _CltSocket->set_nonblock();
-
     while ( true )
     {
         // Checking whether signal has arrived
@@ -86,6 +82,27 @@ ERRORCODE CPacketForwarder::Start( bool _Join )
 
 void CPacketForwarder::SpawnClientMode()
 {
+    m_ClientSocket.set_nonblock();
+    while (true)
+    {
+        // Checking whether signal has arrived
+        if ( graceful_quit )
+        {
+            InfoLog( erOK, "STOP signal received." );
+            return ;
+        }
+
+        try
+        {
+            if ( m_ClientSocket.is_read_ready( 10 ) )
+                break;
+        }
+        catch ( exception & e )
+        {
+            FaultLog( erError, e.what() );
+            return ;
+        }
+    }
     CSocketClient proof_client;
     proof_client.Connect( m_nPort, "127.0.0.1" );
 
@@ -95,12 +112,16 @@ void CPacketForwarder::SpawnClientMode()
         InfoLog( erOK, "STOP signal received." );
         return ;
     }
-    m_ServerCocket = proof_client.GetSocket().detach();
+    m_ServerSocket = proof_client.GetSocket().detach();
+
+
+    m_ServerSocket.set_nonblock();
+
     // executing PF threads
     m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
     m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
 
     m_thrd_clnt->join();
     m_thrd_srv->join();
@@ -124,13 +145,13 @@ void CPacketForwarder::SpawnServerMode()
 
         if ( server.GetSocket().is_read_ready( 10 ) )
         {
-            m_ServerCocket = server.Accept();
+            m_ServerSocket = server.Accept();
 
             // executing PF threads
             m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerCocket, &m_ClientSocket ) ) );
+                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
             m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerCocket ) ) );
+                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
             break;
         }
     }

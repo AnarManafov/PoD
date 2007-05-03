@@ -68,7 +68,7 @@ namespace PROOFAgent
 
         private:
             MiscCommon::INet::smart_socket m_ClientSocket;
-            MiscCommon::INet::smart_socket m_ServerCocket;
+            MiscCommon::INet::smart_socket m_ServerSocket;
             unsigned short m_nPort;
             MiscCommon::Thread_PTR_t m_thrd_clnt;
             MiscCommon::Thread_PTR_t m_thrd_srv;
