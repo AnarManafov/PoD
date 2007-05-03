@@ -1,5 +1,3 @@
 master depc218.gsi.de  workdir=~/proof
 
-worker manafov@lxial24.gsi.de perf=100 workdir=~/
-#worker grid24.gsi.de perf=100 workdir=~/
-#worker grid4.gsi.de perf=100 workdir=~/
+worker manafov@localhost:20001 perf=100 workdir=~/

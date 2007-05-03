@@ -1,0 +1,3 @@
+master lxial24.gsi.de
+worker lxial24.gsi.de perf=100
+

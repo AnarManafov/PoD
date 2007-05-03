@@ -49,9 +49,3 @@ xpd.resource static ~/xrootd_test/proof.conf
 xpd.role master if depc218.gsi.de
 xpd.role worker if lxial24.gsi.de
 
-###
-### Master(s) allowed to connect. Directive active only for Worker or
-### Submaster session requests. Multiple 'allow' directives can
-### be specified. By default all connections are allowed.
-xpd.allow depc218.gsi.de
-
