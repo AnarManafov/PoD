@@ -133,7 +133,7 @@ FILE_PATTERNS          = *.ac \
                          *.xpm \
                          *.dox
 RECURSIVE              = yes
-EXCLUDE                = sbin/;templates/;src/unit_test/
+EXCLUDE                = sbin/*;templates/*;src/unit_test/*
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
