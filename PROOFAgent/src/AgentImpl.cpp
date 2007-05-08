@@ -128,15 +128,15 @@ void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
                 << " for peer: " << strSocketPeerInfo;
                 InfoLog( erOK, ss.str() );
 
-                static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumerator - should give next free port by requests
-                // TODO: Check that port is free, before sending it to PF
+                const int port = get_free_port( m_Data.m_nLocalClientPortMin, m_Data.m_nLocalClientPortMax );
+                if ( 0 == port )
+                    throw runtime_error("Can't find any free port from the given range.");
 
                 // Spwan PortForwarder
                 Socket_t s = socket.detach();
                 AddPF( s, port );
                 // Add a worker to PROOF cfg
                 AddWrk2PROOFCfg( _PROOFCfgDir, sUsrName, port );
-                port++; // TODO: Implement port enumerator - should give next free port by requests
             }
         }
     }
