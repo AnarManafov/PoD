@@ -77,10 +77,10 @@ ERRORCODE CAgentServer::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
+void CAgentServer::ThreadWorker( const std::string &_PROOFCfg )
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( _PROOFCfgDir );
+    CreatePROOFCfg( _PROOFCfg );
     try
     {
         CSocketServer server;
@@ -132,11 +132,12 @@ void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
                 if ( 0 == port )
                     throw runtime_error("Can't find any free port from the given range.");
 
+                // Add a worker to PROOF cfg
+                AddWrk2PROOFCfg( _PROOFCfg, sUsrName, port );
+
                 // Spwan PortForwarder
                 Socket_t s = socket.detach();
                 AddPF( s, port );
-                // Add a worker to PROOF cfg
-                AddWrk2PROOFCfg( _PROOFCfgDir, sUsrName, port );
             }
         }
     }
@@ -178,11 +179,11 @@ ERRORCODE CAgentClient::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentClient::ThreadWorker( const std::string &_PROOFCfgDir )
+void CAgentClient::ThreadWorker( const std::string &_PROOFCfg )
 {
     DebugLog( erOK, "Starting main thread..." );
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( _PROOFCfgDir );
+    CreatePROOFCfg( _PROOFCfg );
     CSocketClient client;
     try
     {

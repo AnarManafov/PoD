@@ -34,7 +34,7 @@ namespace PROOFAgent
         EAgentMode_t m_AgentMode;
         size_t m_nTimeout;
         std::string m_sLastExecCmd;
-        std::string m_sPROOFCfgDir; //!< The directory where PROOFAgent should create proof.conf
+        std::string m_sPROOFCfg;
     }
     SAgentData_t;
 

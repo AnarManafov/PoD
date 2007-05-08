@@ -43,9 +43,9 @@ namespace PROOFAgent
     template <class _T>
     struct CPROOFCfgImp
     {
-        void CreatePROOFCfg( const std::string &_PROOFCfgDir )
+        void CreatePROOFCfg( const std::string &_PROOFCfg )
         {
-            std::ofstream f_out( (_PROOFCfgDir + g_szPROOF_CONF).c_str() );
+            std::ofstream f_out( _PROOFCfg.c_str() );
             // TODO: check file-errors
             _T *pThis = reinterpret_cast<_T*>( this );
 
@@ -60,13 +60,13 @@ namespace PROOFAgent
                 f_out << "worker " << host << " perf=100" << std::endl;
             }
         }
-        void AddWrk2PROOFCfg( const std::string &_PROOFCfgDir, const std::string &_UsrName, unsigned short _Port )
+        void AddWrk2PROOFCfg( const std::string &_PROOFCfg, const std::string &_UsrName, unsigned short _Port )
         {
             _T *pThis = reinterpret_cast<_T*>( this );
             if ( pThis->GetMode() != Server )
                 return ;
 
-            std::ofstream f_out( (_PROOFCfgDir + g_szPROOF_CONF).c_str(), std::ios_base::out | std::ios_base::app );
+            std::ofstream f_out( _PROOFCfg.c_str(), std::ios_base::out | std::ios_base::app );
             // TODO: check file-errors
             
             f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100 workdir=~/" << std::endl;
@@ -110,7 +110,7 @@ namespace PROOFAgent
             virtual EAgentMode_t GetMode() const = 0;
 
         protected:
-            virtual void ThreadWorker( const std::string &_PROOFCfgDir ) = 0;
+            virtual void ThreadWorker( const std::string &_PROOFCfg ) = 0;
     };
 
     typedef struct SAgentServerData
@@ -217,7 +217,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfgDir );
+            void ThreadWorker( const std::string &_PROOFCfg );
 
         private:
             //          const EAgentMode_t Mode;
@@ -248,7 +248,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfgDir );
+            void ThreadWorker( const std::string &_PROOFCfg );
 
         private:
             //   const EAgentMode_t Mode;

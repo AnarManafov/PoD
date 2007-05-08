@@ -40,9 +40,9 @@ namespace PROOFAgent
             {
                 return m_Agent->Init( _element );
             }
-            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir )
+            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
             {
-                return m_Agent->Start( _PROOFCfgDir );
+                return m_Agent->Start( _PROOFCfg );
             }
 
         private:

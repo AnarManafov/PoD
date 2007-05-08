@@ -42,7 +42,7 @@ XERCES_CPP_NAMESPACE_USE;
 
 ERRORCODE CPROOFAgent::Start()
 {
-    return m_Agent.Start( m_Data.m_sPROOFCfgDir );
+    return m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 
 ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance )
@@ -202,9 +202,8 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     m_Data.m_AgentMode = ( sValTmp.find( "server" ) != sValTmp.npos ) ? Server : Client;
     get_attr_value( elementConfig, "timeout", &m_Data.m_nTimeout );
     get_attr_value( elementConfig, "last_execute_cmd", &m_Data.m_sLastExecCmd );
-    get_attr_value( elementConfig, "proof_cfg_dir", &m_Data.m_sPROOFCfgDir );
-    smart_homedir_append( &m_Data.m_sPROOFCfgDir ); // resolving user's home dir from (~/ or $HOME, if present)
-    smart_append( &m_Data.m_sPROOFCfgDir, '/' );
+    get_attr_value( elementConfig, "proof_cfg_path", &m_Data.m_sPROOFCfg );
+    smart_homedir_append( &m_Data.m_sPROOFCfg ); // resolving user's home dir from (~/ or $HOME, if present) 
 
     return erOK;
 }
