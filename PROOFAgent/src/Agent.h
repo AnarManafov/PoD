@@ -48,20 +48,20 @@ namespace PROOFAgent
         private:
             void RefreshAgent ()
             {
-                if ( ( m_Agent.get() && m_Agent->Mode != m_Mode ) || !m_Agent.get() )
+                if ( ( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
                     m_Agent.reset( Spawn() );
             }
             CAgentBase* Spawn()
             {
                 switch ( m_Mode )
                 {
-                    case Server:
+                        case Server:
                         return new CAgentServer;
                         break;
-                    case Client:
+                        case Client:
                         return new CAgentClient;
                         break;
-                    case Unknown:
+                        case Unknown:
                         return NULL;
                         break;
                 }
@@ -70,7 +70,7 @@ namespace PROOFAgent
 
         private:
             pAgentBase_t m_Agent;
-            EAgentMode_t m_Mode;            
+            EAgentMode_t m_Mode;
     };
 
 };

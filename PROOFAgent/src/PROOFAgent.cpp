@@ -204,6 +204,7 @@ ERRORCODE CPROOFAgent::Read( xercesc::DOMNode* _element )
     get_attr_value( elementConfig, "last_execute_cmd", &m_Data.m_sLastExecCmd );
     get_attr_value( elementConfig, "proof_cfg_dir", &m_Data.m_sPROOFCfgDir );
     smart_homedir_append( &m_Data.m_sPROOFCfgDir ); // resolving user's home dir from (~/ or $HOME, if present)
+    smart_append( &m_Data.m_sPROOFCfgDir, '/' );
 
     return erOK;
 }

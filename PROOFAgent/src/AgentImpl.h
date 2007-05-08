@@ -31,6 +31,7 @@
 #include "LogImp.h"
 #include "IXMLPersist.h"
 #include "PacketForwarder.h"
+#include "SysHelper.h"
 
 namespace PROOFAgent
 {
@@ -39,13 +40,34 @@ namespace PROOFAgent
     // declaration of signal handler
     void signal_handler( int _SignalNumber );
 
+    template <class _T>
+    struct CPROOFCfgImp
+    {
+        void CreatePROOFCfg( const std::string &_PROOFCfgDir )
+        {
+            std::ofstream f_out( (_PROOFCfgDir + g_szPROOF_CONF).c_str() );
+            // TODO: check file-errors
+            _T *pThis = reinterpret_cast<_T*>( this );
+
+            if ( pThis->GetMode() == Client )
+            {
+                std::string host;
+                MiscCommon::get_hostname( &host );
+                f_out
+                << "master " << host << "\n"
+                << "worker " << host << " perf=100" << std::endl;
+            }
+        }
+    };
+
     /** @class CAgentBase
       *  @brief
      */
-    class CAgentBase: MiscCommon::IXMLPersist
+    class CAgentBase:
+                MiscCommon::IXMLPersist
     {
         public:
-            CAgentBase() : Mode( Unknown )
+            CAgentBase()
             {
                 struct sigaction sa;
                 ::sigemptyset (&sa.sa_mask);
@@ -60,23 +82,22 @@ namespace PROOFAgent
             }
             virtual ~CAgentBase()
             {}
+
+        public:
             virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
             {
                 return this->Read( _element );
             }
-
             MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir )
             {
-                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
+                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this, _PROOFCfgDir ) );
                 thrd.join();
                 return MiscCommon::erOK;
             }
+            virtual EAgentMode_t GetMode() const = 0;
 
         protected:
-            virtual void ThreadWorker() = 0;
-
-        public:
-            const EAgentMode_t Mode;
+            virtual void ThreadWorker( const std::string &_PROOFCfgDir ) = 0;
     };
 
     typedef struct SAgentServerData
@@ -163,9 +184,6 @@ namespace PROOFAgent
                 MiscCommon::CLogImp<CAgentServer>
     {
         public:
-            CAgentServer() :
-                    Mode( Server )
-            {}
             virtual ~CAgentServer()
             {}
             REGISTER_LOG_MODULE( AgentServer );
@@ -173,6 +191,10 @@ namespace PROOFAgent
         public:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            virtual EAgentMode_t GetMode() const
+            {
+                return Server;
+            }
 
             void AddPF( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort )
             {
@@ -181,10 +203,10 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker();
+            void ThreadWorker( const std::string &_PROOFCfgDir );
 
         private:
-            const EAgentMode_t Mode;
+            //          const EAgentMode_t Mode;
             AgentServerData_t m_Data;
             PF_Container m_PFList;
             boost::mutex m_PFList_mutex;
@@ -195,11 +217,10 @@ namespace PROOFAgent
       */
     class CAgentClient:
                 public CAgentBase,
-                MiscCommon::CLogImp<CAgentClient>
+                MiscCommon::CLogImp<CAgentClient>,
+                protected CPROOFCfgImp<CAgentClient>
     {
         public:
-            CAgentClient() : Mode( Client )
-            {}
             virtual ~CAgentClient()
             {}
             REGISTER_LOG_MODULE( AgentClient );
@@ -207,12 +228,16 @@ namespace PROOFAgent
         public:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            virtual EAgentMode_t GetMode() const
+            {
+                return Client;
+            }
 
         protected:
-            void ThreadWorker();
+            void ThreadWorker( const std::string &_PROOFCfgDir );
 
         private:
-            const EAgentMode_t Mode;
+            //   const EAgentMode_t Mode;
             AgentClientData_t m_Data;
     };
 

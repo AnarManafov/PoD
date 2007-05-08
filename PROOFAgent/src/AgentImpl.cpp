@@ -77,7 +77,7 @@ ERRORCODE CAgentServer::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentServer::ThreadWorker()
+void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
 {
     try
     {
@@ -161,9 +161,11 @@ ERRORCODE CAgentClient::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentClient::ThreadWorker()
+void CAgentClient::ThreadWorker( const std::string &_PROOFCfgDir )
 {
     DebugLog( erOK, "Starting main thread..." );
+    DebugLog( erOK, "Creating a PROOF configuration file..." );
+    CreatePROOFCfg( _PROOFCfgDir );
     CSocketClient client;
     try
     {
@@ -173,7 +175,7 @@ void CAgentClient::ThreadWorker()
 
         // sending protocol version to the server
         {
-            string sProtocol( PROTOCOL_VERSION );
+            string sProtocol( g_szPROTOCOL_VERSION );
             BYTEVector_t buf;
             copy( sProtocol.begin(), sProtocol.end(), back_inserter( buf ) );
             DebugLog( erOK, "Sending protocol version: " + string( reinterpret_cast<char*>( &buf[ 0 ] ) ) );

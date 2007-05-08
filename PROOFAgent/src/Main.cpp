@@ -58,7 +58,7 @@ typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop, Status } ECommand_t;
 
-    SOptions():                     // Default options' values
+    SOptions():                      // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/"),
             m_bDaemonize(false)
@@ -111,9 +111,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     option_dependency(vm, "start", "daemonize" );
     option_dependency(vm, "stop", "daemonize" );
     option_dependency(vm, "status", "daemonize" );
-    option_dependency(vm, "pidfile", "daemonize" );
-    option_dependency(vm, "daemonize", "pidfile" );
-    option_dependency(vm, "start", "pidfile" );
 
     if ( vm.count("config") )
         _Options->m_sConfigFile = vm["config"].as<string>();
@@ -129,7 +126,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     {
         _Options->m_sPidfileDir = vm["pidfile"].as<string>();
         // We need to be sure that there is "/" always at the end of the path
-        smart_append<string>( &_Options->m_sPidfileDir, '/' );
+        smart_append( &_Options->m_sPidfileDir, '/' );
     }
     _Options->m_bDaemonize = vm.count("daemonize");
 
