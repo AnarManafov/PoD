@@ -54,7 +54,7 @@ namespace PROOFAgent
             MiscCommon::get_hostname( &host );
             // master host name is the same for Server and Worker and equak to local host name
             f_out << "master " << host << std::endl;
-           
+
             if ( pThis->GetMode() == Client )
             {
                 f_out << "worker " << host << " perf=100" << std::endl;
@@ -62,6 +62,14 @@ namespace PROOFAgent
         }
         void AddWrk2PROOFCfg( const std::string &_PROOFCfgDir, const std::string &_UsrName, unsigned short _Port )
         {
+            _T *pThis = reinterpret_cast<_T*>( this );
+            if ( pThis->GetMode() != Server )
+                return ;
+
+            std::ofstream f_out( (_PROOFCfgDir + g_szPROOF_CONF).c_str(), std::ios_base::out | std::ios_base::app );
+            // TODO: check file-errors
+            
+            f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100 workdir=~/" << std::endl;
         }
     };
 

@@ -101,25 +101,22 @@ void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
                 smart_socket socket( server.Accept() );
 
                 // checking protocol version
-                {
-                    BYTEVector_t buf( 1024 );
-                    socket >> &buf;
-                    DebugLog( erOK, "Server received: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
+                string sReceive;
+                receive_string( socket, &sReceive, g_nBUF_SIZE );
+                DebugLog( erOK, "Server received: " + sReceive );
 
-                    // TODO: Implement protocol version check
-                    buf.clear();
-                    string sOK( g_szRESPONSE_OK );
-                    copy( sOK.begin(), sOK.end(), back_inserter( buf ) );
-                    DebugLog( erOK, "Server sends: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
-                    socket << buf;
+                // TODO: Implement protocol version check
+                string sOK( g_szRESPONSE_OK );
+                DebugLog( erOK, "Server sends: " + sOK );
+                send_string( socket, sOK );
 
-                    // TODO: Receiving user name
-                    buf.clear();
-                    buf.resize(1024);
-                    socket >> &buf;
-                    DebugLog( erOK, "Server received: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
-                }
+                // TODO: Receiving user name -- now we always assume that this is a user name -- WE NEED to implement a simple protocol!!!
+                string sUsrName;
+                receive_string( socket, &sUsrName, g_nBUF_SIZE );
+                DebugLog( erOK, "Server received: " + sUsrName );
 
+                DebugLog( erOK, "Server sends: " + sOK );
+                send_string( socket, sOK );
 
                 string strSocketInfo;
                 socket2string( socket, &strSocketInfo );
@@ -134,12 +131,12 @@ void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
                 static unsigned short port = m_Data.m_nLocalClientPortMin; // TODO: Implement port enumerator - should give next free port by requests
                 // TODO: Check that port is free, before sending it to PF
 
-                // Add a worker to PROOF cfg
-                //AddWrk2PROOFCfg( _PROOFCfgDir, sUsrName, port );
-
                 // Spwan PortForwarder
                 Socket_t s = socket.detach();
-                AddPF( s, ++port );
+                AddPF( s, port );
+                // Add a worker to PROOF cfg
+                AddWrk2PROOFCfg( _PROOFCfgDir, sUsrName, port );
+                port++; // TODO: Implement port enumerator - should give next free port by requests
             }
         }
     }
@@ -194,23 +191,25 @@ void CAgentClient::ThreadWorker( const std::string &_PROOFCfgDir )
         DebugLog( erOK, "connected!" );
 
         // sending protocol version to the server
-        {
-            string sProtocol( g_szPROTOCOL_VERSION );
-            DebugLog( erOK, "Sending protocol version: " + sProtocol );
-            client.SendString( sProtocol );
+        string sProtocol( g_szPROTOCOL_VERSION );
+        DebugLog( erOK, "Sending protocol version: " + sProtocol );
+        send_string( client.GetSocket(), sProtocol );
 
-            //TODO: Checking response
-            string sResponse;
-            client.ReceiveString( &sResponse, 1024 );
-            DebugLog( erOK, "Client received: " + sResponse );
+        //TODO: Checking response
+        string sResponse;
+        receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+        DebugLog( erOK, "Client received: " + sResponse );
 
-            // Sending User name
-            string sUser;
-            get_cuser_name( &sUser );
-            DebugLog( erOK, "Sending user name: " + sUser );
-            client.SendString( sUser );
-        }
-        // TODO: Protocol check: Wait for server's response
+        // Sending User name
+        string sUser;
+        get_cuser_name( &sUser );
+        DebugLog( erOK, "Sending user name: " + sUser );
+        send_string( client.GetSocket(), sUser );
+
+        //TODO: Checking response
+        receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+        DebugLog( erOK, "Client received: " + sResponse );
+
 
         // Spawn PortForwarder
         CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );

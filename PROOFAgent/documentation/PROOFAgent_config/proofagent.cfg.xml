@@ -34,7 +34,7 @@
                 agent_mode="Client"
                 timeout="0"
                 last_execute_cmd=""
-                proof_cfg_dir="~/"/>
+                proof_cfg_dir="~/tmp"/>
             <agent_client
                 server_port="51510"
                 server_addr="127.0.0.1"
