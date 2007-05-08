@@ -105,14 +105,14 @@ void CAgentServer::ThreadWorker( const std::string &_PROOFCfgDir )
                     BYTEVector_t buf( 1024 );
                     socket >> &buf;
                     DebugLog( erOK, "Server received: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
-                    
+
                     // TODO: Implement protocol version check
-                    buf.clear();                    
+                    buf.clear();
                     string sOK( g_szRESPONSE_OK );
                     copy( sOK.begin(), sOK.end(), back_inserter( buf ) );
                     DebugLog( erOK, "Server sends: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
                     socket << buf;
-                    
+
                     // TODO: Receiving user name
                     buf.clear();
                     buf.resize(1024);
@@ -196,24 +196,19 @@ void CAgentClient::ThreadWorker( const std::string &_PROOFCfgDir )
         // sending protocol version to the server
         {
             string sProtocol( g_szPROTOCOL_VERSION );
-            BYTEVector_t buf;
-            copy( sProtocol.begin(), sProtocol.end(), back_inserter( buf ) );
-            DebugLog( erOK, "Sending protocol version: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
-            client.GetSocket() << buf;
+            DebugLog( erOK, "Sending protocol version: " + sProtocol );
+            client.SendString( sProtocol );
 
             //TODO: Checking response
-            buf.clear();
-            buf.resize(1024);
-            client.GetSocket() >> &buf;
-            DebugLog( erOK, "Client received: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
+            string sResponse;
+            client.ReceiveString( &sResponse, 1024 );
+            DebugLog( erOK, "Client received: " + sResponse );
 
             // Sending User name
-            buf.clear();
             string sUser;
             get_cuser_name( &sUser );
-            copy( sUser.begin(), sUser.end(), back_inserter( buf ) );
-            DebugLog( erOK, "Sending user name: " + string( reinterpret_cast<char*>(&buf[ 0 ]), buf.size() ) );
-            client.GetSocket() << buf;
+            DebugLog( erOK, "Sending user name: " + sUser );
+            client.SendString( sUser );
         }
         // TODO: Protocol check: Wait for server's response
 
