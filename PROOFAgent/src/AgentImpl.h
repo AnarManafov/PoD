@@ -49,14 +49,19 @@ namespace PROOFAgent
             // TODO: check file-errors
             _T *pThis = reinterpret_cast<_T*>( this );
 
+            // getting local host name
+            std::string host;
+            MiscCommon::get_hostname( &host );
+            // master host name is the same for Server and Worker and equak to local host name
+            f_out << "master " << host << std::endl;
+           
             if ( pThis->GetMode() == Client )
             {
-                std::string host;
-                MiscCommon::get_hostname( &host );
-                f_out
-                << "master " << host << "\n"
-                << "worker " << host << " perf=100" << std::endl;
+                f_out << "worker " << host << " perf=100" << std::endl;
             }
+        }
+        void AddWrk2PROOFCfg( const std::string &_PROOFCfgDir, const std::string &_UsrName, unsigned short _Port )
+        {
         }
     };
 
@@ -181,7 +186,8 @@ namespace PROOFAgent
      */
     class CAgentServer :
                 public CAgentBase,
-                MiscCommon::CLogImp<CAgentServer>
+                MiscCommon::CLogImp<CAgentServer>,
+                protected CPROOFCfgImp<CAgentServer>
     {
         public:
             virtual ~CAgentServer()
