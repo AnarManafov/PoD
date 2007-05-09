@@ -5,12 +5,12 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
-        version number:    $LastChangedRevision$
-        created by:           Anar Manafov
-                                   2007-03-01
+        version number:   $LastChangedRevision$
+        created by:          Anar Manafov
+                                  2007-03-01
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
-        Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENT_H
 #define AGENT_H
