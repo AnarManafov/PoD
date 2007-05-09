@@ -52,7 +52,7 @@ namespace PROOFAgent
             // getting local host name
             std::string host;
             MiscCommon::get_hostname( &host );
-            // master host name is the same for Server and Worker and equak to local host name
+            // master host name is the same for Server and Worker and equal to local host name
             f_out << "master " << host << std::endl;
 
             if ( pThis->GetMode() == Client )
@@ -67,8 +67,9 @@ namespace PROOFAgent
                 return ;
 
             std::ofstream f_out( _PROOFCfg.c_str(), std::ios_base::out | std::ios_base::app );
-            // TODO: check file-errors
-            
+            if ( !f_out.is_open() )
+                throw std::runtime_error("Can't open the PROOF configuration file: " + _PROOFCfg );
+
             f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100 workdir=~/" << std::endl;
         }
     };
