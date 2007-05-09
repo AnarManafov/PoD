@@ -20,17 +20,22 @@
 #include "IXMLPersist.h"
 #include "LogImp.h"
 
+/**
+ * @brief A general name space for PROOFAgent application 
+ **/
 namespace PROOFAgent
-{
-    /** @brief Agent data structure. */
+{   
+    /**
+     * @brief Agent data structure.
+     **/
     typedef struct SAgentData
     {
         SAgentData() :
                 m_bLogFileOverwrite( false ),
                 m_nTimeout( 0 )
         {}
-        std::string m_sLogFileDir;    //!< Log filename
-        bool m_bLogFileOverwrite;       //!< Overwrite log file each session
+        std::string m_sLogFileDir;          //!< Log filename
+        bool m_bLogFileOverwrite;          //!< Overwrite log file each session
         EAgentMode_t m_AgentMode;
         size_t m_nTimeout;
         std::string m_sLastExecCmd;
@@ -58,7 +63,6 @@ namespace PROOFAgent
         private:
             MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
             MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
-
             void ExecuteLastCmd();
 
         private:

@@ -6,8 +6,8 @@
  */ /*
  
         version number:    $LastChangedRevision$
-        created by:        Anar Manafov
-                                    2007-03-01
+        created by:           Anar Manafov
+                                   2007-03-01
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
@@ -33,6 +33,9 @@
 #include "PacketForwarder.h"
 #include "SysHelper.h"
 
+/**
+ * @brief A general name space for PROOFAgent application 
+ **/
 namespace PROOFAgent
 {
     typedef enum{ Unknown, Server, Client }EAgentMode_t;
@@ -74,7 +77,7 @@ namespace PROOFAgent
         }
     };
 
-    /** @class CAgentBase
+    /**
       *  @brief
      */
     class CAgentBase:

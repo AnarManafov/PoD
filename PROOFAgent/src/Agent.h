@@ -6,8 +6,8 @@
  */ /*
  
         version number:    $LastChangedRevision$
-        created by:        Anar Manafov
-                                    2007-03-01
+        created by:           Anar Manafov
+                                   2007-03-01
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
@@ -21,6 +21,9 @@
 // OUR
 #include "AgentImpl.h"
 
+/**
+ * @brief A general name space for PROOFAgent application 
+ **/
 namespace PROOFAgent
 {
     typedef std::auto_ptr<CAgentBase> pAgentBase_t;
