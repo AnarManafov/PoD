@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PARes.h
- * @brief $$File comment$$
+ * @brief Resource file of the PROOFAgent project.
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -18,9 +18,6 @@
 // OUR
 #include "def.h"
 
-/**
- * @brief A general name space for PROOFAgent application 
- **/
 namespace PROOFAgent
 {
 

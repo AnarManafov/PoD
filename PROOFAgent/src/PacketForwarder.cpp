@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PacketForwarder.cpp
- * @brief $$File comment$$
+ * @brief Packet Forwarder's implementation
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

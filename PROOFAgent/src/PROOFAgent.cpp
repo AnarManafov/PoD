@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PROOFAgent.cpp
- * @brief $$File comment$$
+ * @brief Implementation of the general PROOFAgent manager
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

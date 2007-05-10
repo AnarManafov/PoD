@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Main.cpp
- * @brief $$File comment$$
+ * @brief Implementation of the "Main" function 
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

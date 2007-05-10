@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Agent.h
- * @brief $$File comment$$
+ * @brief Implementation of CAgent
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -21,9 +21,6 @@
 // OUR
 #include "AgentImpl.h"
 
-/**
- * @brief A general name space for PROOFAgent application 
- **/
 namespace PROOFAgent
 {
     typedef std::auto_ptr<CAgentBase> pAgentBase_t;

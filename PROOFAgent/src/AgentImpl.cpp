@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file AgentImpl.cpp
- * @brief $$File comment$$
+ * @brief Implementation file of AgentServer and AgentClient
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file AgentImpl.h
- * @brief $$File comment$$
+ * @brief Header file of AgentServer and AgentClient
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
@@ -33,9 +33,6 @@
 #include "PacketForwarder.h"
 #include "SysHelper.h"
 
-/**
- * @brief A general name space for PROOFAgent application 
- **/
 namespace PROOFAgent
 {
     typedef enum{ Unknown, Server, Client }EAgentMode_t;

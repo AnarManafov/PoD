@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PacketForwarder.h
- * @brief $$File comment$$
+ * @brief Packet Forwarder's header file
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  

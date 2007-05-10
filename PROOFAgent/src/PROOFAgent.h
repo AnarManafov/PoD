@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PROOFAgent.h
- * @brief $$File comment$$
+ * @brief Header of the general PROOFAgent manager
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
