@@ -15,6 +15,15 @@
 #        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 
+# current working dir
+WD=`pwd`
+echo "Current working directory: $WD"
+# Using eval to force variable substitution
+# changing <WD> to a working directory in the following files:
+eval sed -i 's%\<WD\>%$WD%g' xpd.cfg
+eval sed -i 's%\<WD\>%$WD%g' proofagent.cfg.xml
+
+
 # ROOT
 export ROOTSYS=/usr/ROOT/5.14.00
 export PATH=$ROOTSYS/bin:$PATH

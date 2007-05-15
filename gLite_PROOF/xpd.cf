@@ -41,7 +41,7 @@ fi
 #                                     3rd: 9,10,1,2, 4th: 3-6, ...
 #                         "random"    random choice (a worker is not
 #                                     assigned twice)
-xpd.resource static ~/xrootd_test/proof.conf
+xpd.resource static <WD>/proof.conf
 
 ###
 ### Server role (master, submaster, worker) [default: any]

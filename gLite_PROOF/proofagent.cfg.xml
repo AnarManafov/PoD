@@ -28,13 +28,13 @@
 
         <client>
             <config
-                logfile_dir="~/"
+                logfile_dir="<WD>"
                 logfile_overwrite="yes"
                 log_level="0"
                 agent_mode="Client"
                 timeout="0"
                 last_execute_cmd=""
-                proof_cfg_path="~/proof.conf"/>
+                proof_cfg_path="<WD>/proof.conf"/>
             <agent_client
                 server_port="21111"
                 server_addr="127.0.0.1"
