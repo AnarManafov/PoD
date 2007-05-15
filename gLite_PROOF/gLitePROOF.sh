@@ -32,7 +32,7 @@ export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
 # start xrootd
 echo "Starting xrootd..."
-xrootd -c ~/xpd.cf -b -l ~/xpd.log
+xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 
 #
 #
@@ -47,7 +47,7 @@ xrootd -c ~/xpd.cf -b -l ~/xpd.log
 #
 
 # start proofagent
-./proofagent -i client -c ~/proofagent.cfg.xml --start
+./proofagent -i client -c $WD/proofagent.cfg.xml --start
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
   echo "proofagent successful. Exit code: $RET_VAL"
