@@ -23,7 +23,7 @@
             <agent_server
                 listen_port="21111"
                 local_client_port_min="20000"
-                local_client_port_max="20010" />
+                local_client_port_max="25000" />
         </server>
 
         <client>
