@@ -1,0 +1,39 @@
+/************************************************************************/
+/**
+ * @file gLitePROOF.jdl
+ * @brief $$File comment$$
+ * @author Anar Manafov A.Manafov@gsi.de
+ *//*
+
+        version number:    $LastChangedRevision$
+        created by:        Anar Manafov
+                           2007-05-15
+        last changed by:   $LastChangedBy$ $LastChangedDate$
+
+        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+*************************************************************************/
+
+[
+	Type = "job";
+	Executable = "proof.sh";
+	VirtualOrganisation = "dech";
+	Executable = "gLitePROOF.sh";
+
+	StdOutput = "gLitePROOF.out";
+	StdError = "gLitePROOF.err";
+	OutputSandbox = {
+			   "gLitePROOF.out",
+			   "gLitePROOF.err"
+			};
+	
+	// disable job re-submission in case of failure
+	RetryCount = 0; 
+
+	InputSandbox = {
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent",
+		          "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/gLitePROOF.sh", 
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/xpd.cf",
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent.cfg.xml"
+		       };
+]
+
