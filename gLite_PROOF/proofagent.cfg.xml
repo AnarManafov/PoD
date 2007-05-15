@@ -14,7 +14,7 @@
 		
         <server>         
             <config
-                logfile_dir="~/"
+                logfile_dir="/tmp/"
                 logfile_overwrite="yes"
                 log_level="0"
                 agent_mode="Server"
@@ -28,16 +28,16 @@
 
         <client>
             <config
-                logfile_dir="<WD>"
+                logfile_dir="_G_WRK_DIR"
                 logfile_overwrite="yes"
                 log_level="0"
                 agent_mode="Client"
                 timeout="0"
                 last_execute_cmd=""
-                proof_cfg_path="<WD>/proof.conf"/>
+                proof_cfg_path="_G_WRK_DIR/proof.conf"/>
             <agent_client
                 server_port="21111"
-                server_addr="127.0.0.1"
+                server_addr="depc218.gsi.de"
                 local_proofd_port="1093"/>
         </client>
 	  

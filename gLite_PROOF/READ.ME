@@ -1,0 +1,18 @@
+>>> Send the gLitePROOF job <<<
+
+glite-job-submit -r grid14.gsi.de:2119/blah-pbs-short gLitePROOF.jdl
+
+
+>>> Start xroot redirector <<<
+
+xrootd -c xpd.cf -b -l /tmp/xpd.log
+
+
+>>> Start PROOFAgent server <<<
+
+/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent -d -i server -p /tmp/ -c /home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent.cfg.xml --start
+
+
+>>> Open PROOF Connection from ROOT <<<
+
+ proof = TProof::Open("localhost") 

@@ -18,16 +18,23 @@
 # current working dir
 WD=`pwd`
 echo "Current working directory: $WD"
-# Using eval to force variable substitution
-# changing <WD> to a working directory in the following files:
-eval sed -i 's%\<WD\>%$WD%g' xpd.cfg
-eval sed -i 's%\<WD\>%$WD%g' proofagent.cfg.xml
+y=`eval ls -l`
+echo "$y"
 
+# Using eval to force variable substitution
+# changing _G_WRK_DIR to a working directory in the following files:
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
 export ROOTSYS=/usr/ROOT/5.14.00
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+
+# Transmitting an executable through the InputSandbox does not preserve execute permissions
+if [ ! -x $WD/proofagent ]; then 
+	chmod +x $WD/proofagent
+fi
 
 
 # start xrootd
@@ -47,7 +54,7 @@ xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 #
 
 # start proofagent
-./proofagent -i client -c $WD/proofagent.cfg.xml --start
+./proofagent -i client -c $WD/proofagent.cfg.xml
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
   echo "proofagent successful. Exit code: $RET_VAL"
@@ -63,3 +70,6 @@ fi
 
 # sleep - in order to keep a job slot
 #sleep 1200 # 1200 seconds
+
+# Killing all xrootd in anyway (TODO: must be removed)
+pkill -9 xrootd
