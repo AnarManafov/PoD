@@ -47,5 +47,5 @@ xpd.resource static ~/xrootd_test/proof.conf
 ### Server role (master, submaster, worker) [default: any]
 ### Allows to control the cluster structure.
 xpd.role master if depc218.gsi.de
-xpd.role worker if lxial24.gsi.de
+xpd.role worker if *.gsi.de
 

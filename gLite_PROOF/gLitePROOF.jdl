@@ -1,21 +1,24 @@
-/************************************************************************/
-/**
- * @file gLitePROOF.jdl
- * @brief $$File comment$$
- * @author Anar Manafov A.Manafov@gsi.de
- *//*
+#/************************************************************************/
+#/**
+# * @file gLitePROOF.jdl
+# * @brief $$File comment$$
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        version number:    $LastChangedRevision$
+#        created by:        Anar Manafov
+#                           2007-05-15
+#        last changed by:   $LastChangedBy$ $LastChangedDate$
+#
+#        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+#*************************************************************************/
 
-        version number:    $LastChangedRevision$
-        created by:        Anar Manafov
-                           2007-05-15
-        last changed by:   $LastChangedBy$ $LastChangedDate$
-
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
-*************************************************************************/
+#
+# glite-job-submit -r grid14.gsi.de:2119/blah-pbs-short gLitePROOF.jdl
+#
 
 [
 	Type = "job";
-	Executable = "proof.sh";
 	VirtualOrganisation = "dech";
 	Executable = "gLitePROOF.sh";
 
@@ -23,10 +26,12 @@
 	StdError = "gLitePROOF.err";
 	OutputSandbox = {
 			   "gLitePROOF.out",
-			   "gLitePROOF.err"
+			   "gLitePROOF.err",
+			   "xpd.log",
+			   "proofagent.client.log"
 			};
 	
-	// disable job re-submission in case of failure
+# disable job re-submission in case of failure
 	RetryCount = 0; 
 
 	InputSandbox = {
