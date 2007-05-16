@@ -61,11 +61,11 @@ namespace PROOFAgent
     template <class _T>
     struct CPROOFCfgImp
     {
-        void CreatePROOFCfg( const std::string &_PROOFCfg )
+        void CreatePROOFCfg( const std::string &_PROOFCfg) const
         {
             std::ofstream f_out( _PROOFCfg.c_str() );
             // TODO: check file-errors
-            _T *pThis = reinterpret_cast<_T*>( this );
+            const _T *pThis = reinterpret_cast<const _T*>( this );
 
             // getting local host name
             std::string host;
@@ -78,9 +78,9 @@ namespace PROOFAgent
                 f_out << "worker " << host << " perf=100" << std::endl;
             }
         }
-        void AddWrk2PROOFCfg( const std::string &_PROOFCfg, const std::string &_WorkDir, const std::string &_UsrName, unsigned short _Port )
+        void AddWrk2PROOFCfg( const std::string &_PROOFCfg, const std::string &_UsrName, unsigned short _Port ) const
         {
-            _T *pThis = reinterpret_cast<_T*>( this );
+            const _T *pThis = reinterpret_cast<const _T*>( this );
             if ( pThis->GetMode() != Server )
                 return ;
 
@@ -88,7 +88,7 @@ namespace PROOFAgent
             if ( !f_out.is_open() )
                 throw std::runtime_error("Can't open the PROOF configuration file: " + _PROOFCfg );
 
-            f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100 workdir=" << _WorkDir << std::endl;
+            f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100" << std::endl;
         }
     };
 
@@ -120,16 +120,16 @@ namespace PROOFAgent
             {
                 return this->Read( _element );
             }
-            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir, const std::string &_WorkDir )
+            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir )
             {
-                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this, _PROOFCfgDir, _WorkDir ) );
+                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this, _PROOFCfgDir ) );
                 thrd.join();
                 return MiscCommon::erOK;
             }
             virtual EAgentMode_t GetMode() const = 0;
 
         protected:
-            virtual void ThreadWorker( const std::string &_PROOFCfg, const std::string &_WorkDir ) = 0;
+            virtual void ThreadWorker( const std::string &_PROOFCfg ) = 0;
     };
 
     typedef struct SAgentServerData
@@ -236,7 +236,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfg, const std::string &_WorkDir );
+            void ThreadWorker( const std::string &_PROOFCfg );
 
         private:
             //          const EAgentMode_t Mode;
@@ -267,7 +267,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfg, const std::string &_WorkDir );
+            void ThreadWorker( const std::string &_PROOFCfg );
 
         private:
             //   const EAgentMode_t Mode;

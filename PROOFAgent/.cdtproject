@@ -11,7 +11,11 @@
     
     
     
+    
+    
     <item id="scannerConfiguration">
+      
+      
       
       
       
@@ -29,6 +33,8 @@
       
       
       
+      
+      
       <profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
         
         
@@ -38,7 +44,11 @@
         
         
         
+        
+        
         <buildOutputProvider>
+          
+          
           
           
           
@@ -56,16 +66,22 @@
           
           
           
+          
+          
           <parser enabled="true"/>
           
           
           
           
+          
+        
         
         
         
         
         </buildOutputProvider>
+        
+        
         
         
         
@@ -83,7 +99,11 @@
           
           
           
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
           
           
           
@@ -97,6 +117,8 @@
           
           
           
+          
+        
         
         
         
@@ -106,11 +128,15 @@
         
         
         
+        
+      
       
       
       
       
       </profile>
+      
+      
       
       
       
@@ -128,7 +154,11 @@
         
         
         
+        
+        
         <buildOutputProvider>
+          
+          
           
           
           
@@ -146,16 +176,22 @@
           
           
           
+          
+          
           <parser enabled="true"/>
           
           
           
           
+          
+        
         
         
         
         
         </buildOutputProvider>
+        
+        
         
         
         
@@ -173,7 +209,11 @@
           
           
           
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
           
           
           
@@ -187,6 +227,8 @@
           
           
           
+          
+        
         
         
         
@@ -196,11 +238,15 @@
         
         
         
+        
+      
       
       
       
       
       </profile>
+      
+      
       
       
       
@@ -218,7 +264,11 @@
         
         
         
+        
+        
         <buildOutputProvider>
+          
+          
           
           
           
@@ -236,16 +286,22 @@
           
           
           
+          
+          
           <parser enabled="true"/>
           
           
           
           
+          
+        
         
         
         
         
         </buildOutputProvider>
+        
+        
         
         
         
@@ -263,7 +319,11 @@
           
           
           
+          
+          
           <runAction useDefault="true" command="gcc" arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"/>
+          
+          
           
           
           
@@ -277,6 +337,8 @@
           
           
           
+          
+        
         
         
         
@@ -286,11 +348,15 @@
         
         
         
+        
+      
       
       
       
       
       </profile>
+      
+      
       
       
       
@@ -308,7 +374,11 @@
         
         
         
+        
+        
         <buildOutputProvider>
+          
+          
           
           
           
@@ -326,16 +396,22 @@
           
           
           
+          
+          
           <parser enabled="true"/>
           
           
           
           
+          
+        
         
         
         
         
         </buildOutputProvider>
+        
+        
         
         
         
@@ -353,7 +429,11 @@
           
           
           
+          
+          
           <runAction useDefault="true" command="make" arguments="-f ${project_name}_scd.mk"/>
+          
+          
           
           
           
@@ -367,6 +447,8 @@
           
           
           
+          
+        
         
         
         
@@ -376,6 +458,8 @@
         
         
         
+        
+      
       
       
       
@@ -385,11 +469,15 @@
       
       
       
+      
+    
     
     
     
     
     </item>
+    
+    
     
     
     
@@ -399,51 +487,13 @@
     
     
     <item id="org.eclipse.cdt.core.pathentry">
-      
-      
-      
-      
-      
-      
-      
-      
       <pathentry kind="out" path=""/>
-      
-      
-      
-      
-      
-      
-      
-      
       <pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>
-      
-      
-      
-      
-      
-      
-      
-      
       <pathentry kind="con" path="org.eclipse.cdt.managedbuilder.MANAGED_CONTAINER"/>
-      
-      
-      
-      
-      
-      
-      
-      
       <pathentry kind="src" path=""/>
-      
-      
-      
-      
-    
-    
-    
-    
     </item>
+    
+    
     
     
     
@@ -453,377 +503,1113 @@
     
     
     <item id="org.eclipse.cdt.make.core.buildtargets">
+      
+      
       <buildTargets>
+        
+        
         <target name="all" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>all</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="am--refresh" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>am--refresh</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="Makefile" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>Makefile</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="config.h" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>config.h</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="stamp-h1" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>stamp-h1</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distclean-hdr" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distclean-hdr</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="Doxyfile" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>Doxyfile</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="mostlyclean-libtool" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>mostlyclean-libtool</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="clean-libtool" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>clean-libtool</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distclean-libtool" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distclean-libtool</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="mostlyclean-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>mostlyclean-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="clean-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>clean-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distclean-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distclean-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="maintainer-clean-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>maintainer-clean-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="tags-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>tags-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="ctags-recursive" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>ctags-recursive</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="tags" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>tags</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="ctags" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>ctags</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distclean-tags" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distclean-tags</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distdir" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distdir</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-gzip" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-gzip</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-bzip2" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-bzip2</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-tarZ" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-tarZ</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-shar" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-shar</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-zip" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-zip</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dist-all" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dist-all</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distcheck" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distcheck</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distuninstallcheck" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distuninstallcheck</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distcleancheck" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distcleancheck</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="check" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>check</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="installdirs" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>installdirs</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-exec" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-exec</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-data" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-data</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="uninstall" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>uninstall</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="installcheck" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>installcheck</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-strip" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-strip</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="clean" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>clean</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="distclean" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>distclean</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="dvi" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>dvi</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="html" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>html</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="info" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>info</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-info" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-info</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-man" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-man</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="maintainer-clean" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>maintainer-clean</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="mostlyclean" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>mostlyclean</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="pdf" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>pdf</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="ps" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>ps</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="uninstall-info" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>uninstall-info</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="install-dist_sysconfDATA" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>install-dist_sysconfDATA</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+        
         <target name="uninstall-dist_sysconfDATA" targetID="genmakebuilder" path="">
+          
+          
           <buildCommand>make</buildCommand>
-          <buildArguments></buildArguments>
+          
+          
+          <buildArguments/>
+          
+          
           <buildTarget>uninstall-dist_sysconfDATA</buildTarget>
+          
+          
           <stopOnError>true</stopOnError>
+          
+          
           <useDefaultCommand>true</useDefaultCommand>
+          
+        
         </target>
+        
+      
       </buildTargets>
+      
+    
     </item>
     
     
     
     
+    
+  
   
   
   

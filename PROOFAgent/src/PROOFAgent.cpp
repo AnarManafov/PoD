@@ -42,7 +42,7 @@ XERCES_CPP_NAMESPACE_USE;
 
 ERRORCODE CPROOFAgent::Start()
 {
-    return m_Agent.Start( m_Data.m_sPROOFCfg, m_Data.m_sWorkDir );
+    return m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 
 ERRORCODE CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance )
