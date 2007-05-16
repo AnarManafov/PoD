@@ -27,7 +27,9 @@ using namespace MiscCommon::INet;
 using namespace PROOFAgent;
 using namespace std;
 
-const unsigned int g_BUF_SIZE = 1024;
+// a regular Ethernet frame size - datagram
+// TODO: Move it to config.
+const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
 
@@ -113,7 +115,6 @@ void CPacketForwarder::SpawnClientMode()
         return ;
     }
     m_ServerSocket = proof_client.GetSocket().detach();
-
 
     m_ServerSocket.set_nonblock();
 
