@@ -3,7 +3,7 @@
 #/************************************************************************/
 #/**
 # * @file gLitePROOF.sh
-# * @brief $$File comment$$
+# * @brief gLitePROOF - a job script
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
@@ -33,7 +33,7 @@ export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
 if [ ! -x $WD/proofagent ]; then 
-	chmod +x $WD/proofagent
+    chmod +x $WD/proofagent
 fi
 
 
@@ -57,10 +57,9 @@ xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 ./proofagent -i client -c $WD/proofagent.cfg.xml
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
-  echo "proofagent successful. Exit code: $RET_VAL"
-  
+    echo "proofagent successful. Exit code: $RET_VAL"    
 else
-  echo "cant start proofagent. Exit code: $RET_VAL"
+    echo "cant start proofagent. Exit code: $RET_VAL"
 fi
 
 #
@@ -72,4 +71,13 @@ fi
 #sleep 1200 # 1200 seconds
 
 # Killing all xrootd in anyway (TODO: must be removed)
-pkill -9 xrootd
+pkill -9 xrootda
+
+
+# Removing local proof directory
+# assuming that proof directory is located in the user's home
+proof_dir="~/proof"
+if [ -f "$proof_dir" ]; then
+    rm -rf $proof_dir
+fi
+
