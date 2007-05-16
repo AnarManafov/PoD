@@ -32,7 +32,8 @@ namespace PROOFAgent
     {
         SAgentData() :
                 m_bLogFileOverwrite( false ),
-                m_nTimeout( 0 )
+                m_nTimeout( 0 ),
+                m_sWorkDir("/tmp/")
         {}
         std::string m_sLogFileDir;          //!< Log filename
         bool m_bLogFileOverwrite;          //!< Overwrite log file each session
@@ -40,6 +41,7 @@ namespace PROOFAgent
         size_t m_nTimeout;
         std::string m_sLastExecCmd;
         std::string m_sPROOFCfg;
+        std::string m_sWorkDir;         //!< Working folder. (default: /tmp/)
     }
     SAgentData_t;
 

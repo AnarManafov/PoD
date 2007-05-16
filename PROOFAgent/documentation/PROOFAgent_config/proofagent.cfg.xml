@@ -14,6 +14,7 @@
 		
         <server>         
             <config
+                work_dir="/tmp/"
                 logfile_dir="/tmp/"
                 logfile_overwrite="yes"
                 log_level="0"
@@ -28,6 +29,7 @@
 
         <client1>
             <config
+                work_dir="/tmp/"
                 logfile_dir="/tmp/"
                 logfile_overwrite="yes"
                 log_level="0"
