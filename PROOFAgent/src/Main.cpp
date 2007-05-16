@@ -11,7 +11,9 @@
         last changed by:   $LastChangedBy$ $LastChangedDate$
  
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
-*************************************************************************/ 
+*************************************************************************/
+#include "config.h"
+
 // BOOST
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -24,6 +26,7 @@
 // OUR
 #include "Process.h"
 #include "PROOFAgent.h"
+#include "PARes.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -58,7 +61,7 @@ typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop, Status } ECommand_t;
 
-    SOptions():                      // Default options' values
+    SOptions():                        // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/"),
             m_bDaemonize(false)
@@ -71,6 +74,17 @@ typedef struct SOptions
     bool m_bDaemonize;
 }
 SOptions_t;
+
+void PrintVersion()
+{
+    cout
+    << "PROOFAgent v." << VERSION << "\n"
+    << "-------------------------------------------------" << "\n"
+    << "application file name: " << PACKAGE << "\n"
+    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
+    << "-------------------------------------------------" << "\n"
+    << "Report bugs/comments to A.Manafov@gsi.de" << endl;
+}
 
 // Command line parser
 bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (exception)
@@ -89,6 +103,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     ("instance,i", value<string>(), "name of the instance of PROOFAgent")
     ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
     ("daemonize,d", "run PROOFAgent as a daemon")
+    ("version,v", "Version information")
     ;
 
     // Parsing command-line
@@ -99,6 +114,12 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     if ( vm.count("help") || vm.empty() )
     {
         cout << desc << endl;
+        return false;
+    }
+
+    if ( vm.count("version") )
+    {
+        PrintVersion();
         return false;
     }
 
