@@ -1,3 +1,0 @@
-master depc218.gsi.de  workdir=~/proof
-
-worker manafov@localhost:20001 perf=100 workdir=~/
