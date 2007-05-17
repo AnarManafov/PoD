@@ -1,3 +1,13 @@
+##                                               -*- Autoconf -*-
+## Process this file with autoconf to produce a configure script.
+## ************************************************************************/
+##        version number:    $LastChangedRevision$
+##        created by:        Anar Manafov
+##                           2007-03-25
+##        last changed by:   $LastChangedBy$ $LastChangedDate$
+##
+##        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+## *************************************************************************/
 AC_PREREQ(2.57)
 AC_INIT
 
