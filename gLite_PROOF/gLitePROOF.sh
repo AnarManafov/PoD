@@ -71,13 +71,13 @@ fi
 #sleep 1200 # 1200 seconds
 
 # Killing all xrootd in anyway (TODO: must be removed)
-pkill -9 xrootda
-
+pkill -9 xrootd
 
 # Removing local proof directory
 # assuming that proof directory is located in the user's home
-proof_dir="~/proof"
-if [ -f "$proof_dir" ]; then
+proof_dir="${HOME}/proof"
+if [ -e "$proof_dir" ]; then
+    echo "$proof_dir exists and will be deleted..."
     rm -rf $proof_dir
 fi
 

@@ -41,8 +41,11 @@ fi
 #                                     3rd: 9,10,1,2, 4th: 3-6, ...
 #                         "random"    random choice (a worker is not
 #                                     assigned twice)
-xpd.resource static _G_WRK_DIR/proof.conf
-
+if depc218.gsi.de
+ xpd.resource static ~/proof.conf
+else
+ xpd.resource static _G_WRK_DIR/proof.conf
+fi
 ###
 ### Server role (master, submaster, worker) [default: any]
 ### Allows to control the cluster structure.
