@@ -24,6 +24,20 @@
 
 namespace PROOFAgent
 {
+    struct _SHexInserter
+    {
+            _SHexInserter( std::ostream &_stream ): m_stream(_stream)
+            {
+                m_stream << std::ios::hex << std::ios::uppercase;
+            }
+            bool operator()( unsigned char _Val )
+            {
+                m_stream << static_cast<int>(_Val) << ' ';
+                return true;
+            }
+        private:
+            std::ostream &m_stream;
+    };
 
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
@@ -57,12 +71,29 @@ namespace PROOFAgent
                 std::string strSocketInfo;
                 MiscCommon::INet::socket2string( _socket, &strSocketInfo );
                 std::string strSocketPeerInfo;
+
                 MiscCommon::INet::peer2string( _socket, &strSocketPeerInfo );
+                
                 std::stringstream ss;
                 ss
-                << ( _received ? "RECEIVED: " : "FORWARDED: " )
-                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo ) << "\n"
-                << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ) ) << "\n";
+                << ( _received ? "RECEIVED " : "FORWARDED " )
+                << "(" << _buf.size() << " bytes): "
+                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo );
+
+                if ( !_buf.empty() )
+                {
+                    ss
+                    << "\n"
+                    << "--- STR ---"
+                    << "\n" << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ), _buf.size() ) << "\n"
+                    << "--- HEX ---";
+                    
+                    ss << "\n";
+                    _SHexInserter hex_ins( ss );
+                    for_each( _buf.begin(), _buf.end(), hex_ins );
+                    ss << "\n";
+                }
+
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
 

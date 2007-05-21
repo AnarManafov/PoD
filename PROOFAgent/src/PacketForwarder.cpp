@@ -54,6 +54,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
                 if ( !_SrvSocket->is_valid() )
                 {
                     InfoLog( erOK, "DISCONNECT has been detected." );
+                    // Closing client when server disconnects and closing server when xrootd redirector disconnects
                     graceful_quit = true; // TODO: Do we need here to set graceful_quit to true?
                     return ;
                 }
