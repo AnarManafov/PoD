@@ -24,15 +24,16 @@
 
 namespace PROOFAgent
 {
+    template< class _T >
     struct _SHexInserter
     {
             _SHexInserter( std::ostream &_stream ): m_stream(_stream)
             {
-                m_stream << std::ios::hex << std::ios::uppercase;
+                m_stream << std::hex << std::uppercase;
             }
-            bool operator()( unsigned char _Val )
+            bool operator()( typename _T::value_type _Val )
             {
-                m_stream << static_cast<int>(_Val) << ' ';
+                m_stream << ( static_cast<int>(_Val) ) << ' ';
                 return true;
             }
         private:
@@ -71,29 +72,26 @@ namespace PROOFAgent
                 std::string strSocketInfo;
                 MiscCommon::INet::socket2string( _socket, &strSocketInfo );
                 std::string strSocketPeerInfo;
-
                 MiscCommon::INet::peer2string( _socket, &strSocketPeerInfo );
                 
                 std::stringstream ss;
                 ss
                 << ( _received ? "RECEIVED " : "FORWARDED " )
                 << "(" << _buf.size() << " bytes): "
-                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received ? strSocketInfo : strSocketPeerInfo );
-
+                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received? strSocketInfo : strSocketPeerInfo );
                 if ( !_buf.empty() )
                 {
                     ss
                     << "\n"
-                    << "--- STR ---"
+                    << "--- STR ---" // Printing string representation of the frame
                     << "\n" << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ), _buf.size() ) << "\n"
                     << "--- HEX ---";
                     
-                    ss << "\n";
-                    _SHexInserter hex_ins( ss );
+                    ss << "\n"; // Printing hexadecimal representation of the frame
+                    _SHexInserter<MiscCommon::BYTEVector_t> hex_ins( ss );
                     for_each( _buf.begin(), _buf.end(), hex_ins );
                     ss << "\n";
                 }
-
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
 
