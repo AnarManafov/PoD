@@ -70,8 +70,9 @@ fi
 # sleep - in order to keep a job slot
 #sleep 1200 # 1200 seconds
 
-# Killing all xrootd in anyway (TODO: must be removed)
+# Killing all xrootd in anyway (TODO: must be removed, needs an elegant solution)
 pkill -9 xrootd
+pkill -9 proofserv
 
 # Removing local proof directory
 # assuming that proof directory is located in the user's home
