@@ -29,10 +29,17 @@ stop()
 {
     echo "Stoping..."
     pkill -9 xrootd
-    
+   #pkill -9 proofserv
+
     ./proofagent -d -i server -p /tmp/ --stop
     
     return 0
+}
+
+status()
+{
+    echo `ps -A | grep xrootd`
+    ./proofagent -d -i server -p /tmp/ --status
 }
 
 case "$1" in
@@ -43,6 +50,9 @@ case "$1" in
     stop)
 	stop
 	RETVAL=$?
+	;;
+    status)
+	status
 	;;
 esac
 
