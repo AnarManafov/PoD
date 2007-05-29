@@ -33,10 +33,13 @@ using namespace std;
                "will activate the detected escape button (if any).")
 
 
-CMainDlg::CMainDlg(QDialog *parent)
-        : QDialog(parent)
+CMainDlg::CMainDlg(QDialog *_Parent)
+        : QDialog(_Parent)
 {
-    ui.setupUi( this );
+    m_Timer = new QTimer(this);
+    connect( m_Timer, SIGNAL(timeout()), this, SLOT(update()) );
+
+    m_ui.setupUi( this );
     // Show status on start-up
     on_btnStatusServer_clicked();
 }
@@ -48,14 +51,14 @@ void CMainDlg::on_btnStatusServer_clicked()
     const pid_t pidPA = si.IsPROOFAgentRunning();
 
     const QColor c = ( !pidXrootD || !pidPA ) ? QColor(255, 0, 0) : QColor(0, 0, 255);
-    ui.edtServerInfo->setTextColor( c );
+    m_ui.edtServerInfo->setTextColor( c );
 
     stringstream ss;
     ss
     << si.GetXROOTDInfo() << "\n"
     << si.GetPAInfo() << "\n";
 
-    ui.edtServerInfo->setText( QString(ss.str().c_str()) );
+    m_ui.edtServerInfo->setText( QString(ss.str().c_str()) );
 }
 
 void CMainDlg::on_btnStartServer_clicked()
@@ -105,9 +108,29 @@ void CMainDlg::on_btnBrowsePIDDir_clicked()
 {
     QString directory = QFileDialog::getExistingDirectory(this,
                         tr("Select pid directory of PROOFAgent"),
-                        ui.edtPIDDir->text(),
+                        m_ui.edtPIDDir->text(),
                         QFileDialog::DontResolveSymlinks
                         | QFileDialog::ShowDirsOnly);
     if (!directory.isEmpty())
-        ui.edtPIDDir->setText(directory);
+        m_ui.edtPIDDir->setText(directory);
+}
+
+void CMainDlg::update()
+{
+    // Read proof.conf and update Listbox
+}
+
+void CMainDlg::on_btnStartClient_clicked( bool _Checked )
+{
+    if ( _Checked )
+    {
+        // Start timer and submit gLite jobs
+        m_Timer->start(1000);
+    }
+    else
+    {
+        // Stop timer
+        m_Timer->stop();
+    }
+
 }
