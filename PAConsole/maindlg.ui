@@ -9,9 +9,66 @@
     <height>453</height>
    </rect>
   </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>5</hsizetype>
+    <vsizetype>5</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle" >
    <string>PROOFAgent Management Console</string>
   </property>
+  <widget class="QGroupBox" name="groupBox_2" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>240</y>
+     <width>381</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Client</string>
+   </property>
+   <widget class="QLabel" name="label_2" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>108</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>List of the Clients:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnStartClient" >
+    <property name="geometry" >
+     <rect>
+      <x>300</x>
+      <y>50</y>
+      <width>75</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Start</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="lstClientsList" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>281</width>
+      <height>141</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QGroupBox" name="groupBox" >
    <property name="geometry" >
     <rect>
@@ -127,54 +184,11 @@
       <height>25</height>
      </rect>
     </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_2" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>381</width>
-     <height>201</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Client</string>
-   </property>
-   <widget class="QLabel" name="label_2" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>108</width>
-      <height>27</height>
-     </rect>
-    </property>
     <property name="text" >
-     <string>List of the Clients:</string>
+     <string>/tmp/</string>
     </property>
-   </widget>
-   <widget class="QPushButton" name="btnStartClient" >
-    <property name="geometry" >
-     <rect>
-      <x>300</x>
-      <y>50</y>
-      <width>75</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Start</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="lstClientsList" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>281</width>
-      <height>141</height>
-     </rect>
+    <property name="readOnly" >
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
@@ -186,6 +200,8 @@
   <tabstop>btnStopServer</tabstop>
   <tabstop>btnStatusServer</tabstop>
   <tabstop>edtServerInfo</tabstop>
+  <tabstop>btnBrowsePIDDir</tabstop>
+  <tabstop>edtPIDDir</tabstop>
   <tabstop>btnStartClient</tabstop>
   <tabstop>lstClientsList</tabstop>
  </tabstops>

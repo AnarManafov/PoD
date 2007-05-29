@@ -27,6 +27,11 @@ class CMainDlg : public QDialog
 
     private slots:
         void on_btnStatusServer_clicked();
+        void on_btnStartServer_clicked();
+        void on_btnStopServer_clicked();
+        void on_btnBrowsePIDDir_clicked();
+        
+
 
     private:
         Ui::MainDlg ui;

@@ -49,3 +49,20 @@ void CMainDlg::on_btnStatusServer_clicked()
 
     ui.edtServerInfo->setText( QString(ss.str().c_str()) );
 }
+
+void CMainDlg::on_btnStartServer_clicked()
+{}
+
+void CMainDlg::on_btnStopServer_clicked()
+{}
+
+void CMainDlg::on_btnBrowsePIDDir_clicked()
+{
+    QString directory = QFileDialog::getExistingDirectory(this,
+                        tr("Select pid directory of PROOFAgent"),
+                        ui.edtPIDDir->text(),
+                        QFileDialog::DontResolveSymlinks
+                        | QFileDialog::ShowDirsOnly);
+    if (!directory.isEmpty())
+        ui.edtPIDDir->setText(directory);
+}
