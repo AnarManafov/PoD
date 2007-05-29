@@ -27,14 +27,14 @@ class CServerInfo
         {}
 
     public:
-        pid_t IsXROOTDRunning();
-        pid_t IsPROOFAgentRunning();
-        std::string GetXROOTDInfo();
-        std::string GetPAInfo();
+        pid_t IsXROOTDRunning() const;
+        pid_t IsPROOFAgentRunning() const;
+        std::string GetXROOTDInfo() const;
+        std::string GetPAInfo() const;
 
     private:
-        pid_t IsRunning( const std::string &_Srv );
-        void GetPROOFAgentVersion( std::string *_Ver );
+        pid_t IsRunning( const std::string &_Srv ) const;
+        void GetPROOFAgentVersion( std::string *_Ver ) const;
 };
 
 #endif /*SERVERINFO_H_*/

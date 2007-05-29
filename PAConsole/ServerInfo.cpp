@@ -31,7 +31,7 @@ struct SFindName: public binary_function< CProcList::ProcContainer_t::value_type
     }
 };
 
-pid_t CServerInfo::IsRunning( const string &_Srv )
+pid_t CServerInfo::IsRunning( const string &_Srv ) const
 {
     CProcList::ProcContainer_t pids;
     CProcList::GetProcList( &pids );
@@ -40,17 +40,17 @@ pid_t CServerInfo::IsRunning( const string &_Srv )
     return ( pids.end() != iter ? *iter : 0 );
 }
 
-pid_t CServerInfo::IsXROOTDRunning()
+pid_t CServerInfo::IsXROOTDRunning() const
 {
     return IsRunning( "xrootd" );
 }
 
-pid_t CServerInfo::IsPROOFAgentRunning()
+pid_t CServerInfo::IsPROOFAgentRunning() const
 {
     return IsRunning( "proofagent" );
 }
 
-string CServerInfo::GetXROOTDInfo()
+string CServerInfo::GetXROOTDInfo() const
 {
     const pid_t pid = IsXROOTDRunning();
 
@@ -66,7 +66,7 @@ string CServerInfo::GetXROOTDInfo()
     return ss.str();
 }
 
-string CServerInfo::GetPAInfo()
+string CServerInfo::GetPAInfo() const
 {
     const pid_t pid = IsPROOFAgentRunning();
 
@@ -87,7 +87,7 @@ string CServerInfo::GetPAInfo()
     return ss.str();
 }
 
-void CServerInfo::GetPROOFAgentVersion( std::string *_Ver )
+void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
 {
     if ( !_Ver )
         return ;

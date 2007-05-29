@@ -25,6 +25,14 @@
 
 using namespace std;
 
+
+#define RUNNING_MESSAGE \
+    Dialog::tr("<p>Message boxes have a caption, a text, " \
+               "and any number of buttons, each with standard or custom texts." \
+               "<p>Click a button to close the message box. Pressing the Esc button " \
+               "will activate the detected escape button (if any).")
+
+
 CMainDlg::CMainDlg(QDialog *parent)
         : QDialog(parent)
 {
@@ -51,10 +59,47 @@ void CMainDlg::on_btnStatusServer_clicked()
 }
 
 void CMainDlg::on_btnStartServer_clicked()
-{}
+{
+    CServerInfo si;
+    pid_t pidXrootD = si.IsXROOTDRunning();
+    pid_t pidPA = si.IsPROOFAgentRunning();
+    if ( pidXrootD || pidPA )
+    {
+        QMessageBox::information(this, tr("PROOFAgent Console"), tr("<p>One or more components of the Server are running!<p> Please stop the Server first.") );
+        return ;
+    }
+
+    system("./Server_gLitePROOF.sh start");
+    pidXrootD = si.IsXROOTDRunning();
+    pidPA = si.IsPROOFAgentRunning();
+    if ( !pidXrootD || !pidPA )
+    {
+        QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while starting the Server!") );
+        return ;
+    }
+
+    on_btnStatusServer_clicked();
+}
 
 void CMainDlg::on_btnStopServer_clicked()
-{}
+{
+    CServerInfo si;
+    pid_t pidXrootD = si.IsXROOTDRunning();
+    pid_t pidPA = si.IsPROOFAgentRunning();
+    if ( !pidXrootD && !pidPA )
+        return ;
+
+    system("./Server_gLitePROOF.sh stop");
+    pidXrootD = si.IsXROOTDRunning();
+    pidPA = si.IsPROOFAgentRunning();
+    if ( pidXrootD || pidPA )
+    {
+        QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while stopping the Server!") );
+        return ;
+    }
+
+    on_btnStatusServer_clicked();
+}
 
 void CMainDlg::on_btnBrowsePIDDir_clicked()
 {
