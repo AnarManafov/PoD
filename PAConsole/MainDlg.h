@@ -25,6 +25,9 @@ class CMainDlg : public QDialog
     public:
         CMainDlg( QDialog *parent = 0 );
 
+    private slots:
+        void on_btnStartServer_clicked();
+
     private:
         Ui::MainDlg ui;
 };

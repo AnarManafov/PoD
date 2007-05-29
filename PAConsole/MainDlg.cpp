@@ -14,6 +14,7 @@
 *************************************************************************/ 
 // Qt
 #include <QtGui>
+#include <QtUiTools/QUiLoader>
 
 // Our
 #include "MainDlg.h"
@@ -25,3 +26,8 @@ CMainDlg::CMainDlg(QDialog *parent)
     ui.setupUi( this );
 }
 
+void CMainDlg::on_btnStartServer_clicked()
+{
+    // ui.edtServerInfo->setTextColor(QColor(255, 0, 0));
+    ui.edtServerInfo->setText(QString("Hello Test!"));
+}
