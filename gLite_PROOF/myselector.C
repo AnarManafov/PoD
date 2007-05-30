@@ -86,12 +86,18 @@ void myselector::Terminate()
    // The Terminate() function is the last function to be called during
    // a query. It always runs on the client, it can be used to present
    // the results graphically or save the results to file.#
+   cout << "DEBUG: myselector::Terminate()" << endl;
    TIter next(fOutput);
    TObject *obj;
-   while(obj=next())
+   while( (obj=next()) )
    {
+       cout << "DEBUG: myselector::Terminate(): obj loop" << endl;
        obj->Print();
-       obj->Draw();
+	const string sCName(obj->ClassName());
+	cout << "DEBUG: myselector::Terminate(): class: " << sCName << endl;
+	if(sCName == "TH1F")
+	       obj->Draw();
    }
+   cout << "DEBUG: end of myselector::Terminate()" << endl;
 }
 

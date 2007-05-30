@@ -12,20 +12,21 @@
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
- 
+
+
 {
   // Creating a TDset of files to analyze
-  //TDSet *set;
-  //set = new TDSet("TTree","h42");
+  TDSet *set;
+  set = new TDSet("TTree","h42");
   
   // Files to analyze 
   set->Add("root://depc218.gsi.de//tmp/dstarmb.root");
-  //  set->Add("root://depc218.gsi.de//tmp/dstarmb2.root");
-  // set->Add("root://depc218.gsi.de//tmp/dstarmb3.root");
-  //set->Add("root://depc218.gsi.de//tmp/dstarmb4.root");
+ // set->Add("root://depc218.gsi.de//tmp/dstarmb2.root");
+//  set->Add("root://depc218.gsi.de//tmp/dstarmb3.root");
+//  set->Add("root://depc218.gsi.de//tmp/dstarmb4.root");
   
   // connecting to local PROOF server
-  TProof::Open("localhost");
+  proof = TProof::Open("localhost");
   
   // Processing our test analysis
   set->Process("myselector.C");
