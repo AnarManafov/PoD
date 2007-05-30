@@ -11,4 +11,6 @@ SOURCES	+= 	MainDlg.cpp \
 					 	
 FORMS		= 		maindlg.ui
 
+QT           += xml
+
 					

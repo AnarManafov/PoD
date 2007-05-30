@@ -15,23 +15,20 @@
 // Qt
 #include <QtGui>
 #include <QtUiTools/QUiLoader>
+#include <QtXml/QDomDocument>
 
 // STD
 #include <sstream>
+#include <fstream>
 
 // Our
 #include "MainDlg.h"
 #include "ServerInfo.h"
+#include "SysHelper.h"
+#include "CustomIterator.h"
 
 using namespace std;
-
-
-#define RUNNING_MESSAGE \
-    Dialog::tr("<p>Message boxes have a caption, a text, " \
-               "and any number of buttons, each with standard or custom texts." \
-               "<p>Click a button to close the message box. Pressing the Esc button " \
-               "will activate the detected escape button (if any).")
-
+using namespace MiscCommon;
 
 CMainDlg::CMainDlg(QDialog *_Parent)
         : QDialog(_Parent)
@@ -72,7 +69,8 @@ void CMainDlg::on_btnStartServer_clicked()
         return ;
     }
 
-    system("./Server_gLitePROOF.sh start");
+    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" start");
+    system( cmd.c_str() );
     pidXrootD = si.IsXROOTDRunning();
     pidPA = si.IsPROOFAgentRunning();
     if ( !pidXrootD || !pidPA )
@@ -92,7 +90,8 @@ void CMainDlg::on_btnStopServer_clicked()
     if ( !pidXrootD && !pidPA )
         return ;
 
-    system("./Server_gLitePROOF.sh stop");
+    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
+    system( cmd.c_str() );
     pidXrootD = si.IsXROOTDRunning();
     pidPA = si.IsPROOFAgentRunning();
     if ( pidXrootD || pidPA )
@@ -118,14 +117,36 @@ void CMainDlg::on_btnBrowsePIDDir_clicked()
 void CMainDlg::update()
 {
     // Read proof.conf and update Listbox
+    ifstream f( m_CfgFileName.c_str() );
+
+    StringVector_t vec;
+
+    copy(custom_istream_iterator<string>(f),
+         custom_istream_iterator<string>(),
+         back_inserter(vec));
+
+    m_ui.lstClientsList->clear();
+    StringVector_t::const_iterator iter = vec.begin();
+    StringVector_t::const_iterator iter_end = vec.end();
+    for ( ; iter != iter_end; ++iter )
+    {
+        m_ui.lstClientsList->addItem( iter->c_str() );
+    }
 }
 
 void CMainDlg::on_btnStartClient_clicked( bool _Checked )
 {
     if ( _Checked )
     {
+        GetPROOFCfg( &m_CfgFileName );
+        smart_homedir_append( &m_CfgFileName );
+        if ( m_CfgFileName.empty() )
+        {
+            QMessageBox::critical(this, tr("PROOFAgent Console"), tr("An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml") );
+            return ;
+        }
         // Start timer and submit gLite jobs
-        m_Timer->start(1000);
+        m_Timer->start(3000);
     }
     else
     {
@@ -133,4 +154,47 @@ void CMainDlg::on_btnStartClient_clicked( bool _Checked )
         m_Timer->stop();
     }
 
+}
+
+/// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)
+// TODO: Revise method and remove hard-coded reference to proofagent.cfg.xml
+void CMainDlg::GetPROOFCfg( string *_FileName )
+{
+    if ( !_FileName )
+        return ;
+
+    QFile file("./proofagent.cfg.xml");
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, tr("PROOFAgent Console"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg("./proofagent.cfg.xml")
+                             .arg(file.errorString()));
+        return ;
+    }
+
+    QDomDocument domDocument;
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+    if ( !domDocument.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
+    {
+        QMessageBox::information(window(), tr("PROOFAgent Console"),
+                                 tr("Parse error at line %1, column %2:\n%3")
+                                 .arg(errorLine)
+                                 .arg(errorColumn)
+                                 .arg(errorStr));
+        return ;
+    }
+    QDomNodeList server = domDocument.elementsByTagName("server");
+    QDomNode node = server.at(0).namedItem("config");
+    if ( node.isNull())
+        return ; // TODO: Msg me!
+
+    QDomNode cfg = node.attributes().namedItem("proof_cfg_path");
+    if ( cfg.isNull())
+        return ; // TODO: Msg me!
+
+    *_FileName = cfg.nodeValue().toAscii().data();
 }

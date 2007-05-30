@@ -52,8 +52,12 @@ class CMainDlg:
         void update();
 
     private:
+        void GetPROOFCfg( std::string *_FileName );
+
+    private:
         Ui::MainDlg m_ui;
         QTimer *m_Timer;
+        std::string m_CfgFileName;
 };
 
 #endif /*CMAINDLG_H_*/
