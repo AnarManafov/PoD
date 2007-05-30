@@ -14,13 +14,16 @@
 #
 #        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 #*************************************************************************/
+#
+# Usage: ./Server_gLitePROOF.sh <pid_dir> start|stop|status 
+#
 
 start() 
 {
     echo "Starting..."
-    xrootd -c xpd.cf -b -l /tmp/xpd.log stop
+    xrootd -c xpd.cf -b -l "$1/xpd.log" stop
     
-    ./proofagent -d -i server -p /tmp/ -c proofagent.cfg.xml --start
+    ./proofagent -d -i server -p "$1/" -c proofagent.cfg.xml --start
     
     return 0
 }
@@ -31,7 +34,7 @@ stop()
     pkill -9 xrootd
    #pkill -9 proofserv
 
-    ./proofagent -d -i server -p /tmp/ --stop
+    ./proofagent -d -i server -p "$1/" --stop
     
     return 0
 }
@@ -39,20 +42,33 @@ stop()
 status()
 {
     echo `ps -A | grep xrootd`
-    ./proofagent -d -i server -p /tmp/ --status
+    ./proofagent -d -i server -p "$1/" --status
 }
 
-case "$1" in
+# checking the number of parameters
+if [ $# -ne 2 ]; then
+    echo "Usage: ./Server_gLitePROOF.sh <pid_dir> start|stop|status"
+    exit 1
+fi
+
+# pid_dir must be a valid dir
+if [ ! -e "$1" ]; then
+    echo "error: pid director: \"$1\" doesn't exist!"
+    exit 1
+fi
+
+# star|stop|status
+case "$2" in
     start)	
-	start
+	start $1
 	RETVAL=$?
 	;;
     stop)
-	stop
+	stop $1
 	RETVAL=$?
 	;;
     status)
-	status
+	status $1
 	;;
 esac
 
