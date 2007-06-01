@@ -42,23 +42,6 @@
                 server_addr="depc218.gsi.de"
                 local_proofd_port="1093"/>
         </client>
-	  
-        
-        <client2>            
-                <config
-                logfile_dir="/tmp/"
-                logfile_overwrite="yes"
-                log_level="0"
-                agent_mode="Client"
-                timeout="0"
-                last_execute_cmd=""
-                proof_cfg_path="~/proof.conf.client2"/>
-            
-                <agent_client
-                server_port="51510"
-                server_addr="127.0.0.1"
-                local_proofd_port="1093"/>        
-        </client2>
         
 	</instances>		
 </proofagent_config>
