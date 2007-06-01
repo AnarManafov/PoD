@@ -67,7 +67,7 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE _Start( bool _ClientMode );
             void SpawnServerMode();
             void SpawnClientMode();
-            void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*weather package received or submitted*/ )
+            void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*whether package received or submitted*/ )
             {
                 std::string strSocketInfo;
                 MiscCommon::INet::socket2string( _socket, &strSocketInfo );
