@@ -105,6 +105,12 @@ void CMainDlg::on_btnStopServer_clicked()
         return ;
     }
 
+    // Stoping Clients as well
+    if ( m_ui.btnSubmitClient->isChecked() )
+        m_ui.btnSubmitClient->click();
+    // cleaning Clients list box
+    m_ui.lstClientsList->clear();
+
     on_btnStatusServer_clicked();
 }
 
@@ -165,7 +171,6 @@ void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
         // Stop timer
         m_Timer->stop();
     }
-
 }
 
 /// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)
