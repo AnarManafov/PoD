@@ -1,7 +1,11 @@
 TEMPLATE	= app
 LANGUAGE = C++
 
-INCLUDEPATH = ./Include
+INCLUDEPATH = ./Include \
+						${GAW_LOCATION}/include/glite-api-wrapper \
+						${GLITE_LOCATION}/include \
+						${GLITE_LOCATION}/externals/include \
+						${LCG_LOCATION}/include/lfc 
 
 HEADERS	+= 	MainDlg.h \
 						JobSubmitter.h
@@ -13,5 +17,7 @@ SOURCES	+= 	MainDlg.cpp \
 FORMS		= 		maindlg.ui
 
 QT           += xml
+
+unix:LIBS += -L${GAW_LOCATION}/lib -lglite-api-wrapper
 
 					

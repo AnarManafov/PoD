@@ -18,15 +18,23 @@
 // Qt
 #include <QThread>
 
+// GAW
+#include "gLiteAPIWrapper.h"
+
 class CJobSubmitter: public QThread
 {
         Q_OBJECT
+
+        typedef glite_api_wrapper::CGLiteAPIWrapper GAW;
 
     public:
         CJobSubmitter( QObject *parent ):
                 QThread(parent),
                 m_JobsCount(0)
-        {}
+        {
+            GAW::Instance().Init();
+        }
+
         ~CJobSubmitter()
         {
             if ( isRunning() )
@@ -48,8 +56,10 @@ class CJobSubmitter: public QThread
             emit changeProgress( 0 );
             for ( size_t i = 0; i < m_JobsCount; ++i )
             {
+                // Submit a Grid Job
+                // TODO: take jdl from GUI
+                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", "" ); // TODO: check error
                 emit changeProgress( i * 100 / m_JobsCount );
-                sleep(3);
             }
             emit changeProgress( 100 );
         }
