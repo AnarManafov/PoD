@@ -30,8 +30,8 @@
 using namespace std;
 using namespace MiscCommon;
 
-CMainDlg::CMainDlg(QDialog *_Parent)
-        : QDialog(_Parent)
+CMainDlg::CMainDlg(QDialog *_Parent):
+        QDialog(_Parent)
 {
     m_Timer = new QTimer(this);
     connect( m_Timer, SIGNAL(timeout()), this, SLOT(update()) );
@@ -39,6 +39,11 @@ CMainDlg::CMainDlg(QDialog *_Parent)
     m_ui.setupUi( this );
     // Show status on start-up
     on_btnStatusServer_clicked();
+
+    m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
+
+    connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
+
 }
 
 void CMainDlg::on_btnStatusServer_clicked()
@@ -134,7 +139,7 @@ void CMainDlg::update()
     }
 }
 
-void CMainDlg::on_btnStartClient_clicked( bool _Checked )
+void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
 {
     if ( _Checked )
     {
@@ -147,9 +152,16 @@ void CMainDlg::on_btnStartClient_clicked( bool _Checked )
         }
         // Start timer and submit gLite jobs
         m_Timer->start(3000);
+        m_JobSubmitter->set_jobs_count( m_ui.spinSubmitJobs->value() );
+        m_JobSubmitter->start();
     }
     else
     {
+        // Job submitter's thread
+        if ( m_JobSubmitter->isRunning() )
+            m_JobSubmitter->terminate();
+        setProgress( 0 );
+
         // Stop timer
         m_Timer->stop();
     }

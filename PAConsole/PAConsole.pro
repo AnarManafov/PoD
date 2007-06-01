@@ -3,7 +3,8 @@ LANGUAGE = C++
 
 INCLUDEPATH = ./Include
 
-HEADERS	+= 	MainDlg.h
+HEADERS	+= 	MainDlg.h \
+						JobSubmitter.h
 
 SOURCES	+= 	MainDlg.cpp \
 						ServerInfo.cpp \

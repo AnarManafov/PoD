@@ -23,9 +23,11 @@
 
 // OUR
 #include "MiscUtils.h"
+#include "JobSubmitter.h"
 
-class CMainDlg:
-            public QDialog
+typedef std::auto_ptr<CJobSubmitter> JobSubmitterPtr_t;
+
+class CMainDlg: public QDialog
 {
         Q_OBJECT
 
@@ -47,9 +49,14 @@ class CMainDlg:
         void on_btnStopServer_clicked();
         void on_btnBrowsePIDDir_clicked();
         // Client's slots
-        void on_btnStartClient_clicked( bool Checked = false );
+        void on_btnSubmitClient_clicked( bool Checked = false );
         // Timer
         void update();
+        // Progress
+        void setProgress( int _Val )
+        {
+            m_ui.progressSubmittedJobs->setValue( _Val );
+        }
 
     private:
         void GetPROOFCfg( std::string *_FileName );
@@ -58,6 +65,8 @@ class CMainDlg:
         Ui::MainDlg m_ui;
         QTimer *m_Timer;
         std::string m_CfgFileName;
+        JobSubmitterPtr_t m_JobSubmitter;
 };
+
 
 #endif /*CMAINDLG_H_*/

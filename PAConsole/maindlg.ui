@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>402</width>
-    <height>453</height>
+    <height>512</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -45,7 +45,7 @@
      <string>Server's status:</string>
     </property>
    </widget>
-   <widget class="QWidget" name="" >
+   <widget class="QWidget" name="layoutWidget" >
     <property name="geometry" >
      <rect>
       <x>294</x>
@@ -84,35 +84,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTextEdit" name="edtServerInfo" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>271</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="acceptDrops" >
-     <bool>false</bool>
-    </property>
-    <property name="readOnly" >
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3" >
-    <property name="geometry" >
-     <rect>
-      <x>14</x>
-      <y>184</y>
-      <width>107</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>PA's pid directory:</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btnBrowsePIDDir" >
     <property name="geometry" >
      <rect>
@@ -142,6 +113,35 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QTextEdit" name="edtServerInfo" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>271</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="acceptDrops" >
+     <bool>false</bool>
+    </property>
+    <property name="readOnly" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3" >
+    <property name="geometry" >
+     <rect>
+      <x>12</x>
+      <y>184</y>
+      <width>107</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>PA's pid directory:</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2" >
    <property name="geometry" >
@@ -149,7 +149,7 @@
      <x>10</x>
      <y>240</y>
      <width>381</width>
-     <height>201</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="title" >
@@ -159,7 +159,7 @@
     <property name="geometry" >
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>77</y>
       <width>108</width>
       <height>27</height>
      </rect>
@@ -172,26 +172,77 @@
     <property name="geometry" >
      <rect>
       <x>10</x>
-      <y>50</y>
-      <width>281</width>
+      <y>107</y>
+      <width>361</width>
       <height>141</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnStartClient" >
+   <widget class="Line" name="line" >
     <property name="geometry" >
      <rect>
-      <x>300</x>
-      <y>50</y>
+      <x>10</x>
+      <y>64</y>
+      <width>361</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnSubmitClient" >
+    <property name="geometry" >
+     <rect>
+      <x>11</x>
+      <y>25</y>
       <width>75</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text" >
-     <string>Start</string>
+     <string>Submit</string>
     </property>
     <property name="checkable" >
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressSubmittedJobs" >
+    <property name="geometry" >
+     <rect>
+      <x>190</x>
+      <y>27</y>
+      <width>181</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value" >
+     <number>0</number>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="format" >
+     <string>%p% submitted</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="spinSubmitJobs" >
+    <property name="geometry" >
+     <rect>
+      <x>91</x>
+      <y>26</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="suffix" >
+     <string> job(s)</string>
+    </property>
+    <property name="minimum" >
+     <number>1</number>
+    </property>
+    <property name="value" >
+     <number>1</number>
     </property>
    </widget>
   </widget>
@@ -205,7 +256,8 @@
   <tabstop>edtServerInfo</tabstop>
   <tabstop>btnBrowsePIDDir</tabstop>
   <tabstop>edtPIDDir</tabstop>
-  <tabstop>btnStartClient</tabstop>
+  <tabstop>btnSubmitClient</tabstop>
+  <tabstop>spinSubmitJobs</tabstop>
   <tabstop>lstClientsList</tabstop>
  </tabstops>
  <resources/>
