@@ -101,7 +101,6 @@ private:
                     // Printing string representation of the frame
                     _SPrintableInserter<MiscCommon::BYTEVector_t> pr_ins( ss );
                     for_each( _buf.begin(), _buf.end(), pr_ins );
-                    //<< "\n" << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ), _buf.size() ) << "\n"
 
                     ss << "\n\n";
                     // Printing hexadecimal representation of the frame
