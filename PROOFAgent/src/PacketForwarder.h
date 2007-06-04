@@ -78,7 +78,7 @@ private:
             MiscCommon::ERRORCODE Start( bool _ClientMode = false );
 
         protected:
-            void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
+            void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket, bool _BreakOnDisconnect );
 
         private:
             MiscCommon::ERRORCODE _Start( bool _ClientMode );
@@ -118,6 +118,7 @@ private:
             MiscCommon::Thread_PTR_t m_thrd_clnt;
             MiscCommon::Thread_PTR_t m_thrd_srv;
             MiscCommon::Thread_PTR_t m_thrd_serversocket;
+            boost::mutex m_mutex;
     };
 
 }

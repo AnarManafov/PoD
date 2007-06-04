@@ -33,7 +33,7 @@ const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
 
-void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
+void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket, bool _BreakOnDisconnect )
 {
     BYTEVector_t buf( g_BUF_SIZE );
     while ( true )
@@ -49,13 +49,14 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         {
             if ( _SrvSocket->is_read_ready( 10 ) )
             {
-
+                 boost::mutex::scoped_lock lock(m_mutex);
                 *_SrvSocket >> &buf;
                 if ( !_SrvSocket->is_valid() )
                 {
                     InfoLog( erOK, "DISCONNECT has been detected." );
                     // Closing client when server disconnects and closing server when xrootd redirector disconnects
-                    graceful_quit = true; // TODO: Do we need here to set graceful_quit to true?
+                    if ( _BreakOnDisconnect )
+                        graceful_quit = true; // TODO: Needs to be redesigned
                     return ;
                 }
 
@@ -75,12 +76,12 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     }
 }
 
-ERRORCODE CPacketForwarder::Start( bool _Join )
+ERRORCODE CPacketForwarder::Start( bool _ClientMode )
 {
     // executing PF threads
     m_thrd_serversocket = Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::_Start, this, _Join ) ) );
-    if ( _Join )  //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
+                                            boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
+    if ( _ClientMode )  //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
         m_thrd_serversocket->join();
 
     return erOK;
@@ -121,12 +122,12 @@ void CPacketForwarder::SpawnClientMode()
     m_ServerSocket = proof_client.GetSocket().detach();
 
     m_ServerSocket.set_nonblock();
-
+        
     // executing PF threads
     m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket, true ) ) );
     m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket, true ) ) );
 
     m_thrd_clnt->join();
     m_thrd_srv->join();
@@ -154,9 +155,9 @@ void CPacketForwarder::SpawnServerMode()
 
             // executing PF threads
             m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket, false ) ) );
             m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket, false ) ) );
             break;
         }
     }
