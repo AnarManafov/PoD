@@ -59,8 +59,10 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
                     return ;
                 }
 
-                WriteBuffer( buf, *_CltSocket );
-                ReportPackage( *_SrvSocket, buf );
+                *_CltSocket << buf;
+
+                ReportPackage( *_SrvSocket, *_CltSocket, buf );
+
                 buf.clear();
                 buf.resize( g_BUF_SIZE );
             }
@@ -176,11 +178,4 @@ ERRORCODE CPacketForwarder::_Start( bool _ClientMode )
         return erError;
     }
     return erOK;
-}
-
-void CPacketForwarder::WriteBuffer( BYTEVector_t &_Buf, smart_socket &_socket ) throw ( exception )
-{
-    //  boost::mutex::scoped_lock lock(m_Buf_mutex);
-    _socket << _Buf;
-    ReportPackage( _socket, _Buf, false );
 }

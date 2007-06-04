@@ -15,6 +15,9 @@
 #ifndef PROOFAGENTPACKETFORWARDER_H
 #define PROOFAGENTPACKETFORWARDER_H
 
+// STD
+#include <iomanip>
+
 // Our
 #include "INet.h"
 #include "LogImp.h"
@@ -24,20 +27,36 @@
 
 namespace PROOFAgent
 {
-    template< class _T >
+    template < class _T >
     struct _SHexInserter
     {
-            _SHexInserter( std::ostream &_stream ): m_stream(_stream)
-            {
-                m_stream << std::hex << std::uppercase;
-            }
-            bool operator()( typename _T::value_type _Val )
-            {
-                m_stream << ( static_cast<int>(_Val) ) << ' ';
-                return true;
-            }
-        private:
-            std::ostream &m_stream;
+        _SHexInserter( std::ostream &_stream ): m_stream(_stream)
+        {
+            m_stream << std::hex << std::uppercase;
+        }
+        bool operator()( typename _T::value_type _Val )
+        {
+            m_stream << std::setw(2) << std::setfill('0') << ( static_cast<unsigned int>(_Val) ) << ' ';
+            return true;
+        }
+private:
+        std::ostream &m_stream;
+    };
+
+    template < class _T >
+    struct _SPrintableInserter
+    {
+        _SPrintableInserter( std::ostream &_stream ): m_stream(_stream)
+        {
+            m_stream << std::hex << std::uppercase;
+        }
+        bool operator()( typename _T::value_type _Val )
+        {
+            m_stream << (isprint(_Val) ? static_cast<char>(_Val) : '.' );
+            return true;
+        }
+private:
+        std::ostream &m_stream;
     };
 
     class CPacketForwarder:
@@ -55,8 +74,6 @@ namespace PROOFAgent
 
             REGISTER_LOG_MODULE( PacketForwarder );
 
-            void WriteBuffer( MiscCommon::BYTEVector_t &_Buf, MiscCommon::INet::smart_socket &_socket ) throw ( std::exception );
-
         public:
             MiscCommon::ERRORCODE Start( bool _ClientMode = false );
 
@@ -67,27 +84,27 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE _Start( bool _ClientMode );
             void SpawnServerMode();
             void SpawnClientMode();
-            void ReportPackage( MiscCommon::INet::Socket_t _socket, MiscCommon::BYTEVector_t &_buf, bool _received = true /*whether package received or submitted*/ )
+            void ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2, MiscCommon::BYTEVector_t &_buf )
             {
-                std::string strSocketInfo;
-                MiscCommon::INet::socket2string( _socket, &strSocketInfo );
-                std::string strSocketPeerInfo;
-                MiscCommon::INet::peer2string( _socket, &strSocketPeerInfo );
-                
+                std::string strSocket1;
+                MiscCommon::INet::socket2string( _socket1, &strSocket1 );
+                std::string strSocket2;
+                MiscCommon::INet::socket2string( _socket2, &strSocket2 );
+
                 std::stringstream ss;
                 ss
-                << ( _received ? "RECEIVED " : "FORWARDED " )
-                << "(" << _buf.size() << " bytes): "
-                << ( _received ? strSocketPeerInfo : strSocketInfo ) << " |-> " << ( _received? strSocketInfo : strSocketPeerInfo );
+                << strSocket1 << " > " << strSocket2
+                << " (" << _buf.size() << " bytes): ";
                 if ( !_buf.empty() )
                 {
-                    ss
-                    << "\n"
-                    << "--- STR ---" // Printing string representation of the frame
-                    << "\n" << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ), _buf.size() ) << "\n"
-                    << "--- HEX ---";
-                    
-                    ss << "\n"; // Printing hexadecimal representation of the frame
+                    ss << "\n\n";
+                    // Printing string representation of the frame
+                    _SPrintableInserter<MiscCommon::BYTEVector_t> pr_ins( ss );
+                    for_each( _buf.begin(), _buf.end(), pr_ins );
+                    //<< "\n" << std::string( reinterpret_cast<char*>( &_buf[ 0 ] ), _buf.size() ) << "\n"
+
+                    ss << "\n\n";
+                    // Printing hexadecimal representation of the frame
                     _SHexInserter<MiscCommon::BYTEVector_t> hex_ins( ss );
                     for_each( _buf.begin(), _buf.end(), hex_ins );
                     ss << "\n";
