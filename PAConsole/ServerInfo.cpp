@@ -60,7 +60,7 @@ string CServerInfo::GetXROOTDInfo() const
 
     stringstream ss;
     ss
-    << "XROOD" << spid.str() << ": is "
+    << "XROOTD" << spid.str() << ": is "
     << (pid ? "running" : "not running");
 
     return ss.str();
