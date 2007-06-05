@@ -39,7 +39,7 @@ namespace PROOFAgent
             m_stream << std::setw(2) << std::setfill('0') << ( static_cast<unsigned int>(_Val) ) << ' ';
             return true;
         }
-private:
+      private:
         std::ostream &m_stream;
     };
 
@@ -84,6 +84,7 @@ private:
             MiscCommon::ERRORCODE _Start( bool _ClientMode );
             void SpawnServerMode();
             void SpawnClientMode();
+            bool ForwardBuf( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
             void ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2, MiscCommon::BYTEVector_t &_buf )
             {
                 std::string strSocket1;

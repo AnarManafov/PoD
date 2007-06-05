@@ -77,7 +77,7 @@ ERRORCODE CAgentServer::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentServer::ThreadWorker( const std::string &_PROOFCfg )
+void CAgentServer::ThreadWorker( const string &_PROOFCfg )
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
     CreatePROOFCfg( _PROOFCfg );

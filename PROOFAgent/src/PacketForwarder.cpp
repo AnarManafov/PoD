@@ -33,9 +33,28 @@ const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
 
+bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
+{ // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
+    if ( _Input->is_read_ready( 2 ) )
+    {
+        boost::mutex::scoped_lock lock(m_mutex);
+        BYTEVector_t buf( g_BUF_SIZE );
+
+        *_Input >> &buf;
+
+        // DISCONNECT has been detected
+        if ( !_Input->is_valid() )
+            return false;
+
+        *_Output << buf;
+
+        ReportPackage( *_Input, *_Output, buf );
+    }
+    return true;
+}
+
 void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket, bool _BreakOnDisconnect )
 {
-    BYTEVector_t buf( g_BUF_SIZE );
     while ( true )
     {
         // Checking whether signal has arrived
@@ -47,25 +66,13 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
 
         try
         {
-            if ( _SrvSocket->is_read_ready( 10 ) )
+            if ( !ForwardBuf( _SrvSocket, _CltSocket ) )
             {
-                 boost::mutex::scoped_lock lock(m_mutex);
-                *_SrvSocket >> &buf;
-                if ( !_SrvSocket->is_valid() )
-                {
-                    InfoLog( erOK, "DISCONNECT has been detected." );
-                    // Closing client when server disconnects and closing server when xrootd redirector disconnects
-                    if ( _BreakOnDisconnect )
-                        graceful_quit = true; // TODO: Needs to be redesigned
-                    return ;
-                }
-
-                *_CltSocket << buf;
-
-                ReportPackage( *_SrvSocket, *_CltSocket, buf );
-
-                buf.clear();
-                buf.resize( g_BUF_SIZE );
+                InfoLog( erOK, "DISCONNECT has been detected." );
+                // Closing client when server disconnects and closing server when xrootd redirector disconnects
+                if ( _BreakOnDisconnect )
+                    graceful_quit = true; // TODO: Needs to be redesigned
+                return ;
             }
         }
         catch ( exception & e )
@@ -122,7 +129,7 @@ void CPacketForwarder::SpawnClientMode()
     m_ServerSocket = proof_client.GetSocket().detach();
 
     m_ServerSocket.set_nonblock();
-        
+
     // executing PF threads
     m_thrd_clnt = Thread_PTR_t( new boost::thread(
                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket, true ) ) );
