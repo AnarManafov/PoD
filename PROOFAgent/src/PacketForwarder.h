@@ -47,9 +47,7 @@ namespace PROOFAgent
     struct _SPrintableInserter
     {
         _SPrintableInserter( std::ostream &_stream ): m_stream(_stream)
-        {
-            m_stream << std::hex << std::uppercase;
-        }
+        {}
         bool operator()( typename _T::value_type _Val )
         {
             m_stream << (isprint(_Val) ? static_cast<char>(_Val) : '.' );
