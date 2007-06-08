@@ -24,39 +24,10 @@
 #include "def.h"
 #include "MiscUtils.h"
 #include "BOOSTHelper.h"
+#include "HexView.h"
 
 namespace PROOFAgent
 {
-    template < class _T >
-    struct _SHexInserter
-    {
-        _SHexInserter( std::ostream &_stream ): m_stream(_stream)
-        {
-            m_stream << std::hex << std::uppercase;
-        }
-        bool operator()( typename _T::value_type _Val )
-        {
-            m_stream << std::setw(2) << std::setfill('0') << ( static_cast<unsigned int>(_Val) ) << ' ';
-            return true;
-        }
-      private:
-        std::ostream &m_stream;
-    };
-
-    template < class _T >
-    struct _SPrintableInserter
-    {
-        _SPrintableInserter( std::ostream &_stream ): m_stream(_stream)
-        {}
-        bool operator()( typename _T::value_type _Val )
-        {
-            m_stream << (isprint(_Val) ? static_cast<char>(_Val) : '.' );
-            return true;
-        }
-private:
-        std::ostream &m_stream;
-    };
-
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
                 MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
@@ -96,16 +67,10 @@ private:
                 << " (" << _buf.size() << " bytes): ";
                 if ( !_buf.empty() )
                 {
-                    ss << "\n\n";
-                    // Printing string representation of the frame
-                    _SPrintableInserter<MiscCommon::BYTEVector_t> pr_ins( ss );
-                    for_each( _buf.begin(), _buf.end(), pr_ins );
-
-                    ss << "\n\n";
-                    // Printing hexadecimal representation of the frame
-                    _SHexInserter<MiscCommon::BYTEVector_t> hex_ins( ss );
-                    for_each( _buf.begin(), _buf.end(), hex_ins );
-                    ss << "\n";
+                    ss
+                    << "\n"
+                    << MiscCommon::BYTEVectorHexView_t(_buf)
+                    << "\n";
                 }
                 DebugLog( MiscCommon::erOK, ss.str() );
             }
