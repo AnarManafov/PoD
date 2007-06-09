@@ -33,7 +33,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 
 // TODO: Do we need to move it to the class?
-const size_t g_TimeoutCheckSrvSocket = 1500;
+const size_t g_TimeoutCheckSrvSocket = 2000;
 const size_t g_TimeoutCheckPROOFCONF = 2500;
 
 CMainDlg::CMainDlg(QDialog *_Parent):
@@ -161,7 +161,7 @@ void CMainDlg::update()
 
 void CMainDlg::update_check_srv_socket()
 {
-    m_ui.btnStartServer->setEnabled( get_free_port(m_SrvPort, m_SrvPort) );
+    m_ui.btnStartServer->setEnabled( get_free_port(m_SrvPort) );
 }
 
 void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
