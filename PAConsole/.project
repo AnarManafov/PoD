@@ -55,7 +55,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.environment</key>
-					<value></value>
+					<value>GAW_LOCATION=/home/anar/GAW|</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.enabledIncrementalBuild</key>

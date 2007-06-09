@@ -40,6 +40,11 @@ class CMainDlg: public QDialog
                 m_Timer->stop();
                 delete m_Timer;
             }
+            if( m_TimerSrvSocket )
+            {
+            	m_TimerSrvSocket->stop();
+            	delete m_TimerSrvSocket;
+            }            
         }
 
     private slots:
@@ -52,6 +57,7 @@ class CMainDlg: public QDialog
         void on_btnSubmitClient_clicked( bool Checked = false );
         // Timer
         void update();
+        void update_check_srv_socket();
         // Progress
         void setProgress( int _Val )
         {
@@ -60,11 +66,14 @@ class CMainDlg: public QDialog
 
     private:
         void GetPROOFCfg( std::string *_FileName );
+        void GetSrvPort( int *_Port );
 
     private:
         Ui::MainDlg m_ui;
         QTimer *m_Timer;
+        QTimer *m_TimerSrvSocket;
         std::string m_CfgFileName;
+        int m_SrvPort;
         JobSubmitterPtr_t m_JobSubmitter;
 };
 

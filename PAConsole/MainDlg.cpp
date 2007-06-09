@@ -26,15 +26,29 @@
 #include "ServerInfo.h"
 #include "SysHelper.h"
 #include "CustomIterator.h"
+#include "INet.h"
 
 using namespace std;
 using namespace MiscCommon;
+using namespace MiscCommon::INet;
+
+// TODO: Do we need to move it to the class?
+const size_t g_TimeoutCheckSrvSocket = 1500;
+const size_t g_TimeoutCheckPROOFCONF = 2500;
 
 CMainDlg::CMainDlg(QDialog *_Parent):
         QDialog(_Parent)
 {
     m_Timer = new QTimer(this);
     connect( m_Timer, SIGNAL(timeout()), this, SLOT(update()) );
+
+    // PROOFAgent server's Port number
+    GetSrvPort(&m_SrvPort);
+
+    // Enabling timer which cheks Server socket availability
+    m_TimerSrvSocket = new QTimer(this);
+    connect( m_TimerSrvSocket, SIGNAL(timeout()), this, SLOT(update_check_srv_socket()) );
+    m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
 
     m_ui.setupUi( this );
     // Show status on start-up
@@ -145,6 +159,11 @@ void CMainDlg::update()
     }
 }
 
+void CMainDlg::update_check_srv_socket()
+{
+    m_ui.btnStartServer->setEnabled( get_free_port(m_SrvPort, m_SrvPort) );
+}
+
 void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
 {
     if ( _Checked )
@@ -157,7 +176,7 @@ void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
             return ;
         }
         // Start timer and submit gLite jobs
-        m_Timer->start(3000);
+        m_Timer->start(g_TimeoutCheckSrvSocket);
         m_JobSubmitter->set_jobs_count( m_ui.spinSubmitJobs->value() );
         m_JobSubmitter->start();
     }
@@ -214,4 +233,49 @@ void CMainDlg::GetPROOFCfg( string *_FileName )
         return ; // TODO: Msg me!
 
     *_FileName = cfg.nodeValue().toAscii().data();
+}
+
+void CMainDlg::GetSrvPort( int *_Port )
+{
+    if ( !_Port )
+        return ;
+
+    QFile file("./proofagent.cfg.xml");
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, tr("PROOFAgent Console"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg("./proofagent.cfg.xml")
+                             .arg(file.errorString()));
+        return ;
+    }
+
+    QDomDocument domDocument;
+    QString errorStr;
+    int errorLine;
+    int errorColumn;
+
+    if ( !domDocument.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
+    {
+        QMessageBox::information(window(), tr("PROOFAgent Console"),
+                                 tr("Parse error at line %1, column %2:\n%3")
+                                 .arg(errorLine)
+                                 .arg(errorColumn)
+                                 .arg(errorStr));
+        return ;
+    }
+    QDomNodeList server = domDocument.elementsByTagName("server");
+    QDomNode node = server.at(0).namedItem("config");
+    if ( node.isNull())
+        return ; // TODO: Msg me!
+
+    QDomNode nodeSrv = server.at(0).namedItem("agent_server");
+    if ( node.isNull())
+        return ; // TODO: Msg me!
+
+    QDomNode port = nodeSrv.attributes().namedItem("listen_port");
+    if ( port.isNull())
+        return ; // TODO: Msg me!
+
+    *_Port = port.nodeValue().toInt();
 }
