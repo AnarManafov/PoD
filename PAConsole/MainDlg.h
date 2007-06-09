@@ -63,6 +63,8 @@ class CMainDlg: public QDialog
         {
             m_ui.progressSubmittedJobs->setValue( _Val );
         }
+        // Monitor List of Workers
+        void on_chkShowWorkers_stateChanged( int _Stat );
 
     private:
         void GetPROOFCfg( std::string *_FileName );

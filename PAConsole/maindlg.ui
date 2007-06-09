@@ -32,19 +32,6 @@
    <property name="title" >
     <string>Server</string>
    </property>
-   <widget class="QLabel" name="label" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Server's status:</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget" >
     <property name="geometry" >
      <rect>
@@ -113,22 +100,6 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QTextEdit" name="edtServerInfo" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>271</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="acceptDrops" >
-     <bool>false</bool>
-    </property>
-    <property name="readOnly" >
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_3" >
     <property name="geometry" >
      <rect>
@@ -141,6 +112,41 @@
     <property name="text" >
      <string>PA's pid directory:</string>
     </property>
+   </widget>
+   <widget class="QWidget" name="" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>258</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Server's status:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QTextEdit" name="edtServerInfo" >
+       <property name="acceptDrops" >
+        <bool>false</bool>
+       </property>
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2" >
@@ -155,45 +161,6 @@
    <property name="title" >
     <string>Worker(s)</string>
    </property>
-   <widget class="QListWidget" name="lstClientsList" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>107</y>
-      <width>361</width>
-      <height>141</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="Line" name="line" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>64</y>
-      <width>361</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation" >
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnSubmitClient" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>25</y>
-      <width>75</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Submit</string>
-    </property>
-    <property name="checkable" >
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="progressSubmittedJobs" >
     <property name="geometry" >
      <rect>
@@ -232,17 +199,61 @@
      <number>1</number>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2" >
+   <widget class="QPushButton" name="btnSubmitClient" >
     <property name="geometry" >
      <rect>
-      <x>10</x>
-      <y>77</y>
-      <width>108</width>
+      <x>11</x>
+      <y>25</y>
+      <width>75</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text" >
-     <string>List of Workers:</string>
+     <string>Submit</string>
+    </property>
+    <property name="checkable" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QWidget" name="" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>81</y>
+      <width>361</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item row="1" column="0" >
+      <widget class="QListWidget" name="lstClientsList" />
+     </item>
+     <item row="0" column="0" >
+      <widget class="QCheckBox" name="chkShowWorkers" >
+       <property name="text" >
+        <string>Show available workers:</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="Line" name="line" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>64</y>
+      <width>361</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation" >
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>

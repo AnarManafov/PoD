@@ -57,7 +57,6 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
-
 }
 
 void CMainDlg::on_btnStatusServer_clicked()
@@ -278,4 +277,18 @@ void CMainDlg::GetSrvPort( int *_Port )
         return ; // TODO: Msg me!
 
     *_Port = port.nodeValue().toInt();
+}
+
+void CMainDlg::on_chkShowWorkers_stateChanged( int _Stat )
+{
+    const bool bEnable = (_Stat == Qt::Checked);
+    if ( m_Timer->isActive() && bEnable )
+        return ; // TODO: need assert here
+
+    m_ui.lstClientsList->setEnabled( bEnable );
+
+    if ( !bEnable )
+        m_Timer->stop();
+    else
+        m_Timer->start(g_TimeoutCheckSrvSocket);
 }
