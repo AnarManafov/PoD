@@ -54,13 +54,15 @@ class CMainDlg: public QDialog
         void on_btnStopServer_clicked();
         void on_btnBrowsePIDDir_clicked();
         // Client's slots
-        void on_btnSubmitClient_clicked( bool Checked = false );
+        void on_btnSubmitClient_clicked();
         // Timer
         void update();
         void update_check_srv_socket();
         // Progress
         void setProgress( int _Val )
         {
+        	if ( 100 == _Val )
+        		m_ui.btnSubmitClient->setEnabled( true );
             m_ui.progressSubmittedJobs->setValue( _Val );
         }
         // Monitor List of Workers

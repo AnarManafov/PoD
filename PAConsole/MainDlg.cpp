@@ -163,9 +163,9 @@ void CMainDlg::update_check_srv_socket()
     m_ui.btnStartServer->setEnabled( get_free_port(m_SrvPort) );
 }
 
-void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
+void CMainDlg::on_btnSubmitClient_clicked()
 {
-    if ( _Checked )
+    if ( !m_JobSubmitter->isRunning() )
     {
         GetPROOFCfg( &m_CfgFileName );
         smart_homedir_append( &m_CfgFileName );
@@ -174,20 +174,17 @@ void CMainDlg::on_btnSubmitClient_clicked( bool _Checked )
             QMessageBox::critical(this, tr("PROOFAgent Console"), tr("An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml") );
             return ;
         }
-        // Start timer and submit gLite jobs
-        m_Timer->start(g_TimeoutCheckSrvSocket);
+        // submit gLite jobs
         m_JobSubmitter->set_jobs_count( m_ui.spinSubmitJobs->value() );
         m_JobSubmitter->start();
+        m_ui.btnSubmitClient->setEnabled( false );
     }
     else
     {
         // Job submitter's thread
-        if ( m_JobSubmitter->isRunning() )
-            m_JobSubmitter->terminate();
+        m_JobSubmitter->terminate();
         setProgress( 0 );
-
-        // Stop timer
-        m_Timer->stop();
+        m_ui.btnSubmitClient->setEnabled( true );
     }
 }
 
