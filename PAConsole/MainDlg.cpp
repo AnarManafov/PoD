@@ -143,6 +143,8 @@ void CMainDlg::update()
 {
     // Read proof.conf and update Listbox
     ifstream f( m_CfgFileName.c_str() );
+    if ( !f.is_open() )
+        return ;
 
     StringVector_t vec;
 
@@ -150,11 +152,15 @@ void CMainDlg::update()
          custom_istream_iterator<string>(),
          back_inserter(vec));
 
+
+
+    int cur_sel = m_ui.lstClientsList->currentRow();
     m_ui.lstClientsList->clear();
+
     // Reading only comment blocks of proof.conf
     const LPCTSTR chCmntSign("#");
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                          SFindComment<string>(chCmntSign) );
+                                    SFindComment<string>(chCmntSign) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
@@ -163,6 +169,8 @@ void CMainDlg::update()
         iter = find_if( ++iter, vec.end(),
                         SFindComment<string>(chCmntSign) );
     }
+    if ( m_ui.lstClientsList->count() >= cur_sel )
+        m_ui.lstClientsList->setCurrentRow( cur_sel );
 }
 
 void CMainDlg::update_check_srv_socket()
