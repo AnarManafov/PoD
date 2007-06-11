@@ -79,10 +79,8 @@ void PrintVersion()
 {
     cout
     << "PROOFAgent v." << VERSION << "\n"
-    << "-------------------------------------------------" << "\n"
     << "application file name: " << PACKAGE << "\n"
-    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
-    << "-------------------------------------------------" << "\n"
+    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"    
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
