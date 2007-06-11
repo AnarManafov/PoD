@@ -133,7 +133,9 @@ void CAgentServer::ThreadWorker( const string &_PROOFCfg )
                     throw runtime_error("Can't find any free port from the given range.");
 
                 // Add a worker to PROOF cfg
-                AddWrk2PROOFCfg( _PROOFCfg, sUsrName, port );
+                string strRealWrkHost;
+                peer2string( socket, &strRealWrkHost );
+                AddWrk2PROOFCfg( _PROOFCfg, sUsrName, port, strRealWrkHost );
 
                 // Spwan PortForwarder
                 Socket_t s = socket.detach();

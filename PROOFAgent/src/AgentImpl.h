@@ -71,6 +71,7 @@ namespace PROOFAgent
             std::string host;
             MiscCommon::get_hostname( &host );
             // master host name is the same for Server and Worker and equal to local host name
+            f_out << "#master " << host << std::endl;
             f_out << "master " << host << std::endl;
 
             if ( pThis->GetMode() == Client )
@@ -78,7 +79,7 @@ namespace PROOFAgent
                 f_out << "worker " << host << " perf=100" << std::endl;
             }
         }
-        void AddWrk2PROOFCfg( const std::string &_PROOFCfg, const std::string &_UsrName, unsigned short _Port ) const
+        void AddWrk2PROOFCfg( const std::string &_PROOFCfg, const std::string &_UsrName, unsigned short _Port, const std::string &_RealWrkHost ) const
         {
             const _T *pThis = reinterpret_cast<const _T*>( this );
             if ( pThis->GetMode() != Server )
@@ -88,6 +89,7 @@ namespace PROOFAgent
             if ( !f_out.is_open() )
                 throw std::runtime_error("Can't open the PROOF configuration file: " + _PROOFCfg );
 
+            f_out << "#worker " << _UsrName << "@" << _RealWrkHost <<" (redirect through localhost:" << _Port  << ")"<< std::endl;
             f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100" << std::endl;
         }
     };
