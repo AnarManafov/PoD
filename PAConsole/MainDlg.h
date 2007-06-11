@@ -40,11 +40,11 @@ class CMainDlg: public QDialog
                 m_Timer->stop();
                 delete m_Timer;
             }
-            if( m_TimerSrvSocket )
+            if ( m_TimerSrvSocket )
             {
-            	m_TimerSrvSocket->stop();
-            	delete m_TimerSrvSocket;
-            }            
+                m_TimerSrvSocket->stop();
+                delete m_TimerSrvSocket;
+            }
         }
 
     private slots:
@@ -61,8 +61,8 @@ class CMainDlg: public QDialog
         // Progress
         void setProgress( int _Val )
         {
-        	if ( 100 == _Val )
-        		m_ui.btnSubmitClient->setEnabled( true );
+            if ( 100 == _Val )
+                m_ui.btnSubmitClient->setEnabled( true );
             m_ui.progressSubmittedJobs->setValue( _Val );
         }
         // Monitor List of Workers
