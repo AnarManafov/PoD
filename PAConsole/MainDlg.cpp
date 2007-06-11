@@ -46,7 +46,7 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     // PROOFAgent server's Port number
     GetSrvPort(&m_SrvPort);
 
-    // Enabling timer which cheks Server socket availability
+    // Enabling timer which checks Server's socket availability
     m_TimerSrvSocket = new QTimer(this);
     connect( m_TimerSrvSocket, SIGNAL(timeout()), this, SLOT(update_check_srv_socket()) );
     m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
@@ -58,6 +58,8 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
+
+    on_chkShowWorkers_stateChanged( Qt::Checked );
 }
 
 void CMainDlg::on_btnStatusServer_clicked()
