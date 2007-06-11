@@ -27,6 +27,19 @@
 
 typedef std::auto_ptr<CJobSubmitter> JobSubmitterPtr_t;
 
+template <class _T>
+struct SFindComment
+{
+    SFindComment( const _T &_CmntSign ): m_CmntSign(_CmntSign)
+    {}
+    bool operator() ( const _T &_Val ) const
+    {
+        return ( _Val.find(m_CmntSign) != _Val.npos );
+    }
+private:
+    _T m_CmntSign;
+};
+
 class CMainDlg: public QDialog
 {
         Q_OBJECT
