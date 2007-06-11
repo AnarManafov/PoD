@@ -77,10 +77,10 @@ ERRORCODE CAgentServer::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentServer::ThreadWorker( const string &_PROOFCfg )
+void CAgentServer::ThreadWorker()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( _PROOFCfg );
+    CreatePROOFCfg( m_sPROOFCfg );    
     try
     {
         CSocketServer server;
@@ -135,7 +135,7 @@ void CAgentServer::ThreadWorker( const string &_PROOFCfg )
                 // Add a worker to PROOF cfg
                 string strRealWrkHost;
                 peer2string( socket, &strRealWrkHost );
-                AddWrk2PROOFCfg( _PROOFCfg, sUsrName, port, strRealWrkHost );
+                AddWrk2PROOFCfg( m_sPROOFCfg, sUsrName, port, strRealWrkHost );
 
                 // Spwan PortForwarder
                 Socket_t s = socket.detach();
@@ -181,11 +181,11 @@ ERRORCODE CAgentClient::Write( DOMNode* _element )
     return erNotImpl;
 }
 
-void CAgentClient::ThreadWorker( const std::string &_PROOFCfg )
+void CAgentClient::ThreadWorker()
 {
     DebugLog( erOK, "Starting main thread..." );
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( _PROOFCfg );
+    CreatePROOFCfg( m_sPROOFCfg );
     CSocketClient client;
     try
     {

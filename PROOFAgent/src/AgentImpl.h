@@ -89,7 +89,7 @@ namespace PROOFAgent
             if ( !f_out.is_open() )
                 throw std::runtime_error("Can't open the PROOF configuration file: " + _PROOFCfg );
 
-            f_out << "#worker " << _UsrName << "@" << _RealWrkHost <<" (redirect through localhost:" << _Port  << ")"<< std::endl;
+            f_out << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")" << std::endl;
             f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100" << std::endl;
         }
     };
@@ -115,23 +115,30 @@ namespace PROOFAgent
                 ::sigaction (SIGTERM, &sa, 0);
             }
             virtual ~CAgentBase()
-            {}
+            {
+                if ( !m_sPROOFCfg.empty() )
+                    ::unlink( m_sPROOFCfg.c_str() );
+            }
 
         public:
             virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
             {
                 return this->Read( _element );
             }
-            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfgDir )
+            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
             {
-                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this, _PROOFCfgDir ) );
+                m_sPROOFCfg = _PROOFCfg;
+                boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
                 thrd.join();
                 return MiscCommon::erOK;
             }
             virtual EAgentMode_t GetMode() const = 0;
 
         protected:
-            virtual void ThreadWorker( const std::string &_PROOFCfg ) = 0;
+            virtual void ThreadWorker() = 0;
+
+        protected:
+            std::string m_sPROOFCfg;
     };
 
     typedef struct SAgentServerData
@@ -238,7 +245,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfg );
+            void ThreadWorker();
 
         private:
             //          const EAgentMode_t Mode;
@@ -269,7 +276,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker( const std::string &_PROOFCfg );
+            void ThreadWorker();
 
         private:
             //   const EAgentMode_t Mode;
