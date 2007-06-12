@@ -21,7 +21,7 @@
 start() 
 {
     echo "Starting..."
-    xrootd -c xpd.cf -b -l "$1/xpd.log" stop
+    xrootd -c xpd.cf -b -l "$1/xpd.log"
     
     ./proofagent -d -i server -p "$1/" -c proofagent.cfg.xml --start
     
