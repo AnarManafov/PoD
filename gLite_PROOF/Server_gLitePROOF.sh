@@ -21,6 +21,8 @@
 start() 
 {
     echo "Starting..."
+    # proof.conf must be presented before xrootd is started
+    touch ~/proof.conf
     xrootd -c xpd.cf -b -l "$1/xpd.log"
     
     ./proofagent -d -i server -p "$1/" -c proofagent.cfg.xml --start

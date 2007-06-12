@@ -16,3 +16,6 @@ xrootd -c xpd.cf -b -l /tmp/xpd.log
 >>> Open PROOF Connection from ROOT <<<
 
  proof = TProof::Open("localhost") 
+
+proof->UploadPackage("event.par");
+proof->EnablePackage("event"); 

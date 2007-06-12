@@ -36,6 +36,8 @@ if [ ! -x $WD/proofagent ]; then
     chmod +x $WD/proofagent
 fi
 
+# creating an empty proof.conf, so that xproof will be happy
+touch $WD/proof.conf
 
 # start xrootd
 echo "Starting xrootd..."
