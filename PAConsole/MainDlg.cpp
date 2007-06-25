@@ -44,7 +44,7 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     connect( m_Timer, SIGNAL(timeout()), this, SLOT(update()) );
 
     // PROOFAgent server's Port number
-    GetSrvPort(&m_SrvPort);
+    getSrvPort(&m_SrvPort);
 
     // Enabling timer which checks Server's socket availability
     m_TimerSrvSocket = new QTimer(this);
@@ -60,6 +60,8 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
 
     on_chkShowWorkers_stateChanged( Qt::Checked );
+
+    setActiveWorkers( 0 );
 }
 
 void CMainDlg::on_btnStatusServer_clicked()
@@ -154,8 +156,6 @@ void CMainDlg::update()
          custom_istream_iterator<string>(),
          back_inserter(vec));
 
-
-
     int cur_sel = m_ui.lstClientsList->currentRow();
     m_ui.lstClientsList->clear();
 
@@ -173,6 +173,8 @@ void CMainDlg::update()
     }
     if ( m_ui.lstClientsList->count() >= cur_sel )
         m_ui.lstClientsList->setCurrentRow( cur_sel );
+
+    setActiveWorkers( m_ui.lstClientsList->count() - 1 );
 }
 
 void CMainDlg::update_check_srv_socket()
@@ -184,7 +186,7 @@ void CMainDlg::on_btnSubmitClient_clicked()
 {
     if ( !m_JobSubmitter->isRunning() )
     {
-        GetPROOFCfg( &m_CfgFileName );
+        getPROOFCfg( &m_CfgFileName );
         smart_homedir_append( &m_CfgFileName );
         if ( m_CfgFileName.empty() )
         {
@@ -195,6 +197,8 @@ void CMainDlg::on_btnSubmitClient_clicked()
         m_JobSubmitter->set_jobs_count( m_ui.spinSubmitJobs->value() );
         m_JobSubmitter->start();
         m_ui.btnSubmitClient->setEnabled( false );
+
+        setActiveWorkers( 0, m_ui.spinSubmitJobs->value() );
     }
     else
     {
@@ -207,7 +211,7 @@ void CMainDlg::on_btnSubmitClient_clicked()
 
 /// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)
 // TODO: Revise method and remove hard-coded reference to proofagent.cfg.xml
-void CMainDlg::GetPROOFCfg( string *_FileName )
+void CMainDlg::getPROOFCfg( string *_FileName )
 {
     if ( !_FileName )
         return ;
@@ -248,7 +252,7 @@ void CMainDlg::GetPROOFCfg( string *_FileName )
     *_FileName = cfg.nodeValue().toAscii().data();
 }
 
-void CMainDlg::GetSrvPort( int *_Port )
+void CMainDlg::getSrvPort( int *_Port )
 {
     if ( !_Port )
         return ;

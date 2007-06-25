@@ -23,6 +23,7 @@
 
 // OUR
 #include "MiscUtils.h"
+#include "def.h"
 #include "JobSubmitter.h"
 
 typedef std::auto_ptr<CJobSubmitter> JobSubmitterPtr_t;
@@ -81,9 +82,25 @@ class CMainDlg: public QDialog
         // Monitor List of Workers
         void on_chkShowWorkers_stateChanged( int _Stat );
 
+        // Setting a number of connected workers        
+        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 ) 
+        {
+            static size_t nTotal = 0;
+            if( _Val2 )
+                nTotal = _Val2; 
+            MiscCommon::tstring strMsg( _T("Monitor connections (available %1 out of %2 worker(s)):") );
+            MiscCommon::tstringstream ss;
+            ss << _Val1;
+            MiscCommon::replace<MiscCommon::tstring>( &strMsg, _T("%1"), ss.str() );
+            ss.str("");
+            ss << nTotal;
+            MiscCommon::replace<MiscCommon::tstring>( &strMsg, _T("%2"), ss.str() );
+            m_ui.chkShowWorkers->setText( strMsg.c_str() );
+        }
+
     private:
-        void GetPROOFCfg( std::string *_FileName );
-        void GetSrvPort( int *_Port );
+        void getPROOFCfg( std::string *_FileName );
+        void getSrvPort( int *_Port );
 
     private:
         Ui::MainDlg m_ui;
