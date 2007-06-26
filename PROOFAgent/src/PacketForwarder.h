@@ -47,7 +47,7 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE Start( bool _ClientMode = false );
 
         protected:
-            void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket, bool _BreakOnDisconnect );
+            void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
 
         private:
             MiscCommon::ERRORCODE _Start( bool _ClientMode );

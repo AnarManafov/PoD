@@ -53,7 +53,7 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     return true;
 }
 
-void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket, bool _BreakOnDisconnect )
+void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
 {
     while ( true )
     {
@@ -69,9 +69,8 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             if ( !ForwardBuf( _SrvSocket, _CltSocket ) )
             {
                 InfoLog( erOK, "DISCONNECT has been detected." );
-                // Closing client when server disconnects and closing server when xrootd redirector disconnects
-                if ( _BreakOnDisconnect )
-                    graceful_quit = true; // TODO: Needs to be redesigned
+                _SrvSocket->close();
+                _CltSocket->close();
                 return ;
             }
         }
@@ -132,12 +131,16 @@ void CPacketForwarder::SpawnClientMode()
 
     // executing PF threads
     m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket, true ) ) );
+                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket) ) );
     m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket, true ) ) );
+                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket) ) );
 
     m_thrd_clnt->join();
     m_thrd_srv->join();
+
+    // Closing client when server disconnects and closing server when xrootd redirector disconnects
+    //   if (m_Disc)
+    //       graceful_quit = true;
 }
 
 void CPacketForwarder::SpawnServerMode()
@@ -162,9 +165,9 @@ void CPacketForwarder::SpawnServerMode()
 
             // executing PF threads
             m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket, false ) ) );
+                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
             m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket, false ) ) );
+                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
             break;
         }
     }
