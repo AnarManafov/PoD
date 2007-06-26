@@ -80,7 +80,7 @@ ERRORCODE CAgentServer::Write( DOMNode* _element )
 void CAgentServer::ThreadWorker()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( m_sPROOFCfg );    
+    CreatePROOFCfg( m_sPROOFCfg );
     try
     {
         CSocketServer server;
@@ -189,34 +189,38 @@ void CAgentClient::ThreadWorker()
     CSocketClient client;
     try
     {
-        CSocketClient client;
-        client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
-        DebugLog( erOK, "connected!" );
+        while (true)
+        {
+            DebugLog( erOK, "looking for PROOFAgent server to connect..." );
+            CSocketClient client;
+            client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
+            DebugLog( erOK, "connected!" );
 
-        // sending protocol version to the server
-        string sProtocol( g_szPROTOCOL_VERSION );
-        DebugLog( erOK, "Sending protocol version: " + sProtocol );
-        send_string( client.GetSocket(), sProtocol );
+            // sending protocol version to the server
+            string sProtocol( g_szPROTOCOL_VERSION );
+            DebugLog( erOK, "Sending protocol version: " + sProtocol );
+            send_string( client.GetSocket(), sProtocol );
 
-        //TODO: Checking response
-        string sResponse;
-        receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-        DebugLog( erOK, "Client received: " + sResponse );
+            //TODO: Checking response
+            string sResponse;
+            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+            DebugLog( erOK, "Client received: " + sResponse );
 
-        // Sending User name
-        string sUser;
-        get_cuser_name( &sUser );
-        DebugLog( erOK, "Sending user name: " + sUser );
-        send_string( client.GetSocket(), sUser );
+            // Sending User name
+            string sUser;
+            get_cuser_name( &sUser );
+            DebugLog( erOK, "Sending user name: " + sUser );
+            send_string( client.GetSocket(), sUser );
 
-        //TODO: Checking response
-        receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-        DebugLog( erOK, "Client received: " + sResponse );
+            //TODO: Checking response
+            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+            DebugLog( erOK, "Client received: " + sResponse );
 
 
-        // Spawn PortForwarder
-        CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
-        pf.Start( true );
+            // Spawn PortForwarder
+            CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
+            pf.Start( true );
+        }
     }
     catch ( exception & e )
     {

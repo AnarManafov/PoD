@@ -31,11 +31,22 @@ using namespace std;
 // TODO: Move it to config.
 const unsigned int g_BUF_SIZE = 1500;
 
+// a number of seconds, which is define an interval for select function
+const size_t g_CHECK_INTERVAL = 2;
+
 extern sig_atomic_t graceful_quit;
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 { // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
-    if ( _Input->is_read_ready( 2 ) )
+
+    // DISCONNECT has been detected
+    if ( !_Output->is_valid() )
+    {
+        _Input->close();
+        return false;
+    }
+
+    if ( _Input->is_read_ready( g_CHECK_INTERVAL ) )
     {
         boost::mutex::scoped_lock lock(m_mutex);
         BYTEVector_t buf( g_BUF_SIZE );
@@ -69,8 +80,6 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             if ( !ForwardBuf( _SrvSocket, _CltSocket ) )
             {
                 InfoLog( erOK, "DISCONNECT has been detected." );
-                _SrvSocket->close();
-                _CltSocket->close();
                 return ;
             }
         }
@@ -87,7 +96,8 @@ ERRORCODE CPacketForwarder::Start( bool _ClientMode )
     // executing PF threads
     m_thrd_serversocket = Thread_PTR_t( new boost::thread(
                                             boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
-    if ( _ClientMode )  //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
+    //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
+    if ( _ClientMode )
         m_thrd_serversocket->join();
 
     return erOK;
@@ -131,16 +141,12 @@ void CPacketForwarder::SpawnClientMode()
 
     // executing PF threads
     m_thrd_clnt = Thread_PTR_t( new boost::thread(
-                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket) ) );
+                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
     m_thrd_srv = Thread_PTR_t( new boost::thread(
-                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket) ) );
+                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
 
     m_thrd_clnt->join();
     m_thrd_srv->join();
-
-    // Closing client when server disconnects and closing server when xrootd redirector disconnects
-    //   if (m_Disc)
-    //       graceful_quit = true;
 }
 
 void CPacketForwarder::SpawnServerMode()
@@ -188,5 +194,6 @@ ERRORCODE CPacketForwarder::_Start( bool _ClientMode )
         FaultLog( erError, e.what() );
         return erError;
     }
+
     return erOK;
 }

@@ -45,6 +45,10 @@ namespace PROOFAgent
 
         public:
             MiscCommon::ERRORCODE Start( bool _ClientMode = false );
+            bool IsValid() const
+            {
+                return ( m_ClientSocket.is_valid() || m_ServerSocket.is_valid() );
+            }
 
         protected:
             void ThreadWorker( MiscCommon::INet::smart_socket *_SrvSocket, MiscCommon::INet::smart_socket *_CltSocket );
