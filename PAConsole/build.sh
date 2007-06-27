@@ -20,4 +20,4 @@
 
 cd ..
 $QTDIR/bin/qmake "CONFIG+=release" PAConsole.pro
-
+gmake
