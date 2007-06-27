@@ -133,7 +133,7 @@ void CAgentServer::ThreadWorker()
                     throw runtime_error("Can't find any free port from the given range.");
 
                 // cleaning all PF which are in disconnect stat
-                CleanDisconnectsPF();
+                CleanDisconnectsPF( m_sPROOFCfg );
 
                 // Add a worker to PROOF cfg
                 string strRealWrkHost;
