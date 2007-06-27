@@ -25,5 +25,5 @@ export QTLIB=$QTDIR/lib
 # GAW
 source /home/anar/GAW/bin/env.sh 
 
-$QTDIR/bin/qmake "CONFIG+=release" PAConsole.pro
-gmake
+$QTDIR/bin/qmake PAConsole.pro
+gmake 
