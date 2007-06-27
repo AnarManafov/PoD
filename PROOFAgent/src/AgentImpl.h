@@ -168,8 +168,7 @@ namespace PROOFAgent
         protected:
             void ThreadWorker();
 
-        private:
-            //          const EAgentMode_t Mode;
+        private:            
             AgentServerData_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
@@ -199,8 +198,7 @@ namespace PROOFAgent
         protected:
             void ThreadWorker();
 
-        private:
-            //   const EAgentMode_t Mode;
+        private:            
             AgentClientData_t m_Data;
     };
 
