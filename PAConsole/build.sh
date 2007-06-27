@@ -15,8 +15,15 @@
 #        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 #*************************************************************************
 #
-# REM: environment variables $QTDIR  $QTINC  $QTLIB must be predefined
-# 
+#
+
+# QT 4.2.3
+export QTDIR=/usr/local/Trolltech/Qt-4.2.3
+export QTINC=$QTDIR/include/Qt
+export QTLIB=$QTDIR/lib
+
+# GAW
+source /home/anar/GAW/bin/env.sh 
 
 $QTDIR/bin/qmake "CONFIG+=release" PAConsole.pro
 gmake
