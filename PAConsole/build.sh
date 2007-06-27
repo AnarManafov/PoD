@@ -18,6 +18,5 @@
 # REM: environment variables $QTDIR  $QTINC  $QTLIB must be predefined
 # 
 
-cd ..
 $QTDIR/bin/qmake "CONFIG+=release" PAConsole.pro
 gmake
