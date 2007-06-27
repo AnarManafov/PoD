@@ -1,7 +1,6 @@
 TEMPLATE	= app
 LANGUAGE = C++
 
-CONFIG = qt
 
 VERSION = 0.0.2
 
