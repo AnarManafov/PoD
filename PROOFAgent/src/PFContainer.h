@@ -33,7 +33,7 @@ namespace PROOFAgent
     template <class _T>
     struct SDelete: public std::binary_function<_T, SUpdatePROOFCfgPtr, bool>
     {
-        bool operator() ( _T _val ) const
+        bool operator() ( _T &_val ) const
         {
             if ( !_val.first )
                 return true;
@@ -42,19 +42,28 @@ namespace PROOFAgent
             _val.first = NULL;
             return true;
         }
-        bool operator() ( _T _val, SUpdatePROOFCfgPtr _Updater ) const
+        bool operator() ( _T &_val, const SUpdatePROOFCfgPtr &_Updater ) const
         {
             if ( !_val.first )
                 return true;
 
             if ( !_val.first->IsValid() )
             {
-                delete _val.first;
                 _Updater->_RemoveEntry( _val.second );
+                delete _val.first;
                 _val.first = NULL;
             }
 
             return true;
+        }
+    };
+
+    template <class _T>
+    struct SIsNull1st: public std::unary_function<_T, bool>
+    {
+        bool operator() ( const _T &_val ) const
+        {
+            return ( !_val.first );
         }
     };
 
@@ -81,11 +90,11 @@ namespace PROOFAgent
             {
                 SUpdatePROOFCfgPtr updater = SUpdatePROOFCfgPtr( new SUpdatePROOFCfg(_sPROOFCfg) );
                 std::for_each( m_container.begin(), m_container.end(), std::bind2nd(SDelete<container_value>(), updater) );
+                m_container.erase( std::remove_if(m_container.begin(), m_container.end(), SIsNull1st<container_value>()), m_container.end() );
             }
 
         private:
             pf_container_type m_container;
-
     };
 
 };
