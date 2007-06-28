@@ -13,12 +13,12 @@ echo ">>> pre-processing svn.log file... <<<"
 sed -i "s/\/D-Grid\/PROOFAgent\/tags\//\/tags\//g" svn.log
 
 echo ">>> executing StatSVN... <<<"
-java -jar trunk/PROOFAgent/sbin/statsvn.jar -css ./trunk/PROOFAgent/sbin/statsvn.css -output-dir ./PROOFAgent-metrics -tags '.*' svn.log .
+java -jar ./PROOFAgent/trunk/PROOFAgent/sbin/statsvn.jar -css ./PROOFAgent/trunk/PROOFAgent/sbin/statsvn.css -output-dir ./PROOFAgent-metrics -tags '.*' svn.log ./PROOFAgent/
 
 
 echo ">>> generating SLOC count report... <<<"
-sloccount --crossdups  --wide ./trunk/PROOFAgent/ > result.txt
-./trunk/PROOFAgent/sbin/sloc2html.py result.txt > ./PROOFAgent-metrics/result.html
+sloccount --crossdups  --wide ./PROOFAgent/trunk/PROOFAgent/ > result.txt
+./PROOFAgent/trunk/PROOFAgent/sbin/sloc2html.py result.txt > ./PROOFAgent-metrics/result.html
 
 echo ">>> publishing metrics on the web... <<<"
 chmod og+rx -R PROOFAgent-metrics
