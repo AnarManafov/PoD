@@ -2,7 +2,7 @@ TEMPLATE	= app
 LANGUAGE = C++
 
 
-VERSION = -0.0.2
+VERSION = -0.0.3
 
 INCLUDEPATH = ./Include \
 						${GAW_LOCATION}/include/glite-api-wrapper \
@@ -10,14 +10,20 @@ INCLUDEPATH = ./Include \
 						${GLITE_LOCATION}/externals/include \
 						${LCG_LOCATION}/include/lfc 
 
-HEADERS	+= 	MainDlg.h \
-						JobSubmitter.h
+HEADERS	+= 	src/MainDlg.h \
+						src/JobSubmitter.h
 
-SOURCES	+= 	MainDlg.cpp \
-						ServerInfo.cpp \
-					 	main.cpp
+SOURCES	+= 	src/MainDlg.cpp \
+						src/ServerInfo.cpp \
+					 	src/main.cpp
 					 	
-FORMS		= 		maindlg.ui
+FORMS		= 		src/maindlg.ui
+
+DESTDIR = Build
+
+OBJECTS_DIR = Intermediate
+UI_DIR = Intermediate
+MOC_DIR = Intermediate
 
 QT           += xml
 
