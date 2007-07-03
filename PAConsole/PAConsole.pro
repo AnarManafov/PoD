@@ -27,6 +27,6 @@ MOC_DIR = Intermediate
 
 QT           += xml
 
-unix:LIBS += -L${GAW_LOCATION}/lib -lglite-api-wrapper
+QMAKE_CXXFLAGS += -Wold-style-cast
 
-					
+unix:LIBS += -L${GAW_LOCATION}/lib -lglite-api-wrapper
