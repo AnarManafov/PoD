@@ -17,7 +17,7 @@ SOURCES	+= 	src/MainDlg.cpp \
 						src/ServerInfo.cpp \
 					 	src/main.cpp
 					 	
-FORMS		= 		src/maindlg.ui
+FORMS		= 		res/maindlg.ui
 
 DESTDIR = Build
 
