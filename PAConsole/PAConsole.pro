@@ -2,7 +2,7 @@ TEMPLATE	= app
 LANGUAGE = C++
 
 
-VERSION = -0.0.3
+VERSION = -0.0.4
 
 INCLUDEPATH = ./Include \
 						${GAW_LOCATION}/include/glite-api-wrapper \
