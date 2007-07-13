@@ -19,7 +19,16 @@
 
 [
 	Type = "job";
+	JobType = "parametric";
 	VirtualOrganisation = "dech";
+	
+	Rank = 0;
+	Requirements = other.GlueCEStateStatus == "Production";
+	
+	Parameters = 2;
+	ParameterStart = 0;
+	ParameterStep = 1;
+
 	Executable = "gLitePROOF.sh";
 
 	StdOutput = "gLitePROOF.out";
