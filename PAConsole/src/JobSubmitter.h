@@ -58,6 +58,7 @@ class CJobSubmitter: public QThread
             {
                 // Submit a Grid Job
                 //TODO: take jdl from GUI
+		//TODO: catch exception
 		GAW::Instance().GetJobManager().DelegationCredential();
 		GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl" );// TODO: check error
                 emit changeProgress( i * 100 / m_JobsCount );
