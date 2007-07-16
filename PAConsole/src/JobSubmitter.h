@@ -17,6 +17,7 @@
 
 // Qt
 #include <QThread>
+#include <QtGui>
 
 // GAW
 #include "gLiteAPIWrapper.h"
@@ -57,10 +58,16 @@ class CJobSubmitter: public QThread
             for ( size_t i = 0; i < m_JobsCount; ++i )
             {
                 // Submit a Grid Job
-                //TODO: take jdl from GUI
-		//TODO: catch exception
-		GAW::Instance().GetJobManager().DelegationCredential();
-		GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl" );// TODO: check error
+                //TODO: take jdl from GUI               
+                try
+                {
+                    GAW::Instance().GetJobManager().DelegationCredential();
+                    GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl" );// TODO: check error
+                }
+                catch ( const std::exception &e )
+                {
+                    return;
+                }
                 emit changeProgress( i * 100 / m_JobsCount );
             }
             emit changeProgress( 100 );
