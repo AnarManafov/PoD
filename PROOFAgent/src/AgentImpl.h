@@ -34,13 +34,13 @@
 #include "PacketForwarder.h"
 #include "SysHelper.h"
 #include "CustomIterator.h"
+#include "PARes.h"
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
 
 namespace PROOFAgent
 {
-    typedef enum{ Unknown, Server, Client }EAgentMode_t;
-
+    
     // declaration of signal handler
     void signal_handler( int _SignalNumber );
 

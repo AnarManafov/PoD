@@ -27,6 +27,8 @@ namespace PROOFAgent
 
     const size_t g_nBUF_SIZE = 1024;
 
+    typedef enum{ Unknown, Server, Client }EAgentMode_t;
+
 };
 
 #endif /*PARES_H_*/
