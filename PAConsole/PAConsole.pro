@@ -8,7 +8,8 @@ INCLUDEPATH = ./Include \
 						${GAW_LOCATION}/include/glite-api-wrapper \
 						${GLITE_LOCATION}/include \
 						${GLITE_LOCATION}/externals/include \
-						${LCG_LOCATION}/include/lfc 
+						${LCG_LOCATION}/include/lfc \
+						${XERCESC_LOCATION}/include
 
 HEADERS	+= 	src/MainDlg.h \
 						src/JobSubmitter.h
