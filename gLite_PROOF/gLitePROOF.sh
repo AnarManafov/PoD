@@ -27,7 +27,7 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
-export ROOTSYS=/usr/ROOT/5.15.08
+export ROOTSYS=/usr/ROOT/5.17.01
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
