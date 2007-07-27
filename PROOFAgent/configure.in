@@ -8,7 +8,7 @@
 ##
 ##        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 ## *************************************************************************/
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 AC_INIT
 
 # Geting HEADS's revision number
@@ -23,7 +23,7 @@ VER=["1.0.1."$TMP_VER]
 AM_INIT_AUTOMAKE([proofagent], $VER)
 
 AC_CONFIG_SRCDIR([configure.in])
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 
 ## ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ fi
 
 
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_PROG_CXX
 
 AC_PROG_INSTALL
@@ -94,8 +94,8 @@ fi
 LDFLAGS="$LDFLAGS -L$BOOST_LOCATION/lib -lboost_thread -lboost_program_options"
 CPPFLAGS="$CPPFLAGS -I$BOOST_LOCATION/include"
 
-AC_OUTPUT(
-Doxyfile
+AC_CONFIG_FILES([Doxyfile
 Makefile
 src/Makefile
-src/unit_test/Makefile)
+src/unit_test/Makefile])
+AC_OUTPUT
