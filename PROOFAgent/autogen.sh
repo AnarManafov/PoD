@@ -2,9 +2,6 @@
 
 rm -fr autom4te.cache
 
-echo ">>> Producing a ChangeLog file... <<<"
-./Make_ChangeLog.sh
-
 # Equivalent to
 #       aclocal
 #       autoheader

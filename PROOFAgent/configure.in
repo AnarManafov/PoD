@@ -23,7 +23,7 @@ VER=["1.0.1."$TMP_VER]
 AM_INIT_AUTOMAKE([proofagent], $VER)
 
 AC_CONFIG_SRCDIR([configure.in])
-AC_CONFIG_HEADERS([config.h])
+AM_CONFIG_HEADER([config.h])
 
 
 ## ----------------------------------------------------------------------
