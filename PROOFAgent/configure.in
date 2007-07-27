@@ -8,7 +8,7 @@
 ##
 ##        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 ## *************************************************************************/
-AC_PREREQ(2.59)
+AC_PREREQ(2.57)
 AC_INIT
 
 # Geting HEADS's revision number
