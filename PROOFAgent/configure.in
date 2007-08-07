@@ -19,7 +19,6 @@ TMP_VER=`echo ${SVN_HEAD_REV}`
 
 VER=["1.0.1."$TMP_VER]
 
-
 AM_INIT_AUTOMAKE([proofagent], $VER)
 
 AC_CONFIG_SRCDIR([configure.in])
