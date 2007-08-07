@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?fileVersion 4.0.0?>
+
+<cproject>
+<storageModule moduleId="org.eclipse.cdt.core.settings">
+<cconfiguration id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055">
+<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055" moduleId="org.eclipse.cdt.core.settings" name="Release">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration artifactName="PROOFAgent" buildArtefactType="com.redhat.eclipse.cdt.autotools.buildArtefactType.autotools" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.redhat.eclipse.cdt.autotools.buildArtefactType.autotools" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055" name="Release" parent="com.redhat.eclipse.cdt.autotools.configuration.build" prebuildStep="">
+<folderInfo id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055.1529067221" name="/" resourcePath="">
+<toolChain id="com.redhat.eclipse.cdt.autotools.toolChain.29609052" name="Autotools Toolchain (Gnu)" superClass="com.redhat.eclipse.cdt.autotools.toolChain">
+<targetPlatform id="com.redhat.eclipse.cdt.autotools.toolChain.29609052.1314957612" name=""/>
+<builder buildPath="/home/anar/workspace/PROOFAgent/release" id="com.redhat.eclipse.cdt.autotools.toolchain.builder.966172720" name="Autotools Makefile Generator.Release" superClass="com.redhat.eclipse.cdt.autotools.toolchain.builder"/>
+<tool command="configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.513633449" name="configure" superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure">
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.user.1710713327" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=no" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1784673807" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="release" valueType="string"/>
+</tool>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+<storageModule moduleId="scannerConfiguration"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
+<buildTargets>
+<target name="all" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="am--refresh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>am--refresh</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="Makefile" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>Makefile</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="config.h" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>config.h</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="stamp-h1" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>stamp-h1</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-hdr" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-hdr</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="Doxyfile" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>Doxyfile</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-dist_sysconfDATA" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-dist_sysconfDATA</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall-dist_sysconfDATA" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall-dist_sysconfDATA</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="mostlyclean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>mostlyclean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="clean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>clean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="maintainer-clean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>maintainer-clean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="tags-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>tags-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ctags-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ctags-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="tags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>tags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ctags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ctags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-tags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-tags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distdir" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distdir</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-gzip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-gzip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-bzip2" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-bzip2</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-tarZ" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-tarZ</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-shar" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-shar</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-zip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-zip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-all" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distuninstallcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distuninstallcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distcleancheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distcleancheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="check" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>check</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="installdirs" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>installdirs</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-exec" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-exec</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-data" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-data</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="installcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>installcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-strip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-strip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="clean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dvi" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dvi</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="html" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>html</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-man" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-man</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="maintainer-clean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>maintainer-clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="mostlyclean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>mostlyclean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="pdf" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>pdf</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ps" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ps</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall-info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall-info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+</buildTargets>
+</storageModule>
+</cconfiguration>
+<cconfiguration id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085">
+<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+<externalSettings/>
+<extensions>
+<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+</extensions>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<configuration artifactName="PROOFAgent" buildArtefactType="com.redhat.eclipse.cdt.autotools.buildArtefactType.autotools" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=com.redhat.eclipse.cdt.autotools.buildArtefactType.autotools" cleanCommand="rm -rf" description="" errorParsers="org.eclipse.cdt.core.MakeErrorParser;org.eclipse.cdt.core.GCCErrorParser;org.eclipse.cdt.core.GLDErrorParser;org.eclipse.cdt.core.GASErrorParser" id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085" name="Debug" parent="com.redhat.eclipse.cdt.autotools.configuration.build" prebuildStep="">
+<folderInfo id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085.290901473" name="/" resourcePath="">
+<toolChain id="com.redhat.eclipse.cdt.autotools.toolChain.1780915949" name="Autotools Toolchain (Gnu)" superClass="com.redhat.eclipse.cdt.autotools.toolChain">
+<targetPlatform id="com.redhat.eclipse.cdt.autotools.toolChain.1780915949.1203122768" name=""/>
+<builder buildPath="${workspace_loc:/PROOFAgent/Debug}" id="com.redhat.eclipse.cdt.autotools.toolchain.builder.710915684" name="Autotools Makefile Generator.Debug" superClass="com.redhat.eclipse.cdt.autotools.toolchain.builder"/>
+<tool command="configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.1156033175" name="configure" superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure">
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.user.748104963" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=yes" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1494674242" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="debug" valueType="string"/>
+</tool>
+</toolChain>
+</folderInfo>
+</configuration>
+</storageModule>
+<storageModule moduleId="scannerConfiguration"/>
+<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
+<buildTargets>
+<target name="all" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="am--refresh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>am--refresh</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="Makefile" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>Makefile</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="config.h" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>config.h</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="stamp-h1" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>stamp-h1</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-hdr" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-hdr</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="Doxyfile" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>Doxyfile</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-dist_sysconfDATA" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-dist_sysconfDATA</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall-dist_sysconfDATA" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall-dist_sysconfDATA</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="mostlyclean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>mostlyclean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="clean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>clean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="maintainer-clean-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>maintainer-clean-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="tags-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>tags-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ctags-recursive" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ctags-recursive</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="tags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>tags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ctags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ctags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean-tags" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean-tags</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distdir" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distdir</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-gzip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-gzip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-bzip2" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-bzip2</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-tarZ" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-tarZ</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-shar" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-shar</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-zip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-zip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dist-all" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dist-all</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distuninstallcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distuninstallcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distcleancheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distcleancheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="check" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>check</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="installdirs" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>installdirs</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-exec" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-exec</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-data" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-data</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="installcheck" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>installcheck</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-strip" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-strip</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="clean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="distclean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>distclean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="dvi" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>dvi</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="html" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>html</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="install-man" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>install-man</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="maintainer-clean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>maintainer-clean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="mostlyclean" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>mostlyclean</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="pdf" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>pdf</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="ps" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>ps</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+<target name="uninstall-info" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<buildCommand>make</buildCommand>
+<buildArguments></buildArguments>
+<buildTarget>uninstall-info</buildTarget>
+<stopOnError>true</stopOnError>
+<useDefaultCommand>true</useDefaultCommand>
+</target>
+</buildTargets>
+</storageModule>
+</cconfiguration>
+</storageModule>
+<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+<project id="PROOFAgent.com.redhat.eclipse.cdt.autotools.projectType.847505113" name="Autotools (Gnu)" projectType="com.redhat.eclipse.cdt.autotools.projectType"/>
+</storageModule>
+</cproject>
