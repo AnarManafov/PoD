@@ -4,12 +4,12 @@
  * @brief Implementation of CAgent
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENT_H
@@ -36,13 +36,13 @@ namespace PROOFAgent
                 m_Mode = _Mode;
                 RefreshAgent ();
             }
-            MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
+            void Init( xercesc::DOMNode* _element ) throw(std::exception)
             {
-                return m_Agent->Init( _element );
+                m_Agent->Init( _element );
             }
-            MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
+            void Start( const std::string &_PROOFCfg ) throw(std::exception)
             {
-                return m_Agent->Start( _PROOFCfg );
+                m_Agent->Start( _PROOFCfg );
             }
 
         private:
@@ -55,13 +55,13 @@ namespace PROOFAgent
             {
                 switch ( m_Mode )
                 {
-                        case Server:
+                    case Server:
                         return new CAgentServer;
                         break;
-                        case Client:
+                    case Client:
                         return new CAgentClient;
                         break;
-                        case Unknown:
+                    case Unknown:
                         return NULL;
                         break;
                 }

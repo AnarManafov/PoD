@@ -4,29 +4,24 @@
  * @brief Implementation file of AgentServer and AgentClient
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
-*************************************************************************/ 
+*************************************************************************/
 // API
 #include <sys/types.h>
 
 // XML parser
 #include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/sax/HandlerBase.hpp>
 
-// STD
-#include <stdexcept>
-
 // PROOFAgent
-#include "XMLHelper.h"
 #include "AgentImpl.h"
 #include "INet.h"
 #include "PARes.h"
@@ -47,36 +42,6 @@ void PROOFAgent::signal_handler( int _SignalNumber )
 }
 
 //------------------------- Agent SERVER ------------------------------------------------------------
-ERRORCODE CAgentServer::Read( DOMNode* _element )
-{
-    // TODO: Use a "try" block to catch XML exceptions
-    if ( NULL == _element )
-        throw( invalid_argument( "DOME Node object is NULL" ) );
-
-    // getting <agent_server> Element
-    DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_server" );
-
-    DOMElement* elementConfig( NULL );
-    if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
-        elementConfig = dynamic_cast< DOMElement* >( node ) ;
-    if ( NULL == elementConfig )
-        throw( runtime_error( "empty XML document" ) );
-
-    // retrieving attributes
-    get_attr_value( elementConfig, "listen_port", &m_Data.m_nPort );
-    get_attr_value( elementConfig, "local_client_port_min", &m_Data.m_nLocalClientPortMin );
-    get_attr_value( elementConfig, "local_client_port_max", &m_Data.m_nLocalClientPortMax );
-
-    InfoLog( erOK, "Agent Server configuration:" ) << m_Data;
-
-    return erOK;
-}
-
-ERRORCODE CAgentServer::Write( DOMNode* _element )
-{
-    return erNotImpl;
-}
-
 void CAgentServer::ThreadWorker()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
@@ -155,36 +120,6 @@ void CAgentServer::ThreadWorker()
 
 
 //------------------------- Agent CLIENT ------------------------------------------------------------
-ERRORCODE CAgentClient::Read( DOMNode* _element )
-{
-    // TODO: Use a "try" block to catch XML exceptions
-    if ( NULL == _element )
-        return erXMLNullNode;
-
-    // getting <agent_server> Element
-    DOMNode* node = GetSingleNodeByName_Ex( _element, "agent_client" );
-
-    DOMElement* elementConfig( NULL );
-    if ( DOMNode::ELEMENT_NODE == node->getNodeType() )
-        elementConfig = dynamic_cast< DOMElement* >( node ) ;
-    if ( NULL == elementConfig )
-        throw( runtime_error( "empty XML document" ) );
-
-    // retrieving attributes
-    get_attr_value( elementConfig, "server_port", &m_Data.m_nServerPort );
-    get_attr_value( elementConfig, "server_addr", &m_Data.m_strServerHost );
-    get_attr_value( elementConfig, "local_proofd_port", &m_Data.m_nLocalClientPort );
-
-    InfoLog( erOK, "Agent Client configuration:" ) << m_Data;
-
-    return erOK;
-}
-
-ERRORCODE CAgentClient::Write( DOMNode* _element )
-{
-    return erNotImpl;
-}
-
 void CAgentClient::ThreadWorker()
 {
     DebugLog( erOK, "Starting main thread..." );

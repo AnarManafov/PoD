@@ -4,14 +4,14 @@
  * @brief Packet Forwarder's implementation
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
-*************************************************************************/ 
+*************************************************************************/
 // PROOFAgent
 #include "ErrorCode.h"
 #include "PacketForwarder.h"
@@ -37,7 +37,8 @@ const size_t g_CHECK_INTERVAL = 2;
 extern sig_atomic_t graceful_quit;
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
-{ // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
+{
+    // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
 
     // DISCONNECT has been detected
     if ( !_Output->is_valid() )

@@ -1,15 +1,15 @@
 /************************************************************************/
 /**
  * @file Main.cpp
- * @brief Implementation of the "Main" function 
+ * @brief Implementation of the "Main" function
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "config.h"
@@ -80,7 +80,7 @@ void PrintVersion()
     cout
     << "PROOFAgent v." << VERSION << "\n"
     << "application file name: " << PACKAGE << "\n"
-    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"    
+    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
@@ -262,8 +262,7 @@ int main( int argc, char *argv[] )
         CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
-        if ( FAILED( agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName ) ) )
-            return erError; // TODO: Log me!
+        agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName );
 
         int fd;
         if ( Options.m_bDaemonize )
@@ -293,7 +292,14 @@ int main( int argc, char *argv[] )
     catch ( exception &e )
     {
         agent.FaultLog( erError, e.what() );
+        return 1;
+    }
+    catch ( ... )
+    {
+        string errMsg( "Unexpected Exception occurred." );
+        agent.FaultLog( erXMLInit, errMsg );
+        return 1;
     }
 
-    return erOK;
+    return 0;
 }

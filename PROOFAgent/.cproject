@@ -23,6 +23,7 @@
 <tool command="configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.513633449" name="configure" superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure">
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.user.1710713327" name="User-specified configuration options" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=no" valueType="string"/>
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1784673807" name="Build directory" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="Release" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.prefix.1861168106" superClass="com.redhat.eclipse.cdt.autotools.option.configure.prefix" value="/home/anar/PROOFAgent" valueType="string"/>
 </tool>
 </toolChain>
 </folderInfo>

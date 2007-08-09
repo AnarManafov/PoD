@@ -4,12 +4,12 @@
  * @brief Header file of AgentServer and AgentClient
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENTIMPL_H
@@ -28,7 +28,7 @@
 #include <functional>
 
 // PROOFAgent
-#include "ErrorCode.h"
+//#include "ErrorCode.h"
 #include "LogImp.h"
 #include "IXMLPersist.h"
 #include "PacketForwarder.h"
@@ -40,15 +40,14 @@
 
 namespace PROOFAgent
 {
-    
+
     // declaration of signal handler
     void signal_handler( int _SignalNumber );
 
     /**
       *  @brief
      */
-    class CAgentBase:
-                MiscCommon::IXMLPersist
+    class CAgentBase
     {
         public:
             CAgentBase()
@@ -71,9 +70,9 @@ namespace PROOFAgent
             }
 
         public:
-            virtual MiscCommon::ERRORCODE Init( xercesc::DOMNode* _element )
+            virtual void Init( xercesc::DOMNode* _element )
             {
-                return this->Read( _element );
+                _Init( _element );
             }
             MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
             {
@@ -86,6 +85,7 @@ namespace PROOFAgent
 
         protected:
             virtual void ThreadWorker() = 0;
+            virtual void _Init( xercesc::DOMNode* _element ) = 0;
 
         protected:
             std::string m_sPROOFCfg;
@@ -139,16 +139,26 @@ namespace PROOFAgent
     class CAgentServer :
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentServer>,
+                MiscCommon::IXMLPersistImpl<CAgentServer>,
                 protected CPROOFCfgImpl<CAgentServer>
+
     {
         public:
             virtual ~CAgentServer()
             {}
-            REGISTER_LOG_MODULE( AgentServer );
+            REGISTER_LOG_MODULE( "AgentServer" )
+            DECLARE_XMLPERSIST_IMPL(CAgentServer)
 
         public:
-            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
-            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            BEGIN_READ_XML_NODE(CAgentServer, "agent_server")
+            READ_ELEMENT( "listen_port", m_Data.m_nPort )
+            READ_ELEMENT( "local_client_port_min", m_Data.m_nLocalClientPortMin )
+            READ_ELEMENT( "local_client_port_max", m_Data.m_nLocalClientPortMax )
+            END_READ_XML_NODE
+
+            BEGIN_WRITE_XML_CFG(CAgentServer)
+            END_WRITE_XML_CFG
+
             virtual EAgentMode_t GetMode() const
             {
                 return Server;
@@ -167,8 +177,13 @@ namespace PROOFAgent
 
         protected:
             void ThreadWorker();
+            void _Init( xercesc::DOMNode* _element )
+            {
+                Read( _element );
+                InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+            }
 
-        private:            
+        private:
             AgentServerData_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
@@ -180,16 +195,25 @@ namespace PROOFAgent
     class CAgentClient:
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentClient>,
+                MiscCommon::IXMLPersistImpl<CAgentClient>,
                 protected CPROOFCfgImpl<CAgentClient>
     {
         public:
             virtual ~CAgentClient()
             {}
-            REGISTER_LOG_MODULE( AgentClient );
+            REGISTER_LOG_MODULE( "AgentClient" )
+            DECLARE_XMLPERSIST_IMPL(CAgentClient)
 
         public:
-            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
-            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            BEGIN_READ_XML_NODE(CAgentClient, "agent_client")
+            READ_ELEMENT( "server_port", m_Data.m_nServerPort )
+            READ_ELEMENT( "server_addr", m_Data.m_strServerHost )
+            READ_ELEMENT( "local_proofd_port", m_Data.m_nLocalClientPort )
+            END_READ_XML_NODE
+
+            BEGIN_WRITE_XML_CFG(CAgentClient)
+            END_WRITE_XML_CFG
+
             virtual EAgentMode_t GetMode() const
             {
                 return Client;
@@ -197,8 +221,13 @@ namespace PROOFAgent
 
         protected:
             void ThreadWorker();
+            void _Init( xercesc::DOMNode* _element )
+            {
+                Read( _element );
+                InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
+            }
 
-        private:            
+        private:
             AgentClientData_t m_Data;
     };
 

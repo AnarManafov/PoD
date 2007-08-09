@@ -4,12 +4,12 @@
  * @brief Header of the general PROOFAgent manager
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-01
-        last changed by:   $LastChangedBy$ $LastChangedDate$
- 
+
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-01
+        last changed by:    $LastChangedBy$ $LastChangedDate$
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROOFAGENT_H
@@ -21,10 +21,10 @@
 #include "LogImp.h"
 
 /**
- * @brief A general name space for PROOFAgent application 
+ * @brief A general name space for PROOFAgent application
  **/
 namespace PROOFAgent
-{   
+{
     /**
      * @brief Agent data structure.
      **/
@@ -38,6 +38,7 @@ namespace PROOFAgent
         std::string m_sLogFileDir;          //!< Log filename
         bool m_bLogFileOverwrite;          //!< Overwrite log file each session
         EAgentMode_t m_AgentMode;
+        std::string m_sAgentMode;
         size_t m_nTimeout;
         std::string m_sLastExecCmd;
         std::string m_sPROOFCfg;
@@ -47,7 +48,7 @@ namespace PROOFAgent
 
     class CPROOFAgent:
                 public MiscCommon::CLogImp<CPROOFAgent>,
-                MiscCommon::IXMLPersist
+                MiscCommon::IXMLPersistImpl<CPROOFAgent>
     {
         public:
             CPROOFAgent()
@@ -56,15 +57,27 @@ namespace PROOFAgent
             {
                 ExecuteLastCmd();
             }
-            REGISTER_LOG_MODULE( PROOFAgent )
+            REGISTER_LOG_MODULE( "PROOFAgent" )
+            DECLARE_XMLPERSIST_IMPL(CPROOFAgent)
 
         public:
-            MiscCommon::ERRORCODE ReadCfg( const std::string &_xmlFileName, const std::string &_Instance );
-            MiscCommon::ERRORCODE Start();
+            void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance ) throw(std::exception);
+            void Start() throw(std::exception);
 
         private:
-            MiscCommon::ERRORCODE Read( xercesc::DOMNode* _element );
-            MiscCommon::ERRORCODE Write( xercesc::DOMNode* _element );
+            BEGIN_READ_XML_CFG(CPROOFAgent)
+            READ_ELEMENT( "work_dir", m_Data.m_sWorkDir )
+            READ_ELEMENT( "logfile_dir", m_Data.m_sLogFileDir )
+            READ_ELEMENT( "logfile_overwrite", m_Data.m_bLogFileOverwrite )
+            READ_ELEMENT( "agent_mode", m_Data.m_sAgentMode )
+            READ_ELEMENT( "timeout", m_Data.m_nTimeout )
+            READ_ELEMENT( "last_execute_cmd", m_Data.m_sLastExecCmd )
+            READ_ELEMENT( "proof_cfg_path", m_Data.m_sPROOFCfg )
+            END_READ_XML_CFG
+
+            BEGIN_WRITE_XML_CFG(CPROOFAgent)
+            END_WRITE_XML_CFG
+
             void ExecuteLastCmd();
 
         private:
