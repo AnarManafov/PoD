@@ -4,12 +4,12 @@
  * @brief Main dialog declaration
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
-        version number:   $LastChangedRevision: 931 $
-        created by:          Anar Manafov
-                                  2007-05-23
-        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-06-25 16:56:04 +0200 (Mon, 25 Jun 2007) $
- 
+
+        version number:     $LastChangedRevision: 931 $
+        created by:         Anar Manafov
+                            2007-05-23
+        last changed by:    $LastChangedBy: manafov $ $LastChangedDate: 2007-06-25 16:56:04 +0200 (Mon, 25 Jun 2007) $
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef CMAINDLG_H_
@@ -21,7 +21,7 @@
 // Qt autogen. file
 #include "ui_maindlg.h"
 
-// OUR
+// Our
 #include "MiscUtils.h"
 #include "def.h"
 #include "JobSubmitter.h"
@@ -82,12 +82,12 @@ class CMainDlg: public QDialog
         // Monitor List of Workers
         void on_chkShowWorkers_stateChanged( int _Stat );
 
-        // Setting a number of connected workers        
-        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 ) 
+        // Setting a number of connected workers
+        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 )
         {
             static size_t nTotal = 0;
-            if( _Val2 )
-                nTotal = _Val2; 
+            if ( _Val2 )
+                nTotal = _Val2;
             MiscCommon::tstring strMsg( _T("Monitor connections (available %1 out of %2 worker(s)):") );
             MiscCommon::tstringstream ss;
             ss << _Val1;

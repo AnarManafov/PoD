@@ -5,10 +5,10 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
-        version number:   $LastChangedRevision: 851 $
-        created by:          Anar Manafov
-                                  2007-06-01
-        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-06-01 18:47:22 +0200 (Fri, 01 Jun 2007) $
+        version number:     $LastChangedRevision: 851 $
+        created by:         Anar Manafov
+                            2007-06-01
+        last changed by:    $LastChangedBy: manafov $ $LastChangedDate: 2007-06-01 18:47:22 +0200 (Fri, 01 Jun 2007) $
 
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/
@@ -58,7 +58,7 @@ class CJobSubmitter: public QThread
             for ( size_t i = 0; i < m_JobsCount; ++i )
             {
                 // Submit a Grid Job
-                //TODO: take jdl from GUI               
+                //TODO: take jdl from GUI
                 try
                 {
                     GAW::Instance().GetJobManager().DelegationCredential();
