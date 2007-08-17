@@ -57,15 +57,12 @@ namespace PROOFAgent
                 {
                     case Server:
                         return new CAgentServer;
-                        break;
                     case Client:
-                        return new CAgentClient;
-                        break;
+                        return new CAgentClient;                        
                     case Unknown:
-                        return NULL;
-                        break;
-                }
-                return NULL;
+                    default:
+                        return NULL;                        
+                }                
             }
 
         private:

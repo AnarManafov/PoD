@@ -28,7 +28,6 @@
 #include <functional>
 
 // PROOFAgent
-//#include "ErrorCode.h"
 #include "LogImp.h"
 #include "IXMLPersist.h"
 #include "PacketForwarder.h"
@@ -52,6 +51,7 @@ namespace PROOFAgent
         public:
             CAgentBase()
             {
+                // Registering signals handlers
                 struct sigaction sa;
                 ::sigemptyset (&sa.sa_mask);
                 sa.sa_flags = 0;
@@ -65,6 +65,7 @@ namespace PROOFAgent
             }
             virtual ~CAgentBase()
             {
+                // deleting proof configuration file
                 if ( !m_sPROOFCfg.empty() )
                     ::unlink( m_sPROOFCfg.c_str() );
             }
