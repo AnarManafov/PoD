@@ -16,7 +16,6 @@
 
 // BOOST
 #include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
 
@@ -27,34 +26,13 @@
 #include "Process.h"
 #include "PROOFAgent.h"
 #include "PARes.h"
+#include "BOOSTHelper.h"
 
 using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
 using namespace boost::program_options;
 
-// Function used to check that 'opt1' and 'opt2' are not specified at the same time.
-void conflicting_options( const variables_map& _vm, const char* _opt1, const char* _opt2 )
-{
-    if ( _vm.count(_opt1) && !_vm[_opt1].defaulted() && _vm.count(_opt2) && !_vm[_opt2].defaulted() )
-    {
-        string str("Command line parameter \"%1\" conflicts with \"%2\""); // TODO: Move this message to the resource file
-        replace<string>( &str, "%1", _opt1 );
-        replace<string>( &str, "%2", _opt2 );
-        throw runtime_error( str );
-    }
-}
-// Function used to check that of 'for_what' is specified, then 'required_option' is specified too.
-void option_dependency(const variables_map &_vm, const char *_for_what, const char *_required_option)
-{
-    if ( _vm.count(_for_what) && !_vm[_for_what].defaulted() && ( !_vm.count(_required_option) || _vm[_required_option].defaulted() ) )
-    {
-        string str("Command line parameter \"%1\" must be used with \"%2\""); // TODO: Move this message to the resource file
-        replace<string>( &str, "%1", _for_what );
-        replace<string>( &str, "%2", _required_option );
-        throw runtime_error( str );
-    }
-}
 
 // PROOFAgent's container of options
 typedef struct SOptions
@@ -72,8 +50,7 @@ typedef struct SOptions
     ECommand_t m_Command;
     string m_sPidfileDir;
     bool m_bDaemonize;
-}
-SOptions_t;
+} SOptions_t;
 
 void PrintVersion()
 {
@@ -162,7 +139,7 @@ int main( int argc, char *argv[] )
         if ( !ParseCmdLine( argc, argv, &Options ) )
             return erOK;
     }
-    catch (exception& e)
+    catch ( exception& e )
     {
         // TODO: Log me!
         cerr << e.what() << endl;
@@ -190,17 +167,16 @@ int main( int argc, char *argv[] )
         else
         {
             cout << "PROOFAgent is not running..." << endl;
-            ;
         }
 
         return erOK;
     }
 
     // Checking for "stop" option
-    if ( Options.m_Command == SOptions_t::Stop )
+    if ( SOptions_t::Stop == Options.m_Command )
     {
         // TODO: make wait for the process here to check for errors
-        pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
+        const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
         if ( pid_to_kill > 0 && IsProcessExist(pid_to_kill) )
         {
             cout
@@ -254,6 +230,7 @@ int main( int argc, char *argv[] )
         if ( sid < 0 )  // TODO:  Log the failure
             return ( erError );
     }
+
     // Main object - agent itself
     CPROOFAgent agent;
 
@@ -264,7 +241,6 @@ int main( int argc, char *argv[] )
         // Daemon-specific initialization goes here
         agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName );
 
-        int fd;
         if ( Options.m_bDaemonize )
         {
             // Change the current working directory
@@ -281,7 +257,7 @@ int main( int argc, char *argv[] )
 
             // Establish new open descriptors for stdin, stdout, and stderr. Even if
             //  we don't plan to use them, it is still a good idea to have them open.
-            fd = open("/dev/null", O_RDWR); // stdin - file handle 0.
+            int fd = open("/dev/null", O_RDWR); // stdin - file handle 0.
             dup(fd);                        // stdout - file handle 1.
             dup(fd);                        // stderr - file handle 2.
         }

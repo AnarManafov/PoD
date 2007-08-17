@@ -19,11 +19,11 @@
 <folderInfo id="com.redhat.eclipse.cdt.autotools.configuration.build.760565055.1529067221" name="/" resourcePath="">
 <toolChain id="com.redhat.eclipse.cdt.autotools.toolChain.29609052" name="Autotools Toolchain (Gnu)" superClass="com.redhat.eclipse.cdt.autotools.toolChain">
 <targetPlatform id="com.redhat.eclipse.cdt.autotools.toolChain.29609052.1314957612" name=""/>
-<builder autoBuildTarget="" buildPath="/home/anar/workspace/PROOFAgent/Release" cleanBuildTarget="" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="com.redhat.eclipse.cdt.autotools.toolchain.builder.966172720" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="Autotools Makefile Generator" superClass="com.redhat.eclipse.cdt.autotools.toolchain.builder"/>
+<builder autoBuildTarget="" buildPath="${workspace_loc:/PROOFAgent/Release}" cleanBuildTarget="" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="com.redhat.eclipse.cdt.autotools.toolchain.builder.966172720" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" name="Autotools Makefile Generator" superClass="com.redhat.eclipse.cdt.autotools.toolchain.builder"/>
 <tool command="configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.513633449" name="configure" superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure">
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.user.1710713327" name="User-specified configuration options" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=no" valueType="string"/>
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1784673807" name="Build directory" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="Release" valueType="string"/>
-<option id="com.redhat.eclipse.cdt.autotools.option.configure.prefix.1861168106" superClass="com.redhat.eclipse.cdt.autotools.option.configure.prefix" value="/home/anar/PROOFAgent" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.prefix.1861168106" name="Arch-independent install directory (--prefix)" superClass="com.redhat.eclipse.cdt.autotools.option.configure.prefix" value="/home/anar/PROOFAgent" valueType="string"/>
 </tool>
 </toolChain>
 </folderInfo>
@@ -378,7 +378,8 @@
 </target>
 </buildTargets>
 </storageModule>
-<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+
+
 
 <storageModule moduleId="scannerConfiguration">
 <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
@@ -628,6 +629,9 @@
 </scannerInfoProvider>
 </profile>
 </scannerConfigBuildInfo>
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
+<project-mappings/>
 </storageModule>
 </cconfiguration>
 <cconfiguration id="com.redhat.eclipse.cdt.autotools.configuration.build.1079239085">
@@ -1004,7 +1008,8 @@
 </target>
 </buildTargets>
 </storageModule>
-<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+
+
 
 <storageModule moduleId="scannerConfiguration">
 <autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile"/>
@@ -1254,6 +1259,9 @@
 </scannerInfoProvider>
 </profile>
 </scannerConfigBuildInfo>
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
+<project-mappings/>
 </storageModule>
 </cconfiguration>
 </storageModule>
