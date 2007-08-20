@@ -11,6 +11,11 @@
 AC_PREREQ(2.57)
 AC_INIT
 
+m4_include(custom_m4/debug.m4)
+m4_include(custom_m4/xerces.m4)
+m4_include(custom_m4/boost.m4)
+
+
 # Geting HEADS's revision number
 SVN_HEAD_REV=`svn info https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/ | grep "Revision: " | head -1 | awk -F: '{print $2}'`
 
@@ -24,74 +29,37 @@ AM_INIT_AUTOMAKE([proofagent], $VER)
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER([config.h])
 
-
 ## ----------------------------------------------------------------------
 ## --------------------------- >>> DEBUG/RELEASE Build <<< -----
 ## ----------------------------------------------------------------------
-## Check whether to build debug or not
-AC_MSG_CHECKING([whether to make a debug build])
-ENABLE_DEBUG=0
-AC_ARG_ENABLE(debug,
-    [  --enable-debug          build debug libraries [default=no]],
-    [ case "${enableval}" in
-         yes|"") ENABLE_DEBUG=1 ;;
-         *) ;;
-    esac],
-)
-AC_MSG_RESULT($ENABLE_DEBUG)
-AC_SUBST(ENABLE_DEBUG)
-if test "$ENABLE_DEBUG" = "1" ; then
-	CXXFLAGS="$CXXFLAGS -g3 -O0"
-else
-	CXXFLAGS="$CXXFLAGS -g0 -O2"
-fi
-
-
+is_debug=no
+AC_IS_DEBUG([], is_debug=yes, is_debug=no)
 
 AC_LANG([C++])
 AC_PROG_CXX
 
 AC_PROG_INSTALL
-
-
 ## -----------------------------------------------------------------------
-## ----------------------------- >>> XERCESC <<<----------------------------
+## ----------------------------- >>> XERCES <<<----------------------------
 ## -----------------------------------------------------------------------
-AC_MSG_CHECKING([for xercesc location])
-AC_ARG_WITH(xercesc-location,
-    [ --with-xercesc-location=<dir> Default is \$XERCESC_LOCATION],
-    xercesc_location="$withval",
-    xercesc_location="$XERCESC_LOCATION")
-if test -d "$xercesc_location" ; then
-    AC_MSG_RESULT([found $xercesc_location])
-    XERCESC_LOCATION=$xercesc_location
-elif test -d /opt/glite/externals ; then
-     AC_MSG_RESULT([found /opt/glite/externals])
-     XERCESC_LOCATION=/opt/glite/externals
-else
-    AC_MSG_ERROR([no such directory $glite_location])
-fi
+AC_XERCES([])
 
-LDFLAGS="$LDFLAGS -L$XERCESC_LOCATION/lib -lxerces-c"
-CPPFLAGS="$CPPFLAGS -I$XERCESC_LOCATION/include"
-
+LDFLAGS="$LDFLAGS $XERCESC_LIBS"
+CPPFLAGS="$CPPFLAGS $XERCESC_CFLAGS"
 ## -----------------------------------------------------------------------
 ## ----------------------------- >>> BOOST <<<----------------------------
 ## -----------------------------------------------------------------------
-AC_MSG_CHECKING([for BOOST location])
-AC_ARG_WITH(boost-location,
-    [ --with-boost-location=<dir> Default is \$BOOST_LOCATION],
-    boost_location="$withval",
-    boost_location="$BOOST_LOCATION")
-if test -d "$boost_location" ; then
-    AC_MSG_RESULT([found $boost_location])
-    BOOST_LOCATION=$boost_location
-else
-    AC_MSG_ERROR([no such directory $boost_location])
+have_boost=no
+AC_BOOST([], have_boost=yes, have_boost=no)
+AC_MSG_RESULT(["BOOST found $have_boost"])
+if test "$have_boost" = "no"; then
+  AC_MSG_ERROR([Cannot continue building])
 fi
 
-LDFLAGS="$LDFLAGS -L$BOOST_LOCATION/lib -lboost_thread -lboost_program_options"
-CPPFLAGS="$CPPFLAGS -I$BOOST_LOCATION/include"
+CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
+LDFLAGS="$LDFLAGS -L$BOOST_INSTALL_PATH/lib -lboost_thread -lboost_program_options"
+## -----------------------------------------------------------------------
+## -----------------------------------------------------------------------
 
 AC_CONFIG_FILES([Doxyfile
 Makefile
