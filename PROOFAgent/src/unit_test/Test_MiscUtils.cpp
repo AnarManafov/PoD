@@ -5,12 +5,12 @@
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
  
-        version number:   $LastChangedRevision$
-        created by:          Anar Manafov
-                                  2007-03-10
-        last changed by:   $LastChangedBy$ $LastChangedDate$
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2007-03-10
+        last changed by:    $LastChangedBy$ $LastChangedDate$
  
-        Copyright (c) 2006,2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 *************************************************************************/ 
 // BOOST: tests
 #include <boost/test/unit_test.hpp>
