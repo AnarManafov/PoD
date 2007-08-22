@@ -31,6 +31,23 @@ export ROOTSYS=/usr/ROOT/5.17.01
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
+# PROOFAgent
+PA_VERSION="proofagent-1.0.1.1218"
+echo "Downloading PROOAgent src..."
+`wget http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
+echo "Unpacking PROOFAgent src..."
+`tar -xzf $PA_VERSION.tar.gz` || exit 1
+echo "Creating PROOFAgent dir..."
+PA_DIR="$WD/PROOFAgent"
+`mkdir $PA_DIR`
+pushd "$WD/$PA_VERSION"
+echo "Configuring PROOFAgent..."
+./configure --prefix=$PA_DIR --with-xercesc-prefix=/opt/glite/externals || exit 1
+gmake install
+popd
+`cp $PA_DIR/bin/proofagent $WD` || exit 1
+
+
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
 if [ ! -x $WD/proofagent ]; then 
     chmod +x $WD/proofagent
