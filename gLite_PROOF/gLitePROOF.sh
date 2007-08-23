@@ -103,4 +103,3 @@ if [ -e "$proof_dir" ]; then
     echo "$proof_dir exists and will be deleted..."
     rm -rf $proof_dir
 fi
-
