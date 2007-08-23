@@ -5,7 +5,7 @@ VERSION = -0.0.4
 
 INCLUDEPATH = \
                 ./Include \
-		${GAW_LOCATION}/include/glite-api-wrapper \
+		${GAW_LOCATION}/include \
 		${GLITE_LOCATION}/include \
 		${GLITE_LOCATION}/externals/include \
 		${LCG_LOCATION}/include/lfc \

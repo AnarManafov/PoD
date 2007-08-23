@@ -19,8 +19,11 @@
 #include <QThread>
 #include <QtGui>
 
+// MiscCommon
+#include "gLiteHelper.h"
+
 // GAW
-#include "gLiteAPIWrapper.h"
+#include "glite-api-wrapper/gLiteAPIWrapper.h"
 
 class CJobSubmitter: public QThread
 {
@@ -30,8 +33,7 @@ class CJobSubmitter: public QThread
 
     public:
         CJobSubmitter( QObject *parent ):
-                QThread(parent),
-                m_JobsCount(0)
+                QThread(parent)
         {
             GAW::Instance().Init();
         }
@@ -41,40 +43,38 @@ class CJobSubmitter: public QThread
             if ( isRunning() )
                 terminate();
         }
-
-    public:
-        void set_jobs_count( int _Count )
-        {
-            m_JobsCount = _Count;
-        }
-
+        
     signals:
         void changeProgress( int _Val);
+        void changeNumberOfJobs( int _Val, const std::string &_ParentJobID );
 
     protected:
         void run()
         {
             emit changeProgress( 0 );
-            for ( size_t i = 0; i < m_JobsCount; ++i )
+
+            // Submit a Grid Job
+            //TODO: take jdl from GUI
+            try
             {
-                // Submit a Grid Job
-                //TODO: take jdl from GUI
-                try
-                {
-                    GAW::Instance().GetJobManager().DelegationCredential();
-                    GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl" );// TODO: check error
-                }
-                catch ( const std::exception &e )
-                {
-                    return;
-                }
-                emit changeProgress( i * 100 / m_JobsCount );
+                GAW::Instance().GetJobManager().DelegationCredential();
+                emit changeProgress( 30 );
+                
+                std::string m_LastJobID;
+                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &m_LastJobID );// TODO: check error
+                
+                // Retrieving a number of children of the parametric job
+                MiscCommon::StringVector_t jobs;
+                MiscCommon::gLite::CJobStatusObj(m_LastJobID).GetChildren( &jobs );
+                emit changeNumberOfJobs( jobs.size(), m_LastJobID );
             }
+            catch ( const std::exception &_e )
+            {
+                return;
+            }
+
             emit changeProgress( 100 );
         }
-
-    private:
-        size_t m_JobsCount;
 };
 
 #endif /*JOBSUBMITTER_H_*/

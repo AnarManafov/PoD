@@ -81,6 +81,12 @@ class CMainDlg: public QDialog
         }
         // Monitor List of Workers
         void on_chkShowWorkers_stateChanged( int _Stat );
+        
+        void setNumberOfJobs( int _Val, const std::string &_ParentJobID )
+        {
+          m_LastParentJobID = _ParentJobID;
+          setActiveWorkers( 0, _Val );
+        }
 
         // Setting a number of connected workers
         void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 )
@@ -109,6 +115,7 @@ class CMainDlg: public QDialog
         std::string m_CfgFileName;
         int m_SrvPort;
         JobSubmitterPtr_t m_JobSubmitter;
+        std::string m_LastParentJobID;
 };
 
 

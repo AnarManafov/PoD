@@ -58,6 +58,7 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
+    connect( m_JobSubmitter.get(), SIGNAL(changeNumberOfJobs(int)), this, SLOT(setNumberOfJobs(int, const string&)) );
 
     on_chkShowWorkers_stateChanged( Qt::Checked );
 
@@ -194,11 +195,8 @@ void CMainDlg::on_btnSubmitClient_clicked()
             return ;
         }
         // submit gLite jobs
-        m_JobSubmitter->set_jobs_count( m_ui.spinSubmitJobs->value() );
         m_JobSubmitter->start();
         m_ui.btnSubmitClient->setEnabled( false );
-
-        setActiveWorkers( 0, m_ui.spinSubmitJobs->value() );
     }
     else
     {
