@@ -27,7 +27,10 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
-export ROOTSYS=/usr/ROOT/5.17.01
+wget ftp://root.cern.ch/root/root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
+tar -xzvf root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
+
+export ROOTSYS="/$WD/root"
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
