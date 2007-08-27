@@ -20,6 +20,8 @@
 
 int main(int argc, char **argv)
 {
+    Q_INIT_RESOURCE(paconsole);
+
     QApplication app( argc, argv );
     CMainDlg dlg;
     dlg.show();

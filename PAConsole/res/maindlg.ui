@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>555</height>
+    <width>614</width>
+    <height>453</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -20,239 +20,90 @@
   <property name="windowTitle" >
    <string>PROOFAgent Management Console</string>
   </property>
-  <widget class="QGroupBox" name="groupBox_2" >
+  <widget class="QPushButton" name="closeButton" >
    <property name="geometry" >
     <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>381</width>
-     <height>301</height>
+     <x>530</x>
+     <y>420</y>
+     <width>75</width>
+     <height>27</height>
     </rect>
    </property>
-   <property name="title" >
-    <string>Worker(s)</string>
+   <property name="text" >
+    <string>Close</string>
    </property>
-   <widget class="QListWidget" name="lstClientsList" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>110</y>
-      <width>359</width>
-      <height>181</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="Line" name="line" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>64</y>
-      <width>361</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="orientation" >
-     <enum>Qt::Horizontal</enum>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnSubmitClient" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>25</y>
-      <width>75</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Submit</string>
-    </property>
-    <property name="checkable" >
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="chkShowWorkers" >
-    <property name="geometry" >
-     <rect>
-      <x>11</x>
-      <y>82</y>
-      <width>361</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Monitor connections </string>
-    </property>
-    <property name="checked" >
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QProgressBar" name="progressSubmittedJobs" >
-    <property name="geometry" >
-     <rect>
-      <x>100</x>
-      <y>27</y>
-      <width>271</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value" >
-     <number>0</number>
-    </property>
-    <property name="orientation" >
-     <enum>Qt::Horizontal</enum>
-    </property>
-    <property name="format" >
-     <string>%p% submitted</string>
-    </property>
-   </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox" >
+  <widget class="QListWidget" name="contentsWidget" >
    <property name="geometry" >
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>381</width>
-     <height>221</height>
+     <width>128</width>
+     <height>381</height>
     </rect>
    </property>
-   <property name="title" >
-    <string>Server</string>
+   <property name="minimumSize" >
+    <size>
+     <width>128</width>
+     <height>0</height>
+    </size>
    </property>
-   <widget class="QLineEdit" name="edtPIDDir" >
-    <property name="geometry" >
-     <rect>
-      <x>130</x>
-      <y>180</y>
-      <width>151</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>/tmp/</string>
-    </property>
-    <property name="readOnly" >
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3" >
-    <property name="geometry" >
-     <rect>
-      <x>12</x>
-      <y>184</y>
-      <width>107</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>PA's pid directory:</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="layoutWidget" >
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>271</width>
-      <height>154</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label" >
-       <property name="text" >
-        <string>Server's status:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" >
-      <widget class="QTextEdit" name="edtServerInfo" >
-       <property name="acceptDrops" >
-        <bool>false</bool>
-       </property>
-       <property name="lineWrapMode" >
-        <enum>QTextEdit::NoWrap</enum>
-       </property>
-       <property name="readOnly" >
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget" >
-    <property name="geometry" >
-     <rect>
-      <x>294</x>
-      <y>44</y>
-      <width>77</width>
-      <height>95</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item row="0" column="0" >
-      <widget class="QPushButton" name="btnStartServer" >
-       <property name="text" >
-        <string>St&amp;art</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" >
-      <widget class="QPushButton" name="btnStatusServer" >
-       <property name="text" >
-        <string>Stat&amp;us</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" >
-      <widget class="QPushButton" name="btnStopServer" >
-       <property name="text" >
-        <string>&amp;Stop</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="btnBrowsePIDDir" >
-    <property name="geometry" >
-     <rect>
-      <x>296</x>
-      <y>178</y>
-      <width>75</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Browse...</string>
-    </property>
-   </widget>
+   <property name="maximumSize" >
+    <size>
+     <width>128</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="iconSize" >
+    <size>
+     <width>96</width>
+     <height>84</height>
+    </size>
+   </property>
+   <property name="resizeMode" >
+    <enum>QListView::Adjust</enum>
+   </property>
+   <property name="spacing" >
+    <number>12</number>
+   </property>
+   <property name="viewMode" >
+    <enum>QListView::IconMode</enum>
+   </property>
+   <property name="currentRow" >
+    <number>-1</number>
+   </property>
+  </widget>
+  <widget class="QStackedWidget" name="pagesWidget" >
+   <property name="geometry" >
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>451</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="" />
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <tabstops>
-  <tabstop>btnStartServer</tabstop>
-  <tabstop>btnStopServer</tabstop>
-  <tabstop>btnStatusServer</tabstop>
-  <tabstop>edtServerInfo</tabstop>
-  <tabstop>edtPIDDir</tabstop>
-  <tabstop>btnBrowsePIDDir</tabstop>
-  <tabstop>btnSubmitClient</tabstop>
-  <tabstop>chkShowWorkers</tabstop>
-  <tabstop>lstClientsList</tabstop>
- </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainDlg</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>567</x>
+     <y>433</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>306</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

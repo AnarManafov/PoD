@@ -1,7 +1,7 @@
 TEMPLATE = app
 LANGUAGE = C++
 
-VERSION = -0.0.4
+VERSION = -1.0.0
 
 INCLUDEPATH = \
                 ./Include \
@@ -13,14 +13,27 @@ INCLUDEPATH = \
 
 HEADERS += \
                 src/MainDlg.h \
-		src/JobSubmitter.h
+		src/JobSubmitter.h \
+		src/ServerDlg.h \
+		src/GridDlg.h \
+		src/WorkersDlg.h
 
 SOURCES	+= \
                 src/MainDlg.cpp \
 		src/ServerInfo.cpp \
+		src/ServerDlg.cpp \
+		src/GridDlg.cpp \
+		src/WorkersDlg.cpp \
 		src/main.cpp
 				 	
-FORMS = res/maindlg.ui
+FORMS = \
+        res/maindlg.ui \
+        res/wgServer.ui \
+        res/wgGrid.ui \
+        res/wgWorkers.ui
+        
+
+RESOURCES += res/paconsole.qrc
 
 DESTDIR = Build
 
