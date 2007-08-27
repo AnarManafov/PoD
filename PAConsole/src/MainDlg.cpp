@@ -37,8 +37,8 @@ CMainDlg::CMainDlg(QDialog *_Parent): QDialog(_Parent)
     m_ui.contentsWidget->setCurrentRow( 0 );
     
 
-    connect( grid->GetJobSubmitter(), SIGNAL(changeProgress(int)), grid, SLOT(setProgress(int)) );
-    connect( grid->GetJobSubmitter(), SIGNAL(changeNumberOfJobs(int, const std::string&)), workers, SLOT(setNumberOfJobs(int, const std::string&)) );
+    connect( grid->getJobSubmitter(), SIGNAL(changeProgress(int)), grid, SLOT(setProgress(int)) );
+    connect( grid->getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), workers, SLOT(setNumberOfJobs(int)) );
 }
 
 void CMainDlg::createIcons()

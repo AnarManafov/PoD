@@ -52,9 +52,8 @@ class CWorkersDlg: public QWidget
         // Monitor List of Workers
         void on_chkShowWorkers_stateChanged( int _Stat );
 
-        void setNumberOfJobs( int _Val, const std::string &_ParentJobID )
+        void setNumberOfJobs( int _Val )
         {
-            m_LastParentJobID = _ParentJobID;
             setActiveWorkers( 0, _Val );
         }
 
@@ -82,7 +81,6 @@ class CWorkersDlg: public QWidget
 
         QTimer *m_Timer;
         std::string m_CfgFileName;
-        std::string m_LastParentJobID;
 };
 
 #endif /*WORKERSDLG_H_*/

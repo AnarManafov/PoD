@@ -43,10 +43,16 @@ class CJobSubmitter: public QThread
             if ( isRunning() )
                 terminate();
         }
-        
+
+    public:
+        const std::string &getLastJobID()
+        {
+            return m_LastJobID;
+        }
+
     signals:
         void changeProgress( int _Val);
-        void changeNumberOfJobs( int _Val, const std::string &_ParentJobID );
+        void changeNumberOfJobs( int _Val );
 
     protected:
         void run()
@@ -59,14 +65,17 @@ class CJobSubmitter: public QThread
             {
                 GAW::Instance().GetJobManager().DelegationCredential();
                 emit changeProgress( 30 );
-                
-                std::string m_LastJobID;
-                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &m_LastJobID );// TODO: check error
-                
+
+                std::string sLastJobID;
+                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &sLastJobID );// TODO: check error
+
                 // Retrieving a number of children of the parametric job
                 MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(m_LastJobID).GetChildren( &jobs );
-                emit changeNumberOfJobs( jobs.size(), m_LastJobID );
+                MiscCommon::gLite::CJobStatusObj(sLastJobID).GetChildren( &jobs );
+                emit changeNumberOfJobs( jobs.size() );
+                m_mutex.lock();
+                m_LastJobID = sLastJobID;
+                m_mutex.unlock();
             }
             catch ( const std::exception &_e )
             {
@@ -75,6 +84,10 @@ class CJobSubmitter: public QThread
 
             emit changeProgress( 100 );
         }
+
+    private:
+        std::string m_LastJobID;
+        QMutex m_mutex;
 };
 
 #endif /*JOBSUBMITTER_H_*/

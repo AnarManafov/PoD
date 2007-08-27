@@ -59,6 +59,29 @@
        <string>%p% submitted</string>
       </property>
      </widget>
+     <widget class="QTreeWidget" name="treeJobs" >
+      <property name="geometry" >
+       <rect>
+        <x>20</x>
+        <y>70</y>
+        <width>351</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="alternatingRowColors" >
+       <bool>false</bool>
+      </property>
+      <column>
+       <property name="text" >
+        <string>ID</string>
+       </property>
+      </column>
+      <column>
+       <property name="text" >
+        <string>Status</string>
+       </property>
+      </column>
+     </widget>
     </widget>
    </item>
   </layout>

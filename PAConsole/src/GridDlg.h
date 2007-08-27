@@ -35,10 +35,11 @@ class CGridDlg: public QWidget
         virtual ~CGridDlg();
 
     public:
-        CJobSubmitter *GetJobSubmitter()
+        CJobSubmitter *getJobSubmitter()
         {
             return m_JobSubmitter.get();
         }
+        void updateJobsTree();
 
     public slots:
         void on_btnSubmitClient_clicked();
