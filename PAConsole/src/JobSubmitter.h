@@ -16,7 +16,6 @@
 #define JOBSUBMITTER_H_
 
 // Qt
-#include <QThread>
 #include <QtGui>
 
 // MiscCommon
@@ -37,7 +36,6 @@ class CJobSubmitter: public QThread
         {
             GAW::Instance().Init();
         }
-
         ~CJobSubmitter()
         {
             if ( isRunning() )
@@ -53,21 +51,25 @@ class CJobSubmitter: public QThread
     signals:
         void changeProgress( int _Val);
         void changeNumberOfJobs( int _Val );
+        void sendThreadMsg( const QString &_Msg );
 
     protected:
         void run()
         {
             emit changeProgress( 0 );
+            m_mutex.lock();
+            m_LastJobID.clear();
+            m_mutex.unlock();
 
             // Submit a Grid Job
-            //TODO: take jdl from GUI
+            //TODO: take jdl from GUI or ???
             try
             {
                 GAW::Instance().GetJobManager().DelegationCredential();
                 emit changeProgress( 30 );
 
                 std::string sLastJobID;
-                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &sLastJobID );// TODO: check error
+                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &sLastJobID );
 
                 // Retrieving a number of children of the parametric job
                 MiscCommon::StringVector_t jobs;
@@ -79,6 +81,8 @@ class CJobSubmitter: public QThread
             }
             catch ( const std::exception &_e )
             {
+                emit sendThreadMsg( tr(_e.what()) );
+                emit changeProgress( 0 );
                 return;
             }
 

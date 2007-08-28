@@ -22,6 +22,8 @@
 // PAConsole
 #include "GridDlg.h"
 
+const size_t g_TimeoutRefreshrate = 5000;
+
 using namespace std;
 using namespace MiscCommon;
 using namespace MiscCommon::gLite;
@@ -33,11 +35,26 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
 
     m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
 
-    updateJobsTree(); // TODO: set this method to timer events or refresh btn
+    m_Timer = new QTimer(this);
+    connect( m_Timer, SIGNAL(timeout()), this, SLOT(updateJobsTree()) );
+    m_Timer->start( g_TimeoutRefreshrate );
+
+    connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
+    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
 }
 
 CGridDlg::~CGridDlg()
 {
+    if ( m_Timer )
+    {
+        m_Timer->stop();
+        delete m_Timer;
+    }
+}
+
+void CGridDlg::recieveThreadMsg( const QString &_Msg)
+{
+    QMessageBox::critical( this, tr("PROOFAgent Console"), _Msg );
 }
 
 void CGridDlg::on_btnSubmitClient_clicked()
@@ -60,7 +77,10 @@ void CGridDlg::on_btnSubmitClient_clicked()
 void CGridDlg::updateJobsTree()
 {
     m_ui.treeJobs->clear();
-    string sLastJobID( "https://grid25.gsi.de:9000/ZorYI4-d-rm2MghGEUsL1Q" );//m_JobSubmitter->getLastJobID() );
+    string sLastJobID( m_JobSubmitter->getLastJobID() );
+
+    if ( sLastJobID.empty() )
+        return;
 
     QTreeWidgetItem *parentJob = new QTreeWidgetItem( m_ui.treeJobs );
     parentJob->setText( 0, sLastJobID.c_str() );
@@ -77,7 +97,7 @@ void CGridDlg::updateJobsTree()
             string status;
             CGLiteAPIWrapper::Instance().GetJobManager().JobStatus( *iter, &status );
 
-            QTreeWidgetItem *item = new QTreeWidgetItem( parentJob );
+            QTreeWidgetItem *item = new QTreeWidgetItem( parentJob ); // TODO: Investigate a memory management of QT objects. Do we leek here???
             item->setText( 0, iter->c_str() );
             item->setText( 1, status.c_str() );
         }
@@ -86,6 +106,6 @@ void CGridDlg::updateJobsTree()
     }
     catch ( const exception &_e)
     {
-        // TODO: Msg me!
+        // TODO: Msg me! or..?
     }
 }

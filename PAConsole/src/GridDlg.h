@@ -39,11 +39,11 @@ class CGridDlg: public QWidget
         {
             return m_JobSubmitter.get();
         }
-        void updateJobsTree();
 
     public slots:
         void on_btnSubmitClient_clicked();
-
+        void updateJobsTree();
+        void recieveThreadMsg( const QString &_Msg);
         // Progress
         void setProgress( int _Val )
         {
@@ -55,6 +55,7 @@ class CGridDlg: public QWidget
     private:
         Ui::wgGrid m_ui;
 
+        QTimer *m_Timer;
         JobSubmitterPtr_t m_JobSubmitter;
 };
 

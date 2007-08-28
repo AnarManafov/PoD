@@ -26,18 +26,15 @@ CMainDlg::CMainDlg(QDialog *_Parent): QDialog(_Parent)
 {
     m_ui.setupUi( this );
     
-    CServerDlg *server = new CServerDlg();    
     CGridDlg *grid = new CGridDlg();
     CWorkersDlg *workers = new CWorkersDlg(); 
-    m_ui.pagesWidget->insertWidget( 0, server );
+    m_ui.pagesWidget->insertWidget( 0, new CServerDlg );
     m_ui.pagesWidget->insertWidget( 1, grid );
     m_ui.pagesWidget->insertWidget( 2, workers );
     
     createIcons();
     m_ui.contentsWidget->setCurrentRow( 0 );
     
-
-    connect( grid->getJobSubmitter(), SIGNAL(changeProgress(int)), grid, SLOT(setProgress(int)) );
     connect( grid->getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), workers, SLOT(setNumberOfJobs(int)) );
 }
 

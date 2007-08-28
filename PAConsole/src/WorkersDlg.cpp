@@ -28,7 +28,7 @@
 // PAConsole
 #include "WorkersDlg.h"
 
-const size_t g_TimeoutCheckPROOFCONF = 2500;
+const size_t g_TimeoutCheckPROOFCONF = 5000;
 
 using namespace std;
 using namespace MiscCommon;
@@ -69,7 +69,7 @@ void CWorkersDlg::getPROOFCfg( string *_FileName )
     if ( !_FileName )
         return ;
 
-    QFile file("./proofagent.cfg.xml");
+    QFile file( tr("./proofagent.cfg.xml") );
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         QMessageBox::warning(this, tr("PROOFAgent Console"),
@@ -93,12 +93,12 @@ void CWorkersDlg::getPROOFCfg( string *_FileName )
                                  .arg(errorStr));
         return ;
     }
-    QDomNodeList server = domDocument.elementsByTagName("server");
-    QDomNode node = server.at(0).namedItem("config");
+    QDomNodeList server = domDocument.elementsByTagName( tr("server") );
+    QDomNode node = server.at(0).namedItem( tr("config") );
     if ( node.isNull())
         return ; // TODO: Msg me!
 
-    QDomNode cfg = node.attributes().namedItem("proof_cfg_path");
+    QDomNode cfg = node.attributes().namedItem( tr("proof_cfg_path") );
     if ( cfg.isNull())
         return ; // TODO: Msg me!
 
