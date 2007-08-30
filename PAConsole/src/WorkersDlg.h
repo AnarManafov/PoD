@@ -78,7 +78,6 @@ class CWorkersDlg: public QWidget
 
     private:
         Ui::wgWorkers m_ui;
-
         QTimer *m_Timer;
         std::string m_CfgFileName;
 };

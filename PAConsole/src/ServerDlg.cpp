@@ -59,13 +59,10 @@ CServerDlg::~CServerDlg()
 
 void CServerDlg::on_btnStatusServer_clicked()
 {
-    CServerInfo si;
-    const pid_t pidXrootD = si.IsXROOTDRunning();
-    const pid_t pidPA = si.IsPROOFAgentRunning();
-
-    const QColor c = ( !pidXrootD || !pidPA ) ? QColor(255, 0, 0) : QColor(0, 0, 255);
+    const QColor c = ( IsRunning() ) ? QColor(0, 0, 255) : QColor(255, 0, 0);
     m_ui.edtServerInfo->setTextColor( c );
 
+    CServerInfo si;
     stringstream ss;
     ss
     << si.GetXROOTDInfo() << "\n"
@@ -74,64 +71,58 @@ void CServerDlg::on_btnStatusServer_clicked()
     m_ui.edtServerInfo->setText( QString(ss.str().c_str()) );
 }
 
-void CServerDlg::on_btnStartServer_clicked()
+void CServerDlg::Stop()
 {
-    CServerInfo si;
-    pid_t pidXrootD = si.IsXROOTDRunning();
-    pid_t pidPA = si.IsPROOFAgentRunning();
-    if ( pidXrootD || pidPA )
-    {
-        QMessageBox::information(this, tr("PROOFAgent Console"), tr("<p>One or more components of the Server are running!<p> Please stop the Server first.") );
-        return ;
-    }
+    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
+    system( cmd.c_str() );
+}
 
+void CServerDlg::Start()
+{
     const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" start");
     system( cmd.c_str() );
-    pidXrootD = si.IsXROOTDRunning();
-    pidPA = si.IsPROOFAgentRunning();
-    if ( !pidXrootD || !pidPA )
-    {
+}
+
+bool CServerDlg::IsRunning()
+{
+    CServerInfo si;
+    const pid_t pidXrootD = si.IsXROOTDRunning();
+    const pid_t pidPA = si.IsPROOFAgentRunning();
+    return  (pidXrootD && pidPA);
+}
+
+void CServerDlg::on_btnStartServer_clicked()
+{
+    if ( IsRunning() )
+        Stop();
+    else
+        Start();
+
+    if ( !IsRunning() )
         QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while starting the Server!") );
-        return ;
-    }
 
     on_btnStatusServer_clicked();
 }
 
 void CServerDlg::on_btnStopServer_clicked()
 {
-    CServerInfo si;
-    pid_t pidXrootD = si.IsXROOTDRunning();
-    pid_t pidPA = si.IsPROOFAgentRunning();
-    if ( !pidXrootD && !pidPA )
-        return ;
+    if ( !IsRunning() )
+        return;
 
-    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
-    system( cmd.c_str() );
-    pidXrootD = si.IsXROOTDRunning();
-    pidPA = si.IsPROOFAgentRunning();
-    if ( pidXrootD || pidPA )
-    {
+    Stop();
+    if ( IsRunning() )
         QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while stopping the Server!") );
-        return ;
-    }
-
-    /*    // Stoping Clients as well
-        if ( m_ui.btnSubmitClient->isChecked() )
-            m_ui.btnSubmitClient->click();
-        // cleaning Clients list box
-        m_ui.lstClientsList->clear();*/
 
     on_btnStatusServer_clicked();
 }
 
 void CServerDlg::on_btnBrowsePIDDir_clicked()
 {
-    QString directory = QFileDialog::getExistingDirectory(this,
-                        tr("Select pid directory of PROOFAgent"),
-                        m_ui.edtPIDDir->text(),
-                        QFileDialog::DontResolveSymlinks
-                        | QFileDialog::ShowDirsOnly);
+    const QString directory = QFileDialog::getExistingDirectory(this,
+                              tr("Select pid directory of PROOFAgent"),
+                              m_ui.edtPIDDir->text(),
+                              QFileDialog::DontResolveSymlinks
+                              | QFileDialog::ShowDirsOnly);
     if (!directory.isEmpty())
         m_ui.edtPIDDir->setText(directory);
 }

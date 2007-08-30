@@ -39,6 +39,9 @@ class CServerDlg: public QWidget
 
     private:
         void getSrvPort( int *_Port );
+        void Start();
+        void Stop();
+        bool IsRunning();
 
     private:
         Ui::wgServer m_ui;

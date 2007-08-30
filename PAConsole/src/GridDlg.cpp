@@ -40,7 +40,7 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     m_Timer->start( g_TimeoutRefreshrate );
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
-    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
+    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );    
 }
 
 CGridDlg::~CGridDlg()
@@ -55,12 +55,19 @@ CGridDlg::~CGridDlg()
 void CGridDlg::recieveThreadMsg( const QString &_Msg)
 {
     QMessageBox::critical( this, tr("PROOFAgent Console"), _Msg );
+    m_ui.btnSubmitClient->setEnabled( true );
 }
 
 void CGridDlg::on_btnSubmitClient_clicked()
 {
     if ( !m_JobSubmitter->isRunning() )
     {
+        if( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
+        {
+          QMessageBox::critical( this, tr("PROOFAgent Console"), tr("File\n\"%1\"\ndoesn't exist!").arg(m_ui.edtJDLFileName->text()) );
+          return;
+        }
+        m_JobSubmitter->setJDLFileName( m_ui.edtJDLFileName->text().toAscii().data() );
         // submit gLite jobs
         m_JobSubmitter->start();
         m_ui.btnSubmitClient->setEnabled( false );
@@ -108,4 +115,15 @@ void CGridDlg::updateJobsTree()
     {
         // TODO: Msg me! or..?
     }
+}
+
+void CGridDlg::on_btnBrowseJDL_clicked()
+{
+    const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
+    const QString filename = QFileDialog::getOpenFileName(this,
+                             tr("Select a jdl file"),
+                             dir,
+                             tr("JDL Files (*.jdl)"));
+    if ( QFileInfo(filename).exists() )
+        m_ui.edtJDLFileName->setText(filename);
 }

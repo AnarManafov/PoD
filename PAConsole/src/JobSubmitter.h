@@ -47,6 +47,10 @@ class CJobSubmitter: public QThread
         {
             return m_LastJobID;
         }
+        void setJDLFileName( const std::string &_JDLfilename )
+        {
+          m_JDLfilename = _JDLfilename;
+        }
 
     signals:
         void changeProgress( int _Val);
@@ -69,7 +73,7 @@ class CJobSubmitter: public QThread
                 emit changeProgress( 30 );
 
                 std::string sLastJobID;
-                GAW::Instance().GetJobManager().JobSubmit( "gLitePROOF.jdl", &sLastJobID );
+                GAW::Instance().GetJobManager().JobSubmit( m_JDLfilename.c_str(), &sLastJobID );
 
                 // Retrieving a number of children of the parametric job
                 MiscCommon::StringVector_t jobs;
@@ -92,6 +96,7 @@ class CJobSubmitter: public QThread
     private:
         std::string m_LastJobID;
         QMutex m_mutex;
+        std::string m_JDLfilename;
 };
 
 #endif /*JOBSUBMITTER_H_*/

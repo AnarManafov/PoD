@@ -24,35 +24,58 @@
      <property name="title" >
       <string>Worker(s)</string>
      </property>
-     <widget class="QListWidget" name="lstClientsList" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>359</width>
-        <height>181</height>
-       </rect>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
       </property>
-     </widget>
-     <widget class="QCheckBox" name="chkShowWorkers" >
-      <property name="geometry" >
-       <rect>
-        <x>10</x>
-        <y>20</y>
-        <width>361</width>
-        <height>22</height>
-       </rect>
+      <property name="spacing" >
+       <number>6</number>
       </property>
-      <property name="text" >
-       <string>Monitor connections </string>
-      </property>
-      <property name="checked" >
-       <bool>true</bool>
-      </property>
-     </widget>
+      <item row="0" column="0" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="0" >
+         <widget class="QCheckBox" name="chkShowWorkers" >
+          <property name="text" >
+           <string>Monitor connections </string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QListWidget" name="lstClientsList" />
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
+  <widget class="QWidget" name="" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <property name="margin" >
+     <number>0</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>

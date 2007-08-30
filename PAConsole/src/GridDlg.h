@@ -51,10 +51,10 @@ class CGridDlg: public QWidget
                 m_ui.btnSubmitClient->setEnabled( true );
             m_ui.progressSubmittedJobs->setValue( _Val );
         }
+        void on_btnBrowseJDL_clicked();
 
     private:
         Ui::wgGrid m_ui;
-
         QTimer *m_Timer;
         JobSubmitterPtr_t m_JobSubmitter;
 };
