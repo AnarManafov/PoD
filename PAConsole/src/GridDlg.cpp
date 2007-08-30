@@ -40,7 +40,9 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     m_Timer->start( g_TimeoutRefreshrate );
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
-    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );    
+    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
+    
+    createActions();
 }
 
 CGridDlg::~CGridDlg()
@@ -126,4 +128,24 @@ void CGridDlg::on_btnBrowseJDL_clicked()
                              tr("JDL Files (*.jdl)"));
     if ( QFileInfo(filename).exists() )
         m_ui.edtJDLFileName->setText(filename);
+}
+
+void CGridDlg::createActions()
+{
+  copyJobIDAct = new QAction(tr("&Copy JobID"), this);
+  copyJobIDAct->setShortcut(tr("Ctrl+C"));
+  copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
+  connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
+}
+
+void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
+{
+  // Checking that *treeJobs* has been selected
+  QPoint pos = event->globalPos();
+  if( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
+    return;
+  
+  QMenu menu(this);
+  menu.addAction(copyJobIDAct);
+  menu.exec(event->globalPos());
 }

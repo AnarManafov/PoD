@@ -151,6 +151,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btnSubmitClient</tabstop>
+  <tabstop>edtJDLFileName</tabstop>
+  <tabstop>btnBrowseJDL</tabstop>
+  <tabstop>treeJobs</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

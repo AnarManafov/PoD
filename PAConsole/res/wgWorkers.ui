@@ -77,6 +77,10 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>chkShowWorkers</tabstop>
+  <tabstop>lstClientsList</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

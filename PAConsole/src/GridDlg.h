@@ -52,11 +52,23 @@ class CGridDlg: public QWidget
             m_ui.progressSubmittedJobs->setValue( _Val );
         }
         void on_btnBrowseJDL_clicked();
+        
+        private slots:
+        void copyJobID()
+        {        
+        }
+
+    protected:
+        void contextMenuEvent( QContextMenuEvent *event );
+
+    private:
+        void createActions();
 
     private:
         Ui::wgGrid m_ui;
         QTimer *m_Timer;
         JobSubmitterPtr_t m_JobSubmitter;
+        QAction *copyJobIDAct;
 };
 
 #endif /*GRIDDLG_H_*/
