@@ -41,8 +41,10 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
 
     connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
     connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
-    
+
     createActions();
+    
+    clipboard = QApplication::clipboard();
 }
 
 CGridDlg::~CGridDlg()
@@ -64,10 +66,10 @@ void CGridDlg::on_btnSubmitClient_clicked()
 {
     if ( !m_JobSubmitter->isRunning() )
     {
-        if( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
+        if ( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
         {
-          QMessageBox::critical( this, tr("PROOFAgent Console"), tr("File\n\"%1\"\ndoesn't exist!").arg(m_ui.edtJDLFileName->text()) );
-          return;
+            QMessageBox::critical( this, tr("PROOFAgent Console"), tr("File\n\"%1\"\ndoesn't exist!").arg(m_ui.edtJDLFileName->text()) );
+            return;
         }
         m_JobSubmitter->setJDLFileName( m_ui.edtJDLFileName->text().toAscii().data() );
         // submit gLite jobs
@@ -85,38 +87,15 @@ void CGridDlg::on_btnSubmitClient_clicked()
 
 void CGridDlg::updateJobsTree()
 {
-    m_ui.treeJobs->clear();
-    string sLastJobID( m_JobSubmitter->getLastJobID() );
-
+    const string sLastJobID( m_JobSubmitter->getLastJobID() );
     if ( sLastJobID.empty() )
         return;
 
-    QTreeWidgetItem *parentJob = new QTreeWidgetItem( m_ui.treeJobs );
-    parentJob->setText( 0, sLastJobID.c_str() );
+    if ( m_TreeItems.GetParentJobID() != sLastJobID )
+        m_TreeItems.Reset(sLastJobID, m_ui.treeJobs);
 
-    try
-    {
-        StringVector_t jobs;
-        CJobStatusObj(sLastJobID).GetChildren( &jobs );
+    m_TreeItems.Update();
 
-        StringVector_t::const_iterator iter = jobs.begin();
-        StringVector_t::const_iterator iter_end = jobs.end();
-        for (; iter != iter_end; ++iter)
-        {
-            string status;
-            CGLiteAPIWrapper::Instance().GetJobManager().JobStatus( *iter, &status );
-
-            QTreeWidgetItem *item = new QTreeWidgetItem( parentJob ); // TODO: Investigate a memory management of QT objects. Do we leek here???
-            item->setText( 0, iter->c_str() );
-            item->setText( 1, status.c_str() );
-        }
-        m_ui.treeJobs->setColumnWidth( 0, 260 );
-        m_ui.treeJobs->expandAll();
-    }
-    catch ( const exception &_e)
-    {
-        // TODO: Msg me! or..?
-    }
 }
 
 void CGridDlg::on_btnBrowseJDL_clicked()
@@ -132,20 +111,37 @@ void CGridDlg::on_btnBrowseJDL_clicked()
 
 void CGridDlg::createActions()
 {
-  copyJobIDAct = new QAction(tr("&Copy JobID"), this);
-  copyJobIDAct->setShortcut(tr("Ctrl+C"));
-  copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
-  connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
+    copyJobIDAct = new QAction(tr("&Copy JobID"), this);
+    copyJobIDAct->setShortcut(tr("Ctrl+C"));
+    copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
+    connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 {
-  // Checking that *treeJobs* has been selected
-  QPoint pos = event->globalPos();
-  if( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
-    return;
-  
-  QMenu menu(this);
-  menu.addAction(copyJobIDAct);
-  menu.exec(event->globalPos());
+    // Checking that *treeJobs* has been selected
+    QPoint pos = event->globalPos();
+    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
+        return;
+
+    QMenu menu(this);
+    menu.addAction(copyJobIDAct);
+    menu.exec(event->globalPos());
+}
+
+void CGridDlg::copyJobID() const
+{
+    // Copy selected JobID to clipboard
+    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
+    clipboard->setText( item->text(0), QClipboard::Clipboard);
+    clipboard->setText( item->text(0), QClipboard::Selection);
+}
+
+void CGridDlg::setProgress( int _Val )
+{
+    if ( 100 == _Val )
+        m_ui.btnSubmitClient->setEnabled( true );
+    m_ui.progressSubmittedJobs->setValue( _Val );
 }

@@ -118,13 +118,13 @@ void CWorkersDlg::update()
          custom_istream_iterator<string>(),
          back_inserter(vec));
 
-    int cur_sel = m_ui.lstClientsList->currentRow();
+    const int cur_sel = m_ui.lstClientsList->currentRow();
     m_ui.lstClientsList->clear();
 
     // Reading only comment blocks of proof.conf
     const LPCTSTR chCmntSign("#");
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                    SFindComment<string>(chCmntSign) );
+                                          SFindComment<string>(chCmntSign) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
