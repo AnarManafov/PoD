@@ -23,89 +23,9 @@
 
 // PAConsole
 #include "JobSubmitter.h"
+#include "TreeItemContainer.h"
 
 typedef std::auto_ptr<CJobSubmitter> JobSubmitterPtr_t;
-
-class CItemContainer
-{
-        typedef std::map<std::string, QTreeWidgetItem *> container_t;
-
-    public:
-        void Reset( const std::string &_ParentJobID, QTreeWidget *_Tree )
-        {
-            m_ParentJobID = _ParentJobID;
-            m_Tree = _Tree;
-            m_Tree->clear();
-            m_Children.clear();
-
-            m_ParentJobItem = new QTreeWidgetItem( _Tree );
-            m_ParentJobItem->setText( 0, m_ParentJobID.c_str() );
-
-            try
-            {
-                MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
-                std::for_each( jobs.begin(), jobs.end(),
-                               std::bind1st(std::mem_fun(&CItemContainer::addItem), this) );
-
-                _Tree->setColumnWidth( 0, 260 );
-                _Tree->expandAll();
-            }
-            catch ( const std::exception &_e)
-            {
-            }
-        }
-        void Update()
-        {
-            try
-            {
-                MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
-                std::for_each( jobs.begin(), jobs.end(),
-                               std::bind1st(std::mem_fun(&CItemContainer::updateItem), this) );
-            }
-            catch ( const std::exception &_e)
-            {
-            }
-        }
-        const std::string &GetParentJobID()
-        {
-            return m_ParentJobID;
-        }
-
-    private:
-        void addItem ( std::string _JobID )
-        {
-            QTreeWidgetItem *item( new QTreeWidgetItem(m_ParentJobItem) );
-            item->setText( 0, _JobID.c_str() );
-            item->setText( 1, getJobStatus(_JobID).c_str() );
-            m_Children.insert( std::make_pair(_JobID, item) );
-        }
-
-        void updateItem( std::string _JobID )
-        {
-            container_t::iterator map_iter = m_Children.find( _JobID );
-            if ( m_Children.end() != map_iter )
-                map_iter->second->setText( 1, getJobStatus(_JobID).c_str() );
-            else
-            {
-                // TODO: add element or assert?
-            }
-        }
-        
-        std::string getJobStatus( const std::string &_JobID )
-        {
-          std::string status;
-          glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobStatus( _JobID, &status );
-          return status;
-        }
-
-    private:
-        std::string m_ParentJobID;
-        QTreeWidget *m_Tree;
-        QTreeWidgetItem *m_ParentJobItem;
-        container_t m_Children;
-};
 
 class CGridDlg: public QWidget
 {
@@ -142,7 +62,7 @@ class CGridDlg: public QWidget
         QTimer *m_Timer;
         JobSubmitterPtr_t m_JobSubmitter;
         QAction *copyJobIDAct;
-        CItemContainer m_TreeItems;
+        CTreeItemContainer m_TreeItems;
         QClipboard *clipboard;
 };
 

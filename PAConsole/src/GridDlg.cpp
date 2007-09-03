@@ -16,9 +16,6 @@
 #include <QWidget>
 #include <QTreeWidget>
 
-// GAW
-#include "glite-api-wrapper/gLiteAPIWrapper.h"
-
 // PAConsole
 #include "GridDlg.h"
 
@@ -43,7 +40,7 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
 
     createActions();
-    
+
     clipboard = QApplication::clipboard();
 }
 
@@ -87,15 +84,7 @@ void CGridDlg::on_btnSubmitClient_clicked()
 
 void CGridDlg::updateJobsTree()
 {
-    const string sLastJobID( m_JobSubmitter->getLastJobID() );
-    if ( sLastJobID.empty() )
-        return;
-
-    if ( m_TreeItems.GetParentJobID() != sLastJobID )
-        m_TreeItems.Reset(sLastJobID, m_ui.treeJobs);
-
-    m_TreeItems.Update();
-
+    m_TreeItems.update( m_JobSubmitter->getLastJobID(), m_ui.treeJobs );
 }
 
 void CGridDlg::on_btnBrowseJDL_clicked()
