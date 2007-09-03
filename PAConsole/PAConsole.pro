@@ -16,7 +16,8 @@ HEADERS += \
 		src/JobSubmitter.h \
 		src/ServerDlg.h \
 		src/GridDlg.h \
-		src/WorkersDlg.h
+		src/WorkersDlg.h \
+		src/TreeItemContainer.h
 
 SOURCES	+= \
                 src/MainDlg.cpp \
