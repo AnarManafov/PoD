@@ -1,0 +1,55 @@
+#/************************************************************************/
+#/**
+# * @file gLitePROOF.jdl
+# * @brief $$File comment$$
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        version number:    $LastChangedRevision: 1230 $
+#        created by:        Anar Manafov
+#                           2007-05-15
+#        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-08-30 15:59:43 +0200 (Thu, 30 Aug 2007) $
+#
+#        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+#*************************************************************************/
+
+#
+# glite-job-submit -r grid14.gsi.de:2119/blah-pbs-short gLitePROOF.jdl
+#
+
+[
+	Type = "job";
+	JobType = "parametric";
+	VirtualOrganisation = "dgtest";
+	
+	Rank = 0;
+	Requirements = (other.GlueCEStateStatus == "Production") && (other.GlueCEUniqueId == "dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq") && (other.GlueHostNetworkAdapterOutboundIP == true);
+	
+	Parameters = 1;
+	ParameterStart = 0;
+	ParameterStep = 1;
+
+	Executable = "gLitePROOF_FZK.sh";
+
+	StdOutput = "gLitePROOF.out";
+	StdError = "gLitePROOF.err";
+	OutputSandbox = {
+			   "gLitePROOF.out",
+			   "gLitePROOF.err",
+			   "xpd.log",
+			   "proofagent.client.log",
+			   "config.log"
+			};
+	
+# disable job re-submission in case of failure
+	RetryCount = 0; 
+
+	InputSandbox = {
+		          "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/gLitePROOF_FZK.sh",
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/xpd.cf",
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent.cfg.xml",
+			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/root_v5.16.00.Linux.slc4.gcc3.4.tar.gz",
+                          "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent-1.0.1.1218.tar.gz"
+		       };
+]
+

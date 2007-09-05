@@ -1,6 +1,16 @@
->>> Send the gLitePROOF job <<<
+>>> FZK Site info <<<
 
-glite-job-submit -r grid14.gsi.de:2119/blah-pbs-short gLitePROOF.jdl
+VO: dgtest (or hepcg)
+
+WMP endpoint: https://dgrid-rb.fzk.de:7443/glite_wms_wmproxy_server
+
+CE: dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq
+
+Requirements = (other.GlueCEStateStatus == "Production") && (other.GlueCEUniqueId == "
+dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq") && (other.GlueHostNetworkAdapterOutboundIP ==
+true)
+
+
 
 
 >>> Start xroot redirector <<<

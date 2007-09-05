@@ -7,10 +7,10 @@
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
-#        version number:    $LastChangedRevision$
+#        version number:    $LastChangedRevision: 1230 $
 #        created by:        Anar Manafov
 #                           2007-05-15
-#        last changed by:   $LastChangedBy$ $LastChangedDate$
+#        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-08-30 15:59:43 +0200 (Thu, 30 Aug 2007) $
 #
 #        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 #*************************************************************************/
@@ -27,8 +27,8 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
-wget --tries=2 ftp://root.cern.ch/root/root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
-tar -xzvf root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
+#wget --tries=2 ftp://root.cern.ch/root/root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
+tar -xzvf root_v5.16.00.Linux.slc4.gcc3.4.tar.gz || exit 1
 
 export ROOTSYS="/$WD/root"
 export PATH=$ROOTSYS/bin:$PATH
@@ -36,8 +36,8 @@ export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
 # PROOFAgent
 PA_VERSION="proofagent-1.0.1.1218"
-echo "Downloading PROOAgent src..."
-`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
+#echo "Downloading PROOAgent src..."
+#`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
 echo "Unpacking PROOFAgent src..."
 `tar -xzf $PA_VERSION.tar.gz` || exit 1
 echo "Creating PROOFAgent dir..."
@@ -45,7 +45,7 @@ PA_DIR="$WD/PROOFAgent"
 `mkdir $PA_DIR`
 pushd "$WD/$PA_VERSION"
 echo "Configuring PROOFAgent..."
-./configure --prefix=$PA_DIR --with-xercesc-prefix=/opt/glite/externals
+./configure --prefix=$PA_DIR --with-xercesc-prefix=/$GLITE_LOCATION/externals
 
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
@@ -54,6 +54,8 @@ else
     cp "config.log" "$WD"
     exit 1
 fi
+
+
 
 gmake install
 popd
