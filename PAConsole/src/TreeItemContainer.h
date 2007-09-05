@@ -44,9 +44,10 @@ class CTreeItemContainer
 
             m_ParentJobItem = new QTreeWidgetItem( _Tree );
             m_ParentJobItem->setText( 0, m_ParentJobID.c_str() );
-
             try
             {
+                m_ParentJobItem->setText( 1, getJobStatus(m_ParentJobID).c_str() );
+              
                 MiscCommon::StringVector_t jobs;
                 MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
                 std::for_each( jobs.begin(), jobs.end(),
@@ -64,6 +65,8 @@ class CTreeItemContainer
         {
             try
             {
+                m_ParentJobItem->setText( 1, getJobStatus(m_ParentJobID).c_str() );
+                
                 MiscCommon::StringVector_t jobs;
                 MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
                 std::for_each( jobs.begin(), jobs.end(),
