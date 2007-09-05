@@ -27,5 +27,5 @@ source /home/anar/GAW/bin/env.sh
 
 rm -rf Makefile
 $QTDIR/bin/qmake PAConsole.pro
-gmake clean
+gmake distclean
 gmake
