@@ -163,7 +163,7 @@ void CGridDlg::cancelJob()
     }
     catch( const exception &_e )
     {
-    	const string msg( "Can't cancel the job.\n"+_e.what() );
+    	const string msg( string("Can't cancel the job.\n") + _e.what() );
     	QMessageBox::critical( this, tr("PROOFAgent Console"), tr(msg.c_str()) ); 
     }
 }
