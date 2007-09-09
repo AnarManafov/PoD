@@ -158,7 +158,7 @@ void CGridDlg::cancelJob()
     
     try
     {
-    	glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
+    	CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
     }
     catch( const exception &_e )
     {    	
