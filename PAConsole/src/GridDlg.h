@@ -50,6 +50,7 @@ class CGridDlg: public QWidget
 
     private slots:
         void copyJobID() const;
+        void cancelJob();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
@@ -62,6 +63,7 @@ class CGridDlg: public QWidget
         QTimer *m_Timer;
         JobSubmitterPtr_t m_JobSubmitter;
         QAction *copyJobIDAct;
+        QAction *cancelJobAct;
         CTreeItemContainer m_TreeItems;
         QClipboard *clipboard;
 };

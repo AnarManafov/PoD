@@ -100,10 +100,16 @@ void CGridDlg::on_btnBrowseJDL_clicked()
 
 void CGridDlg::createActions()
 {
+	// COPY Job ID
     copyJobIDAct = new QAction(tr("&Copy JobID"), this);
     copyJobIDAct->setShortcut(tr("Ctrl+C"));
     copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
     connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
+    // CANCEL Job
+    cancelJobAct = new QAction(tr("Canc&el Job"), this);
+    cancelJobAct->setShortcut(tr("Ctrl+E"));
+    cancelJobAct->setStatusTip(tr("Cancel selected Jod"));
+    connect( cancelJobAct, SIGNAL(triggered()), this, SLOT(cancelJob()) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
@@ -112,9 +118,18 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
     QPoint pos = event->globalPos();
     if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
         return;
+    
+    // We need to disable menu items when no jobID is selected
+    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
 
     QMenu menu(this);
     menu.addAction(copyJobIDAct);
+    copyJobIDAct->setEnabled( item );
+    
+    menu.addSeparator();
+    menu.addAction(cancelJobAct);
+    cancelJobAct->setEnabled( item );
+    
     menu.exec(event->globalPos());
 }
 
@@ -126,6 +141,23 @@ void CGridDlg::copyJobID() const
         return;
     clipboard->setText( item->text(0), QClipboard::Clipboard);
     clipboard->setText( item->text(0), QClipboard::Selection);
+}
+
+void CGridDlg::cancelJob()
+{
+    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
+    
+    QMessageBox::StandardButton reply;
+    string jobid( item->text(0).toAscii().data() );
+    string str( "Do you really want to cancel the job:\n" + jobid );
+    reply = QMessageBox::question( this, tr("PROOFAgent Console"), tr(str.c_str()), 
+    							   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if( QMessageBox::Yes != reply )
+    	return;
+    
+	glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
 }
 
 void CGridDlg::setProgress( int _Val )
