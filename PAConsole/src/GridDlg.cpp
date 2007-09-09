@@ -157,7 +157,15 @@ void CGridDlg::cancelJob()
     if( QMessageBox::Yes != reply )
     	return;
     
-	glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
+    try
+    {
+    	glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
+    }
+    catch( const exception &_e )
+    {
+    	const string msg( "Can't cancel the job.\n"+_e.what() );
+    	QMessageBox::critical( this, tr("PROOFAgent Console"), tr(msg.c_str()) ); 
+    }
 }
 
 void CGridDlg::setProgress( int _Val )
