@@ -149,11 +149,10 @@ void CGridDlg::cancelJob()
     if ( !item )
         return;
     
-    QMessageBox::StandardButton reply;
-    string jobid( item->text(0).toAscii().data() );
-    string str( "Do you really want to cancel the job:\n" + jobid );
-    reply = QMessageBox::question( this, tr("PROOFAgent Console"), tr(str.c_str()), 
-    							   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    const string jobid( item->text(0).toAscii().data() );
+    const string msg( "Do you really want to cancel the job:\n" + jobid );
+    const QMessageBox::StandardButton reply( QMessageBox::question( this, tr("PROOFAgent Console"), tr(msg.c_str()), 
+    							   									 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
     if( QMessageBox::Yes != reply )
     	return;
     
@@ -162,9 +161,8 @@ void CGridDlg::cancelJob()
     	glite_api_wrapper::CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
     }
     catch( const exception &_e )
-    {
-    	const string msg( string("Can't cancel the job.\n") + _e.what() );
-    	QMessageBox::critical( this, tr("PROOFAgent Console"), tr(msg.c_str()) ); 
+    {    	
+    	QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) ); 
     }
 }
 
