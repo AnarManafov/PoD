@@ -22,7 +22,7 @@ SVN_HEAD_REV=`svn info https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PR
 # HACK: echo ${SVN_HEAD_REV}  is used to remove leading space
 TMP_VER=`echo ${SVN_HEAD_REV}`
 
-VER=["1.0.1."$TMP_VER]
+VER=["1.0.2."$TMP_VER]
 
 AM_INIT_AUTOMAKE([proofagent], $VER)
 
