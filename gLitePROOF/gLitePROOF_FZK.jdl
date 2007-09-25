@@ -45,11 +45,11 @@
 	RetryCount = 0; 
 
 	InputSandbox = {
-		          "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/gLitePROOF_FZK.sh",
-			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/xpd.cf",
-			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent.cfg.xml",
-			  "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/root_v5.16.00.Linux.slc4.gcc3.4.tar.gz",
-                          "/home/anar/svn/grid/D-Grid/gLite_PROOF/trunk/gLite_PROOF/proofagent-1.0.1.1218.tar.gz"
+		          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF_FZK.sh",
+			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/xpd.cf",
+			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml",
+			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/root_v5.16.00.Linux.slc4.gcc3.4.tar.gz",
+                          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent-1.0.1.1218.tar.gz"
 		       };
 ]
 
