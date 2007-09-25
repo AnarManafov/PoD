@@ -35,7 +35,7 @@ export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
 # PROOFAgent
-PA_VERSION="proofagent-1.0.2.1270"
+PA_VERSION="proofagent-1.0.2.1289"
 echo "Downloading PROOAgent src..."
 `wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
 echo "Unpacking PROOFAgent src..."
