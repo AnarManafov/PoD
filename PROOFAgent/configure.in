@@ -29,6 +29,13 @@ AM_INIT_AUTOMAKE([proofagent], $VER)
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER([config.h])
 
+
+# WARNING: DON'T USE static linkage, becuase of:
+# Using 'gethostbyaddr' in statically linked applications requires at runtime
+# the shared libraries from the glibc version used for linking
+# http://www.gnu.org/software/libc/FAQ.html#s-2.22
+#LDFLAGS="-static $LDFLAGS"
+
 ## ----------------------------------------------------------------------
 ## --------------------------- >>> DEBUG/RELEASE Build <<< -----
 ## ----------------------------------------------------------------------
@@ -44,7 +51,8 @@ AC_PROG_INSTALL
 ## -----------------------------------------------------------------------
 AC_XERCES([])
 
-LDFLAGS="$LDFLAGS $XERCESC_LIBS"
+LDFLAGS="$LDFLAGS"
+LIBS="$LIBS $XERCESC_LIBS"
 CPPFLAGS="$CPPFLAGS $XERCESC_CFLAGS"
 ## -----------------------------------------------------------------------
 ## ----------------------------- >>> BOOST <<<----------------------------
@@ -57,7 +65,8 @@ if test "$have_boost" = "no"; then
 fi
 
 CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
-LDFLAGS="$LDFLAGS -L$BOOST_INSTALL_PATH/lib -lboost_thread -lboost_program_options"
+LDFLAGS="$LDFLAGS -L$BOOST_INSTALL_PATH/lib"
+LIBS="$LIBS -lboost_thread -lboost_program_options"
 ## -----------------------------------------------------------------------
 ## -----------------------------------------------------------------------
 
