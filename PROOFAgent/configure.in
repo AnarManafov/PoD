@@ -65,8 +65,7 @@ if test "$have_boost" = "no"; then
 fi
 
 CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
-LDFLAGS="$LDFLAGS -L$BOOST_INSTALL_PATH/lib"
-LIBS="$LIBS -lboost_thread -lboost_program_options"
+LIBS="$LIBS -L$BOOST_INSTALL_PATH/lib -lboost_thread -lboost_program_options"
 ## -----------------------------------------------------------------------
 ## -----------------------------------------------------------------------
 
