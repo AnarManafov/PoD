@@ -14,17 +14,12 @@ AC_INIT
 m4_include(custom_m4/debug.m4)
 m4_include(custom_m4/xerces.m4)
 m4_include(custom_m4/boost.m4)
+m4_include(custom_m4/version.m4)
 
+AC_VERSION(["https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/"],
+           ["1.0.3"])
 
-# Geting HEADS's revision number
-SVN_HEAD_REV=`svn info https://subversion.gsi.de/grid/D-Grid/PROOFAgent/trunk/PROOFAgent/ | grep "Revision: " | head -1 | awk -F: '{print $2}'`
-
-# HACK: echo ${SVN_HEAD_REV}  is used to remove leading space
-TMP_VER=`echo ${SVN_HEAD_REV}`
-
-VER=["1.0.2."$TMP_VER]
-
-AM_INIT_AUTOMAKE([proofagent], $VER)
+AM_INIT_AUTOMAKE([proofagent], $VERSION_REVISION)
 
 AC_CONFIG_SRCDIR([configure.in])
 AM_CONFIG_HEADER([config.h])

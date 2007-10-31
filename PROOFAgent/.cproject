@@ -632,10 +632,10 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 </target>
-<target name="env.sh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<target name="proofagent_env.sh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
 <buildCommand>make</buildCommand>
 <buildArguments></buildArguments>
-<buildTarget>env.sh</buildTarget>
+<buildTarget>proofagent_env.sh</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 </target>
@@ -1298,10 +1298,10 @@
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 </target>
-<target name="env.sh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
+<target name="proofagent_env.sh" path="" targetID="com.redhat.eclipse.cdt.autotools.builder1">
 <buildCommand>make</buildCommand>
 <buildArguments></buildArguments>
-<buildTarget>env.sh</buildTarget>
+<buildTarget>proofagent_env.sh</buildTarget>
 <stopOnError>true</stopOnError>
 <useDefaultCommand>true</useDefaultCommand>
 </target>
