@@ -4,14 +4,14 @@
  * @brief Unit tests of MiscCommon
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
- 
+
         version number:     $LastChangedRevision$
         created by:         Anar Manafov
                             2007-03-10
         last changed by:    $LastChangedBy$ $LastChangedDate$
- 
+
         Copyright (c) 2007 GSI GridTeam. All rights reserved.
-*************************************************************************/ 
+*************************************************************************/
 // BOOST: tests
 #include <boost/test/unit_test.hpp>
 using boost::unit_test::test_suite;

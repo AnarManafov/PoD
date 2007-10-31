@@ -80,16 +80,16 @@ namespace PROOFAgent
             // Read proof.conf in order to update it
             std::ifstream f( _PROOFCfg.c_str() );
             if ( !f.is_open() )
-                return ;
-
-            MiscCommon::StringVector_t vec;
-
-            std::copy(MiscCommon::custom_istream_iterator<std::string>(f),
-                      MiscCommon::custom_istream_iterator<std::string>(),
-                      std::back_inserter(vec));
-
+                return;
+            
+            typedef MiscCommon::custom_istream_iterator<std::string> in_iterator;
+            // HACK: the extra set of parenthesis (the last argument of vector's ctor) is required, because
+            // the compiler is very aggressive in identifying function declarations and will identify the
+            // definition of vec as forward declaration of a function accepting two istream_iterator parameters
+            // and returning a vector of integers.
+            MiscCommon::StringVector_t vec( in_iterator(f), (in_iterator()) );
             std::ofstream f_out( _PROOFCfg.c_str() );
-
+            
             MiscCommon::StringVector_t::const_iterator iter = vec.begin();
             MiscCommon::StringVector_t::const_iterator iter_end = vec.end();
             for ( ; iter != iter_end; ++iter )
