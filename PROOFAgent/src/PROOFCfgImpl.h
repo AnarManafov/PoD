@@ -88,6 +88,8 @@ namespace PROOFAgent
             // definition of vec as forward declaration of a function accepting two istream_iterator parameters
             // and returning a vector of integers.
             MiscCommon::StringVector_t vec( in_iterator(f), (in_iterator()) );
+            
+            f.close();
             std::ofstream f_out( _PROOFCfg.c_str() );
             
             MiscCommon::StringVector_t::const_iterator iter = vec.begin();
