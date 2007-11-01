@@ -82,12 +82,9 @@ namespace PROOFAgent
             if ( !f.is_open() )
                 return;
             
-            typedef MiscCommon::custom_istream_iterator<std::string> in_iterator;
-            // HACK: the extra set of parenthesis (the last argument of vector's ctor) is required, because
-            // the compiler is very aggressive in identifying function declarations and will identify the
-            // definition of vec as forward declaration of a function accepting two istream_iterator parameters
-            // and returning a vector of integers.
-            MiscCommon::StringVector_t vec( in_iterator(f), (in_iterator()) );
+            MiscCommon::custom_istream_iterator<std::string> in_begin(f);
+	    MiscCommon::custom_istream_iterator<std::string> in_end;
+            MiscCommon::StringVector_t vec( in_begin, in_end );
             
             f.close();
             std::ofstream f_out( _PROOFCfg.c_str() );
