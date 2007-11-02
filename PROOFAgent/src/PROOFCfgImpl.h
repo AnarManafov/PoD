@@ -83,7 +83,7 @@ namespace PROOFAgent
                 return;
             
             MiscCommon::custom_istream_iterator<std::string> in_begin(f);
-	    MiscCommon::custom_istream_iterator<std::string> in_end;
+            MiscCommon::custom_istream_iterator<std::string> in_end;
             MiscCommon::StringVector_t vec( in_begin, in_end );
             
             f.close();
