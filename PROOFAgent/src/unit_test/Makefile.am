@@ -24,4 +24,4 @@ UT_MiscUtils_LDADD = -lboost_unit_test_framework
 
 # Test_Process.cpp
 UT_Process_SOURCES = Test_Process.cpp
-UT_Process_LDADD = -lboost_unit_test_framework
+UT_Process_LDADD = -L@BOOST_INSTALL_PATH@/lib -lboost_unit_test_framework
