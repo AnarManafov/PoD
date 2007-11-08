@@ -67,6 +67,5 @@ LIBS="$LIBS -L$BOOST_INSTALL_PATH/lib -lboost_thread -lboost_program_options"
 AC_CONFIG_FILES([proofagent_env.sh
 Doxyfile 
 Makefile 
-src/Makefile 
-src/unit_test/Makefile])
+src/Makefile])
 AC_OUTPUT

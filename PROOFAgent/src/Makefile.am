@@ -39,5 +39,3 @@ proofagent_include_HEADERS = \
 	../Include/HexView.h
 noinst_HEADERS = PacketForwarder.h Agent.h AgentImpl.h PROOFAgent.h PARes.h PFContainer.h PROOFCfgImpl.h
 AM_CXXFLAGS = -Wall
-
-SUBDIRS = unit_test
