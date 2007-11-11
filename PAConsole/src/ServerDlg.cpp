@@ -22,6 +22,9 @@
 // STD
 #include <sstream>
 
+// API
+#include <signal.h>
+
 // PAConsole
 #include "ServerDlg.h"
 #include "ServerInfo.h"
@@ -74,13 +77,21 @@ void CServerDlg::on_btnStatusServer_clicked()
 void CServerDlg::Stop()
 {
     const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
-    system( cmd.c_str() );
+    int res = system( cmd.c_str() );
+    // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
+    if (WIFSIGNALED(res) &&
+        (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
+            return; //break
 }
 
 void CServerDlg::Start()
 {
     const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" start");
-    system( cmd.c_str() );
+    int res = system( cmd.c_str() );
+    // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
+    if (WIFSIGNALED(res) &&
+        (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
+            return; //break;
 }
 
 bool CServerDlg::IsRunning()
