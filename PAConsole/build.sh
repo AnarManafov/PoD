@@ -18,9 +18,9 @@
 #
 
 # QT 4.2.3
-export QTDIR=/usr/local/Trolltech/Qt-4.2.3
-export QTINC=$QTDIR/include/Qt
-export QTLIB=$QTDIR/lib
+export QTDIR=/usr/lib/qt4
+export QTINC=/usr/include
+export QTLIB=/usr/lib/qt4
 
 # GAW
 source /home/anar/GAW/bin/env.sh 
