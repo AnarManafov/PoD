@@ -27,39 +27,39 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
-#wget --tries=2 ftp://root.cern.ch/root/root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
-tar -xzvf root_v5.16.00.Linux.slc4.gcc3.4.tar.gz || exit 1
+#wget --tries=2 ftp://root.cern.ch/root/root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
+tar -xzvf root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
 
 export ROOTSYS="/$WD/root"
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
 # PROOFAgent
-PA_VERSION="proofagent-1.0.1.1218"
+PA_VERSION="proofagent"
 #echo "Downloading PROOAgent src..."
 #`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
-echo "Unpacking PROOFAgent src..."
+echo "Unpacking PROOFAgent..."
 `tar -xzf $PA_VERSION.tar.gz` || exit 1
-echo "Creating PROOFAgent dir..."
-PA_DIR="$WD/PROOFAgent"
-`mkdir $PA_DIR`
-pushd "$WD/$PA_VERSION"
-echo "Configuring PROOFAgent..."
-./configure --prefix=$PA_DIR --with-xercesc-prefix=/$GLITE_LOCATION/externals
+#echo "Creating PROOFAgent dir..."
+#PA_DIR="$WD/PROOFAgent"
+#`mkdir $PA_DIR`
+#pushd "$WD/$PA_VERSION"
+#echo "Configuring PROOFAgent..."
+#./configure --prefix=$PA_DIR --with-xercesc-prefix=/$GLITE_LOCATION/externals
 
-RET_VAL=$?
-if [ "X$RET_VAL" = "X0" ]; then
-    echo "proofagent configuration successful. Exit code: $RET_VAL"
-else
-    cp "config.log" "$WD"
-    exit 1
-fi
+#RET_VAL=$?
+#if [ "X$RET_VAL" = "X0" ]; then
+#    echo "proofagent configuration successful. Exit code: $RET_VAL"
+#else
+#    cp "config.log" "$WD"
+#    exit 1
+#fi
 
 
 
-gmake install
-popd
-`cp $PA_DIR/bin/proofagent $WD` || exit 1
+#gmake install
+#popd
+#`cp $PA_DIR/bin/proofagent $WD` || exit 1
 
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
