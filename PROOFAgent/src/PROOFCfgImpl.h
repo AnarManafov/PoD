@@ -24,7 +24,7 @@ namespace PROOFAgent
      @verbatim
       
      master depc218.gsi.de  workdir=~/proof
-     worker manafov@localhost:20001 perf=100 workdir=~/
+     worker manafov@localhost port=20001 perf=100 workdir=~/
       
      @endverbatim
      example of proof.conf for client
@@ -71,7 +71,7 @@ namespace PROOFAgent
             ss << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")";
 
             f_out << ss.str() << std::endl;
-            f_out << "worker " << _UsrName << "@localhost:" << _Port << " perf=100" << std::endl;
+            f_out << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << std::endl;
             if ( _RetVal )
                 *_RetVal = ss.str();
         }
