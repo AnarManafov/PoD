@@ -12,7 +12,7 @@ fi
 #       autoheader
 #       automake --add-missing --copy
 #       autoconf
-autoreconf --verbose --force --install -I config -I m4 || exit 1
+autoreconf --verbose --force --install -I config -I m4 -I custom_m4 || exit 1
 
 echo "Now run ./configure and then make."
 exit 0

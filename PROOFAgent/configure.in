@@ -52,15 +52,12 @@ CPPFLAGS="$CPPFLAGS $XERCESC_CFLAGS"
 ## -----------------------------------------------------------------------
 ## ----------------------------- >>> BOOST <<<----------------------------
 ## -----------------------------------------------------------------------
-have_boost=no
-AC_BOOST([], have_boost=yes, have_boost=no)
-AC_MSG_RESULT(["BOOST found $have_boost"])
-if test "$have_boost" = "no"; then
-  AC_MSG_ERROR([Cannot continue building])
-fi
+#AT_BANNER([Boost headers])
+BOOST_REQUIRE([])
 
-CPPFLAGS="$CPPFLAGS $BOOST_CFLAGS"
-LIBS="$LIBS -L$BOOST_INSTALL_PATH/lib -lboost_thread -lboost_program_options"
+#AT_BANNER([Boost libraries])
+BOOST_PROGRAM_OPTIONS([])
+BOOST_THREADS([])
 ## -----------------------------------------------------------------------
 ## -----------------------------------------------------------------------
 
