@@ -57,7 +57,12 @@ BOOST_REQUIRE([])
 
 #AT_BANNER([Boost libraries])
 BOOST_PROGRAM_OPTIONS([])
+LIBS="$LIBS $BOOST_PROGRAM_OPTIONS_LDFLAGS $BOOST_PROGRAM_OPTIONS_LIBS"
+
 BOOST_THREADS([])
+LIBS="$LIBS $BOOST_THREAD_LDFLAGS $BOOST_THREAD_LIBS"
+
+CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 ## -----------------------------------------------------------------------
 ## -----------------------------------------------------------------------
 
