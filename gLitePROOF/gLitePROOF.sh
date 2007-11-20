@@ -27,15 +27,33 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
 # ROOT
-wget --tries=2 ftp://root.cern.ch/root/root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
-tar -xzvf root_v5.16.00.Linux.slc3.gcc3.2.3.tar.gz || exit 1
+wget --tries=2 ftp://root.cern.ch/root/root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
+tar -xzvf root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
 
 export ROOTSYS="/$WD/root"
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
+# BOOST
+BOOST_VERSION="boost_1_34_1"
+BOOST_INCLUDE="boost-1_34_1"
+echo "Downloading BOOST src..."
+`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/ThirdParty/$BOOST_VERSION.tar.gz` || exit 1
+echo "Unpacking BOOST src..."
+`tar -xzf $BOOST_VERSION.tar.gz` || exit 1
+pushd "$WD/$BOOST_VERSION"
+echo "Configuring BOOST..."
+./configure --prefix=$WD/BOOST --with-libraries=program_options,thread || exit 1
+gmake install || exit 1
+popd
+# linking boost include
+# TODO: I didn't find how to make it in BOOT configuration
+ln -s $WD/BOOST/include/$BOOST_INCLUDE/boost $WD/BOOST/include/boost
+
+export LD_LIBRARY_PATH=$WD/BOOST/lib:$LD_LIBRARY_PATH
+
 # PROOFAgent
-PA_VERSION="proofagent-1.0.2.1289"
+PA_VERSION="proofagent-1.0.3.1389"
 echo "Downloading PROOAgent src..."
 `wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
 echo "Unpacking PROOFAgent src..."
@@ -45,7 +63,7 @@ PA_DIR="$WD/PROOFAgent"
 `mkdir $PA_DIR`
 pushd "$WD/$PA_VERSION"
 echo "Configuring PROOFAgent..."
-./configure --prefix=$PA_DIR --with-xercesc-prefix=/opt/glite/externals
+./configure --prefix=$PA_DIR --with-boost-prefix=$WD/BOOST
 
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then

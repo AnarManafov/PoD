@@ -11,7 +11,7 @@ fi
 # GSI Authentication with the server
 if depc218.gsi.de
 xpd.seclib libXrdSec.so
-xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLiteUI-3.1.0-3/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
+xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
 fi
 
 ###
@@ -51,4 +51,6 @@ fi
 ### Allows to control the cluster structure.
 xpd.role worker if *.gsi.de
 xpd.role master if depc218.gsi.de
+
+#xpd.trace all -hdbg
 

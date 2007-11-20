@@ -39,7 +39,7 @@ PA_VERSION="proofagent"
 #echo "Downloading PROOAgent src..."
 #`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
 echo "Unpacking PROOFAgent..."
-`tar -xzf $PA_VERSION.tar.gz` || exit 1
+`tar -xzf $PA_VERSION.tgz` || exit 1
 #echo "Creating PROOFAgent dir..."
 #PA_DIR="$WD/PROOFAgent"
 #`mkdir $PA_DIR`
@@ -85,6 +85,8 @@ xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 #fi
 #
 #
+
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
 
 # start proofagent
 ./proofagent -i client -c $WD/proofagent.cfg.xml
