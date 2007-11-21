@@ -5,10 +5,10 @@
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
-#        version number:    $LastChangedRevision: 1230 $
+#        version number:    $LastChangedRevision: 1390 $
 #        created by:        Anar Manafov
 #                           2007-05-15
-#        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-08-30 15:59:43 +0200 (Thu, 30 Aug 2007) $
+#        last changed by:   $LastChangedBy: manafov $ $LastChangedDate: 2007-11-20 23:19:37 +0100 (Tue, 20 Nov 2007) $
 #
 #        Copyright (c) 2007 GSI GridTeam. All rights reserved.
 #*************************************************************************/
@@ -20,16 +20,16 @@
 [
 	Type = "job";
 	JobType = "parametric";
-	VirtualOrganisation = "dgtest";
+#	VirtualOrganisation = "dech";
 	
 	Rank = 0;
 	Requirements = (other.GlueCEStateStatus == "Production") && (other.GlueCEUniqueId == "dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq") && (other.GlueHostNetworkAdapterOutboundIP == true);
 	
-	Parameters = 1;
+	Parameters = 2;
 	ParameterStart = 0;
 	ParameterStep = 1;
 
-	Executable = "gLitePROOF_FZK.sh";
+	Executable = "gLitePROOF.sh";
 
 	StdOutput = "gLitePROOF.out";
 	StdError = "gLitePROOF.err";
@@ -44,11 +44,9 @@
 	RetryCount = 0; 
 
 	InputSandbox = {
-		          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF_FZK.sh",
+		          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF.sh",
 			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/xpd.cf",
-			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml",
-			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/root_v5.17.04.Linux.slc4.gcc3.4.tar.gz",
-                          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.tgz"
+			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml"
 		       };
 ]
 
