@@ -61,6 +61,10 @@
 
 
 
+
+
+
+
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 <buildTargets>
 <target name="Qt Release Build" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
@@ -82,22 +86,22 @@
 </buildTargets>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
-<pathentry base-path="/usr/include/" include="" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtCore" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtGui" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtXml" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtNetwork" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtTest" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtScript" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtSql" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtSvg" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="Qt3Support" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="ActiveQt" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtDBus" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtDesigner" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtAssistant" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtOpenGL" kind="inc" path="" system="true"/>
-<pathentry base-path="/usr/include/" include="QtUiTools" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtCore" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtGui" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtXml" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtNetwork" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtTest" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtScript" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtSql" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtSvg" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="Qt3Support" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="ActiveQt" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtDBus" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtDesigner" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtAssistant" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtOpenGL" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include" include="QtUiTools" kind="inc" path="" system="true"/>
 <pathentry kind="src" path=""/>
 <pathentry kind="out" path=""/>
 <pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>
