@@ -50,7 +50,7 @@ popd
 export LD_LIBRARY_PATH=$WD/BOOST/lib:$LD_LIBRARY_PATH
 
 # PROOFAgent
-PA_VERSION="proofagent-1.0.3.1399"
+PA_VERSION="proofagent-1.0.3.1408"
 echo "Downloading PROOAgent src..."
 `wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
 echo "Unpacking PROOFAgent src..."
