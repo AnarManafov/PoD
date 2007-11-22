@@ -1,0 +1,28 @@
+BJAM=./tools/jam/src/bin.linuxx86/bjam
+BJAM_CONFIG=-d2 variant=release link=shared --layout=system
+PREFIX=/home/anar/Distr/BOOST
+EPREFIX=/home/anar/Distr/BOOST
+LIBDIR=/home/anar/Distr/BOOST/lib
+INCLUDEDIR=/home/anar/Distr/BOOST/include
+LIBS= --with-program_options --with-thread
+
+all: .dummy
+	@echo "$(BJAM) $(BJAM_CONFIG) --user-config=user-config.jam $(LIBS)"
+	@$(BJAM) $(BJAM_CONFIG) --user-config=user-config.jam $(LIBS) || \
+	echo "Not all Boost libraries built properly."
+
+clean: .dummy
+	rm -rf bin.v2
+
+distclean: clean
+	rm -rf Makefile config.log
+
+check: .dummy
+	@cd status && ../$(BJAM) $(BJAM_CONFIG) --user-config=../user-config.jam || echo "Some Boost regression tests failed. This is normal for many compilers."
+
+install: .dummy
+	@echo "$(BJAM) $(BJAM_CONFIG) --user-config=user-config.jam --prefix=$(PREFIX) --exec-prefix=$(EPREFIX) --libdir=$(LIBDIR) --includedir=$(INCLUDEDIR) $(LIBS) install"
+	@$(BJAM) $(BJAM_CONFIG) --user-config=user-config.jam --prefix=$(PREFIX) --exec-prefix=$(EPREFIX) --libdir=$(LIBDIR) --includedir=$(INCLUDEDIR) $(LIBS) install || echo "Not all Boost libraries built properly."
+
+.dummy:
+

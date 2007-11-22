@@ -46,9 +46,6 @@ echo "Configuring BOOST..."
 ./configure --prefix=$WD/BOOST --with-libraries=program_options,thread || exit 1
 gmake install || exit 1
 popd
-# linking boost include
-# TODO: I didn't find how to make it in BOOT configuration
-ln -s $WD/BOOST/include/$BOOST_INCLUDE/boost $WD/BOOST/include/boost
 
 export LD_LIBRARY_PATH=$WD/BOOST/lib:$LD_LIBRARY_PATH
 
