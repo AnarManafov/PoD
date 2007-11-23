@@ -122,13 +122,13 @@ void CWorkersDlg::update()
     m_ui.lstClientsList->clear();
 
     // Reading only comment blocks of proof.conf
-    const LPCTSTR chCmntSign("#");
+    const char chCmntSign('#');
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
                                           SFindComment<string>(chCmntSign) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
-        trim_left( &*iter, string(chCmntSign) );
+        trim_left( &*iter, chCmntSign );
         m_ui.lstClientsList->addItem( iter->c_str() );
         iter = find_if( ++iter, vec.end(),
                         SFindComment<string>(chCmntSign) );
