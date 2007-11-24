@@ -38,7 +38,7 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ): QWidget( parent )
     m_ui.setupUi( this );
 
     getPROOFCfg( &m_CfgFileName );
-    smart_homedir_append( &m_CfgFileName );
+    smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {
         QMessageBox::critical(this, tr("PROOFAgent Console"), tr("An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml") );
@@ -128,7 +128,7 @@ void CWorkersDlg::update()
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
-        trim_left( &*iter, chCmntSign );
+        trim_left<string>( &*iter, chCmntSign );
         m_ui.lstClientsList->addItem( iter->c_str() );
         iter = find_if( ++iter, vec.end(),
                         SFindComment<string>(chCmntSign) );
