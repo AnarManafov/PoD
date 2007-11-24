@@ -48,6 +48,9 @@ popd
 
 export LD_LIBRARY_PATH=$WD/BOOST/lib:$LD_LIBRARY_PATH
 
+# Compiling 32bit version of PROOFAgent
+export CXXFLAGS=-m32
+
 # PROOFAgent
 PA_VERSION="proofagent-1.0.3.1408"
 echo "Downloading PROOAgent src..."
