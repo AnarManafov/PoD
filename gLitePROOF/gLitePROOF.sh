@@ -43,7 +43,6 @@ echo "Unpacking BOOST src..."
 `tar -xzf $BOOST_VERSION.tar.gz` || exit 1
 pushd "$WD/$BOOST_VERSION"
 echo "Configuring BOOST..."
-./configure --prefix=$WD/BOOST --with-libraries=program_options,thread || exit 1
 gmake install || exit 1
 popd
 
