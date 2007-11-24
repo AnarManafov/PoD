@@ -20,7 +20,7 @@
 [
 	Type = "job";
 	JobType = "parametric";
-#	VirtualOrganisation = "dech";
+	VirtualOrganisation = "dech";
 	
 	Rank = 0;
 	Requirements = other.GlueCEStateStatus == "Production";

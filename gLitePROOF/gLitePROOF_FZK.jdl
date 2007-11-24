@@ -20,7 +20,7 @@
 [
 	Type = "job";
 	JobType = "parametric";
-#	VirtualOrganisation = "dech";
+	VirtualOrganisation = "dgtest";
 	
 	Rank = 0;
 	Requirements = (other.GlueCEStateStatus == "Production") && (other.GlueCEUniqueId == "dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq") && (other.GlueHostNetworkAdapterOutboundIP == true);
