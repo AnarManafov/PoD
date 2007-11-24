@@ -17,10 +17,8 @@
 
 // Qt autogen. file
 #include "ui_wgGrid.h"
-
 // MiscCommon
 #include "def.h"
-
 // PAConsole
 #include "JobSubmitter.h"
 #include "TreeItemContainer.h"
@@ -47,6 +45,7 @@ class CGridDlg: public QWidget
         void recieveThreadMsg( const QString &_Msg);
         void setProgress( int _Val );
         void on_btnBrowseJDL_clicked();
+        void on_edtJDLFileName_textChanged( const QString & /*_text*/ );
 
     private slots:
         void copyJobID() const;
@@ -57,6 +56,7 @@ class CGridDlg: public QWidget
 
     private:
         void createActions();
+        void UpdateEndpoints();
 
     private:
         Ui::wgGrid m_ui;

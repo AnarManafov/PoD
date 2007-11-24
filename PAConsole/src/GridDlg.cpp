@@ -15,9 +15,10 @@
 // Qt
 #include <QWidget>
 #include <QTreeWidget>
-
 // PAConsole
 #include "GridDlg.h"
+// GAW
+#include "glite-api-wrapper/WMPEndpoint.h"
 
 const size_t g_TimeoutRefreshrate = 5000;
 
@@ -42,6 +43,13 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     createActions();
 
     clipboard = QApplication::clipboard();
+
+    UpdateEndpoints();
+
+    // Set completion for the edit box of JDL file name
+    QCompleter *completer = new QCompleter( this );
+    completer->setModel( new QDirModel(completer) );
+    m_ui.edtJDLFileName->setCompleter(completer);
 }
 
 CGridDlg::~CGridDlg()
@@ -69,6 +77,7 @@ void CGridDlg::on_btnSubmitClient_clicked()
             return;
         }
         m_JobSubmitter->setJDLFileName( m_ui.edtJDLFileName->text().toAscii().data() );
+        m_JobSubmitter->setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
         // submit gLite jobs
         m_JobSubmitter->start();
         m_ui.btnSubmitClient->setEnabled( false );
@@ -100,7 +109,7 @@ void CGridDlg::on_btnBrowseJDL_clicked()
 
 void CGridDlg::createActions()
 {
-	// COPY Job ID
+    // COPY Job ID
     copyJobIDAct = new QAction(tr("&Copy JobID"), this);
     copyJobIDAct->setShortcut(tr("Ctrl+C"));
     copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
@@ -118,18 +127,18 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
     QPoint pos = event->globalPos();
     if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
         return;
-    
+
     // We need to disable menu items when no jobID is selected
     const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
 
     QMenu menu(this);
     menu.addAction(copyJobIDAct);
     copyJobIDAct->setEnabled( item );
-    
+
     menu.addSeparator();
     menu.addAction(cancelJobAct);
     cancelJobAct->setEnabled( item );
-    
+
     menu.exec(event->globalPos());
 }
 
@@ -148,21 +157,21 @@ void CGridDlg::cancelJob()
     const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
     if ( !item )
         return;
-    
+
     const string jobid( item->text(0).toAscii().data() );
     const string msg( "Do you really want to cancel the job:\n" + jobid );
-    const QMessageBox::StandardButton reply( QMessageBox::question( this, tr("PROOFAgent Console"), tr(msg.c_str()), 
-    							   									 QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
-    if( QMessageBox::Yes != reply )
-    	return;
-    
+    const QMessageBox::StandardButton reply( QMessageBox::question( this, tr("PROOFAgent Console"), tr(msg.c_str()),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
+    if ( QMessageBox::Yes != reply )
+        return;
+
     try
     {
-    	CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
+        CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
     }
-    catch( const exception &_e )
-    {    	
-    	QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) ); 
+    catch ( const exception &_e )
+    {
+        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
     }
 }
 
@@ -171,4 +180,34 @@ void CGridDlg::setProgress( int _Val )
     if ( 100 == _Val )
         m_ui.btnSubmitClient->setEnabled( true );
     m_ui.progressSubmittedJobs->setValue( _Val );
+}
+
+// Retrieving a list of possiable WMProxy endpoints
+void CGridDlg::UpdateEndpoints()
+{
+    m_ui.cmbEndpoint->clear();
+
+    CWMPEndpoint endpoint;
+    StringVector_t endpoints;
+    try
+    {
+        endpoint.Get( &endpoints, m_ui.edtJDLFileName->text().toAscii().data() );
+    }
+    catch ( const exception &_e )
+    {
+        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+    }
+
+    // Let's fill the Combobox
+    StringVector_t::const_iterator iter( endpoints.begin() );
+    StringVector_t::const_iterator iter_end( endpoints.end() );
+    for ( ; iter != iter_end; ++iter )
+    {
+        m_ui.cmbEndpoint->addItem( tr(iter->c_str()) );
+    }
+}
+
+void CGridDlg::on_edtJDLFileName_textChanged( const QString &/*_text*/ )
+{
+    UpdateEndpoints();
 }

@@ -22,9 +22,19 @@
 #include "GridDlg.h"
 #include "WorkersDlg.h"
 
-CMainDlg::CMainDlg(QDialog *_Parent): QDialog(_Parent)
+CMainDlg::CMainDlg(QDialog *_Parent):
+  QDialog( _Parent )
 {
     m_ui.setupUi( this );
+
+    Qt::WindowFlags flags( 0 );
+    // Adding "Maximize" and "Minimize" buttons
+    // Removing "What's this" button
+    flags |= Qt::WindowTitleHint;
+    flags |= Qt::WindowSystemMenuHint;
+    flags |= Qt::WindowMaximizeButtonHint;
+    flags |= Qt::WindowMinimizeButtonHint;
+    setWindowFlags( flags );
     
     CGridDlg *grid = new CGridDlg();
     CWorkersDlg *workers = new CWorkersDlg(); 

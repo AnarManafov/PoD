@@ -17,10 +17,8 @@
 
 // Qt
 #include <QtGui>
-
 // MiscCommon
 #include "gLiteHelper.h"
-
 // GAW
 #include "glite-api-wrapper/gLiteAPIWrapper.h"
 
@@ -49,7 +47,11 @@ class CJobSubmitter: public QThread
         }
         void setJDLFileName( const std::string &_JDLfilename )
         {
-          m_JDLfilename = _JDLfilename;
+            m_JDLfilename = _JDLfilename;
+        }
+        void setEndpoint( const std::string &_Endpoint )
+        {
+            m_WMPEndpoint = _Endpoint;
         }
 
     signals:
@@ -66,10 +68,9 @@ class CJobSubmitter: public QThread
             m_mutex.unlock();
 
             // Submit a Grid Job
-            //TODO: take jdl from GUI or ???
             try
             {
-                GAW::Instance().GetJobManager().DelegationCredential();
+                GAW::Instance().GetJobManager().DelegationCredential( &m_WMPEndpoint );
                 emit changeProgress( 30 );
 
                 std::string sLastJobID;
@@ -97,6 +98,7 @@ class CJobSubmitter: public QThread
         std::string m_LastJobID;
         QMutex m_mutex;
         std::string m_JDLfilename;
+        std::string m_WMPEndpoint;
 };
 
 #endif /*JOBSUBMITTER_H_*/
