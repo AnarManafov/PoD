@@ -26,60 +26,69 @@ echo "$y"
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 
+# host's CPU/instruction set
+   host_arch=`( uname -p ) 2>&1`
+   case "$host_arch" in
+   i386|sparc|ppc|alpha|arm|mips)
+     ;;
+   powerpc) # Darwin returns 'powerpc'
+     host_arch=ppc
+     ;;
+   *) # uname -p on Linux returns 'unknown' for the processor type,
+      # OpenBSD returns 'Intel Pentium/MMX ("Genuine Intel" 586-class)'
+
+      # Maybe uname -m (machine hardware name) returns something we
+      # recognize.
+
+      # x86/x86pc is used by QNX
+      case "`( uname -m ) 2>&1`" in
+      i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686) host_arch=x86 ;;
+      ia64) host_arch=ia64 ;;
+      x86_64) host_arch=x86_64 ;;
+      ppc) host_arch=ppc ;;
+      alpha) host_arch=alpha ;;
+      sparc*) host_arch=sparc ;;
+      9000*) host_arch=hppa ;;
+      arm*) host_arch=arm ;;
+      s390) host_arch=s390 ;;
+      s390x) host_arch=s390x ;;
+      mips) host_arch=mips ;;
+      *) host_arch=UNKNOWN ;;
+    esac
+    ;;
+  esac
+
+echo "*** host's CPU/instruction set: " $host_arch
+
+case "$host_arch" in
+x86)
+	PROOFAGENT_ARC="proofagent.i686.tar.gz"
+	ROOT_ARC="root_v5.17.04.Linux.slc4.gcc3.4.tar.gz" ;;
+x86_64)
+        PROOFAGENT_ARC="proofagent.x86_64.tar.gz"
+        ROOT_ARC="root_v5.17.04.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
+esac
+
 # ROOT
-wget --tries=2 ftp://root.cern.ch/root/root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
-tar -xzvf root_v5.17.04.Linux.slc4.gcc3.4.tar.gz || exit 1
+wget --tries=2 ftp://root.cern.ch/root/$ROOT_ARC || exit 1
+tar -xzvf $ROOT_ARC || exit 1
 
 export ROOTSYS="/$WD/root"
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 
-# BOOST
-BOOST_VERSION="boost_1_34_1"
-BOOST_INCLUDE="boost-1_34_1"
-echo "Downloading BOOST src..."
-`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/ThirdParty/$BOOST_VERSION.tar.gz` || exit 1
-echo "Unpacking BOOST src..."
-`tar -xzf $BOOST_VERSION.tar.gz` || exit 1
-pushd "$WD/$BOOST_VERSION"
-echo "Configuring BOOST..."
-gmake install || exit 1
-popd
-
-export LD_LIBRARY_PATH=$WD/BOOST/lib:$LD_LIBRARY_PATH
-
-# Compiling 32bit version of PROOFAgent
-export CXXFLAGS=-m32
 
 # PROOFAgent
-PA_VERSION="proofagent-1.0.3.1408"
-echo "Downloading PROOAgent src..."
-`wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/$PA_VERSION.tar.gz` || exit 1
-echo "Unpacking PROOFAgent src..."
-`tar -xzf $PA_VERSION.tar.gz` || exit 1
-echo "Creating PROOFAgent dir..."
-PA_DIR="$WD/PROOFAgent"
-`mkdir $PA_DIR`
-pushd "$WD/$PA_VERSION"
-echo "Configuring PROOFAgent..."
-./configure --prefix=$PA_DIR --with-boost-prefix=$WD/BOOST
+wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$PROOFAGENT_ARC  || exit 1
+tar -xzf $PROOFAGENT_ARC || exit 1
 
-RET_VAL=$?
-if [ "X$RET_VAL" = "X0" ]; then
-    echo "proofagent configuration successful. Exit code: $RET_VAL"
-else
-    cp "config.log" "$WD"
-    exit 1
-fi
-
-gmake install
-popd
-`cp $PA_DIR/bin/proofagent $WD` || exit 1
-
+export PROOFAGENTSYS="/$WD/proofagent"
+export PATH=$PROOFAGENTSYS/:$PATH 
+export LD_LIBRARY_PATH=$PROOFAGENTSYS/:$LD_LIBRARY_PATH
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
-if [ ! -x $WD/proofagent ]; then 
-    chmod +x $WD/proofagent
+if [ ! -x $PROOFAGENTSYS/proofagent ]; then 
+    chmod +x $PROOFAGENTSYS/proofagent
 fi
 
 # creating an empty proof.conf, so that xproof will be happy
@@ -102,7 +111,7 @@ xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 #
 
 # start proofagent
-./proofagent -i client -c $WD/proofagent.cfg.xml
+proofagent -i client -c $WD/proofagent.cfg.xml
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"    

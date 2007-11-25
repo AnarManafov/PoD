@@ -30,13 +30,13 @@
         <client>
             <config
 		work_dir="/tmp/"
-                logfile_dir="_G_WRK_DIR"
+                logfile_dir="/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF"
                 logfile_overwrite="yes"
                 log_level="0"
                 agent_mode="Client"
                 timeout="0"
                 last_execute_cmd=""
-                proof_cfg_path="_G_WRK_DIR/proof.conf"/>
+                proof_cfg_path="/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proof.conf"/>
             <agent_client
                 server_port="21111"
                 server_addr="depc218.gsi.de"
