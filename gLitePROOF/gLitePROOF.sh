@@ -21,6 +21,10 @@ echo "Current working directory: $WD"
 y=`eval ls -l`
 echo "$y"
 
+# TODO: Needs to be revised
+# PROXY in FZK
+export http_proxy=http://proxy.fzk.de:8000/
+
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
