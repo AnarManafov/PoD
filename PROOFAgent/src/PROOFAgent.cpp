@@ -98,17 +98,17 @@ void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_
         Read( instance );
         // Correcting convfiguration values
         // resolving user's home dir from (~/ or $HOME, if present)
-        smart_homedir_append( &m_Data.m_sWorkDir );
+        smart_path( &m_Data.m_sWorkDir );
         // We need to be sure that there is "/" always at the end of the path
         smart_append<string>( &m_Data.m_sWorkDir, '/' );
 
-        smart_homedir_append( &m_Data.m_sLogFileDir );
+        smart_path( &m_Data.m_sLogFileDir );
         smart_append<string>( &m_Data.m_sLogFileDir, '/' );
 
         MiscCommon::to_lower( m_Data.m_sAgentMode );
         m_Data.m_AgentMode = ( m_Data.m_sAgentMode.find( "server" ) != m_Data.m_sAgentMode.npos ) ? Server : Client;
 
-        smart_homedir_append( &m_Data.m_sPROOFCfg );
+        smart_path( &m_Data.m_sPROOFCfg );
 
         // Initializing log engine
         // log file name: proofagent.<instance_name>.pid
