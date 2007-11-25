@@ -44,12 +44,12 @@ fi
 if depc218.gsi.de
  xpd.resource static ~/proof.conf
 else
- xpd.resource static /home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proof.conf
+ xpd.resource static _G_WRK_DIR/proof.conf
 fi
 ###
 ### Server role (master, submaster, worker) [default: any]
 ### Allows to control the cluster structure.
-xpd.role worker if *.gsi.de
+xpd.role worker if *
 xpd.role master if depc218.gsi.de
 
 #xpd.trace all -hdbg
