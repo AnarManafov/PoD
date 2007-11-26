@@ -1,6 +1,22 @@
 #
 # XRD port
-xrd.port 1094
+xrd.port 20094
+
+#
+## Export /pool/proofpool
+xrootd.export /tmp/
+
+#
+## FS lib
+xrootd.fslib libXrdOfs.so
+
+# Port
+olb.port 20021
+
+# Paths
+olb.path w /tmp
+
+
 
 ### Load the XrdProofd protocol:
 ### using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
