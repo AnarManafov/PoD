@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<gaw_config last_update="" version="1.0.0" xmlns="">
+  <!-- glite-api-wrapper Main Manager -->
+  <!--
+      Boolean values must be set as 1 for "true" and as 0 for "false"
+      -->
+  <gaw_mng>
+    <!--
+	logfile - full path of the GAW log file
+	logfile_overwrite - overwrite log file every new session [type: Boolean]
+	-->
+    <config
+	   logfile="/tmp/glite-api-wrapper.log"
+	   logfile_overwrite="yes">
+    </config>
+  </gaw_mng>
+  <!-- JobManager -->
+  <job_mng>
+    <!--
+	wmp_endpoint - WMProxy endpoint
+	-->
+    <config
+	   wmp_endpoint="https://dgrid-rb.fzk.de:7443/glite_wms_wmproxy_server">
+    </config>
+    <jobs>
+      <job
+	  glite_jobid="https://grid25.gsi.de:9000/CY3Iab9phQ2tD1b7dregjg"
+	  numeric_jobid="2">
+      </job>
+    </jobs>
+  </job_mng>
+  <!-- CatalogManager -->
+  <catalog_mng>
+    <!--
+	lfc_host - LFC node host name
+	lfc_wrkdir - initial working directory of the LFC session
+	-->
+    <config
+	   lfc_host="dech-vo.scai.fraunhofer.de"
+	   lfc_session_comment="glite-api-wrapper LFC connection"
+	   lfc_wrkdir="/grid">
+    </config>
+  </catalog_mng>
+</gaw_config>

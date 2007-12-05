@@ -70,7 +70,7 @@ x86_64)
 esac
 
 # ROOT
-wget --tries=2 ftp://root.cern.ch/root/$ROOT_ARC || exit 1
+wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || exit 1
 tar -xzvf $ROOT_ARC || exit 1
 
 export ROOTSYS="/$WD/root"
