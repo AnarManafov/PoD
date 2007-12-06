@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>426</width>
-    <height>507</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -19,6 +19,12 @@
       <string>Grid</string>
      </property>
      <layout class="QGridLayout" >
+      <property name="horizontalSpacing" >
+       <number>9</number>
+      </property>
+      <property name="verticalSpacing" >
+       <number>9</number>
+      </property>
       <item row="0" column="0" >
        <layout class="QHBoxLayout" >
         <property name="spacing" >
@@ -92,19 +98,6 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QProgressBar" name="progressSubmittedJobs" >
-          <property name="value" >
-           <number>0</number>
-          </property>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="format" >
-           <string>%p% submitted</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="btnSubmitClient" >
           <property name="text" >
            <string>Submit</string>
@@ -114,23 +107,56 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QSpinBox" name="spinNumWorkers" >
+          <property name="alignment" >
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="specialValueText" >
+           <string/>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4" >
+          <property name="text" >
+           <string>worker(s)</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="3" column="0" >
+       <widget class="QProgressBar" name="progressSubmittedJobs" >
+        <property name="value" >
+         <number>0</number>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="format" >
+         <string>%p% submitted</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
        <widget class="Line" name="line" >
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" >
+      <item row="5" column="0" >
        <widget class="QLabel" name="label" >
         <property name="text" >
          <string>Information about the last submitted job:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
+      <item row="6" column="0" >
        <widget class="QTreeWidget" name="treeJobs" >
         <property name="alternatingRowColors" >
          <bool>false</bool>
