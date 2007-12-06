@@ -19,6 +19,8 @@
 #include "GridDlg.h"
 // GAW
 #include "glite-api-wrapper/WMPEndpoint.h"
+// MiscCommon
+#include "JDLHelper.h"
 
 const size_t g_TimeoutRefreshrate = 5000;
 
@@ -50,6 +52,11 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel(completer) );
     m_ui.edtJDLFileName->setCompleter(completer);
+
+    // Setting up PARAMETERS
+    int num_jobs;
+    get_ad_attr( &num_jobs, m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
+    m_ui.spinNumWorkers->setValue( num_jobs );
 }
 
 CGridDlg::~CGridDlg()
@@ -76,6 +83,9 @@ void CGridDlg::on_btnSubmitClient_clicked()
             QMessageBox::critical( this, tr("PROOFAgent Console"), tr("File\n\"%1\"\ndoesn't exist!").arg(m_ui.edtJDLFileName->text()) );
             return;
         }
+        // Setting up PARAMETERS
+        set_ad_attr( m_ui.spinNumWorkers->value(), m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
+
         m_JobSubmitter->setJDLFileName( m_ui.edtJDLFileName->text().toAscii().data() );
         m_JobSubmitter->setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
         // submit gLite jobs

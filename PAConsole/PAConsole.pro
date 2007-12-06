@@ -6,7 +6,8 @@ INCLUDEPATH = ./Include \
     ${GLITE_LOCATION}/include \
     ${GLITE_LOCATION}/externals/include \
     ${LCG_LOCATION}/include/lfc \
-    ${XERCESC_LOCATION}/include
+    ${XERCESC_LOCATION}/include \
+    ${CLASSADS_LOCATION}/include
 HEADERS += src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
@@ -31,3 +32,6 @@ MOC_DIR = Intermediate
 QT += xml
 unix:LIBS += -L${GAW_LOCATION}/lib \
     -lglite-api-wrapper
+    
+# -DWANT_NAMESPACES needed by ClassAd
+QMAKE_CXXFLAGS += -DWANT_NAMESPACES
