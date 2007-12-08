@@ -4,7 +4,13 @@ xrd.port 20094
 
 #
 ## Export /pool/proofpool
-xrootd.export /tmp/
+if depc218.gsi.de
+ xrd.adminpath /tmp/ group
+ xrootd.export /tmp/
+else
+ xrd.adminpath _G_WRK_DIR/ group
+ xrootd.export _G_WRK_DIR/
+fi
 
 #
 ## FS lib
@@ -14,14 +20,24 @@ xrootd.fslib libXrdOfs.so
 olb.port 20021
 
 # Paths
-olb.path w /tmp
+if depc218.gsi.de
+ olb.path w /tmp
+else
+ olb.path w _G_WRK_DIR/
+fi
 
+
+if depc218.gsi.de
+ set PROOFTMP=/tmp
+else
+ set PROOFTMP=_G_WRK_DIR
+fi
 
 
 ### Load the XrdProofd protocol:
 ### using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 if exec xrootd
-xrd.protocol xproofd:1093 libXrdProofd.so
+ xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
 fi
 
 # GSI Authentication with the server
@@ -29,6 +45,7 @@ if depc218.gsi.de
 xpd.seclib libXrdSec.so
 xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
 fi
+
 
 ###
 ### Working directory for sessions [<User_Home>/proof]
@@ -61,7 +78,12 @@ if depc218.gsi.de
  xpd.resource static ~/proof.conf
 else
  xpd.resource static _G_WRK_DIR/proof.conf
+ xpd.workdir _G_WRK_DIR/proof
 fi
+
+# TODO: the following doesn't WORK! :(
+#xpd.tmp _G_WRK_DIR/
+
 ###
 ### Server role (master, submaster, worker) [default: any]
 ### Allows to control the cluster structure.
