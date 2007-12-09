@@ -1,52 +1,17 @@
-#/************************************************************************/
-#/**
-# * @file gLitePROOF.jdl
-# * @brief $$File comment$$
-# * @author Anar Manafov A.Manafov@gsi.de
-# *//*
-#
-#        version number:    $LastChangedRevision$
-#        created by:        Anar Manafov
-#                           2007-05-15
-#        last changed by:   $LastChangedBy$ $LastChangedDate$
-#
-#        Copyright (c) 2007 GSI GridTeam. All rights reserved.
-#*************************************************************************/
 
-#
-# glite-job-submit -r grid14.gsi.de:2119/blah-pbs-short gLitePROOF.jdl
-#
-
-[
-	Type = "job";
-	JobType = "parametric";
-	VirtualOrganisation = "dech";
-	
-	Rank = 0;
-	Requirements = other.GlueCEStateStatus == "Production";
-	
-	Parameters = 2;
-	ParameterStart = 0;
-	ParameterStep = 1;
-
-	Executable = "gLitePROOF.sh";
-
-	StdOutput = "gLitePROOF.out";
-	StdError = "gLitePROOF.err";
-	OutputSandbox = {
-			   "gLitePROOF.out",
-			   "gLitePROOF.err",
-			   "xpd.log",
-			   "proofagent.client.log"
-			};
-	
-# disable job re-submission in case of failure
-	RetryCount = 0; 
-
-	InputSandbox = {
-		          "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF.sh",
-			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/xpd.cf",
-			  "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml"
-		       };
-]
-
+ [
+  Requirements = other.GlueCEStateStatus == "Production"; 
+  RetryCount = 0; 
+  ParameterStart = 0; 
+  PARAMETERS = 3; 
+  JobType = "parametric"; 
+  Executable = "gLitePROOF.sh"; 
+  ParameterStep = 1; 
+  StdOutput = "gLitePROOF.out"; 
+  OutputSandbox = { "gLitePROOF.out","gLitePROOF.err","xpd.log","proofagent.client.log" }; 
+  VirtualOrganisation = "dech"; 
+  Rank = 0; 
+  Type = "job"; 
+  StdError = "gLitePROOF.err"; 
+  InputSandbox = { "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF.sh","/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/xpd.cf","/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml" }
+ ]

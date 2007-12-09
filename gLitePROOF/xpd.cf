@@ -79,9 +79,11 @@ if depc218.gsi.de
 else
  xpd.resource static _G_WRK_DIR/proof.conf
  xpd.workdir _G_WRK_DIR/proof
+ xpd.tmp _G_WRK_DIR/
 fi
 
 # TODO: the following doesn't WORK! :(
+# see my bug report: https://savannah.cern.ch/bugs/index.php?32035
 #xpd.tmp _G_WRK_DIR/
 
 ###
