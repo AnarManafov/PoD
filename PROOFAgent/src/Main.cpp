@@ -32,6 +32,7 @@ using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
 using namespace boost::program_options;
+namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 
 // PROOFAgent's container of options
@@ -101,12 +102,12 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     if ( !vm.count("instance") )
         throw runtime_error("You need to specify instance name by using \"instance\" option.");
 
-    conflicting_options( vm, "start", "stop" );
-    conflicting_options( vm, "start", "status" );
-    conflicting_options( vm, "stop", "status" );
-    option_dependency(vm, "start", "daemonize" );
-    option_dependency(vm, "stop", "daemonize" );
-    option_dependency(vm, "status", "daemonize" );
+    boost_hlp::conflicting_options( vm, "start", "stop" );
+    boost_hlp::conflicting_options( vm, "start", "status" );
+    boost_hlp::conflicting_options( vm, "stop", "status" );
+    boost_hlp::option_dependency(vm, "start", "daemonize" );
+    boost_hlp::option_dependency(vm, "stop", "daemonize" );
+    boost_hlp::option_dependency(vm, "status", "daemonize" );
 
     if ( vm.count("config") )
         _Options->m_sConfigFile = vm["config"].as<string>();

@@ -26,6 +26,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 using namespace PROOFAgent;
 using namespace std;
+namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 // a regular Ethernet frame size - datagram
 // TODO: Move it to config.
@@ -95,7 +96,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
 ERRORCODE CPacketForwarder::Start( bool _ClientMode )
 {
     // executing PF threads
-    m_thrd_serversocket = Thread_PTR_t( new boost::thread(
+    m_thrd_serversocket = boost_hlp::Thread_PTR_t( new boost::thread(
                                             boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
     //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
     if ( _ClientMode )
@@ -141,9 +142,9 @@ void CPacketForwarder::SpawnClientMode()
     m_ServerSocket.set_nonblock();
 
     // executing PF threads
-    m_thrd_clnt = Thread_PTR_t( new boost::thread(
+    m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-    m_thrd_srv = Thread_PTR_t( new boost::thread(
+    m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
 
     m_thrd_clnt->join();
@@ -171,9 +172,9 @@ void CPacketForwarder::SpawnServerMode()
             m_ServerSocket = server.Accept();
 
             // executing PF threads
-            m_thrd_clnt = Thread_PTR_t( new boost::thread(
+            m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
                                             boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-            m_thrd_srv = Thread_PTR_t( new boost::thread(
+            m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
             break;
         }
