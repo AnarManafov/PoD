@@ -36,6 +36,11 @@ AM_CONFIG_HEADER([config.h])
 ## ----------------------------------------------------------------------
 is_debug=no
 AC_IS_DEBUG([], is_debug=yes, is_debug=no)
+if test x$is_debug = xyes ; then
+        CXXFLAGS="$CXXFLAGS -g3 -O0 -Wall"
+else
+        CXXFLAGS="$CXXFLAGS -g0 -O2 -Wall"
+fi
 
 AC_LANG([C++])
 AC_PROG_CXX
