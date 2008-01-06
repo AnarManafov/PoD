@@ -36,6 +36,7 @@ proofagent_include_HEADERS = \
 	../Include/BOOSTHelper.h \
 	../Include/SysHelper.h \
 	../Include/CustomIterator.h \
-	../Include/HexView.h
+	../Include/HexView.h \
+	../Include/stlx.h
 noinst_HEADERS = PacketForwarder.h Agent.h AgentImpl.h PROOFAgent.h PARes.h PFContainer.h PROOFCfgImpl.h
 AM_CXXFLAGS = -Wall
