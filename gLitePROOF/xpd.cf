@@ -6,7 +6,7 @@ xrd.port 20094
 ## Export /pool/proofpool
 if depc218.gsi.de
  xrd.adminpath /tmp/ group
- xrootd.export /tmp/
+ xrootd.export /opt/PROOF_DATA/
 else
  xrd.adminpath _G_WRK_DIR/ group
  xrootd.export _G_WRK_DIR/
@@ -21,7 +21,7 @@ olb.port 20021
 
 # Paths
 if depc218.gsi.de
- olb.path w /tmp
+ olb.path w /opt/PROOF_DATA/
 else
  olb.path w _G_WRK_DIR/
 fi
@@ -44,12 +44,7 @@ fi
 if depc218.gsi.de
 xpd.seclib libXrdSec.so
 xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
-else
-xpd.seclib libXrdSec.so
-xpd.sec.protocol gsi -d:1 crl:0
 fi
-
-
 ###
 ### Working directory for sessions [<User_Home>/proof]
 #xpd.workdir /home/anar/xrootd_test/proof
@@ -92,8 +87,10 @@ fi
 ###
 ### Server role (master, submaster, worker) [default: any]
 ### Allows to control the cluster structure.
-xpd.role worker if *
-xpd.role master if depc218.gsi.de
+if depc218.gsi.de
+xpd.role master
+else
+xpd.role worker
+fi
 
 #xpd.trace all -hdbg
-
