@@ -44,6 +44,9 @@ fi
 if depc218.gsi.de
 xpd.seclib libXrdSec.so
 xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
+else
+xpd.seclib libXrdSec.so
+xpd.sec.protocol gsi -d:1 crl:0
 fi
 
 
