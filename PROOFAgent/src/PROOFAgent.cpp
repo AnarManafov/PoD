@@ -10,15 +10,13 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 // STD
 #include <stdexcept>
-#include <iostream>
-#include <string>
 // PROOFAgent
 #include "PROOFAgent.h"
 // MiscCommon

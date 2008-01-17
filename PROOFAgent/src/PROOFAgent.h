@@ -10,15 +10,13 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROOFAGENT_H
 #define PROOFAGENT_H
 
 // PROOFAgent
 #include "Agent.h"
-#include "IXMLPersist.h"
-#include "LogImp.h"
 
 /**
  * @brief A general name space for PROOFAgent application
@@ -51,8 +49,10 @@ namespace PROOFAgent
             }
     };
     /**
+     * 
      * @brief Agent data structure.
-     **/
+     * 
+     */
     typedef struct SAgentData
     {
         SAgentData() :

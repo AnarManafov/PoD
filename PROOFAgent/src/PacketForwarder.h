@@ -10,19 +10,16 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROOFAGENTPACKETFORWARDER_H
 #define PROOFAGENTPACKETFORWARDER_H
 
 // STD
 #include <iomanip>
-
-// Our
+// MiscCommon
 #include "INet.h"
 #include "LogImp.h"
-#include "def.h"
-#include "MiscUtils.h"
 #include "BOOSTHelper.h"
 #include "HexView.h"
 
