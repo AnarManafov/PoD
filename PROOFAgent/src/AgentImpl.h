@@ -10,30 +10,28 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
 
 // API
 #include <signal.h>
-
 // BOOST
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-
 // STD
 #include <list>
 #include <functional>
-
-// PROOFAgent
+// MiscCommon
 #include "LogImp.h"
 #include "IXMLPersist.h"
-#include "PacketForwarder.h"
 #include "SysHelper.h"
 #include "CustomIterator.h"
 #include "PARes.h"
+// PROOFAgent
+#include "PacketForwarder.h"
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
 
