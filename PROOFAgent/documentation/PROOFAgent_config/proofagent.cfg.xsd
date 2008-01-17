@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="proofagent_config">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="instances"/>
+			</xsd:sequence>
+			<xsd:attribute name="last_update" type="xsd:date" use="required"/>
+			<xsd:attribute name="version" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="instances">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element ref="instance"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="instance">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="config"/>
+				<xsd:choice maxOccurs="1" minOccurs="1">
+					<xsd:element ref="agent_server"/>
+					<xsd:element ref="agent_client"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+<!--xsd:attribute name="type" type="xsd:string" use="required"/-->
+			<xsd:attribute name="type" type="instanceType"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:simpleType name="instanceType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="server"/>
+			<xsd:enumeration value="client"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="config">
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="work_dir" type="xsd:string"/>
+				<xsd:element name="logfile_dir" type="xsd:string"/>
+				<xsd:element name="logfile_overwrite" type="xsd:boolean"/>
+				<xsd:element name="log_level" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="timeout" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="proof_cfg_path" type="xsd:string"/>
+				<xsd:element name="last_execute_cmd" type="xsd:string"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="agent_server">
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="listen_port" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="local_client_port_min" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="local_client_port_max" type="xsd:nonNegativeInteger"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="agent_client">
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="server_port" type="xsd:nonNegativeInteger"/>
+				<xsd:element name="server_addr" type="xsd:string"/>
+				<xsd:element name="local_proofd_port" type="xsd:nonNegativeInteger"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

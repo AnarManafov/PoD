@@ -152,9 +152,9 @@ namespace PROOFAgent
 
         public:
             BEGIN_READ_XML_NODE(CAgentServer, "agent_server")
-            READ_ELEMENT( "listen_port", m_Data.m_nPort )
-            READ_ELEMENT( "local_client_port_min", m_Data.m_nLocalClientPortMin )
-            READ_ELEMENT( "local_client_port_max", m_Data.m_nLocalClientPortMax )
+            READ_NODE_VALUE( "listen_port", m_Data.m_nPort )
+            READ_NODE_VALUE( "local_client_port_min", m_Data.m_nLocalClientPortMin )
+            READ_NODE_VALUE( "local_client_port_max", m_Data.m_nLocalClientPortMax )
             END_READ_XML_NODE
 
             BEGIN_WRITE_XML_CFG(CAgentServer)
@@ -207,9 +207,9 @@ namespace PROOFAgent
 
         public:
             BEGIN_READ_XML_NODE(CAgentClient, "agent_client")
-            READ_ELEMENT( "server_port", m_Data.m_nServerPort )
-            READ_ELEMENT( "server_addr", m_Data.m_strServerHost )
-            READ_ELEMENT( "local_proofd_port", m_Data.m_nLocalClientPort )
+            READ_NODE_VALUE( "server_port", m_Data.m_nServerPort )
+            READ_NODE_VALUE( "server_addr", m_Data.m_strServerHost )
+            READ_NODE_VALUE( "local_proofd_port", m_Data.m_nLocalClientPort )
             END_READ_XML_NODE
 
             BEGIN_WRITE_XML_CFG(CAgentClient)
