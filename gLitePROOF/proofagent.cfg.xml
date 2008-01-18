@@ -1,47 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<proofagent_config last_update="" version="1.0.0" xmlns="">
-    
-       <!-- General properties of PROOFAgent
-            logfile_dir - (string) - a directory path for the log file
-            logfile_overwrite - (yes/no) - whether PA should overwrite the log file after each session
-            log_level - (string - [0-3]) - the level of the log: 0 - errors; 1 - warn; 2 - info; 3 - debug;  
-            agent_mode - (string - "Server"/"Client") - the mode in which this instance should work
-            timeout - !!! Should be renamed !!!
-            proof_cfg_dir - (string) - a directory path where PA should place proof.conf and xrootd conf files (~ and %HOME can be use)
-            -->
-    
+<proofagent_config last_update="2008-01-15" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www-linux.gsi.de/~manafov/D-Grid/docz/proofagent.cfg.xsd">
 	<instances>
-		
-        <server>         
-            <config
-		work_dir="/tmp/"
-                logfile_dir="/tmp/"
-                logfile_overwrite="yes"
-                log_level="0"
-                agent_mode="Server"
-                timeout="0"
-                proof_cfg_path="~/proof.conf"/>
-            <agent_server
-                listen_port="21111"
-                local_client_port_min="20000"
-                local_client_port_max="25000" />
-        </server>
-
-        <client>
-            <config
-		work_dir="/tmp/"
-                logfile_dir="_G_WRK_DIR"
-                logfile_overwrite="yes"
-                log_level="0"
-                agent_mode="Client"
-                timeout="0"
-                last_execute_cmd=""
-                proof_cfg_path="_G_WRK_DIR/proof.conf"/>
-            <agent_client
-                server_port="21111"
-                server_addr="depc218.gsi.de"
-                local_proofd_port="1093"/>
-        </client>
-        
-	</instances>		
+		<instance name="server" type="server">
+			<config>
+				<work_dir>/tmp/</work_dir>
+				<logfile_dir>/tmp/</logfile_dir>
+				<logfile_overwrite>true</logfile_overwrite>
+				<log_level>0</log_level>
+				<timeout>0</timeout>
+				<proof_cfg_path>~/proof.conf</proof_cfg_path>
+				<last_execute_cmd/>
+			</config>
+			<agent_server>
+				<listen_port>21111</listen_port>
+				<local_client_port_min>20000</local_client_port_min>
+				<local_client_port_max>25000</local_client_port_max>
+			</agent_server>
+		</instance>
+		<instance name="client" type="client">
+			<config>
+				<work_dir>/tmp/</work_dir>
+				<logfile_dir>_G_WRK_DIR</logfile_dir>
+				<logfile_overwrite>true</logfile_overwrite>
+				<log_level>0</log_level>
+				<timeout>0</timeout>
+				<proof_cfg_path>_G_WRK_DIR/proof.conf</proof_cfg_path>
+				<last_execute_cmd/>
+			</config>
+			<agent_client>
+				<server_port>21111</server_port>
+				<server_addr>depc218.gsi.de</server_addr>
+				<local_proofd_port>1093</local_proofd_port>
+			</agent_client>
+		</instance>
+	</instances>
 </proofagent_config>
