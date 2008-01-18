@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <proofagent_config last_update="2008-01-15" version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www-linux.gsi.de/~manafov/D-Grid/docz/proofagent.cfg.xsd">
-<!-- General properties of PROOFAgent
-            logfile_dir - (string) - a directory path for the log file
-            logfile_overwrite - (yes/no) - whether PA should overwrite the log file after each session
-            log_level - (string - [0-3]) - the level of the log: 0 - errors; 1 - warn; 2 - info; 3 - debug;  
-            agent_mode - (string - "Server"/"Client") - the mode in which this instance should work
-            timeout - !!! Should be renamed !!!
-            proof_cfg_dir - (string) - a directory path where PA should place proof.conf and xrootd conf files (~ and %HOME can be use)
-            -->
 	<instances>
 		<instance name="server0" type="server">
 			<config>
