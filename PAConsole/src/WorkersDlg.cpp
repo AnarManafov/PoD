@@ -93,16 +93,36 @@ void CWorkersDlg::getPROOFCfg( string *_FileName )
                                  .arg(errorStr));
         return ;
     }
-    QDomNodeList server = domDocument.elementsByTagName( tr("server") );
-    QDomNode node = server.at(0).namedItem( tr("config") );
-    if ( node.isNull())
+
+    QDomNodeList instance = domDocument.elementsByTagName("instance");
+    if ( instance.isEmpty() )
+        return; // TODO: msg me!
+
+    QDomNode server;
+    for ( int i = 0; i < instance.count(); ++i )
+    {
+        const QDomNode name(
+            instance.item(i).attributes().namedItem("name") );
+        if ( name.isNull() )
+            continue;
+        // TODO: We look exactly for "server" instance!
+        // Change it. Move instance name to the PAConsole settings.
+        if ( name.nodeValue() == "server" )
+        {
+            server = instance.item(i);
+            break;
+        }
+    }
+
+    QDomNode config = server.namedItem("config");
+    if ( config.isNull())
         return ; // TODO: Msg me!
 
-    QDomNode cfg = node.attributes().namedItem( tr("proof_cfg_path") );
-    if ( cfg.isNull())
+    QDomNode proof_cfg = config.namedItem( tr("proof_cfg_path") ).firstChild();
+    if ( proof_cfg.isNull())
         return ; // TODO: Msg me!
 
-    *_FileName = cfg.nodeValue().toAscii().data();
+    *_FileName = proof_cfg.nodeValue().toAscii().data();
 }
 
 void CWorkersDlg::update()
@@ -124,7 +144,7 @@ void CWorkersDlg::update()
     // Reading only comment blocks of proof.conf
     const char chCmntSign('#');
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                          SFindComment<string>(chCmntSign) );
+                                    SFindComment<string>(chCmntSign) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {

@@ -81,7 +81,7 @@ void CServerDlg::Stop()
     // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
     if (WIFSIGNALED(res) &&
         (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
-            return; //break
+        return; //break
 }
 
 void CServerDlg::Start()
@@ -91,7 +91,7 @@ void CServerDlg::Start()
     // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
     if (WIFSIGNALED(res) &&
         (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
-            return; //break;
+        return; //break;
 }
 
 bool CServerDlg::IsRunning()
@@ -172,16 +172,31 @@ void CServerDlg::getSrvPort( int *_Port )
                                  .arg(errorStr));
         return ;
     }
-    QDomNodeList server = domDocument.elementsByTagName("server");
-    QDomNode node = server.at(0).namedItem("config");
-    if ( node.isNull())
+    QDomNodeList instance = domDocument.elementsByTagName("instance");
+    if ( instance.isEmpty() )
+        return; // TODO: msg me!
+
+    QDomNode server;
+    for ( int i = 0; i < instance.count(); ++i )
+    {
+        const QDomNode name(
+            instance.item(i).attributes().namedItem("name") );
+        if ( name.isNull() )
+            continue;
+        // TODO: We look exactly for "server" instance!
+        // Change it. Move instance name to the PAConsole settings.
+        if ( name.nodeValue() == "server" )
+        {
+            server = instance.item(i);
+            break;
+        }
+    }
+
+    QDomNode agent_server = server.namedItem("agent_server");
+    if ( agent_server.isNull())
         return ; // TODO: Msg me!
 
-    QDomNode nodeSrv = server.at(0).namedItem("agent_server");
-    if ( node.isNull())
-        return ; // TODO: Msg me!
-
-    QDomNode port = nodeSrv.attributes().namedItem("listen_port");
+    QDomNode port = agent_server.namedItem("listen_port").firstChild();
     if ( port.isNull())
         return ; // TODO: Msg me!
 
