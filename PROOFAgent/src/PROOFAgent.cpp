@@ -39,7 +39,7 @@ void CPROOFAgent::Start() throw(exception)
     m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 
-void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance ) throw(exception)
+void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(exception)
 {
     // Strategy if looking for Cfg file:
     // 1 - current working directory
@@ -67,10 +67,10 @@ void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_
 
     smart_path( &xmlFileName );
 
-    _ReadCfg( xmlFileName, _Instance );
+    _ReadCfg( xmlFileName, _Instance, _bValidateXML );
 }
 
-void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &_Instance ) throw(exception)
+void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(exception)
 {
     // Initializing XML parser - Xerces-C++
     try
@@ -100,12 +100,12 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
 
         if ( parser->canSetFeature(XMLUni::fgDOMNamespaces, true) )
             parser->setFeature( XMLUni::fgDOMNamespaces, true );
-        if ( parser->canSetFeature(XMLUni::fgXercesSchema, true) )
-            parser->setFeature( XMLUni::fgXercesSchema, true );
-        if ( parser->canSetFeature(XMLUni::fgXercesSchemaFullChecking, true) )
-            parser->setFeature( XMLUni::fgXercesSchemaFullChecking, true );
-        if ( parser->canSetFeature(XMLUni::fgDOMValidation, true) )
-            parser->setFeature( XMLUni::fgDOMValidation, true );
+        if ( parser->canSetFeature(XMLUni::fgXercesSchema, _bValidateXML) )
+            parser->setFeature( XMLUni::fgXercesSchema, _bValidateXML );
+        if ( parser->canSetFeature(XMLUni::fgXercesSchemaFullChecking, _bValidateXML) )
+            parser->setFeature( XMLUni::fgXercesSchemaFullChecking, _bValidateXML );
+        if ( parser->canSetFeature(XMLUni::fgDOMValidation, _bValidateXML) )
+            parser->setFeature( XMLUni::fgDOMValidation, _bValidateXML );
         // enable datatype normalization - default is off
         if ( parser->canSetFeature(XMLUni::fgDOMDatatypeNormalization, true) )
             parser->setFeature( XMLUni::fgDOMDatatypeNormalization, true );

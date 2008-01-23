@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "config.h"
 
@@ -43,7 +43,8 @@ typedef struct SOptions
     SOptions():                        // Default options' values
             m_Command(Start),
             m_sPidfileDir("/tmp/"),
-            m_bDaemonize(false)
+            m_bDaemonize(false),
+            m_bValidate(false)
     {}
 
     string m_sConfigFile;
@@ -51,6 +52,7 @@ typedef struct SOptions
     ECommand_t m_Command;
     string m_sPidfileDir;
     bool m_bDaemonize;
+    bool m_bValidate;
 } SOptions_t;
 
 void PrintVersion()
@@ -80,6 +82,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
     ("daemonize,d", "run PROOFAgent as a daemon")
     ("version,v", "Version information")
+    ("validate,l", "validate configuration file before parsing it")
     ;
 
     // Parsing command-line
@@ -126,6 +129,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         smart_append( &_Options->m_sPidfileDir, '/' );
     }
     _Options->m_bDaemonize = vm.count("daemonize");
+    _Options->m_bValidate = vm.count("validate");
 
     return true;
 }
@@ -240,7 +244,7 @@ int main( int argc, char *argv[] )
         CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
-        agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName );
+        agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName, Options.m_bValidate );
 
         if ( Options.m_bDaemonize )
         {

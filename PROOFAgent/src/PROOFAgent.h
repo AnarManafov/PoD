@@ -86,7 +86,7 @@ namespace PROOFAgent
             DECLARE_XMLPERSIST_IMPL(CPROOFAgent)
 
         public:
-            void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance ) throw(std::exception);
+            void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML = false ) throw(std::exception);
             void Start() throw(std::exception);
 
         private:            
@@ -103,7 +103,7 @@ namespace PROOFAgent
             END_WRITE_XML_CFG
 
             void ExecuteLastCmd();
-            void _ReadCfg( const std::string &_xmlFileName, const std::string &_Instance ) throw(std::exception);
+            void _ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(std::exception);
 
         private:
             SAgentData_t m_Data;
