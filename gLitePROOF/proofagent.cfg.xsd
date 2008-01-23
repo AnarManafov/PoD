@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--  -->
+<!-- PROOF_AGENT -->
+<!--  -->
+	<xsd:element name="proofagent_config">
+		<xsd:annotation>
+			<xsd:documentation>A main configuration node</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="instances"/>
+			</xsd:sequence>
+			<xsd:attribute name="last_update" type="xsd:date" use="required"/>
+			<xsd:attribute name="version" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+<!--  -->
+<!-- INSTANCES -->
+<!--  -->
+	<xsd:element name="instances">
+		<xsd:annotation>
+			<xsd:documentation>The &quot;instances&quot; node may contain a number of instances of PROOFAgent.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element ref="instance"/>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+<!--  -->
+<!-- INSTANCE -->
+<!--  -->
+	<xsd:element name="instance">
+		<xsd:annotation>
+			<xsd:documentation>The &quot;instance&quot; node represents an instance of the PROOFAgent.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="config"/>
+				<xsd:choice maxOccurs="1" minOccurs="1">
+					<xsd:element ref="agent_server"/>
+					<xsd:element ref="agent_client"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+			<xsd:attribute name="type" type="instanceType"/>
+		</xsd:complexType>
+	</xsd:element>
+<!--  -->
+<!-- INSTANCE TYPE-->
+<!--  -->
+	<xsd:simpleType name="instanceType">
+		<xsd:annotation>
+			<xsd:documentation>Currently only &quot;server&quot; and &quot;client&quot; are supported as an instance types of PROOFAgent.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="server"/>
+			<xsd:enumeration value="client"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+<!--  -->
+<!-- CONFIG-->
+<!--  -->
+	<xsd:element name="config">
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="work_dir" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>A working directory of PROOFAgent. The pid file will be created there.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="logfile_dir" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>A directory which the log file should be created in.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="logfile_overwrite" type="xsd:boolean">
+					<xsd:annotation>
+						<xsd:documentation>The &quot;logfile_overwrite&quot; element indicates whether PROOFAgent should overwrite the log file after each session or not.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="log_level" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>A level of the log: 0 - errors; 1 - warn; 2 - info; 3 - debug.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="timeout" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation/>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="proof_cfg_path" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation> A directory path where PROOFAgent should place proof.conf conf file (~ and %HOME can be use).</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="last_execute_cmd" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation/>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+<!--  -->
+<!-- AGENT SERVER -->
+<!--  -->
+	<xsd:element name="agent_server">
+		<xsd:annotation>
+			<xsd:documentation>A PROOFAgent server configuration.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="listen_port" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>A port number, which is used by PROOFAgent server to listen.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="local_client_port_min" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>The &quot;local_client_port_min&quot; and &quot;local_client_port_max&quot; define a range of ports, 
+						which PROOFAgent server will use for his local connections to xrootd. 
+						Actually through these ports a traffic from remote workers will arrive to a local xrootd redirector.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="local_client_port_max" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>The &quot;local_client_port_min&quot; and &quot;local_client_port_max&quot; define a range of ports, 
+						which PROOFAgent server will use for his local connections to xrootd. 
+						Actually through these ports a traffic from remote workers will arrive to a local xrootd redirector.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+<!--  -->
+<!-- AGENT CLIENT -->
+<!--  -->
+	<xsd:element name="agent_client">
+		<xsd:annotation>
+			<xsd:documentation>A PROOFAgent client (worker) configuration</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice maxOccurs="unbounded" minOccurs="0">
+				<xsd:element name="server_port" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>A port number of the PROOFAgent server to connect.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="server_addr" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>A host name of the PROOFAgent server. Could be an IP address or a host name (with FQDN).</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="local_proofd_port" type="xsd:nonNegativeInteger">
+					<xsd:annotation>
+						<xsd:documentation>A port number of the local xproof client. Usually 1093.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
