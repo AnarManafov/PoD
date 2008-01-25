@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QWidget>
@@ -18,22 +18,22 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QFileDialog>
-
 // STD
 #include <sstream>
-
 // API
 #include <signal.h>
-
+// MiscCommon
+#include "INet.h"
+#include "Process.h"
 // PAConsole
 #include "ServerDlg.h"
 #include "ServerInfo.h"
-#include "INet.h"
 
 const size_t g_TimeoutCheckSrvSocket = 2000;
 
 using namespace std;
 using namespace MiscCommon::INet;
+using namespace MiscCommon;
 
 CServerDlg::CServerDlg( QWidget *parent ): QWidget( parent )
 {
@@ -62,7 +62,7 @@ CServerDlg::~CServerDlg()
 
 void CServerDlg::on_btnStatusServer_clicked()
 {
-    const QColor c = ( IsRunning() ) ? QColor(0, 0, 255) : QColor(255, 0, 0);
+    const QColor c = ( IsRunning(true) ) ? QColor(0, 0, 255) : QColor(255, 0, 0);
     m_ui.edtServerInfo->setTextColor( c );
 
     CServerInfo si;
@@ -74,42 +74,52 @@ void CServerDlg::on_btnStatusServer_clicked()
     m_ui.edtServerInfo->setText( QString(ss.str().c_str()) );
 }
 
-void CServerDlg::Stop()
+void CServerDlg::CommandServer( EServerCommands _command )
 {
-    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
-    int res = system( cmd.c_str() );
-    // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
-    if (WIFSIGNALED(res) &&
-        (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
-        return; //break
+    //const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
+    const string cmd("./Server_gLitePROOF.sh");
+    StringVector_t params;
+    params.push_back( string(m_ui.edtPIDDir->text().toAscii().data()) );
+    switch ( _command )
+    {
+        case srvSTART:
+            params.push_back( "start" );
+            break;
+        case srvSTOP:
+            params.push_back( "stop" );
+            break;
+        default:
+            return; //TODO: assert me!
+    }
+    try
+    {
+        do_execv( cmd, params, 30, false );
+    }
+    catch ( const exception &_e)
+    {
+        QMessageBox::critical(this, tr("PROOFAgent Console"), tr(_e.what()) );
+    }
 }
 
-void CServerDlg::Start()
-{
-    const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" start");
-    int res = system( cmd.c_str() );
-    // HACK: warning: ignoring return value of `int system(const char*)`, declared with attribute warn_unused_result
-    if (WIFSIGNALED(res) &&
-        (WTERMSIG(res) == SIGINT || WTERMSIG(res) == SIGQUIT))
-        return; //break;
-}
-
-bool CServerDlg::IsRunning()
+bool CServerDlg::IsRunning( bool _check_all )
 {
     CServerInfo si;
     const pid_t pidXrootD = si.IsXROOTDRunning();
     const pid_t pidPA = si.IsPROOFAgentRunning();
-    return  (pidXrootD && pidPA);
+    if ( _check_all )
+        return  (pidXrootD && pidPA);
+    else
+        return  (pidXrootD || pidPA);
 }
 
 void CServerDlg::on_btnStartServer_clicked()
 {
-    if ( IsRunning() )
-        Stop();
-    else
-        Start();
+    if ( IsRunning(true) )
+        return;
 
-    if ( !IsRunning() )
+    CommandServer( srvSTART );
+
+    if ( !IsRunning(true) )
         QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while starting the Server!") );
 
     on_btnStatusServer_clicked();
@@ -117,11 +127,11 @@ void CServerDlg::on_btnStartServer_clicked()
 
 void CServerDlg::on_btnStopServer_clicked()
 {
-    if ( !IsRunning() )
+    if ( !IsRunning(false) )
         return;
 
-    Stop();
-    if ( IsRunning() )
+    CommandServer( srvSTOP );
+    if ( IsRunning(true) )
         QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while stopping the Server!") );
 
     on_btnStatusServer_clicked();

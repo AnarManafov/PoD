@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef SERVERDLG_H_
 #define SERVERDLG_H_
@@ -24,6 +24,8 @@
 class CServerDlg: public QWidget
 {
         Q_OBJECT
+        
+        enum EServerCommands{ srvSTART, srvSTOP };
 
     public:
         CServerDlg( QWidget *parent = 0 );
@@ -39,9 +41,8 @@ class CServerDlg: public QWidget
 
     private:
         void getSrvPort( int *_Port );
-        void Start();
-        void Stop();
-        bool IsRunning();
+        void CommandServer( EServerCommands _command );        
+        bool IsRunning( bool _check_all );
 
     private:
         Ui::wgServer m_ui;
