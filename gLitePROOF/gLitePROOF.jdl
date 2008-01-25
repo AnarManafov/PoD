@@ -3,7 +3,7 @@
   Requirements = other.GlueCEStateStatus == "Production"; 
   RetryCount = 0; 
   ParameterStart = 0; 
-  PARAMETERS = 2; 
+  PARAMETERS = 3; 
   JobType = "parametric"; 
   Executable = "gLitePROOF.sh"; 
   ParameterStep = 1; 

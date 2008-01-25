@@ -3,7 +3,7 @@
   Requirements = ( other.GlueCEStateStatus == "Production" ) && ( other.GlueCEUniqueId == "dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq" ) && ( other.GlueHostNetworkAdapterOutboundIP == true ); 
   RetryCount = 0; 
   ParameterStart = 0; 
-  PARAMETERS = 1; 
+  PARAMETERS = 5; 
   JobType = "parametric"; 
   Executable = "gLitePROOF.sh"; 
   ParameterStep = 1; 
@@ -13,5 +13,5 @@
   Rank = 0; 
   Type = "job"; 
   StdError = "gLitePROOF.err"; 
-  InputSandbox = { "/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/gLitePROOF.sh","/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/xpd.cf","/home/anar/svn/grid/D-Grid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml" }
+  InputSandbox = { "/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF/gLitePROOF.sh","/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF/xpd.cf","/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF/proofagent.cfg.xml" }
  ]
