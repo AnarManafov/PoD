@@ -1,3 +1,8 @@
+!!! WARNING !!!
+This is the internal READ.ME and must not be used by the end user.
+!!! WARNING !!!
+
+
 >>> FZK Site info <<<
 
 VO: dgtest (or hepcg)
@@ -30,18 +35,4 @@ xrootd -c xpd.cf -b -l /tmp/xpd.log
 proof->UploadPackage("event.par");
 proof->EnablePackage("event"); 
 
->>>> mini ROOT
-#1.0 compile on WN
-./configure --disable-opengl --disable-python --disable-ssl --disable-builtin_zlib --disable-krb5 --disable-ldap --disable-shadowpw --disable-xml
-
-more than 20 min of compilation :( unacceptable so far
-
-
-#1.1
-./configure --disable-opengl --disable-python --disable-ssl --disable-builtin_zlib --disable-krb5 --disable-ldap --disable-shadowpw --disable-xml --disable-builtin_afterimage --disable-asimage --disable-astiff --disable-builtin_afterimage --disable-builtin_freetype --disable-builtin_pcre --disable-cintex --disable-pch --disable-reflex --disable-xft
-
-compilation time on depc218 ~ 19 min.
-
-
-#2 download a tarball
 
