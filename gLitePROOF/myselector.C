@@ -87,5 +87,8 @@ void myselector::Terminate()
   // a query. It always runs on the client, it can be used to present
   // the results graphically or save the results to file.#
   
-  fOutput->FindObject("fHist")->Draw();
+  TH1F *f = dynamic_cast<TH1F*> (bfOutput->FindObject("fHist") );
+ if( !f )
+	return;
+ f->Draw();
 }
