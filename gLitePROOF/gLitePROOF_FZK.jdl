@@ -3,7 +3,7 @@
   Requirements = ( other.GlueCEStateStatus == "Production" ) && ( other.GlueCEUniqueId == "dgrid-ce.fzk.de:2119/jobmanager-lcgpbs-dgiseq" ) && ( other.GlueHostNetworkAdapterOutboundIP == true ); 
   RetryCount = 0; 
   ParameterStart = 0; 
-  PARAMETERS = 5; 
+  PARAMETERS = 3; 
   JobType = "parametric"; 
   Executable = "gLitePROOF.sh"; 
   ParameterStep = 1; 
