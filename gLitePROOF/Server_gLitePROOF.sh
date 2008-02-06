@@ -21,11 +21,6 @@
 start() 
 {
     echo "Starting..."
-    # Using eval to force variable substitution
-    # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
-    MASTER_HOST=`hostname -f`
-    cp -f xpd.cf.template xpd.cf
-    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./xpd.cf
     # proof.conf must be presented before xrootd is started
     touch ~/proof.conf
     xrootd -c xpd.cf -b -l "$1/xpd.log"

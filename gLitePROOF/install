@@ -1,0 +1,11 @@
+#! /bin/bash
+
+# Using eval to force variable substitution
+# changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
+MASTER_HOST=`hostname -f`
+# generating xpd.cf
+cp -f xpd.cf.template xpd.cf
+eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./xpd.cf
+# generating proofagent.cfg.xml
+cp -f proofagent.cfg.xml.template proofagent.cfg.xml
+eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./proofagent.cfg.xml
