@@ -26,5 +26,5 @@
   proof = TProof::Open( "localhost" );
   
   // Processing our test analysis
-  set->Process( "myselector.C" );
+  set->Process( "test/myselector.C" );
 }

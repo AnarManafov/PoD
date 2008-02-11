@@ -25,7 +25,7 @@ start()
     touch ~/proof.conf
     xrootd -c xpd.cf -b -l "$1/xpd.log"
     
-    ./proofagent --validate -d -i server -p "$1/" -c proofagent.cfg.xml --start
+    $GLITE_PROOF_LOCATION/bin/proofagent --validate -d -i server -p "$1/" -c proofagent.cfg.xml --start
     
     return 0
 }
@@ -36,7 +36,7 @@ stop()
     pkill -9 xrootd
    #pkill -9 proofserv
 
-    ./proofagent -d -i server -p "$1/" --stop
+    $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --stop
     
     return 0
 }
@@ -44,7 +44,7 @@ stop()
 status()
 {
     echo `ps -A | grep xrootd`
-    ./proofagent -d -i server -p "$1/" --status
+    $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --status
 }
 
 # checking the number of parameters

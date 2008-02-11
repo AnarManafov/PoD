@@ -1,11 +1,65 @@
 #! /bin/bash
 
+############ Vars ######################
+VERSION=2.0.3
+
+############ Funstions ##################
+CreateCFG()
+{
+echo "Creating default cfg files..."
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
-MASTER_HOST=`hostname -f`
+    MASTER_HOST=`hostname -f`
 # generating xpd.cf
-cp -f xpd.cf.template xpd.cf
-eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./xpd.cf
+    cp -f template/xpd.cf.template xpd.cf
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./xpd.cf
 # generating proofagent.cfg.xml
-cp -f proofagent.cfg.xml.template proofagent.cfg.xml
-eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./proofagent.cfg.xml
+    cp -f template/proofagent.cfg.xml.template proofagent.cfg.xml
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./proofagent.cfg.xml
+
+    return 0
+}
+
+InstallGAW()
+{
+    #TODO: implement me!
+    return 0
+}
+
+InstallPROOFAgent()
+{
+    #TODO: implement me!
+    return 0
+}
+
+InstallPAConsole()
+{
+    #TODO: implement me!
+    return 0
+}
+
+InstallApps()
+{
+    InstallGAW || return 1
+    InstallPROOFAgent || return 1
+    InstallPAConsole || return 1
+
+    return 0
+}
+
+
+
+
+
+
+####### Main
+echo "--------------------"
+echo "gLitePROOF v."$VERSION
+echo "--------------------"
+echo
+CreateCFG || (echo "Error: can't create cfg files."; exit 1)
+
+InstallApps || exit 1
+
+echo "Installation successfully done."
+exit 0
