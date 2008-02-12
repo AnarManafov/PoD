@@ -32,6 +32,7 @@ TMP_PATH=$APP_PATH/tmp
 CreateCFG()
 {
 echo "Creating default cfg files..."
+# generating gLitePROOF_ENV.sh
    cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
 # Using eval to force variable substitution
@@ -51,11 +52,6 @@ _GetModule() #parameters: $1 - package name; $2 - URL
 {
    wget --tries=2 --directory-prefix=$TMP_PATH $2/$1.tar.gz  || return 1
    tar -C $APP_PATH -xzf $TMP_PATH/$1.tar.gz || return 1
-}
-
-_Uninstall() #parameters: $1 - package name;
-{
- #TODO: implement me!
 }
 
 InstallGAW()
@@ -124,7 +120,6 @@ echo "--------------------"
 echo "gLitePROOF v."$VERSION
 echo "--------------------"
 echo
-CreateCFG || (echo "Error: can't create cfg files."; exit 1)
 
 InstallApps
 
@@ -140,6 +135,8 @@ fi
 
 echo "---> deleting temporary files..."
 rm -rf $TMP_PATH
+
+CreateCFG || (echo "Error: can't create cfg files."; exit 1)
 
 echo "Installation successfully done."
 exit 0

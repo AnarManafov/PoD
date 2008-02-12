@@ -25,7 +25,7 @@ start()
     touch ~/proof.conf
     xrootd -c xpd.cf -b -l "$1/xpd.log"
     
-    $GLITE_PROOF_LOCATION/bin/proofagent --validate -d -i server -p "$1/" -c proofagent.cfg.xml --start
+    $GLITE_PROOF_LOCATION/bin/proofagent --validate -d -i server -p "$1/" -c $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml --start
     
     return 0
 }

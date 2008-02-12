@@ -2,28 +2,27 @@
 
 VERSION=2.0.4
 
-mkdir -p gLitePROOFpackage || exit 1
+PKG_NAME=gLitePROOFpackage
 
-cp  --target-directory=gLitePROOFpackage -rv \
-	gLitePROOF_FZK.jdl \
-	myselector.C \
-	proofagent.cfg.xml \
-	xpd.cf.template \
-	gLitePROOF.jdl \
-	myselector.h \
-	proof_demo1.C \
-	documentation \
-	gLitePROOF.sh \
-	PAConsole \
-	READ.ME \
-	dstarmb.root \
-	proofagent \
-	Server_gLitePROOF.sh \
-	|| exit 1
+mkdir -p $PKG_NAME || exit 1
 
+cp --target-directory=$PKG_NAME -rv \
+    bin \
+    documentation \
+    etc \
+    template \
+    "test" \
+    install \
+    || exit 1
 
-tar  -czvf gLitePROOFpackage.$VERSION.tgz gLitePROOFpackage || exit 1
+rm -rf $PKG_NAME/bin/.svn
+rm -rf $PKG_NAME/documentation/.svn
+rm -rf $PKG_NAME/etc/.svn
+rm -rf $PKG_NAME/template/.svn
+rm -rf $PKG_NAME/test/.svn
 
-rm -rf gLitePROOFpackage || exit 1
+tar  -czvf $PKG_NAME.$VERSION.tgz $PKG_NAME || exit 1
+
+rm -rf $PKG_NAME || exit 1
 
 exit 0
