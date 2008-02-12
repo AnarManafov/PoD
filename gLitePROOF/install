@@ -1,7 +1,7 @@
 #! /bin/bash
 
 ############ Vars ######################
-VERSION=2.0.3
+VERSION=2.0.4
 
 INSTALL_PATH=/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF
 
@@ -13,7 +13,7 @@ PROOFAgent_PKG=proofagent-1.0.3.1467
 PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
 PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
 
-PAConsole_PKG=PAConsole-1.0.2
+PAConsole_PKG=PAConsole-1.0.3
 PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
 PAConsole_OPTIONS=
 
@@ -51,7 +51,7 @@ InstallGAW()
     echo "---> deleting temporary files..."
     rm -rf $GAW_PKG.tar.gz
     echo
-    echo "---> PROOFAgent has been installed."
+    echo "---> GAW has been installed."
     return 0
 }
 
@@ -68,13 +68,24 @@ InstallPROOFAgent()
     echo "---> deleting temporary files..."
     rm -rf $PROOFAgent_PKG.tar.gz
     echo
-    echo "---> GAW has been installed."
+    echo "---> PROOFAgent has been installed."
     return 0
 }
 
 InstallPAConsole()
 {
-    #TODO: implement me!
+    wget --tries=2 $PAConsole_LINK/$PAConsole_PKG.tar.gz || return 1
+    tar -xzf $PAConsole_PKG.tar.gz || return 1
+    pushd $PAConsole_PKG
+    ./build.sh || return 1
+    gmake || return 1
+    cp Build/PAConsole $INSTALL_PATH/bin/
+    popd
+    
+    echo "---> deleting temporary files..."
+    rm -rf $PAConsole_PKG.tar.gz
+    echo
+    echo "---> PAConsole has been installed."
     return 0
 }
 
