@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QWidget>
@@ -29,6 +29,7 @@
 #include "WorkersDlg.h"
 
 const size_t g_TimeoutCheckPROOFCONF = 5000;
+const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 
 using namespace std;
 using namespace MiscCommon;
@@ -69,12 +70,15 @@ void CWorkersDlg::getPROOFCfg( string *_FileName )
     if ( !_FileName )
         return ;
 
-    QFile file( tr("./proofagent.cfg.xml") );
+    string cfg( g_szPROOF_CFG );
+    smart_path( &cfg );
+
+    QFile file( cfg.c_str() );
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         QMessageBox::warning(this, tr("PROOFAgent Console"),
                              tr("Cannot read file %1:\n%2.")
-                             .arg("./proofagent.cfg.xml")
+                             .arg(cfg.c_str())
                              .arg(file.errorString()));
         return ;
     }
