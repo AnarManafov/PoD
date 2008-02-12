@@ -92,7 +92,7 @@ void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
     if ( !_Ver )
         return ;
 
-    FILE *f = popen( "./proofagent --version", "r" );
+    FILE *f = popen( "proofagent --version", "r" );
     if ( !f )
         return ;
 

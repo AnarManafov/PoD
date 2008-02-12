@@ -84,9 +84,9 @@ void CServerDlg::on_btnStatusServer_clicked()
 }
 
 void CServerDlg::CommandServer( EServerCommands _command )
-{
-    //const string cmd = string("./Server_gLitePROOF.sh ") + m_ui.edtPIDDir->text().toAscii().data() + string(" stop");
-    const string cmd("./Server_gLitePROOF.sh");
+{    
+    string cmd("$GLITE_PROOF_LOCATION/bin/Server_gLitePROOF.sh");
+    smart_path( &cmd );
     StringVector_t params;
     params.push_back( string(m_ui.edtPIDDir->text().toAscii().data()) );
     switch ( _command )
