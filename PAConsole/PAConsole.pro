@@ -1,6 +1,6 @@
 TEMPLATE = app
 LANGUAGE = C++
-VERSION = -1.0.3
+VERSION = -1.0.4
 INCLUDEPATH = ./Include \
     ${GAW_LOCATION}/include \
     ${GLITE_LOCATION}/include \

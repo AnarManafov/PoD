@@ -23,6 +23,8 @@
 #include "JDLHelper.h"
 
 const size_t g_TimeoutRefreshrate = 5000;
+// default JDL file
+const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
 using namespace std;
 using namespace MiscCommon;
@@ -52,10 +54,19 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel(completer) );
     m_ui.edtJDLFileName->setCompleter(completer);
+    string jdl( g_szDefaultJDL );
+    smart_path( &jdl );
+    m_ui.edtJDLFileName->setText( jdl.c_str() );
 
     // Setting up PARAMETERS
-    int num_jobs;
-    get_ad_attr( &num_jobs, m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
+    int num_jobs(0);
+    try
+    {
+        get_ad_attr( &num_jobs, m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
+    }
+    catch (...)
+    {
+    }
     m_ui.spinNumWorkers->setValue( num_jobs );
 }
 
