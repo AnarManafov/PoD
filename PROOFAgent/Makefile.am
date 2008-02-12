@@ -5,5 +5,5 @@ AUTOMAKE_OPTIONS = foreign 1.4
 SUBDIRS = src
 
 dist_sysconf_DATA = documentation/PROOFAgent_config/proofagent.cfg.xml
-dist_bin_SCRIPTS = proofagent_env.sh unit_tests.sh
-bin_SCRIPTS = proofagent_env.sh unit_tests.sh
+dist_bin_SCRIPTS = proofagent_env.sh
+bin_SCRIPTS = proofagent_env.sh
