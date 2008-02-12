@@ -19,6 +19,15 @@ PAConsole_OPTIONS=
 
 
 
+APP_PATH=$INSTALL_PATH/app
+TMP_PATH=$APP_PATH/tmp
+########################################
+
+
+
+
+
+
 ############ Funstions ##################
 CreateCFG()
 {
@@ -38,18 +47,27 @@ echo "Creating default cfg files..."
     return 0
 }
 
+_GetModule() #parameters: $1 - package name; $2 - URL
+{
+   wget --tries=2 --directory-prefix=$TMP_PATH $2/$1.tar.gz  || return 1
+   tar -C $APP_PATH -xzf $TMP_PATH/$1.tar.gz || return 1
+}
+
+_Uninstall() #parameters: $1 - package name;
+{
+ #TODO: implement me!
+}
+
 InstallGAW()
 {
-    wget --tries=2 $GAW_LINK/$GAW_PKG.tar.gz || return 1
-    tar -xzf $GAW_PKG.tar.gz || return 1
-    pushd $GAW_PKG
+    _GetModule $GAW_PKG $GAW_LINK
+
+    pushd $APP_PATH/$GAW_PKG
     ./configure $GAW_OPTIONS || return 1
     gmake || return 1
     gmake install || return 1
     popd
        
-    echo "---> deleting temporary files..."
-    rm -rf $GAW_PKG.tar.gz
     echo
     echo "---> GAW has been installed."
     return 0
@@ -57,16 +75,14 @@ InstallGAW()
 
 InstallPROOFAgent()
 {
-    wget --tries=2 $PROOFAgent_LINK/$PROOFAgent_PKG.tar.gz || return 1
-    tar -xzf $PROOFAgent_PKG.tar.gz || return 1
-    pushd $PROOFAgent_PKG
+    _GetModule $PROOFAgent_PKG $PROOFAgent_LINK
+
+    pushd $APP_PATH/$PROOFAgent_PKG
     ./configure $PROOFAgent_OPTIONS || return 1
     gmake || return 1
     gmake install || return 1
     popd
        
-    echo "---> deleting temporary files..."
-    rm -rf $PROOFAgent_PKG.tar.gz
     echo
     echo "---> PROOFAgent has been installed."
     return 0
@@ -74,16 +90,14 @@ InstallPROOFAgent()
 
 InstallPAConsole()
 {
-    wget --tries=2 $PAConsole_LINK/$PAConsole_PKG.tar.gz || return 1
-    tar -xzf $PAConsole_PKG.tar.gz || return 1
-    pushd $PAConsole_PKG
+    _GetModule $PAConsole_PKG $PAConsole_LINK
+
+    pushd  $APP_PATH/$PAConsole_PKG
     ./build.sh || return 1
     gmake || return 1
     cp Build/PAConsole $INSTALL_PATH/bin/
     popd
     
-    echo "---> deleting temporary files..."
-    rm -rf $PAConsole_PKG.tar.gz
     echo
     echo "---> PAConsole has been installed."
     return 0
@@ -91,6 +105,8 @@ InstallPAConsole()
 
 InstallApps()
 {
+    mkdir -p $TMP_PATH
+
     InstallGAW || return 1
     InstallPROOFAgent || return 1
     InstallPAConsole || return 1
@@ -110,7 +126,20 @@ echo "--------------------"
 echo
 CreateCFG || (echo "Error: can't create cfg files."; exit 1)
 
-InstallApps || exit 1
+InstallApps
+
+RET_VAL=$?
+echo
+echo
+if [ "X$RET_VAL" = "X0" ]; then
+  echo "---> All gLitePROOF modules have been successfully installed."
+
+else
+  echo "---> ERROR: Failed to install gLitePROOF modules."
+fi
+
+echo "---> deleting temporary files..."
+rm -rf $TMP_PATH
 
 echo "Installation successfully done."
 exit 0
