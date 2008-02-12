@@ -32,6 +32,8 @@
 
 const size_t g_TimeoutCheckSrvSocket = 2000;
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
+// default pid/log directory
+const char * const g_szPID_Dir = "$GLITE_PROOF_LOCATION/";
 
 using namespace std;
 using namespace MiscCommon::INet;
@@ -48,6 +50,11 @@ CServerDlg::CServerDlg( QWidget *parent ): QWidget( parent )
     m_TimerSrvSocket = new QTimer(this);
     connect( m_TimerSrvSocket, SIGNAL(timeout()), this, SLOT(update_check_srv_socket()) );
     m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
+    
+    // pid/log directory
+    string sPIDDir( g_szPID_Dir );
+    smart_path( &sPIDDir );
+    m_ui.edtPIDDir->setText( sPIDDir.c_str() );
 
     // Show status on start-up
     on_btnStatusServer_clicked();

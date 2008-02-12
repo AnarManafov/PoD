@@ -52,7 +52,7 @@
         <item>
          <widget class="QLineEdit" name="edtJDLFileName" >
           <property name="text" >
-           <string>./gLitePROOF.jdl</string>
+           <string/>
           </property>
          </widget>
         </item>
