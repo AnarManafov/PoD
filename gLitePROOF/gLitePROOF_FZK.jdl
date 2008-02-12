@@ -13,5 +13,5 @@
   Rank = 0; 
   Type = "job"; 
   StdError = "gLitePROOF.err"; 
-  InputSandbox = { "$GLITE_PROOF_LOCATION/gLitePROOF.sh","$GLITE_PROOF_LOCATION/xpd.cf","$GLITE_PROOF_LOCATION/proofagent.cfg.xml" }
+  InputSandbox = { "$GLITE_PROOF_LOCATION/gLitePROOF.sh","$GLITE_PROOF_LOCATION/etc/xpd.cf","$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml" }
  ]

@@ -3,32 +3,72 @@
 ############ Vars ######################
 VERSION=2.0.3
 
+INSTALL_PATH=/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF
+
+GAW_PKG=glite-api-wrapper-3.0.0.1699
+GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/GAW
+GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
+
+PROOFAgent_PKG=proofagent-1.0.3.1467
+PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
+PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
+
+PAConsole_PKG=PAConsole-1.0.2
+PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
+PAConsole_OPTIONS=
+
+
+
 ############ Funstions ##################
 CreateCFG()
 {
 echo "Creating default cfg files..."
+   cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
+   eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
     MASTER_HOST=`hostname -f`
 # generating xpd.cf
-    cp -f template/xpd.cf.template xpd.cf
-    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./xpd.cf
+    cp -f template/xpd.cf.template etc/xpd.cf
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd.cf
 # generating proofagent.cfg.xml
-    cp -f template/proofagent.cfg.xml.template proofagent.cfg.xml
-    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' ./proofagent.cfg.xml
+    cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
 
     return 0
 }
 
 InstallGAW()
 {
-    #TODO: implement me!
+    wget --tries=2 $GAW_LINK/$GAW_PKG.tar.gz || return 1
+    tar -xzf $GAW_PKG.tar.gz || return 1
+    pushd $GAW_PKG
+    ./configure $GAW_OPTIONS || return 1
+    gmake || return 1
+    gmake install || return 1
+    popd
+       
+    echo "---> deleting temporary files..."
+    rm -rf $GAW_PKG.tar.gz
+    echo
+    echo "---> PROOFAgent has been installed."
     return 0
 }
 
 InstallPROOFAgent()
 {
-    #TODO: implement me!
+    wget --tries=2 $PROOFAgent_LINK/$PROOFAgent_PKG.tar.gz || return 1
+    tar -xzf $PROOFAgent_PKG.tar.gz || return 1
+    pushd $PROOFAgent_PKG
+    ./configure $PROOFAgent_OPTIONS || return 1
+    gmake || return 1
+    gmake install || return 1
+    popd
+       
+    echo "---> deleting temporary files..."
+    rm -rf $PROOFAgent_PKG.tar.gz
+    echo
+    echo "---> GAW has been installed."
     return 0
 }
 
