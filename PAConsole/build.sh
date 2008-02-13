@@ -17,14 +17,6 @@
 #
 #
 
-# QT 4.2.3
-export QTDIR=/usr/lib/qt4
-export QTINC=/usr/include
-export QTLIB=/usr/lib/qt4
-
-# GAW
-source /home/anar/GAW/bin/env.sh 
-
 gmake distclean
 $QTDIR/bin/qmake PAConsole.pro
 gmake
