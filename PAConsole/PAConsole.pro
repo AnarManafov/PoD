@@ -28,5 +28,4 @@ unix:LIBS += -L${GAW_LOCATION}/lib \
     -lglite-api-wrapper
 
 # -DWANT_NAMESPACES needed by ClassAd
-QMAKE_CXXFLAGS += -DWANT_NAMESPACES \
-    ${GAW_CPPFLAGS}
+QMAKE_CXXFLAGS += ${GAW_CPPFLAGS}
