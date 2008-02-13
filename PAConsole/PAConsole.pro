@@ -1,6 +1,6 @@
 TEMPLATE = app
 LANGUAGE = C++
-VERSION = -1.0.3
+VERSION = -1.0.4
 INCLUDEPATH = ./Include \
     ${CLASSADS_LOCATION}/include
 HEADERS += src/MainDlg.h \
