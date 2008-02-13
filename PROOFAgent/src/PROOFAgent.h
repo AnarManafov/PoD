@@ -89,7 +89,7 @@ namespace PROOFAgent
             void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML = false ) throw(std::exception);
             void Start() throw(std::exception);
 
-        private:            
+        private:
             BEGIN_READ_XML_CFG(CPROOFAgent)            
             READ_NODE_VALUE( "work_dir", m_Data.m_sWorkDir )
             READ_NODE_VALUE( "logfile_dir", m_Data.m_sLogFileDir )
