@@ -1,8 +1,7 @@
 TEMPLATE = app
 LANGUAGE = C++
 VERSION = -1.0.4
-INCLUDEPATH = ./Include \
-    ${CLASSADS_LOCATION}/include
+INCLUDEPATH = ./Include
 HEADERS += src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
