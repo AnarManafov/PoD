@@ -2,12 +2,7 @@ TEMPLATE = app
 LANGUAGE = C++
 VERSION = -1.0.4
 INCLUDEPATH = ./Include \
-    ${GAW_LOCATION}/include \
-    ${GLITE_LOCATION}/include \
-    ${GLITE_LOCATION}/externals/include \
-    ${LCG_LOCATION}/include/lfc \
-    ${XERCESC_LOCATION}/include \
-    ${CLASSADS_LOCATION}/include
+    ${GAW_CPPFLAGS}/include
 HEADERS += src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
