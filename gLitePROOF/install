@@ -5,16 +5,16 @@ VERSION=2.0.4
 
 INSTALL_PATH=/home/anar/svn-dgrid/dgrid/gLitePROOF/trunk/gLitePROOF
 
-GAW_PKG=glite-api-wrapper-3.0.0.1699
-GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/GAW
+GAW_PKG=glite-api-wrapper-3.1.0.1733
+GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
-PROOFAgent_PKG=proofagent-1.0.3.1467
-PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
+PROOFAgent_PKG=proofagent-1.0.4.1731
+PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
 
-PAConsole_PKG=PAConsole-1.0.3
-PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF
+PAConsole_PKG=PAConsole-1.0.4
+PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PAConsole_OPTIONS=
 
 

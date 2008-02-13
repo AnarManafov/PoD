@@ -3,9 +3,9 @@
 	<instances>
 		<instance name="server" type="server">
 			<config>
-				<work_dir>/tmp/</work_dir>
-				<logfile_dir>/tmp/</logfile_dir>
-				<logfile_overwrite>true</logfile_overwrite>
+				<work_dir>$GLITE_PROOF_LOCATION/</work_dir>
+				<logfile_dir>$GLITE_PROOF_LOCATION/</logfile_dir>
+				<logfile_overwrite>false</logfile_overwrite>
 				<log_level>0</log_level>
 				<timeout>0</timeout>
 				<proof_cfg_path>~/proof.conf</proof_cfg_path>
