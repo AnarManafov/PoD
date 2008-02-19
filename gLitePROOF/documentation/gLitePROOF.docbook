@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+
+<book id="gLitePROOF" lang="en">
+<bookinfo>
+<title>gLitePROOF v2.0.4</title> 
+<mediaobject>
+	<imageobject>
+	<imagedata fileref="gLitePROOF_html_m92b6502.png" format="PNG"/>
+	</imageobject>
+</mediaobject>
+  <authorgroup>
+    <author>
+       <firstname>Anar</firstname>
+       <surname>Manafov</surname>
+         <affiliation>
+           <address><email>A.Manafov@gsi.de</email></address>
+         </affiliation>
+    </author>
+  </authorgroup>
+  <edition>gLitePROOF v2.0.4</edition>
+  <pubdate>2007-2008</pubdate>
+  <copyright>
+	<year>2007</year>
+	<year>2008</year>
+	<holder>GSI mbH.</holder>
+	<holder>GSI GridTeam</holder>
+  </copyright>
+  </bookinfo>
+
+<!-- 
+Introduction 
+-->
+  <chapter id="Introduction">
+    <title>Introduction</title>
+    <para></para>
+  </chapter>
+  
+<!-- 
+Requirements 
+-->
+  <chapter id="Requirements">
+    <title>Requirements</title>
+    <para></para>
+  </chapter>
+
+<!-- 
+Download 
+-->
+  <chapter id="download">
+    <title>Download</title>
+    <para></para>
+  </chapter>
+  
+<!-- 
+Installation 
+-->
+  <chapter id="Installation">
+
+
+
+    <title>Installation</title>
+    <para></para>
+    <sect1 id="step1">
+      <title>Step #1</title>
+      <para></para>
+    </sect1>
+    <sect1 id="step2">
+      <title>Step #2</title>
+      <para></para>
+    </sect1>
+    <sect1 id="step3">
+      <title>Step #3</title>
+      <para></para>
+    </sect1>
+    <sect1 id="step4">
+      <title>Step #4</title>
+      <para></para>
+    </sect1>
+  </chapter>  
+  
+ <!-- 
+Configuration 
+-->
+  <chapter id="Configuration">
+    <title>Configuration</title>
+    <para></para>
+    <sect1 id="GAW">
+      <title>GAW</title>
+      <para></para>
+    </sect1>
+    <sect1 id="PROOFAgent">
+      <title>PROOFAgent</title>
+      <para></para>
+    </sect1>
+    <sect1 id="XROOTD">
+      <title>XROOTD</title>
+      <para></para>
+    </sect1>
+  </chapter>
+  
+<!-- 
+How to run 
+-->
+  <chapter id="How_to_run">
+    <title>How to run</title>
+    <para></para>
+  </chapter>
+  
+<!-- 
+Test 
+-->
+  <chapter id="Test">
+    <title>Test</title>
+    <para></para>
+  </chapter>
+  
+<!-- 
+Known Issues 
+-->
+  <chapter id="Known_Issues">
+    <title>Known Issues</title>
+    <para></para>
+  </chapter>
+  
+<!-- 
+Support 
+-->
+  <chapter id="Support">
+    <title>Support</title>
+    <para></para>
+  </chapter>
+  
+</book>
