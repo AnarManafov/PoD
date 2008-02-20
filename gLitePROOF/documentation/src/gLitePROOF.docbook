@@ -20,23 +20,133 @@
     </author>
   </authorgroup>
   <edition>gLitePROOF v2.0.4</edition>
-  <pubdate>2007-2008</pubdate>
   <copyright>
 	<year>2007</year>
 	<year>2008</year>
 	<holder>GSI mbH.</holder>
 	<holder>GSI GridTeam</holder>
   </copyright>
+  <releaseinfo>
+  $LastChangedDate$
+  last changed by:   $LastChangedBy$ $LastChangedDate$
+  </releaseinfo>
   </bookinfo>
 
 <!-- 
 Introduction 
 -->
-  <chapter id="Introduction">
-    <title>Introduction</title>
-    <para>
-    </para>
-  </chapter>
+	<chapter id="Introduction">
+		<title>Introduction</title>
+    	<para>
+    	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
+    	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
+    	on the gLite Grid. 
+    	</para>
+    	<para>
+    	<application>gLitePROOF</application> consists of the following components:
+		<itemizedlist>
+  			<listitem>
+    			<para>
+    			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
+    			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
+    			Grid worker nodes behind a firewall. Also PROOFAgent has a number of additional
+    			useful functionalities which help to start, process, and control PROOF interactive analysis.
+    			The default configuration file is included.      
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
+    			to simplify the usage of PROOFAgent and gLitePROOF configuration files. PAConsole uses GAW to
+    			perform gLite job submissions. Users can control jobs directly using ROOT and RGLite plug-in
+    			instead of using PAConsole.
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>xpd.cfg</guilabel> &mdash; a generic XROOTD configuration file (configures redirector
+    			and remote Grid workers).
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>Server_gLitePROOF.sh</guilabel> &mdash; a server side script. Helps to start/stop
+    			services of gLitePROOF. Could be used via command line or PAConsole GUI.
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>gLitePROOF.jdl</guilabel> &mdash; a JDL file, describes a generic, parametric Grid job,
+    			which is submitted to gLite and aims to execute gLitePROOF workers on Grid worker nodes.  
+    			</para>
+  			</listitem>
+  			<listitem>
+    			<para>
+    			<guilabel>gLitePROOF.sh</guilabel> &mdash; a job script executed on remote machines (on Grid WNs).  
+    			</para>
+  			</listitem>
+  			<listitem>
+    			<para>
+    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets envariament of gLitePROOF and
+    			should be sourced before a use of gLitePROOF.  
+    			</para>
+			</listitem>
+		</itemizedlist>
+		</para>
+		<para>
+		<figure float="0">
+			<title>A generic schema of gLitePROOF</title>
+			<screenshot><mediaobject>
+			<imageobject>
+			<imagedata fileref="gLite_PROOF.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>phrase</phrase>
+			</textobject>
+			</mediaobject></screenshot>
+		</figure>
+		</para>
+		<para>
+		The following describs the main use case of gLitePROOF:
+		<orderedlist>
+  		<title>Set up PROOF on the Grid</title>
+  			<listitem>
+    			<para>Using PAConsole a user configures and starts PROOFAgent (PA)
+    			server and XROOTD redirector.</para>
+  			</listitem>
+  			<listitem>
+    			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
+			</listitem>
+			<listitem>
+				<para>Using PAConsole the user submits gLitePROOF parametric job to the Grid.</para>
+			</listitem>
+			<listitem>
+				<para>When the job arrives to a remote worker node it configures the environment
+				and starts all needed services including XROOTD worker and PA client.</para>
+			</listitem>
+			<listitem>
+				<para>Then PA client communicates with PA server, exchanges environment data and
+				initiates a network tunnel.</para>
+			</listitem>
+			<listitem>
+				<para>When PA server accepts a client connection, the client is ready to be a PROOF
+				worker node.</para>
+			</listitem>
+			<listitem>
+				<para>When PA server detects good connections with its clients, this information is
+				immediately reflected by PAConsole.</para>
+			</listitem>
+			<listitem>
+				<para>When all workers are connected or when the user is satisfied with the number of
+				connected workers, the PROOF analysis can be processed like on a local batch farm.</para>
+			</listitem>
+			<listitem>
+				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
+				gLitePROOF Grid jobs.</para>
+			</listitem>			
+			</orderedlist>
+		</para>
+	</chapter>
   
 <!-- 
 Requirements 
@@ -70,9 +180,9 @@ Installation
       <title>Step #1</title>
       <para>Choose a directory where you want to install <application>gLitePROOF</application>,
       we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>gLitePROOF</application> tarball to this directory:
-     	<screen>
-      <command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.4.tgz</replaceable></command>
- 		</screen>
+<screen>
+<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.4.tgz</replaceable></command>
+</screen>
 		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
 		where <application>gLitePROOF</application> package will be located.</para>
     </sect1>
@@ -80,20 +190,20 @@ Installation
       <title>Step #2</title>
       <para>
       Change to the gLitePROOF directory:
-      <screen>
-      <command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
-      </screen>
+<screen>
+<command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
+</screen>
       and edit the install script. In the script you need to change at least the
       <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
       in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
       In our example it therefore will look like the following:
-      <screen>
-      INSTALL_PATH=/tmp/test/gLitePROOFpackage
-      </screen>
+<screen>
+INSTALL_PATH=/tmp/test/gLitePROOFpackage
+</screen>
       You may want to change some other setting. Here the description of the variables,
       which could be used to adjust gLitePROOF installation:
       <table>
-		<title>gLitePROOF instalaltion settings</title>
+		<title>gLitePROOF configuration variables</title>
   		<tgroup cols="2">
     		<thead>
       	<row>
@@ -164,18 +274,18 @@ Installation
       <para>
       Execute installation script, which will perform downloads of required modules,
       build them and configure <application>gLitePROOF</application> for the first run:
-      <screen>
-		<command>./install</command>
-		</screen>
+<screen>
+<command>./install</command>
+</screen>
       </para>
     </sect1>
     <sect1 id="step4">
       <title>Step #4</title>
       <para>
       In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
-      <screen>
-      <command>source gLitePROOF_ENV.sh</command>
-      </screen>
+<screen>
+<command>source gLitePROOF_ENV.sh</command>
+</screen>
       You need to source this script every time when you want to use <application>gLitePROOF</application>
       or source it from your bash profile.
       </para>
@@ -226,8 +336,8 @@ How to run
 <!-- 
 Test 
 -->
-  <chapter id="Test">
-    <title>Test</title>
+  <chapter id="How_to_test">
+    <title>How to test</title>
     <para>
     To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
     (see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
@@ -235,10 +345,10 @@ Test
     the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
     like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
     In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
-    <programlisting> 
-		set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
-		set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
-	</programlisting>
+<programlisting>
+set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
+set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
+</programlisting>
 	Now you are ready to perform this test. Use the <link linkend="How_to_run">How to run</link> chapter to perform this test using <application>gLitePROOF</application>.
    </para>
   </chapter>

@@ -1,7 +1,7 @@
 
 DOCBOOK=gLitePROOF.docbook
 
-HTML_OUT_DIR=html
+HTML_OUT_DIR=../html_help
 
 IMGS= \
 	gLitePROOF_logo.png\
@@ -17,7 +17,7 @@ HTML_OUT= \
 	Support.html\
 	index.html\
 	Known_Issues.html\
-	Test.html\
+	How_to_test.html\
 	download.html\
 	Installation.html\
 	Requirements.html
