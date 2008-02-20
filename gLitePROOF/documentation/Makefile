@@ -31,7 +31,7 @@ $(HTML_OUT_DIR)/%.css:
 	@echo "Using custom CSS..."
 	@cp $(CSS_FILES) $(HTML_OUT_DIR)/
 
-$(HTML_OUT_DIR)/%.html:
+$(HTML_OUT_DIR)/%.html: $(DOCBOOK)
 	@echo "Generating html doc..."
 	$(XMLTO) $(XMLTO_PARAM) $(DOCBOOK)
 

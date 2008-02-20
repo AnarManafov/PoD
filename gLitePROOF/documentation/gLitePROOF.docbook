@@ -34,7 +34,8 @@ Introduction
 -->
   <chapter id="Introduction">
     <title>Introduction</title>
-    <para></para>
+    <para>
+    </para>
   </chapter>
   
 <!-- 
@@ -50,33 +51,143 @@ Download
 -->
   <chapter id="download">
     <title>Download</title>
-    <para></para>
+    <para>
+    		gLitePROOF could be downloaded from the following locations:
+			<itemizedlist>
+  				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Stable/gLitePROOF/">Stable Releases</ulink></para></listitem>
+  				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Nightly/">Nightly Releases</ulink></para></listitem>  			
+			</itemizedlist>
+    </para>
   </chapter>
   
 <!-- 
 Installation 
 -->
   <chapter id="Installation">
-
-
-
     <title>Installation</title>
     <para></para>
     <sect1 id="step1">
       <title>Step #1</title>
-      <para></para>
+      <para>Choose a directory where you want to install <application>gLitePROOF</application>,
+      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>gLitePROOF</application> tarball to this directory:
+     	<screen>
+      <command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.4.tgz</replaceable></command>
+ 		</screen>
+		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
+		where <application>gLitePROOF</application> package will be located.</para>
     </sect1>
     <sect1 id="step2">
       <title>Step #2</title>
-      <para></para>
+      <para>
+      Change to the gLitePROOF directory:
+      <screen>
+      <command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
+      </screen>
+      and edit the install script. In the script you need to change at least the
+      <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
+      in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
+      In our example it therefore will look like the following:
+      <screen>
+      INSTALL_PATH=/tmp/test/gLitePROOFpackage
+      </screen>
+      You may want to change some other setting. Here the description of the variables,
+      which could be used to adjust gLitePROOF installation:
+      <table>
+		<title>gLitePROOF instalaltion settings</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>Variable</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+      		<row>
+        			<entry>INSTALL_PATH</entry>
+        			<entry>A full path to the gLitePROOF installation.</entry>
+      		</row>
+      		<row>
+        			<entry>GAW_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>GAW_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>GAW_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTDIR</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTINC</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTLIB</entry>
+        			<entry>TODO</entry>        
+      		</row>
+    		</tbody>
+   	</tgroup>
+		</table>
+      </para>
     </sect1>
     <sect1 id="step3">
       <title>Step #3</title>
-      <para></para>
+      <para>
+      Execute installation script, which will perform downloads of required modules,
+      build them and configure <application>gLitePROOF</application> for the first run:
+      <screen>
+		<command>./install</command>
+		</screen>
+      </para>
     </sect1>
     <sect1 id="step4">
       <title>Step #4</title>
-      <para></para>
+      <para>
+      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+      <screen>
+      <command>source gLitePROOF_ENV.sh</command>
+      </screen>
+      You need to source this script every time when you want to use <application>gLitePROOF</application>
+      or source it from your bash profile.
+      </para>
+      <para>
+      Now the installation is done.
+      <important>
+      	<para>
+       	If there were problems during installation, please see
+      	<link linkend="Support">Support</link> or <link linkend="Known_Issues">Known Issues</link>.
+      	</para>
+      </important>
+      </para>
     </sect1>
   </chapter>  
   
@@ -85,10 +196,14 @@ Configuration
 -->
   <chapter id="Configuration">
     <title>Configuration</title>
-    <para></para>
+    <para>
+    As it was mentioned above <application>gLitePROOF</application> consists of several modules
+    and to configure <application>gLitePROOF</application> one should configure some of these modules.
+    </para>
     <sect1 id="GAW">
       <title>GAW</title>
-      <para></para>
+      <para>
+      </para>
     </sect1>
     <sect1 id="PROOFAgent">
       <title>PROOFAgent</title>
@@ -113,7 +228,19 @@ Test
 -->
   <chapter id="Test">
     <title>Test</title>
-    <para></para>
+    <para>
+    To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
+    (see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
+    Copy the <filename>test/dstarmb.root</filename> file to the location which you specified as your <varname>olb.path</varname> in
+    the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
+    like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
+    In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
+    <programlisting> 
+		set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
+		set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
+	</programlisting>
+	Now you are ready to perform this test. Use the <link linkend="How_to_run">How to run</link> chapter to perform this test using <application>gLitePROOF</application>.
+   </para>
   </chapter>
   
 <!-- 
@@ -121,7 +248,10 @@ Known Issues
 -->
   <chapter id="Known_Issues">
     <title>Known Issues</title>
-    <para></para>
+    <para>
+    For the list of known issues please follow the following link:
+    <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF#KnownIssues">gLitePROOF Trac</ulink>
+    </para>
   </chapter>
   
 <!-- 
@@ -129,7 +259,26 @@ Support
 -->
   <chapter id="Support">
     <title>Support</title>
-    <para></para>
+    <para>
+    	<itemizedlist>
+  			<listitem>
+  				<para>
+  				Your requests you can send to: Anar Manafov <email>A.Manafov@gsi.de</email> or to GSI GridTeam <email>grid-admin@gsi.de</email>.
+  				</para>
+  			</listitem>
+  			<listitem>
+  				<para>
+  				Use <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF">gLitePROOF Trac</ulink> to find out details and post tickets related to the project.
+  				There you also can find SVN repository, Build system, and project and source code documentation.
+  				</para>
+  			</listitem>
+  				<listitem>
+  				<para>
+  				Meet <ulink url="http://rglite.blogspot.com/">RGLite and gLitePROOF Blog</ulink>.
+  				</para>
+  			</listitem>  			
+		</itemizedlist>
+    </para>
   </chapter>
   
 </book>
