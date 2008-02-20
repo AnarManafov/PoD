@@ -3,6 +3,13 @@ DOCBOOK=gLitePROOF.docbook
 
 HTML_OUT_DIR=html
 
+IMGS= \
+	gLitePROOF_logo.png\
+	gLite_PROOF.png\
+	important.png
+
+IMG_DIR = img
+
 HTML_OUT= \
 	Configuration.html\
 	How_to_run.html\
@@ -35,10 +42,15 @@ $(HTML_OUT_DIR)/%.html: $(DOCBOOK)
 	@echo "Generating html doc..."
 	$(XMLTO) $(XMLTO_PARAM) $(DOCBOOK)
 
-html_files: ${addprefix $(HTML_OUT_DIR)/, $(HTML_OUT)}
-css_files:  ${addprefix $(HTML_OUT_DIR)/, $(CSS_FILES)}
+$(HTML_OUT_DIR)/%.png:
+	@echo "Copying images..."
+	@cp ${addprefix $(IMG_DIR)/, $(IMGS)} $(HTML_OUT_DIR)/
 
-gen_html: $(HTML_OUT_DIR) css_files html_files
+html_files: ${addprefix $(HTML_OUT_DIR)/, $(HTML_OUT)}
+css_files: ${addprefix $(HTML_OUT_DIR)/, $(CSS_FILES)}
+img_files: ${addprefix $(HTML_OUT_DIR)/, $(IMGS)}
+
+gen_html: $(HTML_OUT_DIR) css_files img_files html_files
 
 
 clean:
