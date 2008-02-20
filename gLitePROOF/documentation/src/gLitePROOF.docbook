@@ -27,8 +27,14 @@
 	<holder>GSI GridTeam</holder>
   </copyright>
   <releaseinfo>
-  $LastChangedRevision$	$LastChangedDate$ $LastChangedBy$
+  $Revision$
   </releaseinfo>
+  <pubdate>
+  $Date$
+  </pubdate>
+  <publisher>
+  <publishername>$LastChangedBy$</publishername>
+  </publisher>
   
   </bookinfo>
 
