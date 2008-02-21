@@ -27,6 +27,7 @@ CSS_FILES=docbook.css
 XMLTO=xmlto
 
 XMLTO_PARAM=-o $(HTML_OUT_DIR) xhtml -m config.xsl
+XMLTO_PARAM_NOCHUNKS=-o $(HTML_OUT_DIR) xhtml-nochunks -m config.xsl
 
 all: gen_html
 
@@ -41,6 +42,7 @@ $(HTML_OUT_DIR)/%.css:
 $(HTML_OUT_DIR)/%.html: $(DOCBOOK)
 	@echo "Generating html doc..."
 	$(XMLTO) $(XMLTO_PARAM) $(DOCBOOK)
+	$(XMLTO) $(XMLTO_PARAM_NOCHUNKS) $(DOCBOOK)
 
 $(HTML_OUT_DIR)/%.png:
 	@echo "Copying images..."

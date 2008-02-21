@@ -15,7 +15,7 @@
 	<xsl:template name="user.header.content">
 		<div class="projection">
 			<div class="logo">
-				<img src="http://www-linux.gsi.de/~manafov/D-Grid/Trac_Logo.png" style="position: top: 1em; left;"/>
+				<img src="gLitePROOF_logo.png" style="position: top: 1em; left;"/>
 			</div>
 		</div>
 	</xsl:template>

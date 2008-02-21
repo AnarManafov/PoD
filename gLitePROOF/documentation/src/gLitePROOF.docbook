@@ -5,11 +5,6 @@
 <book id="gLitePROOF" lang="en">
 <bookinfo>
 <title>gLitePROOF v2.0.4</title> 
-<mediaobject>
-	<imageobject>
-	<imagedata fileref="gLitePROOF_logo.png" format="PNG"/>
-	</imageobject>
-</mediaobject>
   <authorgroup>
     <author>
        <firstname>Anar</firstname>
