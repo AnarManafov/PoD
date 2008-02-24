@@ -4,6 +4,14 @@ VERSION=2.0.4
 
 PKG_NAME=gLitePROOFpackage
 
+
+# building documentation
+pushd documentation/src/
+gmake
+popd
+
+# making pkg.
+
 mkdir -p $PKG_NAME || exit 1
 
 cp --target-directory=$PKG_NAME -rv \
