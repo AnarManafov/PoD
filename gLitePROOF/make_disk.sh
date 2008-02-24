@@ -7,7 +7,7 @@ PKG_NAME=gLitePROOFpackage
 
 # building documentation
 pushd documentation/src/
-gmake
+gmake || exit 1
 popd
 
 # making pkg.
@@ -29,7 +29,9 @@ rm -rf $PKG_NAME/etc/.svn
 rm -rf $PKG_NAME/template/.svn
 rm -rf $PKG_NAME/test/.svn
 
-tar  -czvf $PKG_NAME.$VERSION.tgz $PKG_NAME || exit 1
+tar  -cvf $PKG_NAME.$VERSION.tar $PKG_NAME || exit 1
+gzip -9 $PKG_NAME.$VERSION.tar || exit 1
+
 
 rm -rf $PKG_NAME || exit 1
 
