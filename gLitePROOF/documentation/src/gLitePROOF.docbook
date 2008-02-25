@@ -88,7 +88,7 @@ Introduction
   			</listitem>
   			<listitem>
     			<para>
-    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets envariament of gLitePROOF and
+    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of gLitePROOF and
     			should be sourced before a use of gLitePROOF.  
     			</para>
 			</listitem>
@@ -108,7 +108,7 @@ Introduction
 		</figure>
 		</para>
 		<para>
-		The following describs the main use case of gLitePROOF:
+		The following describes the main use case of gLitePROOF:
 		<orderedlist>
   		<title>Set up PROOF on the Grid</title>
   			<listitem>
@@ -215,7 +215,7 @@ Installation
 <screen>
 <command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
 </screen>
-      and edit the install script. In the script you need to change at least the
+      and edit the <filename>install</filename> script. In the script you need to change at least the
       <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
       in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
       In our example it therefore will look like the following:
@@ -335,16 +335,71 @@ Configuration
     <sect1 id="GAW">
       <title>GAW</title>
       <para>
+      There is GAW's configuration file in the
+      <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> directory, it's called
+      <filename>glite-api-wrapper.cfg.xml</filename>. Through this file one can configure GAW engine.
+      The file is an XML file and it's XML Schema documentation and description of all configuration keys could
+      be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
       </para>
+      <para>
+      Since gLitEPROOF uses GAW to submit gLite jobs the important parameter to configure would be
+      a <varname>wmp_endpoint</varname>. This parameter holds the value for the default WMProxy endpoint to use.
+      <tip>
+      <para>
+      GAW has a smart method for endpoint guessing. So, if you have could configured gLite UI,
+      in terms that WMProxy endpoints are configured for your VO, then GAW will find the best mach and
+      will use it, and you therefore could just keep the <varname>wmp_endpoint</varname> value empty or
+      you could remove this key from the configuration file at all. Otherwise GAW will use the value from
+      the configuration file.      
+      </para>
+      </tip>
+		All other settings may be changed to adgust gLitePROOF according to personal needs.
+		</para>
     </sect1>
     <sect1 id="PROOFAgent">
       <title>PROOFAgent</title>
-      <para></para>
+      <para>
+      PROOFAgent is a kind of proxy and manager application for gLitePROOF. This application manages
+      communication with gLitePROOF workers, where PROOFAgent clinets are working. 
+      There is GAW's configuration file in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
+      directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
+      holds both client and server configuration, so be carefull while changing it.
+      The file is an XML file and it's XML Schema documentation and description of all configuration keys could
+      be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
+      </para>
+		<warning>
+      <para>
+      PROOFAgent works with instances. The default configuration file is holds two instances: server, client.
+      It is recomendet for users to keep it that way. Only Advanced users may want to change this.
+      </para>
+      </warning>
+      <para>
+      The default configuration of PROOFAgent assumes, that:
+      <itemizedlist>
+	  <listitem><para>the port range 20000-25000 (well known as default Globus port range)
+	  is open on worker nodes for outgoing connection,</para></listitem>
+  	  <listitem><para>PROOFAgent server located on the machine where gLitePROOF has been installed,</para></listitem>
+  	  <listitem><para>PROOFAgent server accepts connections on 21111 port
+  	  (open this port if you have a firewall on your UI or reconfigure PROOFAgent to use any other avaliable port).</para></listitem>
+		</itemizedlist>
+		</para>   
     </sect1>
     <sect1 id="XROOTD">
       <title>XROOTD</title>
-      <para></para>
+      <para>
+      There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
+      directory and it's called <filename>xpd.cf</filename>.
+      </para>
+      <para>
+      TODO
+      </para>
     </sect1>
+    <sect1 id="A_JDL_file">
+      <title>A JDL file</title>
+      <para>
+      TODO
+      </para>
+    </sect1>    
   </chapter>
   
 <!-- 

@@ -6,7 +6,9 @@ HTML_OUT_DIR=../html_help
 IMGS= \
 	gLitePROOF_logo.png\
 	gLite_PROOF.png\
-	important.png
+	important.png \
+	tip.png \
+	warning.png
 
 IMG_DIR = img
 
