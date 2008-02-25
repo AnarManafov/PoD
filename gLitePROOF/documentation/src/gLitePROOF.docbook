@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"[
+<!ENTITY Introduction SYSTEM "Introduction.docbook">
+<!ENTITY Requirements SYSTEM "Requirements.docbook">
+<!ENTITY Installation SYSTEM "Installation.docbook">
+<!ENTITY Configuration SYSTEM "Configuration.docbook">
+]>
 
 <book id="gLitePROOF" lang="en">
 <bookinfo>
@@ -36,148 +41,13 @@
 <!-- 
 Introduction 
 -->
-	<chapter id="Introduction">
-		<title>Introduction</title>
-    	<para>
-    	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
-    	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
-    	on the gLite Grid. 
-    	</para>
-    	<para>
-    	<application>gLitePROOF</application> consists of the following components:
-		<itemizedlist>
-  			<listitem>
-    			<para>
-    			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
-    			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
-    			Grid worker nodes behind a firewall. Also PROOFAgent has a number of additional
-    			useful functionalities which help to start, process, and control PROOF interactive analysis.
-    			The default configuration file is included.      
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
-    			to simplify the usage of PROOFAgent and gLitePROOF configuration files. PAConsole uses GAW to
-    			perform gLite job submissions. Users can control jobs directly using ROOT and RGLite plug-in
-    			instead of using PAConsole.
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>xpd.cfg</guilabel> &mdash; a generic XROOTD configuration file (configures redirector
-    			and remote Grid workers).
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>Server_gLitePROOF.sh</guilabel> &mdash; a server side script. Helps to start/stop
-    			services of gLitePROOF. Could be used via command line or PAConsole GUI.
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>gLitePROOF.jdl</guilabel> &mdash; a JDL file, describes a generic, parametric Grid job,
-    			which is submitted to gLite and aims to execute gLitePROOF workers on Grid worker nodes.  
-    			</para>
-  			</listitem>
-  			<listitem>
-    			<para>
-    			<guilabel>gLitePROOF.sh</guilabel> &mdash; a job script executed on remote machines (on Grid WNs).  
-    			</para>
-  			</listitem>
-  			<listitem>
-    			<para>
-    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of gLitePROOF and
-    			should be sourced before a use of gLitePROOF.  
-    			</para>
-			</listitem>
-		</itemizedlist>
-		</para>
-		<para>
-		<figure float="0">
-			<title>A generic schema of gLitePROOF</title>
-			<screenshot><mediaobject>
-			<imageobject>
-			<imagedata fileref="gLite_PROOF.png" format="PNG"/>
-			</imageobject>
-			<textobject>
-			<phrase>phrase</phrase>
-			</textobject>
-			</mediaobject></screenshot>
-		</figure>
-		</para>
-		<para>
-		The following describes the main use case of gLitePROOF:
-		<orderedlist>
-  		<title>Set up PROOF on the Grid</title>
-  			<listitem>
-    			<para>Using PAConsole a user configures and starts PROOFAgent (PA)
-    			server and XROOTD redirector.</para>
-  			</listitem>
-  			<listitem>
-    			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
-			</listitem>
-			<listitem>
-				<para>Using PAConsole the user submits gLitePROOF parametric job to the Grid.</para>
-			</listitem>
-			<listitem>
-				<para>When the job arrives to a remote worker node it configures the environment
-				and starts all needed services including XROOTD worker and PA client.</para>
-			</listitem>
-			<listitem>
-				<para>Then PA client communicates with PA server, exchanges environment data and
-				initiates a network tunnel.</para>
-			</listitem>
-			<listitem>
-				<para>When PA server accepts a client connection, the client is ready to be a PROOF
-				worker node.</para>
-			</listitem>
-			<listitem>
-				<para>When PA server detects good connections with its clients, this information is
-				immediately reflected by PAConsole.</para>
-			</listitem>
-			<listitem>
-				<para>When all workers are connected or when the user is satisfied with the number of
-				connected workers, the PROOF analysis can be processed like on a local batch farm.</para>
-			</listitem>
-			<listitem>
-				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
-				gLitePROOF Grid jobs.</para>
-			</listitem>			
-			</orderedlist>
-		</para>
-	</chapter>
+	&Introduction;
   
 <!-- 
 Requirements 
 -->
-  <chapter id="Requirements">
-    <title>Requirements</title>
-    <para>
-    gLitePROOF works as a client/server application.
-    We define server side as a side which is lockated on the local (for the user) space, on users's laptop, for example.
-    For simplification we will call it a user's workspace or local worksapce.
-    We deine a client side as a side which is lockated on the remote space, gLite Grid Worker Nodes, for example.
-    Clients are actally workers for us. For simplification we will call it a remote workspace.
-    </para>
-    <para>
-    User's workspace requarements:
-    <itemizedlist>
-    <listitem><para>ROOT 5.18+ (xrootd enabled)</para></listitem>
-    <listitem><para>gLite UI 3.1</para></listitem>
-    </itemizedlist>
-    </para>
-    <para>
-    Remote workspace requarements:
-    <itemizedlist>
-    <listitem><para>gLite WMS (WMProxy endpoint)</para></listitem>
-    <listitem><para>gLite WNs (at least v3.0)</para></listitem>
-    <listitem><para>Outgoing connection for GLOBUS ports (configurable)</para></listitem>    
-    </itemizedlist>
-    </para>    
-  </chapter>
-
+	&Requirements;
+	
 <!-- 
 Download 
 -->
@@ -195,213 +65,13 @@ Download
 <!-- 
 Installation 
 -->
-  <chapter id="Installation">
-    <title>Installation</title>
-    <para></para>
-    <sect1 id="step1">
-      <title>Step #1</title>
-      <para>Choose a directory where you want to install <application>gLitePROOF</application>,
-      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>gLitePROOF</application> tarball to this directory:
-<screen>
-<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.4.tgz</replaceable></command>
-</screen>
-		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
-		where <application>gLitePROOF</application> package will be located.</para>
-    </sect1>
-    <sect1 id="step2">
-      <title>Step #2</title>
-      <para>
-      Change to the gLitePROOF directory:
-<screen>
-<command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
-</screen>
-      and edit the <filename>install</filename> script. In the script you need to change at least the
-      <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
-      in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
-      In our example it therefore will look like the following:
-<screen>
-INSTALL_PATH=/tmp/test/gLitePROOFpackage
-</screen>
-      You may want to change some other setting. Here the description of the variables,
-      which could be used to adjust gLitePROOF installation:
-      <table>
-		<title>gLitePROOF configuration variables</title>
-  		<tgroup cols="2">
-    		<thead>
-      	<row>
-        		<entry>Variable</entry>
-        		<entry>Description</entry>        
-      	</row>
-    		</thead>
-    		<tbody>
-      		<row>
-        			<entry>INSTALL_PATH</entry>
-        			<entry>A full path to the gLitePROOF installation.</entry>
-      		</row>
-      		<row>
-        			<entry>GAW_LINK</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>GAW_PKG</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>GAW_OPTIONS</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PROOFAgent_PKG</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PROOFAgent_LINK</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PROOFAgent_OPTIONS</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PAConsole_PKG</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PAConsole_LINK</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>PAConsole_OPTIONS</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>QTDIR</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>QTINC</entry>
-        			<entry>TODO</entry>        
-      		</row>
-      		<row>
-        			<entry>QTLIB</entry>
-        			<entry>TODO</entry>        
-      		</row>
-    		</tbody>
-   	</tgroup>
-		</table>
-      </para>
-    </sect1>
-    <sect1 id="step3">
-      <title>Step #3</title>
-      <para>
-      Execute installation script, which will perform downloads of required modules,
-      build them and configure <application>gLitePROOF</application> for the first run:
-<screen>
-<command>./install</command>
-</screen>
-      </para>
-    </sect1>
-    <sect1 id="step4">
-      <title>Step #4</title>
-      <para>
-      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
-<screen>
-<command>source gLitePROOF_ENV.sh</command>
-</screen>
-      You need to source this script every time when you want to use <application>gLitePROOF</application>
-      or source it from your bash profile.
-      </para>
-      <para>
-      Now the installation is done.
-      <important>
-      	<para>
-       	If there were problems during installation, please see
-      	<link linkend="Support">Support</link> or <link linkend="Known_Issues">Known Issues</link>.
-      	</para>
-      </important>
-      </para>
-    </sect1>
-  </chapter>  
+  &Installation;
   
  <!-- 
 Configuration 
 -->
-  <chapter id="Configuration">
-    <title>Configuration</title>
-    <para>
-    As it was mentioned above <application>gLitePROOF</application> consists of several modules
-    and to configure <application>gLitePROOF</application> one should configure some of these modules.
-    </para>
-    <sect1 id="GAW">
-      <title>GAW</title>
-      <para>
-      There is GAW's configuration file in the
-      <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> directory, it's called
-      <filename>glite-api-wrapper.cfg.xml</filename>. Through this file one can configure GAW engine.
-      The file is an XML file and it's XML Schema documentation and description of all configuration keys could
-      be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
-      </para>
-      <para>
-      Since gLitEPROOF uses GAW to submit gLite jobs the important parameter to configure would be
-      a <varname>wmp_endpoint</varname>. This parameter holds the value for the default WMProxy endpoint to use.
-      <tip>
-      <para>
-      GAW has a smart method for endpoint guessing. So, if you have could configured gLite UI,
-      in terms that WMProxy endpoints are configured for your VO, then GAW will find the best mach and
-      will use it, and you therefore could just keep the <varname>wmp_endpoint</varname> value empty or
-      you could remove this key from the configuration file at all. Otherwise GAW will use the value from
-      the configuration file.      
-      </para>
-      </tip>
-		All other settings may be changed to adgust gLitePROOF according to personal needs.
-		</para>
-    </sect1>
-    <sect1 id="PROOFAgent">
-      <title>PROOFAgent</title>
-      <para>
-      PROOFAgent is a kind of proxy and manager application for gLitePROOF. This application manages
-      communication with gLitePROOF workers, where PROOFAgent clinets are working. 
-      There is GAW's configuration file in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
-      directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
-      holds both client and server configuration, so be carefull while changing it.
-      The file is an XML file and it's XML Schema documentation and description of all configuration keys could
-      be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
-      </para>
-		<warning>
-      <para>
-      PROOFAgent works with instances. The default configuration file is holds two instances: server, client.
-      It is recomendet for users to keep it that way. Only Advanced users may want to change this.
-      </para>
-      </warning>
-      <para>
-      The default configuration of PROOFAgent assumes, that:
-      <itemizedlist>
-	  <listitem><para>the port range 20000-25000 (well known as default Globus port range)
-	  is open on worker nodes for outgoing connection,</para></listitem>
-  	  <listitem><para>PROOFAgent server located on the machine where gLitePROOF has been installed,</para></listitem>
-  	  <listitem><para>PROOFAgent server accepts connections on 21111 port
-  	  (open this port if you have a firewall on your UI or reconfigure PROOFAgent to use any other avaliable port).</para></listitem>
-		</itemizedlist>
-		</para>   
-    </sect1>
-    <sect1 id="XROOTD">
-      <title>XROOTD</title>
-      <para>
-      There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
-      directory and it's called <filename>xpd.cf</filename>.
-      </para>
-      <para>
-      TODO
-      </para>
-    </sect1>
-    <sect1 id="A_JDL_file">
-      <title>A JDL file</title>
-      <para>
-      TODO
-      </para>
-    </sect1>    
-  </chapter>
-  
+  &Configuration;
+    
 <!-- 
 How to run 
 -->
@@ -467,5 +137,5 @@ Support
 		</itemizedlist>
     </para>
   </chapter>
-  
+   
 </book>

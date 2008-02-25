@@ -1,0 +1,120 @@
+<!-- 
+Introduction 
+-->
+	<chapter id="Introduction">
+		<title>Introduction</title>
+		<chapterinfo>
+    		<releaseinfo>$Revision$</releaseinfo>
+  	 		<pubdate>$Date$</pubdate>
+  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
+   	</chapterinfo>
+    	<para>
+    	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
+    	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
+    	on the gLite Grid. 
+    	</para>
+    	<para>
+    	<application>gLitePROOF</application> consists of the following components:
+		<itemizedlist>
+  			<listitem>
+    			<para>
+    			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
+    			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
+    			Grid worker nodes behind a firewall. Also PROOFAgent has a number of additional
+    			useful functionalities which help to start, process, and control PROOF interactive analysis.
+    			The default configuration file is included.      
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
+    			to simplify the usage of PROOFAgent and gLitePROOF configuration files. PAConsole uses GAW to
+    			perform gLite job submissions. Users can control jobs directly using ROOT and RGLite plug-in
+    			instead of using PAConsole.
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>xpd.cfg</guilabel> &mdash; a generic XROOTD configuration file (configures redirector
+    			and remote Grid workers).
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>Server_gLitePROOF.sh</guilabel> &mdash; a server side script. Helps to start/stop
+    			services of gLitePROOF. Could be used via command line or PAConsole GUI.
+    			</para>
+  			</listitem>
+  		  	<listitem>
+    			<para>
+    			<guilabel>gLitePROOF.jdl</guilabel> &mdash; a JDL file, describes a generic, parametric Grid job,
+    			which is submitted to gLite and aims to execute gLitePROOF workers on Grid worker nodes.  
+    			</para>
+  			</listitem>
+  			<listitem>
+    			<para>
+    			<guilabel>gLitePROOF.sh</guilabel> &mdash; a job script executed on remote machines (on Grid WNs).  
+    			</para>
+  			</listitem>
+  			<listitem>
+    			<para>
+    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of gLitePROOF and
+    			should be sourced before a use of gLitePROOF.  
+    			</para>
+			</listitem>
+		</itemizedlist>
+		</para>
+		<para>
+		<figure float="0">
+			<title>A generic schema of gLitePROOF</title>
+			<screenshot><mediaobject>
+			<imageobject>
+			<imagedata fileref="gLite_PROOF.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>phrase</phrase>
+			</textobject>
+			</mediaobject></screenshot>
+		</figure>
+		</para>
+		<para>
+		The following describes the main use case of gLitePROOF:
+		<orderedlist>
+  		<title>Set up PROOF on the Grid</title>
+  			<listitem>
+    			<para>Using PAConsole a user configures and starts PROOFAgent (PA)
+    			server and XROOTD redirector.</para>
+  			</listitem>
+  			<listitem>
+    			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
+			</listitem>
+			<listitem>
+				<para>Using PAConsole the user submits gLitePROOF parametric job to the Grid.</para>
+			</listitem>
+			<listitem>
+				<para>When the job arrives to a remote worker node it configures the environment
+				and starts all needed services including XROOTD worker and PA client.</para>
+			</listitem>
+			<listitem>
+				<para>Then PA client communicates with PA server, exchanges environment data and
+				initiates a network tunnel.</para>
+			</listitem>
+			<listitem>
+				<para>When PA server accepts a client connection, the client is ready to be a PROOF
+				worker node.</para>
+			</listitem>
+			<listitem>
+				<para>When PA server detects good connections with its clients, this information is
+				immediately reflected by PAConsole.</para>
+			</listitem>
+			<listitem>
+				<para>When all workers are connected or when the user is satisfied with the number of
+				connected workers, the PROOF analysis can be processed like on a local batch farm.</para>
+			</listitem>
+			<listitem>
+				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
+				gLitePROOF Grid jobs.</para>
+			</listitem>			
+			</orderedlist>
+		</para>
+	</chapter>

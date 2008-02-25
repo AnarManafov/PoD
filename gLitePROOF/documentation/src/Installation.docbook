@@ -1,0 +1,136 @@
+<!-- 
+Installation 
+-->
+  <chapter id="Installation">
+    <title>Installation</title>
+     	<chapterinfo>
+    		<releaseinfo>$Revision$</releaseinfo>
+  	 		<pubdate>$Date$</pubdate>
+  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
+   	</chapterinfo>
+    <para></para>
+    <sect1 id="step1">
+      <title>Step #1</title>
+      <para>Choose a directory where you want to install <application>gLitePROOF</application>,
+      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>gLitePROOF</application> tarball to this directory:
+<screen>
+<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.4.tgz</replaceable></command>
+</screen>
+		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
+		where <application>gLitePROOF</application> package will be located.</para>
+    </sect1>
+    <sect1 id="step2">
+      <title>Step #2</title>
+      <para>
+      Change to the gLitePROOF directory:
+<screen>
+<command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
+</screen>
+      and edit the <filename>install</filename> script. In the script you need to change at least the
+      <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
+      in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
+      In our example it therefore will look like the following:
+<screen>
+INSTALL_PATH=/tmp/test/gLitePROOFpackage
+</screen>
+      You may want to change some other setting. Here the description of the variables,
+      which could be used to adjust gLitePROOF installation:
+      <table>
+		<title>gLitePROOF configuration variables</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>Variable</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+      		<row>
+        			<entry>INSTALL_PATH</entry>
+        			<entry>A full path to the gLitePROOF installation.</entry>
+      		</row>
+      		<row>
+        			<entry>GAW_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>GAW_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>GAW_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PROOFAgent_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_PKG</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_LINK</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>PAConsole_OPTIONS</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTDIR</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTINC</entry>
+        			<entry>TODO</entry>        
+      		</row>
+      		<row>
+        			<entry>QTLIB</entry>
+        			<entry>TODO</entry>        
+      		</row>
+    		</tbody>
+   	</tgroup>
+		</table>
+      </para>
+    </sect1>
+    <sect1 id="step3">
+      <title>Step #3</title>
+      <para>
+      Execute installation script, which will perform downloads of required modules,
+      build them and configure <application>gLitePROOF</application> for the first run:
+<screen>
+<command>./install</command>
+</screen>
+      </para>
+    </sect1>
+    <sect1 id="step4">
+      <title>Step #4</title>
+      <para>
+      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+<screen>
+<command>source gLitePROOF_ENV.sh</command>
+</screen>
+      You need to source this script every time when you want to use <application>gLitePROOF</application>
+      or source it from your bash profile.
+      </para>
+      <para>
+      Now the installation is done.
+      <important>
+      	<para>
+       	If there were problems during installation, please see
+      	<link linkend="Support">Support</link> or <link linkend="Known_Issues">Known Issues</link>.
+      	</para>
+      </important>
+      </para>
+    </sect1>
+  </chapter>
+  
