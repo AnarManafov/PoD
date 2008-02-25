@@ -8,6 +8,8 @@ Introduction
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
+   	<sect1 id="gLitePROOF">
+      <title>gLitePROOF</title>
     	<para>
     	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
     	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
@@ -77,6 +79,9 @@ Introduction
 			</mediaobject></screenshot>
 		</figure>
 		</para>
+		</sect1>
+		<sect1 id="use_case">
+      <title>Use case</title>
 		<para>
 		The following describes the main use case of gLitePROOF:
 		<orderedlist>
@@ -117,4 +122,5 @@ Introduction
 			</listitem>			
 			</orderedlist>
 		</para>
+		</sect1>
 	</chapter>

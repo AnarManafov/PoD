@@ -1,4 +1,17 @@
 
+SRC=\
+	gLitePROOF.docbook\
+	Introduction.docbook\
+	Requirements.docbook\
+	Installation.docbook\
+	Configuration.docbook\
+	Download.docbook\
+	How_to_run.docbook\
+	How_to_test.docbook\
+	Known_Issues.docbook\
+	Support.docbook
+
+
 DOCBOOK=gLitePROOF.docbook
 
 HTML_OUT_DIR=../html_help
@@ -41,7 +54,7 @@ $(HTML_OUT_DIR)/%.css:
 	@echo "Using custom CSS..."
 	@cp $(CSS_FILES) $(HTML_OUT_DIR)/
 
-$(HTML_OUT_DIR)/%.html: $(DOCBOOK)
+$(HTML_OUT_DIR)/%.html: $(SRC)
 	@echo "Generating html doc..."
 	$(XMLTO) $(XMLTO_PARAM) $(DOCBOOK)
 	$(XMLTO) $(XMLTO_PARAM_NOCHUNKS) $(DOCBOOK)

@@ -5,6 +5,11 @@
 <!ENTITY Requirements SYSTEM "Requirements.docbook">
 <!ENTITY Installation SYSTEM "Installation.docbook">
 <!ENTITY Configuration SYSTEM "Configuration.docbook">
+<!ENTITY Download SYSTEM "Download.docbook">
+<!ENTITY How_to_run SYSTEM "How_to_run.docbook">
+<!ENTITY How_to_test SYSTEM "How_to_test.docbook">
+<!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
+<!ENTITY Support SYSTEM "Support.docbook">
 ]>
 
 <book id="gLitePROOF" lang="en">
@@ -51,16 +56,7 @@ Requirements
 <!-- 
 Download 
 -->
-  <chapter id="download">
-    <title>Download</title>
-    <para>
-    		gLitePROOF could be downloaded from the following locations:
-			<itemizedlist>
-  				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Stable/gLitePROOF/">Stable Releases</ulink></para></listitem>
-  				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Nightly/">Nightly Releases</ulink></para></listitem>  			
-			</itemizedlist>
-    </para>
-  </chapter>
+	&Download;
   
 <!-- 
 Installation 
@@ -75,67 +71,21 @@ Configuration
 <!-- 
 How to run 
 -->
-  <chapter id="How_to_run">
-    <title>How to run</title>
-    <para></para>
-  </chapter>
+  &How_to_run;
   
 <!-- 
 Test 
 -->
-  <chapter id="How_to_test">
-    <title>How to test</title>
-    <para>
-    To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
-    (see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
-    Copy the <filename>test/dstarmb.root</filename> file to the location which you specified as your <varname>olb.path</varname> in
-    the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
-    like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
-    In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
-<programlisting>
-set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
-set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
-</programlisting>
-	Now you are ready to perform this test. Use the <link linkend="How_to_run">How to run</link> chapter to perform this test using <application>gLitePROOF</application>.
-   </para>
-  </chapter>
+  &How_to_test;
   
 <!-- 
 Known Issues 
 -->
-  <chapter id="Known_Issues">
-    <title>Known Issues</title>
-    <para>
-    For the list of known issues please follow the following link:
-    <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF#KnownIssues">gLitePROOF Trac</ulink>
-    </para>
-  </chapter>
+  &Known_Issues;
   
 <!-- 
 Support 
 -->
-  <chapter id="Support">
-    <title>Support</title>
-    <para>
-    	<itemizedlist>
-  			<listitem>
-  				<para>
-  				Your requests you can send to: Anar Manafov <email>A.Manafov@gsi.de</email> or to GSI GridTeam <email>grid-admin@gsi.de</email>.
-  				</para>
-  			</listitem>
-  			<listitem>
-  				<para>
-  				Use <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF">gLitePROOF Trac</ulink> to find out details and post tickets related to the project.
-  				There you also can find SVN repository, Build system, and project and source code documentation.
-  				</para>
-  			</listitem>
-  				<listitem>
-  				<para>
-  				Meet <ulink url="http://rglite.blogspot.com/">RGLite and gLitePROOF Blog</ulink>.
-  				</para>
-  			</listitem>  			
-		</itemizedlist>
-    </para>
-  </chapter>
-   
+  &Support;
+
 </book>

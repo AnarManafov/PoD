@@ -8,7 +8,6 @@ Installation
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
-    <para></para>
     <sect1 id="step1">
       <title>Step #1</title>
       <para>Choose a directory where you want to install <application>gLitePROOF</application>,
