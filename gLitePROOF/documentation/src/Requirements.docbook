@@ -8,27 +8,33 @@ Requirements
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
-    <para>
-    gLitePROOF works as a client/server application.
-    We define server side as a side which is lockated on the local (for the user) space, on users's laptop, for example.
-    For simplification we will call it a user's workspace or local worksapce.
-    We deine a client side as a side which is lockated on the remote space, gLite Grid Worker Nodes, for example.
-    Clients are actally workers for us. For simplification we will call it a remote workspace.
-    </para>
-    <para>
-    User's workspace requarements:
-    <itemizedlist>
-    <listitem><para>ROOT 5.18+ (xrootd enabled)</para></listitem>
-    <listitem><para>gLite UI 3.1</para></listitem>
-    </itemizedlist>
-    </para>
-    <para>
-    Remote workspace requarements:
-    <itemizedlist>
-    <listitem><para>gLite WMS (WMProxy endpoint)</para></listitem>
-    <listitem><para>gLite WNs (at least v3.0)</para></listitem>
-    <listitem><para>Outgoing connection for GLOBUS ports (configurable)</para></listitem>    
-    </itemizedlist>
-    </para>    
+   	<sect1 id="User_workspace_requarements">
+   	<title>User's workspace requarements</title>
+    	<para>
+    	gLitePROOF works as a client/server application.
+    	We define server side as a side which is lockated on the local (for the user) space, on users's laptop, for example.
+    	For simplification we will call it a user's workspace or local worksapce.
+    	We deine a client side as a side which is lockated on the remote space, gLite Grid Worker Nodes, for example.
+    	Clients are actally workers for us. For simplification we will call it a remote workspace.
+    	</para>
+    	<para>
+    	Workspace requarements:
+    	<itemizedlist>
+    	<listitem><para>ROOT 5.18+ (xrootd enabled)</para></listitem>
+    	<listitem><para>gLite UI 3.1</para></listitem>
+    	</itemizedlist>
+    	</para>
+    	</sect1>
+   	<sect1 id="Workers_workspace_requarements">
+   	<title>Workers' workspace requarements</title>    	
+    	<para>
+    	Workspace requarements:
+    	<itemizedlist>
+    	<listitem><para>gLite WMS (WMProxy endpoint)</para></listitem>
+    	<listitem><para>gLite WNs (at least v3.0)</para></listitem>
+    	<listitem><para>Outgoing connection for GLOBUS ports (configurable)</para></listitem>    
+    	</itemizedlist>
+    	</para>
+    	</sect1>    
   </chapter>
   
