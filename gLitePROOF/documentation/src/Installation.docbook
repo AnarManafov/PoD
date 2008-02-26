@@ -125,8 +125,7 @@ INSTALL_PATH=/tmp/test/gLitePROOFpackage
       Now the installation is done.
       <important>
       	<para>
-       	If there were problems during installation, please see
-      	<link linkend="Support">Support</link> or <link linkend="Known_Issues">Known Issues</link>.
+       	If there were problems during installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
       	</para>
       </important>
       </para>

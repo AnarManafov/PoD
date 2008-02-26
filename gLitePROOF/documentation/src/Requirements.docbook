@@ -12,10 +12,9 @@ Requirements
    	<title>User's workspace requarements</title>
     	<para>
     	gLitePROOF works as a client/server application.
-    	We define server side as a side which is lockated on the local (for the user) space, on users's laptop, for example.
-    	For simplification we will call it a user's workspace or local worksapce.
-    	We deine a client side as a side which is lockated on the remote space, gLite Grid Worker Nodes, for example.
-    	Clients are actally workers for us. For simplification we will call it a remote workspace.
+    	We define user's workspace as a side, which is lockated on the local (for the user) space,
+    	on users's laptop, for example. For simplification we will call it a user's workspace or
+    	local worksapce. There gLitePROOF server is running.
     	</para>
     	<para>
     	Workspace requarements:
@@ -26,7 +25,12 @@ Requirements
     	</para>
     	</sect1>
    	<sect1 id="Workers_workspace_requarements">
-   	<title>Workers' workspace requarements</title>    	
+   	<title>Workers' workspace requarements</title>
+   	<para>
+   	We deine workers' workspace as a side which is lockated on the remote space,
+   	gLite Grid Worker Nodes, for example.
+    	Clients are actally workers for us. For simplification we will call it a remote workspace.
+   	</para>    	
     	<para>
     	Workspace requarements:
     	<itemizedlist>

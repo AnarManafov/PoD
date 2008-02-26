@@ -19,9 +19,15 @@ HTML_OUT_DIR=../html_help
 IMGS= \
 	gLitePROOF_logo.png\
 	gLite_PROOF.png\
-	important.png \
-	tip.png \
-	warning.png
+	important.png\
+	tip.png\
+	warning.png\
+	PAConsole_ServersOff.png\
+	PAConsole_ServersOn.png\
+	PAConsole_Grid0.png\
+	PAConsole_Grid1.png\
+	PAConsole_Grid2.png\
+	PAConsole_Workers.png
 
 IMG_DIR = img
 

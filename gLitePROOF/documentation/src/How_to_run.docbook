@@ -1,13 +1,188 @@
-<!-- 
-How to run 
+<!--
+How to run
 -->
   <chapter id="How_to_run">
     <title>How to run</title>
-    	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
-   	</chapterinfo>
-    <para></para>
+        <chapterinfo>
+            <releaseinfo>$Revision$</releaseinfo>
+               <pubdate>$Date$</pubdate>
+              <publisher><publishername>$LastChangedBy$</publishername></publisher>
+       </chapterinfo>
+           
+    <sect1 id="Environment">
+      <title>Environment</title>
+      <para>
+      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+<screen>
+<command>cd /tmp/test/gLitePROOFpackage</command>
+<command>source gLitePROOF_ENV.sh</command>
+</screen>
+      </para>
+      <para>
+      You need to have a valid VOMS proxy, before starting gLitePROOF.
+      </para>      
+    </sect1>
+    
+    <sect1 id="Services">
+      <title>Services</title>
+      <para>
+      Start PAConsole, a GUI application, which automates and helps to manage most of the operations.
+<screen>
+<command>PAConsole&amp;</command>
+</screen>
+        The <xref linkend="PAConsole_Server1"/> shows a screen shot of PAConsole's Server page. You can see that
+        the information window has a red font, which means one or all of the services are down. Currently gLitePROOF
+        requires two services: xrootd and PROOFAgent.
+
+        <para><figure float="0" id="PAConsole_Server1">
+        <title>PAConsole: Server is Off</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_ServersOff.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+
+        In oder to start gLitePROOF services the <guibutton>Start</guibutton> button should be pressed. To stop gLitePROOF
+        the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
+        <guibutton>Status</guibutton> button.
+        </para>
+        
+        <para>
+        The <xref linkend="PAConsole_Server2"/> shows the interface after the <guibutton>Start</guibutton> button has
+        been clicked and gLitePROOF services are up.
+        
+        <para><figure float="0" id="PAConsole_Server2">
+        <title>PAConsole: Server is ON</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_ServersOn.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+        
+        <tip><para>You have probably noticed that the <guibutton>Start</guibutton> button is now inactive. PAConsle marks this button
+        inactive whenever it is not possible to start gLitePROOF services. For example, if PROOFAgent's port is in use,
+        PAConsole will disable the <guibutton>Start</guibutton> button.</para></tip>
+    
+      </para>
+    </sect1>
+
+    <sect1 id="Grid_workers">
+      <title>Grid workers</title>
+      <para>
+      As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nods.
+      </para>
+      <para>
+      Select the Grid page of the PACosnle by clicking on the left sided tool bar. The page looks something like
+      it is shown on the <xref linkend="PAConsole_Grid0"/>.
+ 
+         <para><figure float="0" id="PAConsole_Grid0">
+        <title>PAConsole: Grid page</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>     
+      To submit workers users have to specify a JDL file (the default <filename>gLitePROOF_FZK.jdl</filename> could be used
+      or a custom one). WMProxy endpoint should be selected. If PAConsole showes no Endpoints, that would probably mean you
+      don't have any predefined endpoints on your gLite UI and gLitePROOF will use the one which is defined in the GAW
+      configuration file. If several endpoints found, than you can chose which one GAW should use to submit gLitePROOF jobs.
+      At the last users may want to specify a number of workers they desire to use. gLitePROOF uses a parametric job submission,
+      which means that only one job will be send to WMS, but there it will be spread according to defined number of
+      workers.
+          <para><figure float="0" id="PAConsole_Grid1">
+        <title>PAConsole: Submitting 3 workers</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+        
+        A current status of the last submitted jobs is dynamically shown by PAConsole, which could be seen
+        on the <xref linkend="PAConsole_Grid1"/>.
+        
+          <para><figure float="0" id="PAConsole_Grid2">
+        <title>PAConsole: Context menu</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID
+        or cancel selected job.        
+       </para>
+     </sect1>            
+         
+    <sect1 id="PROOF_workers">
+      <title>PROOF workers</title>
+      <para>
+       As soon as a single job arrives gLite WN, it tries to connect to gLitePROOF server to transfer information
+       about itself and environment of WN. When negotiations are done and gLitePROOF server excepts WNs, it became a normal
+       PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
+       (see the <xref linkend="PAConsole_Workers"/>).        
+          <para><figure float="0" id="PAConsole_Workers">
+        <title>PAConsole: Workers</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Workers.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+        It is not required to wait until all requested workers will be connected. Users could start analysis after
+        reasonable number of workers are online, even after the first connected worker one could start the analysis.
+        When other workers arrive, the root (proof) session must be restarted in order to reconnect to the newly
+        arrived workers.                 
+       </para>
+       <tip><para>
+       gLitePROOF supports reconnection. That means if your analysis has a bug or a root session crashed you wouldn't
+       need to resubmit gLitePROOF job. You just need to close current root session, open it again. gLitePROOF will manage
+       reconnection with its worker nodes automatically. Workers nods will be only until the PROOFAgent service is online or
+       until the Grid queue time is over.
+       </para></tip>
+       </sect1>
+      
+    <sect1 id="Analysis">
+      <title>Analysis</title>
+      <para>
+      Now when your remote PROOF workers (gLitePROOF workers) are online, you can process you ROOT/PROOF
+      analysis normally, if it would be a usual PROOF session.      
+       </para>
+       <para>
+       For an example analysis, please see <xref linkend="How_to_test"/>.
+       </para>
+       </sect1>      
+      
+    <sect1 id="How_to_shut_down_gLitePROOF">
+      <title>How to shut down gLitePROOF</title>
+      <para>
+      In order to shut down gLitePROOF the gLitePROOF server should be stopped. On the Server page, click the
+      <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
+      gLite job slots will be freed. If you continue to monitor Grid jobs on the Grid page, after some time
+      statuses of jobs should be equal to "Done".
+       </para>
+       </sect1>
+           
   </chapter>
-  
+ 
