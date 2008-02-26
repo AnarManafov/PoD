@@ -7,9 +7,16 @@ Known Issues
     		<releaseinfo>$Revision$</releaseinfo>
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
-   	</chapterinfo>    
-    <para>
-    For the list of known issues please follow the following link:
-    <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF#KnownIssues">gLitePROOF Trac</ulink>
-    </para>
+   	</chapterinfo>
+   	
+		<sect1 id="tmp_on_worker_nodes">
+      <title>/tmp on worker nodes</title>
+      	<para>
+      	The <filename class="directory">/tmp</filename> directory on remote workers must be open
+      	for r/w. PROOF and ROOT writes there.
+      	I have redirected all possible temporary files to Grid's user home,
+      	but there are still some files ROOT/PROOF writes there, it includes sockets files of proof/xrootd.
+      	</para>
+      </sect1>
+      
   </chapter>
