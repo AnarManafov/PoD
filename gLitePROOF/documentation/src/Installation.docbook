@@ -50,51 +50,51 @@ INSTALL_PATH=/tmp/test/gLitePROOFpackage
       		</row>
       		<row>
         			<entry>GAW_LINK</entry>
-        			<entry>TODO</entry>        
+        			<entry>An URL of glite-api-wrapper's source tarball</entry>        
       		</row>
       		<row>
         			<entry>GAW_PKG</entry>
-        			<entry>TODO</entry>        
+        			<entry>A name of glite-api-wrapper package (<filename>glite-api-wrapper-3.1.0.1783</filename> for example).</entry>        
       		</row>
       		<row>
         			<entry>GAW_OPTIONS</entry>
-        			<entry>TODO</entry>        
+        			<entry>Options, which should be given to the configure utility of glite-api-wrapper.</entry>        
       		</row>
       		<row>
         			<entry>PROOFAgent_PKG</entry>
-        			<entry>TODO</entry>        
+        			<entry>A name of PROOFAgent package.</entry>        
       		</row>
       		<row>
         			<entry>PROOFAgent_LINK</entry>
-        			<entry>TODO</entry>        
+        			<entry>An URL of PROOFAgent's source tarball</entry>        
       		</row>
       		<row>
         			<entry>PROOFAgent_OPTIONS</entry>
-        			<entry>TODO</entry>        
+        			<entry>Options, which should be given to the configure utility of PROOFAgent.</entry>        
       		</row>
       		<row>
         			<entry>PAConsole_PKG</entry>
-        			<entry>TODO</entry>        
+        			<entry>A name of PAConsole package.</entry>        
       		</row>
       		<row>
         			<entry>PAConsole_LINK</entry>
-        			<entry>TODO</entry>        
+        			<entry>An URL of PAConsole's source tarball</entry>        
       		</row>
       		<row>
         			<entry>PAConsole_OPTIONS</entry>
-        			<entry>TODO</entry>        
+        			<entry>Reserved.</entry>        
       		</row>
       		<row>
         			<entry>QTDIR</entry>
-        			<entry>TODO</entry>        
+        			<entry>The QTDIR has to be set to point at the directory containing the Qt distribution.</entry>        
       		</row>
       		<row>
         			<entry>QTINC</entry>
-        			<entry>TODO</entry>        
+        			<entry>Represents the headers direcotry of Qt.</entry>        
       		</row>
       		<row>
         			<entry>QTLIB</entry>
-        			<entry>TODO</entry>        
+        			<entry>Represents the Qt libraries direcotry.</entry>        
       		</row>
     		</tbody>
    	</tgroup>
