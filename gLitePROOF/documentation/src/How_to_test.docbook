@@ -7,24 +7,29 @@ Test
     		<releaseinfo>$Revision$</releaseinfo>
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
-   	</chapterinfo>    
-   	<para>
-    	To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
-    	(see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
-    	Copy the <filename>test/dstarmb.root</filename> file to the location which you specified as your <varname>olb.path</varname> in
-    	the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
-    	like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
-    	In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
+   	</chapterinfo>
+   	<sect1 id="simple_test">
+   	<title>Simple test</title>    
+   		<para>
+    		To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
+    		(see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
+    		</para>
+    		<para>
+    		Copy the <filename>test/dstarmb.root</filename> file to the location which you specified as your <varname>olb.path</varname> in
+    		the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
+    		like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
+    		In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
 <programlisting>
 set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
 set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
 </programlisting>
-		Now you are ready to perform this test. Use the <xref linkend="How_to_run"/> to remote PROOF workers. As soon as you get
-		requared number of workers start a root session and execute the following command:
+			Now you are ready to perform this test. Use the <xref linkend="How_to_run"/> to remote PROOF workers. As soon as you get
+			requared number of workers start a root session and execute the following command:
 <screen>
 <prompt>root [0] </prompt><command>.x test/simple_test0.C</command>
 </screen>
-		This macro will connect to the PROOF (gLitePROOF) workers and perform a test analysis.
-   	</para>
+			This macro will connect to the PROOF (gLitePROOF) workers and perform a test analysis.
+   		</para>
+		</sect1>
 	</chapter>
   
