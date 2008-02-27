@@ -98,17 +98,16 @@ touch $WD/proof.conf
 echo "Starting xrootd..."
 xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 
-#
-#
-#RET_VAL=$?
-#if [ "X$RET_VAL" = "X0" ]; then
-#  echo "successful. Exit code: $RET_VAL"
-#  
-#else
-#  echo "unsuccessful. Exit code: $RET_VAL"
-#fi
-#
-#
+# detect that xrootd failed to start
+sleep 10
+XRD=`pgrep xrootd`
+XRD_RET_VAL=$?
+if [ "X$XRD_RET_VAL" = "X0" ]; then
+    echo "XROOTD successful."
+else
+    echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
+    exit 1
+fi
 
 # start proofagent
 proofagent -i client -c $WD/proofagent.cfg.xml
