@@ -25,6 +25,12 @@
 
 namespace PROOFAgent
 {
+    /**
+     *
+     * @brief The CPacketForwarder class, creates a proxy between client sockets and server's socket given by a port number.
+     * @brief It tries to connect by the given port number and then redirects all traffic from/to the client. 
+     *
+     */
     class CPacketForwarder:
                 public MiscCommon::CLogImp<CPacketForwarder>,
                 MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count

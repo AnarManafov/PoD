@@ -87,7 +87,9 @@
 				</xsd:element>
 				<xsd:element name="timeout" type="xsd:nonNegativeInteger">
 					<xsd:annotation>
-						<xsd:documentation/>
+						<xsd:documentation>It is a number of seconds, represents the time PROOFAgent instance is allowed to work.
+         An internal timeout guard of the PROOFAgent will not allow PROOF agent to work longer, than
+         it is instructed by this value and PROOFAgent will be forced to be killed. Default is 0 - no timeout.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element name="proof_cfg_path" type="xsd:string">
@@ -97,7 +99,7 @@
 				</xsd:element>
 				<xsd:element name="last_execute_cmd" type="xsd:string">
 					<xsd:annotation>
-						<xsd:documentation/>
+						<xsd:documentation>PROOFAgent will execute this command at the end of the session.</xsd:documentation>
 					</xsd:annotation>
 				</xsd:element>
 			</xsd:choice>

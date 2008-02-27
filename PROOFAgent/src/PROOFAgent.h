@@ -19,8 +19,10 @@
 #include "Agent.h"
 
 /**
+ * 
  * @brief A general name space for PROOFAgent application
- **/
+ * 
+ */
 namespace PROOFAgent
 {
     /**
@@ -50,7 +52,7 @@ namespace PROOFAgent
     };
     /**
      * 
-     * @brief Agent data structure.
+     * @brief Agent's data structure.
      * 
      */
     typedef struct SAgentData
@@ -60,17 +62,28 @@ namespace PROOFAgent
                 m_nTimeout( 0 ),
                 m_sWorkDir("/tmp/")
         {}
-        std::string m_sLogFileDir;          //!< Log filename
-        bool m_bLogFileOverwrite;          //!< Overwrite log file each session
-        EAgentMode_t m_AgentMode;
-        std::string m_sAgentMode;
+        std::string m_sLogFileDir;      //!< The log filename.
+        bool m_bLogFileOverwrite;       //!< Overwrite log file each session.
+        EAgentMode_t m_AgentMode;       //!< A mode of PROOFAgent, defined by ::EAgentMode_t.
+        std::string m_sAgentMode;       //!< A string representation of the mode.
+        /**
+         * 
+         * @brief It is a number of seconds, represents the time PROOFAgent instance is allowed to work.
+         * @brief An internal timeout guard of the PROOFAgent will not allow PROOF agent to work longer, than
+         * @brief it is instructed by this value and PROOFAgent will be forced to be killed. Default is 0 - no timeout.
+         * 
+         */
         size_t m_nTimeout;
-        std::string m_sLastExecCmd;
-        std::string m_sPROOFCfg;
+        std::string m_sLastExecCmd;     //!< PROOFAgent will execute this command at the end of the session.
+        std::string m_sPROOFCfg;        //!< A location of the proof configuration file.
         std::string m_sWorkDir;         //!< Working folder. (default: /tmp/)
     }
     SAgentData_t;
-
+    /**
+     * 
+     * @brief The PROOFAgent manager
+     * 
+     */
     class CPROOFAgent:
                 public MiscCommon::CLogImp<CPROOFAgent>,
                 MiscCommon::IXMLPersistImpl<CPROOFAgent>

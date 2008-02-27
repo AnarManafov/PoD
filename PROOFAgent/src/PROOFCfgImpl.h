@@ -10,7 +10,7 @@
                             2007-06-27
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROOFCFGIMP_H_
 #define PROOFCFGIMP_H_
@@ -18,6 +18,7 @@
 namespace PROOFAgent
 {
     /**
+     *
      * @brief This class creates proof.conf for server and client
      * @note
      example of proof.conf for server
@@ -34,7 +35,8 @@ namespace PROOFAgent
      worker lxial24.gsi.de perf=100
       
      @endverbatim
-     **/
+     *
+     */
     template <class _T>
     struct CPROOFCfgImpl
     {
@@ -81,14 +83,14 @@ namespace PROOFAgent
             std::ifstream f( _PROOFCfg.c_str() );
             if ( !f.is_open() )
                 return;
-            
+
             MiscCommon::custom_istream_iterator<std::string> in_begin(f);
             MiscCommon::custom_istream_iterator<std::string> in_end;
             MiscCommon::StringVector_t vec( in_begin, in_end );
-            
+
             f.close();
             std::ofstream f_out( _PROOFCfg.c_str() );
-            
+
             MiscCommon::StringVector_t::const_iterator iter = vec.begin();
             MiscCommon::StringVector_t::const_iterator iter_end = vec.end();
             for ( ; iter != iter_end; ++iter )

@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PFContainer.h
- * @brief
+ * @brief A container implemenetation, which holds objects of CPacketForwarder
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -10,13 +10,18 @@
                             2007-06-27
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PFCONTAINER_H_
 #define PFCONTAINER_H_
 
 namespace PROOFAgent
 {
+    /**
+     *
+     * @brief A helper class, which helps to remove entries from the proof configuration file.
+     *
+     */
     struct SUpdatePROOFCfg: protected CPROOFCfgImpl<SUpdatePROOFCfg>
     {
         SUpdatePROOFCfg(const std::string &_sPROOFCfg): m_sPROOFCfg(_sPROOFCfg)
@@ -27,9 +32,17 @@ namespace PROOFAgent
         }
         const std::string m_sPROOFCfg;
     };
-
+    /**
+     *
+     * @brief A shared pointer wrapper for the SUpdatePROOFCfg class.
+     *
+     */
     typedef boost::shared_ptr<SUpdatePROOFCfg> SUpdatePROOFCfgPtr;
-
+    /**
+     *
+     * @brief A functor, which helps to delete entries from the internal PF container.
+     *
+     */
     template <class _T>
     struct SDelete: public std::binary_function<_T, SUpdatePROOFCfgPtr, bool>
     {
@@ -57,7 +70,11 @@ namespace PROOFAgent
             return true;
         }
     };
-
+    /**
+     *
+     * @brief A functor, which checks whether the first value of a pair is NULL.
+     *
+     */
     template <class _T>
     struct SIsNull1st: public std::unary_function<_T, bool>
     {
@@ -66,7 +83,11 @@ namespace PROOFAgent
             return ( !_val.first );
         }
     };
-
+    /**
+     *
+     * @brief A container implemenetation, which holds objects of CPacketForwarder
+     *
+     */
     class CPFContainer
     {
             typedef CPacketForwarder pf_container_value;

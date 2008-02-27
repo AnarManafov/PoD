@@ -23,6 +23,12 @@
 namespace PROOFAgent
 {
     typedef std::auto_ptr<CAgentBase> pAgentBase_t;
+    /**
+     * 
+     * @brief A simple object factory class.
+     * @brief It produces Agents objects according to the given mode. 
+     * 
+     */
     class CAgent
     {
         public:

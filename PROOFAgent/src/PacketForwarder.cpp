@@ -10,15 +10,13 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // PROOFAgent
 #include "ErrorCode.h"
 #include "PacketForwarder.h"
-
 // BOOST
 #include <boost/bind.hpp>
-
 // API
 #include <signal.h>
 

@@ -37,12 +37,16 @@
 
 namespace PROOFAgent
 {
-
-    // declaration of signal handler
-    void signal_handler( int _SignalNumber );
-
     /**
-      *  @brief
+     *
+     * @brief declaration of a signal handler
+     *
+     */
+    void signal_handler( int _SignalNumber );
+    /**
+     *
+     * @brief A base class for PROOFAgent mods - agents.
+     *
      */
     class CAgentBase
     {
@@ -89,7 +93,11 @@ namespace PROOFAgent
         protected:
             std::string m_sPROOFCfg;
     };
-
+    /**
+     * 
+     * @brief Agent's data structure (for server mode).
+     * 
+     */
     typedef struct SAgentServerData
     {
         SAgentServerData() :
@@ -109,7 +117,11 @@ namespace PROOFAgent
         << "a Local Clients Ports: " << _data.m_nLocalClientPortMin << "-" << _data.m_nLocalClientPortMax << std::endl;
         return _stream;
     }
-
+    /**
+     * 
+     * @brief Agent's data structure (for client mode).
+     * 
+     */
     typedef struct SAgentClientData
     {
         SAgentClientData() :
@@ -130,10 +142,10 @@ namespace PROOFAgent
         << std::endl;
         return _stream;
     }
-
-
-    /** @class CAgentServer
-     *  @brief
+    /**
+     * 
+     * @brief An agent class, for the server mode of PROOFAgent
+     * 
      */
     class CAgentServer :
                 public CAgentBase,
@@ -187,10 +199,11 @@ namespace PROOFAgent
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
     };
-
-    /** @class CAgentClient
-      *  @brief
-      */
+    /**
+     * 
+     * @brief An agent class, for the client mode of PROOFAgent
+     * 
+     */
     class CAgentClient:
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentClient>,

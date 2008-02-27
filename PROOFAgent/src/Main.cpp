@@ -18,10 +18,8 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
-
 // API
 #include <sys/wait.h>
-
 // OUR
 #include "Process.h"
 #include "PROOFAgent.h"
@@ -35,7 +33,11 @@ using namespace boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 
-// PROOFAgent's container of options
+/**
+ * 
+ * @brief PROOFAgent's container of options
+ * 
+ */
 typedef struct SOptions
 {
     typedef enum ECommand { Start, Stop, Status } ECommand_t;
