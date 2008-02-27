@@ -13,10 +13,14 @@ Introduction
     	<para>
     	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
     	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
-    	on the gLite Grid. 
+    	on the gLite Grid.
     	</para>
     	<para>
-    	<application>gLitePROOF</application> consists of the following components:
+    	gLitePROOF uses <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/GAW">glite-api-wrapper library</ulink>
+    	(<acronym>GAW</acronym>) to perform gLite job submission.
+    	</para>
+    	<para>
+    	<application>gLitePROOF</application> consists of the following main components:
 		<itemizedlist>
   			<listitem>
     			<para>
@@ -67,7 +71,7 @@ Introduction
 		</itemizedlist>
 		</para>
 		<para>
-		<figure float="0">
+		<figure id="fig_gLite_PROOF" float="0">
 			<title>A generic schema of gLitePROOF</title>
 			<screenshot><mediaobject>
 			<imageobject>
@@ -83,7 +87,7 @@ Introduction
 		<sect1 id="use_case">
       <title>Use case</title>
 		<para>
-		The following describes the main use case of gLitePROOF:
+		The following describes the main use case of gLitePROOF (see <xref linkend="fig_gLite_PROOF"/>):
 		<orderedlist>
   		<title>Set up PROOF on the Grid</title>
   			<listitem>

@@ -19,4 +19,14 @@ Known Issues
       	</para>
       </sect1>
       
+		<sect1 id="globus_config.h_is_missing">
+      <title>globus_config.h is missing</title>
+      	<para>
+      	Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
+      	(see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah Bug #31180</ulink>).
+      	gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
+      	to let GAW to use gLite API.       	 
+      	</para>
+      </sect1>      
+      
   </chapter>
