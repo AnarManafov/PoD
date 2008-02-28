@@ -1,5 +1,15 @@
 #! /bin/bash
-
+##/************************************************************************/
+##/*! \file make_dist.sh
+##  *//*
+##
+##         version number:     $LastChangedRevision$
+##         created by:         Anar Manafov
+##                             2008-02-06
+##         last changed by:    $LastChangedBy$ $LastChangedDate$
+##
+##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##*************************************************************************/
 VERSION=2.0.4
 
 PKG_NAME=gLitePROOFpackage

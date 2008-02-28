@@ -1,4 +1,15 @@
 #! /bin/bash
+##/************************************************************************/
+##/*! \file install
+##  *//*
+##
+##         version number:     $LastChangedRevision$
+##         created by:         Anar Manafov
+##                             2008-02-06
+##         last changed by:    $LastChangedBy$ $LastChangedDate$
+##
+##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##*************************************************************************/
 
 ############ Vars ######################
 VERSION=2.0.4
