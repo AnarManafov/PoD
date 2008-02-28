@@ -68,7 +68,7 @@ InstallGAW()
     popd
      
     # source GAW's config - other modules need it
-    GAW_ENV=$INSTALL_PATH/bin/env.sh
+    GAW_ENV=$INSTALL_PATH/bin/gaw_env.sh
     if [ -e $GAW_ENV ]; then
 	echo "Sourcing GAW's env.: "$GAW_ENV
     	. $GAW_ENV
@@ -140,7 +140,6 @@ echo
 echo
 if [ "X$RET_VAL" = "X0" ]; then
   echo "---> All gLitePROOF modules have been successfully installed."
-
 else
   echo "---> ERROR: Failed to install gLitePROOF modules."
 fi
