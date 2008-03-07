@@ -42,6 +42,7 @@ rm -rf $PKG_NAME/test/.svn
 REV=`svn info https://subversion.gsi.de/dgrid/gLitePROOF/trunk/gLitePROOF  | grep "Revision: " | head -1 | awk -F": " '{printf("%s", $ 2)}'`
 echo "REV=$REV"
 THE_NAME=$PKG_NAME.$VERSION.$REV
+rm -f $THE_NAME.tar.* 
 tar  -cvf $THE_NAME.tar $PKG_NAME || exit 1
 gzip -9 $THE_NAME.tar || exit 1
 
