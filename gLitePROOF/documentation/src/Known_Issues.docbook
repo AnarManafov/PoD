@@ -68,4 +68,25 @@ proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)50 );
       	</para>
       </sect1>
       
+		<sect1 id="ClassAdsNamespace">
+      <title>ClassAds and Namespace</title>
+      	<para>
+      	One may want to compile CLASSADS with namespace support,
+      	because gLite UI contains CLASSADS which compiled without support of namespaces,
+      	though some of gLite API libraries (WMSUI for example) require classads with namespace support.
+      	</para>
+      	<para>
+			Download classads-0.9.9 from <ulink url="http://www.cs.wisc.edu/condor/classad/">here</ulink>.
+<programlisting>
+tar -xzvf classads_0.9.9.tar.gz
+cd classads_0.9.9
+./configure --enable-namespace
+make
+make install
+</programlisting>
+      	</para>
+      </sect1>
+      
+      
+      
   </chapter>

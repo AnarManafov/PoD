@@ -31,6 +31,12 @@ PAConsole_OPTIONS=
 export QTDIR=/usr/lib/qt4
 export QTINC=/usr/include
 export QTLIB=/usr/lib/qt4
+# gLite
+#export GLITE_LOCATION=
+export XERCESC_LOCATION=$GLITE_LOCATION/../external/opt/xerces-c
+export CLASSADS_LOCATION=$GLITE_LOCATION/../classads
+export BOOST_LOCATION=$GLITE_LOCATION/../external/usr/
+export GRIDSITE_INSTALL_PATH=$GLITE_LOCATION/../external/usr/
 
 
 APP_PATH=$INSTALL_PATH/app

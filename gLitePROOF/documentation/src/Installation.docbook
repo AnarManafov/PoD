@@ -8,6 +8,7 @@ Installation
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
+    
     <sect1 id="step1">
       <title>Step #1</title>
       <para>Choose a directory where you want to install <application>gLitePROOF</application>,
@@ -96,9 +97,35 @@ INSTALL_PATH=/tmp/test/gLitePROOFpackage
         			<entry>QTLIB</entry>
         			<entry>Represents the Qt libraries direcotry.</entry>        
       		</row>
+      		<row>
+        			<entry>GLITE_LOCATION</entry>
+        			<entry>A gLite UI location path.</entry>
+      		</row>
+      		<row>
+        			<entry>XERCESC_LOCATION</entry>
+        			<entry>A full path to the Xerces-C library installation directory. [<filename>$GLITE_LOCATION/../external/opt/xerces-c</filename>]</entry>
+      		</row>
+      		<row>
+        			<entry>CLASSADS_LOCATION</entry>
+        			<entry>A full path to the ClassAds library installation directory. [<filename>$GLITE_LOCATION/../classads</filename>]</entry>
+      		</row>
+      		<row>
+        			<entry>BOOST_LOCATION</entry>
+        			<entry>A full path to the BOOST libraries installation directory. [<filename>$GLITE_LOCATION/../external/usr/</filename>]</entry>        
+      		</row>
+      		<row>
+        			<entry>GRIDSITE_INSTALL_PATH</entry>
+        			<entry>A full path to the GridSite library installation directory. [<filename>$GLITE_LOCATION/../external/usr/</filename>]</entry>        
+      		</row>
     		</tbody>
    	</tgroup>
 		</table>
+		<note><para>
+        If variables such as GLITE_LOCATION, XERCESC_LOCATION, CLASSADS_LOCATION,
+        BOOST_LOCATION, GRIDSITE_INSTALL_PATH are not defined, then gLitePROOF modules will try to find according libraries
+        during configuration. Unfortunately PAConsole doesn't support auto-detection and still requires these variables.
+        This will be fixed in the next release.
+		</para></note>
       </para>
     </sect1>
     <sect1 id="step3">
