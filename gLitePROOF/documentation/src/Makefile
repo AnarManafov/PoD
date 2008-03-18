@@ -22,6 +22,7 @@ IMGS= \
 	important.png\
 	tip.png\
 	warning.png\
+	note.png\
 	PAConsole_ServersOff.png\
 	PAConsole_ServersOn.png\
 	PAConsole_Grid0.png\

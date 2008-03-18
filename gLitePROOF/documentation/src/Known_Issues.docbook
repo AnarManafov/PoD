@@ -27,6 +27,45 @@ Known Issues
       	gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
       	to let GAW to use gLite API.       	 
       	</para>
-      </sect1>      
+      </sect1>
+      
+  		<sect1 id="MaxSlavesPerNode">
+      <title>It seems I run always X slaves, but I requested Y.</title>
+      	<para>
+      	gLitePROOF setups workers on the Grid nodes and it makes PROOF master to think,
+      	that all of his workers are on the localhost. Actually gLitePROOF hides remote PROOF workers from the
+      	PROOF server and acts as a "proxy" between them. And since default value for
+      	<varname>PROOF_MaxSlavesPerNode</varname> is 2, therefore only 2 slaves get packages.
+      	Since all slaves (for PROOF server) are on the localhost, the other Y-2 workers won't get packages.
+      	</para>
+      	<para>
+      	See for more information
+      	<ulink url="http://root.cern.ch/twiki/bin/view/ROOT/ProofParameters">PROOF Wiki</ulink>:     	      	
+      	</para>
+      	<blockquote>
+      		<para>
+<programlisting>
+PROOF_MaxSlavesPerNode
+Type: int
+Description: Parameter for the packetizers. Limit the number of slaves accessing data on any single node.
+Default Value:
+				In TPacketizer the default value is 4.
+				In TPacketizerAdaptive and TPacketizerProgressive it is 2.
+</programlisting>
+	      	</para>
+      	</blockquote> 
+      	<note><para>
+      	From other source of information, it looks like the default number of workers reading remotely from one file
+      	node (worker machine) is not "2", but a number of CPU cores of the master node.
+      	</para></note>
+      	<para>
+      	In order to resolve this issue, you need to change one variable of your PROOF session (50 is only an example):
+<programlisting>
+proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)50 );
+</programlisting>
+         Hopefully in the future, this will be possible to do through XROOTD configuration file and gLitePROOF will
+         manage it for you automatically.
+      	</para>
+      </sect1>
       
   </chapter>
