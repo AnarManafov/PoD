@@ -9,7 +9,7 @@ Requirements
               <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
        <sect1 id="User_workspace_requarements">
-       <title>User's workspace requarements</title>
+       <title>User's workspace requirements</title>
         <para>
         gLitePROOF works as a client/server application.
         We define user's workspace as a side, which is located on the local (for the user) space,
@@ -17,7 +17,7 @@ Requirements
         local workspace. There gLitePROOF server is running.
         </para>
         <para>
-        Workspace requarements:
+        Workspace requirements:
         <itemizedlist>
         <listitem><para>ROOT 5.18+ (xrootd enabled)</para></listitem>
         <listitem><para>gLite UI 3.1</para></listitem>
@@ -25,14 +25,14 @@ Requirements
         </para>
         </sect1>
        <sect1 id="Workers_workspace_requarements">
-       <title>Workers' workspace requarements</title>
+       <title>Workers' workspace requirements</title>
        <para>
        We define workers' workspace as a side which is located on the remote space,
        gLite Grid Worker Nodes, for example.
         Clients are actually workers for us. For simplification we will call it a remote workspace.
        </para>       
         <para>
-        Workspace requarements:
+        Workspace requirements:
         <itemizedlist>
         <listitem><para>gLite WMS (WMProxy endpoint)</para></listitem>
         <listitem><para>gLite WNs (at least v3.0)</para></listitem>
