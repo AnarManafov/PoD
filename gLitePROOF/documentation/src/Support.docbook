@@ -12,13 +12,13 @@ Support
     	<itemizedlist>
   			<listitem>
   				<para>
-  				Your requests you can send to: Anar Manafov <email>A.Manafov@gsi.de</email> or to GSI GridTeam <email>grid-admin@gsi.de</email>.
+  				Your requests can be send to: Anar Manafov <email>A.Manafov@gsi.de</email> or to GSI GridTeam <email>grid-admin@gsi.de</email>.
   				</para>
   			</listitem>
   			<listitem>
   				<para>
   				Use <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF">gLitePROOF Trac</ulink> to find out details and post tickets related to the project.
-  				There you also can find SVN repository, Build system, and project and source code documentation.
+  				You also can find there an SVN repository of the project, build system reports, and project's documentation.
   				</para>
   			</listitem>
   				<listitem>
