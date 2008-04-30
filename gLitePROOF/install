@@ -63,7 +63,7 @@ echo "Creating default cfg files..."
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd.cf
     # populating the tmp dir.
     _TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
-    eval sed -i 's%_G_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
+    eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
 # generating proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml

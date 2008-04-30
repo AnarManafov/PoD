@@ -25,6 +25,9 @@ echo "$y"
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
+# populating the tmp dir.
+_TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
    host_arch=`( uname -p ) 2>&1`

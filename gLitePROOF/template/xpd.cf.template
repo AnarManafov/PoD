@@ -20,10 +20,10 @@ xrd.port 20094
 ## Up to 32 characters are needed to define actual socket files; 
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 if _G_MASTER_HOSTNAME
- xrd.adminpath _G_TMP_DIR group
+ xrd.adminpath _G_SERVER_TMP_DIR group
  xrootd.export /opt/PROOF_DATA/
 else
- xrd.adminpath _G_TMP_DIR group
+ xrd.adminpath _G_WORKER_TMP_DIR group
  xrootd.export _G_WRK_DIR/
 fi
 
@@ -46,9 +46,9 @@ fi
 #
 ## setting a PROOF temp dir.
 if _G_MASTER_HOSTNAME
- set PROOFTMP=_G_TMP_DIR
+ set PROOFTMP=_G_SERVER_TMP_DIR
 else
- set PROOFTMP=_G_TMP_DIR
+ set PROOFTMP=_G_WORKER_TMP_DIR
 fi
 
 #
