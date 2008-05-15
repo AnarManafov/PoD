@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef GRIDDLG_H_
 #define GRIDDLG_H_
@@ -50,6 +50,7 @@ class CGridDlg: public QWidget
     private slots:
         void copyJobID() const;
         void cancelJob();
+        void getJobOutput();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
@@ -64,6 +65,7 @@ class CGridDlg: public QWidget
         JobSubmitterPtr_t m_JobSubmitter;
         QAction *copyJobIDAct;
         QAction *cancelJobAct;
+        QAction *getJobOutputAct;
         CTreeItemContainer m_TreeItems;
         QClipboard *clipboard;
 };

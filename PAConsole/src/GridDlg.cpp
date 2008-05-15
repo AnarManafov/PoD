@@ -31,6 +31,17 @@ using namespace MiscCommon;
 using namespace MiscCommon::gLite;
 using namespace glite_api_wrapper;
 
+typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
+
+string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path )
+{
+    string str("output of ");
+    str += _joboutput_path.first;
+    str += " has been saved to ";
+    str += _joboutput_path.second;
+    return str;
+}
+
 CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
 {
     m_ui.setupUi( this );
@@ -133,13 +144,18 @@ void CGridDlg::createActions()
     // COPY Job ID
     copyJobIDAct = new QAction(tr("&Copy JobID"), this);
     copyJobIDAct->setShortcut(tr("Ctrl+C"));
-    copyJobIDAct->setStatusTip(tr("Copy selected Jod ID to the clipboard"));
+    copyJobIDAct->setStatusTip(tr("Copy selected jod id to the clipboard"));
     connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
     // CANCEL Job
     cancelJobAct = new QAction(tr("Canc&el Job"), this);
     cancelJobAct->setShortcut(tr("Ctrl+E"));
-    cancelJobAct->setStatusTip(tr("Cancel selected Jod"));
+    cancelJobAct->setStatusTip(tr("Cancel the selected jod"));
     connect( cancelJobAct, SIGNAL(triggered()), this, SLOT(cancelJob()) );
+    // GET OUTPUT of the Job
+    getJobOutputAct = new QAction(tr("Get &output"), this);
+    getJobOutputAct->setShortcut(tr("Ctrl+O"));
+    getJobOutputAct->setStatusTip(tr("Get output sandbox of the selected jod"));
+    connect( getJobOutputAct, SIGNAL(triggered()), this, SLOT(getJobOutput()) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
@@ -156,6 +172,9 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
     menu.addAction(copyJobIDAct);
     copyJobIDAct->setEnabled( item );
 
+    menu.addAction(getJobOutputAct);
+    getJobOutputAct->setEnabled( item );
+
     menu.addSeparator();
     menu.addAction(cancelJobAct);
     cancelJobAct->setEnabled( item );
@@ -166,7 +185,7 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 void CGridDlg::copyJobID() const
 {
     // Copy selected JobID to clipboard
-    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
     if ( !item )
         return;
     clipboard->setText( item->text(0), QClipboard::Clipboard);
@@ -175,7 +194,7 @@ void CGridDlg::copyJobID() const
 
 void CGridDlg::cancelJob()
 {
-    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
     if ( !item )
         return;
 
@@ -193,7 +212,46 @@ void CGridDlg::cancelJob()
     catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        return;
     }
+}
+
+void CGridDlg::getJobOutput()
+{
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
+
+    bool ok;
+    const QString path = QInputDialog::getText(this, tr("PROOFAgent Console"),
+                         tr("Enter the path, where output files should be delivered to:"),
+                         QLineEdit::Normal,
+                         QDir::home().absolutePath(), &ok);
+    if (!ok || path.isEmpty())
+        return;
+
+    const string jobid( item->text(0).toAscii().data() );
+
+    gaw_path_type joboutput_path;
+    try
+    {
+        CGLiteAPIWrapper::Instance().GetJobManager().JobOutput(
+            jobid,
+            path.toAscii().data(),
+            &joboutput_path,
+            true);
+    }
+    catch ( const exception &_e )
+    {
+        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        return;
+    }
+
+    ostringstream ss;
+    transform( joboutput_path.begin(), joboutput_path.end(),
+               ostream_iterator<string>(ss, "\n____\n"),
+               gaw_path_type_to_string);
+    QMessageBox::information( this, tr("PROOFAgent Console"), tr(ss.str().c_str()) );
 }
 
 void CGridDlg::setProgress( int _Val )
@@ -217,6 +275,7 @@ void CGridDlg::UpdateEndpoints()
     catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        return;
     }
 
     // Let's fill the Combobox
