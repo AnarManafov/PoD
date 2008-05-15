@@ -1,2 +1,3 @@
 ********************* Release 2.0.5 (not yet released)  ************************
 
+- gLitePROOF.sh - a grid job script, its error and signal handling has been improved [Trac Ticket #52].
