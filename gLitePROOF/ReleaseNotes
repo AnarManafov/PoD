@@ -1,4 +1,6 @@
 ********************* Release 2.0.5 (not yet released)  ************************
 
 - gLitePROOF.sh - a grid job script, its error and signal handling has been improved [Trac Ticket #52].
-- added the latest PAConsole
+- added the latest PAConsole.
+- documentation has been updated.
+

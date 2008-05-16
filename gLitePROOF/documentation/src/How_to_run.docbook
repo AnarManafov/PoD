@@ -83,7 +83,7 @@ How to run
       Select the Grid page of the PACosnle by clicking on the left sided tool bar. The page looks something like
       it is shown on the <xref linkend="PAConsole_Grid0"/>.
  
-         <para><figure float="0" id="PAConsole_Grid0">
+        <para><figure float="0" id="PAConsole_Grid0">
         <title>PAConsole: Grid page</title>
         <screenshot><mediaobject>
         <imageobject>
@@ -101,7 +101,7 @@ How to run
       At the last users may want to specify a number of workers they desire to use. gLitePROOF uses a parametric job submission,
       which means that only one job will be send to WMS, but there it will be spread according to defined number of
       workers.
-          <para><figure float="0" id="PAConsole_Grid1">
+        <para><figure float="0" id="PAConsole_Grid1">
         <title>PAConsole: Submitting 3 workers</title>
         <screenshot><mediaobject>
         <imageobject>
@@ -116,7 +116,7 @@ How to run
         A current status of the last submitted jobs is dynamically shown by PAConsole, which could be seen
         on the <xref linkend="PAConsole_Grid1"/>.
         
-          <para><figure float="0" id="PAConsole_Grid2">
+        <para><figure float="0" id="PAConsole_Grid2">
         <title>PAConsole: Context menu</title>
         <screenshot><mediaobject>
         <imageobject>
@@ -127,8 +127,8 @@ How to run
         </textobject>
         </mediaobject></screenshot>
         </figure></para>
-        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID
-        or cancel selected job.        
+        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
+        get output sandbox of the selected job or cancel it.
        </para>
      </sect1>            
          
