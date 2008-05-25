@@ -78,8 +78,8 @@ proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)50 );
       	<para>
 			Download classads-0.9.9 from <ulink url="http://www.cs.wisc.edu/condor/classad/">here</ulink>.
 <programlisting>
-tar -xzvf classads_0.9.9.tar.gz
-cd classads_0.9.9
+tar -xzvf classads-0.9.9.tar.gz
+cd classads-0.9.9
 ./configure --enable-namespace
 make
 make install
