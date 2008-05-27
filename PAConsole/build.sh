@@ -18,5 +18,5 @@
 #
 
 gmake distclean
-$QTDIR/bin/qmake PAConsole.pro
+$QTDIR/bin/qmake-qt4 PAConsole.pro
 gmake
