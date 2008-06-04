@@ -2,3 +2,4 @@
 
 - Added a context menu item (Grid page), using which one can retrieve job
   output files of the selected job [Trac Ticket #48].
+- Now PAConsole supports serialization[Trac Ticket #47].

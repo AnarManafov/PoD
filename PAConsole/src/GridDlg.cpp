@@ -21,6 +21,7 @@
 #include "glite-api-wrapper/WMPEndpoint.h"
 // MiscCommon
 #include "JDLHelper.h"
+#include "SysHelper.h"
 
 const size_t g_TimeoutRefreshrate = 5000;
 // default JDL file
@@ -42,7 +43,9 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
     return str;
 }
 
-CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
+CGridDlg::CGridDlg( QWidget *parent ):
+        QWidget( parent ),
+        m_JDLFileName( g_szDefaultJDL )
 {
     m_ui.setupUi( this );
 
@@ -65,20 +68,8 @@ CGridDlg::CGridDlg( QWidget *parent ): QWidget( parent )
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel(completer) );
     m_ui.edtJDLFileName->setCompleter(completer);
-    string jdl( g_szDefaultJDL );
-    smart_path( &jdl );
-    m_ui.edtJDLFileName->setText( jdl.c_str() );
 
-    // Setting up PARAMETERS
-    int num_jobs(0);
-    try
-    {
-        get_ad_attr( &num_jobs, m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
-    }
-    catch (...)
-    {
-    }
-    m_ui.spinNumWorkers->setValue( num_jobs );
+    UpdateAfterLoad();
 }
 
 CGridDlg::~CGridDlg()
@@ -88,6 +79,23 @@ CGridDlg::~CGridDlg()
         m_Timer->stop();
         delete m_Timer;
     }
+}
+
+void CGridDlg::UpdateAfterLoad()
+{
+    smart_path( &m_JDLFileName );
+    m_ui.edtJDLFileName->setText( m_JDLFileName.c_str() );
+
+    // Setting up PARAMETERS
+    int num_jobs(0);
+    try
+    {
+        get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
+    }
+    catch (...)
+    {
+    }
+    m_ui.spinNumWorkers->setValue( num_jobs );
 }
 
 void CGridDlg::recieveThreadMsg( const QString &_Msg)
@@ -106,9 +114,9 @@ void CGridDlg::on_btnSubmitClient_clicked()
             return;
         }
         // Setting up PARAMETERS
-        set_ad_attr( m_ui.spinNumWorkers->value(), m_ui.edtJDLFileName->text().toAscii().data(), JDL_PARAMETERS );
+        set_ad_attr( m_ui.spinNumWorkers->value(), m_JDLFileName, JDL_PARAMETERS );
 
-        m_JobSubmitter->setJDLFileName( m_ui.edtJDLFileName->text().toAscii().data() );
+        m_JobSubmitter->setJDLFileName( m_JDLFileName );
         m_JobSubmitter->setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
         // submit gLite jobs
         m_JobSubmitter->start();
@@ -136,7 +144,10 @@ void CGridDlg::on_btnBrowseJDL_clicked()
                              dir,
                              tr("JDL Files (*.jdl)"));
     if ( QFileInfo(filename).exists() )
+    {
+        m_JDLFileName = filename.toAscii().data();
         m_ui.edtJDLFileName->setText(filename);
+    }
 }
 
 void CGridDlg::createActions()
@@ -270,7 +281,7 @@ void CGridDlg::UpdateEndpoints()
     StringVector_t endpoints;
     try
     {
-        endpoint.Get( &endpoints, m_ui.edtJDLFileName->text().toAscii().data() );
+        endpoint.Get( &endpoints, m_JDLFileName );
     }
     catch ( const exception &_e )
     {
