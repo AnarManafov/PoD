@@ -15,15 +15,48 @@
 // Qt
 #include <QtGui>
 #include <QtUiTools/QUiLoader>
-
+// STD
+#include <fstream>
+// BOOST
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+// MiscCommon
+#include "def.h"
 // PAConsole
 #include "MainDlg.h"
 #include "ServerDlg.h"
 #include "GridDlg.h"
 #include "WorkersDlg.h"
 
+using namespace MiscCommon;
+
+LPCTSTR g_szCfgFileName = "PAConsole.xml.cfg";
+
+template<class T>
+void _loadcfg( T &_s, const std::string &_FileName )
+{
+    if (_FileName.empty() || !MiscCommon::is_file_exists(_FileName))
+        return;
+    std::ifstream f(_FileName.c_str());
+    //assert(f.good());
+    boost::archive::xml_iarchive ia(f);
+    ia >> BOOST_SERIALIZATION_NVP(_s);
+}
+
+template<class T>
+void _savecfg( const T &_s, const std::string &_FileName )
+{
+    if (_FileName.empty())
+        return;
+    // make an archive
+    std::ofstream f(_FileName.c_str());
+    //assert(f.good());
+    boost::archive::xml_oarchive oa(f);
+    oa << BOOST_SERIALIZATION_NVP(_s);
+}
+
 CMainDlg::CMainDlg(QDialog *_Parent):
-  QDialog( _Parent )
+        QDialog( _Parent )
 {
     m_ui.setupUi( this );
 
@@ -35,17 +68,24 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     flags |= Qt::WindowMaximizeButtonHint;
     flags |= Qt::WindowMinimizeButtonHint;
     setWindowFlags( flags );
-    
-    CGridDlg *grid = new CGridDlg();
-    CWorkersDlg *workers = new CWorkersDlg(); 
-    m_ui.pagesWidget->insertWidget( 0, new CServerDlg );
-    m_ui.pagesWidget->insertWidget( 1, grid );
-    m_ui.pagesWidget->insertWidget( 2, workers );
-    
+
+    // Loading class from the config file
+    _loadcfg(*this, g_szCfgFileName);
+
+    m_ui.pagesWidget->insertWidget( 0, &m_server);
+    m_ui.pagesWidget->insertWidget( 1, &m_grid );
+    m_ui.pagesWidget->insertWidget( 2, &m_workers );
+
     createIcons();
     m_ui.contentsWidget->setCurrentRow( 0 );
-    
-    connect( grid->getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), workers, SLOT(setNumberOfJobs(int)) );
+
+    connect( m_grid.getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), &m_workers, SLOT(setNumberOfJobs(int)) );
+}
+
+CMainDlg::~CMainDlg()
+{
+    // Saving class to the config file
+    _savecfg(*this, g_szCfgFileName);
 }
 
 void CMainDlg::createIcons()

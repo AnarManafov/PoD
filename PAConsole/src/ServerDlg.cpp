@@ -25,7 +25,6 @@
 // MiscCommon
 #include "INet.h"
 #include "Process.h"
-#include "SysHelper.h"
 // PAConsole
 #include "ServerDlg.h"
 #include "ServerInfo.h"
@@ -39,7 +38,9 @@ using namespace std;
 using namespace MiscCommon::INet;
 using namespace MiscCommon;
 
-CServerDlg::CServerDlg( QWidget *parent ): QWidget( parent )
+CServerDlg::CServerDlg( QWidget *_parent ):
+        QWidget( _parent ),
+        m_PIDDir(g_szPID_Dir)
 {
     m_ui.setupUi( this );
 
@@ -52,9 +53,8 @@ CServerDlg::CServerDlg( QWidget *parent ): QWidget( parent )
     m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
     
     // pid/log directory
-    string sPIDDir( g_szPID_Dir );
-    smart_path( &sPIDDir );
-    m_ui.edtPIDDir->setText( sPIDDir.c_str() );
+    smart_path( &m_PIDDir );
+    m_ui.edtPIDDir->setText( m_PIDDir.c_str() );
 
     // Show status on start-up
     on_btnStatusServer_clicked();
@@ -84,7 +84,7 @@ void CServerDlg::on_btnStatusServer_clicked()
 }
 
 void CServerDlg::CommandServer( EServerCommands _command )
-{    
+{
     string cmd("$GLITE_PROOF_LOCATION/bin/Server_gLitePROOF.sh");
     smart_path( &cmd );
     StringVector_t params;
@@ -154,7 +154,10 @@ void CServerDlg::on_btnBrowsePIDDir_clicked()
                               QFileDialog::DontResolveSymlinks
                               | QFileDialog::ShowDirsOnly);
     if (!directory.isEmpty())
+    {
         m_ui.edtPIDDir->setText(directory);
+        m_PIDDir = directory.toAscii().data();
+    }
 }
 
 void CServerDlg::update_check_srv_socket()
