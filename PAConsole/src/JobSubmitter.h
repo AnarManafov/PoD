@@ -17,6 +17,11 @@
 
 // Qt
 #include <QtGui>
+// BOOST
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/split_member.hpp>
 // MiscCommon
 #include "gLiteHelper.h"
 // GAW
@@ -27,6 +32,8 @@ class CJobSubmitter: public QThread
         Q_OBJECT
 
         typedef glite_api_wrapper::CGLiteAPIWrapper GAW;
+
+        friend class boost::serialization::access;
 
     public:
         CJobSubmitter( QObject *parent ):
@@ -43,6 +50,9 @@ class CJobSubmitter: public QThread
     public:
         const std::string &getLastJobID()
         {
+            // Retrieving a number of children of the parametric job
+            emit changeNumberOfJobs( getNumberOfJobs(m_LastJobID) );
+
             return m_LastJobID;
         }
         void setJDLFileName( const std::string &_JDLfilename )
@@ -77,9 +87,7 @@ class CJobSubmitter: public QThread
                 GAW::Instance().GetJobManager().JobSubmit( m_JDLfilename.c_str(), &sLastJobID );
 
                 // Retrieving a number of children of the parametric job
-                MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(sLastJobID).GetChildren( &jobs );
-                emit changeNumberOfJobs( jobs.size() );
+                emit changeNumberOfJobs( getNumberOfJobs(sLastJobID) );
                 m_mutex.lock();
                 m_LastJobID = sLastJobID;
                 m_mutex.unlock();
@@ -94,11 +102,36 @@ class CJobSubmitter: public QThread
             emit changeProgress( 100 );
         }
 
+        int getNumberOfJobs( const std::string &_JobID) const
+        {
+            try
+            {
+                // Retrieving a number of children of the parametric job
+                MiscCommon::StringVector_t jobs;
+                MiscCommon::gLite::CJobStatusObj(_JobID).GetChildren( &jobs );
+                return (jobs.size());
+            }
+            catch (...)
+            {
+            }
+            return 0;
+        }
+
+        template<class Archive>
+        void serialize(Archive & _ar, const unsigned int /*_version*/)
+        {
+            m_mutex.lock();
+            _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
+            m_mutex.unlock();
+        }
+
     private:
         std::string m_LastJobID;
         QMutex m_mutex;
         std::string m_JDLfilename;
         std::string m_WMPEndpoint;
 };
+
+BOOST_CLASS_VERSION(CJobSubmitter, 1)
 
 #endif /*JOBSUBMITTER_H_*/

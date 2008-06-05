@@ -34,7 +34,7 @@ class CMainDlg: public QDialog
         friend class boost::serialization::access;
 
     public:
-        CMainDlg( QDialog *_Parent = 0 );
+        CMainDlg( QDialog *_Parent = NULL );
         virtual ~CMainDlg();
 
     public slots:
@@ -47,9 +47,8 @@ class CMainDlg: public QDialog
         {
             _ar
             & BOOST_SERIALIZATION_NVP(m_server)
-            & BOOST_SERIALIZATION_NVP(m_grid);
-            //& BOOST_SERIALIZATION_NVP(m_workers)
-
+            & BOOST_SERIALIZATION_NVP(m_grid)
+            & BOOST_SERIALIZATION_NVP(m_workers);
         }
 
     private:

@@ -42,4 +42,5 @@ QMAKE_CXXFLAGS += ${GAW_CPPFLAGS}
 DISTFILES += build.sh \
     res/images/grid.png \
     res/images/server.png \
-    res/images/workers.png
+    res/images/workers.png \
+    ReleaseNotes

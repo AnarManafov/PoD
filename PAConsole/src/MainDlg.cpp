@@ -17,6 +17,7 @@
 #include <QtUiTools/QUiLoader>
 // STD
 #include <fstream>
+#include <exception>
 // BOOST
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
@@ -28,35 +29,56 @@
 #include "GridDlg.h"
 #include "WorkersDlg.h"
 
+using namespace std;
 using namespace MiscCommon;
 
-LPCTSTR g_szCfgFileName = "PAConsole.xml.cfg";
+LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg";
 
 template<class T>
-void _loadcfg( T &_s, const std::string &_FileName )
+void _loadcfg( T &_s, string _FileName, QDialog *_Parent = NULL ) throw()
 {
-    if (_FileName.empty() || !MiscCommon::is_file_exists(_FileName))
-        return;
-    std::ifstream f(_FileName.c_str());
-    //assert(f.good());
-    boost::archive::xml_iarchive ia(f);
-    ia >> BOOST_SERIALIZATION_NVP(_s);
+    smart_path(&_FileName);
+    try
+    {
+        if (_FileName.empty() || !is_file_exists(_FileName))
+            throw exception();
+
+        ifstream f(_FileName.c_str());
+        //assert(f.good());
+        boost::archive::xml_iarchive ia(f);
+        ia >> BOOST_SERIALIZATION_NVP(_s);
+    }
+    catch (...)
+    {
+        QMessageBox::warning(_Parent, "PROOFAgent Console",
+                             "Can't load configuration from \"$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg\"" );
+    }
 }
 
 template<class T>
-void _savecfg( const T &_s, const std::string &_FileName )
+void _savecfg( const T &_s, string _FileName, QDialog *_Parent = NULL  ) throw()
 {
-    if (_FileName.empty())
-        return;
-    // make an archive
-    std::ofstream f(_FileName.c_str());
-    //assert(f.good());
-    boost::archive::xml_oarchive oa(f);
-    oa << BOOST_SERIALIZATION_NVP(_s);
+    smart_path(&_FileName);
+    try
+    {
+        if (_FileName.empty() || !is_file_exists(_FileName))
+            throw exception();
+
+        // make an archive
+        ofstream f(_FileName.c_str());
+        //assert(f.good());
+
+        boost::archive::xml_oarchive oa(f);
+        oa << BOOST_SERIALIZATION_NVP(_s);
+    }
+    catch (...)
+    {
+        QMessageBox::warning(_Parent, "PROOFAgent Console",
+                             "Can't save configuration to \"$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg\"" );
+    }
 }
 
-CMainDlg::CMainDlg(QDialog *_Parent):
-        QDialog( _Parent )
+CMainDlg::CMainDlg(QDialog *_Parent): QDialog( _Parent )
 {
     m_ui.setupUi( this );
 
@@ -70,7 +92,7 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     setWindowFlags( flags );
 
     // Loading class from the config file
-    _loadcfg(*this, g_szCfgFileName);
+    _loadcfg(*this, g_szCfgFileName, this);
 
     m_ui.pagesWidget->insertWidget( 0, &m_server);
     m_ui.pagesWidget->insertWidget( 1, &m_grid );
@@ -85,7 +107,7 @@ CMainDlg::CMainDlg(QDialog *_Parent):
 CMainDlg::~CMainDlg()
 {
     // Saving class to the config file
-    _savecfg(*this, g_szCfgFileName);
+    _savecfg(*this, g_szCfgFileName, this);
 }
 
 void CMainDlg::createIcons()

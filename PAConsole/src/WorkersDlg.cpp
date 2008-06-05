@@ -17,14 +17,11 @@
 #include <QtXml/QDomDocument>
 #include <QMessageBox>
 #include <QFile>
-
 // STD
 #include <fstream>
-
 // MiscCommon
 #include "CustomIterator.h"
 #include "SysHelper.h"
-
 // PAConsole
 #include "WorkersDlg.h"
 
@@ -34,7 +31,9 @@ const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml
 using namespace std;
 using namespace MiscCommon;
 
-CWorkersDlg::CWorkersDlg( QWidget *parent ): QWidget( parent )
+CWorkersDlg::CWorkersDlg( QWidget *parent ):
+        QWidget( parent ),
+        m_bMonitorWorkers(true)
 {
     m_ui.setupUi( this );
 
@@ -49,7 +48,7 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ): QWidget( parent )
     m_Timer = new QTimer(this);
     connect( m_Timer, SIGNAL(timeout()), this, SLOT(update()) );
 
-    on_chkShowWorkers_stateChanged( Qt::Checked );
+    on_chkShowWorkers_stateChanged( m_bMonitorWorkers? Qt::Checked: Qt::Unchecked );
 
     setActiveWorkers( 0 );
 }
@@ -165,13 +164,13 @@ void CWorkersDlg::update()
 
 void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
 {
-    const bool bEnable = (_Stat == Qt::Checked);
-    if ( m_Timer->isActive() && bEnable )
+    m_bMonitorWorkers = (_Stat == Qt::Checked);
+    if ( m_Timer->isActive() && m_bMonitorWorkers )
         return ; // TODO: need assert here
 
-    m_ui.lstClientsList->setEnabled( bEnable );
+    m_ui.lstClientsList->setEnabled( m_bMonitorWorkers );
 
-    if ( !bEnable )
+    if ( !m_bMonitorWorkers )
         m_Timer->stop();
     else
         m_Timer->start(g_TimeoutCheckPROOFCONF);

@@ -2,4 +2,8 @@
 
 - Added a context menu item (Grid page), using which one can retrieve job
   output files of the selected job [Trac Ticket #48].
-- Now PAConsole supports serialization[Trac Ticket #47].
+- Now PAConsole supports serialization [Trac Ticket #47].
+  It remembers users settings and, for example, the last submitted job saved too.
+  Which allows user to restart PAConsole and still monitor the last job.
+  Configuration data saved to and loaded from  $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml.
+- ReleaseNotes should be a part of distr [Trac Ticket #61].

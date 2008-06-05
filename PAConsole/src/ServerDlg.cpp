@@ -29,7 +29,7 @@
 #include "ServerDlg.h"
 #include "ServerInfo.h"
 
-const size_t g_TimeoutCheckSrvSocket = 2000;
+const size_t g_TimeoutCheckSrvSocket = 2000;  // in milliseconds
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 // default pid/log directory
 const char * const g_szPID_Dir = "$GLITE_PROOF_LOCATION/";
@@ -51,7 +51,7 @@ CServerDlg::CServerDlg( QWidget *_parent ):
     m_TimerSrvSocket = new QTimer(this);
     connect( m_TimerSrvSocket, SIGNAL(timeout()), this, SLOT(update_check_srv_socket()) );
     m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
-    
+
     // pid/log directory
     smart_path( &m_PIDDir );
     m_ui.edtPIDDir->setText( m_PIDDir.c_str() );

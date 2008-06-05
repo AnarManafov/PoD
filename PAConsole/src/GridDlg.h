@@ -19,16 +19,9 @@
 #include "ui_wgGrid.h"
 // MiscCommon
 #include "def.h"
-// BOOST
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/split_member.hpp>
 // PAConsole
 #include "JobSubmitter.h"
 #include "TreeItemContainer.h"
-
-typedef std::auto_ptr<CJobSubmitter> JobSubmitterPtr_t;
 
 class CGridDlg: public QWidget
 {
@@ -41,9 +34,9 @@ class CGridDlg: public QWidget
         virtual ~CGridDlg();
 
     public:
-        CJobSubmitter *getJobSubmitter()
+        const CJobSubmitter *getJobSubmitter()
         {
-            return m_JobSubmitter.get();
+            return &m_JobSubmitter;
         }
 
     public slots:
@@ -70,12 +63,16 @@ class CGridDlg: public QWidget
         template<class Archive>
         void save(Archive & _ar, const unsigned int /*_version*/) const
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_JDLFileName);
+            _ar
+            & BOOST_SERIALIZATION_NVP(m_JDLFileName)
+            & BOOST_SERIALIZATION_NVP(m_JobSubmitter);
         }
         template<class Archive>
         void load(Archive & _ar, const unsigned int /*_version*/)
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_JDLFileName);
+            _ar
+            & BOOST_SERIALIZATION_NVP(m_JDLFileName)
+            & BOOST_SERIALIZATION_NVP(m_JobSubmitter);
             UpdateAfterLoad();
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -83,7 +80,7 @@ class CGridDlg: public QWidget
     private:
         Ui::wgGrid m_ui;
         QTimer *m_Timer;
-        JobSubmitterPtr_t m_JobSubmitter;
+        CJobSubmitter m_JobSubmitter;
         QAction *copyJobIDAct;
         QAction *cancelJobAct;
         QAction *getJobOutputAct;

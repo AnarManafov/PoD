@@ -23,7 +23,7 @@
 #include "JDLHelper.h"
 #include "SysHelper.h"
 
-const size_t g_TimeoutRefreshrate = 5000;
+const size_t g_TimeoutRefreshrate = 2000; // in milliseconds
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
@@ -45,18 +45,17 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
 
 CGridDlg::CGridDlg( QWidget *parent ):
         QWidget( parent ),
+        m_JobSubmitter(this),
         m_JDLFileName( g_szDefaultJDL )
 {
     m_ui.setupUi( this );
-
-    m_JobSubmitter = JobSubmitterPtr_t( new CJobSubmitter( this ) );
 
     m_Timer = new QTimer(this);
     connect( m_Timer, SIGNAL(timeout()), this, SLOT(updateJobsTree()) );
     m_Timer->start( g_TimeoutRefreshrate );
 
-    connect( m_JobSubmitter.get(), SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
-    connect( m_JobSubmitter.get(), SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
+    connect( &m_JobSubmitter, SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
+    connect( &m_JobSubmitter, SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
 
     createActions();
 
@@ -96,6 +95,8 @@ void CGridDlg::UpdateAfterLoad()
     {
     }
     m_ui.spinNumWorkers->setValue( num_jobs );
+
+    updateJobsTree();
 }
 
 void CGridDlg::recieveThreadMsg( const QString &_Msg)
@@ -106,7 +107,7 @@ void CGridDlg::recieveThreadMsg( const QString &_Msg)
 
 void CGridDlg::on_btnSubmitClient_clicked()
 {
-    if ( !m_JobSubmitter->isRunning() )
+    if ( !m_JobSubmitter.isRunning() )
     {
         if ( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
         {
@@ -116,16 +117,16 @@ void CGridDlg::on_btnSubmitClient_clicked()
         // Setting up PARAMETERS
         set_ad_attr( m_ui.spinNumWorkers->value(), m_JDLFileName, JDL_PARAMETERS );
 
-        m_JobSubmitter->setJDLFileName( m_JDLFileName );
-        m_JobSubmitter->setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
+        m_JobSubmitter.setJDLFileName( m_JDLFileName );
+        m_JobSubmitter.setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
         // submit gLite jobs
-        m_JobSubmitter->start();
+        m_JobSubmitter.start();
         m_ui.btnSubmitClient->setEnabled( false );
     }
     else
     {
         // Job submitter's thread
-        m_JobSubmitter->terminate();
+        m_JobSubmitter.terminate();
         setProgress( 0 );
         m_ui.btnSubmitClient->setEnabled( true );
     }
@@ -133,7 +134,7 @@ void CGridDlg::on_btnSubmitClient_clicked()
 
 void CGridDlg::updateJobsTree()
 {
-    m_TreeItems.update( m_JobSubmitter->getLastJobID(), m_ui.treeJobs );
+    m_TreeItems.update( m_JobSubmitter.getLastJobID(), m_ui.treeJobs );
 }
 
 void CGridDlg::on_btnBrowseJDL_clicked()
