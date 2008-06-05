@@ -30,6 +30,7 @@ cp --target-directory=$PKG_NAME -rv \
     template \
     "test" \
     install \
+    ReleaseNotes \
     || exit 1
 
 rm -rf $PKG_NAME/bin/.svn
