@@ -16,7 +16,7 @@ VERSION=2.0.5
 
 INSTALL_PATH=/tmp/test/gLitePROOFpackage
 
-GAW_PKG=glite-api-wrapper-3.1.0.1847
+GAW_PKG=glite-api-wrapper-3.1.0.1855
 GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
