@@ -4,6 +4,10 @@ AUTOMAKE_OPTIONS = foreign 1.4
 
 SUBDIRS = src
 
+EXTRA_DIST = \
+        autogen.sh \
+        ReleaseNotes 
+
 dist_sysconf_DATA = documentation/PROOFAgent_config/proofagent.cfg.xml
 dist_bin_SCRIPTS = proofagent_env.sh
 bin_SCRIPTS = proofagent_env.sh
