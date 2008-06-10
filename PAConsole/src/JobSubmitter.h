@@ -63,6 +63,10 @@ class CJobSubmitter: public QThread
         {
             m_WMPEndpoint = _Endpoint;
         }
+        void DelegationCredential() throw (std::exception)
+        {
+            GAW::Instance().GetJobManager().DelegationCredential( &m_WMPEndpoint );
+        }
 
     signals:
         void changeProgress( int _Val);
@@ -80,7 +84,7 @@ class CJobSubmitter: public QThread
             // Submit a Grid Job
             try
             {
-                GAW::Instance().GetJobManager().DelegationCredential( &m_WMPEndpoint );
+                DelegationCredential();
                 emit changeProgress( 30 );
 
                 std::string sLastJobID;
@@ -116,14 +120,21 @@ class CJobSubmitter: public QThread
             }
             return 0;
         }
-
         template<class Archive>
-        void serialize(Archive & _ar, const unsigned int /*_version*/)
+        void save(Archive & _ar, const unsigned int /*_version*/) const
+        {
+            _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
+        }
+        template<class Archive>
+        void load(Archive & _ar, const unsigned int /*_version*/)
         {
             m_mutex.lock();
             _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
             m_mutex.unlock();
+
+            DelegationCredential();
         }
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
     private:
         std::string m_LastJobID;
