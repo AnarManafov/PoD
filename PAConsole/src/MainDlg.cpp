@@ -78,7 +78,9 @@ void _savecfg( const T &_s, string _FileName, QDialog *_Parent = NULL  ) throw()
     }
 }
 
-CMainDlg::CMainDlg(QDialog *_Parent): QDialog( _Parent )
+CMainDlg::CMainDlg(QDialog *_Parent):
+        QDialog( _Parent ),
+        m_CurrentPage(0)
 {
     m_ui.setupUi( this );
 
@@ -99,7 +101,7 @@ CMainDlg::CMainDlg(QDialog *_Parent): QDialog( _Parent )
     m_ui.pagesWidget->insertWidget( 2, &m_workers );
 
     createIcons();
-    m_ui.contentsWidget->setCurrentRow( 0 );
+    m_ui.contentsWidget->setCurrentRow( m_CurrentPage );
 
     connect( m_grid.getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), &m_workers, SLOT(setNumberOfJobs(int)) );
 }
@@ -141,4 +143,5 @@ void CMainDlg::changePage(QListWidgetItem *_Current, QListWidgetItem *_Previous)
         _Current = _Previous;
 
     m_ui.pagesWidget->setCurrentIndex( m_ui.contentsWidget->row(_Current) );
+    m_CurrentPage = m_ui.pagesWidget->currentIndex();
 }

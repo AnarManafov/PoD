@@ -59,7 +59,7 @@ class CWorkersDlg: public QWidget
 
         void setNumberOfJobs( int _Val )
         {
-            setActiveWorkers( 0, _Val );
+            setActiveWorkers( getWorkersFromPROOFCfg(), _Val );
         }
 
         // Setting a number of connected workers
@@ -80,6 +80,7 @@ class CWorkersDlg: public QWidget
 
     private:
         void getPROOFCfg( std::string *_FileName );
+        int getWorkersFromPROOFCfg();
 
         template<class Archive>
         void save(Archive & _ar, const unsigned int /*_version*/) const

@@ -46,6 +46,7 @@ class CMainDlg: public QDialog
         void serialize(Archive &_ar, const unsigned int /*_file_version*/)
         {
             _ar
+            & BOOST_SERIALIZATION_NVP(m_CurrentPage)
             & BOOST_SERIALIZATION_NVP(m_server)
             & BOOST_SERIALIZATION_NVP(m_grid)
             & BOOST_SERIALIZATION_NVP(m_workers);
@@ -57,6 +58,7 @@ class CMainDlg: public QDialog
         CGridDlg m_grid;
         CWorkersDlg m_workers;
         CServerDlg m_server;
+        int m_CurrentPage;
 };
 
 BOOST_CLASS_VERSION(CMainDlg, 1)
