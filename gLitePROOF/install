@@ -82,9 +82,9 @@ InstallGAW()
     _GetModule $GAW_PKG $GAW_LINK
 
     pushd $APP_PATH/$GAW_PKG
-    ./configure $GAW_OPTIONS || return 1
-    gmake || return 1
-    gmake install || return 1
+    ./configure $GAW_OPTIONS || (popd; return 1)
+    gmake || (popd; return 1)
+    gmake install || (popd; return 1)
     popd
      
     # source GAW's config - other modules need it
@@ -107,9 +107,9 @@ InstallPROOFAgent()
     _GetModule $PROOFAgent_PKG $PROOFAgent_LINK
 
     pushd $APP_PATH/$PROOFAgent_PKG
-    ./configure $PROOFAgent_OPTIONS || return 1
-    eval gmake || return 1
-    gmake install || return 1
+    ./configure $PROOFAgent_OPTIONS ||  (popd; return 1)
+    eval gmake ||  (popd; return 1)
+    gmake install ||  (popd; return 1)
     popd
        
     echo
@@ -122,7 +122,7 @@ InstallPAConsole()
     _GetModule $PAConsole_PKG $PAConsole_LINK
 
     pushd  $APP_PATH/$PAConsole_PKG
-    ./build.sh || return 1
+    ./build.sh ||  (popd; return 1)
     cp Build/PAConsole $INSTALL_PATH/bin/
     popd
     
@@ -166,6 +166,10 @@ fi
 
 echo "---> deleting temporary files..."
 rm -rf $TMP_PATH
+
+if [ "X$RET_VAL" != "X0" ]; then
+    exit 1;
+fi
 
 CreateCFG || (echo "Error: can't create cfg files."; exit 1)
 
