@@ -61,7 +61,7 @@ void _savecfg( const T &_s, string _FileName, QDialog *_Parent = NULL  ) throw()
     smart_path(&_FileName);
     try
     {
-        if (_FileName.empty() || !is_file_exists(_FileName))
+        if (_FileName.empty())
             throw exception();
 
         // make an archive
