@@ -132,7 +132,12 @@ class CJobSubmitter: public QThread
             _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
             m_mutex.unlock();
 
-            DelegationCredential();
+            try
+            {
+                DelegationCredential();
+            }
+            catch (...)
+                {}
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 

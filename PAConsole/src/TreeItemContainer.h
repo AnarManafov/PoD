@@ -47,26 +47,31 @@ class CTreeItemContainer
             try
             {
                 m_ParentJobItem->setText( 1, getJobStatus(m_ParentJobID).c_str() );
-              
+
                 MiscCommon::StringVector_t jobs;
                 MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
                 std::for_each( jobs.begin(), jobs.end(),
                                std::bind1st(std::mem_fun(&CTreeItemContainer::addItem), this) );
 
-                _Tree->setColumnWidth( 0, 260 );
-                _Tree->expandAll();
             }
             catch ( const std::exception &_e)
             {
             }
+            _Tree->setColumnWidth( 0, 260 );
+            _Tree->expandAll();
         }
 
         void _Update()
         {
             try
             {
-                m_ParentJobItem->setText( 1, getJobStatus(m_ParentJobID).c_str() );
-                
+                const std::string status( getJobStatus(m_ParentJobID) );
+                // if the status is empty, we don't try to process children
+                if ( status.empty() )
+                    return;
+
+                m_ParentJobItem->setText( 1, status.c_str() );
+
                 MiscCommon::StringVector_t jobs;
                 MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
                 std::for_each( jobs.begin(), jobs.end(),

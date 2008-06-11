@@ -25,7 +25,7 @@
 // PAConsole
 #include "WorkersDlg.h"
 
-const size_t g_TimeoutCheckPROOFCONF = 3000;
+const size_t g_TimeoutCheckPROOFCONF = 5000; // in milliseconds
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 
 using namespace std;

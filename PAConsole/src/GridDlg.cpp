@@ -23,7 +23,7 @@
 #include "JDLHelper.h"
 #include "SysHelper.h"
 
-const size_t g_TimeoutRefreshrate = 2000; // in milliseconds
+const size_t g_TimeoutRefreshrate = 3000; // in milliseconds
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
@@ -61,14 +61,10 @@ CGridDlg::CGridDlg( QWidget *parent ):
 
     clipboard = QApplication::clipboard();
 
-    UpdateEndpoints();
-
     // Set completion for the edit box of JDL file name
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel(completer) );
     m_ui.edtJDLFileName->setCompleter(completer);
-
-    UpdateAfterLoad();
 }
 
 CGridDlg::~CGridDlg()
