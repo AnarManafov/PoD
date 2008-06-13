@@ -16,11 +16,11 @@ VERSION=2.0.5
 
 INSTALL_PATH=/tmp/test/gLitePROOFpackage
 
-GAW_PKG=glite-api-wrapper-3.1.0.1855
+GAW_PKG=glite-api-wrapper-3.1.0.1875
 GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
-PROOFAgent_PKG=proofagent-1.0.4.1854
+PROOFAgent_PKG=proofagent-1.0.4.1872
 PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
 

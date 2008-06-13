@@ -3,5 +3,5 @@
 - gLitePROOF.sh - a grid job script, its error and signal handling has been improved [Trac Ticket #52].
 - added the latest PAConsole.
 - documentation has been updated.
-- using GAW v.3.1.0.1855, PROOFAgent v. 1.0.4.1854 and PAConsole 1.0.4
+- using GAW v.3.1.0.1875, PROOFAgent v. 1.0.4.1872 and PAConsole 1.0.4
 
