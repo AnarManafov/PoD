@@ -10,7 +10,7 @@
                            2007-09-03
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef TREEITEMCONTAINER_H_
 #define TREEITEMCONTAINER_H_

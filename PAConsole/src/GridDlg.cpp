@@ -45,8 +45,7 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
 
 CGridDlg::CGridDlg( QWidget *parent ):
         QWidget( parent ),
-        m_JobSubmitter(this),
-        m_JDLFileName( g_szDefaultJDL )
+        m_JobSubmitter(this)
 {
     m_ui.setupUi( this );
 
@@ -74,6 +73,13 @@ CGridDlg::~CGridDlg()
         m_Timer->stop();
         delete m_Timer;
     }
+}
+
+void CGridDlg::setAllDefault()
+{
+    m_JDLFileName = g_szDefaultJDL;
+    m_JobSubmitter.setAllDefault();
+    UpdateAfterLoad();
 }
 
 void CGridDlg::UpdateAfterLoad()

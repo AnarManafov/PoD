@@ -38,6 +38,12 @@ class CGridDlg: public QWidget
         {
             return &m_JobSubmitter;
         }
+        /**
+         * 
+         * @brief The setAllDefault() method sets all CGridDlg to default values.
+         * 
+         */
+        void setAllDefault();
 
     public slots:
         void on_btnSubmitClient_clicked();

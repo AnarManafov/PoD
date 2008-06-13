@@ -10,7 +10,7 @@
                             2007-06-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef JOBSUBMITTER_H_
 #define JOBSUBMITTER_H_
@@ -54,6 +54,11 @@ class CJobSubmitter: public QThread
             emit changeNumberOfJobs( getNumberOfJobs(m_LastJobID) );
 
             return m_LastJobID;
+        }
+        void setAllDefault()
+        {
+            emit changeNumberOfJobs( 0 );
+            m_LastJobID.clear();
         }
         void setJDLFileName( const std::string &_JDLfilename )
         {
@@ -108,6 +113,9 @@ class CJobSubmitter: public QThread
 
         int getNumberOfJobs( const std::string &_JobID) const
         {
+            if ( _JobID.empty() )
+                return 0;
+
             try
             {
                 // Retrieving a number of children of the parametric job
