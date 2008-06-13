@@ -1,7 +1,7 @@
-********************* Release 2.0.5 (not yet released)  ************************
+********************* Release 2.0.5 2008-06-13 ************************
 
 - gLitePROOF.sh - a grid job script, its error and signal handling has been improved [Trac Ticket #52].
 - added the latest PAConsole.
 - documentation has been updated.
-- using GAW v.3.1.0.1875, PROOFAgent v. 1.0.4.1872 and PAConsole 1.0.4
+- using GAW v.3.1.0.1880, PROOFAgent v. 1.0.4.1883 and PAConsole 1.0.4 (see apps' ReleaseNotes files for more details).
 
