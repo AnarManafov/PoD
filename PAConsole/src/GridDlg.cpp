@@ -92,13 +92,13 @@ void CGridDlg::UpdateAfterLoad()
     try
     {
         get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
+
+        updateJobsTree();
     }
     catch (...)
     {
     }
     m_ui.spinNumWorkers->setValue( num_jobs );
-
-    updateJobsTree();
 }
 
 void CGridDlg::recieveThreadMsg( const QString &_Msg)
