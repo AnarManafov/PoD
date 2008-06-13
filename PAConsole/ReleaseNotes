@@ -1,4 +1,4 @@
-********************* Release 1.0.4 (not yet released)  ************************
+********************* Release 1.0.4 2008-06-13 ************************
 
 - Added a context menu item (Grid page), using which one can retrieve job
   output files of the selected job [Trac Ticket #48].
