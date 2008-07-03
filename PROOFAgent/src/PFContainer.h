@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file PFContainer.h
- * @brief A container implemenetation, which holds objects of CPacketForwarder
+ * @brief A container implementation, which holds objects of CPacketForwarder
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -85,7 +85,7 @@ namespace PROOFAgent
     };
     /**
      *
-     * @brief A container implemenetation, which holds objects of CPacketForwarder
+     * @brief A container implementation, which holds objects of CPacketForwarder
      *
      */
     class CPFContainer

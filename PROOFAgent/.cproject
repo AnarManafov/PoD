@@ -24,6 +24,10 @@
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.user.1710713327" name="User-specified configuration options" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=no" valueType="string"/>
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1784673807" name="Build directory" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="Release" valueType="string"/>
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.prefix.1861168106" name="Arch-independent install directory (--prefix)" superClass="com.redhat.eclipse.cdt.autotools.option.configure.prefix" value="/home/anar/PROOFAgent" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.includes.1960970179" name="includes" superClass="com.redhat.eclipse.cdt.autotools.option.configure.includes" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${project_loc}/Include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${GLITE_LOCATION}/../external/opt/xerces-c/include&quot;"/>
+</option>
 </tool>
 <tool id="com.redhat.eclipse.cdt.autotools.toolchain.tool.autogen.1102464781" name="autogen.sh" superClass="com.redhat.eclipse.cdt.autotools.toolchain.tool.autogen"/>
 </toolChain>
@@ -779,6 +783,10 @@
 <tool command="configure" id="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure.1156033175" name="configure" superClass="com.redhat.eclipse.cdt.autotools.gnu.toolchain.tool.configure">
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.user.748104963" name="User-specified configuration options" superClass="com.redhat.eclipse.cdt.autotools.option.configure.user" value="--enable-debug=yes" valueType="string"/>
 <option id="com.redhat.eclipse.cdt.autotools.option.configure.builddir.1494674242" name="Build directory" superClass="com.redhat.eclipse.cdt.autotools.option.configure.builddir" value="Debug" valueType="string"/>
+<option id="com.redhat.eclipse.cdt.autotools.option.configure.includes.1313876535" name="includes" superClass="com.redhat.eclipse.cdt.autotools.option.configure.includes" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${project_loc}/Include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${GLITE_LOCATION}/../external/opt/xerces-c/include&quot;"/>
+</option>
 </tool>
 <tool id="com.redhat.eclipse.cdt.autotools.toolchain.tool.autogen.890390879" name="autogen.sh" superClass="com.redhat.eclipse.cdt.autotools.toolchain.tool.autogen"/>
 </toolChain>

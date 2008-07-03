@@ -17,7 +17,7 @@ m4_include(custom_m4/boost.m4)
 m4_include(custom_m4/version.m4)
 
 AC_VERSION(["https://subversion.gsi.de/dgrid/PROOFAgent/trunk/PROOFAgent/"],
-           ["1.0.4"])
+           ["1.0.5"])
 
 AM_INIT_AUTOMAKE([proofagent], $VERSION_REVISION)
 

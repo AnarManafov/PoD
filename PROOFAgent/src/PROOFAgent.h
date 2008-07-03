@@ -19,15 +19,15 @@
 #include "Agent.h"
 
 /**
- * 
+ *
  * @brief A general name space for PROOFAgent application
- * 
+ *
  */
 namespace PROOFAgent
 {
     /**
      *
-     * @brief A custom DOM error handler. Requared by DOMBuilder.
+     * @brief A custom DOM error handler. Required by DOMBuilder.
      * @exception std::runtime_error - thrown in any case of error from the parser.
      * @note We don't check severity (_domError.getSeverity) of the error.
      * @note We abort parsing in any way by throwing the exception.
@@ -51,9 +51,9 @@ namespace PROOFAgent
             }
     };
     /**
-     * 
+     *
      * @brief Agent's data structure.
-     * 
+     *
      */
     typedef struct SAgentData
     {
@@ -67,11 +67,11 @@ namespace PROOFAgent
         EAgentMode_t m_AgentMode;       //!< A mode of PROOFAgent, defined by ::EAgentMode_t.
         std::string m_sAgentMode;       //!< A string representation of the mode.
         /**
-         * 
+         *
          * @brief It is a number of seconds, represents the time PROOFAgent instance is allowed to work.
          * @brief An internal timeout guard of the PROOFAgent will not allow PROOF agent to work longer, than
          * @brief it is instructed by this value and PROOFAgent will be forced to be killed. Default is 0 - no timeout.
-         * 
+         *
          */
         size_t m_nTimeout;
         std::string m_sLastExecCmd;     //!< PROOFAgent will execute this command at the end of the session.
@@ -80,9 +80,9 @@ namespace PROOFAgent
     }
     SAgentData_t;
     /**
-     * 
+     *
      * @brief The PROOFAgent manager
-     * 
+     *
      */
     class CPROOFAgent:
                 public MiscCommon::CLogImp<CPROOFAgent>,
@@ -103,10 +103,10 @@ namespace PROOFAgent
             void Start() throw(std::exception);
 
         private:
-            BEGIN_READ_XML_CFG(CPROOFAgent)            
+            BEGIN_READ_XML_CFG(CPROOFAgent)
             READ_NODE_VALUE( "work_dir", m_Data.m_sWorkDir )
             READ_NODE_VALUE( "logfile_dir", m_Data.m_sLogFileDir )
-            READ_NODE_VALUE( "logfile_overwrite", m_Data.m_bLogFileOverwrite )            
+            READ_NODE_VALUE( "logfile_overwrite", m_Data.m_bLogFileOverwrite )
             READ_NODE_VALUE( "timeout", m_Data.m_nTimeout )
             READ_NODE_VALUE( "last_execute_cmd", m_Data.m_sLastExecCmd )
             READ_NODE_VALUE( "proof_cfg_path", m_Data.m_sPROOFCfg )

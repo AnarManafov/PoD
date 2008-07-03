@@ -155,7 +155,7 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
 
         // reading configuration of a given instance
         Read( instance );
-        // Correcting convfiguration values
+        // Correcting configuration values
         // resolving user's home dir from (~/ or $HOME, if present)
         smart_path( &m_Data.m_sWorkDir );
         // We need to be sure that there is "/" always at the end of the path
