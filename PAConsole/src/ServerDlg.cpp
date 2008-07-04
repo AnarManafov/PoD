@@ -40,7 +40,7 @@ using namespace MiscCommon;
 
 CServerDlg::CServerDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_PIDDir(g_szPID_Dir)
+        m_PIDDir( g_szPID_Dir )
 {
     m_ui.setupUi( this );
 
@@ -48,9 +48,9 @@ CServerDlg::CServerDlg( QWidget *_parent ):
     getSrvPort( &m_SrvPort );
 
     // Enabling timer which checks Server's socket availability
-    m_TimerSrvSocket = new QTimer(this);
-    connect( m_TimerSrvSocket, SIGNAL(timeout()), this, SLOT(update_check_srv_socket()) );
-    m_TimerSrvSocket->start(g_TimeoutCheckSrvSocket);
+    m_TimerSrvSocket = new QTimer( this );
+    connect( m_TimerSrvSocket, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
+    m_TimerSrvSocket->start( g_TimeoutCheckSrvSocket );
 
     // pid/log directory
     smart_path( &m_PIDDir );
@@ -71,7 +71,7 @@ CServerDlg::~CServerDlg()
 
 void CServerDlg::on_btnStatusServer_clicked()
 {
-    const QColor c = ( IsRunning(true) ) ? QColor(0, 0, 255) : QColor(255, 0, 0);
+    const QColor c = ( IsRunning( true ) ) ? QColor( 0, 0, 255 ) : QColor( 255, 0, 0 );
     m_ui.edtServerInfo->setTextColor( c );
 
     CServerInfo si;
@@ -80,15 +80,15 @@ void CServerDlg::on_btnStatusServer_clicked()
     << si.GetXROOTDInfo() << "\n"
     << si.GetPAInfo() << "\n";
 
-    m_ui.edtServerInfo->setText( QString(ss.str().c_str()) );
+    m_ui.edtServerInfo->setText( QString( ss.str().c_str() ) );
 }
 
 void CServerDlg::CommandServer( EServerCommands _command )
 {
-    string cmd("$GLITE_PROOF_LOCATION/bin/Server_gLitePROOF.sh");
+    string cmd( "$GLITE_PROOF_LOCATION/bin/Server_gLitePROOF.sh" );
     smart_path( &cmd );
     StringVector_t params;
-    params.push_back( string(m_ui.edtPIDDir->text().toAscii().data()) );
+    params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
     switch ( _command )
     {
         case srvSTART:
@@ -104,65 +104,60 @@ void CServerDlg::CommandServer( EServerCommands _command )
     {
         do_execv( cmd, params, 30, false );
     }
-    catch ( const exception &_e)
+    catch ( const exception &_e )
     {
-        QMessageBox::critical(this, tr("PROOFAgent Console"), tr(_e.what()) );
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
     }
 }
 
 bool CServerDlg::IsRunning( bool _check_all )
 {
     CServerInfo si;
-    const pid_t pidXrootD = si.IsXROOTDRunning();
-    const pid_t pidPA = si.IsPROOFAgentRunning();
-    if ( _check_all )
-        return  (pidXrootD && pidPA);
-    else
-        return  (pidXrootD || pidPA);
+    return si.IsRunning( _check_all );
 }
 
 void CServerDlg::on_btnStartServer_clicked()
 {
-    if ( IsRunning(true) )
+    if ( IsRunning( true ) )
         return;
 
     CommandServer( srvSTART );
 
-    if ( !IsRunning(true) )
-        QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while starting the Server!") );
+    if ( !IsRunning( true ) )
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "<p>An error occurred while starting the Server!" ) );
 
     on_btnStatusServer_clicked();
 }
 
 void CServerDlg::on_btnStopServer_clicked()
 {
-    if ( !IsRunning(false) )
+    if ( !IsRunning( false ) )
         return;
 
     CommandServer( srvSTOP );
-    if ( IsRunning(true) )
-        QMessageBox::critical(this, tr("PROOFAgent Console"), tr("<p>An error occurred while stopping the Server!") );
+    if ( IsRunning( true ) )
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "<p>An error occurred while stopping the Server!" ) );
 
     on_btnStatusServer_clicked();
 }
 
 void CServerDlg::on_btnBrowsePIDDir_clicked()
 {
-    const QString directory = QFileDialog::getExistingDirectory(this,
-                              tr("Select pid directory of PROOFAgent"),
-                              m_ui.edtPIDDir->text(),
-                              QFileDialog::DontResolveSymlinks
-                              | QFileDialog::ShowDirsOnly);
-    if (!directory.isEmpty())
+    const QString directory = QFileDialog::getExistingDirectory( this,
+                                                                 tr( "Select pid directory of PROOFAgent" ),
+                                                                 m_ui.edtPIDDir->text(),
+                                                                 QFileDialog::DontResolveSymlinks
+                                                                 | QFileDialog::ShowDirsOnly );
+    if ( !directory.isEmpty() )
     {
-        m_ui.edtPIDDir->setText(directory);
+        m_ui.edtPIDDir->setText( directory );
         m_PIDDir = directory.toAscii().data();
     }
 }
 
 void CServerDlg::update_check_srv_socket()
 {
-    m_ui.btnStartServer->setEnabled( get_free_port(m_SrvPort) );
+    m_ui.btnStartServer->setEnabled( get_free_port( m_SrvPort ) );
 }
 
 void CServerDlg::getSrvPort( int *_Port )
@@ -174,12 +169,12 @@ void CServerDlg::getSrvPort( int *_Port )
     smart_path( &cfg );
 
     QFile file( cfg.c_str() );
-    if (!file.open(QFile::ReadOnly | QFile::Text))
+    if ( !file.open( QFile::ReadOnly | QFile::Text ) )
     {
-        QMessageBox::warning(this, tr("PROOFAgent Console"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(cfg.c_str())
-                             .arg(file.errorString()));
+        QMessageBox::warning( this, tr( "PROOFAgent Console" ),
+                              tr( "Cannot read file %1:\n%2." )
+                              .arg( cfg.c_str() )
+                              .arg( file.errorString() ) );
         return ;
     }
 
@@ -190,14 +185,14 @@ void CServerDlg::getSrvPort( int *_Port )
 
     if ( !domDocument.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-        QMessageBox::information(window(), tr("PROOFAgent Console"),
-                                 tr("Parse error at line %1, column %2:\n%3")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
+        QMessageBox::information( window(), tr( "PROOFAgent Console" ),
+                                  tr( "Parse error at line %1, column %2:\n%3" )
+                                  .arg( errorLine )
+                                  .arg( errorColumn )
+                                  .arg( errorStr ) );
         return ;
     }
-    QDomNodeList instance = domDocument.elementsByTagName("instance");
+    QDomNodeList instance = domDocument.elementsByTagName( "instance" );
     if ( instance.isEmpty() )
         return; // TODO: msg me!
 
@@ -205,24 +200,24 @@ void CServerDlg::getSrvPort( int *_Port )
     for ( int i = 0; i < instance.count(); ++i )
     {
         const QDomNode name(
-            instance.item(i).attributes().namedItem("name") );
+            instance.item( i ).attributes().namedItem( "name" ) );
         if ( name.isNull() )
             continue;
         // TODO: We look exactly for "server" instance!
         // Change it. Move instance name to the PAConsole settings.
         if ( name.nodeValue() == "server" )
         {
-            server = instance.item(i);
+            server = instance.item( i );
             break;
         }
     }
 
-    QDomNode agent_server = server.namedItem("agent_server");
-    if ( agent_server.isNull())
+    QDomNode agent_server = server.namedItem( "agent_server" );
+    if ( agent_server.isNull() )
         return ; // TODO: Msg me!
 
-    QDomNode port = agent_server.namedItem("listen_port").firstChild();
-    if ( port.isNull())
+    QDomNode port = agent_server.namedItem( "listen_port" ).firstChild();
+    if ( port.isNull() )
         return ; // TODO: Msg me!
 
     *_Port = port.nodeValue().toInt();

@@ -23,7 +23,7 @@ using namespace MiscCommon;
 
 struct SFindName: public binary_function< CProcList::ProcContainer_t::value_type, string, bool >
 {
-    bool operator() ( CProcList::ProcContainer_t::value_type _pid, const string &_Name ) const
+    bool operator()( CProcList::ProcContainer_t::value_type _pid, const string &_Name ) const
     {
         CProcStatus p;
         p.Open( _pid );
@@ -31,23 +31,33 @@ struct SFindName: public binary_function< CProcList::ProcContainer_t::value_type
     }
 };
 
-pid_t CServerInfo::IsRunning( const string &_Srv ) const
+pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
     CProcList::ProcContainer_t pids;
     CProcList::GetProcList( &pids );
 
-    CProcList::ProcContainer_t::const_iterator iter = find_if( pids.begin(), pids.end(), bind2nd(SFindName(), _Srv));
+    CProcList::ProcContainer_t::const_iterator iter = find_if( pids.begin(), pids.end(), bind2nd( SFindName(), _Srv ) );
     return ( pids.end() != iter ? *iter : 0 );
+}
+
+bool CServerInfo::IsRunning( bool _check_all ) const
+{
+    const pid_t pidXrootD = IsXROOTDRunning();
+    const pid_t pidPA = IsPROOFAgentRunning();
+    if ( _check_all )
+        return ( pidXrootD && pidPA );
+    else
+        return ( pidXrootD || pidPA );
 }
 
 pid_t CServerInfo::IsXROOTDRunning() const
 {
-    return IsRunning( "xrootd" );
+    return _IsRunning( "xrootd" );
 }
 
 pid_t CServerInfo::IsPROOFAgentRunning() const
 {
-    return IsRunning( "proofagent" );
+    return _IsRunning( "proofagent" );
 }
 
 string CServerInfo::GetXROOTDInfo() const
@@ -61,7 +71,7 @@ string CServerInfo::GetXROOTDInfo() const
     stringstream ss;
     ss
     << "XROOTD" << spid.str() << ": is "
-    << (pid ? "running" : "not running");
+    << ( pid ? "running" : "not running" );
 
     return ss.str();
 }
@@ -77,7 +87,7 @@ string CServerInfo::GetPAInfo() const
     stringstream ss;
     ss
     << "PROOFAgent" << spid.str() << ": is "
-    << (pid ? "running" : "not running");
+    << ( pid ? "running" : "not running" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
@@ -99,12 +109,12 @@ void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
     char * line = NULL;
     size_t len = 0;
     stringstream ss;
-    while ( getline(&line, &len, f) != -1 )
+    while ( getline( &line, &len, f ) != -1 )
     {
         ss << line << "\n";
     }
     if ( line )
-        free(line);
-    pclose(f);
+        free( line );
+    pclose( f );
     *_Ver = ss.str();
 }

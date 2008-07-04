@@ -16,7 +16,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle" >
-   <string>PROOFAgent Management Console - v 1.0.4</string>
+   <string>PROOFAgent Management Console - v 1.0.5</string>
   </property>
   <layout class="QGridLayout" >
    <property name="leftMargin" >

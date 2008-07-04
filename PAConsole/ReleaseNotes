@@ -1,6 +1,7 @@
 ********************* Release 1.0.5 not yet released ************************
 - moved to Eclipse 3.4 "Ganymede"
 - fixed typos
+- Show message box if PAConsole user submits jobs but server is not running [Trac Ticket #70]. 
 
 ********************* Release 1.0.4 2008-06-13 ************************
 

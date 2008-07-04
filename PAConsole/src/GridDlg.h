@@ -48,7 +48,7 @@ class CGridDlg: public QWidget
     public slots:
         void on_btnSubmitClient_clicked();
         void updateJobsTree();
-        void recieveThreadMsg( const QString &_Msg);
+        void recieveThreadMsg( const QString &_Msg );
         void setProgress( int _Val );
         void on_btnBrowseJDL_clicked();
         void on_edtJDLFileName_textChanged( const QString & /*_text*/ );
@@ -67,18 +67,18 @@ class CGridDlg: public QWidget
         void UpdateAfterLoad();
 
         template<class Archive>
-        void save(Archive & _ar, const unsigned int /*_version*/) const
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
             _ar
-            & BOOST_SERIALIZATION_NVP(m_JDLFileName)
-            & BOOST_SERIALIZATION_NVP(m_JobSubmitter);
+            & BOOST_SERIALIZATION_NVP( m_JDLFileName )
+            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
         }
         template<class Archive>
-        void load(Archive & _ar, const unsigned int /*_version*/)
+        void load( Archive & _ar, const unsigned int /*_version*/ )
         {
             _ar
-            & BOOST_SERIALIZATION_NVP(m_JDLFileName)
-            & BOOST_SERIALIZATION_NVP(m_JobSubmitter);
+            & BOOST_SERIALIZATION_NVP( m_JDLFileName )
+            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
             UpdateAfterLoad();
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -95,6 +95,6 @@ class CGridDlg: public QWidget
         std::string m_JDLFileName;
 };
 
-BOOST_CLASS_VERSION(CGridDlg, 1)
+BOOST_CLASS_VERSION( CGridDlg, 1 )
 
 #endif /*GRIDDLG_H_*/

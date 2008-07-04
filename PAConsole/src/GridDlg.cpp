@@ -5,18 +5,19 @@
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
 
-        version number:    $LastChangedRevision$
-        created by:        Anar Manafov
-                           2007-08-24
-        last changed by:   $LastChangedBy$ $LastChangedDate$
+ version number:    $LastChangedRevision$
+ created by:        Anar Manafov
+ 2007-08-24
+ last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
-*************************************************************************/
+ Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+ *************************************************************************/
 // Qt
 #include <QWidget>
 #include <QTreeWidget>
 // PAConsole
 #include "GridDlg.h"
+#include "ServerInfo.h"
 // GAW
 #include "glite-api-wrapper/WMPEndpoint.h"
 // MiscCommon
@@ -36,25 +37,24 @@ typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
 
 string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path )
 {
-    string str("output of ");
+    string str( "output of " );
     str += _joboutput_path.first;
     str += " has been saved to ";
     str += _joboutput_path.second;
     return str;
 }
 
-CGridDlg::CGridDlg( QWidget *parent ):
-        QWidget( parent ),
-        m_JobSubmitter(this)
+CGridDlg::CGridDlg( QWidget *parent ) :
+        QWidget( parent ), m_JobSubmitter( this )
 {
     m_ui.setupUi( this );
 
-    m_Timer = new QTimer(this);
-    connect( m_Timer, SIGNAL(timeout()), this, SLOT(updateJobsTree()) );
+    m_Timer = new QTimer( this );
+    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( updateJobsTree() ) );
     m_Timer->start( g_TimeoutRefreshrate );
 
-    connect( &m_JobSubmitter, SIGNAL(changeProgress(int)), this, SLOT(setProgress(int)) );
-    connect( &m_JobSubmitter, SIGNAL(sendThreadMsg(const QString&)), this, SLOT(recieveThreadMsg(const QString&)) );
+    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
 
     createActions();
 
@@ -62,8 +62,8 @@ CGridDlg::CGridDlg( QWidget *parent ):
 
     // Set completion for the edit box of JDL file name
     QCompleter *completer = new QCompleter( this );
-    completer->setModel( new QDirModel(completer) );
-    m_ui.edtJDLFileName->setCompleter(completer);
+    completer->setModel( new QDirModel( completer ) );
+    m_ui.edtJDLFileName->setCompleter( completer );
 }
 
 CGridDlg::~CGridDlg()
@@ -88,32 +88,48 @@ void CGridDlg::UpdateAfterLoad()
     m_ui.edtJDLFileName->setText( m_JDLFileName.c_str() );
 
     // Setting up PARAMETERS
-    int num_jobs(0);
+    int num_jobs( 0 );
     try
     {
         get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
 
         updateJobsTree();
     }
-    catch (...)
+    catch ( ... )
     {
     }
     m_ui.spinNumWorkers->setValue( num_jobs );
 }
 
-void CGridDlg::recieveThreadMsg( const QString &_Msg)
+void CGridDlg::recieveThreadMsg( const QString &_Msg )
 {
-    QMessageBox::critical( this, tr("PROOFAgent Console"), _Msg );
+    QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
 
 void CGridDlg::on_btnSubmitClient_clicked()
 {
+    // Checking first that gLitePROOF server is running
+    CServerInfo si;
+    if ( !si.IsRunning( true ) )
+    {
+        const string msg( "gLitePROOF server is not running.\n"
+                          "Do you want to submit this job anyway?" );
+        const QMessageBox::StandardButton reply =
+            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+                                   QMessageBox::Yes | QMessageBox::No );
+        if ( QMessageBox::Yes != reply )
+            return;
+    }
+
     if ( !m_JobSubmitter.isRunning() )
     {
         if ( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
         {
-            QMessageBox::critical( this, tr("PROOFAgent Console"), tr("File\n\"%1\"\ndoesn't exist!").arg(m_ui.edtJDLFileName->text()) );
+            QMessageBox::critical( this,
+                                   tr( "PROOFAgent Console" ),
+                                   tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
+                                       m_ui.edtJDLFileName->text() ) );
             return;
         }
         // Setting up PARAMETERS
@@ -142,58 +158,56 @@ void CGridDlg::updateJobsTree()
 void CGridDlg::on_btnBrowseJDL_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
-    const QString filename = QFileDialog::getOpenFileName(this,
-                             tr("Select a jdl file"),
-                             dir,
-                             tr("JDL Files (*.jdl)"));
-    if ( QFileInfo(filename).exists() )
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
+                                                           tr( "JDL Files (*.jdl)" ) );
+    if ( QFileInfo( filename ).exists() )
     {
         m_JDLFileName = filename.toAscii().data();
-        m_ui.edtJDLFileName->setText(filename);
+        m_ui.edtJDLFileName->setText( filename );
     }
 }
 
 void CGridDlg::createActions()
 {
     // COPY Job ID
-    copyJobIDAct = new QAction(tr("&Copy JobID"), this);
-    copyJobIDAct->setShortcut(tr("Ctrl+C"));
-    copyJobIDAct->setStatusTip(tr("Copy selected jod id to the clipboard"));
-    connect( copyJobIDAct, SIGNAL(triggered()), this, SLOT(copyJobID()) );
+    copyJobIDAct = new QAction( tr( "&Copy JobID" ), this );
+    copyJobIDAct->setShortcut( tr( "Ctrl+C" ) );
+    copyJobIDAct->setStatusTip( tr( "Copy selected jod id to the clipboard" ) );
+    connect( copyJobIDAct, SIGNAL( triggered() ), this, SLOT( copyJobID() ) );
     // CANCEL Job
-    cancelJobAct = new QAction(tr("Canc&el Job"), this);
-    cancelJobAct->setShortcut(tr("Ctrl+E"));
-    cancelJobAct->setStatusTip(tr("Cancel the selected jod"));
-    connect( cancelJobAct, SIGNAL(triggered()), this, SLOT(cancelJob()) );
+    cancelJobAct = new QAction( tr( "Canc&el Job" ), this );
+    cancelJobAct->setShortcut( tr( "Ctrl+E" ) );
+    cancelJobAct->setStatusTip( tr( "Cancel the selected jod" ) );
+    connect( cancelJobAct, SIGNAL( triggered() ), this, SLOT( cancelJob() ) );
     // GET OUTPUT of the Job
-    getJobOutputAct = new QAction(tr("Get &output"), this);
-    getJobOutputAct->setShortcut(tr("Ctrl+O"));
-    getJobOutputAct->setStatusTip(tr("Get output sandbox of the selected jod"));
-    connect( getJobOutputAct, SIGNAL(triggered()), this, SLOT(getJobOutput()) );
+    getJobOutputAct = new QAction( tr( "Get &output" ), this );
+    getJobOutputAct->setShortcut( tr( "Ctrl+O" ) );
+    getJobOutputAct->setStatusTip( tr( "Get output sandbox of the selected jod" ) );
+    connect( getJobOutputAct, SIGNAL( triggered() ), this, SLOT( getJobOutput() ) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 {
     // Checking that *treeJobs* has been selected
     QPoint pos = event->globalPos();
-    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal(pos) ) )
+    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
         return;
 
     // We need to disable menu items when no jobID is selected
     const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
 
-    QMenu menu(this);
-    menu.addAction(copyJobIDAct);
+    QMenu menu( this );
+    menu.addAction( copyJobIDAct );
     copyJobIDAct->setEnabled( item );
 
-    menu.addAction(getJobOutputAct);
+    menu.addAction( getJobOutputAct );
     getJobOutputAct->setEnabled( item );
 
     menu.addSeparator();
-    menu.addAction(cancelJobAct);
+    menu.addAction( cancelJobAct );
     cancelJobAct->setEnabled( item );
 
-    menu.exec(event->globalPos());
+    menu.exec( event->globalPos() );
 }
 
 void CGridDlg::copyJobID() const
@@ -202,8 +216,8 @@ void CGridDlg::copyJobID() const
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
     if ( !item )
         return;
-    clipboard->setText( item->text(0), QClipboard::Clipboard);
-    clipboard->setText( item->text(0), QClipboard::Selection);
+    clipboard->setText( item->text( 0 ), QClipboard::Clipboard );
+    clipboard->setText( item->text( 0 ), QClipboard::Selection );
 }
 
 void CGridDlg::cancelJob()
@@ -212,10 +226,11 @@ void CGridDlg::cancelJob()
     if ( !item )
         return;
 
-    const string jobid( item->text(0).toAscii().data() );
+    const string jobid( item->text( 0 ).toAscii().data() );
     const string msg( "Do you really want to cancel the job:\n" + jobid );
-    const QMessageBox::StandardButton reply( QMessageBox::question( this, tr("PROOFAgent Console"), tr(msg.c_str()),
-            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
+    const QMessageBox::StandardButton
+    reply( QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+                                  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
     if ( QMessageBox::Yes != reply )
         return;
 
@@ -225,7 +240,7 @@ void CGridDlg::cancelJob()
     }
     catch ( const exception &_e )
     {
-        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
     }
 }
@@ -237,35 +252,35 @@ void CGridDlg::getJobOutput()
         return;
 
     bool ok;
-    const QString path = QInputDialog::getText(this, tr("PROOFAgent Console"),
-                         tr("Enter the path, where output files should be delivered to:"),
-                         QLineEdit::Normal,
-                         QDir::home().absolutePath(), &ok);
-    if (!ok || path.isEmpty())
+    const QString
+    path =
+        QInputDialog::getText(
+            this,
+            tr( "PROOFAgent Console" ),
+            tr(
+                "Enter the path, where output files should be delivered to:" ),
+            QLineEdit::Normal, QDir::home().absolutePath(), &ok );
+    if ( !ok || path.isEmpty() )
         return;
 
-    const string jobid( item->text(0).toAscii().data() );
+    const string jobid( item->text( 0 ).toAscii().data() );
 
     gaw_path_type joboutput_path;
     try
     {
-        CGLiteAPIWrapper::Instance().GetJobManager().JobOutput(
-            jobid,
-            path.toAscii().data(),
-            &joboutput_path,
-            true);
+        CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
+                                                                &joboutput_path, true );
     }
     catch ( const exception &_e )
     {
-        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
     }
 
     ostringstream ss;
     transform( joboutput_path.begin(), joboutput_path.end(),
-               ostream_iterator<string>(ss, "\n____\n"),
-               gaw_path_type_to_string);
-    QMessageBox::information( this, tr("PROOFAgent Console"), tr(ss.str().c_str()) );
+               ostream_iterator<string> ( ss, "\n____\n" ), gaw_path_type_to_string );
+    QMessageBox::information( this, tr( "PROOFAgent Console" ), tr( ss.str().c_str() ) );
 }
 
 void CGridDlg::setProgress( int _Val )
@@ -288,7 +303,7 @@ void CGridDlg::UpdateEndpoints()
     }
     catch ( const exception &_e )
     {
-        QMessageBox::critical( this, tr("PROOFAgent Console"), tr(_e.what()) );
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
     }
 
@@ -297,7 +312,7 @@ void CGridDlg::UpdateEndpoints()
     StringVector_t::const_iterator iter_end( endpoints.end() );
     for ( ; iter != iter_end; ++iter )
     {
-        m_ui.cmbEndpoint->addItem( tr(iter->c_str()) );
+        m_ui.cmbEndpoint->addItem( tr( iter->c_str() ) );
     }
 }
 
