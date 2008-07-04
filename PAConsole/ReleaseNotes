@@ -1,3 +1,7 @@
+********************* Release 1.0.5 not yet released ************************
+- moved to Eclipse 3.4 "Ganymede"
+- fixed typos
+
 ********************* Release 1.0.4 2008-06-13 ************************
 
 - Added a context menu item (Grid page), using which one can retrieve job

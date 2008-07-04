@@ -275,7 +275,7 @@ void CGridDlg::setProgress( int _Val )
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
 
-// Retrieving a list of possiable WMProxy endpoints
+// Retrieving a list of possible WMProxy endpoints
 void CGridDlg::UpdateEndpoints()
 {
     m_ui.cmbEndpoint->clear();

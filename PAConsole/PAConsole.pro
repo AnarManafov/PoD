@@ -1,6 +1,6 @@
 TEMPLATE = app
 LANGUAGE = C++
-VERSION = -1.0.4
+VERSION = -1.0.5
 INCLUDEPATH = ./Include
 HEADERS += src/MainDlg.h \
     src/JobSubmitter.h \
