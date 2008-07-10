@@ -4,4 +4,4 @@
 # ChangeLog from a subversion repository log.
 #
 
-svn2cl -i --group-by-day
+svn2cl -i --group-by-day || touch ChangeLog
