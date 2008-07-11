@@ -45,7 +45,7 @@ namespace PROOFAgent
     void signal_handler( int _SignalNumber );
     /**
      *
-     * @brief A base class for PROOFAgent mods - agents.
+     * @brief A base class for PROOFAgent modes - agents.
      *
      */
     class CAgentBase
@@ -94,9 +94,9 @@ namespace PROOFAgent
             std::string m_sPROOFCfg;
     };
     /**
-     * 
+     *
      * @brief Agent's data structure (for server mode).
-     * 
+     *
      */
     typedef struct SAgentServerData
     {
@@ -118,9 +118,9 @@ namespace PROOFAgent
         return _stream;
     }
     /**
-     * 
+     *
      * @brief Agent's data structure (for client mode).
-     * 
+     *
      */
     typedef struct SAgentClientData
     {
@@ -143,9 +143,9 @@ namespace PROOFAgent
         return _stream;
     }
     /**
-     * 
+     *
      * @brief An agent class, for the server mode of PROOFAgent
-     * 
+     *
      */
     class CAgentServer :
                 public CAgentBase,
@@ -200,9 +200,9 @@ namespace PROOFAgent
             boost::mutex m_PFList_mutex;
     };
     /**
-     * 
+     *
      * @brief An agent class, for the client mode of PROOFAgent
-     * 
+     *
      */
     class CAgentClient:
                 public CAgentBase,
