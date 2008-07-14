@@ -26,7 +26,7 @@
 
 using namespace std;
 
-CLogInfoDlg::CLogInfoDlg( QWidget *_parent, const std::string &_gLiteJobID ) :
+CLogInfoDlg::CLogInfoDlg( QWidget *_parent, const string &_gLiteJobID ) :
         QDialog( _parent ),
         m_gLiteJobID( _gLiteJobID )
 {
