@@ -2,7 +2,7 @@ TEMPLATE = app
 LANGUAGE = C++
 VERSION = -1.0.5
 INCLUDEPATH = ./Include
-HEADERS += src/CLogInfoDlg.h \
+HEADERS += src/LogInfoDlg.h \
     src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
@@ -21,7 +21,7 @@ HEADERS += src/CLogInfoDlg.h \
     Include/stlx.h \
     Include/INet.h \
     Include/JDLHelper.h
-SOURCES += src/CLogInfoDlg.cpp \
+SOURCES += src/LogInfoDlg.cpp \
     src/MainDlg.cpp \
     src/ServerInfo.cpp \
     src/ServerDlg.cpp \
