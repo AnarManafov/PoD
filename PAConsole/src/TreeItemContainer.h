@@ -23,40 +23,45 @@ class CTreeItemContainer
         typedef std::map<std::string, QTreeWidgetItem *> container_t;
 
     public:
-        void update( const std::string &_ParentJobID, QTreeWidget *_Tree )
+        void update( const CJobSubmitter::jobslist_t &_Jobs, QTreeWidget *_Tree )
         {
-            if ( _ParentJobID.empty() )
-                return;
-
-            if ( _ParentJobID != m_ParentJobID )
-                _Reset( _ParentJobID, _Tree );
+            if ( _Jobs != m_Jobs )
+                _Reset( _Jobs, _Tree );
             else
                 _Update();
         }
 
     private:
-        void _Reset( const std::string &_ParentJobID, QTreeWidget *_Tree )
+        void _Reset( const CJobSubmitter::jobslist_t &_Jobs, QTreeWidget *_Tree )
         {
-            m_ParentJobID = _ParentJobID;
+            m_Jobs = _Jobs;
             m_Tree = _Tree;
             m_Tree->clear();
+            m_ParentJobItem.clear();
             m_Children.clear();
 
-            m_ParentJobItem = new QTreeWidgetItem( _Tree );
-            m_ParentJobItem->setText( 0, m_ParentJobID.c_str() );
-            try
+            CJobSubmitter::jobslist_t::const_iterator iter = m_Jobs.begin();
+            CJobSubmitter::jobslist_t::const_iterator iter_end = m_Jobs.end();
+            for ( ; iter != iter_end; ++iter )
             {
-                m_ParentJobItem->setText( 1, getJobStatus(m_ParentJobID).c_str() );
+                QTreeWidgetItem *ParentJobItem = new QTreeWidgetItem( _Tree );
+                m_ParentJobItem.insert( container_t::value_type( *iter, ParentJobItem ) );
+                ParentJobItem->setText( 0, iter->c_str() );
+                try
+                {
+                    ParentJobItem->setText( 1, getJobStatus( *iter ).c_str() );
 
-                MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
-                std::for_each( jobs.begin(), jobs.end(),
-                               std::bind1st(std::mem_fun(&CTreeItemContainer::addItem), this) );
+                    MiscCommon::StringVector_t jobs;
+                    MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
+                    std::for_each( jobs.begin(), jobs.end(),
+                                   boost::bind( boost::mem_fn( &CTreeItemContainer::addChildItem ), this, _1, ParentJobItem ) );
 
+                }
+                catch ( const std::exception &_e )
+                {
+                }
             }
-            catch ( const std::exception &_e)
-            {
-            }
+
             _Tree->setColumnWidth( 0, 260 );
             _Tree->expandAll();
         }
@@ -65,40 +70,31 @@ class CTreeItemContainer
         {
             try
             {
-                const std::string status( getJobStatus(m_ParentJobID) );
-                // if the status is empty, we don't try to process children
-                if ( status.empty() )
-                    return;
-
-                m_ParentJobItem->setText( 1, status.c_str() );
-
-                MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(m_ParentJobID).GetChildren( &jobs );
-                std::for_each( jobs.begin(), jobs.end(),
-                               std::bind1st(std::mem_fun(&CTreeItemContainer::updateItem), this) );
+                // loop over the parents
+                for_each( m_ParentJobItem.begin(), m_ParentJobItem.end(),
+                          boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
+                // loop over the children if any
+                for_each( m_Children.begin(), m_Children.end(),
+                          boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
             }
-            catch ( const std::exception &_e)
+            catch ( const std::exception &_e )
             {
             }
         }
 
-        void addItem ( std::string _JobID )
+        void updateItem( container_t::value_type &_Item )
         {
-            QTreeWidgetItem *item( new QTreeWidgetItem(m_ParentJobItem) );
+            if ( !_Item.second )
+                return;
+            _Item.second->setText( 1, getJobStatus( _Item.first ).c_str() );
+        }
+
+        void addChildItem( std::string _JobID, QTreeWidgetItem *_parent )
+        {
+            QTreeWidgetItem *item( new QTreeWidgetItem( _parent ) );
             item->setText( 0, _JobID.c_str() );
-            item->setText( 1, getJobStatus(_JobID).c_str() );
-            m_Children.insert( std::make_pair(_JobID, item) );
-        }
-
-        void updateItem( std::string _JobID )
-        {
-            container_t::iterator map_iter = m_Children.find( _JobID );
-            if ( m_Children.end() != map_iter )
-                map_iter->second->setText( 1, getJobStatus(_JobID).c_str() );
-            else
-            {
-                // TODO: add element or assert?
-            }
+            item->setText( 1, getJobStatus( _JobID ).c_str() );
+            m_Children.insert( container_t::value_type( _JobID, item ) );
         }
 
         std::string getJobStatus( const std::string &_JobID )
@@ -109,9 +105,9 @@ class CTreeItemContainer
         }
 
     private:
-        std::string m_ParentJobID;
+        CJobSubmitter::jobslist_t m_Jobs;
         QTreeWidget *m_Tree;
-        QTreeWidgetItem *m_ParentJobItem;
+        container_t m_ParentJobItem;
         container_t m_Children;
 };
 

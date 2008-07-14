@@ -58,6 +58,7 @@ class CGridDlg: public QWidget
         void cancelJob();
         void getJobOutput();
         void getJobLoggingInfo();
+        void removeJob();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
@@ -92,6 +93,7 @@ class CGridDlg: public QWidget
         QAction *cancelJobAct;
         QAction *getJobOutputAct;
         QAction *getJobLoggingInfoAct;
+        QAction *removeJobAct;
         CTreeItemContainer m_TreeItems;
         QClipboard *clipboard;
         std::string m_JDLFileName;

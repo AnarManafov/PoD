@@ -22,6 +22,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/set.hpp>
 // MiscCommon
 #include "gLiteHelper.h"
 // GAW
@@ -36,8 +37,11 @@ class CJobSubmitter: public QThread
         friend class boost::serialization::access;
 
     public:
+        typedef std::set<std::string> jobslist_t;
+
+    public:
         CJobSubmitter( QObject *parent ):
-                QThread(parent)
+                QThread( parent )
         {
             GAW::Instance().Init();
         }
@@ -48,17 +52,17 @@ class CJobSubmitter: public QThread
         }
 
     public:
-        const std::string &getLastJobID()
+        const jobslist_t &getActiveJobList()
         {
             // Retrieving a number of children of the parametric job
-            emit changeNumberOfJobs( getNumberOfJobs(m_LastJobID) );
+            emit changeNumberOfJobs( getNumberOfJobs() );
 
-            return m_LastJobID;
+            return m_JobsList;
         }
         void setAllDefault()
         {
             emit changeNumberOfJobs( 0 );
-            m_LastJobID.clear();
+            m_JobsList.clear();
         }
         void setJDLFileName( const std::string &_JDLfilename )
         {
@@ -68,13 +72,21 @@ class CJobSubmitter: public QThread
         {
             m_WMPEndpoint = _Endpoint;
         }
-        void DelegationCredential() throw (std::exception)
+        void DelegationCredential() throw( std::exception )
         {
             GAW::Instance().GetJobManager().DelegationCredential( &m_WMPEndpoint );
         }
+        void RemoveJob( const std::string &_JobID )
+        {
+            m_mutex.lock();
+            m_JobsList.erase( _JobID );
+            m_mutex.unlock();
+
+            emit changeNumberOfJobs( getNumberOfJobs() );
+        }
 
     signals:
-        void changeProgress( int _Val);
+        void changeProgress( int _Val );
         void changeNumberOfJobs( int _Val );
         void sendThreadMsg( const QString &_Msg );
 
@@ -82,9 +94,6 @@ class CJobSubmitter: public QThread
         void run()
         {
             emit changeProgress( 0 );
-            m_mutex.lock();
-            m_LastJobID.clear();
-            m_mutex.unlock();
 
             // Submit a Grid Job
             try
@@ -95,15 +104,16 @@ class CJobSubmitter: public QThread
                 std::string sLastJobID;
                 GAW::Instance().GetJobManager().JobSubmit( m_JDLfilename.c_str(), &sLastJobID );
 
-                // Retrieving a number of children of the parametric job
-                emit changeNumberOfJobs( getNumberOfJobs(sLastJobID) );
                 m_mutex.lock();
-                m_LastJobID = sLastJobID;
+                m_JobsList.insert( sLastJobID );
                 m_mutex.unlock();
+
+                // Retrieving a number of children of the parametric job
+                emit changeNumberOfJobs( getNumberOfJobs() );
             }
             catch ( const std::exception &_e )
             {
-                emit sendThreadMsg( tr(_e.what()) );
+                emit sendThreadMsg( tr( _e.what() ) );
                 emit changeProgress( 0 );
                 return;
             }
@@ -111,51 +121,60 @@ class CJobSubmitter: public QThread
             emit changeProgress( 100 );
         }
 
-        int getNumberOfJobs( const std::string &_JobID) const
+        int getNumberOfJobs( ) const
         {
-            if ( _JobID.empty() )
+            if ( m_JobsList.empty() )
                 return 0;
 
             try
             {
+                jobslist_t::const_iterator iter = m_JobsList.begin();
+                jobslist_t::const_iterator iter_end = m_JobsList.end();
                 // Retrieving a number of children of the parametric job
+                size_t num( 0 );
                 MiscCommon::StringVector_t jobs;
-                MiscCommon::gLite::CJobStatusObj(_JobID).GetChildren( &jobs );
-                return (jobs.size());
+                for ( ; iter != iter_end; ++iter )
+                {
+                    MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
+                    num += jobs.size();
+                    jobs.clear();
+                }
+                return ( num );
             }
-            catch (...)
+            catch ( ... )
             {
             }
             return 0;
         }
         template<class Archive>
-        void save(Archive & _ar, const unsigned int /*_version*/) const
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
+            _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
         }
         template<class Archive>
-        void load(Archive & _ar, const unsigned int /*_version*/)
+        void load( Archive & _ar, const unsigned int _version )
         {
             m_mutex.lock();
-            _ar & BOOST_SERIALIZATION_NVP(m_LastJobID);
+            if ( _version >= 2 ) // TODO: make CJobSubmitter v1 in  PAconsole version 1.0.6 depreciated
+                _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
             m_mutex.unlock();
 
             try
             {
                 DelegationCredential();
             }
-            catch (...)
+            catch ( ... )
                 {}
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
     private:
-        std::string m_LastJobID;
+        jobslist_t m_JobsList;
         QMutex m_mutex;
         std::string m_JDLfilename;
         std::string m_WMPEndpoint;
 };
 
-BOOST_CLASS_VERSION(CJobSubmitter, 1)
+BOOST_CLASS_VERSION( CJobSubmitter, 2 )
 
 #endif /*JOBSUBMITTER_H_*/

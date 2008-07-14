@@ -26,7 +26,7 @@
 #include "LogInfoDlg.h"
 
 
-const size_t g_TimeoutRefreshrate = 3000; // in milliseconds
+const size_t g_TimeoutRefreshrate = 15*1000; // in milliseconds
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
@@ -154,7 +154,7 @@ void CGridDlg::on_btnSubmitClient_clicked()
 
 void CGridDlg::updateJobsTree()
 {
-    m_TreeItems.update( m_JobSubmitter.getLastJobID(), m_ui.treeJobs );
+    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
 
 void CGridDlg::on_btnBrowseJDL_clicked()
@@ -191,6 +191,11 @@ void CGridDlg::createActions()
     getJobLoggingInfoAct->setShortcut( tr( "Ctrl+L" ) );
     getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
     connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
+    // Remove Job from monitoring
+    removeJobAct = new QAction( tr( "&Remove Job" ), this );
+    removeJobAct->setShortcut( tr( "Ctrl+R" ) );
+    removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
+    connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
@@ -212,6 +217,10 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 
     menu.addAction( getJobLoggingInfoAct );
     getJobLoggingInfoAct->setEnabled( item );
+
+    menu.addSeparator();
+    menu.addAction( removeJobAct );
+    removeJobAct->setEnabled( item );
 
     menu.addSeparator();
     menu.addAction( cancelJobAct );
@@ -306,10 +315,27 @@ void CGridDlg::getJobLoggingInfo()
     dlg.exec();
 }
 
+void CGridDlg::removeJob()
+{
+    // Job ID
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
+
+    const string jobid( item->text( 0 ).toAscii().data() );
+
+    m_JobSubmitter.RemoveJob( jobid );
+    updateJobsTree();
+}
+
 void CGridDlg::setProgress( int _Val )
 {
     if ( 100 == _Val )
+    {
         m_ui.btnSubmitClient->setEnabled( true );
+        // The job is submitted, we need to update the tree
+        updateJobsTree();
+    }
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
 
