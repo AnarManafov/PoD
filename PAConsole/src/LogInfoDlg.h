@@ -18,16 +18,21 @@
 // Qt autogen. file
 #include "ui_wgLogInfo.h"
 
-class CLogInfoDlg: public QWidget
+class CLogInfoDlg: public QDialog
 {
         Q_OBJECT
 
     public:
-        CLogInfoDlg( QWidget *_parent );
+        CLogInfoDlg( QWidget *_parent, const std::string &_gLiteJobID );
         virtual ~CLogInfoDlg();
 
+    public slots:
+        int exec();
+        void on_btnSave_clicked();
+
     private:
-        Ui::wgLogInfo m_ui;
+        Ui::Dialog m_ui;
+        std::string m_gLiteJobID;
 };
 
 #endif /* CLOGINFODLG_H_ */

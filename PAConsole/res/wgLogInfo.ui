@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>333</width>
-    <height>437</height>
+    <width>579</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -34,9 +34,20 @@
       <number>5</number>
      </property>
      <item>
-      <widget class="QTextEdit" name="textEdit" >
+      <widget class="QTextEdit" name="txtLogView" >
+       <property name="font" >
+        <font>
+         <family>Monospace</family>
+        </font>
+       </property>
+       <property name="documentTitle" >
+        <string/>
+       </property>
        <property name="undoRedoEnabled" >
         <bool>true</bool>
+       </property>
+       <property name="lineWrapMode" >
+        <enum>QTextEdit::WidgetWidth</enum>
        </property>
        <property name="readOnly" >
         <bool>true</bool>
@@ -44,7 +55,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton" >
+      <widget class="QPushButton" name="btnSave" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
          <horstretch>0</horstretch>
@@ -52,10 +63,10 @@
         </sizepolicy>
        </property>
        <property name="layoutDirection" >
-        <enum>Qt::RightToLeft</enum>
+        <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text" >
-        <string>PushButton</string>
+        <string>Save...</string>
        </property>
       </widget>
      </item>

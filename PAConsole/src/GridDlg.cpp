@@ -5,12 +5,12 @@
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
 
- version number:    $LastChangedRevision$
- created by:        Anar Manafov
- 2007-08-24
- last changed by:   $LastChangedBy$ $LastChangedDate$
+        version number:    $LastChangedRevision$
+        created by:        Anar Manafov
+                           2007-08-24
+        last changed by:   $LastChangedBy$ $LastChangedDate$
 
- Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
  *************************************************************************/
 // Qt
 #include <QWidget>
@@ -23,7 +23,7 @@
 // PAConsole
 #include "GridDlg.h"
 #include "ServerInfo.h"
-
+#include "LogInfoDlg.h"
 
 
 const size_t g_TimeoutRefreshrate = 3000; // in milliseconds
@@ -295,7 +295,15 @@ void CGridDlg::getJobOutput()
 
 void CGridDlg::getJobLoggingInfo()
 {
+    // Job ID
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
 
+    const string jobid( item->text( 0 ).toAscii().data() );
+
+    CLogInfoDlg dlg( this, jobid );
+    dlg.exec();
 }
 
 void CGridDlg::setProgress( int _Val )

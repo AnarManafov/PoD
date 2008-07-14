@@ -1,7 +1,9 @@
 ********************* Release 1.0.5 not yet released ************************
 - moved to Eclipse 3.4 "Ganymede"
 - fixed typos
-- Show message box if PAConsole user submits jobs but server is not running [Trac Ticket #70]. 
+- Show message box if PAConsole user submits jobs but server is not running [Trac Ticket #70].
+- Added a possibility to retrieve jobs logging information from the gLite LB.
+  Now using a context menu of the Grid jobs list one can get a full log of the selected job. [Track Ticket #65]  
 
 ********************* Release 1.0.4 2008-06-13 ************************
 
