@@ -87,6 +87,8 @@
 </target>
 </buildTargets>
 </storageModule>
+
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
 <pathentry base-path="/usr/include" include="" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include" include="QtCore" kind="inc" path="" system="true"/>

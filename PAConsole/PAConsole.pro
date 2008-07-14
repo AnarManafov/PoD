@@ -2,7 +2,8 @@ TEMPLATE = app
 LANGUAGE = C++
 VERSION = -1.0.5
 INCLUDEPATH = ./Include
-HEADERS += src/MainDlg.h \
+HEADERS += src/CLogInfoDlg.h \
+    src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
     src/GridDlg.h \
@@ -20,7 +21,8 @@ HEADERS += src/MainDlg.h \
     Include/stlx.h \
     Include/INet.h \
     Include/JDLHelper.h
-SOURCES += src/MainDlg.cpp \
+SOURCES += src/CLogInfoDlg.cpp \
+    src/MainDlg.cpp \
     src/ServerInfo.cpp \
     src/ServerDlg.cpp \
     src/GridDlg.cpp \
@@ -29,7 +31,8 @@ SOURCES += src/MainDlg.cpp \
 FORMS = res/maindlg.ui \
     res/wgServer.ui \
     res/wgGrid.ui \
-    res/wgWorkers.ui
+    res/wgWorkers.ui \
+    res/wgLogInfo.ui
 RESOURCES += res/paconsole.qrc
 DESTDIR = Build
 OBJECTS_DIR = Intermediate

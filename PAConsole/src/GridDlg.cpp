@@ -15,14 +15,16 @@
 // Qt
 #include <QWidget>
 #include <QTreeWidget>
-// PAConsole
-#include "GridDlg.h"
-#include "ServerInfo.h"
 // GAW
 #include "glite-api-wrapper/WMPEndpoint.h"
 // MiscCommon
 #include "JDLHelper.h"
 #include "SysHelper.h"
+// PAConsole
+#include "GridDlg.h"
+#include "ServerInfo.h"
+
+
 
 const size_t g_TimeoutRefreshrate = 3000; // in milliseconds
 // default JDL file
@@ -184,6 +186,11 @@ void CGridDlg::createActions()
     getJobOutputAct->setShortcut( tr( "Ctrl+O" ) );
     getJobOutputAct->setStatusTip( tr( "Get output sandbox of the selected jod" ) );
     connect( getJobOutputAct, SIGNAL( triggered() ), this, SLOT( getJobOutput() ) );
+    // Get Logging Info
+    getJobLoggingInfoAct = new QAction( tr( "Get &logging info" ), this );
+    getJobLoggingInfoAct->setShortcut( tr( "Ctrl+L" ) );
+    getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
+    connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
 }
 
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
@@ -202,6 +209,9 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 
     menu.addAction( getJobOutputAct );
     getJobOutputAct->setEnabled( item );
+
+    menu.addAction( getJobLoggingInfoAct );
+    getJobLoggingInfoAct->setEnabled( item );
 
     menu.addSeparator();
     menu.addAction( cancelJobAct );
@@ -281,6 +291,11 @@ void CGridDlg::getJobOutput()
     transform( joboutput_path.begin(), joboutput_path.end(),
                ostream_iterator<string> ( ss, "\n____\n" ), gaw_path_type_to_string );
     QMessageBox::information( this, tr( "PROOFAgent Console" ), tr( ss.str().c_str() ) );
+}
+
+void CGridDlg::getJobLoggingInfo()
+{
+
 }
 
 void CGridDlg::setProgress( int _Val )
