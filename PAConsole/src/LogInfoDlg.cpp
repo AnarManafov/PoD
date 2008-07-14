@@ -47,7 +47,16 @@ int CLogInfoDlg::exec()
     // Getting Logging information. Using GAW to do so.
     ostringstream ss;
     typedef glite_api_wrapper::CGLiteAPIWrapper GAW;
-    GAW::Instance().GetJobManager().JobLogInfo( m_gLiteJobID, ss );
+    try
+    {
+        GAW::Instance().GetJobManager().JobLogInfo( m_gLiteJobID, ss );
+    }
+    catch ( const exception &_e )
+    {
+        QMessageBox::critical( this,
+                               tr( "PROOFAgent Console" ),
+                               tr( _e.what() ) );
+    }
 
     m_ui.txtLogView->setPlainText( ss.str().c_str() );
     return QDialog::exec();
