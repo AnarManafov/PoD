@@ -25,8 +25,6 @@
 #include "ServerInfo.h"
 #include "LogInfoDlg.h"
 
-
-const size_t g_TimeoutRefreshrate = 15 * 1000; // in milliseconds
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
@@ -54,7 +52,6 @@ CGridDlg::CGridDlg( QWidget *parent ) :
 
     m_Timer = new QTimer( this );
     connect( m_Timer, SIGNAL( timeout() ), this, SLOT( updateJobsTree() ) );
-    m_Timer->start( g_TimeoutRefreshrate );
 
     connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );

@@ -2,7 +2,8 @@ TEMPLATE = app
 LANGUAGE = C++
 VERSION = -1.0.5
 INCLUDEPATH = ./Include
-HEADERS += src/LogInfoDlg.h \
+HEADERS += src/PreferencesDlg.h \
+    src/LogInfoDlg.h \
     src/MainDlg.h \
     src/JobSubmitter.h \
     src/ServerDlg.h \
@@ -21,14 +22,16 @@ HEADERS += src/LogInfoDlg.h \
     Include/stlx.h \
     Include/INet.h \
     Include/JDLHelper.h
-SOURCES += src/LogInfoDlg.cpp \
+SOURCES += src/PreferencesDlg.cpp \
+    src/LogInfoDlg.cpp \
     src/MainDlg.cpp \
     src/ServerInfo.cpp \
     src/ServerDlg.cpp \
     src/GridDlg.cpp \
     src/WorkersDlg.cpp \
     src/main.cpp
-FORMS = res/maindlg.ui \
+FORMS = res/wgPreferences.ui \
+    res/maindlg.ui \
     res/wgServer.ui \
     res/wgGrid.ui \
     res/wgWorkers.ui \

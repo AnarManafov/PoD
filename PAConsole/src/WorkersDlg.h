@@ -78,6 +78,13 @@ class CWorkersDlg: public QWidget
             m_ui.chkShowWorkers->setText( strMsg.c_str() );
         }
 
+        void restartUpdTimer(int _WorkersUpdInterval)
+        {
+            m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
+            if (m_bMonitorWorkers)
+                m_Timer->start(m_WorkersUpdInterval);
+        }
+
     private:
         void getPROOFCfg( std::string *_FileName );
         int getWorkersFromPROOFCfg();
@@ -102,6 +109,7 @@ class CWorkersDlg: public QWidget
         QTimer *m_Timer;
         std::string m_CfgFileName;
         bool m_bMonitorWorkers;
+        int m_WorkersUpdInterval;
 };
 
 BOOST_CLASS_VERSION(CWorkersDlg, 1)

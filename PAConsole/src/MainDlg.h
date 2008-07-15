@@ -25,6 +25,7 @@
 #include "ServerDlg.h"
 #include "GridDlg.h"
 #include "WorkersDlg.h"
+#include "PreferencesDlg.h"
 
 
 class CMainDlg: public QDialog
@@ -49,7 +50,8 @@ class CMainDlg: public QDialog
             & BOOST_SERIALIZATION_NVP(m_CurrentPage)
             & BOOST_SERIALIZATION_NVP(m_server)
             & BOOST_SERIALIZATION_NVP(m_grid)
-            & BOOST_SERIALIZATION_NVP(m_workers);
+            & BOOST_SERIALIZATION_NVP(m_workers)
+            & BOOST_SERIALIZATION_NVP(m_preferences);
         }
 
     private:
@@ -58,9 +60,10 @@ class CMainDlg: public QDialog
         CGridDlg m_grid;
         CWorkersDlg m_workers;
         CServerDlg m_server;
+        CPreferencesDlg m_preferences;
         int m_CurrentPage;
 };
 
-BOOST_CLASS_VERSION(CMainDlg, 1)
+BOOST_CLASS_VERSION(CMainDlg, 2)
 
 #endif /*CMAINDLG_H_*/

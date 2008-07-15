@@ -25,9 +25,6 @@
 #include "def.h"
 // PAConsole
 #include "MainDlg.h"
-#include "ServerDlg.h"
-#include "GridDlg.h"
-#include "WorkersDlg.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -37,33 +34,33 @@ LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg";
 template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
-    smart_path(&_FileName);
-    if (_FileName.empty() || !is_file_exists(_FileName))
+    smart_path( &_FileName );
+    if ( _FileName.empty() || !is_file_exists( _FileName ) )
         throw exception();
 
-    ifstream f(_FileName.c_str());
+    ifstream f( _FileName.c_str() );
     //assert(f.good());
-    boost::archive::xml_iarchive ia(f);
-    ia >> BOOST_SERIALIZATION_NVP(_s);
+    boost::archive::xml_iarchive ia( f );
+    ia >> BOOST_SERIALIZATION_NVP( _s );
 }
 
 template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
-    smart_path(&_FileName);
-    if (_FileName.empty())
+    smart_path( &_FileName );
+    if ( _FileName.empty() )
         throw exception();
 
     // make an archive
-    ofstream f(_FileName.c_str());
+    ofstream f( _FileName.c_str() );
     //assert(f.good());
-    boost::archive::xml_oarchive oa(f);
-    oa << BOOST_SERIALIZATION_NVP(_s);
+    boost::archive::xml_oarchive oa( f );
+    oa << BOOST_SERIALIZATION_NVP( _s );
 }
 
-CMainDlg::CMainDlg(QDialog *_Parent):
+CMainDlg::CMainDlg( QDialog *_Parent ):
         QDialog( _Parent ),
-        m_CurrentPage(0)
+        m_CurrentPage( 0 )
 {
     m_ui.setupUi( this );
 
@@ -79,25 +76,34 @@ CMainDlg::CMainDlg(QDialog *_Parent):
     try
     {
         // Loading class from the config file
-        _loadcfg(*this, g_szCfgFileName);
+        _loadcfg( *this, g_szCfgFileName );
     }
-    catch (...)
+    catch ( ... )
     {
         m_grid.setAllDefault();
-        QMessageBox::information(this, "PROOFAgent Console",
-                                 "Can't load configuration from \
-                                 \"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\".\
-                                 PAConsole will use its defaul settings." );
+        QMessageBox::information( this, "PROOFAgent Console",
+                                  "Can't load configuration from \
+                                  \"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\".\
+                                  PAConsole will use its default settings." );
     }
 
-    m_ui.pagesWidget->insertWidget( 0, &m_server);
+    // Using preferences
+    m_grid.restartUpdTimer( m_preferences.getJobStatusUpdInterval() );
+    // Immediately update interval when a user changes settings
+    connect( &m_preferences, SIGNAL( changedJobStatusUpdInterval( int ) ), &m_grid, SLOT( restartUpdTimer( int ) ) );
+    m_workers.restartUpdTimer( m_preferences.getWorkersUpdInterval() );
+    // Immediately update interval when a user changes settings
+    connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), &m_workers, SLOT( restartUpdTimer( int ) ) );
+
+    m_ui.pagesWidget->insertWidget( 0, &m_server );
     m_ui.pagesWidget->insertWidget( 1, &m_grid );
     m_ui.pagesWidget->insertWidget( 2, &m_workers );
+    m_ui.pagesWidget->insertWidget( 3, &m_preferences );
 
     createIcons();
     m_ui.contentsWidget->setCurrentRow( m_CurrentPage );
 
-    connect( m_grid.getJobSubmitter(), SIGNAL(changeNumberOfJobs(int)), &m_workers, SLOT(setNumberOfJobs(int)) );
+    connect( m_grid.getJobSubmitter(), SIGNAL( changeNumberOfJobs( int ) ), &m_workers, SLOT( setNumberOfJobs( int ) ) );
 }
 
 CMainDlg::~CMainDlg()
@@ -105,46 +111,53 @@ CMainDlg::~CMainDlg()
     try
     {
         // Saving class to the config file
-        _savecfg(*this, g_szCfgFileName);
+        _savecfg( *this, g_szCfgFileName );
     }
-    catch (...)
+    catch ( ... )
     {
-        QMessageBox::warning(this, "PROOFAgent Console",
-                             "Can't save configuration to \
-                             \"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\"" );
+        QMessageBox::warning( this, "PROOFAgent Console",
+                              "Can't save configuration to \
+                              \"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\"" );
     }
 }
 
 void CMainDlg::createIcons()
 {
-    QListWidgetItem *configButton = new QListWidgetItem( m_ui.contentsWidget );
-    configButton->setIcon(QIcon(":/images/server.png"));
-    configButton->setText(tr("Server"));
-    configButton->setTextAlignment(Qt::AlignHCenter);
-    configButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    QListWidgetItem *serverButton = new QListWidgetItem( m_ui.contentsWidget );
+    serverButton->setIcon( QIcon( ":/images/server.png" ) );
+    serverButton->setText( tr( "Server" ) );
+    serverButton->setTextAlignment( Qt::AlignHCenter );
+    serverButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
-    QListWidgetItem *updateButton = new QListWidgetItem( m_ui.contentsWidget );
-    updateButton->setIcon(QIcon(":/images/grid.png"));
-    updateButton->setText(tr("Grid"));
-    updateButton->setTextAlignment(Qt::AlignHCenter);
-    updateButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    QListWidgetItem *gridButton = new QListWidgetItem( m_ui.contentsWidget );
+    gridButton->setIcon( QIcon( ":/images/grid.png" ) );
+    gridButton->setText( tr( "Grid" ) );
+    gridButton->setTextAlignment( Qt::AlignHCenter );
+    gridButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
-    QListWidgetItem *queryButton = new QListWidgetItem( m_ui.contentsWidget );
-    queryButton->setIcon(QIcon(":/images/workers.png"));
-    queryButton->setText(tr("Workers"));
-    queryButton->setTextAlignment(Qt::AlignHCenter);
-    queryButton->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+    QListWidgetItem *workersButton = new QListWidgetItem( m_ui.contentsWidget );
+    workersButton->setIcon( QIcon( ":/images/workers.png" ) );
+    workersButton->setText( tr( "Workers" ) );
+    workersButton->setTextAlignment( Qt::AlignHCenter );
+    workersButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+
+    // TODO: Make a new icon for Preferences page
+    QListWidgetItem *preferencesButton = new QListWidgetItem( m_ui.contentsWidget );
+    preferencesButton->setIcon( QIcon( ":/images/workers.png" ) );
+    preferencesButton->setText( tr( "Preferences" ) );
+    preferencesButton->setTextAlignment( Qt::AlignHCenter );
+    preferencesButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
     connect( m_ui.contentsWidget,
-             SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
-             this, SLOT(changePage(QListWidgetItem *, QListWidgetItem*)));
+             SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
+             this, SLOT( changePage( QListWidgetItem *, QListWidgetItem* ) ) );
 }
 
-void CMainDlg::changePage(QListWidgetItem *_Current, QListWidgetItem *_Previous)
+void CMainDlg::changePage( QListWidgetItem *_Current, QListWidgetItem *_Previous )
 {
     if ( !_Current )
         _Current = _Previous;
 
-    m_ui.pagesWidget->setCurrentIndex( m_ui.contentsWidget->row(_Current) );
+    m_ui.pagesWidget->setCurrentIndex( m_ui.contentsWidget->row( _Current ) );
     m_CurrentPage = m_ui.pagesWidget->currentIndex();
 }

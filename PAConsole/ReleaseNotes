@@ -9,7 +9,11 @@
   In this case users can add more workers to a gLitePROOF cluster on the fly and keep tracking.
   Users also can remove job from monitoring using context menu of jobs list window.
   Remove is not supported for children jobs, only single jobs or parents can be removed from the monitoring. [Track Ticket #71]
-- Optimizations in jobs' monitoring, which led to reductions of calls to gLite LB. 
+- Optimizations in jobs' monitoring, which led to reductions of calls to gLite LB.
+- Added a Preferences page. Users now are able to adjust PAConsole settings. Currently the following settings are available:
+  * Job Status update interval
+  * Workers update interval
+  more will come... [Track Ticket #73] 
 
 ********************* Release 1.0.4 2008-06-13 ************************
 

@@ -25,7 +25,6 @@
 // PAConsole
 #include "WorkersDlg.h"
 
-const size_t g_TimeoutCheckPROOFCONF = 5000; // in milliseconds
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 
 using namespace std;
@@ -171,12 +170,12 @@ void CWorkersDlg::on_chkShowWorkers_stateChanged(int _Stat)
 {
     m_bMonitorWorkers = (_Stat == Qt::Checked);
     if (m_Timer->isActive() && m_bMonitorWorkers)
-        return ; // TODO: need assert here
+        return ; // TODO: need an assert here
 
     m_ui.lstClientsList->setEnabled(m_bMonitorWorkers);
 
     if (!m_bMonitorWorkers)
         m_Timer->stop();
     else
-        m_Timer->start(g_TimeoutCheckPROOFCONF);
+        m_Timer->start(m_WorkersUpdInterval);
 }

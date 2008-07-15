@@ -52,6 +52,11 @@ class CGridDlg: public QWidget
         void setProgress( int _Val );
         void on_btnBrowseJDL_clicked();
         void on_edtJDLFileName_textChanged( const QString & /*_text*/ );
+        void restartUpdTimer(int _JobStatusUpdInterval)
+        {
+            // start or restart the timer
+            m_Timer->start( _JobStatusUpdInterval * 1000 );
+        }
 
     private slots:
         void copyJobID() const;
@@ -68,6 +73,7 @@ class CGridDlg: public QWidget
         void UpdateEndpoints();
         void UpdateAfterLoad();
 
+        // serialization
         template<class Archive>
         void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
