@@ -26,7 +26,7 @@
 #include "LogInfoDlg.h"
 
 
-const size_t g_TimeoutRefreshrate = 15*1000; // in milliseconds
+const size_t g_TimeoutRefreshrate = 15 * 1000; // in milliseconds
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
 
@@ -47,7 +47,8 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
 }
 
 CGridDlg::CGridDlg( QWidget *parent ) :
-        QWidget( parent ), m_JobSubmitter( this )
+        QWidget( parent ),
+        m_JobSubmitter( this )
 {
     m_ui.setupUi( this );
 

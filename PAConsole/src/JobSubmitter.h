@@ -40,8 +40,7 @@ class CJobSubmitter: public QThread
         typedef std::set<std::string> jobslist_t;
 
     public:
-        CJobSubmitter( QObject *parent ):
-                QThread( parent )
+        CJobSubmitter( QObject *parent ): QThread( parent )
         {
             GAW::Instance().Init();
         }
@@ -104,6 +103,8 @@ class CJobSubmitter: public QThread
                 std::string sLastJobID;
                 GAW::Instance().GetJobManager().JobSubmit( m_JDLfilename.c_str(), &sLastJobID );
 
+                emit changeProgress( 90 );
+
                 m_mutex.lock();
                 m_JobsList.insert( sLastJobID );
                 m_mutex.unlock();
@@ -121,7 +122,7 @@ class CJobSubmitter: public QThread
             emit changeProgress( 100 );
         }
 
-        int getNumberOfJobs( ) const
+        int getNumberOfJobs() const
         {
             if ( m_JobsList.empty() )
                 return 0;
@@ -142,10 +143,11 @@ class CJobSubmitter: public QThread
                 return ( num );
             }
             catch ( ... )
-            {
-            }
+                {}
             return 0;
         }
+
+        // serialization
         template<class Archive>
         void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {

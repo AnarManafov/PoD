@@ -20,7 +20,8 @@
 
 class CTreeItemContainer
 {
-        typedef std::map<std::string, QTreeWidgetItem *> container_t;
+        typedef std::pair<std::string, QTreeWidgetItem *> Item_t;
+        typedef std::vector<Item_t> container_t;
 
     public:
         void update( const CJobSubmitter::jobslist_t &_Jobs, QTreeWidget *_Tree )
@@ -34,10 +35,12 @@ class CTreeItemContainer
     private:
         void _Reset( const CJobSubmitter::jobslist_t &_Jobs, QTreeWidget *_Tree )
         {
+            // Recreating the tree
             m_Jobs = _Jobs;
             m_Tree = _Tree;
             m_Tree->clear();
             m_ParentJobItem.clear();
+            m_ParentJobItem.reserve( m_Jobs.size() );
             m_Children.clear();
 
             CJobSubmitter::jobslist_t::const_iterator iter = m_Jobs.begin();
@@ -45,21 +48,18 @@ class CTreeItemContainer
             for ( ; iter != iter_end; ++iter )
             {
                 QTreeWidgetItem *ParentJobItem = new QTreeWidgetItem( _Tree );
-                m_ParentJobItem.insert( container_t::value_type( *iter, ParentJobItem ) );
+                m_ParentJobItem.push_back( container_t::value_type( *iter, ParentJobItem ) );
                 ParentJobItem->setText( 0, iter->c_str() );
+                ParentJobItem->setText( 1, getJobStatus( *iter ).c_str() );
                 try
                 {
-                    ParentJobItem->setText( 1, getJobStatus( *iter ).c_str() );
-
                     MiscCommon::StringVector_t jobs;
                     MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
                     std::for_each( jobs.begin(), jobs.end(),
                                    boost::bind( boost::mem_fn( &CTreeItemContainer::addChildItem ), this, _1, ParentJobItem ) );
-
                 }
                 catch ( const std::exception &_e )
-                {
-                }
+                    {}
             }
 
             _Tree->setColumnWidth( 0, 260 );
@@ -68,33 +68,33 @@ class CTreeItemContainer
 
         void _Update()
         {
-            try
-            {
-                // loop over the parents
-                for_each( m_ParentJobItem.begin(), m_ParentJobItem.end(),
-                          boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
-                // loop over the children if any
-                for_each( m_Children.begin(), m_Children.end(),
-                          boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
-            }
-            catch ( const std::exception &_e )
-            {
-            }
+            // Updating the tree - statuses of items
+            // loop over the parents
+            for_each( m_ParentJobItem.begin(), m_ParentJobItem.end(),
+                      boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
+            // loop over the children if any
+            for_each( m_Children.begin(), m_Children.end(),
+                      boost::bind( boost::mem_fn( &CTreeItemContainer::updateItem ), this, _1 ) );
         }
 
         void updateItem( container_t::value_type &_Item )
         {
             if ( !_Item.second )
                 return;
-            _Item.second->setText( 1, getJobStatus( _Item.first ).c_str() );
+            try
+            {
+                _Item.second->setText( 1, getJobStatus( _Item.first ).c_str() );
+            }
+            catch ( const std::exception &_e )
+                {}
         }
 
-        void addChildItem( std::string _JobID, QTreeWidgetItem *_parent )
+        void addChildItem( const std::string &_JobID, QTreeWidgetItem *_parent )
         {
             QTreeWidgetItem *item( new QTreeWidgetItem( _parent ) );
             item->setText( 0, _JobID.c_str() );
             item->setText( 1, getJobStatus( _JobID ).c_str() );
-            m_Children.insert( container_t::value_type( _JobID, item ) );
+            m_Children.push_back( container_t::value_type( _JobID, item ) );
         }
 
         std::string getJobStatus( const std::string &_JobID )
