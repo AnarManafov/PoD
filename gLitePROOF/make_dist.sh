@@ -10,7 +10,7 @@
 ##
 ##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
-VERSION=2.0.5
+VERSION=2.0.6
 
 PKG_NAME=gLitePROOFpackage
 
