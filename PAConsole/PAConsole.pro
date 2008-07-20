@@ -49,4 +49,5 @@ DISTFILES += build.sh \
     res/images/grid.png \
     res/images/server.png \
     res/images/workers.png \
-    ReleaseNotes
+    ReleaseNotes \
+    res/images/preferences.png

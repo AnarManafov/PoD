@@ -1,7 +1,8 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-   <file>images/server.png</file>
-   <file>images/grid.png</file>
-   <file>images/workers.png</file>
-</qresource>
+<RCC>
+    <qresource prefix="/" >
+        <file>images/grid.png</file>
+        <file>images/preferences.png</file>
+        <file>images/server.png</file>
+        <file>images/workers.png</file>
+    </qresource>
 </RCC>
