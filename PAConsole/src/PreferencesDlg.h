@@ -50,11 +50,13 @@ class CPreferencesDlg: public QWidget
     private slots:
         void _changedJobStatusUpdInterval( int _val )
         {
-            emit changedJobStatusUpdInterval(_val);
+            m_JobStatusUpdInterval = _val;
+            emit changedJobStatusUpdInterval( _val );
         }
         void _changedWorkersUpdInterval( int _val )
         {
-            emit changedWorkersUpdInterval(_val);
+            m_WorkersUpdInterval = _val;
+            emit changedWorkersUpdInterval( _val );
         }
 
     private:

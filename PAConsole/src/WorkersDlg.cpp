@@ -30,31 +30,31 @@ const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml
 using namespace std;
 using namespace MiscCommon;
 
-CWorkersDlg::CWorkersDlg(QWidget *parent):
-        QWidget(parent),
-        m_bMonitorWorkers(true)
+CWorkersDlg::CWorkersDlg( QWidget *parent ):
+        QWidget( parent ),
+        m_bMonitorWorkers( true )
 {
-    m_ui.setupUi(this);
+    m_ui.setupUi( this );
 
-    getPROOFCfg(&m_CfgFileName);
-    smart_path(&m_CfgFileName);
-    if (m_CfgFileName.empty())
+    getPROOFCfg( &m_CfgFileName );
+    smart_path( &m_CfgFileName );
+    if ( m_CfgFileName.empty() )
     {
-        QMessageBox::critical(this, tr("PROOFAgent Console"), tr("An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml"));
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml" ) );
         //return ;
     }
 
-    m_Timer = new QTimer(this);
-    connect(m_Timer, SIGNAL(timeout()), this, SLOT(update()));
+    m_Timer = new QTimer( this );
+    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update() ) );
 
-    on_chkShowWorkers_stateChanged(m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked);
+    on_chkShowWorkers_stateChanged( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
 
-    setActiveWorkers(0);
+    setActiveWorkers( 0 );
 }
 
 CWorkersDlg::~CWorkersDlg()
 {
-    if (m_Timer)
+    if ( m_Timer )
     {
         m_Timer->stop();
         delete m_Timer;
@@ -63,21 +63,21 @@ CWorkersDlg::~CWorkersDlg()
 
 /// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)
 // TODO: Revise method and remove hard-coded reference to proofagent.cfg.xml
-void CWorkersDlg::getPROOFCfg(string *_FileName)
+void CWorkersDlg::getPROOFCfg( string *_FileName )
 {
-    if (!_FileName)
+    if ( !_FileName )
         return ;
 
-    string cfg(g_szPROOF_CFG);
-    smart_path(&cfg);
+    string cfg( g_szPROOF_CFG );
+    smart_path( &cfg );
 
-    QFile file(cfg.c_str());
-    if (!file.open(QFile::ReadOnly | QFile::Text))
+    QFile file( cfg.c_str() );
+    if ( !file.open( QFile::ReadOnly | QFile::Text ) )
     {
-        QMessageBox::warning(this, tr("PROOFAgent Console"),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(cfg.c_str())
-                             .arg(file.errorString()));
+        QMessageBox::warning( this, tr( "PROOFAgent Console" ),
+                              tr( "Cannot read file %1:\n%2." )
+                              .arg( cfg.c_str() )
+                              .arg( file.errorString() ) );
         return ;
     }
 
@@ -86,42 +86,42 @@ void CWorkersDlg::getPROOFCfg(string *_FileName)
     int errorLine;
     int errorColumn;
 
-    if (!domDocument.setContent(&file, true, &errorStr, &errorLine, &errorColumn))
+    if ( !domDocument.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-        QMessageBox::information(window(), tr("PROOFAgent Console"),
-                                 tr("Parse error at line %1, column %2:\n%3")
-                                 .arg(errorLine)
-                                 .arg(errorColumn)
-                                 .arg(errorStr));
+        QMessageBox::information( window(), tr( "PROOFAgent Console" ),
+                                  tr( "Parse error at line %1, column %2:\n%3" )
+                                  .arg( errorLine )
+                                  .arg( errorColumn )
+                                  .arg( errorStr ) );
         return ;
     }
 
-    QDomNodeList instance = domDocument.elementsByTagName("instance");
-    if (instance.isEmpty())
+    QDomNodeList instance = domDocument.elementsByTagName( "instance" );
+    if ( instance.isEmpty() )
         return; // TODO: msg me!
 
     QDomNode server;
-    for (int i = 0; i < instance.count(); ++i)
+    for ( int i = 0; i < instance.count(); ++i )
     {
         const QDomNode name(
-            instance.item(i).attributes().namedItem("name"));
-        if (name.isNull())
+            instance.item( i ).attributes().namedItem( "name" ) );
+        if ( name.isNull() )
             continue;
         // TODO: We look exactly for "server" instance!
         // Change it. Move instance name to the PAConsole settings.
-        if (name.nodeValue() == "server")
+        if ( name.nodeValue() == "server" )
         {
-            server = instance.item(i);
+            server = instance.item( i );
             break;
         }
     }
 
-    QDomNode config = server.namedItem("config");
-    if (config.isNull())
+    QDomNode config = server.namedItem( "config" );
+    if ( config.isNull() )
         return ; // TODO: Msg me!
 
-    QDomNode proof_cfg = config.namedItem(tr("proof_cfg_path")).firstChild();
-    if (proof_cfg.isNull())
+    QDomNode proof_cfg = config.namedItem( tr( "proof_cfg_path" ) ).firstChild();
+    if ( proof_cfg.isNull() )
         return ; // TODO: Msg me!
 
     *_FileName = proof_cfg.nodeValue().toAscii().data();
@@ -130,35 +130,38 @@ void CWorkersDlg::getPROOFCfg(string *_FileName)
 int CWorkersDlg::getWorkersFromPROOFCfg()
 {
     // Read proof.conf and update Listbox
-    ifstream f(m_CfgFileName.c_str());
-    if (!f.is_open())
+    ifstream f( m_CfgFileName.c_str() );
+    if ( !f.is_open() )
+    {
+        m_ui.lstClientsList->clear();
         return 0;
+    }
 
     StringVector_t vec;
 
-    copy(custom_istream_iterator<string>(f),
-         custom_istream_iterator<string>(),
-         back_inserter(vec));
+    copy( custom_istream_iterator<string>( f ),
+          custom_istream_iterator<string>(),
+          back_inserter( vec ) );
 
     const int cur_sel = m_ui.lstClientsList->currentRow();
     m_ui.lstClientsList->clear();
 
     // Reading only comment blocks of proof.conf
-    const char chCmntSign('#');
-    StringVector_t::iterator iter = find_if(vec.begin(), vec.end(),
-                                            SFindComment<string>(chCmntSign));
+    const char chCmntSign( '#' );
+    StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
+                                             SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
-    while (iter != iter_end)
+    while ( iter != iter_end )
     {
-        trim_left<string>(&*iter, chCmntSign);
-        m_ui.lstClientsList->addItem(iter->c_str());
-        iter = find_if(++iter, vec.end(),
-                       SFindComment<string>(chCmntSign));
+        trim_left<string>( &*iter, chCmntSign );
+        m_ui.lstClientsList->addItem( iter->c_str() );
+        iter = find_if( ++iter, vec.end(),
+                        SFindComment<string>( chCmntSign ) );
     }
-    if (m_ui.lstClientsList->count() >= cur_sel)
-        m_ui.lstClientsList->setCurrentRow(cur_sel);
+    if ( m_ui.lstClientsList->count() >= cur_sel )
+        m_ui.lstClientsList->setCurrentRow( cur_sel );
 
-    return (m_ui.lstClientsList->count() - 1);
+    return ( m_ui.lstClientsList->count() - 1 );
 }
 
 void CWorkersDlg::update()
@@ -166,16 +169,16 @@ void CWorkersDlg::update()
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 
-void CWorkersDlg::on_chkShowWorkers_stateChanged(int _Stat)
+void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
 {
-    m_bMonitorWorkers = (_Stat == Qt::Checked);
-    if (m_Timer->isActive() && m_bMonitorWorkers)
+    m_bMonitorWorkers = ( _Stat == Qt::Checked );
+    if ( m_Timer->isActive() && m_bMonitorWorkers )
         return ; // TODO: need an assert here
 
-    m_ui.lstClientsList->setEnabled(m_bMonitorWorkers);
+    m_ui.lstClientsList->setEnabled( m_bMonitorWorkers );
 
-    if (!m_bMonitorWorkers)
+    if ( !m_bMonitorWorkers )
         m_Timer->stop();
     else
-        m_Timer->start(m_WorkersUpdInterval);
+        m_Timer->start( m_WorkersUpdInterval );
 }
