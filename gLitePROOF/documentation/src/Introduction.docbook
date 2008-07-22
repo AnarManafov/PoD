@@ -12,12 +12,12 @@ Introduction
       <title>gLitePROOF</title>
     	<para>
     	<application>gLitePROOF</application> – a gLite PROOF package. It is a number of utilities and configuration files
-    	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed data analysis
-    	on the gLite Grid.
+    	developed at GSI (Darmstadt, Germany) in terms of the D-Grid project and aims to implement a PROOF distributed
+    	data analysis on the gLite Grid.
     	</para>
     	<para>
     	gLitePROOF uses <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/GAW">glite-api-wrapper library</ulink>
-    	(<acronym>GAW</acronym>) to perform gLite job submission.
+    	(<acronym>GAW</acronym>) to perform gLite job submission and other Grid-related procedures.
     	</para>
     	<para>
     	<application>gLitePROOF</application> consists of the following main components:
@@ -35,7 +35,7 @@ Introduction
     			<para>
     			<guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
     			to simplify the usage of PROOFAgent and gLitePROOF configuration files. PAConsole uses GAW to
-    			perform gLite job submissions. Users can control jobs directly using ROOT and RGLite plug-in
+    			perform Grid-related procedures. Users can control jobs directly using ROOT and RGLite plug-in
     			instead of using PAConsole.
     			</para>
   			</listitem>

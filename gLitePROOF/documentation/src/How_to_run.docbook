@@ -46,7 +46,7 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        In oder to start gLitePROOF services the <guibutton>Start</guibutton> button should be pressed. To stop gLitePROOF
+        Klick on the <guibutton>Start</guibutton> button in oder to start gLitePROOF services. To stop gLitePROOF
         the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
         <guibutton>Status</guibutton> button.
         </para>
@@ -94,15 +94,16 @@ How to run
         </textobject>
         </mediaobject></screenshot>
         </figure></para>     
-      To submit workers users have to specify a JDL file (the default <filename>gLitePROOF_FZK.jdl</filename> could be used
-      or a custom one). WMProxy endpoint should be selected. If PAConsole showes no Endpoints, that would probably mean you
+      To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
+      or a custom one). A WMProxy endpoint should be selected. If PAConsole showes no Endpoints, that would probably mean you
       don't have any predefined endpoints on your gLite UI and gLitePROOF will use the one which is defined in the GAW
       configuration file. If several endpoints found, than you can chose which one GAW should use to submit gLitePROOF jobs.
+		PAConsole uses an automatic endpoint recognition system provided by GAW.      
       At the last users may want to specify a number of workers they desire to use. gLitePROOF uses a parametric job submission,
       which means that only one job will be send to WMS, but there it will be spread according to defined number of
       workers.
         <para><figure float="0" id="PAConsole_Grid1">
-        <title>PAConsole: Submitting 3 workers</title>
+        <title>PAConsole: Submitting 5 workers</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
@@ -116,7 +117,35 @@ How to run
         A current status of the last submitted jobs is dynamically shown by PAConsole, which could be seen
         on the <xref linkend="PAConsole_Grid1"/>.
         
-        <para><figure float="0" id="PAConsole_Grid2">
+        <para>
+        PAConsole is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>). Every newly submitted job will be added to monitoring
+        and kept there until removed via
+        <menuchoice>
+		  <shortcut><keycombo><keysym>Ctrl-R</keysym></keycombo></shortcut>
+		  <guimenu>Context Menu</guimenu>
+	     <guimenuitem>Remove Job</guimenuitem>
+	     </menuchoice>.
+        It is useful in case when user wants to add more workers on the fly. The job will be submitted with the currently
+        selected jdl file, that means users can submit several jobs with different jdl files. It is useful when user wants
+        to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
+        </para>
+        <para><figure float="0" id="PAConsole_Grid3">
+        <title>PAConsole: Monitoring of several jobs</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>        
+        
+        <para>
+        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
+        get output sandbox of the selected job, get logging information (see <xref linkend="PAConsole_LogInfo"/>),
+        remove a job from the monitoring or cancel it.
+        <figure float="0" id="PAConsole_Grid2">
         <title>PAConsole: Context menu</title>
         <screenshot><mediaobject>
         <imageobject>
@@ -127,15 +156,25 @@ How to run
         </textobject>
         </mediaobject></screenshot>
         </figure></para>
-        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
-        get output sandbox of the selected job or cancel it.
+        
+        <figure float="0" id="PAConsole_LogInfo">
+        <title>PAConsole: Logging Information</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure>
        </para>
      </sect1>            
          
     <sect1 id="PROOF_workers">
       <title>PROOF workers</title>
       <para>
-       As soon as a single job arrives gLite WN, it tries to connect to gLitePROOF server to transfer information
+       As soon as a single job reaches gLite WN, it tries to connect to gLitePROOF server to transfer information
        about itself and environment of WN. When negotiations are done and gLitePROOF server excepts WNs, it became a normal
        PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
        (see the <xref linkend="PAConsole_Workers"/>).        
@@ -152,7 +191,7 @@ How to run
         </figure></para>
         It is not required to wait until all requested workers will be connected. Users could start analysis after
         reasonable number of workers are online, even after the first connected worker one could start the analysis.
-        When other workers arrive, the root (proof) session must be restarted in order to reconnect to the newly
+        When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
         arrived workers.                 
        </para>
        <tip><para>
@@ -162,7 +201,28 @@ How to run
        until the Grid queue time is over.
        </para></tip>
        </sect1>
-      
+       
+    <sect1 id="PAConsole_preferences">
+      <title>Preferences</title>
+      <para>
+      	
+        Using a preferences page (see <xref linkend="PAConsole_Preferences"/>) users are able to change updated interval of the Grid job monitoring and the available
+        workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
+        otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
+        <para><figure float="0" id="PAConsole_Preferences">
+        <title>PAConsole: Preferences</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_Preferences.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+      </para>  
+    </sect1>
+             
     <sect1 id="Analysis">
       <title>Analysis</title>
       <para>

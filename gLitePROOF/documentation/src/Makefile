@@ -28,7 +28,10 @@ IMGS= \
 	PAConsole_Grid0.png\
 	PAConsole_Grid1.png\
 	PAConsole_Grid2.png\
-	PAConsole_Workers.png
+	PAConsole_Grid3.png\
+	PAConsole_Workers.png\
+	PAConsole_Preferences.png\
+	PAConsole_LogInfo.png
 
 IMG_DIR = img
 
