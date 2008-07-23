@@ -71,7 +71,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         // Checking whether signal has arrived
         if ( graceful_quit )
         {
-            InfoLog( erOK, "STOP signal received." );
+            InfoLog( erOK, "STOP signal received on PF worker thread." );
             return ;
         }
 
@@ -79,7 +79,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         {
             if ( !ForwardBuf( _SrvSocket, _CltSocket ) )
             {
-                InfoLog( erOK, "DISCONNECT has been detected." );
+                InfoLog( erOK, "DISCONNECT has been detected on PF worker thread." );
                 return ;
             }
         }
@@ -106,12 +106,13 @@ ERRORCODE CPacketForwarder::Start( bool _ClientMode )
 void CPacketForwarder::SpawnClientMode()
 {
     m_ClientSocket.set_nonblock();
+    // Waiting a server end for data
     while (true)
     {
         // Checking whether signal has arrived
         if ( graceful_quit )
         {
-            InfoLog( erOK, "STOP signal received." );
+            InfoLog( erOK, "STOP signal received on the Client mode." );
             return ;
         }
 
@@ -126,13 +127,14 @@ void CPacketForwarder::SpawnClientMode()
             return ;
         }
     }
+    // Connecting to the local client (a proof slave)
     CSocketClient proof_client;
     proof_client.Connect( m_nPort, "127.0.0.1" );
 
     // Checking whether signal has arrived
     if ( graceful_quit )
     {
-        InfoLog( erOK, "STOP signal received." );
+        InfoLog( erOK, "STOP signal received on the Client mode." );
         return ;
     }
     m_ServerSocket = proof_client.GetSocket().detach();
@@ -153,6 +155,7 @@ void CPacketForwarder::SpawnServerMode()
 {
     while ( true )
     {
+        // Listening for PROOF master connections
         CSocketServer server;
         server.Bind( m_nPort );
         server.Listen( 1 );
@@ -161,12 +164,13 @@ void CPacketForwarder::SpawnServerMode()
         // Checking whether signal has arrived
         if ( graceful_quit )
         {
-            InfoLog( erOK, "STOP signal received." );
+            InfoLog( erOK, "STOP signal received on the Server mode." );
             return ;
         }
 
         if ( server.GetSocket().is_read_ready( 10 ) )
         {
+            // A PROOF master connection
             m_ServerSocket = server.Accept();
 
             // executing PF threads
