@@ -78,6 +78,7 @@ void CServerDlg::on_btnStatusServer_clicked()
     stringstream ss;
     ss
     << si.GetXROOTDInfo() << "\n"
+    << "-----------------------\n"
     << si.GetPAInfo() << "\n";
 
     m_ui.edtServerInfo->setText( QString( ss.str().c_str() ) );

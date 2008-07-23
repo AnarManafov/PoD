@@ -111,10 +111,11 @@ void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
     stringstream ss;
     while ( getline( &line, &len, f ) != -1 )
     {
-        ss << line << "\n";
+        ss << line;
     }
     if ( line )
         free( line );
     pclose( f );
+    ss << '\n';
     *_Ver = ss.str();
 }
