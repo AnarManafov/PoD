@@ -30,6 +30,7 @@
 #include "SysHelper.h"
 #include "CustomIterator.h"
 #include "PARes.h"
+#include "Process.h"
 // PROOFAgent
 #include "PacketForwarder.h"
 #include "PROOFCfgImpl.h"
@@ -55,15 +56,15 @@ namespace PROOFAgent
             {
                 // Registering signals handlers
                 struct sigaction sa;
-                ::sigemptyset (&sa.sa_mask);
+                ::sigemptyset( &sa.sa_mask );
                 sa.sa_flags = 0;
 
                 // Register the handler for SIGINT.
                 sa.sa_handler = signal_handler;
-                ::sigaction (SIGINT, &sa, 0);
+                ::sigaction( SIGINT, &sa, 0 );
                 // Register the handler for SIGTERM
                 sa.sa_handler = signal_handler;
-                ::sigaction (SIGTERM, &sa, 0);
+                ::sigaction( SIGTERM, &sa, 0 );
             }
             virtual ~CAgentBase()
             {
@@ -85,6 +86,20 @@ namespace PROOFAgent
                 return MiscCommon::erOK;
             }
             virtual EAgentMode_t GetMode() const = 0;
+            bool IsPROOFReady( unsigned short _Port ) const
+            {
+                // #1  - Check whether xrootd process exists
+                pid_t pid = MiscCommon::getprocbyname( "xrootd" );
+                if ( !MiscCommon::IsProcessExist( pid ) )
+                    return false;
+                // #2 - Check whether PROOF port is in use
+                if ( 0 == _Port )
+                    return true;
+                if( 0 != MiscCommon::INet::get_free_port( _Port ) )
+                    return false; // PROOF port is not in use, that means we can't connect to it
+                // TODO: Implement more checks of xrootd/proof here
+                return true;
+            }
 
         protected:
             virtual void ThreadWorker() = 0;
@@ -128,9 +143,9 @@ namespace PROOFAgent
                 m_nServerPort( 0 ),
                 m_nLocalClientPort( 0 )
         {}
-        unsigned short m_nServerPort;
-        std::string m_strServerHost;
-        unsigned short m_nLocalClientPort;
+        unsigned short m_nServerPort;       //!< PROOFAgent's server port
+        std::string m_strServerHost;        //!< PROOFAgent's server host
+        unsigned short m_nLocalClientPort;  //!< PROOF's local port (on worker nodes)
     }
     AgentClientData_t;
     inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
@@ -158,16 +173,16 @@ namespace PROOFAgent
             virtual ~CAgentServer()
             {}
             REGISTER_LOG_MODULE( "AgentServer" )
-            DECLARE_XMLPERSIST_IMPL(CAgentServer)
+            DECLARE_XMLPERSIST_IMPL( CAgentServer )
 
         public:
-            BEGIN_READ_XML_NODE(CAgentServer, "agent_server")
+            BEGIN_READ_XML_NODE( CAgentServer, "agent_server" )
             READ_NODE_VALUE( "listen_port", m_Data.m_nPort )
             READ_NODE_VALUE( "local_client_port_min", m_Data.m_nLocalClientPortMin )
             READ_NODE_VALUE( "local_client_port_max", m_Data.m_nLocalClientPortMax )
             END_READ_XML_NODE
 
-            BEGIN_WRITE_XML_CFG(CAgentServer)
+            BEGIN_WRITE_XML_CFG( CAgentServer )
             END_WRITE_XML_CFG
 
             virtual EAgentMode_t GetMode() const
@@ -175,15 +190,15 @@ namespace PROOFAgent
                 return Server;
             }
 
-            void AddPF( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort, const std::string &_sPROOFCfgString)
+            void AddPF( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort, const std::string &_sPROOFCfgString )
             {
-                boost::mutex::scoped_lock lock ( m_PFList_mutex );
-                m_PFList.add( _ClientSocket, _nNewLocalPort, _sPROOFCfgString);
+                boost::mutex::scoped_lock lock( m_PFList_mutex );
+                m_PFList.add( _ClientSocket, _nNewLocalPort, _sPROOFCfgString );
             }
 
             void CleanDisconnectsPF( const std::string &_sPROOFCfg )
             {
-                m_PFList.clean_disconnects(_sPROOFCfg);
+                m_PFList.clean_disconnects( _sPROOFCfg );
             }
 
         protected:
@@ -214,16 +229,16 @@ namespace PROOFAgent
             virtual ~CAgentClient()
             {}
             REGISTER_LOG_MODULE( "AgentClient" )
-            DECLARE_XMLPERSIST_IMPL(CAgentClient)
+            DECLARE_XMLPERSIST_IMPL( CAgentClient )
 
         public:
-            BEGIN_READ_XML_NODE(CAgentClient, "agent_client")
+            BEGIN_READ_XML_NODE( CAgentClient, "agent_client" )
             READ_NODE_VALUE( "server_port", m_Data.m_nServerPort )
             READ_NODE_VALUE( "server_addr", m_Data.m_strServerHost )
             READ_NODE_VALUE( "local_proofd_port", m_Data.m_nLocalClientPort )
             END_READ_XML_NODE
 
-            BEGIN_WRITE_XML_CFG(CAgentClient)
+            BEGIN_WRITE_XML_CFG( CAgentClient )
             END_WRITE_XML_CFG
 
             virtual EAgentMode_t GetMode() const

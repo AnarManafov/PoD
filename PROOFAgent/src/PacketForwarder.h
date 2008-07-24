@@ -28,7 +28,7 @@ namespace PROOFAgent
     /**
      *
      * @brief The CPacketForwarder class, creates a proxy between client sockets and server's socket given by a port number.
-     * @brief It tries to connect by the given port number and then redirects all traffic from/to the client. 
+     * @brief It tries to connect by the given port number and then redirects all traffic from/to the client.
      *
      */
     class CPacketForwarder:
@@ -38,7 +38,8 @@ namespace PROOFAgent
         public:
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
-                    m_nPort( _nNewLocalPort )
+                    m_nPort( _nNewLocalPort ),
+                    m_Counter(0)
             {}
 
             ~CPacketForwarder()
@@ -76,7 +77,7 @@ namespace PROOFAgent
                 {
                     ss
                     << "\n"
-                    << MiscCommon::BYTEVectorHexView_t(_buf)
+                    << MiscCommon::BYTEVectorHexView_t( _buf )
                     << "\n";
                 }
                 DebugLog( MiscCommon::erOK, ss.str() );
@@ -90,6 +91,9 @@ namespace PROOFAgent
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_srv;
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_serversocket;
             boost::mutex m_mutex;
+            // TODO: remove this member whenever a boost::thread::joinable() will be accessible (gLite UI 3.1 it is not)
+            // This is a workaround in order to properly close sockets in PF in server mode.
+            unsigned short m_Counter;
     };
 
 }

@@ -40,15 +40,12 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
 
     // DISCONNECT has been detected
-    if ( !_Output->is_valid() )
-    {
-        _Input->close();
+    if ( !_Output->is_valid() || !_Input->is_valid() )
         return false;
-    }
 
     if ( _Input->is_read_ready( g_CHECK_INTERVAL ) )
     {
-        boost::mutex::scoped_lock lock(m_mutex);
+        boost::mutex::scoped_lock lock( m_mutex );
         BYTEVector_t buf( g_BUF_SIZE );
 
         *_Input >> &buf;
@@ -72,7 +69,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         if ( graceful_quit )
         {
             InfoLog( erOK, "STOP signal received on PF worker thread." );
-            return ;
+            break;
         }
 
         try
@@ -80,14 +77,31 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             if ( !ForwardBuf( _SrvSocket, _CltSocket ) )
             {
                 InfoLog( erOK, "DISCONNECT has been detected on PF worker thread." );
-                return ;
+                break;
             }
         }
         catch ( exception & e )
         {
             FaultLog( erError, e.what() );
-            return ;
+            break;
         }
+    }
+    // TODO: Log me!
+
+    // TODO: see comments of the m_Counter member in the header file
+    {
+        boost::mutex::scoped_lock lock( m_mutex );
+        --m_Counter;
+        stringstream ss;
+        ss << "Thread counter = " << m_Counter;
+        DebugLog( erOK, ss.str() );
+    }
+    if ( m_Counter <= 0 )
+    {
+        InfoLog( erOK, "Forcing all PF sockets to be closed..." );
+        m_ClientSocket.close();
+        m_ServerSocket.close();
+        InfoLog( erOK, "All PF sockets are closed." );
     }
 }
 
@@ -95,19 +109,20 @@ ERRORCODE CPacketForwarder::Start( bool _ClientMode )
 {
     // executing PF threads
     m_thrd_serversocket = boost_hlp::Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
+                                                       boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
     //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
     if ( _ClientMode )
         m_thrd_serversocket->join();
 
     return erOK;
+    boost::thread t;
 }
 
 void CPacketForwarder::SpawnClientMode()
 {
     m_ClientSocket.set_nonblock();
     // Waiting a server end for data
-    while (true)
+    while ( true )
     {
         // Checking whether signal has arrived
         if ( graceful_quit )
@@ -143,9 +158,9 @@ void CPacketForwarder::SpawnClientMode()
 
     // executing PF threads
     m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
-                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
     m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-                                   boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+                                              boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
 
     m_thrd_clnt->join();
     m_thrd_srv->join();
@@ -175,9 +190,11 @@ void CPacketForwarder::SpawnServerMode()
 
             // executing PF threads
             m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
-                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+                                                       boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+            ++m_Counter;
             m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-                                           boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+                                                      boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+            ++m_Counter;
             break;
         }
     }

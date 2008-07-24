@@ -52,6 +52,13 @@ void CAgentServer::ThreadWorker()
         server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
         {
+            // TODO: we need to check real PROOF port here
+            if ( !IsPROOFReady( 0 ) )
+            {
+                FaultLog( erError, "Can't connect to PROOF/XRD service." );
+                graceful_quit = 1;
+            }
+
             // Checking whether signal has arrived
             if ( graceful_quit )
             {
@@ -93,7 +100,7 @@ void CAgentServer::ThreadWorker()
 
                 const int port = get_free_port( m_Data.m_nLocalClientPortMin, m_Data.m_nLocalClientPortMax );
                 if ( 0 == port )
-                    throw runtime_error("Can't find any free port from the given range.");
+                    throw runtime_error( "Can't find any free port from the given range." );
 
                 // Add a worker to PROOF cfg
                 string strRealWrkHost;
@@ -102,9 +109,9 @@ void CAgentServer::ThreadWorker()
                 AddWrk2PROOFCfg( m_sPROOFCfg, sUsrName, port, strRealWrkHost, &strPROOFCfgString );
 
                 // Spawn PortForwarder
-                Socket_t s = socket.detach();
-                AddPF( s, port, strPROOFCfgString );
+                AddPF( socket.detach(), port, strPROOFCfgString );
             }
+            // TODO: Needs to be optimized. Maybe moved to a different thread
             // cleaning all PF which are in disconnect state
             CleanDisconnectsPF( m_sPROOFCfg );
         }
@@ -125,8 +132,15 @@ void CAgentClient::ThreadWorker()
     CSocketClient client;
     try
     {
-        while (true)
+        while ( true )
         {
+            if ( !IsPROOFReady( m_Data.m_nLocalClientPort ) )
+            {
+                FaultLog( erError, "Can't connect to PROOF/XRD service." );
+                graceful_quit = 1;
+                break;
+            }
+
             DebugLog( erOK, "looking for PROOFAgent server to connect..." );
             CSocketClient client;
             client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
