@@ -21,23 +21,9 @@
 using namespace std;
 using namespace MiscCommon;
 
-struct SFindName: public binary_function< CProcList::ProcContainer_t::value_type, string, bool >
-{
-    bool operator()( CProcList::ProcContainer_t::value_type _pid, const string &_Name ) const
-    {
-        CProcStatus p;
-        p.Open( _pid );
-        return ( p.GetValue( "Name" ) == _Name );
-    }
-};
-
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
-    CProcList::ProcContainer_t pids;
-    CProcList::GetProcList( &pids );
-
-    CProcList::ProcContainer_t::const_iterator iter = find_if( pids.begin(), pids.end(), bind2nd( SFindName(), _Srv ) );
-    return ( pids.end() != iter ? *iter : 0 );
+        return getprocbyname(_Srv);
 }
 
 bool CServerInfo::IsRunning( bool _check_all ) const
