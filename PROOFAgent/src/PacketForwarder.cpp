@@ -30,6 +30,9 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 const size_t g_CHECK_INTERVAL = 2;
 const size_t g_CHECK_SERVERMSG_INTERVAL = 10;
 const size_t g_SERVER_INTERVAL = 10;
+// a regular Ethernet frame size - datagram
+// TODO: Move it to config.
+const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
 
@@ -42,15 +45,16 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     if ( _Input->is_read_ready( g_CHECK_INTERVAL ) )
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        *_Input >> &m_Buffer;
+        BYTEVector_t buf( g_BUF_SIZE );
+        *_Input >> &buf;
 
         // DISCONNECT has been detected
-        if ( !_Output->is_valid() )
+        if ( !_Output->is_valid() || !_Input->is_valid() )
             return false;
 
-        *_Output << m_Buffer;
+        *_Output << buf;
 
-        ReportPackage( *_Input, *_Output, m_Buffer );
+        ReportPackage( *_Input, *_Output, buf );
     }
     return true;
 }
@@ -151,8 +155,10 @@ void CPacketForwarder::SpawnClientMode()
     // executing PF threads
     m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
                                                boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+    ++m_Counter;
     m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+    ++m_Counter;
 
     // in the Client mode we wait for the threads
     m_thrd_clnt->join();
