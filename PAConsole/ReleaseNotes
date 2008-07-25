@@ -13,7 +13,8 @@
 - Added a Preferences page. Users now are able to adjust PAConsole settings. Currently the following settings are available:
   * Job Status update interval
   * Workers update interval
-  more will come... [Track Ticket #73] 
+  more will come... [Track Ticket #73]
+- GUI fixes
 
 ********************* Release 1.0.4 2008-06-13 ************************
 
