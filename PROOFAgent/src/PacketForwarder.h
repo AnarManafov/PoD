@@ -25,6 +25,10 @@
 
 namespace PROOFAgent
 {
+    // a regular Ethernet frame size - datagram
+    // TODO: Move it to config.
+    const unsigned int g_BUF_SIZE = 1500;
+
     /**
      *
      * @brief The CPacketForwarder class, creates a proxy between client sockets and server's socket given by a port number.
@@ -39,7 +43,8 @@ namespace PROOFAgent
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
                     m_nPort( _nNewLocalPort ),
-                    m_Counter(0)
+                    m_Counter( 0 ),
+                    m_Buffer( g_BUF_SIZE )
             {}
 
             ~CPacketForwarder()
@@ -94,6 +99,7 @@ namespace PROOFAgent
             // TODO: remove this member whenever a boost::thread::joinable() will be accessible (gLite UI 3.1 it is not)
             // This is a workaround in order to properly close sockets in PF in server mode.
             unsigned short m_Counter;
+            MiscCommon::BYTEVector_t m_Buffer;
     };
 
 }

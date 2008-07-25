@@ -34,12 +34,12 @@ using namespace PROOFAgent;
 XERCES_CPP_NAMESPACE_USE;
 
 
-void CPROOFAgent::Start() throw(exception)
+void CPROOFAgent::Start() throw( exception )
 {
     m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 
-void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(exception)
+void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( exception )
 {
     // Strategy if looking for Cfg file:
     // 1 - current working directory
@@ -57,10 +57,10 @@ void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_
 
     CFindCfgFile<string> cfg_file;
     cfg_file.SetOrder
-    (cur_dir)
-    ("$HOME/" + _xmlFileName)
-    ("$PROOFAGENT_LOCATION/etc/" + _xmlFileName)
-    ("/etc/" + _xmlFileName);
+    ( cur_dir )
+    ( "$HOME/" + _xmlFileName )
+    ( "$PROOFAGENT_LOCATION/etc/" + _xmlFileName )
+    ( "/etc/" + _xmlFileName );
 
     string xmlFileName;
     cfg_file.GetCfg( &xmlFileName );
@@ -70,7 +70,7 @@ void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_
     _ReadCfg( xmlFileName, _Instance, _bValidateXML );
 }
 
-void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(exception)
+void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( exception )
 {
     // Initializing XML parser - Xerces-C++
     try
@@ -85,7 +85,7 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
     }
 
     // Getting DOMImplementation
-    smart_XMLCh features("LS");
+    smart_XMLCh features( "LS" );
     DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation( features );
     if ( !impl )
         throw runtime_error( "Can't get DOMImplementation object." );
@@ -94,20 +94,20 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
     {
         // Getting DOMBuilder
         boost::shared_ptr<DOMBuilder> parser(
-            (dynamic_cast<DOMImplementationLS*>(impl))->createDOMBuilder(DOMImplementationLS::MODE_SYNCHRONOUS, NULL ),
-            boost::mem_fn(&DOMBuilder::release)
+            ( dynamic_cast<DOMImplementationLS*>( impl ) )->createDOMBuilder( DOMImplementationLS::MODE_SYNCHRONOUS, NULL ),
+            boost::mem_fn( &DOMBuilder::release )
         );
 
-        if ( parser->canSetFeature(XMLUni::fgDOMNamespaces, true) )
+        if ( parser->canSetFeature( XMLUni::fgDOMNamespaces, true ) )
             parser->setFeature( XMLUni::fgDOMNamespaces, true );
-        if ( parser->canSetFeature(XMLUni::fgXercesSchema, _bValidateXML) )
+        if ( parser->canSetFeature( XMLUni::fgXercesSchema, _bValidateXML ) )
             parser->setFeature( XMLUni::fgXercesSchema, _bValidateXML );
-        if ( parser->canSetFeature(XMLUni::fgXercesSchemaFullChecking, _bValidateXML) )
+        if ( parser->canSetFeature( XMLUni::fgXercesSchemaFullChecking, _bValidateXML ) )
             parser->setFeature( XMLUni::fgXercesSchemaFullChecking, _bValidateXML );
-        if ( parser->canSetFeature(XMLUni::fgDOMValidation, _bValidateXML) )
+        if ( parser->canSetFeature( XMLUni::fgDOMValidation, _bValidateXML ) )
             parser->setFeature( XMLUni::fgDOMValidation, _bValidateXML );
         // enable datatype normalization - default is off
-        if ( parser->canSetFeature(XMLUni::fgDOMDatatypeNormalization, true) )
+        if ( parser->canSetFeature( XMLUni::fgDOMDatatypeNormalization, true ) )
             parser->setFeature( XMLUni::fgDOMDatatypeNormalization, true );
 
         // Setting up the custom error handler
@@ -135,19 +135,19 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
         DOMNode *instances_node = GetSingleNodeByName_Ex( node, "instances" );
 
         // Getting all "instance" nodes
-        const DOMNodeList *list = GetNodesByName(instances_node, "instance" );
+        const DOMNodeList *list = GetNodesByName( instances_node, "instance" );
         if ( !list )
             throw( runtime_error( "can't find \"instance\" XML node." ) );
         DOMNode *instance = NULL;
         // Loopig through "instance" nodes
-        for (XMLSize_t i = 0; i < list->getLength(); ++i)
+        for ( XMLSize_t i = 0; i < list->getLength(); ++i )
         {
-            DOMNode *inst( list->item(i) );
+            DOMNode *inst( list->item( i ) );
             if ( !inst )
                 continue;
             string sNodeName;
-            get_attr_value( dynamic_cast<DOMElement*>(inst), "name", &sNodeName );
-            if (_Instance == sNodeName )
+            get_attr_value( dynamic_cast<DOMElement*>( inst ), "name", &sNodeName );
+            if ( _Instance == sNodeName )
                 instance = inst;
         }
         if ( !instance )
@@ -165,7 +165,7 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
         smart_append<string>( &m_Data.m_sLogFileDir, '/' );
 
         // Reading type of the instance
-        get_attr_value( dynamic_cast<DOMElement*>(instance), "type", &m_Data.m_sAgentMode );
+        get_attr_value( dynamic_cast<DOMElement*>( instance ), "type", &m_Data.m_sAgentMode );
         m_Data.m_AgentMode = ( m_Data.m_sAgentMode.find( "server" ) != m_Data.m_sAgentMode.npos ) ? Server : Client;
 
         smart_path( &m_Data.m_sPROOFCfg );
@@ -180,7 +180,7 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
         << ".log";
 
         CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
-        InfoLog( erOK, PACKAGE + string(" v.") + VERSION );
+        InfoLog( erOK, PACKAGE + string( " v." ) + VERSION );
 
         // Timeout Guard
         if ( 0 != m_Data.m_nTimeout )

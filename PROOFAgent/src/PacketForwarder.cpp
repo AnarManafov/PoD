@@ -26,19 +26,15 @@ using namespace PROOFAgent;
 using namespace std;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
-// a regular Ethernet frame size - datagram
-// TODO: Move it to config.
-const unsigned int g_BUF_SIZE = 1500;
-
 // a number of seconds, which is define an interval for select function
 const size_t g_CHECK_INTERVAL = 2;
+const size_t g_CHECK_SERVERMSG_INTERVAL = 10;
+const size_t g_SERVER_INTERVAL = 10;
 
 extern sig_atomic_t graceful_quit;
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 {
-    // TODO: Do we need to optimize and use an external buffer (from the higher scope)?
-
     // DISCONNECT has been detected
     if ( !_Output->is_valid() || !_Input->is_valid() )
         return false;
@@ -46,17 +42,15 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     if ( _Input->is_read_ready( g_CHECK_INTERVAL ) )
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf( g_BUF_SIZE );
-
-        *_Input >> &buf;
+        *_Input >> &m_Buffer;
 
         // DISCONNECT has been detected
-        if ( !_Input->is_valid() )
+        if ( !_Output->is_valid() )
             return false;
 
-        *_Output << buf;
+        *_Output << m_Buffer;
 
-        ReportPackage( *_Input, *_Output, buf );
+        ReportPackage( *_Input, *_Output, m_Buffer );
     }
     return true;
 }
@@ -86,8 +80,6 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             break;
         }
     }
-    // TODO: Log me!
-
     // TODO: see comments of the m_Counter member in the header file
     {
         boost::mutex::scoped_lock lock( m_mutex );
@@ -96,7 +88,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         ss << "Thread counter = " << m_Counter;
         DebugLog( erOK, ss.str() );
     }
-    if ( m_Counter <= 0 )
+    if ( m_Counter <= 0 ) // All threads are finished
     {
         InfoLog( erOK, "Forcing all PF sockets to be closed..." );
         m_ClientSocket.close();
@@ -110,18 +102,18 @@ ERRORCODE CPacketForwarder::Start( bool _ClientMode )
     // executing PF threads
     m_thrd_serversocket = boost_hlp::Thread_PTR_t( new boost::thread(
                                                        boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
-    //  Join Threads (for Client) and non-join Threads (for Server mode - server shouldn't sleep while PF is working)
+    //  Join Threads (for Client) and non-join Threads for Server mode - server shouldn't sleep while PF is working.
     if ( _ClientMode )
         m_thrd_serversocket->join();
 
     return erOK;
-    boost::thread t;
 }
 
 void CPacketForwarder::SpawnClientMode()
 {
     m_ClientSocket.set_nonblock();
-    // Waiting a server end for data
+    // Waiting a server peer for data
+    // PROOF server connects to its client (to us), not other way around.
     while ( true )
     {
         // Checking whether signal has arrived
@@ -133,8 +125,8 @@ void CPacketForwarder::SpawnClientMode()
 
         try
         {
-            if ( m_ClientSocket.is_read_ready( 10 ) )
-                break;
+            if ( m_ClientSocket.is_read_ready( g_CHECK_SERVERMSG_INTERVAL ) )
+                break; // there is something from the server arrived
         }
         catch ( exception & e )
         {
@@ -162,6 +154,7 @@ void CPacketForwarder::SpawnClientMode()
     m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
 
+    // in the Client mode we wait for the threads
     m_thrd_clnt->join();
     m_thrd_srv->join();
 }
@@ -171,6 +164,7 @@ void CPacketForwarder::SpawnServerMode()
     while ( true )
     {
         // Listening for PROOF master connections
+        // Whenever he tries to connect to its clients we will catch it and redirect it
         CSocketServer server;
         server.Bind( m_nPort );
         server.Listen( 1 );
@@ -183,7 +177,7 @@ void CPacketForwarder::SpawnServerMode()
             return ;
         }
 
-        if ( server.GetSocket().is_read_ready( 10 ) )
+        if ( server.GetSocket().is_read_ready( g_SERVER_INTERVAL ) )
         {
             // A PROOF master connection
             m_ServerSocket = server.Accept();
@@ -199,7 +193,6 @@ void CPacketForwarder::SpawnServerMode()
         }
     }
 }
-
 
 ERRORCODE CPacketForwarder::_Start( bool _ClientMode )
 {

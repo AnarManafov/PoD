@@ -21,9 +21,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-// STD
-#include <list>
-#include <functional>
 // MiscCommon
 #include "LogImp.h"
 #include "IXMLPersist.h"
@@ -95,7 +92,7 @@ namespace PROOFAgent
                 // #2 - Check whether PROOF port is in use
                 if ( 0 == _Port )
                     return true;
-                if( 0 != MiscCommon::INet::get_free_port( _Port ) )
+                if ( 0 != MiscCommon::INet::get_free_port( _Port ) )
                     return false; // PROOF port is not in use, that means we can't connect to it
                 // TODO: Implement more checks of xrootd/proof here
                 return true;

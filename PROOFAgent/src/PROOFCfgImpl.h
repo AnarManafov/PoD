@@ -40,7 +40,7 @@ namespace PROOFAgent
     template <class _T>
     struct CPROOFCfgImpl
     {
-        void CreatePROOFCfg( const std::string &_PROOFCfg) const
+        void CreatePROOFCfg( const std::string &_PROOFCfg ) const
         {
             std::ofstream f_out( _PROOFCfg.c_str() );
             // TODO: check file-errors
@@ -67,7 +67,7 @@ namespace PROOFAgent
 
             std::ofstream f_out( _PROOFCfg.c_str(), std::ios_base::out | std::ios_base::app );
             if ( !f_out.is_open() )
-                throw std::runtime_error("Can't open the PROOF configuration file: " + _PROOFCfg );
+                throw std::runtime_error( "Can't open the PROOF configuration file: " + _PROOFCfg );
 
             std::stringstream ss;
             ss << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")";
@@ -84,7 +84,7 @@ namespace PROOFAgent
             if ( !f.is_open() )
                 return;
 
-            MiscCommon::custom_istream_iterator<std::string> in_begin(f);
+            MiscCommon::custom_istream_iterator<std::string> in_begin( f );
             MiscCommon::custom_istream_iterator<std::string> in_end;
             MiscCommon::StringVector_t vec( in_begin, in_end );
 

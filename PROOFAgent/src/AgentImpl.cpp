@@ -31,6 +31,7 @@ using namespace MiscCommon::INet;
 XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
+const size_t g_READ_READY_INTERVAL = 10;
 
 sig_atomic_t graceful_quit = 0;
 
@@ -52,7 +53,7 @@ void CAgentServer::ThreadWorker()
         server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
         {
-            // TODO: we need to check real PROOF port here
+            // TODO: we need to check real PROOF port here (from cfg)
             if ( !IsPROOFReady( 0 ) )
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
@@ -66,7 +67,7 @@ void CAgentServer::ThreadWorker()
                 return ;
             }
 
-            if ( server.GetSocket().is_read_ready( 10 ) )
+            if ( server.GetSocket().is_read_ready( g_READ_READY_INTERVAL ) )
             {
                 smart_socket socket( server.Accept() );
 

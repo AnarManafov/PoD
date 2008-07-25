@@ -1,6 +1,7 @@
 ********************* Release 1.0.5 not yet released ************************
 - fixed typos
 - moved to Eclipse 3.4 "Ganymede"
+- fixed an improper behaviour when a PROOFAgent worker fails to connect to XROOTD on Grid WNs [Trac Ticket #76]
 
 ********************* Release 1.0.4 2008-06-13 ************************
 - documentation has been updated

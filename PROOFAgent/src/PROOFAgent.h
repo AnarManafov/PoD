@@ -36,7 +36,7 @@ namespace PROOFAgent
     class CDOMErrorHandler: public xercesc::DOMErrorHandler
     {
         public:
-            bool handleError (const xercesc::DOMError &_domError) throw(std::exception)
+            bool handleError( const xercesc::DOMError &_domError ) throw( std::exception )
             {
                 MiscCommon::XMLHelper::smart_XMLCh msg( _domError.getMessage() );
                 xercesc::DOMLocator *locator( _domError.getLocation() );
@@ -60,7 +60,7 @@ namespace PROOFAgent
         SAgentData() :
                 m_bLogFileOverwrite( false ),
                 m_nTimeout( 0 ),
-                m_sWorkDir("/tmp/")
+                m_sWorkDir( "/tmp/" )
         {}
         std::string m_sLogFileDir;      //!< The log filename.
         bool m_bLogFileOverwrite;       //!< Overwrite log file each session.
@@ -96,14 +96,14 @@ namespace PROOFAgent
                 ExecuteLastCmd();
             }
             REGISTER_LOG_MODULE( "PROOFAgent" )
-            DECLARE_XMLPERSIST_IMPL(CPROOFAgent)
+            DECLARE_XMLPERSIST_IMPL( CPROOFAgent )
 
         public:
-            void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML = false ) throw(std::exception);
-            void Start() throw(std::exception);
+            void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML = false ) throw( std::exception );
+            void Start() throw( std::exception );
 
         private:
-            BEGIN_READ_XML_CFG(CPROOFAgent)
+            BEGIN_READ_XML_CFG( CPROOFAgent )
             READ_NODE_VALUE( "work_dir", m_Data.m_sWorkDir )
             READ_NODE_VALUE( "logfile_dir", m_Data.m_sLogFileDir )
             READ_NODE_VALUE( "logfile_overwrite", m_Data.m_bLogFileOverwrite )
@@ -112,11 +112,11 @@ namespace PROOFAgent
             READ_NODE_VALUE( "proof_cfg_path", m_Data.m_sPROOFCfg )
             END_READ_XML_CFG
 
-            BEGIN_WRITE_XML_CFG(CPROOFAgent)
+            BEGIN_WRITE_XML_CFG( CPROOFAgent )
             END_WRITE_XML_CFG
 
             void ExecuteLastCmd();
-            void _ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw(std::exception);
+            void _ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( std::exception );
 
         private:
             SAgentData_t m_Data;
