@@ -23,6 +23,9 @@ start()
     echo "Starting..."
     # proof.conf must be presented before xrootd is started
     touch ~/proof.conf
+
+    olbd -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
+
     xrootd -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
     
     $GLITE_PROOF_LOCATION/bin/proofagent --validate -d -i server -p "$1/" -c $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml --start
@@ -33,8 +36,9 @@ start()
 stop()
 {
     echo "Stoping..."
+    pkill -9 olbd
     pkill -9 xrootd
-   #pkill -9 proofserv
+    pkill -9 proofserv
 
     $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --stop
     
@@ -44,6 +48,7 @@ stop()
 status()
 {
     echo `ps -A | grep xrootd`
+    echo `ps -A | grep olbd`
     $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --status
 }
 

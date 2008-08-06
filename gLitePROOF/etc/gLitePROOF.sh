@@ -19,6 +19,7 @@
 # ***** Perform program exit housekeeping *****
 function clean_up {
 # Killing all xrootd in anyway (TODO: must be removed, needs an elegant solution)
+    pkill -9 olbd
     pkill -9 xrootd
     pkill -9 proofserv
     
@@ -91,11 +92,11 @@ echo "*** host's CPU/instruction set: " $host_arch
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="proofagent-1_0_4_1692-x86-linux-gcc_3_4.tar.gz"
-	ROOT_ARC="root_v5.18.00.Linux.slc4.gcc3.4.tar.gz" ;;
+	PROOFAGENT_ARC="proofagent-1_0_5-x86-linux-gcc_3_4.tar.gz"
+	ROOT_ARC="root_v5.20.00.Linux.slc4.gcc3.4.tar.gz" ;;
     x86_64)
-        PROOFAGENT_ARC="proofagent-1_0_4_1692-x86_64-linux-gcc_3_4.tar.gz"
-        ROOT_ARC="root_v5.18.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
+        PROOFAGENT_ARC="proofagent-1_0_5-x86_64-linux-gcc_3_4.tar.gz"
+        ROOT_ARC="root_v5.20.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
 esac
 
 # ****************
@@ -123,6 +124,10 @@ fi
 
 # creating an empty proof.conf, so that xproof will be happy
 touch $WD/proof.conf
+
+# start xrootd
+echo "Starting olbd..."
+olbd -c $WD/xpd.cf -b -l $WD/xpd.log
 
 # start xrootd
 echo "Starting xrootd..."

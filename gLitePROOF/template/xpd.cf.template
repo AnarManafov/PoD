@@ -12,37 +12,48 @@
 #
 ## XRD port
 xrd.port 20094
-
 #
-## Export /pool/proofpool
+## FS lib
+xrootd.fslib libXrdOfs.so
+#
+## Specify a valid path prefix for file requests.
+xrootd.export /tmp
+#
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.
 ## Up to 32 characters are needed to define actual socket files; 
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 if _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
- xrootd.export /opt/PROOF_DATA/
+ all.role manager
+ all.manager _G_MASTER_HOSTNAME:20030
+ ofs.maxdelay 30
+ olb.port 20030
+ olb.delay startup 15 drop 30s lookup 2
+ oss.cache public  /tmp*
 else
  xrd.adminpath _G_WORKER_TMP_DIR group
- xrootd.export _G_WRK_DIR/
+ all.role server
+ all.manager _G_MASTER_HOSTNAME:20030
 fi
-
 #
-## FS lib
-xrootd.fslib libXrdOfs.so
-
+##
+olb.space linger 0 recalc 15 min 500m 600m
 #
-## OLB Port
-olb.port 20021
-
-# 
-## OLB Path
-if _G_MASTER_HOSTNAME
- olb.path w /opt/PROOF_DATA/
-else
- olb.path w _G_WRK_DIR/
-fi
-
+##
+olb.path w /tmp
+#
+##
+olb.allow host *
+#
+##
+oss.path /tmp r/w
+#
+## logging
+xrd.trace all debug
+odc.trace all debug
+ofs.trace all debug
+olb.trace all debug
 #
 ## setting a PROOF temp dir.
 if _G_MASTER_HOSTNAME
@@ -50,14 +61,12 @@ if _G_MASTER_HOSTNAME
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
 fi
-
 #
 ## Load the XrdProofd protocol:
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 if exec xrootd
  xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
 fi
-
 #
 ## GSI Authentication with the server
 #--> Uncomment it if you want to use GSI authentication with your redirector
@@ -105,5 +114,3 @@ xpd.role master
 else
 xpd.role worker
 fi
-
-#xpd.trace all -hdbg
