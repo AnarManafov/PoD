@@ -1,5 +1,20 @@
 ********************* Release 2.0.6 not yet released ************************
 
+- this version is based on ROOT 5.20 [Trac Ticket #72]
+- implemented a part of [Trac Ticket #53].
+  Since r1963 there is a possibility to use xrootd pools on WNs.
+  When users can't use external xrootd clusters or any other data source,
+  they may want to use local WNs as pools. In this case gLitePROOF makes UI
+  as a redirector and all connected workers as servers. And one can use xrdcp
+  to distribute data files on the cluster. Example:
+     xrdcp dstarmb0.root root://depc218.gsi.de:20094//tmp/
+  Where depc218.gsi.de - is a gLitePROOF UI and 20094 is a port for xrootd (1094 - is a default one).
+  In the current implementation there is only one major restriction, that a port,
+  which the user has assigned for xrootd should be opened on WNs.
+  In the next version of PROOFAgent there will a proxy provided,
+  so that this restriction will be voided. [Trac Ticket #53]
+- documentation has been updated.
+
 ********************* Release 2.0.5 2008-06-13 ************************
 
 - gLitePROOF.sh - a grid job script, its error and signal handling has been improved [Trac Ticket #52].
