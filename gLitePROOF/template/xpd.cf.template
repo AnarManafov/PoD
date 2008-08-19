@@ -11,7 +11,15 @@
 ###*************************************************************************/
 #
 ## XRD port
-xrd.port 1094
+# if there is no 1094 opened on WNs, then
+# this port should be in a Globus port range.
+# The range is opened on most of the sites
+# on the Grid for outgoing connections.
+# If there is no incoming traffic allowed (even for 1094),
+# then you can't use WNs as a xrootd POOLs and need
+# to find another source of data files, like an external XROOTD cluster
+# or any other source.
+xrd.port 20094 #1094
 #
 ## FS lib
 xrootd.fslib libXrdOfs.so
@@ -26,15 +34,15 @@ xrootd.export /tmp
 if _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
  all.role manager #server
- all.manager _G_MASTER_HOSTNAME:3132
+ all.manager _G_MASTER_HOSTNAME:23121 #3132
  ofs.maxdelay 30
- olb.port 3132
+ olb.port 23121 #3132
  olb.delay startup 15 drop 30s lookup 2
  oss.cache public  /tmp*
 else
  xrd.adminpath _G_WORKER_TMP_DIR group
  all.role server
- all.manager _G_MASTER_HOSTNAME:3132
+ all.manager _G_MASTER_HOSTNAME:23121 #3132
 fi
 #
 ##
