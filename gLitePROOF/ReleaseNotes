@@ -12,8 +12,9 @@
   In the current implementation there is only one major restriction, that a port,
   which the user has assigned for xrootd should be opened on WNs.
   In the next version of PROOFAgent there will a proxy provided,
-  so that this restriction will be voided. [Trac Ticket #53]
+  so that this restriction will be voided.
 - documentation has been updated.
+- minor bugs have been fixed.
 
 ********************* Release 2.0.5 2008-06-13 ************************
 
