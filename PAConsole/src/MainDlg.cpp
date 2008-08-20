@@ -141,7 +141,6 @@ void CMainDlg::createIcons()
     workersButton->setTextAlignment( Qt::AlignHCenter );
     workersButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
-    // TODO: Make a new icon for Preferences page
     QListWidgetItem *preferencesButton = new QListWidgetItem( m_ui.contentsWidget );
     preferencesButton->setIcon( QIcon( ":/images/preferences.png" ) );
     preferencesButton->setText( tr( "Preferences" ) );

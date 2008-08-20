@@ -1,20 +1,22 @@
-********************* Release 1.0.5 not yet released ************************
-- moved to Eclipse 3.4 "Ganymede"
-- fixed typos
+********************* Release 1.0.5 2008-08-20 ************************
+- The project has been moved to Eclipse 3.4 "Ganymede".
+- Fixed many typos.
 - Show message box if PAConsole user submits jobs but server is not running [Trac Ticket #70].
 - Added a possibility to retrieve jobs logging information from the gLite LB.
   Now using a context menu of the Grid jobs list one can get a full log of the selected job. [Track Ticket #65]
-- It is now possible to submit (with different jdl files) and monitor several jobs. Parametric jobs (gLitePROOF default jdl)
-  monitored as well. Every time user clicks the submit button a new job will be submitted and added to the monitoring.
-  In this case users can add more workers to a gLitePROOF cluster on the fly and keep tracking.
-  Users also can remove job from monitoring using context menu of jobs list window.
+- It is now possible to submit (with different jdl files) and monitor several jobs simultaneously.
+  Parametric jobs (gLitePROOF default jdl) monitored as well.
+  Every time user clicks the submit button a new job will be submitted and added to the monitoring.
+  In this case users can add more workers to a gLitePROOF cluster on the fly and keep tracking all of them.
+  Users also can remove job from monitoring using context menu of the jobs list control.
   Remove is not supported for children jobs, only single jobs or parents can be removed from the monitoring. [Track Ticket #71]
 - Optimizations in jobs' monitoring, which led to reductions of calls to gLite LB.
 - Added a Preferences page. Users now are able to adjust PAConsole settings. Currently the following settings are available:
   * Job Status update interval
   * Workers update interval
-  more will come... [Track Ticket #73]
-- GUI fixes
+  more will come... [Track Ticket #73].
+- GUI fixes.
+- Minor bugs fixing.
 
 ********************* Release 1.0.4 2008-06-13 ************************
 
