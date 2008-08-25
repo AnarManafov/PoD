@@ -32,7 +32,7 @@ How to run
 </screen>
         The <xref linkend="PAConsole_Server1"/> shows a screen shot of PAConsole's Server page. You can see that
         the information window has a red font, which means one or all of the services are down. Currently gLitePROOF
-        requires two services: xrootd and PROOFAgent.
+        requires two services: xrootd and PROOFAgent (+ oldb, a part of xrootd, if you want to use pool workers ).
 
         <para><figure float="0" id="PAConsole_Server1">
         <title>PAConsole: Server is Off</title>
@@ -46,7 +46,7 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        Klick on the <guibutton>Start</guibutton> button in oder to start gLitePROOF services. To stop gLitePROOF
+        Click the <guibutton>Start</guibutton> button in oder to start gLitePROOF services. To stop gLitePROOF
         the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
         <guibutton>Status</guibutton> button.
         </para>
@@ -68,8 +68,8 @@ How to run
         </figure></para>
         
         <tip><para>You have probably noticed that the <guibutton>Start</guibutton> button is now inactive. PAConsle marks this button
-        inactive whenever it is not possible to start gLitePROOF services. For example, if PROOFAgent's port is in use,
-        PAConsole will disable the <guibutton>Start</guibutton> button.</para></tip>
+        inactive whenever it is not possible to start gLitePROOF services. For example, if PROOFAgent's port is in use on
+        in CLOSE_WAIT stat, PAConsole will disable the <guibutton>Start</guibutton> button.</para></tip>
     
       </para>
     </sect1>
@@ -197,7 +197,7 @@ How to run
        <tip><para>
        gLitePROOF supports reconnection. That means if your analysis has a bug or a root session crashed you wouldn't
        need to resubmit gLitePROOF job. You just need to close current root session, open it again. gLitePROOF will manage
-       reconnection with its worker nodes automatically. Workers nods will be only until the PROOFAgent service is online or
+       reconnection with its worker nodes automatically. Worker nods will be online until the PROOFAgent service is online or
        until the Grid queue time is over.
        </para></tip>
        </sect1>

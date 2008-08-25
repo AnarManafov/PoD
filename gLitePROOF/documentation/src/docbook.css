@@ -188,12 +188,6 @@
        font-size: 80%; 
        line-height: 1.15;
     }
-    
-    .boost-toc
-    {
-       float: right;
-       padding: 0.5pc;
-    }
 
 /*=============================================================================
     Tables
@@ -326,7 +320,22 @@
     {
         text-align: left
     }
+    
+    .constant
+    {
+    	font-style: italic;
+    	font-weight: bold;
+    }
 
+    .varname
+    {
+    	font-style: italic;
+    }
+    
+    .filename
+    {
+    	font-style: italic;    
+    }
 /*=============================================================================
     Colors
 =============================================================================*/

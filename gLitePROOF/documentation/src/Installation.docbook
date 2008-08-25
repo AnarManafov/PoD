@@ -14,7 +14,7 @@ Installation
       <para>Choose a directory where you want to install <application>gLitePROOF</application>,
       we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>gLitePROOF</application> tarball to this directory:
 <screen>
-<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.5.tgz</replaceable></command>
+<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.6.tgz</replaceable></command>
 </screen>
 		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
 		where <application>gLitePROOF</application> package will be located.</para>

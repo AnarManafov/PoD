@@ -85,7 +85,7 @@ Configuration
       gLitePROOF is only meant to help to setup a PROOF cluster on the fly using a gLite worker nodes. A data access is not
       really a part of responsibility of gLitePROOF. The default configuration of gLitePROOF offers a possibility to access data
       files from the server machine (user's workspace) using xrootd vie port 20094 and the following shared folder
-      <filename class="directory">/opt/PROOF_DATA/</filename>. Users may want to use another xrootd facility to access data or
+      <filename class="directory">/tmp/</filename>. Users may want to use another xrootd facility to access data or
       reconfigure gLitePROOF's xrootd to use different port and location. To do so the following variables must be updated in
       <filename>xpd.cf</filename> file: <varname>xrd.port</varname>, <varname>xrootd.export</varname> (for the server host),
       <varname>olb.path</varname>(for the server host).
@@ -94,6 +94,22 @@ Configuration
       <para>
       It is recommended to use own xrootd facility to access data files. Using user's local machine for data access is very
       inefficient. gLitePROOF provides this ability only for testing purpose.
+      </para>
+      </tip>
+      
+      <tip>
+      <para>
+      By a slight change of default gLitePROOF's <filename>xrd.cf</filename>, users can have a dynamic xrootd pools on Grid WNs.
+      To do so, you need to set <varname>all.role</varname> parameter to <constant>manager</constant> instead of
+      <constant>server</constant> (default) for your UI host.
+		<para>
+		
+		But, gLitePROOF doesn't provide yet [<ulink url="https://subversion.gsi.de/trac/dgrid/ticket/53">gLitePROOF Trac Ticket #53</ulink>]
+		a proxy mechanism for xrootd file transfer,
+		WNs therefore must have XROOTD ports opened in both directions (which is very unusual for Grid worker nodes).
+		Once again, for best performance and security reasons it is recommend to use external data storage,
+		like external xrootd cluster or any other data storage supported by ROOT.
+		</para> 
       </para>
       </tip>
       
