@@ -33,7 +33,7 @@ xrootd.export /tmp
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 if _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
- all.role manager #server
+ all.role server #manager
  all.manager _G_MASTER_HOSTNAME:23121 #3132
  ofs.maxdelay 30
  olb.port 23121 #3132
