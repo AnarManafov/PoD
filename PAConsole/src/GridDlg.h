@@ -70,7 +70,7 @@ class CGridDlg: public QWidget
 
     private:
         void createActions();
-        void UpdateEndpoints();
+        void UpdateEndpoints( bool _Msg );
         void UpdateAfterLoad();
 
         // serialization
