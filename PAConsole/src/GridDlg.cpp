@@ -132,6 +132,9 @@ void CGridDlg::on_btnSubmitClient_clicked()
                                        m_ui.edtJDLFileName->text() ) );
             return;
         }
+
+        m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
+
         // Setting up PARAMETERS
         set_ad_attr( m_ui.spinNumWorkers->value(), m_JDLFileName, JDL_PARAMETERS );
 
