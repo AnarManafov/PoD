@@ -370,5 +370,5 @@ void CGridDlg::UpdateEndpoints(bool _Msg)
 void CGridDlg::on_edtJDLFileName_textChanged( const QString &/*_text*/ )
 {
     m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
-    UpdateEndpoints();
+    UpdateEndpoints( flase );
 }
