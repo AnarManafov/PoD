@@ -58,7 +58,7 @@ CGridDlg::CGridDlg( QWidget *parent ) :
 
     createActions();
 
-    clipboard = Q_MsgApplication::clipboard();
+    clipboard = QApplication::clipboard();
 
     // Set completion for the edit box of JDL file name
     QCompleter *completer = new QCompleter( this );
