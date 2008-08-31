@@ -19,7 +19,7 @@
 # ***** Perform program exit housekeeping *****
 function clean_up {
 # Killing all xrootd in anyway (TODO: must be removed, needs an elegant solution)
-    pkill -9 olbd
+   # pkill -9 olbd
     pkill -9 xrootd
     pkill -9 proofserv
     
@@ -126,8 +126,8 @@ fi
 touch $WD/proof.conf
 
 # start xrootd
-echo "Starting olbd..."
-olbd -c $WD/xpd.cf -b -l $WD/xpd.log
+#echo "Starting olbd..."
+#olbd -c $WD/xpd.cf -b -l $WD/xpd.log
 
 # start xrootd
 echo "Starting xrootd..."

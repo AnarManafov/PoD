@@ -19,8 +19,8 @@
   TDSet *set = new TDSet( "TTree","h42" );
   
   // Files to analyze 
-  set->Add( "root://depc218.gsi.de:1094//tmp/dstarmb0.root" );
-  set->Add( "root://depc218.gsi.de:1094//tmp/dstarmb1.root" );
+  set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
+  set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
   
   // connecting to local PROOF server
   proof = TProof::Open( "localhost" );

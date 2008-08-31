@@ -25,43 +25,57 @@ xrd.port 20094 #1094
 xrootd.fslib libXrdOfs.so
 #
 ## Specify a valid path prefix for file requests.
-xrootd.export /tmp
+## uncomment if you want to help the WN pools
+#xrootd.export /tmp
 #
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.
-## Up to 32 characters are needed to define actual socket files; 
+## Up to 32 characters are needed to define actual socket files;
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
-if _G_MASTER_HOSTNAME
+## comment if you want to help the WN pools
+if  _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
- all.role server #manager
- all.manager _G_MASTER_HOSTNAME:23121 #3132
- ofs.maxdelay 30
- olb.port 23121 #3132
- olb.delay startup 15 drop 30s lookup 2
- oss.cache public  /tmp*
+ xrootd.export /opt/PROOF_DATA/
 else
  xrd.adminpath _G_WORKER_TMP_DIR group
- all.role server
- all.manager _G_MASTER_HOSTNAME:23121 #3132
+ xrootd.export _G_WRK_DIR/
 fi
 #
-##
-olb.space linger 0 recalc 15 min 500m 600m
+# Uncomment this block if you want gLitePROOF to manage data pools on WNs
+# The if block above must be comments then.
+#
+#if _G_MASTER_HOSTNAME
+# xrd.adminpath _G_SERVER_TMP_DIR group
+# all.role manager
+# all.manager _G_MASTER_HOSTNAME:3132
+# ofs.maxdelay 30
+# olb.port 3132
+# olb.delay startup 15 drop 30s lookup 2
+# oss.cache public  /tmp*
+# else
+#  xrd.adminpath _G_WORKER_TMP_DIR group
+#   all.role server
+#  all.manager _G_MASTER_HOSTNAME:3132
+#fi
+#
 #
 ##
-olb.path w /tmp
+#olb.space linger 0 recalc 15 min 500m 600m
 #
 ##
-olb.allow host *
+#olb.path w /tmp
 #
 ##
-oss.path /tmp r/w
+#olb.allow host *
+#
+##
+#oss.path /tmp r/w
 #
 ## logging
 xrd.trace all debug
-odc.trace all debug
-ofs.trace all debug
-olb.trace all debug
+#odc.trace all debug
+#ofs.trace all debug
+#olb.trace all debug
 #
 ## setting a PROOF temp dir.
 if _G_MASTER_HOSTNAME
