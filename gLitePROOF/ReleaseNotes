@@ -1,6 +1,6 @@
-********************* Release 2.0.6 not yet released ************************
+********************* Release 2.0.6 2008-09-01 ************************
 
-- this version is based on ROOT 5.20 [Trac Ticket #72]
+- this version is based on ROOT 5.21.02 [Trac Ticket #72]
 - implemented a part of [Trac Ticket #53].
   Since r1963 there is a possibility to use xrootd pools on WNs.
   When users can't use external xrootd clusters or any other data source,
