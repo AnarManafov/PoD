@@ -136,3 +136,6 @@ xpd.role master
 else
 xpd.role worker
 fi
+
+xpd.trace all debug
+
