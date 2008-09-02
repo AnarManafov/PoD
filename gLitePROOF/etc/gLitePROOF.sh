@@ -96,10 +96,10 @@ echo "*** host's CPU/instruction set: " $host_arch
 case "$host_arch" in
     x86)
 	PROOFAGENT_ARC="proofagent-1_0_5-x86-linux-gcc_3_4.tar.gz"
-	ROOT_ARC="root_v5.21.02.Linux.slc4.gcc3.4.tar.gz" ;;
+	ROOT_ARC="root_v5.18.00.Linux.slc4.gcc3.4.tar.gz" ;;
     x86_64)
         PROOFAGENT_ARC="proofagent-1_0_5-x86_64-linux-gcc_3_4.tar.gz"
-        ROOT_ARC="root_v5.21.02.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
+        ROOT_ARC="root_v5.18.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
 esac
 
 # ****************
