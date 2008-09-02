@@ -23,9 +23,12 @@ function clean_up {
     pkill -9 xrootd
     pkill -9 proofserv
     
-# Removing local proof directory
-# assuming that proof directory is located in the user's home
-    proof_dir="${HOME}/proof"
+# Archive and removing local proof directory
+    _WD=`pwd`
+    proof_dir="$_WD/proof"
+
+    tar -czvf proof_log.tgz $proof_dir
+
     if [ -e "$proof_dir" ]; then
 	echo "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir

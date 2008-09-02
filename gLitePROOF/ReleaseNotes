@@ -15,6 +15,7 @@
   so that this restriction will be voided.
 - documentation has been updated.
 - minor bugs have been fixed.
+- Added an ability to download a PROOF log files from worker nodes. [Trac Ticket #77]
 - using GAW v.3.2.0.1974, PROOFAgent v. 1.0.5.1977 and PAConsole 1.0.5 (see apps' ReleaseNotes files for more details).
 
 ********************* Release 2.0.5 2008-06-13 ************************
