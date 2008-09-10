@@ -81,10 +81,10 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     catch ( ... )
     {
         m_grid.setAllDefault();
-        QMessageBox::information( this, "PROOFAgent Console",
-                                  "Can't load configuration from \
-                                  \"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\".\
-                                  PAConsole will use its default settings." );
+        cerr << "PROOFAgent Console Warning: "
+             << "Can't load configuration from "
+             << "\"$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg\". "
+             << "PAConsole will use its default settings." << endl;    
     }
 
     // Using preferences
