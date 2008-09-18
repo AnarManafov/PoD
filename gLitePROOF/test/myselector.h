@@ -357,7 +357,12 @@ void myselector::Init(TTree *tree)
    // Init() will be called many times when running with PROOF.
 
    // Set branch addresses
-   if (tree == 0) return;
+   if (tree == 0) 
+	return;
+
+   // TODO: from Anna, see ticket #72
+   tree->SetCacheSize(0);
+
    fChain = tree;
    fChain->SetMakeClass(1);
 
