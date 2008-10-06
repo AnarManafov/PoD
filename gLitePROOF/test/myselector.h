@@ -359,10 +359,6 @@ void myselector::Init(TTree *tree)
    // Set branch addresses
    if (tree == 0) 
 	return;
-
-   // TODO: from Anna, see ticket #72
-   tree->SetCacheSize(0);
-
    fChain = tree;
    fChain->SetMakeClass(1);
 
