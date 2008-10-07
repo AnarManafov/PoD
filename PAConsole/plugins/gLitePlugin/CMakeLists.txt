@@ -31,15 +31,15 @@ link_directories("$ENV{GAW_LOCATION}/lib")
 OPTION(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 
 set( MOC_HDRS_gLite
-    gliteplugin.h
+    ./src/gliteplugin.h
 )
 
 set( SOURCE_FILES_gLite
-        gliteplugin.cpp
+    ./src/gliteplugin.cpp
 )
 
 set( UI_FILES_gLite
-        gliteplugin.ui
+    ./res/gliteplugin.ui
 )
 
 #set( UI_RESOURCE_gLite 

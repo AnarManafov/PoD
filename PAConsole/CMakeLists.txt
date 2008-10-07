@@ -41,7 +41,7 @@ set( MOC_HDRS
 )
 
 set( SOURCE_FILES
-        ./src/PreferencesDlg.cpp 
+    ./src/PreferencesDlg.cpp 
     ./src/LogInfoDlg.cpp 
     ./src/MainDlg.cpp
     ./src/ServerInfo.cpp 
@@ -52,18 +52,17 @@ set( SOURCE_FILES
 )
 
 set( UI_FILES
-        ./res/wgPreferences.ui 
-        ./res/maindlg.ui 
-        ./res/wgServer.ui 
-        ./res/wgGrid.ui 
-        ./res/wgWorkers.ui 
-        ./res/wgLogInfo.ui
+    ./res/wgPreferences.ui 
+    ./res/maindlg.ui 
+    ./res/wgServer.ui 
+    ./res/wgGrid.ui 
+    ./res/wgWorkers.ui 
+    ./res/wgLogInfo.ui
 )
 
 set( UI_RESOURCE 
         ./res/paconsole.qrc
-)
-
+)ui_gliteplugin.h
 
 find_package( Qt4 REQUIRED )
 SET(QT_USE_QTXML 1)
