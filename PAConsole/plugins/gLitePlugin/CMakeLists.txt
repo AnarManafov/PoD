@@ -25,10 +25,6 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 link_directories("$ENV{GAW_LOCATION}/lib")
 
-#
-# Options
-#
-OPTION(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 
 set( MOC_HDRS_gLite
     ./src/gliteplugin.h
