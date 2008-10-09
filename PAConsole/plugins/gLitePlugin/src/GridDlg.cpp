@@ -27,6 +27,8 @@
 
 // default JDL file
 const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
+// configuration file of the plugin
+//LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_gLite.xml.cfg";
 
 using namespace std;
 using namespace MiscCommon;
@@ -44,9 +46,39 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
     return str;
 }
 
+// TODO: avoid of code duplications (this two function must be put in MiscCommon)
+// Serialization helpers
+/*template<class T>
+void _loadcfg( T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() || !is_file_exists( _FileName ) )
+        throw exception();
+
+    ifstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_iarchive ia( f );
+    ia >> BOOST_SERIALIZATION_NVP( _s );
+}
+
+template<class T>
+void _savecfg( const T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() )
+        throw exception();
+
+    // make an archive
+    ofstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_oarchive oa( f );
+    oa << BOOST_SERIALIZATION_NVP( _s );
+}
+*/
 CGridDlg::CGridDlg( QWidget *parent ) :
         QWidget( parent ),
-        m_JobSubmitter( this )
+        m_JobSubmitter( this ),
+        m_JobsCount( 0 )
 {
     m_ui.setupUi( this );
 
@@ -55,6 +87,7 @@ CGridDlg::CGridDlg( QWidget *parent ) :
 
     connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
+    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( setNumberOfJobs( int ) ) );
 
     createActions();
 
@@ -64,6 +97,16 @@ CGridDlg::CGridDlg( QWidget *parent ) :
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJDLFileName->setCompleter( completer );
+
+    /*   try
+       {
+           // Loading class from the config file
+           _loadcfg( *this, g_szCfgFileName );
+       }
+       catch ( ... )
+       {
+           m_grid.setAllDefault();
+       }*/
 }
 
 CGridDlg::~CGridDlg()
@@ -162,7 +205,7 @@ void CGridDlg::on_btnBrowseJDL_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
-                             tr( "JDL Files (*.jdl)" ) );
+                                                           tr( "JDL Files (*.jdl)" ) );
     if ( QFileInfo( filename ).exists() )
     {
         m_JDLFileName = filename.toAscii().data();
@@ -289,7 +332,7 @@ void CGridDlg::getJobOutput()
     try
     {
         CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
-                &joboutput_path, true );
+                                                                &joboutput_path, true );
     }
     catch ( const exception &_e )
     {
@@ -341,7 +384,7 @@ void CGridDlg::setProgress( int _Val )
 }
 
 // Retrieving a list of possible WMProxy endpoints
-void CGridDlg::UpdateEndpoints(bool _Msg)
+void CGridDlg::UpdateEndpoints( bool _Msg )
 {
     m_ui.cmbEndpoint->clear();
 
@@ -372,3 +415,11 @@ void CGridDlg::on_edtJDLFileName_textChanged( const QString &/*_text*/ )
     m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
     UpdateEndpoints( false );
 }
+
+void CGridDlg::setNumberOfJobs( int _count )
+{
+    m_JobsCount = _count;
+    emit changeNumberOfJobs( _count );
+}
+
+Q_EXPORT_PLUGIN2( gLiteJobManager, CGridDlg );

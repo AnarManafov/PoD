@@ -122,6 +122,9 @@ class CJobSubmitter: public QThread
             emit changeProgress( 100 );
         }
 
+        // this function is very "expensive",
+        // we therefore use it only via signal only when number of jobs may be changed.
+        // Users can't call it any time they want.
         int getNumberOfJobs() const
         {
             if ( m_JobsList.empty() )

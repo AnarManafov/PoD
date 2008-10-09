@@ -21,49 +21,56 @@
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <boost/serialization/vector.hpp>
 // PAConsole
 #include "ServerDlg.h"
-#include "GridDlg.h"
 #include "WorkersDlg.h"
 #include "PreferencesDlg.h"
 
+class IJobManager;
 
 class CMainDlg: public QDialog
 {
         Q_OBJECT
 
         friend class boost::serialization::access;
+        typedef std::vector<IJobManager*> PluginVec_t;
 
     public:
         CMainDlg( QDialog *_Parent = NULL );
         virtual ~CMainDlg();
 
+    signals:
+        void numberOfJobs( int );
+
     public slots:
-        void changePage(QListWidgetItem *current, QListWidgetItem *previous);
+        void changePage( QListWidgetItem *current, QListWidgetItem *previous );
+        void updatePluginTimer( int _interval );
+        void changeNumberOfJobs( int _count );
 
     private:
         void createIcons();
+        void loadPlugins();
         template<class Archive>
-        void serialize(Archive &_ar, const unsigned int /*_file_version*/)
+        void serialize( Archive &_ar, const unsigned int /*_file_version*/ )
         {
             _ar
-            & BOOST_SERIALIZATION_NVP(m_CurrentPage)
-            & BOOST_SERIALIZATION_NVP(m_server)
-            & BOOST_SERIALIZATION_NVP(m_grid)
-            & BOOST_SERIALIZATION_NVP(m_workers)
-            & BOOST_SERIALIZATION_NVP(m_preferences);
+            & BOOST_SERIALIZATION_NVP( m_CurrentPage )
+            & BOOST_SERIALIZATION_NVP( m_server )
+            & BOOST_SERIALIZATION_NVP( m_workers )
+            & BOOST_SERIALIZATION_NVP( m_preferences );
         }
 
     private:
         Ui::MainDlg m_ui;
 
-        CGridDlg m_grid;
         CWorkersDlg m_workers;
         CServerDlg m_server;
         CPreferencesDlg m_preferences;
         int m_CurrentPage;
+        PluginVec_t m_plugins;
 };
 
-BOOST_CLASS_VERSION(CMainDlg, 2)
+BOOST_CLASS_VERSION( CMainDlg, 2 )
 
 #endif /*CMAINDLG_H_*/
