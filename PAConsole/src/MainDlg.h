@@ -27,6 +27,7 @@
 #include "WorkersDlg.h"
 #include "PreferencesDlg.h"
 
+
 class IJobManager;
 
 class CMainDlg: public QDialog
@@ -71,6 +72,6 @@ class CMainDlg: public QDialog
         PluginVec_t m_plugins;
 };
 
-BOOST_CLASS_VERSION( CMainDlg, 2 )
+BOOST_CLASS_VERSION( CMainDlg, 3 )
 
 #endif /*CMAINDLG_H_*/

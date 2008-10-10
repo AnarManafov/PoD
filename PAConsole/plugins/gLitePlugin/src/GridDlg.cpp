@@ -15,25 +15,29 @@
 // Qt
 #include <QWidget>
 #include <QTreeWidget>
+// BOOST
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
 // GAW
 #include "glite-api-wrapper/WMPEndpoint.h"
 // MiscCommon
 #include "JDLHelper.h"
 #include "SysHelper.h"
+#include "def.h"
 // PAConsole
 #include "GridDlg.h"
 #include "ServerInfo.h"
 #include "LogInfoDlg.h"
 
-// default JDL file
-const char * const g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
-// configuration file of the plugin
-//LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_gLite.xml.cfg";
-
 using namespace std;
 using namespace MiscCommon;
 using namespace MiscCommon::gLite;
 using namespace glite_api_wrapper;
+
+// default JDL file
+const LPCTSTR g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
+// configuration file of the plug-in
+const LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_gLite.xml.cfg";
 
 typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
 
@@ -48,7 +52,7 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
 
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
-/*template<class T>
+template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
@@ -74,7 +78,7 @@ void _savecfg( const T &_s, string _FileName )
     boost::archive::xml_oarchive oa( f );
     oa << BOOST_SERIALIZATION_NVP( _s );
 }
-*/
+
 CGridDlg::CGridDlg( QWidget *parent ) :
         QWidget( parent ),
         m_JobSubmitter( this ),
@@ -98,19 +102,28 @@ CGridDlg::CGridDlg( QWidget *parent ) :
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJDLFileName->setCompleter( completer );
 
-    /*   try
-       {
-           // Loading class from the config file
-           _loadcfg( *this, g_szCfgFileName );
-       }
-       catch ( ... )
-       {
-           m_grid.setAllDefault();
-       }*/
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, g_szCfgFileName );
+    }
+    catch ( ... )
+    {
+        setAllDefault();
+    }
 }
 
 CGridDlg::~CGridDlg()
 {
+    try
+    {
+        // Saving class to the config file
+        _savecfg( *this, g_szCfgFileName );
+    }
+    catch ( ... )
+    {
+    }
+
     if ( m_Timer )
     {
         m_Timer->stop();

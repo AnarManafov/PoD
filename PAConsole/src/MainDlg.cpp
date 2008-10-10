@@ -30,8 +30,8 @@
 using namespace std;
 using namespace MiscCommon;
 
-LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg";
-LPCTSTR g_szPluginDir = "$GLITE_PROOF_LOCATION/plugins";
+const LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg";
+const LPCTSTR g_szPluginDir = "$GLITE_PROOF_LOCATION/plugins";
 
 template<class T>
 void _loadcfg( T &_s, string _FileName )

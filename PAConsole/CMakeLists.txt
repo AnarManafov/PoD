@@ -15,20 +15,18 @@
 project( PAConsole )
 
 
-SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "6")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "6")
 
 # Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
-
-link_directories("$ENV{GAW_LOCATION}/lib")
 
 #
 # Options
 #
-OPTION(BUILD_DOCUMENTATION "Build source code documentation" OFF)
+option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h
@@ -58,7 +56,7 @@ set( UI_RESOURCE
 )
 
 find_package( Qt4 REQUIRED )
-SET(QT_USE_QTXML 1)
+set(QT_USE_QTXML 1)
 #include_directories ( ${QT_INCLUDES} )
 #The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script
 include( ${QT_USE_FILE} )
@@ -67,32 +65,44 @@ QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} OPTIONS -f )
 QT4_WRAP_UI( UI_HDRS ${UI_FILES} )
 QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
 
-# search for Boost version 1.34
-find_package( Boost 1.34 COMPONENTS serialization )
-link_directories ( ${Boost_LIBRARY_DIRS} )
-include_directories ( ${Boost_INCLUDE_DIRS} )
+#
+# search for Boost
+#
+
+# we set this manually if we want to use gLite plug-in,
+# wich is linked with gLite version of BOOST :(
+set(BOOST_ROOT "$ENV{BOOST_LOCATION}")
+
+find_package( Boost 1.32 REQUIRED COMPONENTS serialization)
+
+message("BOOST inc. dir.: ${Boost_INCLUDE_DIRS}")
+message("BOOST lib. dir.: ${Boost_LIBRARY_DIRS}")
+message("BOOST libs: ${Boost_LIBRARIES}")
+
 
 #
 # Documentation
 #
-IF(BUILD_DOCUMENTATION)
-    ADD_SUBDIRECTORY(documentation)
-ENDIF(BUILD_DOCUMENTATION)
+if(BUILD_DOCUMENTATION)
+    add_subdirectory(documentation)
+endif(BUILD_DOCUMENTATION)
+									
+#
+## PAConsole executable
+#
+include_directories( ${CMAKE_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
-ADD_EXECUTABLE(PAConsole ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS} ${UI_HDRS})
-											
-include_directories( ${CMAKE_BINARY_DIR} src Include )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-
+add_executable(PAConsole ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS} ${UI_HDRS})
 
 target_link_libraries (
     PAConsole
     ${QT_LIBRARIES}
     ${Boost_LIBRARIES}
-    )
+)
 
-INSTALL(TARGETS PAConsole DESTINATION bin)
+install(TARGETS PAConsole DESTINATION bin)
 
 #
 # Package
@@ -100,16 +110,15 @@ INSTALL(TARGETS PAConsole DESTINATION bin)
 
 # excluding build directory
 # excluding svn files and Eclipse project files
-SET(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
+set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
                               ".svn"
                               ".project"
                               ".cproject"
                               ".settings")
 message("CPACK_SOURCE_IGNORE_FILES = ${CPACK_SOURCE_IGNORE_FILES}")
-INCLUDE(CPack)
+include(CPack)
 
 #
 # gLite plug-in
 #
 add_subdirectory ( plugins/gLitePlugin )
-
