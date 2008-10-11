@@ -103,7 +103,34 @@ target_link_libraries (
     ${Boost_LIBRARIES}
 )
 
+#
+# gLite plug-in
+#
+if (BUILD_GLITE_PLUGIN)
+    message(STATUS "Looking for GAW")
+    if ( "$ENV{GAW_LOCATION}" STREQUAL "" )
+        message(STATUS "Looking for GAW - not found.")
+        set(BUILD_GLITE_PLUGIN OFF)
+    else( "$ENV{GAW_LOCATION}" STREQUAL "" )
+        message(STATUS "Looking for GAW - found")
+    endif( "$ENV{GAW_LOCATION}" STREQUAL "" )
+endif (BUILD_GLITE_PLUGIN)
+
+if (BUILD_GLITE_PLUGIN)
+    # Build gLite plug-in
+    add_subdirectory ( plugins/gLitePlugin )
+    message (STATUS "Build gLite plug-in - YES")
+else (BUILD_GLITE_PLUGIN)
+    message (STATUS "Build gLite plug-in - NO")
+endif (BUILD_GLITE_PLUGIN)
+
+#
+# LSF Plug-in
+#
+# !* TODO *!
+
 install(TARGETS PAConsole DESTINATION bin)
+
 
 #
 # Package
@@ -118,22 +145,3 @@ set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
                               ".settings")
 message("CPACK_SOURCE_IGNORE_FILES = ${CPACK_SOURCE_IGNORE_FILES}")
 include(CPack)
-
-#
-# gLite plug-in
-#
-if ( "$ENV{GAW_LOCATION}" STREQUAL "" )
-    set(BUILD_GLITE_PLUGIN OFF)
-endif( "$ENV{GAW_LOCATION}" STREQUAL "" )
- 
-if (BUILD_GLITE_PLUGIN)
-    add_subdirectory ( plugins/gLitePlugin )
-    message (STATUS "Build gLite plug-in - YES")
-else (BUILD_GLITE_PLUGIN)
-    message (STATUS "Build gLite plug-in - NO")
-endif (BUILD_GLITE_PLUGIN)
-
-#
-# LSF Plug-in
-#
-# !* TODO *!

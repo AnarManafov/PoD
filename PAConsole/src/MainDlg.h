@@ -64,7 +64,6 @@ class CMainDlg: public QDialog
 
     private:
         Ui::MainDlg m_ui;
-
         CWorkersDlg m_workers;
         CServerDlg m_server;
         CPreferencesDlg m_preferences;

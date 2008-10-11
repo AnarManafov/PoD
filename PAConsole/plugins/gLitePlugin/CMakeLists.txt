@@ -43,7 +43,7 @@ set( UI_FILES_gLite
 )
 
 set( UI_SRSC_gLite 
-        ./res/paconsole_glite.qrc
+    ./res/paconsole_glite.qrc
 )
 
 QT4_WRAP_CPP( MOC_SRCS_gLite ${MOC_HDRS_gLite} OPTIONS -f )
@@ -56,15 +56,11 @@ add_library(PAConsole_gLite SHARED ${SOURCE_FILES_gLite} ${MOC_SRCS_gLite} ${RCS
 set(CMAKE_CXX_FLAGS "$ENV{GAW_CPPFLAGS} -Wall")										
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} src )
 
-#set(CMAKE_CXX_FLAGS "-Wall")
-
 
 target_link_libraries (
-    PAConsole_gLite
-  #  ${Boost_LIBRARIES}    
+    PAConsole_gLite 
     glite-api-wrapper
 )
-
 
 #INSTALL(TARGETS PAConsole_gLite DESTINATION bin)
 

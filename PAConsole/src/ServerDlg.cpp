@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QFileDialog>
+#include <QTimer>
 // STD
 #include <sstream>
 // API

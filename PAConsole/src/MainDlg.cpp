@@ -14,7 +14,6 @@
 *************************************************************************/
 // Qt
 #include <QtGui>
-#include <QtUiTools/QUiLoader>
 // STD
 #include <fstream>
 #include <exception>

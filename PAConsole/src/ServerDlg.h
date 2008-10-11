@@ -15,8 +15,6 @@
 #ifndef SERVERDLG_H_
 #define SERVERDLG_H_
 
-// Qt
-#include <QTimer>
 // Qt autogen. file
 #include "ui_wgServer.h"
 // BOOST
@@ -26,6 +24,8 @@
 #include <boost/serialization/split_member.hpp>
 // MiscCommon
 #include "SysHelper.h"
+
+class QTimer;
 
 class CServerDlg: public QWidget
 {
@@ -62,8 +62,8 @@ class CServerDlg: public QWidget
         {
             _ar & BOOST_SERIALIZATION_NVP(m_PIDDir);
 
-            // pid/log directory            
-            MiscCommon::smart_path( &m_PIDDir );            
+            // pid/log directory
+            MiscCommon::smart_path( &m_PIDDir );
             m_ui.edtPIDDir->setText( m_PIDDir.c_str() );
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()

@@ -15,9 +15,6 @@
 #ifndef TREEITEMCONTAINER_H_
 #define TREEITEMCONTAINER_H_
 
-// GAW
-#include "glite-api-wrapper/gLiteAPIWrapper.h"
-
 class CTreeItemContainer
 {
         typedef std::pair<std::string, QTreeWidgetItem *> Item_t;

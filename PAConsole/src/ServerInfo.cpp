@@ -12,11 +12,11 @@
 
         Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#include "ServerInfo.h"
-
-// OUR
+// MiscCommon
 #include "Process.h"
 #include "def.h"
+// PAConsole
+#include "ServerInfo.h"
 
 using namespace std;
 using namespace MiscCommon;

@@ -15,8 +15,6 @@
 #ifndef WORKERSDLG_H_
 #define WORKERSDLG_H_
 
-// Qt
-#include <QTimer>
 // Qt autogen. file
 #include "ui_wgWorkers.h"
 // BOOST
@@ -27,6 +25,8 @@
 // MiscCommon
 #include "MiscUtils.h"
 #include "def.h"
+
+class QTimer;
 
 template <class _T>
 struct SFindComment
@@ -63,27 +63,8 @@ class CWorkersDlg: public QWidget
         }
 
         // Setting a number of connected workers
-        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 )
-        {
-            static size_t nTotal = 0;
-            if ( _Val2 )
-                nTotal = _Val2;
-            MiscCommon::tstring strMsg( _T("Monitor connections (available %1 out of %2 worker(s)):") );
-            MiscCommon::tstringstream ss;
-            ss << _Val1;
-            MiscCommon::replace<MiscCommon::tstring>( &strMsg, _T("%1"), ss.str() );
-            ss.str("");
-            ss << nTotal;
-            MiscCommon::replace<MiscCommon::tstring>( &strMsg, _T("%2"), ss.str() );
-            m_ui.chkShowWorkers->setText( strMsg.c_str() );
-        }
-
-        void restartUpdTimer(int _WorkersUpdInterval)
-        {
-            m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
-            if (m_bMonitorWorkers)
-                m_Timer->start(m_WorkersUpdInterval);
-        }
+        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
+        void restartUpdTimer(int _WorkersUpdInterval);
 
     private:
         void getPROOFCfg( std::string *_FileName );

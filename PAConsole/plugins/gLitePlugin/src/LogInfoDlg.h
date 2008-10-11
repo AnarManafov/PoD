@@ -20,19 +20,19 @@
 
 class CLogInfoDlg: public QDialog
 {
-        Q_OBJECT
+    Q_OBJECT
 
-    public:
-        CLogInfoDlg( QWidget *_parent, const std::string &_gLiteJobID );
-        virtual ~CLogInfoDlg();
+public:
+    CLogInfoDlg( QWidget *_parent, const std::string &_gLiteJobID );
+    virtual ~CLogInfoDlg();
 
-    public slots:
-        int exec();
-        void on_btnSave_clicked();
+public slots:
+    int exec();
+    void on_btnSave_clicked();
 
-    private:
-        Ui::Dialog m_ui;
-        std::string m_gLiteJobID;
+private:
+    Ui::Dialog m_ui;
+    std::string m_gLiteJobID;
 };
 
 #endif /* CLOGINFODLG_H_ */

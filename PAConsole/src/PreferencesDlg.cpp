@@ -12,6 +12,9 @@
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// QT
+#include <QObject>
+// PAConsole
 #include "PreferencesDlg.h"
 
 
