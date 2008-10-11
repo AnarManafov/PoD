@@ -25,4 +25,4 @@ set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
 #
 # Plug-ins
 #
-set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
+set( BUILD_GLITE_PLUGIN ON CACHE BOOL "Build source code documentation" FORCE )

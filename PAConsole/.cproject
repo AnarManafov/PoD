@@ -18,23 +18,7 @@
 <project-mappings/>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
-<storageModule moduleId="org.eclipse.cdt.core.pathentry">
-<pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
-<pathentry kind="mac" name="QT_DLL" path="" value=""/>
-<pathentry kind="mac" name="QT_GUI_LIB" path="" value=""/>
-<pathentry kind="mac" name="QT_XML_LIB" path="" value=""/>
-<pathentry kind="mac" name="QT_CORE_LIB" path="" value=""/>
-<pathentry include="/usr/include" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/QtGui" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/QtXml" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/QtCore" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PAConsole" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PAConsole/src" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PAConsole/Include" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/gLite/external/usr/include" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PAConsole/plugins/gLitePlugin" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PAConsole/plugins/gLitePlugin/src" kind="inc" path="" system="true"/>
-</storageModule>
+
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 <buildTargets>
 <target name="all" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
@@ -131,6 +115,26 @@
 <parser enabled="true"/>
 </scannerInfoProvider>
 </profile>
+</storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
+<storageModule moduleId="org.eclipse.cdt.core.pathentry">
+<pathentry kind="mac" name="QT_DLL" path="" value=""/>
+<pathentry kind="mac" name="QT_GUI_LIB" path="" value=""/>
+<pathentry kind="mac" name="QT_XML_LIB" path="" value=""/>
+<pathentry kind="mac" name="QT_CORE_LIB" path="" value=""/>
+<pathentry include="/usr/include" kind="inc" path="" system="true"/>
+<pathentry include="/usr/include/QtGui" kind="inc" path="" system="true"/>
+<pathentry include="/usr/include/QtXml" kind="inc" path="" system="true"/>
+<pathentry include="/usr/include/QtCore" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/workspace/PAConsole" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/workspace/PAConsole/src" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/workspace/PAConsole/Include" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/gLite/external/usr/include" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/workspace/PAConsole/plugins/gLitePlugin" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/workspace/PAConsole/plugins/gLitePlugin/src" kind="inc" path="" system="true"/>
+<pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
+<pathentry kind="src" path=""/>
+<pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>
 </storageModule>
 </cconfiguration>
 </storageModule>

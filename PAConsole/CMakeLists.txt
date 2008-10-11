@@ -122,9 +122,18 @@ include(CPack)
 #
 # gLite plug-in
 #
+if ( "$ENV{GAW_LOCATION}" STREQUAL "" )
+    set(BUILD_GLITE_PLUGIN OFF)
+endif( "$ENV{GAW_LOCATION}" STREQUAL "" )
+ 
 if (BUILD_GLITE_PLUGIN)
     add_subdirectory ( plugins/gLitePlugin )
     message (STATUS "Build gLite plug-in - YES")
 else (BUILD_GLITE_PLUGIN)
     message (STATUS "Build gLite plug-in - NO")
 endif (BUILD_GLITE_PLUGIN)
+
+#
+# LSF Plug-in
+#
+# !* TODO *!
