@@ -76,9 +76,9 @@ set(BOOST_ROOT "$ENV{BOOST_LOCATION}")
 
 find_package( Boost 1.32 REQUIRED COMPONENTS serialization)
 
-message("BOOST inc. dir.: ${Boost_INCLUDE_DIRS}")
-message("BOOST lib. dir.: ${Boost_LIBRARY_DIRS}")
-message("BOOST libs: ${Boost_LIBRARIES}")
+message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
+message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
+message(STATUS "  libs: ${Boost_LIBRARIES}")
 
 
 #
@@ -143,5 +143,4 @@ set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
                               ".project"
                               ".cproject"
                               ".settings")
-message("CPACK_SOURCE_IGNORE_FILES = ${CPACK_SOURCE_IGNORE_FILES}")
 include(CPack)

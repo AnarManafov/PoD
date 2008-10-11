@@ -62,7 +62,7 @@ target_link_libraries (
     glite-api-wrapper
 )
 
-#INSTALL(TARGETS PAConsole_gLite DESTINATION bin)
+install(TARGETS PAConsole_gLite DESTINATION plugins)
 
 #
 # Package
