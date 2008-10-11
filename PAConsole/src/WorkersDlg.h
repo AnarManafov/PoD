@@ -31,11 +31,11 @@ class QTimer;
 template <class _T>
 struct SFindComment
 {
-    SFindComment( const typename _T::value_type &_CmntSign ): m_CmntSign(_CmntSign)
+    SFindComment( const typename _T::value_type &_CmntSign ): m_CmntSign( _CmntSign )
     {}
-    bool operator() ( const _T &_Val ) const
+    bool operator()( const _T &_Val ) const
     {
-        return ( _Val.find(m_CmntSign) != _Val.npos );
+        return ( _Val.find( m_CmntSign ) != _Val.npos );
     }
 private:
     typename _T::value_type m_CmntSign;
@@ -64,21 +64,21 @@ class CWorkersDlg: public QWidget
 
         // Setting a number of connected workers
         void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
-        void restartUpdTimer(int _WorkersUpdInterval);
+        void restartUpdTimer( int _WorkersUpdInterval );
 
     private:
         void getPROOFCfg( std::string *_FileName );
         int getWorkersFromPROOFCfg();
 
         template<class Archive>
-        void save(Archive & _ar, const unsigned int /*_version*/) const
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_bMonitorWorkers);
+            _ar & BOOST_SERIALIZATION_NVP( m_bMonitorWorkers );
         }
         template<class Archive>
-        void load(Archive & _ar, const unsigned int /*_version*/)
+        void load( Archive & _ar, const unsigned int /*_version*/ )
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_bMonitorWorkers);
+            _ar & BOOST_SERIALIZATION_NVP( m_bMonitorWorkers );
 
             on_chkShowWorkers_stateChanged( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
             m_ui.chkShowWorkers->setCheckState( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
@@ -93,6 +93,6 @@ class CWorkersDlg: public QWidget
         int m_WorkersUpdInterval;
 };
 
-BOOST_CLASS_VERSION(CWorkersDlg, 1)
+BOOST_CLASS_VERSION( CWorkersDlg, 1 )
 
 #endif /*WORKERSDLG_H_*/

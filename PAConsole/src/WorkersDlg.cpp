@@ -189,19 +189,19 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
     static size_t nTotal = 0;
     if ( _Val2 )
         nTotal = _Val2;
-    tstring strMsg( _T("Monitor connections (available %1 out of %2 worker(s)):") );
+    tstring strMsg( _T( "Monitor connections (available %1 out of %2 worker(s)):" ) );
     tstringstream ss;
     ss << _Val1;
-    replace<tstring>( &strMsg, _T("%1"), ss.str() );
-    ss.str("");
+    replace<tstring>( &strMsg, _T( "%1" ), ss.str() );
+    ss.str( "" );
     ss << nTotal;
-    replace<tstring>( &strMsg, _T("%2"), ss.str() );
+    replace<tstring>( &strMsg, _T( "%2" ), ss.str() );
     m_ui.chkShowWorkers->setText( strMsg.c_str() );
 }
 
-void CWorkersDlg::restartUpdTimer(int _WorkersUpdInterval)
+void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 {
     m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
-    if (m_bMonitorWorkers)
-        m_Timer->start(m_WorkersUpdInterval);
+    if ( m_bMonitorWorkers )
+        m_Timer->start( m_WorkersUpdInterval );
 }

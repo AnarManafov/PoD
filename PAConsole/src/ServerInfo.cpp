@@ -23,7 +23,7 @@ using namespace MiscCommon;
 
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
-        return getprocbyname(_Srv);
+    return getprocbyname( _Srv );
 }
 
 bool CServerInfo::IsRunning( bool _check_all ) const

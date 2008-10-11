@@ -53,14 +53,14 @@ class CServerDlg: public QWidget
         bool IsRunning( bool _check_all );
 
         template<class Archive>
-        void save(Archive & _ar, const unsigned int /*_version*/) const
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_PIDDir);
+            _ar & BOOST_SERIALIZATION_NVP( m_PIDDir );
         }
         template<class Archive>
-        void load(Archive & _ar, const unsigned int /*_version*/)
+        void load( Archive & _ar, const unsigned int /*_version*/ )
         {
-            _ar & BOOST_SERIALIZATION_NVP(m_PIDDir);
+            _ar & BOOST_SERIALIZATION_NVP( m_PIDDir );
 
             // pid/log directory
             MiscCommon::smart_path( &m_PIDDir );
@@ -75,6 +75,6 @@ class CServerDlg: public QWidget
         std::string m_PIDDir;
 };
 
-BOOST_CLASS_VERSION(CServerDlg, 1)
+BOOST_CLASS_VERSION( CServerDlg, 1 )
 
 #endif /*SERVERDLG_H_*/
