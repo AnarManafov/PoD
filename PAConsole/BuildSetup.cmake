@@ -21,3 +21,8 @@ set( Boost_USE_MULTITHREADED OFF CACHE BOOL "BOOST" FORCE )
 # Documentation
 #
 set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
+
+#
+# Plug-ins
+#
+set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )

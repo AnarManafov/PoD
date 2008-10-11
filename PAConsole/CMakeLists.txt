@@ -27,6 +27,7 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # Options
 #
 option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
+option(BUILD_GLITE_PLUGIN "Build gLite plug-in" OFF)
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h
@@ -121,4 +122,9 @@ include(CPack)
 #
 # gLite plug-in
 #
-add_subdirectory ( plugins/gLitePlugin )
+if (BUILD_GLITE_PLUGIN)
+    add_subdirectory ( plugins/gLitePlugin )
+    message (STATUS "Build gLite plug-in - YES")
+else (BUILD_GLITE_PLUGIN)
+    message (STATUS "Build gLite plug-in - NO")
+endif (BUILD_GLITE_PLUGIN)
