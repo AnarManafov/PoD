@@ -34,3 +34,4 @@ set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
 
 # gLite plug-in
 set( BUILD_GLITE_PLUGIN ON CACHE BOOL "Build source code documentation" FORCE )
+
