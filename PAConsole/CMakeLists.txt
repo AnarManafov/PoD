@@ -138,14 +138,6 @@ install(TARGETS PAConsole DESTINATION bin)
 
 # excluding build directory
 # excluding svn files and Eclipse project files
-set(CPACK_SOURCE_IGNORE_FILES "/CMakeFiles/"
-			      "_CPack_Packages/"
-			      "~"
-			      "CMakeCache.txt"
-			      ".cmake$"
-			      ".directory$"
-			      ".svn"
-                              ".project"
-                              ".cproject"
-                              ".settings")
+SET(CPACK_SOURCE_IGNORE_FILES
+"/\\\\.;~$;/_;build/;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
 include(CPack)
