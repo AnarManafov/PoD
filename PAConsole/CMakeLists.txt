@@ -138,8 +138,7 @@ install(TARGETS PAConsole DESTINATION bin)
 
 # excluding build directory
 # excluding svn files and Eclipse project files
-set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
-                              ".svn"
+set(CPACK_SOURCE_IGNORE_FILES ".svn"
                               ".project"
                               ".cproject"
                               ".settings")
