@@ -138,6 +138,8 @@ install(TARGETS PAConsole DESTINATION bin)
 
 # excluding build directory
 # excluding svn files and Eclipse project files
-SET(CPACK_SOURCE_IGNORE_FILES
+SET(CPACK_GENERATOR "TGZ")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_IGNORE_FILES
 "/\\\\.;~$;/_;build/;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
 include(CPack)
