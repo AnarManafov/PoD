@@ -10,27 +10,26 @@
 ##
 ##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
+VERSION=2.0.7
 
+###
 ############ Vars ######################
-VERSION=2.0.6
-
+# Users may change these variables
+###
 INSTALL_PATH=/tmp/test/gLitePROOFpackage
 
-GAW_PKG=glite-api-wrapper-3.2.0.1974
-GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/GAW/
+
+GAW_PKG=glite-api-wrapper-3.2.0
+GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly/
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
-PROOFAgent_PKG=proofagent-1.0.5.1977
-PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF/
+PROOFAgent_PKG=proofagent-1.0.5
+PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly/
 PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
 
-PAConsole_PKG=PAConsole-1.0.5
-PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/gLitePROOF/
-PAConsole_OPTIONS=
-# Qt 4.2.3
-export QTDIR=/usr/lib/qt4
-export QTINC=/usr/include
-export QTLIB=/usr/lib/qt4
+PAConsole_PKG=PAConsole-1.0.6-Source
+PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly/
+PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # gLite
 #export GLITE_LOCATION=
 export XERCESC_LOCATION=$GLITE_LOCATION/../external/opt/xerces-c
@@ -44,17 +43,15 @@ TMP_PATH=$APP_PATH/tmp
 ########################################
 
 
-
-
-
-
+###
 ############ Funstions ##################
+###
 CreateCFG()
 {
-echo "Creating default cfg files..."
+    echo "---> INFO: Creating default cfg files..."
 # generating gLitePROOF_ENV.sh
-   cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
-   eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
+    cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
+    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
     MASTER_HOST=`hostname -f`
@@ -67,14 +64,14 @@ echo "Creating default cfg files..."
 # generating proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
-
+    
     return 0
 }
 
 _GetModule() #parameters: $1 - package name; $2 - URL
 {
-   wget --tries=2 --directory-prefix=$TMP_PATH $2/$1.tar.gz  || return 1
-   tar -C $APP_PATH -xzf $TMP_PATH/$1.tar.gz || return 1
+    wget --tries=2 --directory-prefix=$TMP_PATH $2/$1.tar.gz  || return 1
+    tar -C $APP_PATH -xzf $TMP_PATH/$1.tar.gz || return 1
 }
 
 InstallGAW()
@@ -98,7 +95,7 @@ InstallGAW()
     fi
   
     echo
-    echo "---> GAW has been installed."
+    echo "---> INFO: GAW has been installed."
     return 0
 }
 
@@ -113,29 +110,42 @@ InstallPROOFAgent()
     popd
        
     echo
-    echo "---> PROOFAgent has been installed."
+    echo "---> INFO: PROOFAgent has been installed."
     return 0
 }
 
 InstallPAConsole()
 {
     _GetModule $PAConsole_PKG $PAConsole_LINK
-
-    pushd  $APP_PATH/$PAConsole_PKG
-    ./build.sh ||  (popd; return 1)
-    cp Build/PAConsole $INSTALL_PATH/bin/
+ 
+    pushd  $APP_PATH/$PAConsole_PKG || return 1
+    eval cmake $PAConsole_OPTIONS -C BuildSetup.cmake . ||  (popd; return 1)
+    gmake install || (popd; return 1)
     popd
     
     echo
-    echo "---> PAConsole has been installed."
+    echo "---> INFO: PAConsole has been installed."
     return 0
 }
 
 InstallApps()
 {
     mkdir -p $TMP_PATH
+    
+    InstallGAW
+    GAW_RET_VAL=$?
+    echo
+    echo
+    if [ "X$GAW_RET_VAL" != "X0" ]; then
+	echo "---> WARNING: Can't install gLite API Wrapper (GAW) library."
+	echo "---> WARNING: Do you want to use gLite plug-in?"
+	echo "---> WARNING: Without GAW there can be no gLite plug-in for PAConsole installed."
+	echo "---> WARNING: Please fix GAW configuration options (in the install script) and resolve missing dependencies, if you still want to use gLite plug-in for PAConsole."
+	echo
+	echo "Press any key to continue, or Ctrl+C to abort..."
+	read -s -n 1	
+    fi
 
-    InstallGAW || return 1
     InstallPROOFAgent || return 1
     InstallPAConsole || return 1
 
@@ -159,19 +169,21 @@ RET_VAL=$?
 echo
 echo
 if [ "X$RET_VAL" = "X0" ]; then
-  echo "---> All gLitePROOF modules have been successfully installed."
+  echo "---> INFO: All gLitePROOF modules have been successfully installed."
 else
   echo "---> ERROR: Failed to install gLitePROOF modules."
 fi
 
-echo "---> deleting temporary files..."
-rm -rf $TMP_PATH
+if [[ -d $TMP_PATH ]]; then
+    echo "---> INFO: deleting temporary files..."
+    rm -rf $TMP_PATH
+fi
 
 if [ "X$RET_VAL" != "X0" ]; then
     exit 1;
 fi
 
-CreateCFG || (echo "Error: can't create cfg files."; exit 1)
+CreateCFG || (echo "---> Error: can't create cfg files."; exit 1)
 
 echo "Installation successfully done."
 exit 0
