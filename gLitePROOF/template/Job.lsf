@@ -1,0 +1,44 @@
+#! /bin/bash
+
+#/************************************************************************/
+##/**
+## * @file Job.lsf
+## * @brief an LSF job script
+## * @author Anar Manafov A.Manafov@gsi.de
+## *//*
+##
+##        version number:    $LastChangedRevision$
+##        created by:        Anar Manafov
+##                           2008-10-13
+##        last changed by:   $LastChangedBy$ $LastChangedDate$
+##
+##        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##*************************************************************************/
+
+#BSUB-q proof
+#BSUB-o std_%J.out
+#BSUB-e std_%J.er
+
+# create a working folder
+WRK_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+
+cd $WRK_DIR || return 1
+
+cp /misc/manafov/gLitePROOF_Test/gLitePROOFpackage/etc/xpd.cf  $WRK_DIR/
+cp /misc/manafov/gLitePROOF_Test/gLitePROOFpackage/etc/proofagent.cfg.xml  $WRK_DIR/
+cp /misc/manafov/gLitePROOF_Test/gLitePROOFpackage/etc/gLitePROOF.sh  $WRK_DIR/
+
+# ROOT version
+export ROOTSYS=/misc/manafov/ROOT/root_trunk_64b/root
+export PATH=$ROOTSYS/bin:$PATH
+export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+
+$WRK_DIR/gLitePROOF.sh
+
+cp $WRK_DIR/proof_log.tgz /misc/manafov/gLitePROOF_Test/gLitePROOFpackage/
+
+if [[ -d $WRK_DIR ]]; then
+	rm -rf $WRK_DIR
+fi
+
+return 0
