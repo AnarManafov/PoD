@@ -20,8 +20,8 @@ Introduction
     	(<acronym>GAW</acronym>) to perform gLite job submission and other Grid-related procedures.
     	</para>
     	<para>
-    	<application>gLitePROOF</application> consists of the following main components:
 		<itemizedlist>
+			<title><application>gLitePROOF</application> consists of the following main components:</title>
   			<listitem>
     			<para>
     			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
