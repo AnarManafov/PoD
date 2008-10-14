@@ -77,7 +77,7 @@ How to run
     <sect1 id="Grid_workers">
       <title>Grid workers</title>
       <para>
-      As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nods.
+      As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
       </para>
       <para>
       Select the Grid page of the PACosnle by clicking on the left sided tool bar. The page looks something like
@@ -175,7 +175,7 @@ How to run
       <title>PROOF workers</title>
       <para>
        As soon as a single job reaches gLite WN, it tries to connect to gLitePROOF server to transfer information
-       about itself and environment of WN. When negotiations are done and gLitePROOF server excepts WNs, it became a normal
+       about itself and environment of WN. When negotiations are done and gLitePROOF server accepts WNs, it became a normal
        PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
        (see the <xref linkend="PAConsole_Workers"/>).        
           <para><figure float="0" id="PAConsole_Workers">
@@ -197,7 +197,7 @@ How to run
        <tip><para>
        gLitePROOF supports reconnection. That means if your analysis has a bug or a root session crashed you wouldn't
        need to resubmit gLitePROOF job. You just need to close current root session, open it again. gLitePROOF will manage
-       reconnection with its worker nodes automatically. Worker nods will be online until the PROOFAgent service is online or
+       reconnection with its worker nodes automatically. Worker nodes will be online until the PROOFAgent service is online or
        until the Grid queue time is over.
        </para></tip>
        </sect1>
