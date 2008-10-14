@@ -17,10 +17,20 @@ Requirements
         local workspace. There gLitePROOF server is running.
         </para>
         <para>
-        Workspace requirements:
+	<itemizedlist>
+		<title>General workspace requirements: </title>
+		<listitem>ROOT 5.18+ (xrootd enabled)</listitem>
+		<listitem>Qt 4.2.x</listitem>
+		<listitem>BOOST 1.32</listitem>
+		<listitem>cmake 2.6.2</listitem>
+	</itemizedlist>
         <itemizedlist>
-        <listitem><para>ROOT 5.18+ (xrootd enabled)</para></listitem>
-        <listitem><para>gLite UI 3.1</para></listitem>
+                <title>Additional requirements for gLite plug-in: </title>
+                <listitem>gLite UI 3.1</listitem>
+        </itemizedlist>
+        <itemizedlist>
+                <title>Additional requirements for LSF plug-in: </title>
+                        <listitem>LSF 6.1 API (headers und libraries)</listitem>
         </itemizedlist>
         </para>
         </sect1>
@@ -30,14 +40,17 @@ Requirements
        We define workers' workspace as a side which is located on the remote space,
        gLite Grid Worker Nodes, for example.
         Clients are actually workers for us. For simplification we will call it a remote workspace.
-       </para>       
-        <para>
-        Workspace requirements:
-        <itemizedlist>
-        <listitem><para>gLite WMS (WMProxy endpoint)</para></listitem>
-        <listitem><para>gLite WNs (at least v3.0)</para></listitem>
-        <listitem><para>Outgoing connection for GLOBUS ports (configurable)</para></listitem>   
-        </itemizedlist>
+       	</para>       
+       	<para>
+       	<itemizedlist>
+       		<title>General workspace requirements: </title>
+                <listitem>Outgoing connection for GLOBUS ports (configurable)</listitem>
+	</itemizedlist>
+       	<itemizedlist>
+        	<title>Additional requirements for gLite plug-in: </title>
+                <listitem>gLite WMS (WMProxy endpoint)</listitem>
+		<listitem>gLite WNs (at least v3.0)</listitem>
+	</itemizedlist>
         </para>
         </sect1>   
   </chapter>
