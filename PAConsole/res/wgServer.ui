@@ -13,22 +13,10 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
+   <property name="margin" >
     <number>9</number>
    </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
+   <property name="spacing" >
     <number>6</number>
    </property>
    <item row="0" column="0" >
@@ -37,22 +25,10 @@
       <string>Server</string>
      </property>
      <layout class="QGridLayout" >
-      <property name="leftMargin" >
+      <property name="margin" >
        <number>9</number>
       </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
-       <number>9</number>
-      </property>
-      <property name="horizontalSpacing" >
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing" >
+      <property name="spacing" >
        <number>6</number>
       </property>
       <item row="1" column="2" >
@@ -70,22 +46,10 @@
       </item>
       <item row="0" column="2" >
        <layout class="QGridLayout" >
-        <property name="leftMargin" >
+        <property name="margin" >
          <number>0</number>
         </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <property name="horizontalSpacing" >
-         <number>6</number>
-        </property>
-        <property name="verticalSpacing" >
+        <property name="spacing" >
          <number>6</number>
         </property>
         <item row="1" column="0" >
@@ -137,28 +101,18 @@
       </item>
       <item rowspan="2" row="0" column="0" colspan="2" >
        <layout class="QGridLayout" >
-        <property name="leftMargin" >
+        <property name="margin" >
          <number>0</number>
         </property>
-        <property name="topMargin" >
-         <number>0</number>
-        </property>
-        <property name="rightMargin" >
-         <number>0</number>
-        </property>
-        <property name="bottomMargin" >
-         <number>0</number>
-        </property>
-        <property name="horizontalSpacing" >
-         <number>6</number>
-        </property>
-        <property name="verticalSpacing" >
+        <property name="spacing" >
          <number>6</number>
         </property>
         <item row="0" column="0" >
          <widget class="QLabel" name="label" >
           <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+           <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
