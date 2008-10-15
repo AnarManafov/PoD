@@ -82,6 +82,11 @@ CreateCFG()
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' test/simple_test0.C
     eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' test/simple_test0.C
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' test/simple_test0.C    
+    
+# linking datafile for tests
+    ln -s test/dstarmb.root  test/dstarmb1.root
+# creating a log dir
+    mkdir log
 
     return 0
 }
