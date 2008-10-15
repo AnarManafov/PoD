@@ -19,20 +19,19 @@
 # then you can't use WNs as a xrootd POOLs and need
 # to find another source of data files, like an external XROOTD cluster
 # or any other source.
+#
 xrd.port 20094 #1094
 #
 ## FS lib
-xrootd.fslib libXrdOfs.so
 #
-## Specify a valid path prefix for file requests.
-## uncomment if you want to help the WN pools
-#xrootd.export /tmp
+xrootd.fslib libXrdOfs.so
 #
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.
 ## Up to 32 characters are needed to define actual socket files;
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 ## comment if you want to help the WN pools
+#
 if  _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
  xrootd.export /opt/PROOF_DATA/
@@ -41,43 +40,12 @@ else
  xrootd.export _G_WRK_DIR/
 fi
 #
-# Uncomment this block if you want gLitePROOF to manage data pools on WNs
-# The if block above must be comments then.
-#
-#if _G_MASTER_HOSTNAME
-# xrd.adminpath _G_SERVER_TMP_DIR group
-# all.role manager
-# all.manager _G_MASTER_HOSTNAME:3132
-# ofs.maxdelay 30
-# olb.port 3132
-# olb.delay startup 15 drop 30s lookup 2
-# oss.cache public  /tmp*
-# else
-#  xrd.adminpath _G_WORKER_TMP_DIR group
-#   all.role server
-#  all.manager _G_MASTER_HOSTNAME:3132
-#fi
-#
-#
-##
-#olb.space linger 0 recalc 15 min 500m 600m
-#
-##
-#olb.path w /tmp
-#
-##
-#olb.allow host *
-#
-##
-#oss.path /tmp r/w
-#
 ## logging
+#
 xrd.trace all debug
-#odc.trace all debug
-#ofs.trace all debug
-#olb.trace all debug
 #
 ## setting a PROOF temp dir.
+#
 if _G_MASTER_HOSTNAME
  set PROOFTMP=_G_SERVER_TMP_DIR
 else
@@ -86,56 +54,29 @@ fi
 #
 ## Load the XrdProofd protocol:
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
+#
 if exec xrootd
  xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
 fi
 #
-## GSI Authentication with the server
-#--> Uncomment it if you want to use GSI authentication with your redirector
-#if _G_MASTER_HOSTNAME
-#xpd.seclib libXrdSec.so
-#xpd.sec.protocol gsi -d:1 -certdir:/home/anar/gLite/external/etc/grid-security/certificates -cert:/home/anar/svn/grid/certificates/hosts/depc218/hostcert.pem -key:/home/anar/svn/grid/certificates/hosts/depc218/hostkey.pem
-#fi
-
-#
-##
 ## Resource finder
-## NB: 'if <pattern>' not supported for this directive.
-## xpd.resource static [<cfg_file>] [ucfg:<user_cfg_opt>]  [wmx:<max_workers>] [selopt:<selection_mode>]
-## "static", i.e. using a config file
-##   <cfg_file>          path alternative config file
-##                       [$ROOTSYS/proof/etc/proof.conf]
-##   <user_cfg_opt>      if "yes": enable user private config files at
-##                       $HOME/.proof.conf or $HOME/.<usr_def>, where
-##                       <usr_cfg> is the second argument to
-##                       TProof::Open("<master>","<usr_cfg>") ["no"]
-##   <max_workers>       Maximum number of workers to be assigned to user
-##                       session [-1, i.e. all]
-##   <selection_mode>    If <max_workers> != -1, specify the way workers
-##                       are chosen:
-##                       "roundrobin"  round-robin selection in bunches
-##                                     of n(=<max_workers>) workers.
-##                                     Example:
-##                                     N = 10 (available workers), n = 4:
-##                                     1st (session): 1-4, 2nd: 5-8,
-##                                     3rd: 9,10,1,2, 4th: 3-6, ...
-##                         "random"    random choice (a worker is not
-##                                     assigned twice)
+#
 if _G_MASTER_HOSTNAME
  xpd.resource static ~/proof.conf
 else
  xpd.resource static _G_WRK_DIR/proof.conf
  xpd.workdir _G_WRK_DIR/proof
 fi
-
 #
 ## Server role (master, submaster, worker) [default: any]
 ## Allows to control the cluster structure.
+#
 if _G_MASTER_HOSTNAME
 xpd.role master
 else
 xpd.role worker
 fi
-
+#
+## Log
+#
 xpd.trace all debug
-

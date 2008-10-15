@@ -1,0 +1,69 @@
+#! /bin/bash
+
+#/************************************************************************/
+##/**
+## * @file Job.lsf
+## * @brief an LSF job script
+## * @author Anar Manafov A.Manafov@gsi.de
+## *//*
+##
+##        version number:    $LastChangedRevision$
+##        created by:        Anar Manafov
+##                           2008-10-13
+##        last changed by:   $LastChangedBy$ $LastChangedDate$
+##
+##        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##*************************************************************************/
+
+#
+# TODO: Script must support LSF with no shared dirs
+#
+
+#BSUB-J "gLitePROOF[1-2]"
+#BSUB-q proof
+#BSUB-oo _G_WRK_DIR/log/std_%J-%I.out
+#BSUB-L /bin/bash
+
+
+######################################################
+
+######################################################
+#
+## working directory
+#
+G_WRK_DIR=_G_WRK_DIR
+#
+## log dir
+#
+LOG_DIR=$G_WRK_DIR/log/$LSB_JOBID
+mkdir -p $LOG_DIR
+#
+## create a working folder
+#
+WRK_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+cd $WRK_DIR || return 1
+#
+## input files.
+## we don't use BSUB-f since it doens't support env. variables in paths
+#
+cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
+cp $G_WRK_DIR/etc/proofagent.cfg.xml $WRK_DIR/proofagent.cfg.xml
+cp $G_WRK_DIR/etc/gLitePROOF.sh $WRK_DIR/gLitePROOF.sh
+#
+## Here you can specify your own version of ROOT
+## or you can delete -r <ROOTSYS> parameter and 
+## gLitePROOF will use its own settings
+#
+$WRK_DIR/gLitePROOF.sh -r "/misc/manafov/ROOT/root_trunk_64b/root"
+#
+## logs
+#
+cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
+cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$LSB_JOBINDEX.log
+cp $WRK_DIR/proofagent.client.log $LOG_DIR/proofagent.client_$LSB_JOBINDEX.log 
+
+if [[ -d $WRK_DIR ]]; then
+	rm -rf $WRK_DIR
+fi
+
+return 0
