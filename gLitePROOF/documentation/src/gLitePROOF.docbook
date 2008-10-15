@@ -12,9 +12,9 @@
 <!ENTITY Support SYSTEM "Support.docbook">
 ]>
 
-<book id="gLitePROOF" lang="en">
+<book id="XPOD" lang="en">
 <bookinfo>
-<title>gLitePROOF v2.0.7</title> 
+<title>XPROOF on Demand v2.0.7</title> 
   <authorgroup>
     <author>
        <firstname>Anar</firstname>
@@ -24,7 +24,7 @@
          </affiliation>
     </author>
   </authorgroup>
-  <edition>gLitePROOF v2.0.7</edition>
+  <edition>XPROOF on Demand v2.0.7</edition>
   <copyright>
 	<year>2007</year>
 	<year>2008</year>
