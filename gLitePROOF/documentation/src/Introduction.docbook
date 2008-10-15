@@ -11,35 +11,35 @@ Introduction
    	<sect1 id="XPROOF-on-Demand">
       <title>XPROOF on Demand</title>
     	<para>
-    	<application>XPROOF on Demand (XPOD)</application> – a specially designed solution to provide a PROOF cluster on demand.
+    	<application>XPROOF on Demand (POD)</application> – a specially designed solution to provide a PROOF cluster on demand.
     	It is developed at GSI (Darmstadt, Germany) in terms of a D-Grid project and aims to implement a PROOF distributed
     	data analysis on Grid and batch clusters.
     	</para>
     	<para>
-    	<application>XPOD</application> provides a plug-in system, which helps to use it with different job submission machinaries.
-    	Current implementation of XPOD ships a gLite plug-in (for gLite Grid) and LSF plug-in (for LSF batch system). 
+    	<application>POD</application> provides a plug-in system, which helps to use it with different job submission machinaries.
+    	Current implementation of POD ships a gLite plug-in (for gLite Grid) and LSF plug-in (for LSF batch system). 
     	The gLitye plug-in uses <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/GAW">glite-api-wrapper library</ulink>
     	(<acronym>GAW</acronym>) to perform gLite job submission and other Grid-related procedures.
     	</para>
     	<para>
 		<itemizedlist>
-			<title><application>XPOD</application> consists of the following main components:</title>
+			<title><application>POD</application> consists of the following main components:</title>
   			<listitem>
     			<para>
     			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
     			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
     			remote worker nodes behind a firewall. Also PROOFAgent has a number of additional
     			useful functionalities which help to start, process, and control PROOF interactive analysis.
-    			Its default configuration file is provided with the XPODs distribution.
+    			Its default configuration file is provided with the PODs distribution.
     			</para>
   			</listitem>
   		  	<listitem>
     			<para>
                 <guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
-                to simplify the usage of PROOFAgent and XPOD configuration files.
+                to simplify the usage of PROOFAgent and POD configuration files.
                 PACosnole implements a plug-in system, which helps to have different job managers and
                 submit workers to a different Grid or batch systems.
-                Currently XPOD provides gLite and LSF plug-ins.
+                Currently POD provides gLite and LSF plug-ins.
     			</para>
   			</listitem>
   		  	<listitem>
@@ -51,13 +51,13 @@ Introduction
   		  	<listitem>
     			<para>
     			<guilabel>Server_gLitePROOF.sh</guilabel> &mdash; a server side script. Helps to start/stop
-    			services of XPOD. Could be used via command line or PAConsole GUI.
+    			services of POD. Could be used via command line or PAConsole GUI.
     			</para>
   			</listitem>
   		  	<listitem>
     			<para>
     			<guilabel>gLitePROOF.jdl</guilabel> &mdash; a JDL file, describes a generic, parametric Grid job,
-    			which is submitted to gLite and aims to execute XPOD workers on Grid worker nodes.  
+    			which is submitted to gLite and aims to execute POD workers on Grid worker nodes.  
     			</para>
   			</listitem>
   			<listitem>
@@ -67,8 +67,8 @@ Introduction
   			</listitem>
   			<listitem>
     			<para>
-    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of XPOD and
-    			should be sourced before a use of XPOD.  
+    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of POD and
+    			should be sourced before a use of POD.  
     			</para>
 			</listitem>
 			  	<listitem>
@@ -79,8 +79,8 @@ Introduction
 		</itemizedlist>
 		</para>
 		<para>
-		<figure id="fig_XPOD" float="0">
-			<title>A generic schema of XPOD</title>
+		<figure id="fig_POD" float="0">
+			<title>A generic schema of POD with gLite plug-in</title>
 			<screenshot><mediaobject>
 			<imageobject>
 			<imagedata fileref="gLite_PROOF.png" format="PNG"/>
@@ -95,7 +95,7 @@ Introduction
 		<sect1 id="use_case">
       <title>Use case</title>
 		<para>
-		The following describes one of the main use case of XPOD (see <xref linkend="fig_XPOD"/>):
+		The following describes one of the main use case of POD (see <xref linkend="fig_POD"/>):
 		<orderedlist>
   		<title>Set up PROOF on the Grid</title>
   			<listitem>
@@ -106,7 +106,7 @@ Introduction
     			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
 			</listitem>
 			<listitem>
-				<para>Using PAConsole the user submits XPOD parametric job to the Grid.</para>
+				<para>Using PAConsole the user submits POD parametric job to the Grid.</para>
 			</listitem>
 			<listitem>
 				<para>When the job arrives to a remote worker node it configures the environment
@@ -130,7 +130,7 @@ Introduction
 			</listitem>
 			<listitem>
 				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
-				XPOD Grid jobs.</para>
+				POD Grid jobs.</para>
 			</listitem>			
 			</orderedlist>
 		</para>

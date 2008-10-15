@@ -14,7 +14,7 @@
 
 <book id="XPOD" lang="en">
 <bookinfo>
-<title>XPROOF on Demand v2.0.7</title> 
+<title>PROOF on Demand - a POD project (v.2.0.7)</title> 
   <authorgroup>
     <author>
        <firstname>Anar</firstname>
@@ -24,7 +24,7 @@
          </affiliation>
     </author>
   </authorgroup>
-  <edition>XPROOF on Demand v2.0.7</edition>
+  <edition>PROOF on Demand v2.0.7</edition>
   <copyright>
 	<year>2007</year>
 	<year>2008</year>

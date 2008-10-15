@@ -1,6 +1,6 @@
 
 SRC=\
-	XPOD.docbook\
+	POD.docbook\
 	Introduction.docbook\
 	Requirements.docbook\
 	Installation.docbook\
@@ -12,7 +12,7 @@ SRC=\
 	Support.docbook
 
 
-DOCBOOK=XPOD.docbook
+DOCBOOK=POD.docbook
 
 HTML_OUT_DIR=../html_help
 
