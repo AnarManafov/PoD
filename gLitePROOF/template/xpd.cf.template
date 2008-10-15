@@ -34,7 +34,7 @@ xrootd.fslib libXrdOfs.so
 #
 if  _G_MASTER_HOSTNAME
  xrd.adminpath _G_SERVER_TMP_DIR group
- xrootd.export /opt/PROOF_DATA/
+ xrootd.export _G_XRD_EXPORT_DIR
 else
  xrd.adminpath _G_WORKER_TMP_DIR group
  xrootd.export _G_WRK_DIR/
