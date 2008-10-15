@@ -1,6 +1,6 @@
 
 SRC=\
-	gLitePROOF.docbook\
+	XPOD.docbook\
 	Introduction.docbook\
 	Requirements.docbook\
 	Installation.docbook\
@@ -12,7 +12,7 @@ SRC=\
 	Support.docbook
 
 
-DOCBOOK=gLitePROOF.docbook
+DOCBOOK=XPOD.docbook
 
 HTML_OUT_DIR=../html_help
 
