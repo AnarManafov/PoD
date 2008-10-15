@@ -18,6 +18,8 @@ VERSION=2.0.7
 ###
 INSTALL_PATH=/tmp/test/gLitePROOFpackage
 
+PROOF_PORT=21093
+
 
 GAW_PKG=glite-api-wrapper-3.2.0
 GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly/
@@ -49,28 +51,33 @@ TMP_PATH=$APP_PATH/tmp
 CreateCFG()
 {
     echo "---> INFO: Creating default cfg files..."
-# generating gLitePROOF_ENV.sh
+# generating ./gLitePROOF_ENV.sh
     cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
 
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
     MASTER_HOST=`hostname -f`
-# generating xpd.cf
+# generating etc/xpd.cf
     cp -f template/xpd.cf.template etc/xpd.cf
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd.cf
     # populating the tmp dir.
     _TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
 
-# generating proofagent.cfg.xml
+# generating etc/proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
 
-# generating Job.lsf
+# generating etc/Job.lsf
     cp -f template/Job.lsf.template etc/Job.lsf
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' etc/Job.lsf
-    
+
+# generate test/simple_test0.C
+    cp -f template/simple_test0.C.template test/simple_test0.C
+    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' test/simple_test0.C
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' test/simple_test0.C
+    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' test/simple_test0.C
     return 0
 }
 

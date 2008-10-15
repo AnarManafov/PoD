@@ -19,11 +19,11 @@
   TDSet *set = new TDSet( "TTree","h42" );
   
   // Files to analyze 
-  set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
-  set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
+  set->Add( "root://_G_MASTER_HOSTNAME:20094//_G_WRK_DIR/test/dstarmb.root" );
+  set->Add( "root://_G_MASTER_HOSTNAME:20094//_G_WRK_DIR/test/dstarmb.root" );
   
   // connecting to local PROOF server
-  proof = TProof::Open( "localhost" );
+  proof = TProof::Open( "_G_MASTER_HOSTNAME:_G_PROOF_PORT" );
   
   // Processing our test analysis
   set->Process( "test/myselector.C" );
