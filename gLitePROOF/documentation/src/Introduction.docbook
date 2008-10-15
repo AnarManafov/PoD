@@ -8,10 +8,10 @@ Introduction
   	 		<pubdate>$Date$</pubdate>
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
-   	<sect1 id="XPROOF-on-Demand">
-      <title>XPROOF on Demand</title>
+   	<sect1 id="PROOF-on-Demand">
+      <title>PROOF on Demand</title>
     	<para>
-    	<application>XPROOF on Demand (POD)</application> – a specially designed solution to provide a PROOF cluster on demand.
+    	<application>PROOF on Demand (POD)</application> – a specially designed solution to provide a PROOF cluster on demand.
     	It is developed at GSI (Darmstadt, Germany) in terms of a D-Grid project and aims to implement a PROOF distributed
     	data analysis on Grid and batch clusters.
     	</para>
