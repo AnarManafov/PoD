@@ -84,7 +84,7 @@ CreateCFG()
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' test/simple_test0.C    
     
 # linking datafile for tests
-    ln -s test/dstarmb.root  test/dstarmb1.root
+    ln -s test/dstarmb.root dstarmb1.root
 # creating a log dir
     mkdir log
 
