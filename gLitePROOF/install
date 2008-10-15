@@ -69,6 +69,7 @@ CreateCFG()
 # generating etc/proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
+    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/proofagent.cfg.xml
 
 # generating etc/Job.lsf
     cp -f template/Job.lsf.template etc/Job.lsf
@@ -79,6 +80,7 @@ CreateCFG()
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' test/simple_test0.C
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' test/simple_test0.C
     eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' test/simple_test0.C
+
     return 0
 }
 

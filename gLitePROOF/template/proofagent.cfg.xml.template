@@ -30,7 +30,7 @@
 			<agent_client>
 				<server_port>21111</server_port>
 				<server_addr>_G_MASTER_HOSTNAME</server_addr>
-				<local_proofd_port>1093</local_proofd_port>
+				<local_proofd_port>_G_PROOF_PORT</local_proofd_port>
 			</agent_client>
 		</instance>
 	</instances>
