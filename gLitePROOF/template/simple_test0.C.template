@@ -20,7 +20,7 @@
   
   // Files to analyze 
   set->Add( "root://_G_MASTER_HOSTNAME:20094//_G_WRK_DIR/test/dstarmb.root" );
-  set->Add( "root://_G_MASTER_HOSTNAME:20094//_G_WRK_DIR/test/dstarmb.root" );
+  set->Add( "root://_G_MASTER_HOSTNAME:20094//_G_WRK_DIR/test/dstarmb1.root" );
   
   // connecting to local PROOF server
   proof = TProof::Open( "_G_MASTER_HOSTNAME:_G_PROOF_PORT" );

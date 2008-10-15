@@ -64,6 +64,7 @@ CreateCFG()
     # populating the tmp dir.
     _TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
+    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd.cf
 
 # generating etc/proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml

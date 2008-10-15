@@ -56,7 +56,7 @@ fi
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 #
 if exec xrootd
- xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
+ xrd.protocol xproofd:_G_PROOF_POR libXrdProofd.so tmp:/$PROOFTMP
 fi
 #
 ## Resource finder
