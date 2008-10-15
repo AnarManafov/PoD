@@ -14,14 +14,20 @@
 #
 #        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
 #*************************************************************************/
+#
+# Arguments for the script:
+#
+# -r <ROOTSYS> : gLitePROOF will not install its own version of ROOT on workers, instead it will use provided ROOTSYS
+#
+#
 
 # ************************************************************************
 # ***** Perform program exit housekeeping *****
 function clean_up {
 # Killing all xrootd in anyway (TODO: must be removed, needs an elegant solution)
    # pkill -9 olbd
-    pkill -9 xrootd
-    pkill -9 proofserv
+    pkill -9 -U $UID xrootd
+    pkill -9 -U $UID proofserv
     
 # Archive and removing local proof directory
     _WD=`pwd`
@@ -37,6 +43,21 @@ function clean_up {
     exit $1
 }
 # ************************************************************************
+
+
+# ************************************************************************
+# ***** Arguments *****
+WN_INSTALL_ROOT=True
+WN_ROOTSYS=
+while getopts "r:" Option
+do
+  case $Option in
+    r) 
+	  WN_INSTALL_ROOT=False 
+	  WN_ROOTSYS=$OPTARG ;;
+  esac
+done
+
 
 
 # ************************************************************************
@@ -104,12 +125,18 @@ esac
 
 # ****************
 # ***** ROOT *****
-wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || clean_up 1
-tar -xzvf $ROOT_ARC || clean_up 1
+if [ "$WN_INSTALL_ROOT" = "True" ]; then
+    wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || clean_up 1
+    tar -xzvf $ROOT_ARC || clean_up 1
 
-export ROOTSYS="/$WD/root"
-export PATH=$ROOTSYS/bin:$PATH
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+    export ROOTSYS="/$WD/root"
+    export PATH=$ROOTSYS/bin:$PATH
+    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+else
+    export ROOTSYS=$WN_ROOTSYS
+    export PATH=$ROOTSYS/bin:$PATH
+    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
+fi
 
 # **********************
 # ***** PROOFAgent *****

@@ -33,11 +33,15 @@ cp --target-directory=$PKG_NAME -rv \
     ReleaseNotes \
     || exit 1
 
-rm -rf $PKG_NAME/bin/.svn
-rm -rf $PKG_NAME/documentation/.svn
-rm -rf $PKG_NAME/etc/.svn
-rm -rf $PKG_NAME/template/.svn
-rm -rf $PKG_NAME/test/.svn
+if [[ -d $PKG_NAME  ]] ; then
+	rm -rf $PKG_NAME/bin/.svn
+	rm -rf $PKG_NAME/documentation/.svn
+	rm -rf $PKG_NAME/documentation/src/img/.svn
+	rm -rf $PKG_NAME/documentation/src/.svn
+	rm -rf $PKG_NAME/etc/.svn
+	rm -rf $PKG_NAME/template/.svn
+	rm -rf $PKG_NAME/test/.svn
+fi
 
 # a revision number
 REV=`svn info https://subversion.gsi.de/dgrid/gLitePROOF/trunk/gLitePROOF  | grep "Revision: " | head -1 | awk -F": " '{printf("%s", $ 2)}'`

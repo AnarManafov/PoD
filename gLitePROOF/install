@@ -52,6 +52,7 @@ CreateCFG()
 # generating gLitePROOF_ENV.sh
     cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
+
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
     MASTER_HOST=`hostname -f`
@@ -61,9 +62,14 @@ CreateCFG()
     # populating the tmp dir.
     _TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
+
 # generating proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
+
+# generating Job.lsf
+    cp -f template/Job.lsf.template etc/Job.lsf
+    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' etc/Job.lsf
     
     return 0
 }
@@ -78,10 +84,10 @@ InstallGAW()
 {
     _GetModule $GAW_PKG $GAW_LINK
 
-    pushd $APP_PATH/$GAW_PKG
-    ./configure $GAW_OPTIONS || (popd; return 1)
-    gmake || (popd; return 1)
-    gmake install || (popd; return 1)
+    pushd $APP_PATH/$GAW_PKG || return 1
+    ./configure $GAW_OPTIONS || { popd; return 1; }
+    gmake || { popd; return 1; }
+    gmake install || { popd; return 1; }
     popd
      
     # source GAW's config - other modules need it
@@ -103,10 +109,10 @@ InstallPROOFAgent()
 {
     _GetModule $PROOFAgent_PKG $PROOFAgent_LINK
 
-    pushd $APP_PATH/$PROOFAgent_PKG
-    ./configure $PROOFAgent_OPTIONS ||  (popd; return 1)
-    eval gmake ||  (popd; return 1)
-    gmake install ||  (popd; return 1)
+    pushd $APP_PATH/$PROOFAgent_PKG || return 1
+    ./configure $PROOFAgent_OPTIONS || { popd; return 1; }
+    gmake || { popd; return 1; }
+    gmake install || { popd; return 1; }
     popd
        
     echo
@@ -119,8 +125,9 @@ InstallPAConsole()
     _GetModule $PAConsole_PKG $PAConsole_LINK
  
     pushd  $APP_PATH/$PAConsole_PKG || return 1
-    eval cmake $PAConsole_OPTIONS -C BuildSetup.cmake . ||  (popd; return 1)
-    gmake install || (popd; return 1)
+    cmake $PAConsole_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
+    gmake || { popd; return 1; }
+    gmake install || { popd; return 1; }
     popd
     
     echo
@@ -183,7 +190,7 @@ if [ "X$RET_VAL" != "X0" ]; then
     exit 1;
 fi
 
-CreateCFG || (echo "---> Error: can't create cfg files."; exit 1)
+CreateCFG || { echo "---> Error: can't create cfg files."; exit 1; }
 
 echo "Installation successfully done."
 exit 0

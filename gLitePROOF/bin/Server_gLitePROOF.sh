@@ -37,8 +37,8 @@ stop()
 {
     echo "Stoping..."
 #    pkill -9 olbd
-    pkill -9 xrootd
-    pkill -9 proofserv
+    pkill -U $UID -9 xrootd
+    pkill -U $UID -9 proofserv
 
     $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --stop
     
