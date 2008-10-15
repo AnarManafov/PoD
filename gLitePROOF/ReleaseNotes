@@ -1,3 +1,7 @@
+********************* Release 2.0.6 not yet released ************************
+- PAConsole now supports job manager plug-ins
+- implemented a support of LSF workers
+
 ********************* Release 2.0.6 2008-09-02 ************************
 
 - this version is based on ROOT 5.18 (see: workers are dropped if use ROOT 5.20 or ROOT 5.21.02 - [Trac Ticket #72] )
