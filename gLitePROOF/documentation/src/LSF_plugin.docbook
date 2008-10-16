@@ -1,0 +1,74 @@
+<!--
+How to run
+-->
+  <chapter id="LSF_plugin">
+    <title>LSF plug-in</title>
+        <chapterinfo>
+            <releaseinfo>$Revision$</releaseinfo>
+               <pubdate>$Date$</pubdate>
+              <publisher><publishername>$LastChangedBy$</publishername></publisher>
+       </chapterinfo>
+           
+    <sect1 id="LSF_Workers">
+      <title>LSF workers</title>
+      <para>
+      Currently LSF plug-in GUI page for PAConsole is in development and going to be release in the end of November, 2008.
+      This will give LSF users ability to submit and monitor POD's LSF jobs as it is done in gLite plug-in, for example.
+      </para>
+      <para> 
+      Anyway, POD already supports LSF job manager without GUI.
+      </para>
+      <para>
+      In order to submit POD jobs to LSF you need to issue the following command from the POD's working folder:
+<screen>
+<command>bsub &lt; etc&#47;Job.lsf</command>
+</screen>
+      </para>
+      <para>
+      Then in PAConsole you could continue to monitor PROOF workers.
+      </para>
+      <para>
+      You could also submit POD's jobs to LSF several times and all of valid workers will be automatically added to
+      a current POD session until you shut the POD server down.
+      </para>
+    </sect1>
+      
+     <sect1 id="LSF_Settings">
+      <title>Plug-in settings</title>
+      <para>
+      This section describs how to change plug-in's settings. At this time users must change the settings manually.
+      But all of that will be easely be managable, when PAConsole GUI for the plug-in is ready.  
+      <sect2 id="LSF_num_workers">
+      <title>number of workers</title>
+      <para>
+      By default the LSF plug-in submits 2 workers, in order to change the number of workers you need to modify
+      the <filename>etc&#47;Job.lsf</filename> script, its BSUB-J part. The second array parametr is by default set to 2:
+<screen>
+#BSUB-J "gLitePROOF[1-2]"
+</screen>
+You could change it to 10, for example:
+<screen>
+#BSUB-J "gLitePROOF[1-10]"
+</screen>
+		</para>
+		</sect2>
+		
+		<sect2 id="LSF_ROOT_VERSION">
+      <title>default ROOT version on workers</title>
+      <para>
+      In order to change ROOT version, which is used on POD WNs,
+      you need to modifie the <filename>etc&#47;Job.lsf</filename> script.
+      The part where POD's job script is called. By default the version set to
+      "&#47;misc&#47;manafov&#47;ROOT&#47;root_trunk_64b&#47;root" (ROOT 5.21.04, for Debain etch64):
+<screen>
+$WRK_DIR&#47;gLitePROOF.sh -r "&#47;misc&#47;manafov&#47;ROOT&#47;root_trunk_64b&#47;root"
+</screen>
+		if you remove "-r" parameter and its argument, then POD will use it's own default version - currently ROOT 5.18.
+		</para>
+		</sect2>
+		
+      </para>
+    </sect1>
+    
+  </chapter>
+ 

@@ -11,14 +11,14 @@ Test
    	<sect1 id="simple_test">
    	<title>Simple test</title>    
    		<para>
-    		To test your <application>gLitePROOF</application> installation you can use a simple test provided with the distributive
-    		(see the test directory in your <application>gLitePROOF</application> installation folder). The test performs a simple ROOT analysis.
+    		To test your <application>POD</application> installation you can use a simple test provided with the distributive
+    		(see the test directory in your <application>POD</application> installation folder). The test performs a simple ROOT analysis.
     		</para>
     		<para>
-    		Copy the <filename>test/dstarmb.root</filename> file to the location which you specified as your <varname>olb.path</varname> in
-    		the <filename>template/xpd.cf.template</filename> files. It is also recommended to make several copies of the root file,
-    		like <filename>/opt/PROOF_DATA/dstarmb0.root</filename> and <filename>/opt/PROOF_DATA/dstarmb1.root</filename> if you use a default location.
-    		In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they reflect your configuration:
+    		It is also recommended to make several copies of the root file,
+    		like <filename>test/dstarmb1.root</filename> and <filename>test/dstarmb1.root</filename> if you use a default location.
+    		In the <filename>test/simple_test0.C</filename> file you have to change the following lines so that they
+    		reflect your configuration (if default doesn't reflect your setup):
 <programlisting>
 set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
 set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
@@ -28,7 +28,7 @@ set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
 <screen>
 <prompt>root [0] </prompt><command>.x test/simple_test0.C</command>
 </screen>
-			This macro will connect to the PROOF (gLitePROOF) workers and perform a test analysis.
+			This macro will connect to the PROOF (POD's workers) workers and perform a test analysis.
    		</para>
 		</sect1>
 	</chapter>

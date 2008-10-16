@@ -7,6 +7,8 @@
 <!ENTITY Configuration SYSTEM "Configuration.docbook">
 <!ENTITY Download SYSTEM "Download.docbook">
 <!ENTITY How_to_run SYSTEM "How_to_run.docbook">
+<!ENTITY gLite_plugin SYSTEM "gLite_plugin.docbook">
+<!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
 <!ENTITY Support SYSTEM "Support.docbook">
@@ -72,6 +74,16 @@ Configuration
 How to run 
 -->
   &How_to_run;
+ 
+<!-- 
+How to run 
+-->
+  &gLite_plugin;
+
+<!-- 
+How to run 
+-->
+  &LSF_plugin;
   
 <!-- 
 Test 

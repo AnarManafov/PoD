@@ -32,8 +32,8 @@ Known Issues
   		<sect1 id="MaxSlavesPerNode">
       <title>It seems I run always X slaves, but I requested Y.</title>
       	<para>
-      	gLitePROOF setups workers on the Grid nodes and it makes PROOF master to think,
-      	that all of his workers are on the localhost. Actually gLitePROOF hides remote PROOF workers from the
+      	POD setups workers on the remote nodes and it makes PROOF master to think,
+      	that all of his workers are on the localhost. Actually POD hides remote PROOF workers from the
       	PROOF server and acts as a "proxy" between them. And since default value for
       	<varname>PROOF_MaxSlavesPerNode</varname> is 2, therefore only 2 slaves get packages.
       	Since all slaves (for PROOF server) are on the localhost, the other Y-2 workers won't get packages.
@@ -63,7 +63,7 @@ Default Value:
 <programlisting>
 proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)50 );
 </programlisting>
-         Hopefully in the future, this will be possible to do through XROOTD configuration file and gLitePROOF will
+         Hopefully in the future, this will be possible to do through XROOTD configuration file and POD will
          manage it for you automatically.
       	</para>
       </sect1>

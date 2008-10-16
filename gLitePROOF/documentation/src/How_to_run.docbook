@@ -12,15 +12,13 @@ How to run
     <sect1 id="Environment">
       <title>Environment</title>
       <para>
-      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+      In order to enable POD's environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
 <screen>
 <command>cd /tmp/test/gLitePROOFpackage</command>
 <command>source gLitePROOF_ENV.sh</command>
 </screen>
-      </para>
-      <para>
-      You need to have a valid VOMS proxy, before starting gLitePROOF.
-      </para>      
+		Also don't forget, before starting POD the ROOT should be in the PATH as well.
+      </para>    
     </sect1>
     
     <sect1 id="Services">
@@ -31,8 +29,9 @@ How to run
 <command>PAConsole&amp;</command>
 </screen>
         The <xref linkend="PAConsole_Server1"/> shows a screen shot of PAConsole's Server page. You can see that
-        the information window has a red font, which means one or all of the services are down. Currently gLitePROOF
-        requires two services: xrootd and PROOFAgent (+ oldb, a part of xrootd, if you want to use pool workers ).
+        the information window has a red font, which means one or all of the services are down. Currently POD
+        requires two services: xrootd and PROOFAgent (+ oldb, a part of xrootd, if you want to use pool workers.
+        Pool workers are not officially supported. ).
 
         <para><figure float="0" id="PAConsole_Server1">
         <title>PAConsole: Server is Off</title>
@@ -46,14 +45,14 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        Click the <guibutton>Start</guibutton> button in oder to start gLitePROOF services. To stop gLitePROOF
+        Click the <guibutton>Start</guibutton> button in oder to start POD services. To stop POD
         the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
         <guibutton>Status</guibutton> button.
         </para>
         
         <para>
         The <xref linkend="PAConsole_Server2"/> shows the interface after the <guibutton>Start</guibutton> button has
-        been clicked and gLitePROOF services are up.
+        been clicked and POD services are up.
         
         <para><figure float="0" id="PAConsole_Server2">
         <title>PAConsole: Server is ON</title>
@@ -68,114 +67,33 @@ How to run
         </figure></para>
         
         <tip><para>You have probably noticed that the <guibutton>Start</guibutton> button is now inactive. PAConsle marks this button
-        inactive whenever it is not possible to start gLitePROOF services. For example, if PROOFAgent's port is in use on
+        inactive whenever it is not possible to start POD services. For example, if PROOFAgent's port is in use on
         in CLOSE_WAIT stat, PAConsole will disable the <guibutton>Start</guibutton> button.</para></tip>
     
       </para>
     </sect1>
 
-    <sect1 id="Grid_workers">
-      <title>Grid workers</title>
+	 <sect1 id="JobManagerPlugins">
+      <title>Job Manager plug-ins</title>
       <para>
-      As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
+      The next step is to submit remote workers using POD's job manager.
+      Starting from version 2.0.7 the POD project supports plug-ins. Submiting a remote jobs is done via a job manager plug-ins.
+      That means POD could be used on different Grid and batch sites. For instance currently POD supports gLite and LSF job submitions.
+      It also posiable to use a combination of plku-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
       </para>
       <para>
-      Select the Grid page of the PACosnle by clicking on the left sided tool bar. The page looks something like
-      it is shown on the <xref linkend="PAConsole_Grid0"/>.
- 
-        <para><figure float="0" id="PAConsole_Grid0">
-        <title>PAConsole: Grid page</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>     
-      To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
-      or a custom one). A WMProxy endpoint should be selected. If PAConsole showes no Endpoints, that would probably mean you
-      don't have any predefined endpoints on your gLite UI and gLitePROOF will use the one which is defined in the GAW
-      configuration file. If several endpoints found, than you can chose which one GAW should use to submit gLitePROOF jobs.
-		PAConsole uses an automatic endpoint recognition system provided by GAW.      
-      At the last users may want to specify a number of workers they desire to use. gLitePROOF uses a parametric job submission,
-      which means that only one job will be send to WMS, but there it will be spread according to defined number of
-      workers.
-        <para><figure float="0" id="PAConsole_Grid1">
-        <title>PAConsole: Submitting 5 workers</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-        
-        A current status of the last submitted jobs is dynamically shown by PAConsole, which could be seen
-        on the <xref linkend="PAConsole_Grid1"/>.
-        
-        <para>
-        PAConsole is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>). Every newly submitted job will be added to monitoring
-        and kept there until removed via
-        <menuchoice>
-		  <shortcut><keycombo><keysym>Ctrl-R</keysym></keycombo></shortcut>
-		  <guimenu>Context Menu</guimenu>
-	     <guimenuitem>Remove Job</guimenuitem>
-	     </menuchoice>.
-        It is useful in case when user wants to add more workers on the fly. The job will be submitted with the currently
-        selected jdl file, that means users can submit several jobs with different jdl files. It is useful when user wants
-        to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
-        </para>
-        <para><figure float="0" id="PAConsole_Grid3">
-        <title>PAConsole: Monitoring of several jobs</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>        
-        
-        <para>
-        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
-        get output sandbox of the selected job, get logging information (see <xref linkend="PAConsole_LogInfo"/>),
-        remove a job from the monitoring or cancel it.
-        <figure float="0" id="PAConsole_Grid2">
-        <title>PAConsole: Context menu</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-        
-        <figure float="0" id="PAConsole_LogInfo">
-        <title>PAConsole: Logging Information</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure>
+       For the gLite plug-in specific, please see <xref linkend="gLite_plugin"/>.
        </para>
-     </sect1>            
-         
+       <para>
+       For the LSF plug-in specific, please see <xref linkend="LSF_plugin"/>.
+       </para>
+    </sect1>
+    
     <sect1 id="PROOF_workers">
       <title>PROOF workers</title>
       <para>
-       As soon as a single job reaches gLite WN, it tries to connect to gLitePROOF server to transfer information
-       about itself and environment of WN. When negotiations are done and gLitePROOF server accepts WNs, it became a normal
+       As soon as a single job reaches remote worker node (WN), it tries to connect to POD server to transfer information
+       about itself and environment of WN. When negotiations are done and POD server accepts WNs, it became a normal
        PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
        (see the <xref linkend="PAConsole_Workers"/>).        
           <para><figure float="0" id="PAConsole_Workers">
@@ -195,19 +113,21 @@ How to run
         arrived workers.                 
        </para>
        <tip><para>
-       gLitePROOF supports reconnection. That means if your analysis has a bug or a root session crashed you wouldn't
-       need to resubmit gLitePROOF job. You just need to close current root session, open it again. gLitePROOF will manage
+       POD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
+       need to resubmit POD jobs. You just need to close current root session, open it again. POD will manage
        reconnection with its worker nodes automatically. Worker nodes will be online until the PROOFAgent service is online or
-       until the Grid queue time is over.
+       until s Grid and/or batch queue time is over.
        </para></tip>
        </sect1>
+
        
     <sect1 id="PAConsole_preferences">
       <title>Preferences</title>
       <para>
       	
-        Using a preferences page (see <xref linkend="PAConsole_Preferences"/>) users are able to change updated interval of the Grid job monitoring and the available
-        workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
+        Using a preferences page (see <xref linkend="PAConsole_Preferences"/>) users are able to change updated interval of
+        the remote jobs monitoring and the available
+        PROOF workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
         otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
         <para><figure float="0" id="PAConsole_Preferences">
         <title>PAConsole: Preferences</title>
@@ -226,7 +146,7 @@ How to run
     <sect1 id="Analysis">
       <title>Analysis</title>
       <para>
-      Now when your remote PROOF workers (gLitePROOF workers) are online, you can process you ROOT/PROOF
+      Now when your remote PROOF workers (POD workers) are online, you can process you ROOT/PROOF
       analysis normally, if it would be a usual PROOF session.      
        </para>
        <para>
@@ -234,15 +154,15 @@ How to run
        </para>
        </sect1>      
       
-    <sect1 id="How_to_shut_down_gLitePROOF">
-      <title>How to shut down gLitePROOF</title>
+    <sect1 id="How_to_shut_down_POD">
+      <title>How to shut down POD</title>
       <para>
-      In order to shut down gLitePROOF the gLitePROOF server should be stopped. On the Server page, click the
+      In order to shut down POD the POD server should be stopped. On the Server page, click the
       <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
-      gLite job slots will be freed. If you continue to monitor Grid jobs on the Grid page, after some time
-      statuses of jobs should be equal to "Done".
-       </para>
-       </sect1>
+      remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
+      plug-in page, after some time statuses of jobs should be equal to "Done".
+      </para>
+      </sect1>
            
   </chapter>
  

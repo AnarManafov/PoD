@@ -9,12 +9,13 @@ Configuration
               <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
     <para>
-    As it was mentioned above <application>gLitePROOF</application> consists of several modules
-    and to configure <application>gLitePROOF</application> one should configure some of these modules.
+    As it was mentioned above <application>POD</application> consists of several modules
+    and to configure <application>POD</application> one should configure some of these modules.
     </para>
     <sect1 id="GAW">
       <title>GAW</title>
       <para>
+      GAW needed for gLite plug-in (if you want to use gLite workers as your PROOF workers).
       There is GAW's configuration file in the
       <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> directory, it's called
       <filename>glite-api-wrapper.cfg.xml</filename>. Through this file one can configure GAW engine.
@@ -22,7 +23,7 @@ Configuration
       be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
       </para>
       <para>
-      Since gLitEPROOF uses GAW to submit gLite jobs the important parameter to configure would be
+      Since gLite plug-in uses GAW to submit gLite jobs the important parameter to configure would be
       a <varname>wmp_endpoint</varname>. This parameter holds the value for the default WMProxy endpoint to use.
       <tip>
       <para>
@@ -33,15 +34,15 @@ Configuration
       the configuration file.      
       </para>
       </tip>
-        All other settings may be changed to adjust gLitePROOF according to personal needs.
+        All other settings may be changed to adjust POD according to personal needs.
         </para>
     </sect1>
     <sect1 id="PROOFAgent">
       <title>PROOFAgent</title>
       <para>
-      PROOFAgent is a kind of proxy and manager application for gLitePROOF. This application manages
-      communication with gLitePROOF workers, where PROOFAgent clients are working.
-      There is GAW's configuration file in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
+      PROOFAgent is a kind of proxy and manager application for POD. This application manages
+      communication with POD workers, where PROOFAgent clients are working.
+      There is PROOFAgent's configuration file in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
       directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
       holds both client and server configuration, so be careful while changing it.
       The file is an XML file and it's XML Schema documentation and description of all configuration keys could
@@ -56,6 +57,8 @@ Configuration
       <para>
       The default configuration of PROOFAgent assumes, that:
       <itemizedlist>
+      <listitem><para>the PROOF port is 21093 (user may want to change it, but then xrootd config (<xref linkend="XROOTD"/>)
+      should be modifyed accordengly),</para></listitem>
       <listitem><para>the port range 20000-25000 (well known as default Globus port range)
       is open on worker nodes for outgoing connection,</para></listitem>
         <listitem><para>PROOFAgent server located on the machine where gLitePROOF has been installed,</para></listitem>
@@ -68,7 +71,7 @@ Configuration
       <title>XROOTD</title>
       <para>
       There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
-      directory and it's called <filename>xpd.cf</filename>. gLitePROOF uses this file to configure both local redirector and
+      directory and it's called <filename>xpd.cf</filename>. POD uses this file to configure both local redirector and
       remote workers.
             
       <tip>
@@ -78,33 +81,34 @@ Configuration
       </para>
       </tip>
       
-      The default xrootd configuration, which comes with gLitePROOF should be sufficient for basic operations.
+      The default xrootd configuration, which comes with POD should be sufficient for basic operations.
       In most of use cases it is not needed to modify the configuration.
       </para>
       <para>
-      gLitePROOF is only meant to help to setup a PROOF cluster on the fly using a gLite worker nodes. A data access is not
-      really a part of responsibility of gLitePROOF. The default configuration of gLitePROOF offers a possibility to access data
+      POD is only meant to help to setup a PROOF cluster on the fly using a remote worker nodes. A data access is not
+      really a part of responsibility of POD. The default configuration of POD offers a possibility to access data
       files from the server machine (user's workspace) using xrootd vie port 20094 and the following shared folder
       <filename class="directory">/tmp/</filename>. Users may want to use another xrootd facility to access data or
-      reconfigure gLitePROOF's xrootd to use different port and location. To do so the following variables must be updated in
+      reconfigure POD's xrootd to use different port and location. To do so the following variables must be updated in
       <filename>xpd.cf</filename> file: <varname>xrd.port</varname>, <varname>xrootd.export</varname> (for the server host),
       <varname>olb.path</varname>(for the server host).
 
       <tip>
       <para>
-      It is recommended to use own xrootd facility to access data files. Using user's local machine for data access is very
-      inefficient. gLitePROOF provides this ability only for testing purpose.
+      It is recommended to use your own xrootd facility to access data files.
+      Using user's local machine for data access is very
+      inefficient. POD provides this ability only for testing purpose.
       </para>
       </tip>
       
       <tip>
       <para>
-      By a slight change of default gLitePROOF's <filename>xrd.cf</filename>, users can have a dynamic xrootd pools on Grid WNs.
+      By a slight change of default POD's <filename>xrd.cf</filename>, users can have a dynamic xrootd pools on remote WNs.
       To do so, you need to set <varname>all.role</varname> parameter to <constant>manager</constant> instead of
       <constant>server</constant> (default) for your UI host.
 		<para>
 		
-		But, gLitePROOF doesn't provide yet [<ulink url="https://subversion.gsi.de/trac/dgrid/ticket/53">gLitePROOF Trac Ticket #53</ulink>]
+		But, POD doesn't provide yet [<ulink url="https://subversion.gsi.de/trac/dgrid/ticket/53">POD Trac Ticket #53</ulink>]
 		a proxy mechanism for xrootd file transfer,
 		WNs therefore must have XROOTD ports opened in both directions (which is very unusual for Grid worker nodes).
 		Once again, for best performance and security reasons it is recommend to use external data storage,
@@ -118,10 +122,10 @@ Configuration
     <sect1 id="A_JDL_file">
       <title>A JDL file</title>
       <para>
-      gLitePROOF submits its workers with help of a JDL file. Default JDL files are a part of gLitePROOF packages.
+      POD submits its workers with help of a JDL file. Default JDL files are a part of POD packages.
       User can find them in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> folder.
       There are <filename>gLitePROOF.jdl</filename> and <filename>gLitePROOF_FZK.jdl</filename> files in this folder.
-      The first file is generic gLitePROOF jdl file and the second one is optimized for a specific FZK gLite computing element.
+      The first file is the generic POD jdl file and the second one is optimized for a specific FZK gLite computing element.
         This files could be used as examples or real job files.
       </para>
       <para>

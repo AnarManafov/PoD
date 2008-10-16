@@ -7,6 +7,8 @@ SRC=\
 	Configuration.docbook\
 	Download.docbook\
 	How_to_run.docbook\
+	gLite_plugin.docbook\
+	LSF_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook
