@@ -8,12 +8,12 @@ Requirements
                <pubdate>$Date$</pubdate>
               <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
-       <sect1 id="User_workspace_requarements">
+       <sect1 id="User_workspace_requirements">
        <title>User's workspace requirements</title>
         <para>
         POD works as a client/server application.
         We define user's workspace as a side, which is located on the local (for the user) space,
-        on users's laptop, for example. For simplification we will call it a user's workspace or
+        on users laptop, for example. For simplification we will call it a user's workspace or
         local workspace. There POD server is running.
         </para>
         <para>
@@ -30,11 +30,11 @@ Requirements
         </itemizedlist>
         <itemizedlist>
                 <title>Additional requirements for LSF plug-in: </title>
-                        <listitem>LSF 6.1 API (headers und libraries)</listitem>
+                        <listitem>LSF 6.1 API (headers and libraries)</listitem>
         </itemizedlist>
         </para>
         </sect1>
-       <sect1 id="Workers_workspace_requarements">
+       <sect1 id="Workers_workspace_requirements">
        <title>Workers' workspace requirements</title>
        <para>
        We define workers' workspace as a side which is located on the remote space,

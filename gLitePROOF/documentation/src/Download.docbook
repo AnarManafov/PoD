@@ -9,7 +9,7 @@ Download
   			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>    
     <para>
-    		XPOD could be downloaded from the following locations:
+    		POD could be downloaded from the following locations:
 			<itemizedlist>
   				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Stable/gLitePROOF/">Stable Releases</ulink></para></listitem>
   				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Nightly/">Nightly Releases</ulink></para></listitem>  			

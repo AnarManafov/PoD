@@ -24,7 +24,7 @@ set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb0.root" );
 set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
 </programlisting>
 			Now you are ready to perform this test. Use the <xref linkend="How_to_run"/> to remote PROOF workers. As soon as you get
-			requared number of workers start a root session and execute the following command:
+			required number of workers start a root session and execute the following command:
 <screen>
 <prompt>root [0] </prompt><command>.x test/simple_test0.C</command>
 </screen>

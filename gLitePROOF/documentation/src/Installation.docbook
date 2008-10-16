@@ -51,7 +51,7 @@ INSTALL_PATH=/tmp/test/gLitePROOFpackage
       		</row>
       		<row>
         			<entry>PROOF_PORT</entry>
-        			<entry>Set the default PROOF port number. In the future versions it will be posiable to change it
+        			<entry>Set the default PROOF port number. In the future versions it will be possible to change it
         			with help of GUI at any time. Currently it is set once during installation.
         			After the installation and could be change only manually
         			(see <xref linkend="PROOFAgent"/> and <xref linkend="XROOTD"/>). 

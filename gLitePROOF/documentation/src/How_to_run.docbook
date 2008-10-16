@@ -45,7 +45,7 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        Click the <guibutton>Start</guibutton> button in oder to start POD services. To stop POD
+        Click the <guibutton>Start</guibutton> button in order to start POD services. To stop POD
         the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
         <guibutton>Status</guibutton> button.
         </para>
@@ -77,9 +77,9 @@ How to run
       <title>Job Manager plug-ins</title>
       <para>
       The next step is to submit remote workers using POD's job manager.
-      Starting from version 2.0.7 the POD project supports plug-ins. Submiting a remote jobs is done via a job manager plug-ins.
-      That means POD could be used on different Grid and batch sites. For instance currently POD supports gLite and LSF job submitions.
-      It also posiable to use a combination of plku-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
+      Starting from version 2.0.7 the POD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
+      That means POD could be used on different Grid and batch sites. For instance currently POD supports gLite and LSF job submissions.
+      It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
       </para>
       <para>
        For the gLite plug-in specific, please see <xref linkend="gLite_plugin"/>.
@@ -108,14 +108,14 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
         It is not required to wait until all requested workers will be connected. Users could start analysis after
-        reasonable number of workers are online, even after the first connected worker one could start the analysis.
+        reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
         When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
         arrived workers.                 
        </para>
        <tip><para>
        POD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
        need to resubmit POD jobs. You just need to close current root session, open it again. POD will manage
-       reconnection with its worker nodes automatically. Worker nodes will be online until the PROOFAgent service is online or
+       reconnection with its worker nodes automatically. Worker nodes will be on-line until the PROOFAgent service is on-line or
        until s Grid and/or batch queue time is over.
        </para></tip>
        </sect1>
@@ -146,7 +146,7 @@ How to run
     <sect1 id="Analysis">
       <title>Analysis</title>
       <para>
-      Now when your remote PROOF workers (POD workers) are online, you can process you ROOT/PROOF
+      Now when your remote PROOF workers (POD workers) are on-line, you can process you ROOT/PROOF
       analysis normally, if it would be a usual PROOF session.      
        </para>
        <para>

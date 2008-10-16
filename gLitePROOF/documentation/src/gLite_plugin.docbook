@@ -22,7 +22,7 @@ How to run
       As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
       </para>
       <para>
-      Select the Grid page of the PACosnle by clicking on the left sided tool bar. The page looks something like
+      Select the Grid page of the PAConsole by clicking on the left sided tool bar. The page looks something like
       it is shown on the <xref linkend="PAConsole_Grid0"/>.
  
         <para><figure float="0" id="PAConsole_Grid0">
@@ -37,7 +37,7 @@ How to run
         </mediaobject></screenshot>
         </figure></para>     
       To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
-      or a custom one). A WMProxy endpoint should be selected. If PAConsole showes no Endpoints, that would probably mean you
+      or a custom one). A WMProxy endpoint should be selected. If PAConsole shows no Endpoints, that would probably mean you
       don't have any predefined endpoints on your gLite UI and POD will use the one which is defined in the GAW
       configuration file. If several endpoints found, than you can chose which one GAW should use to submit POD jobs.
 		PAConsole uses an automatic endpoint recognition system provided by GAW.      

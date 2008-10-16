@@ -36,13 +36,13 @@ How to run
      <sect1 id="LSF_Settings">
       <title>Plug-in settings</title>
       <para>
-      This section describs how to change plug-in's settings. At this time users must change the settings manually.
-      But all of that will be easely be managable, when PAConsole GUI for the plug-in is ready.  
+      This section describes how to change plug-in's settings. At this time users must change the settings manually.
+      But all of that will be easily be manageable, when PAConsole GUI for the plug-in is ready.  
       <sect2 id="LSF_num_workers">
       <title>number of workers</title>
       <para>
       By default the LSF plug-in submits 2 workers, in order to change the number of workers you need to modify
-      the <filename>etc&#47;Job.lsf</filename> script, its BSUB-J part. The second array parametr is by default set to 2:
+      the <filename>etc&#47;Job.lsf</filename> script, its BSUB-J part. The second array parameter is by default set to 2:
 <screen>
 #BSUB-J "gLitePROOF[1-2]"
 </screen>
@@ -57,7 +57,7 @@ You could change it to 10, for example:
       <title>default ROOT version on workers</title>
       <para>
       In order to change ROOT version, which is used on POD WNs,
-      you need to modifie the <filename>etc&#47;Job.lsf</filename> script.
+      you need to modify the <filename>etc&#47;Job.lsf</filename> script.
       The part where POD's job script is called. By default the version set to
       "&#47;misc&#47;manafov&#47;ROOT&#47;root_trunk_64b&#47;root" (ROOT 5.21.04, for Debain etch64):
 <screen>

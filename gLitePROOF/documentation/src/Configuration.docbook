@@ -58,10 +58,10 @@ Configuration
       The default configuration of PROOFAgent assumes, that:
       <itemizedlist>
       <listitem><para>the PROOF port is 21093 (user may want to change it, but then xrootd config (<xref linkend="XROOTD"/>)
-      should be modifyed accordengly),</para></listitem>
+      should be modified accordingly),</para></listitem>
       <listitem><para>the port range 20000-25000 (well known as default Globus port range)
       is open on worker nodes for outgoing connection,</para></listitem>
-        <listitem><para>PROOFAgent server located on the machine where gLitePROOF has been installed,</para></listitem>
+        <listitem><para>PROOFAgent server located on the machine where POD has been installed,</para></listitem>
         <listitem><para>PROOFAgent server accepts connections on 21111 port
         (open this port if you have a firewall on your UI or reconfigure PROOFAgent to use any other available port).</para></listitem>
         </itemizedlist>
