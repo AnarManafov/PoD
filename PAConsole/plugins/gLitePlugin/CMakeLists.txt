@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2008 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( PAConsole_gLite )
+project( PAConsole_glite )
 
 
 #set(CPACK_PACKAGE_VERSION_MAJOR "0")
@@ -26,43 +26,43 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 link_directories("$ENV{GAW_LOCATION}/lib")
 
 
-set( MOC_HDRS_gLite
+set( MOC_HDRS_glite
     ./src/GridDlg.h
     ./src/JobSubmitter.h
     ./src/LogInfoDlg.h 
 )
 
-set( SOURCE_FILES_gLite
+set( SOURCE_FILES_glite
     ./src/GridDlg.cpp
     ./src/LogInfoDlg.cpp
 )
 
-set( UI_FILES_gLite
+set( UI_FILES_glite
     ./res/wgGrid.ui
     ./res/wgLogInfo.ui
 )
 
-set( UI_SRSC_gLite 
+set( UI_SRSC_glite 
     ./res/paconsole_glite.qrc
 )
 
-QT4_WRAP_CPP( MOC_SRCS_gLite ${MOC_HDRS_gLite} OPTIONS -f )
-QT4_WRAP_UI( UI_HDRS_gLite ${UI_FILES_gLite} )
-QT4_ADD_RESOURCES( RCS_SRCS_gLite  ${UI_SRSC_gLite} )
+QT4_WRAP_CPP( MOC_SRCS_glite ${MOC_HDRS_glite} OPTIONS -f )
+QT4_WRAP_UI( UI_HDRS_glite ${UI_FILES_glite} )
+QT4_ADD_RESOURCES( RCS_SRCS_glite  ${UI_SRSC_glite} )
 
 
-add_library(PAConsole_gLite SHARED ${SOURCE_FILES_gLite} ${MOC_SRCS_gLite} ${RCS_SRCS_gLite} ${UI_HDRS_gLite})
+add_library(PAConsole_glite SHARED ${SOURCE_FILES_glite} ${MOC_SRCS_glite} ${RCS_SRCS_glite} ${UI_HDRS_glite})
 
 set(CMAKE_CXX_FLAGS "$ENV{GAW_CPPFLAGS} -Wall")										
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} src )
 
 
 target_link_libraries (
-    PAConsole_gLite 
+    PAConsole_glite 
     glite-api-wrapper
 )
 
-install(TARGETS PAConsole_gLite DESTINATION plugins)
+install(TARGETS PAConsole_glite DESTINATION plugins)
 
 #
 # Package

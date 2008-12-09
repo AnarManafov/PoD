@@ -127,7 +127,9 @@ endif (BUILD_GLITE_PLUGIN)
 #
 # LSF Plug-in
 #
-# !* TODO *!
+add_subdirectory ( plugins/LSFPlugin )
+message (STATUS "Build LSF plug-in - YES")
+    
 
 install(TARGETS PAConsole DESTINATION bin)
 
