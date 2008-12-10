@@ -48,8 +48,8 @@ class CLSFDlg: public QWidget, IJobManager
         void updateJobsTree();
         void recieveThreadMsg( const QString &_Msg );
         void setProgress( int _Val );
-        void on_btnBrowseJDL_clicked();
-        void on_edtJDLFileName_textChanged( const QString & /*_text*/ );
+        void on_btnBrowseJobScript_clicked();
+        void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
         void setNumberOfJobs( int _count );
 
 
@@ -95,7 +95,7 @@ class CLSFDlg: public QWidget, IJobManager
         QAction *getJobLoggingInfoAct;
         QAction *removeJobAct;
         QClipboard *clipboard;
-        std::string m_JDLFileName;
+        std::string m_JobScript;
         int m_JobsCount;
 };
 

@@ -47,14 +47,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="edtJDLFileName" >
+         <widget class="QLineEdit" name="edtJobScriptFileName" >
           <property name="text" >
            <string/>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnBrowseJDL" >
+         <widget class="QPushButton" name="btnBrowseJobScript" >
           <property name="text" >
            <string>Browse...</string>
           </property>
@@ -185,8 +185,8 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>edtJDLFileName</tabstop>
-  <tabstop>btnBrowseJDL</tabstop>
+  <tabstop>edtJobScriptFileName</tabstop>
+  <tabstop>btnBrowseJobScript</tabstop>
   <tabstop>btnSubmitClient</tabstop>
   <tabstop>treeJobs</tabstop>
  </tabstops>

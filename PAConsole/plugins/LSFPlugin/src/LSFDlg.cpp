@@ -19,8 +19,14 @@
 //#include <boost/archive/xml_iarchive.hpp>
 // PAConsole LSF plug-in
 #include "LSFDlg.h"
+// MiscCommon
+#include "def.h"
+#include "SysHelper.h"
 
 using namespace std;
+using namespace MiscCommon;
+// default Job Script file
+const LPCTSTR g_szDefaultJobScript = "$GLITE_PROOF_LOCATION/etc/Job.lsf";
 
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
@@ -39,11 +45,11 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     clipboard = QApplication::clipboard();
 
-//    // Set completion for the edit box of JDL file name
-//    QCompleter *completer = new QCompleter( this );
-//    completer->setModel( new QDirModel( completer ) );
-//    m_ui.edtJDLFileName->setCompleter( completer );
-//
+    // Set completion for the edit box of JDL file name
+    QCompleter *completer = new QCompleter( this );
+    completer->setModel( new QDirModel( completer ) );
+    m_ui.edtJobScriptFileName->setCompleter( completer );
+
 //    try
 //    {
 //        // Loading class from the config file
@@ -75,16 +81,16 @@ CLSFDlg::~CLSFDlg()
 
 void CLSFDlg::setAllDefault()
 {
-//    m_JDLFileName = g_szDefaultJDL;
+    m_JobScript = g_szDefaultJobScript;
 //    m_JobSubmitter.setAllDefault();
 //    UpdateAfterLoad();
 }
 
 void CLSFDlg::UpdateAfterLoad()
 {
-//    smart_path( &m_JDLFileName );
-//    m_ui.edtJDLFileName->setText( m_JDLFileName.c_str() );
-//
+    smart_path( &m_JobScript );
+    m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
+
 //    // Setting up PARAMETERS
 //    int num_jobs( 0 );
 //    try
@@ -156,16 +162,16 @@ void CLSFDlg::updateJobsTree()
 //    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
 
-void CLSFDlg::on_btnBrowseJDL_clicked()
+void CLSFDlg::on_btnBrowseJobScript_clicked()
 {
-//    const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
-//    const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
-//                                                           tr( "JDL Files (*.jdl)" ) );
-//    if ( QFileInfo( filename ).exists() )
-//    {
-//        m_JDLFileName = filename.toAscii().data();
-//        m_ui.edtJDLFileName->setText( filename );
-//    }
+    const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
+                                                           tr( "LSF script (*.lsf)" ) );
+    if ( QFileInfo( filename ).exists() )
+    {
+        m_JobScript = filename.toAscii().data();
+        m_ui.edtJobScriptFileName->setText( filename );
+    }
 }
 
 void CLSFDlg::createActions()
@@ -365,9 +371,9 @@ void CLSFDlg::UpdateEndpoints( bool _Msg )
 //    }
 }
 
-void CLSFDlg::on_edtJDLFileName_textChanged( const QString &/*_text*/ )
+void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
 {
-//    m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
+    m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
 //    UpdateEndpoints( false );
 }
 
