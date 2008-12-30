@@ -12,13 +12,34 @@
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// LSF API
+#include <lsf/lsbatch.h>
+// STD
+#include <stdexcept>
+// Misc
+#include "def.h"
+// LSF plug-in
 #include "LsfMng.h"
 
-CLsfMng::CLsfMng() {
-	// TODO Auto-generated constructor stub
+using namespace std;
+using namespace MiscCommon;
+
+const LPCTSTR g_szAppName = "PoD LSF plug-in";
+
+CLsfMng::CLsfMng()
+{
 
 }
 
-CLsfMng::~CLsfMng() {
-	// TODO Auto-generated destructor stub
+CLsfMng::~CLsfMng()
+{
+
+}
+
+void CLsfMng::init()
+{
+    // initialize LSBLIB  and  get  the  configuration environment
+    // FIX: for some reason lsb_init requares char * insted of const char *. This needs to be investigated
+    if ( lsb_init( const_cast<char*>( g_szAppName ) ) < 0 )
+        throw runtime_error( "Can't initialize LSF." ); // TODO: get error description here (get it from LSF, lsberrno)
 }

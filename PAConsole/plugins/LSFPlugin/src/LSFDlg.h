@@ -17,6 +17,8 @@
 
 // Qt autogen. file
 #include "ui_wgLSF.h"
+// gLite plug-in
+#include "LsfMng.h"
 // PAConsole
 #include "IJobManager.h"
 
@@ -97,6 +99,8 @@ class CLSFDlg: public QWidget, IJobManager
         QClipboard *clipboard;
         std::string m_JobScript;
         int m_JobsCount;
+
+        CLsfMng m_lsf;
 };
 
 //BOOST_CLASS_VERSION( CGridDlg, 1 )

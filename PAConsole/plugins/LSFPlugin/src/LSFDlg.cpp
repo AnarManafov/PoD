@@ -59,6 +59,15 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 //    {
 //        setAllDefault();
 //    }
+
+    try
+    {
+    	m_lsf.init();
+    }
+    catch (const exception &e)
+    {
+    	// TODO: Show messageb
+    }
 }
 
 CLSFDlg::~CLSFDlg()

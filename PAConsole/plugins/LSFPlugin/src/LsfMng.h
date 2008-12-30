@@ -15,10 +15,14 @@
 #ifndef LSFMNG_H_
 #define LSFMNG_H_
 
-class CLsfMng {
-public:
-	CLsfMng();
-	virtual ~CLsfMng();
+class CLsfMng
+{
+    public:
+        CLsfMng();
+        virtual ~CLsfMng();
+
+    public:
+        void init();
 };
 
 #endif /* LSFMNG_H_ */

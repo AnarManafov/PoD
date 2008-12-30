@@ -25,10 +25,12 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 set( MOC_HDRS_lsf
     ./src/LSFDlg.h
+    ./src/LsfMng.h
 )
 
 set( SOURCE_FILES_lsf
     ./src/LSFDlg.cpp
+    ./src/LsfMng.cpp
 )
 
 set( UI_FILES_lsf
@@ -47,11 +49,12 @@ QT4_ADD_RESOURCES( RCS_SRCS_lsf  ${UI_SRSC_lsf} )
 add_library(PAConsole_lsf SHARED ${SOURCE_FILES_lsf} ${MOC_SRCS_lsf} ${RCS_SRCS_lsf} ${UI_HDRS_lsf})
 
 set(CMAKE_CXX_FLAGS " -Wall")
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} src )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${LSF_INCLUDE_DIR} src )
 
 
 target_link_libraries (
     PAConsole_lsf
+    ${LSF_LIBRARIES}
 )
 
 install(TARGETS PAConsole_lsf DESTINATION plugins)
