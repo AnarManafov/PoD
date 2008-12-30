@@ -35,3 +35,5 @@ set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
 # gLite plug-in
 set( BUILD_GLITE_PLUGIN ON CACHE BOOL "Build source code documentation" FORCE )
 
+# LSF plug-in
+set( LSF_PREFIX "/home/anar/LSF" CACHE STRING "LSF prefix" FORCE) 

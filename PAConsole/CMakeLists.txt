@@ -22,6 +22,8 @@ set(CPACK_PACKAGE_VERSION_PATCH "6")
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
+# Where to lookup modules
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 
 #
 # Options
@@ -127,8 +129,13 @@ endif (BUILD_GLITE_PLUGIN)
 #
 # LSF Plug-in
 #
-add_subdirectory ( plugins/LSFPlugin )
-message (STATUS "Build LSF plug-in - YES")
+find_package( LSF REQUIRED )
+if (LSF_FOUND)
+    add_subdirectory ( plugins/LSFPlugin )
+    message (STATUS "Build LSF plug-in - YES")
+else (LSF_FOUND)
+    message (STATUS "Build LSF plug-in - NO")    
+endif (LSF_FOUND)   
     
 
 install(TARGETS PAConsole DESTINATION bin)
