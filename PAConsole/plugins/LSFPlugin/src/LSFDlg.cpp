@@ -11,14 +11,14 @@
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
- *************************************************************************/
+*************************************************************************/
+// PAConsole LSF plug-in
+#include "LSFDlg.h"
 // Qt
 #include <QtGui>
 // BOOST
 //#include <boost/archive/xml_oarchive.hpp>
 //#include <boost/archive/xml_iarchive.hpp>
-// PAConsole LSF plug-in
-#include "LSFDlg.h"
 // MiscCommon
 #include "def.h"
 #include "SysHelper.h"

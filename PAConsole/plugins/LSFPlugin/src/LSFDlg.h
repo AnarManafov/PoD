@@ -15,10 +15,10 @@
 #ifndef LSFDLG_H_
 #define LSFDLG_H_
 
-// Qt autogen. file
-#include "ui_wgLSF.h"
 // gLite plug-in
 #include "LsfMng.h"
+// Qt autogen. file
+#include "ui_wgLSF.h"
 // PAConsole
 #include "IJobManager.h"
 

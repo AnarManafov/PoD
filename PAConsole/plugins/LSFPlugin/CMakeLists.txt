@@ -25,7 +25,6 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 set( MOC_HDRS_lsf
     ./src/LSFDlg.h
-    ./src/LsfMng.h
 )
 
 set( SOURCE_FILES_lsf

@@ -12,8 +12,6 @@
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
-// LSF API
-#include <lsf/lsbatch.h>
 // STD
 #include <stdexcept>
 // Misc

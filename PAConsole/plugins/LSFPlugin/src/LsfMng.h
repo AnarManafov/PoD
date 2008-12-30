@@ -15,6 +15,9 @@
 #ifndef LSFMNG_H_
 #define LSFMNG_H_
 
+// LSF API
+#include <lsf/lsbatch.h>
+
 class CLsfMng
 {
     public:
@@ -23,6 +26,10 @@ class CLsfMng
 
     public:
         void init();
+        void jobSubmit();
+
+    private:
+    	submit m_submitRequest;
 };
 
 #endif /* LSFMNG_H_ */
