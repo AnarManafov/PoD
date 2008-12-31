@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file LsfMng.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
@@ -14,6 +14,7 @@
 *************************************************************************/
 // STD
 #include <stdexcept>
+#include <cstring>
 // Misc
 #include "def.h"
 // LSF plug-in
@@ -40,4 +41,77 @@ void CLsfMng::init()
     // FIX: for some reason lsb_init requares char * insted of const char *. This needs to be investigated
     if ( lsb_init( const_cast<char*>( g_szAppName ) ) < 0 )
         throw runtime_error( "Can't initialize LSF." ); // TODO: get error description here (get it from LSF, lsberrno)
+
+    m_submitRequest.clear();
+}
+
+void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
+{
+    m_submitRequest.insert( propertyDict_t::value_type( _type, _val ) );
+}
+
+int CLsfMng::jobSubmit()
+{
+    submit request;
+
+    // set all defaults
+    memset( &request, 0, sizeof( submit ) );
+    for ( size_t i = 0; i < LSF_RLIM_NLIMITS; i++ )
+        request.rLimits[i] = DEFAULT_RLIMIT;
+
+    // TODO: implement this via STD algorithms (accumulate would fit I think)
+    propertyDict_t::const_iterator iter = m_submitRequest.begin();
+    propertyDict_t::const_iterator iter_end = m_submitRequest.end();
+    for ( ; iter != iter_end; ++iter )
+    {
+        // TODO: investigate whether LSF really needs "char *"! Meantime removing const from our const strings.
+        switch ( iter->first )
+        {
+            case JP_SUB_JOB_NAME:
+                request.options |= SUB_JOB_NAME;
+                request.jobName = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_QUEUE:
+                request.options |= SUB_QUEUE;
+                request.queue = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_HOST:
+                request.options |= SUB_HOST;
+                request.hostSpec = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_IN_FILE:
+                request.options |= SUB_IN_FILE;
+                request.inFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_OUT_FILE:
+                request.options |= SUB_OUT_FILE;
+                request.outFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_ERR_FILE:
+                request.options |= SUB_ERR_FILE;
+                request.errFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            default:
+                return 0; //TODO: Assert here
+        }
+    }
+
+    submitReply reply; // results of job submission
+    // submit the job with specifications
+    int jobId = lsb_submit( &request, &reply );
+
+    if ( jobId < 0 )
+    {
+        // if job submission fails, lsb_submit returns -1
+        switch ( lsberrno )
+        {
+                // and sets lsberrno to indicate the error
+            case LSBE_QUEUE_USE:
+            case LSBE_QUEUE_CLOSED:
+            default:
+                throw runtime_error( "job submission failed" ); // TODO: report a proper error here
+        }
+        return 0;
+    }
+    return jobId;
 }

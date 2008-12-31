@@ -118,6 +118,7 @@
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 
+
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
 <pathentry kind="mac" name="QT_DLL" path="" value=""/>
 <pathentry kind="mac" name="QT_GUI_LIB" path="" value=""/>
@@ -130,6 +131,7 @@
 <pathentry include="build" kind="inc" path="" system="true"/>
 <pathentry include="Include" kind="inc" path="" system="true"/>
 <pathentry include="build/plugins/gLitePlugin/" kind="inc" path="" system="true"/>
+<pathentry include="/home/anar/LSF/include" kind="inc" path="" system="true"/>
 <pathentry excluding="**/CMakeFiles/" kind="out" path=""/>
 <pathentry kind="src" path=""/>
 <pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>

@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file LsfMng.h
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
@@ -17,19 +17,38 @@
 
 // LSF API
 #include <lsf/lsbatch.h>
+// STD
+#include <string>
+#include <map>
 
 class CLsfMng
 {
+	public:
+		typedef enum EJobProperty
+		{
+			JP_SUB_JOB_NAME,		//!< job name specified
+			JP_SUB_QUEUE,			//!< queue specified
+			JP_SUB_HOST,			//!< execution host(s) specified
+			JP_SUB_IN_FILE,			//!< input file specified
+			JP_SUB_OUT_FILE,		//!< output file specified
+			JP_SUB_ERR_FILE			//!< error file specified
+		}EJobProperty_t;
+
+		typedef std::map<EJobProperty_t, std::string> propertyDict_t;
+
     public:
         CLsfMng();
         virtual ~CLsfMng();
 
     public:
         void init();
-        void jobSubmit();
+        void addProperty( EJobProperty_t _type, const std::string &_val);
+        // TODO: implement
+        //void removeProperty();
+		int jobSubmit();
 
     private:
-    	submit m_submitRequest;
+    	propertyDict_t m_submitRequest;
 };
 
 #endif /* LSFMNG_H_ */
