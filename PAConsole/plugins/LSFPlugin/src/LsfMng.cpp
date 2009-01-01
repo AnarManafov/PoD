@@ -25,7 +25,7 @@ using namespace MiscCommon;
 
 const LPCTSTR g_szAppName = "PoD LSF plug-in";
 
-CLsfMng::CLsfMng()
+CLsfMng::CLsfMng(): m_bInit( false )
 {
 
 }
@@ -43,6 +43,8 @@ void CLsfMng::init()
         throw runtime_error( "Can't initialize LSF." ); // TODO: get error description here (get it from LSF, lsberrno)
 
     m_submitRequest.clear();
+
+    m_bInit = true;
 }
 
 void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
@@ -50,8 +52,11 @@ void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
     m_submitRequest.insert( propertyDict_t::value_type( _type, _val ) );
 }
 
-int CLsfMng::jobSubmit()
+LS_LONG_INT_t CLsfMng::jobSubmit()
 {
+    if ( !m_bInit )
+        return 0; //TODO: throw something here
+
     submit request;
 
     // set all defaults
@@ -98,7 +103,7 @@ int CLsfMng::jobSubmit()
 
     submitReply reply; // results of job submission
     // submit the job with specifications
-    int jobId = lsb_submit( &request, &reply );
+    LS_LONG_INT_t jobId = lsb_submit( &request, &reply );
 
     if ( jobId < 0 )
     {
@@ -114,4 +119,31 @@ int CLsfMng::jobSubmit()
         return 0;
     }
     return jobId;
+}
+
+CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
+{
+    if ( !m_bInit )
+        return JS_JOB_STAT_UNKWN; //TODO: throw something here
+
+    // detailed job info
+    jobInfoEnt *job;
+
+    //gets the total number of pending job. Exits if failure */
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+        throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
+
+    // number of remaining jobs unread
+    int more = 0;
+    // get the job details
+    job = lsb_readjobinfo( &more );
+    if ( job == NULL )
+        throw runtime_error( "error retrieving job's status - readjob error" ); // TODO: report a proper error here
+
+    EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
+
+    //when finished to display the job info, close the connection to the mbatchd
+    lsb_closejobinfo();
+
+    return status;
 }
