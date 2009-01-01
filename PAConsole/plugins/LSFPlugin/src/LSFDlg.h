@@ -15,8 +15,8 @@
 #ifndef LSFDLG_H_
 #define LSFDLG_H_
 
-// gLite plug-in
-#include "LsfMng.h"
+// LSF plug-in
+#include "JobSubmitter.h"
 // Qt autogen. file
 #include "ui_wgLSF.h"
 // PAConsole
@@ -27,6 +27,8 @@ class CLSFDlg: public QWidget, IJobManager
 {
         Q_OBJECT
         Q_INTERFACES( IJobManager )
+
+        friend class boost::serialization::access;
 
     public:
         CLSFDlg( QWidget *parent = NULL );
@@ -70,23 +72,23 @@ class CLSFDlg: public QWidget, IJobManager
         void UpdateEndpoints( bool _Msg = true );
         void UpdateAfterLoad();
 
-//        // serialization
-//        template<class Archive>
-//        void save( Archive & _ar, const unsigned int /*_version*/ ) const
-//        {
-//            _ar
-//            & BOOST_SERIALIZATION_NVP( m_JDLFileName )
-//            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-//        }
-//        template<class Archive>
-//        void load( Archive & _ar, const unsigned int /*_version*/ )
-//        {
-//            _ar
-//            & BOOST_SERIALIZATION_NVP( m_JDLFileName )
-//            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-//            UpdateAfterLoad();
-//        }
-//        BOOST_SERIALIZATION_SPLIT_MEMBER()
+        // serialization
+        template<class Archive>
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
+        {
+            _ar
+            & BOOST_SERIALIZATION_NVP( m_JobScript );
+           // & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
+        }
+        template<class Archive>
+        void load( Archive & _ar, const unsigned int /*_version*/ )
+        {
+            _ar
+            & BOOST_SERIALIZATION_NVP( m_JobScript );
+           //& BOOST_SERIALIZATION_NVP( m_JobSubmitter );
+            UpdateAfterLoad();
+        }
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
     private:
         Ui::wgGrid m_ui;
@@ -99,10 +101,9 @@ class CLSFDlg: public QWidget, IJobManager
         QClipboard *clipboard;
         std::string m_JobScript;
         int m_JobsCount;
-
-        CLsfMng m_lsf;
+        CJobSubmitter m_JobSubmitter;
 };
 
-//BOOST_CLASS_VERSION( CGridDlg, 1 )
+BOOST_CLASS_VERSION( CLSFDlg, 1 )
 
 #endif /*LSFDLG_H_*/

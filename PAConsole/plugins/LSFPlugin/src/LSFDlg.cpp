@@ -12,13 +12,15 @@
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// BOOST
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
 // PAConsole LSF plug-in
 #include "LSFDlg.h"
 // Qt
 #include <QtGui>
-// BOOST
-//#include <boost/archive/xml_oarchive.hpp>
-//#include <boost/archive/xml_iarchive.hpp>
+// STD
+#include <fstream>
 // MiscCommon
 #include "def.h"
 #include "SysHelper.h"
@@ -27,10 +29,43 @@ using namespace std;
 using namespace MiscCommon;
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$GLITE_PROOF_LOCATION/etc/Job.lsf";
+// configuration file of the plug-in
+const LPCTSTR g_szLSFPluginCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_LSF.xml.cfg";
+
+
+// TODO: avoid of code duplications (this two function must be put in MiscCommon)
+// Serialization helpers
+template<class T>
+void _loadcfg( T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() || !is_file_exists( _FileName ) )
+        throw exception();
+
+    ifstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_iarchive ia( f );
+    ia >> BOOST_SERIALIZATION_NVP( _s );
+}
+
+template<class T>
+void _savecfg( const T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() )
+        throw exception();
+
+    // make an archive
+    ofstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_oarchive oa( f );
+    oa << BOOST_SERIALIZATION_NVP( _s );
+}
 
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
-        m_JobsCount( 0 )
+        m_JobsCount( 0 ),
+        m_JobSubmitter(this)
 {
     m_ui.setupUi( this );
 
@@ -50,36 +85,28 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
 
-//    try
-//    {
-//        // Loading class from the config file
-//        _loadcfg( *this, g_szCfgFileName );
-//    }
-//    catch ( ... )
-//    {
-//        setAllDefault();
-//    }
-
     try
     {
-    	m_lsf.init();
+        // Loading class from the config file
+        _loadcfg( *this, g_szLSFPluginCfgFileName );
     }
-    catch (const exception &e)
+    catch ( ... )
     {
-    	// TODO: Show messageb
+        setAllDefault();
     }
+
 }
 
 CLSFDlg::~CLSFDlg()
 {
-//    try
-//    {
-//        // Saving class to the config file
-//        _savecfg( *this, g_szCfgFileName );
-//    }
-//    catch ( ... )
-//    {
-//    }
+    try
+    {
+        // Saving class to the config file
+        _savecfg( *this, g_szLSFPluginCfgFileName );
+    }
+    catch ( ... )
+    {
+    }
 
     if ( m_Timer )
     {
