@@ -27,7 +27,7 @@ IF (UNIX)
 
     FIND_PATH(LSF_INCLUDE_DIR lsf/lsf.h
       ${LSF_PREFIX}/include
-      /LSF/lsf
+      /LSF/lsf/include
     )
 
     FIND_LIBRARY(LSF_LSF_LIB
