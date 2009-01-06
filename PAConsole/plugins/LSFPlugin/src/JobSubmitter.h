@@ -12,8 +12,8 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef JOBSUBMITTER_H_
-#define JOBSUBMITTER_H_
+#ifndef LSFJOBSUBMITTER_H_
+#define LSFJOBSUBMITTER_H_
 
 // gLite plug-in
 #include "LsfMng.h"
@@ -28,7 +28,7 @@
 #include <boost/serialization/set.hpp>
 
 
-class CJobSubmitter: public QThread
+class CLSFJobSubmitter: public QThread
 {
         Q_OBJECT
 
@@ -38,24 +38,28 @@ class CJobSubmitter: public QThread
         typedef std::set<LS_LONG_INT_t> jobslist_t;
 
     public:
-        CJobSubmitter( QObject *parent ): QThread( parent )
+        CLSFJobSubmitter( QObject *parent ): QThread( parent )
         {
-            try
-            {
-            	m_lsf.init();
-            }
-            catch (const std::exception &e)
-            {
-            	// TODO: Show messageb
-            }
         }
-        ~CJobSubmitter()
+        ~CLSFJobSubmitter()
         {
             if ( isRunning() )
                 terminate();
         }
 
     public:
+    	bool init()
+    	{
+            try
+            {
+            	m_lsf.init();
+            }
+            catch (const std::exception &e)
+            {
+            	return false;
+            }
+            return true;
+    	}
         const jobslist_t &getActiveJobList()
         {
             // Retrieving a number of children of the parametric job
@@ -169,6 +173,6 @@ class CJobSubmitter: public QThread
         CLsfMng m_lsf;
 };
 
-BOOST_CLASS_VERSION( CJobSubmitter, 2 )
+BOOST_CLASS_VERSION( CLSFJobSubmitter, 2 )
 
-#endif /*JOBSUBMITTER_H_*/
+#endif /*LSFJOBSUBMITTER_H_*/

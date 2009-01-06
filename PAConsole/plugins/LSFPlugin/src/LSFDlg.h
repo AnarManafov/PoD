@@ -42,35 +42,35 @@ class CLSFDlg: public QWidget, IJobManager
         void startUpdTimer( int _JobStatusUpdInterval );
         int getJobsCount() const;
 
-        void setAllDefault();
+//        void setAllDefault();
 
-    signals:
-        void changeNumberOfJobs( int _count );
+  //  signals:
+ //       void changeNumberOfJobs( int _count );
 
-    public slots:
-        void on_btnSubmitClient_clicked();
-        void updateJobsTree();
-        void recieveThreadMsg( const QString &_Msg );
-        void setProgress( int _Val );
-        void on_btnBrowseJobScript_clicked();
-        void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
-        void setNumberOfJobs( int _count );
-
-
-    private slots:
-        void copyJobID() const;
-        void cancelJob();
-        void getJobOutput();
-        void getJobLoggingInfo();
-        void removeJob();
-
-    protected:
-        void contextMenuEvent( QContextMenuEvent *event );
-
-    private:
-        void createActions();
-        void UpdateEndpoints( bool _Msg = true );
-        void UpdateAfterLoad();
+//   public slots:
+//        void on_btnSubmitClient_clicked();
+//        void updateJobsTree();
+//        void recieveThreadMsg( const QString &_Msg );
+//        void setProgress( int _Val );
+//        void on_btnBrowseJobScript_clicked();
+//        void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
+//        void setNumberOfJobs( int _count );
+//
+//
+//    private slots:
+//        void copyJobID() const;
+//        void cancelJob();
+//        void getJobOutput();
+//        void getJobLoggingInfo();
+//        void removeJob();
+//
+//    protected:
+//        void contextMenuEvent( QContextMenuEvent *event );
+//
+//    private:
+//        void createActions();
+//        void UpdateEndpoints( bool _Msg = true );
+//        void UpdateAfterLoad();
 
         // serialization
         template<class Archive>
@@ -86,7 +86,7 @@ class CLSFDlg: public QWidget, IJobManager
             _ar
             & BOOST_SERIALIZATION_NVP( m_JobScript );
            //& BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-            UpdateAfterLoad();
+      //      UpdateAfterLoad();
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
@@ -101,7 +101,7 @@ class CLSFDlg: public QWidget, IJobManager
         QClipboard *clipboard;
         std::string m_JobScript;
         int m_JobsCount;
-        CJobSubmitter m_JobSubmitter;
+        CLSFJobSubmitter m_JobSubmitter;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )
