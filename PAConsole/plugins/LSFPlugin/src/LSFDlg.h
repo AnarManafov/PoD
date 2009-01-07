@@ -69,7 +69,6 @@ class CLSFDlg: public QWidget, IJobManager
 //
     private:
 //        void createActions();
-//        void UpdateEndpoints( bool _Msg = true );
         void UpdateAfterLoad();
 
         // serialization
@@ -77,16 +76,18 @@ class CLSFDlg: public QWidget, IJobManager
         void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
             _ar
-            & BOOST_SERIALIZATION_NVP( m_JobScript );
-            // & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
+            & BOOST_SERIALIZATION_NVP( m_JobScript )
+            & BOOST_SERIALIZATION_NVP( m_JobsCount )
+            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
         }
         template<class Archive>
         void load( Archive & _ar, const unsigned int /*_version*/ )
         {
             _ar
-            & BOOST_SERIALIZATION_NVP( m_JobScript );
-            //& BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-            //      UpdateAfterLoad();
+            & BOOST_SERIALIZATION_NVP( m_JobScript )
+            & BOOST_SERIALIZATION_NVP( m_JobsCount )
+            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
+            UpdateAfterLoad();
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 

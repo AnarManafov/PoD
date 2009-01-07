@@ -42,7 +42,7 @@ class CLSFJobSubmitter: public QThread
     public:
         CLSFJobSubmitter( QObject *parent ): QThread( parent )
         {
-        	init();
+            init();
         }
         ~CLSFJobSubmitter()
         {
@@ -51,18 +51,18 @@ class CLSFJobSubmitter: public QThread
         }
 
     public:
-    	bool init()
-    	{
+        bool init()
+        {
             try
             {
-            	m_lsf.init();
+                m_lsf.init();
             }
-            catch (const std::exception &e)
+            catch ( const std::exception &e )
             {
-            	return false;
+                return false;
             }
             return true;
-    	}
+        }
         const jobslist_t &getActiveJobList()
         {
             // Retrieving a number of children of the parametric job
@@ -81,15 +81,15 @@ class CLSFJobSubmitter: public QThread
         }
         void setNumberOfWorkers( int _WrkN )
         {
-        	// setting job array
-        	std::ostringstream jobname;
-        	jobname << getpid() << "[1-" << _WrkN << "]";
+            // setting job array
+            std::ostringstream jobname;
+            jobname << getpid() << "[1-" << _WrkN << "]";
 
-        	m_lsf.addProperty(CLsfMng::JP_SUB_JOB_NAME, jobname.str());
+            m_lsf.addProperty( CLsfMng::JP_SUB_JOB_NAME, jobname.str() );
         }
         void setQueue( const std::string &_queue )
         {
-        	m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
+            m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
         }
         void RemoveJob( const LS_LONG_INT_t &_JobID )
         {
@@ -115,7 +115,7 @@ class CLSFJobSubmitter: public QThread
             {
                 emit changeProgress( 30 );
 
-                LS_LONG_INT_t nLastJobID = m_lsf.jobSubmit(m_JobScriptFilename);
+                LS_LONG_INT_t nLastJobID = m_lsf.jobSubmit( m_JobScriptFilename );
 
                 emit changeProgress( 90 );
 
@@ -150,12 +150,12 @@ class CLSFJobSubmitter: public QThread
                 jobslist_t::const_iterator iter_end = m_JobsList.end();
                 // Retrieving a number of children of the parametric job
                 size_t num( 0 );
-          //      MiscCommon::StringVector_t jobs;
+                //      MiscCommon::StringVector_t jobs;
                 for ( ; iter != iter_end; ++iter )
                 {
-        //            MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
-            //        num += jobs.size();
-                  //  jobs.clear();
+                    //            MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
+                    //        num += jobs.size();
+                    //  jobs.clear();
                 }
                 return ( num );
             }
@@ -174,8 +174,7 @@ class CLSFJobSubmitter: public QThread
         void load( Archive & _ar, const unsigned int _version )
         {
             m_mutex.lock();
-            if ( _version >= 2 ) // TODO: make CJobSubmitter v1 in  PAconsole version 1.0.6 depreciated
-                _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
+            _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
             m_mutex.unlock();
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -187,6 +186,6 @@ class CLSFJobSubmitter: public QThread
         CLsfMng m_lsf;
 };
 
-BOOST_CLASS_VERSION( CLSFJobSubmitter, 2 )
+BOOST_CLASS_VERSION( CLSFJobSubmitter, 1 )
 
 #endif /*LSFJOBSUBMITTER_H_*/

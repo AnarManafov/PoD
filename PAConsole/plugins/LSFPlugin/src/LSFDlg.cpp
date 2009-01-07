@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file LSFDlg.h
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
@@ -97,7 +97,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
         setAllDefault();
     }
 
-
     // TODO: move this to GUI setting
     m_JobSubmitter.setQueue( "proof" );
 }
@@ -131,19 +130,7 @@ void CLSFDlg::UpdateAfterLoad()
 {
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
-
-//    // Setting up PARAMETERS
-//    int num_jobs( 0 );
-//    try
-//    {
-//        get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
-//
-//        updateJobsTree();
-//    }
-//    catch ( ... )
-//    {
-//    }
-//    m_ui.spinNumWorkers->setValue( num_jobs );
+    m_ui.spinNumWorkers->setValue( m_JobsCount );
 }
 
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
@@ -383,37 +370,9 @@ void CLSFDlg::setProgress( int _Val )
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
 
-//// Retrieving a list of possible WMProxy endpoints
-//void CLSFDlg::UpdateEndpoints( bool _Msg )
-//{
-////    m_ui.cmbEndpoint->clear();
-////
-////    CWMPEndpoint endpoint;
-////    StringVector_t endpoints;
-////    try
-////    {
-////        endpoint.Get( &endpoints, m_JDLFileName );
-////    }
-////    catch ( const exception &_e )
-////    {
-////        if ( _Msg )
-////            QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
-////        return;
-////    }
-////
-////    // Let's fill the Combobox
-////    StringVector_t::const_iterator iter( endpoints.begin() );
-////    StringVector_t::const_iterator iter_end( endpoints.end() );
-////    for ( ; iter != iter_end; ++iter )
-////    {
-////        m_ui.cmbEndpoint->addItem( tr( iter->c_str() ) );
-////    }
-//}
-
 void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
 {
     m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
-//    UpdateEndpoints( false );
 }
 
 void CLSFDlg::setNumberOfJobs( int _count )
