@@ -66,7 +66,6 @@ void _savecfg( const T &_s, string _FileName )
 
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
-        m_JobsCount( 0 ),
         m_JobSubmitter( this )
 {
     m_ui.setupUi( this );
@@ -122,6 +121,7 @@ CLSFDlg::~CLSFDlg()
 void CLSFDlg::setAllDefault()
 {
     m_JobScript = g_szDefaultJobScript;
+    m_JobsCount = 1;
     m_JobSubmitter.setAllDefault();
     UpdateAfterLoad();
 }
