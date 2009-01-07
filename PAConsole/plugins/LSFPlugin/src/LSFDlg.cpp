@@ -66,6 +66,7 @@ void _savecfg( const T &_s, string _FileName )
 
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
+        m_AllJobsCount( 0 ),
         m_JobSubmitter( this )
 {
     m_ui.setupUi( this );
@@ -121,7 +122,7 @@ CLSFDlg::~CLSFDlg()
 void CLSFDlg::setAllDefault()
 {
     m_JobScript = g_szDefaultJobScript;
-    m_JobsCount = 1;
+    m_WorkersCount = 1;
     m_JobSubmitter.setAllDefault();
     UpdateAfterLoad();
 }
@@ -130,7 +131,7 @@ void CLSFDlg::UpdateAfterLoad()
 {
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
-    m_ui.spinNumWorkers->setValue( m_JobsCount );
+    m_ui.spinNumWorkers->setValue( m_WorkersCount );
 }
 
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
@@ -167,8 +168,8 @@ void CLSFDlg::on_btnSubmitClient_clicked()
 
         m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
 
-        m_JobsCount = m_ui.spinNumWorkers->value();
-        m_JobSubmitter.setNumberOfWorkers( m_JobsCount );
+        m_WorkersCount = m_ui.spinNumWorkers->value();
+        m_JobSubmitter.setNumberOfWorkers( m_WorkersCount );
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
         // submit gLite jobs
@@ -378,7 +379,7 @@ void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
 
 void CLSFDlg::setNumberOfJobs( int _count )
 {
-    m_JobsCount = _count;
+    m_AllJobsCount = _count;
     emit changeNumberOfJobs( _count );
 }
 
@@ -401,7 +402,7 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 }
 int CLSFDlg::getJobsCount() const
 {
-    return m_JobsCount;
+    return m_AllJobsCount;
 }
 
 Q_EXPORT_PLUGIN2( LSFJobManager, CLSFDlg );

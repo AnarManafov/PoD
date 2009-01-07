@@ -139,6 +139,7 @@ class CLSFJobSubmitter: public QThread
         // this function is very "expensive",
         // we therefore use it only via signal only when number of jobs may be changed.
         // Users can't call it any time they want.
+        // considering on ly array jobs in this algorithm
         int getNumberOfJobs() const
         {
             if ( m_JobsList.empty() )
@@ -148,14 +149,11 @@ class CLSFJobSubmitter: public QThread
             {
                 jobslist_t::const_iterator iter = m_JobsList.begin();
                 jobslist_t::const_iterator iter_end = m_JobsList.end();
-                // Retrieving a number of children of the parametric job
+                // Retrieving a number of jobs in array jobs
                 size_t num( 0 );
-                //      MiscCommon::StringVector_t jobs;
                 for ( ; iter != iter_end; ++iter )
                 {
-                    //            MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
-                    //        num += jobs.size();
-                    //  jobs.clear();
+                    num += m_lsf.getNumberOfChildren(*iter);
                 }
                 return ( num );
             }

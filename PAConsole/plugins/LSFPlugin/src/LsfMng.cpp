@@ -101,7 +101,7 @@ LS_LONG_INT_t CLsfMng::jobSubmit( const std::string &_Cmd )
         }
     }
 
-    request.command = const_cast<char*>(_Cmd.c_str());
+    request.command = const_cast<char*>( _Cmd.c_str() );
 
     submitReply reply; // results of job submission
     // submit the job with specifications
@@ -148,4 +148,36 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
     lsb_closejobinfo();
 
     return status;
+}
+
+int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
+{
+    if ( !m_bInit )
+        return JS_JOB_STAT_UNKWN; //TODO: throw something here
+
+    // detailed job info
+    jobInfoEnt *job;
+
+    //gets the total number of pending job. Exits if failure */
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+        throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
+
+    // number of remaining jobs unread
+    int more = 0;
+    // get the job details
+    job = lsb_readjobinfo( &more );
+    if ( job == NULL )
+        throw runtime_error( "error retrieving job's status - readjob error" ); // TODO: report a proper error here
+
+    int retNumberOfJobsInArray = 0;
+    // check whether it is an array job
+    if ( JGRP_NODE_ARRAY == job->jType )
+    {
+        retNumberOfJobsInArray = job->counter[JGRP_COUNT_NJOBS];
+    }
+
+    //when finished to display the job info, close the connection to the mbatchd
+    lsb_closejobinfo();
+
+    return retNumberOfJobsInArray;
 }

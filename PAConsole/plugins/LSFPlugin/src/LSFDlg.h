@@ -77,7 +77,7 @@ class CLSFDlg: public QWidget, IJobManager
         {
             _ar
             & BOOST_SERIALIZATION_NVP( m_JobScript )
-            & BOOST_SERIALIZATION_NVP( m_JobsCount )
+            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
             & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
         }
         template<class Archive>
@@ -85,7 +85,7 @@ class CLSFDlg: public QWidget, IJobManager
         {
             _ar
             & BOOST_SERIALIZATION_NVP( m_JobScript )
-            & BOOST_SERIALIZATION_NVP( m_JobsCount )
+            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
             & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
             UpdateAfterLoad();
         }
@@ -101,7 +101,8 @@ class CLSFDlg: public QWidget, IJobManager
         QAction *removeJobAct;
         QClipboard *clipboard;
         std::string m_JobScript;
-        int m_JobsCount;
+        int m_AllJobsCount;
+        int m_WorkersCount;
         CLSFJobSubmitter m_JobSubmitter;
 };
 
