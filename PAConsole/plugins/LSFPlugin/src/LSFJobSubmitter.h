@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file JobSubmitter.h
+ * @file LSFJobSubmitter.h
  * @brief A thread-class which submits Grid jobs and reports a progress status
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
@@ -17,6 +17,8 @@
 
 // gLite plug-in
 #include "LsfMng.h"
+// STD
+#include <sstream>
 // Qt
 #include <QThread>
 #include <QMutex>
@@ -40,6 +42,7 @@ class CLSFJobSubmitter: public QThread
     public:
         CLSFJobSubmitter( QObject *parent ): QThread( parent )
         {
+        	init();
         }
         ~CLSFJobSubmitter()
         {
@@ -72,14 +75,26 @@ class CLSFJobSubmitter: public QThread
             emit changeNumberOfJobs( 0 );
             m_JobsList.clear();
         }
-        void setJDLFileName( const std::string &_JDLfilename )
+        void setJobScriptFilename( const std::string &_JobScriptFilename )
         {
-     //       m_JDLfilename = _JDLfilename;
+            m_JobScriptFilename = _JobScriptFilename;
         }
-        void RemoveJob( const std::string &_JobID )
+        void setNumberOfWorkers( int _WrkN )
+        {
+        	// setting job array
+        	std::ostringstream jobname;
+        	jobname << getpid() << "[1-" << _WrkN << "]";
+
+        	m_lsf.addProperty(CLsfMng::JP_SUB_JOB_NAME, jobname.str());
+        }
+        void setQueue( const std::string &_queue )
+        {
+        	m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
+        }
+        void RemoveJob( const LS_LONG_INT_t &_JobID )
         {
             m_mutex.lock();
-      //      m_JobsList.erase( _JobID );
+            m_JobsList.erase( _JobID );
             m_mutex.unlock();
 
             emit changeNumberOfJobs( getNumberOfJobs() );
@@ -100,13 +115,12 @@ class CLSFJobSubmitter: public QThread
             {
                 emit changeProgress( 30 );
 
-                std::string sLastJobID;
-      //          GAW::Instance().GetJobManager().JobSubmit( m_JDLfilename.c_str(), &sLastJobID );
+                LS_LONG_INT_t nLastJobID = m_lsf.jobSubmit(m_JobScriptFilename);
 
                 emit changeProgress( 90 );
 
                 m_mutex.lock();
-     //           m_JobsList.insert( sLastJobID );
+                m_JobsList.insert( nLastJobID );
                 m_mutex.unlock();
 
                 // Retrieving a number of children of the parametric job
@@ -169,7 +183,7 @@ class CLSFJobSubmitter: public QThread
     private:
         jobslist_t m_JobsList;
         QMutex m_mutex;
-        //std::string m_JDLfilename;
+        std::string m_JobScriptFilename;
         CLsfMng m_lsf;
 };
 

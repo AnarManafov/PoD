@@ -24,6 +24,8 @@
 // MiscCommon
 #include "def.h"
 #include "SysHelper.h"
+// PAConsole
+#include "ServerInfo.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -65,16 +67,16 @@ void _savecfg( const T &_s, string _FileName )
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
         m_JobsCount( 0 ),
-        m_JobSubmitter(this)
+        m_JobSubmitter( this )
 {
     m_ui.setupUi( this );
 
     m_Timer = new QTimer( this );
     connect( m_Timer, SIGNAL( timeout() ), this, SLOT( updateJobsTree() ) );
 
-//    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
-//    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
-//    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( setNumberOfJobs( int ) ) );
+    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
+    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( setNumberOfJobs( int ) ) );
 
 //    createActions();
 
@@ -92,9 +94,12 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     }
     catch ( ... )
     {
-//        setAllDefault();
+        setAllDefault();
     }
 
+
+    // TODO: move this to GUI setting
+    m_JobSubmitter.setQueue( "proof" );
 }
 
 CLSFDlg::~CLSFDlg()
@@ -115,101 +120,99 @@ CLSFDlg::~CLSFDlg()
     }
 }
 
-//void CLSFDlg::setAllDefault()
-//{
-//    m_JobScript = g_szDefaultJobScript;
-////    m_JobSubmitter.setAllDefault();
-////    UpdateAfterLoad();
-//}
-//
-//void CLSFDlg::UpdateAfterLoad()
-//{
-//    smart_path( &m_JobScript );
-//    m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
-//
-////    // Setting up PARAMETERS
-////    int num_jobs( 0 );
-////    try
-////    {
-////        get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
-////
-////        updateJobsTree();
-////    }
-////    catch ( ... )
-////    {
-////    }
-////    m_ui.spinNumWorkers->setValue( num_jobs );
-//}
-//
-//void CLSFDlg::recieveThreadMsg( const QString &_Msg )
-//{
-////    QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
-////    m_ui.btnSubmitClient->setEnabled( true );
-//}
-//
-//void CLSFDlg::on_btnSubmitClient_clicked()
-//{
-////    // Checking first that gLitePROOF server is running
-////    CServerInfo si;
-////    if ( !si.IsRunning( true ) )
-////    {
-////        const string msg( "gLitePROOF server is not running.\n"
-////                          "Do you want to submit this job anyway?" );
-////        const QMessageBox::StandardButton reply =
-////            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
-////                                   QMessageBox::Yes | QMessageBox::No );
-////        if ( QMessageBox::Yes != reply )
-////            return;
-////    }
-////
-////    if ( !m_JobSubmitter.isRunning() )
-////    {
-////        if ( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
-////        {
-////            QMessageBox::critical( this,
-////                                   tr( "PROOFAgent Console" ),
-////                                   tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
-////                                       m_ui.edtJDLFileName->text() ) );
-////            return;
-////        }
-////
-////        m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
-////
-////        // Setting up PARAMETERS
-////        set_ad_attr( m_ui.spinNumWorkers->value(), m_JDLFileName, JDL_PARAMETERS );
-////
-////        m_JobSubmitter.setJDLFileName( m_JDLFileName );
-////        m_JobSubmitter.setEndpoint( m_ui.cmbEndpoint->currentText().toAscii().data() );
-////        // submit gLite jobs
-////        m_JobSubmitter.start();
-////        m_ui.btnSubmitClient->setEnabled( false );
-////    }
-////    else
-////    {
-////        // Job submitter's thread
-////        m_JobSubmitter.terminate();
-////        setProgress( 0 );
-////        m_ui.btnSubmitClient->setEnabled( true );
-////    }
-//}
-//
-//void CLSFDlg::updateJobsTree()
-//{
-////    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
-//}
-//
-//void CLSFDlg::on_btnBrowseJobScript_clicked()
-//{
-//    const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
-//    const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
-//                                                           tr( "LSF script (*.lsf)" ) );
-//    if ( QFileInfo( filename ).exists() )
+void CLSFDlg::setAllDefault()
+{
+    m_JobScript = g_szDefaultJobScript;
+    m_JobSubmitter.setAllDefault();
+    UpdateAfterLoad();
+}
+
+void CLSFDlg::UpdateAfterLoad()
+{
+    smart_path( &m_JobScript );
+    m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
+
+//    // Setting up PARAMETERS
+//    int num_jobs( 0 );
+//    try
 //    {
-//        m_JobScript = filename.toAscii().data();
-//        m_ui.edtJobScriptFileName->setText( filename );
-//    }
-//}
+//        get_ad_attr( &num_jobs, m_JDLFileName, JDL_PARAMETERS );
 //
+//        updateJobsTree();
+//    }
+//    catch ( ... )
+//    {
+//    }
+//    m_ui.spinNumWorkers->setValue( num_jobs );
+}
+
+void CLSFDlg::recieveThreadMsg( const QString &_Msg )
+{
+    QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
+    m_ui.btnSubmitClient->setEnabled( true );
+}
+
+void CLSFDlg::on_btnSubmitClient_clicked()
+{
+    // Checking first that gLitePROOF server is running
+    CServerInfo si;
+    if ( !si.IsRunning( true ) )
+    {
+        const string msg( "gLitePROOF server is not running.\n"
+                          "Do you want to submit this job anyway?" );
+        const QMessageBox::StandardButton reply =
+            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+                                   QMessageBox::Yes | QMessageBox::No );
+        if ( QMessageBox::Yes != reply )
+            return;
+    }
+
+    if ( !m_JobSubmitter.isRunning() )
+    {
+        if ( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
+        {
+            QMessageBox::critical( this,
+                                   tr( "PROOFAgent Console" ),
+                                   tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
+                                       m_ui.edtJobScriptFileName->text() ) );
+            return;
+        }
+
+        m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
+
+        m_JobSubmitter.setNumberOfWorkers( m_ui.spinNumWorkers->value() );
+
+        m_JobSubmitter.setJobScriptFilename( m_JobScript );
+        // submit gLite jobs
+        m_JobSubmitter.start();
+        m_ui.btnSubmitClient->setEnabled( false );
+    }
+    else
+    {
+        // Job submitter's thread
+        m_JobSubmitter.terminate();
+        setProgress( 0 );
+        m_ui.btnSubmitClient->setEnabled( true );
+    }
+}
+
+void CLSFDlg::updateJobsTree()
+{
+//    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
+}
+
+void CLSFDlg::on_btnBrowseJobScript_clicked()
+{
+    const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
+    const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
+                                                           tr( "LSF script (*.lsf)" ) );
+    if ( QFileInfo( filename ).exists() )
+    {
+        m_JobScript = filename.toAscii().data();
+        m_ui.edtJobScriptFileName->setText( filename );
+    }
+}
+
 //void CLSFDlg::createActions()
 //{
 ////    // COPY Job ID
@@ -368,18 +371,18 @@ CLSFDlg::~CLSFDlg()
 ////    m_JobSubmitter.RemoveJob( jobid );
 ////    updateJobsTree();
 //}
-//
-//void CLSFDlg::setProgress( int _Val )
-//{
-////    if ( 100 == _Val )
-////    {
-////        m_ui.btnSubmitClient->setEnabled( true );
-////        // The job is submitted, we need to update the tree
-////        updateJobsTree();
-////    }
-////    m_ui.progressSubmittedJobs->setValue( _Val );
-//}
-//
+
+void CLSFDlg::setProgress( int _Val )
+{
+    if ( 100 == _Val )
+    {
+        m_ui.btnSubmitClient->setEnabled( true );
+        // The job is submitted, we need to update the tree
+        //updateJobsTree();
+    }
+    m_ui.progressSubmittedJobs->setValue( _Val );
+}
+
 //// Retrieving a list of possible WMProxy endpoints
 //void CLSFDlg::UpdateEndpoints( bool _Msg )
 //{
@@ -406,18 +409,18 @@ CLSFDlg::~CLSFDlg()
 ////        m_ui.cmbEndpoint->addItem( tr( iter->c_str() ) );
 ////    }
 //}
-//
-//void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
-//{
-//    m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
-////    UpdateEndpoints( false );
-//}
 
-//void CLSFDlg::setNumberOfJobs( int _count )
-//{
-//    m_JobsCount = _count;
-//   emit changeNumberOfJobs( _count );
-//}
+void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
+{
+    m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
+//    UpdateEndpoints( false );
+}
+
+void CLSFDlg::setNumberOfJobs( int _count )
+{
+    m_JobsCount = _count;
+    emit changeNumberOfJobs( _count );
+}
 
 QString CLSFDlg::getName() const
 {

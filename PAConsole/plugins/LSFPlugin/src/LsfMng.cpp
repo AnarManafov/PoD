@@ -52,7 +52,7 @@ void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
     m_submitRequest.insert( propertyDict_t::value_type( _type, _val ) );
 }
 
-LS_LONG_INT_t CLsfMng::jobSubmit()
+LS_LONG_INT_t CLsfMng::jobSubmit( const std::string &_Cmd )
 {
     if ( !m_bInit )
         return 0; //TODO: throw something here
@@ -100,6 +100,8 @@ LS_LONG_INT_t CLsfMng::jobSubmit()
                 return 0; //TODO: Assert here
         }
     }
+
+    request.command = const_cast<char*>(_Cmd.c_str());
 
     submitReply reply; // results of job submission
     // submit the job with specifications

@@ -63,7 +63,7 @@ class CLsfMng
         void addProperty( EJobProperty_t _type, const std::string &_val );
         // TODO: implement
         //void removeProperty();
-        LS_LONG_INT_t jobSubmit();
+        LS_LONG_INT_t jobSubmit( const std::string &_Cmd );
         EJobStatus_t jobStatus( LS_LONG_INT_t _jobID );
 
     private:
