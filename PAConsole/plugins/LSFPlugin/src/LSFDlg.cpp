@@ -167,7 +167,8 @@ void CLSFDlg::on_btnSubmitClient_clicked()
 
         m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
 
-        m_JobSubmitter.setNumberOfWorkers( m_ui.spinNumWorkers->value() );
+        m_JobsCount = m_ui.spinNumWorkers->value();
+        m_JobSubmitter.setNumberOfWorkers( m_JobsCount );
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
         // submit gLite jobs
