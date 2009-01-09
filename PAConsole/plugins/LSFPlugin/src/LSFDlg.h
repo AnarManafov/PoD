@@ -21,7 +21,8 @@
 #include "ui_wgLSF.h"
 // PAConsole
 #include "IJobManager.h"
-
+// LSF plug-in
+#include "TreeItemContainer.h"
 
 class CLSFDlg: public QWidget, IJobManager
 {
@@ -104,6 +105,7 @@ class CLSFDlg: public QWidget, IJobManager
         int m_AllJobsCount;
         int m_WorkersCount;
         CLSFJobSubmitter m_JobSubmitter;
+        CTreeItemContainer m_TreeItems;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )

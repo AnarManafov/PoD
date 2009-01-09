@@ -187,7 +187,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
 
 void CLSFDlg::updateJobsTree()
 {
-//    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
+    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
 
 void CLSFDlg::on_btnBrowseJobScript_clicked()

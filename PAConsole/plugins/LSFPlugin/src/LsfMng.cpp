@@ -132,7 +132,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
         throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
 
     // number of remaining jobs unread
@@ -150,6 +150,35 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
     return status;
 }
 
+std::string CLsfMng::jobStatusString( LS_LONG_INT_t _jobID )
+{
+    switch ( jobStatus( _jobID ) )
+    {
+        case JS_JOB_STAT_PEND:
+            return "pending";
+        case JS_JOB_STAT_PSUSP:
+            return "held";
+        case JS_JOB_STAT_RUN:
+            return "running";
+        case JS_JOB_STAT_SSUSP:
+            return "suspended by LSF";
+        case JS_JOB_STAT_USUSP:
+            return "suspended by user";
+        case JS_JOB_STAT_EXIT:
+            return "exited";
+        case JS_JOB_STAT_DONE:
+            return "completed";
+        case JS_JOB_STAT_PDONE:
+            return "done";
+        case JS_JOB_STAT_PERROR:
+            return "job process error";
+        case JS_JOB_STAT_WAIT:
+            return "waiting";
+        default:
+            return "unknown";
+    }
+}
+
 int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
 {
     if ( !m_bInit )
@@ -159,7 +188,7 @@ int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
         throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
 
     // number of remaining jobs unread
@@ -180,4 +209,19 @@ int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
     lsb_closejobinfo();
 
     return retNumberOfJobsInArray;
+}
+
+void CLsfMng::getChildren( LS_LONG_INT_t _jobID, IDContainer_t *_container ) const
+{
+    if ( !_container )
+        return;
+
+    int children_count = getNumberOfChildren( _jobID );
+    if ( 0 >= children_count )
+        return;
+
+    for ( int i = 0; i < children_count; ++i )
+    {
+        _container->push_back( LSB_JOBID( _jobID, i ) );
+    }
 }
