@@ -153,7 +153,7 @@ class CLSFJobSubmitter: public QThread
                 size_t num( 0 );
                 for ( ; iter != iter_end; ++iter )
                 {
-                    num += m_lsf.getNumberOfChildren(*iter);
+                    num += m_lsf.getNumberOfChildren( *iter );
                 }
                 return ( num );
             }

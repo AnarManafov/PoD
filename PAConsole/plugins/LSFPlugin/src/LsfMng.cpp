@@ -132,7 +132,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
         throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
 
     // number of remaining jobs unread
@@ -188,7 +188,7 @@ int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
         throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
 
     // number of remaining jobs unread
@@ -222,6 +222,6 @@ void CLsfMng::getChildren( LS_LONG_INT_t _jobID, IDContainer_t *_container ) con
 
     for ( int i = 0; i < children_count; ++i )
     {
-        _container->push_back( LSB_JOBID( LSB_ARRAY_JOBID( _jobID ), i ) );
+        _container->push_back( LSB_JOBID( _jobID, i ) );
     }
 }
