@@ -222,6 +222,6 @@ void CLsfMng::getChildren( LS_LONG_INT_t _jobID, IDContainer_t *_container ) con
 
     for ( int i = 0; i < children_count; ++i )
     {
-        _container->push_back( LSB_JOBID( _jobID, i ) );
+        _container->push_back( LSB_JOBID( LSB_ARRAY_IDX(_jobID), i ) );
     }
 }
