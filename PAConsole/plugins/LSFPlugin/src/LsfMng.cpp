@@ -188,7 +188,7 @@ int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
         throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
 
     // number of remaining jobs unread
