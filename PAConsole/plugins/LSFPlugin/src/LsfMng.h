@@ -22,7 +22,7 @@
 #include <map>
 #include <vector>
 
-typedef long long int LS_LONG_INT_t;
+typedef long long int lsf_jobid_t;
 
 class CLsfMng
 {
@@ -54,7 +54,7 @@ class CLsfMng
         } EJobStatus_t;
 
         typedef std::map<EJobProperty_t, std::string> propertyDict_t;
-        typedef std::vector<LS_LONG_INT_t> IDContainer_t;
+        typedef std::vector<lsf_jobid_t> IDContainer_t;
 
     public:
         CLsfMng();
@@ -65,11 +65,11 @@ class CLsfMng
         void addProperty( EJobProperty_t _type, const std::string &_val );
         // TODO: implement
         //void removeProperty();
-        LS_LONG_INT_t jobSubmit( const std::string &_Cmd );
-        EJobStatus_t jobStatus( LS_LONG_INT_t _jobID );
-        std::string jobStatusString( LS_LONG_INT_t _jobID );
-        int getNumberOfChildren( LS_LONG_INT_t _jobID ) const;
-        void getChildren( LS_LONG_INT_t _jobID, IDContainer_t *_container ) const;
+        lsf_jobid_t jobSubmit( const std::string &_Cmd );
+        EJobStatus_t jobStatus( lsf_jobid_t _jobID );
+        std::string jobStatusString( lsf_jobid_t _jobID );
+        int getNumberOfChildren( lsf_jobid_t _jobID ) const;
+        void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
 
     private:
         propertyDict_t m_submitRequest;

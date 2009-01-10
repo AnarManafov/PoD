@@ -22,7 +22,7 @@
 
 class CTreeItemContainer
 {
-        typedef std::pair<LS_LONG_INT_t, QTreeWidgetItem *> Item_t;
+        typedef std::pair<lsf_jobid_t, QTreeWidgetItem *> Item_t;
         typedef std::vector<Item_t> container_t;
 
     public:
@@ -54,7 +54,8 @@ class CTreeItemContainer
                 QTreeWidgetItem *ParentJobItem = new QTreeWidgetItem( _Tree );
                 m_ParentJobItem.push_back( container_t::value_type( *iter, ParentJobItem ) );
                 std::ostringstream str;
-                str << *iter;
+                // TODO: LsfMng should have methods to return string representations of jobID
+                str << LSB_ARRAY_JOBID(*iter);
                 ParentJobItem->setText( 0, str.str().c_str() );
                 ParentJobItem->setText( 1, getJobStatus( *iter ).c_str() );
                 try
@@ -95,17 +96,17 @@ class CTreeItemContainer
                 {}
         }
 
-        void addChildItem( LS_LONG_INT_t _JobID, QTreeWidgetItem *_parent )
+        void addChildItem( lsf_jobid_t _JobID, QTreeWidgetItem *_parent )
         {
             QTreeWidgetItem *item( new QTreeWidgetItem( _parent ) );
             std::ostringstream str;
-            str << _JobID;
+            str << LSB_ARRAY_JOBID(_JobID) << "[" << LSB_ARRAY_IDX(_JobID) << "]";
             item->setText( 0, str.str().c_str() );
             item->setText( 1, getJobStatus( _JobID ).c_str() );
             m_Children.push_back( container_t::value_type( _JobID, item ) );
         }
 
-        std::string getJobStatus( LS_LONG_INT_t _JobID )
+        std::string getJobStatus( lsf_jobid_t _JobID )
         {
             CLsfMng lsf;
             lsf.init();

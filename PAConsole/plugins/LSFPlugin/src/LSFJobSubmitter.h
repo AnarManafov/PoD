@@ -37,7 +37,7 @@ class CLSFJobSubmitter: public QThread
         friend class boost::serialization::access;
 
     public:
-        typedef std::set<LS_LONG_INT_t> jobslist_t;
+        typedef std::set<lsf_jobid_t> jobslist_t;
 
     public:
         CLSFJobSubmitter( QObject *parent ): QThread( parent )
@@ -91,7 +91,7 @@ class CLSFJobSubmitter: public QThread
         {
             m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
         }
-        void RemoveJob( const LS_LONG_INT_t &_JobID )
+        void RemoveJob( const lsf_jobid_t &_JobID )
         {
             m_mutex.lock();
             m_JobsList.erase( _JobID );
@@ -115,7 +115,7 @@ class CLSFJobSubmitter: public QThread
             {
                 emit changeProgress( 30 );
 
-                LS_LONG_INT_t nLastJobID = m_lsf.jobSubmit( m_JobScriptFilename );
+                lsf_jobid_t nLastJobID = m_lsf.jobSubmit( m_JobScriptFilename );
 
                 emit changeProgress( 90 );
 

@@ -52,7 +52,7 @@ void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
     m_submitRequest.insert( propertyDict_t::value_type( _type, _val ) );
 }
 
-LS_LONG_INT_t CLsfMng::jobSubmit( const std::string &_Cmd )
+lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
 {
     if ( !m_bInit )
         return 0; //TODO: throw something here
@@ -105,7 +105,7 @@ LS_LONG_INT_t CLsfMng::jobSubmit( const std::string &_Cmd )
 
     submitReply reply; // results of job submission
     // submit the job with specifications
-    LS_LONG_INT_t jobId = lsb_submit( &request, &reply );
+    int jobId = lsb_submit( &request, &reply );
 
     if ( jobId < 0 )
     {
@@ -120,10 +120,10 @@ LS_LONG_INT_t CLsfMng::jobSubmit( const std::string &_Cmd )
         }
         return 0;
     }
-    return jobId;
+    return LSB_JOBID(jobId, 0);
 }
 
-CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
+CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID )
 {
     if ( !m_bInit )
         return JS_JOB_STAT_UNKWN; //TODO: throw something here
@@ -150,7 +150,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( LS_LONG_INT_t _jobID )
     return status;
 }
 
-std::string CLsfMng::jobStatusString( LS_LONG_INT_t _jobID )
+std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID )
 {
     switch ( jobStatus( _jobID ) )
     {
@@ -179,7 +179,7 @@ std::string CLsfMng::jobStatusString( LS_LONG_INT_t _jobID )
     }
 }
 
-int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
+int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 {
     if ( !m_bInit )
         return JS_JOB_STAT_UNKWN; //TODO: throw something here
@@ -211,7 +211,7 @@ int CLsfMng::getNumberOfChildren( LS_LONG_INT_t _jobID ) const
     return retNumberOfJobsInArray;
 }
 
-void CLsfMng::getChildren( int _jobID, IDContainer_t *_container ) const
+void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
 {
     if ( !_container )
         return;
