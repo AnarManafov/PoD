@@ -40,17 +40,17 @@ class CLsfMng
         // possible values for the status field
         typedef enum EJobStatus
         {
-            JS_JOB_STAT_PEND,   //!< job is pending
-            JS_JOB_STAT_PSUSP,   //!< job is held
-            JS_JOB_STAT_RUN,   //!< job is running
-            JS_JOB_STAT_SSUSP,   //!< job is suspended by LSF Batch system
-            JS_JOB_STAT_USUSP,   //!< job is suspended by user
-            JS_JOB_STAT_EXIT,   //!< job exited
-            JS_JOB_STAT_DONE,   //!< job is completed successfully
-            JS_JOB_STAT_PDONE,   //!< post job process done successfully
-            JS_JOB_STAT_PERROR,  //!< post job process error
-            JS_JOB_STAT_WAIT,   //!< chunk job waiting its execution turn
-            JS_JOB_STAT_UNKWN,   //!< unknown status
+            JS_JOB_STAT_PEND  	= 0x01,   	//!< job is pending
+            JS_JOB_STAT_PSUSP 	= 0x02,   	//!< job is held
+            JS_JOB_STAT_RUN	  	= 0x04,   	//!< job is running
+            JS_JOB_STAT_SSUSP 	= 0x08,   	//!< job is suspended by LSF Batch system
+            JS_JOB_STAT_USUSP	= 0x10,   	//!< job is suspended by user
+            JS_JOB_STAT_EXIT	= 0x20,   	//!< job exited
+            JS_JOB_STAT_DONE	= 0x40,   	//!< job is completed successfully
+            JS_JOB_STAT_PDONE	= 0x80,   	//!< post job process done successfully
+            JS_JOB_STAT_PERROR	= 0x100,  	//!< post job process error
+            JS_JOB_STAT_WAIT	= 0x200,   	//!< chunk job waiting its execution turn
+            JS_JOB_STAT_UNKWN	= 0x1000,   //!< unknown status
         } EJobStatus_t;
 
         typedef std::map<EJobProperty_t, std::string> propertyDict_t;
