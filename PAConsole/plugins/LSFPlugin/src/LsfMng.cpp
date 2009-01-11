@@ -126,21 +126,21 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
 CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID )
 {
     if ( !m_bInit )
-        return JS_JOB_STAT_UNKWN; //TODO: throw something here
+        return JS_JOB_STAT_UNKWN;
 
     // detailed job info
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
-        throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
+    	return JS_JOB_STAT_UNKWN;
 
     // number of remaining jobs unread
     int more = 0;
     // get the job details
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
-        throw runtime_error( "error retrieving job's status - readjob error" ); // TODO: report a proper error here
+    	return JS_JOB_STAT_UNKWN;
 
     EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
 
@@ -182,21 +182,21 @@ std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID )
 int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 {
     if ( !m_bInit )
-        return JS_JOB_STAT_UNKWN; //TODO: throw something here
+        return 0;
 
     // detailed job info
     jobInfoEnt *job;
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
-        throw runtime_error( "error retrieving job's status" ); // TODO: report a proper error here
+    	return 0;
 
     // number of remaining jobs unread
     int more = 0;
     // get the job details
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
-        throw runtime_error( "error retrieving job's status - readjob error" ); // TODO: report a proper error here
+    	return 0;
 
     int retNumberOfJobsInArray = 0;
     // check whether it is an array job
