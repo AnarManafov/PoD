@@ -135,19 +135,6 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0" >
-       <widget class="QProgressBar" name="progressSubmittedJobs" >
-        <property name="value" >
-         <number>0</number>
-        </property>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="format" >
-         <string>%p% submitted</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0" >
        <widget class="Line" name="line" >
         <property name="orientation" >
@@ -179,7 +166,24 @@
         </column>
        </widget>
       </item>
+      <item row="2" column="0" >
+       <widget class="QProgressBar" name="progressSubmittedJobs" >
+        <property name="value" >
+         <number>0</number>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="format" >
+         <string>%p% submitted</string>
+        </property>
+       </widget>
+      </item>
      </layout>
+     <zorder>line</zorder>
+     <zorder>label</zorder>
+     <zorder>treeJobs</zorder>
+     <zorder>progressSubmittedJobs</zorder>
     </widget>
    </item>
   </layout>
