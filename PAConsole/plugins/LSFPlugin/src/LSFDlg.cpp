@@ -78,7 +78,7 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
     connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( setNumberOfJobs( int ) ) );
 
-//    createActions();
+    createActions();
 
     clipboard = QApplication::clipboard();
 
@@ -369,7 +369,7 @@ void CLSFDlg::setProgress( int _Val )
     {
         m_ui.btnSubmitClient->setEnabled( true );
         // The job is submitted, we need to update the tree
-        //updateJobsTree();
+        updateJobsTree();
     }
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
