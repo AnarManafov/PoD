@@ -56,20 +56,20 @@ class CLSFDlg: public QWidget, IJobManager
         void on_btnBrowseJobScript_clicked();
         void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
         void setNumberOfJobs( int _count );
-//
-//
-//    private slots:
+
+
+    private slots:
 //        void copyJobID() const;
 //        void cancelJob();
 //        void getJobOutput();
 //        void getJobLoggingInfo();
-//        void removeJob();
-//
-//    protected:
-//        void contextMenuEvent( QContextMenuEvent *event );
-//
+        void removeJob();
+
+    protected:
+        void contextMenuEvent( QContextMenuEvent *event );
+
     private:
-//        void createActions();
+        void createActions();
         void UpdateAfterLoad();
 
         // serialization

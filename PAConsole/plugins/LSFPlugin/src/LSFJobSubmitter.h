@@ -91,10 +91,14 @@ class CLSFJobSubmitter: public QThread
         {
             m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
         }
-        void RemoveJob( const lsf_jobid_t &_JobID )
+        void removeJob( const std::string &_JobID )
         {
+            std::istringstream str( _JobID );
+            int jobid( 0 );
+            str >> jobid;
+
             m_mutex.lock();
-            m_JobsList.erase( _JobID );
+            m_JobsList.erase( jobid );
             m_mutex.unlock();
 
             emit changeNumberOfJobs( getNumberOfJobs() );

@@ -132,6 +132,8 @@ void CLSFDlg::UpdateAfterLoad()
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
     m_ui.spinNumWorkers->setValue( m_WorkersCount );
+
+    updateJobsTree();
 }
 
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
@@ -202,66 +204,66 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
     }
 }
 
-//void CLSFDlg::createActions()
-//{
-////    // COPY Job ID
-////    copyJobIDAct = new QAction( tr( "&Copy JobID" ), this );
-////    copyJobIDAct->setShortcut( tr( "Ctrl+C" ) );
-////    copyJobIDAct->setStatusTip( tr( "Copy selected jod id to the clipboard" ) );
-////    connect( copyJobIDAct, SIGNAL( triggered() ), this, SLOT( copyJobID() ) );
-////    // CANCEL Job
-////    cancelJobAct = new QAction( tr( "Canc&el Job" ), this );
-////    cancelJobAct->setShortcut( tr( "Ctrl+E" ) );
-////    cancelJobAct->setStatusTip( tr( "Cancel the selected jod" ) );
-////    connect( cancelJobAct, SIGNAL( triggered() ), this, SLOT( cancelJob() ) );
-////    // GET OUTPUT of the Job
-////    getJobOutputAct = new QAction( tr( "Get &output" ), this );
-////    getJobOutputAct->setShortcut( tr( "Ctrl+O" ) );
-////    getJobOutputAct->setStatusTip( tr( "Get output sandbox of the selected jod" ) );
-////    connect( getJobOutputAct, SIGNAL( triggered() ), this, SLOT( getJobOutput() ) );
-////    // Get Logging Info
-////    getJobLoggingInfoAct = new QAction( tr( "Get &logging info" ), this );
-////    getJobLoggingInfoAct->setShortcut( tr( "Ctrl+L" ) );
-////    getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
-////    connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
-////    // Remove Job from monitoring
-////    removeJobAct = new QAction( tr( "&Remove Job" ), this );
-////    removeJobAct->setShortcut( tr( "Ctrl+R" ) );
-////    removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
-////    connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
-//}
-//
-//void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
-//{
-////    // Checking that *treeJobs* has been selected
-////    QPoint pos = event->globalPos();
-////    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
-////        return;
-////
-////    // We need to disable menu items when no jobID is selected
-////    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
-////
-////    QMenu menu( this );
-////    menu.addAction( copyJobIDAct );
-////    copyJobIDAct->setEnabled( item );
-////
-////    menu.addAction( getJobOutputAct );
-////    getJobOutputAct->setEnabled( item );
-////
-////    menu.addAction( getJobLoggingInfoAct );
-////    getJobLoggingInfoAct->setEnabled( item );
-////
-////    menu.addSeparator();
-////    menu.addAction( removeJobAct );
-////    removeJobAct->setEnabled( item );
-////
-////    menu.addSeparator();
-////    menu.addAction( cancelJobAct );
-////    cancelJobAct->setEnabled( item );
-////
-////    menu.exec( event->globalPos() );
-//}
-//
+void CLSFDlg::createActions()
+{
+//    // COPY Job ID
+//    copyJobIDAct = new QAction( tr( "&Copy JobID" ), this );
+//    copyJobIDAct->setShortcut( tr( "Ctrl+C" ) );
+//    copyJobIDAct->setStatusTip( tr( "Copy selected jod id to the clipboard" ) );
+//    connect( copyJobIDAct, SIGNAL( triggered() ), this, SLOT( copyJobID() ) );
+//    // CANCEL Job
+//    cancelJobAct = new QAction( tr( "Canc&el Job" ), this );
+//    cancelJobAct->setShortcut( tr( "Ctrl+E" ) );
+//    cancelJobAct->setStatusTip( tr( "Cancel the selected jod" ) );
+//    connect( cancelJobAct, SIGNAL( triggered() ), this, SLOT( cancelJob() ) );
+//    // GET OUTPUT of the Job
+//    getJobOutputAct = new QAction( tr( "Get &output" ), this );
+//    getJobOutputAct->setShortcut( tr( "Ctrl+O" ) );
+//    getJobOutputAct->setStatusTip( tr( "Get output sandbox of the selected jod" ) );
+//    connect( getJobOutputAct, SIGNAL( triggered() ), this, SLOT( getJobOutput() ) );
+//    // Get Logging Info
+//    getJobLoggingInfoAct = new QAction( tr( "Get &logging info" ), this );
+//    getJobLoggingInfoAct->setShortcut( tr( "Ctrl+L" ) );
+//    getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
+//    connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
+    // Remove Job from monitoring
+    removeJobAct = new QAction( tr( "&Remove Job" ), this );
+    removeJobAct->setShortcut( tr( "Ctrl+R" ) );
+    removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
+    connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
+}
+
+void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
+{
+    // Checking that *treeJobs* has been selected
+    QPoint pos = event->globalPos();
+    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
+        return;
+
+    // We need to disable menu items when no jobID is selected
+    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+
+    QMenu menu( this );
+//   menu.addAction( copyJobIDAct );
+//   copyJobIDAct->setEnabled( item );
+
+//    menu.addAction( getJobOutputAct );
+//    getJobOutputAct->setEnabled( item );
+
+//    menu.addAction( getJobLoggingInfoAct );
+//    getJobLoggingInfoAct->setEnabled( item );
+
+    menu.addSeparator();
+    menu.addAction( removeJobAct );
+    removeJobAct->setEnabled( item );
+
+//    menu.addSeparator();
+//    menu.addAction( cancelJobAct );
+//    cancelJobAct->setEnabled( item );
+
+    menu.exec( event->globalPos() );
+}
+
 //void CLSFDlg::copyJobID() const
 //{
 ////    // Copy selected JobID to clipboard
@@ -347,19 +349,19 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
 ////    CLogInfoDlg dlg( this, jobid );
 ////    dlg.exec();
 //}
-//
-//void CLSFDlg::removeJob()
-//{
-////    // Job ID
-////    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-////    if ( !item )
-////        return;
-////
-////    const string jobid( item->text( 0 ).toAscii().data() );
-////
-////    m_JobSubmitter.RemoveJob( jobid );
-////    updateJobsTree();
-//}
+
+void CLSFDlg::removeJob()
+{
+    // Job ID
+    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
+    if ( !item )
+        return;
+
+    const string jobid( item->text( 0 ).toAscii().data() );
+
+    m_JobSubmitter.removeJob( jobid );
+    updateJobsTree();
+}
 
 void CLSFDlg::setProgress( int _Val )
 {
