@@ -5,12 +5,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>625</width>
-    <height>518</height>
+    <width>656</width>
+    <height>562</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <sizepolicy>
+    <hsizetype>0</hsizetype>
+    <vsizetype>0</vsizetype>
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -18,11 +20,29 @@
   <property name="windowTitle" >
    <string>PROOFAgent Management Console - v 1.0.5</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
    <item row="0" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" >
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>11</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
        <item>
         <widget class="QListWidget" name="contentsWidget" >
          <property name="minimumSize" >
@@ -60,7 +80,9 @@
        <item>
         <widget class="QStackedWidget" name="pagesWidget" >
          <property name="sizePolicy" >
-          <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+          <sizepolicy>
+           <hsizetype>7</hsizetype>
+           <vsizetype>7</vsizetype>
            <horstretch>81</horstretch>
            <verstretch>100</verstretch>
           </sizepolicy>
@@ -89,7 +111,9 @@
      <item>
       <widget class="QPushButton" name="closeButton" >
        <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
