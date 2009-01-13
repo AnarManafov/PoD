@@ -16,7 +16,7 @@ VERSION=2.0.7
 ############ Vars ######################
 # Users may change these variables
 ###
-INSTALL_PATH=/tmp/test/gLitePROOFpackage
+INSTALL_PATH=/tmp/test/PoDpackage
 
 XRD_EXPORT_DIR=$INSTALL_PATH/test
 PROOF_PORT=21093
@@ -63,7 +63,7 @@ CreateCFG()
     cp -f template/xpd.cf.template etc/xpd.cf
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd.cf
     # populating the tmp dir.
-    _TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+    _TMP_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
     eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd.cf
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd.cf
@@ -183,7 +183,7 @@ InstallApps()
 
 ####### Main
 echo "--------------------"
-echo "gLitePROOF v."$VERSION
+echo "PROOF on Demand v."$VERSION
 echo "--------------------"
 echo
 
@@ -193,9 +193,9 @@ RET_VAL=$?
 echo
 echo
 if [ "X$RET_VAL" = "X0" ]; then
-  echo "---> INFO: All gLitePROOF modules have been successfully installed."
+  echo "---> INFO: All PoD modules have been successfully installed."
 else
-  echo "---> ERROR: Failed to install gLitePROOF modules."
+  echo "---> ERROR: Failed to install PoD modules."
 fi
 
 if [[ -d $TMP_PATH ]]; then

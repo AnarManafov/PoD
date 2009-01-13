@@ -44,7 +44,7 @@ if [[ -d $PKG_NAME  ]] ; then
 fi
 
 # a revision number
-REV=`svn info https://subversion.gsi.de/dgrid/gLitePROOF/trunk/gLitePROOF  | grep "Revision: " | head -1 | awk -F": " '{printf("%s", $ 2)}'`
+REV=`svn info https://subversion.gsi.de/dgrid/PoD/trunk/PoD  | grep "Revision: " | head -1 | awk -F": " '{printf("%s", $ 2)}'`
 echo "REV=$REV"
 THE_NAME=$PKG_NAME.$VERSION.$REV
 rm -f $THE_NAME.tar.* 

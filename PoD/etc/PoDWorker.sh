@@ -2,8 +2,8 @@
 
 #/************************************************************************/
 #/**
-# * @file gLitePROOF.sh
-# * @brief gLitePROOF - a job script
+# * @file PoDWorker.sh
+# * @brief PoDWorker - is a job script
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
@@ -12,12 +12,12 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
 # Arguments for the script:
 #
-# -r <ROOTSYS> : gLitePROOF will not install its own version of ROOT on workers, instead it will use provided ROOTSYS
+# -r <ROOTSYS> : PoDWorker will not install its own version of ROOT on workers, instead it will use provided ROOTSYS
 #
 #
 
@@ -77,7 +77,7 @@ echo "$y"
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 # populating the tmp dir.
-_TMP_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+_TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
