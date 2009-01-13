@@ -11,7 +11,7 @@ Introduction
    	<sect1 id="PROOF-on-Demand">
       <title>PROOF on Demand</title>
     	<para>
-    	<application>PROOF on Demand (POD)</application> – a specially designed solution to provide a PROOF cluster on demand.
+    	<application>PROOF on Demand (PoD)</application> – a specially designed solution to provide a PROOF cluster on demand.
     	It is developed at GSI (Darmstadt, Germany) in terms of a D-Grid project and aims to implement a PROOF distributed
     	data analysis on Grid and batch clusters.
     	</para>
@@ -67,7 +67,7 @@ Introduction
   			</listitem>
   			<listitem>
     			<para>
-    			<guilabel>gLitePROOF_ENV.sh</guilabel> &mdash; this script sets environment of POD and
+    			<guilabel>PoD_env.sh</guilabel> &mdash; this script sets environment of POD and
     			should be sourced before a use of POD.  
     			</para>
 			</listitem>

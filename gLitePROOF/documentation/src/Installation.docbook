@@ -137,9 +137,9 @@ INSTALL_PATH=/tmp/test/gLitePROOFpackage
     <sect1 id="step4">
       <title>Step #4</title>
       <para>
-      In order to enable gLitePROOF environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+      In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
 <screen>
-<command>source gLitePROOF_ENV.sh</command>
+<command>source PoD_env.sh</command>
 </screen>
       You need to source this script every time when you want to use <application>POD</application>
       or source it from your bash profile.

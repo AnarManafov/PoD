@@ -12,10 +12,10 @@ How to run
     <sect1 id="Environment">
       <title>Environment</title>
       <para>
-      In order to enable POD's environment you need to source the <filename>gLitePROOF_ENV.sh</filename> script:
+      In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
 <screen>
 <command>cd /tmp/test/gLitePROOFpackage</command>
-<command>source gLitePROOF_ENV.sh</command>
+<command>source PoD_env.sh</command>
 </screen>
 		Also don't forget, before starting POD the ROOT should be in the PATH as well.
       </para>    

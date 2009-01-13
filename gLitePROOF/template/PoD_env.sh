@@ -1,6 +1,6 @@
 #! /bin/bash
 ##/************************************************************************/
-##/*! \file gLitePROOF_ENV.sh.template
+##/*! \file PoD_env.sh.template
 ##  *//*
 ##
 ##         version number:     $LastChangedRevision$

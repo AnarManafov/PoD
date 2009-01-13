@@ -52,9 +52,9 @@ TMP_PATH=$APP_PATH/tmp
 CreateCFG()
 {
     echo "---> INFO: Creating default cfg files..."
-# generating ./gLitePROOF_ENV.sh
-    cp -f template/gLitePROOF_ENV.sh.template ./gLitePROOF_ENV.sh
-    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./gLitePROOF_ENV.sh
+# generating ./PoD_env.sh
+    cp -f template/PoD_env.sh.template ./PoD_env.sh
+    eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./PoD_env.sh
 
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
