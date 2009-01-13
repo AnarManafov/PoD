@@ -35,7 +35,7 @@ mkdir -p $LOG_DIR
 #
 ## create a working folder
 #
-WRK_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+WRK_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
 echo "working directory: " $WRK_DIR
 cd $WRK_DIR || return 1
 #
@@ -44,7 +44,7 @@ cd $WRK_DIR || return 1
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
 cp $G_WRK_DIR/etc/proofagent.cfg.xml $WRK_DIR/proofagent.cfg.xml
-cp $G_WRK_DIR/etc/PoDworker.sh $WRK_DIR/PoDWorker.sh
+cp $G_WRK_DIR/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 ## Here you can specify your own version of ROOT
 ## or you can delete -r <ROOTSYS> parameter and 
