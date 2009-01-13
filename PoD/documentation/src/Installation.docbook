@@ -14,9 +14,9 @@ Installation
       <para>Choose a directory where you want to install <application>POD</application>,
       we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>POD</application> tarball to this directory:
 <screen>
-<command>tar -C /tmp/test -xzvf <replaceable>gLitePROOFpackage.2.0.7.tgz</replaceable></command>
+<command>tar -C /tmp/test -xzvf <replaceable>PoDPackage.2.0.7.tgz</replaceable></command>
 </screen>
-		Tar will created a new directory <filename class="directory">/tmp/testgLitePROOFpackage</filename>,
+		Tar will created a new directory <filename class="directory">/tmp/test/PoD</filename>,
 		where <application>POD</application> package will be located.</para>
     </sect1>
     <sect1 id="step2">
@@ -24,14 +24,14 @@ Installation
       <para>
       Change to the POD directory:
 <screen>
-<command>cd <replaceable>/tmp/test/gLitePROOFpackage</replaceable></command>
+<command>cd <replaceable>/tmp/test/PoDpackage</replaceable></command>
 </screen>
       and edit the <filename>install</filename> script. In the script you need to change at least the
-      <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">gLitePROOFpackage</filename> directory,
-      in our case to the <filename class="directory">/tmp/test/gLitePROOFpackage</filename>.
+      <envar>INSTALL_PATH</envar> variable. It should point to the <filename class="directory">PoD</filename> directory,
+      in our case to the <filename class="directory">/tmp/test/PoD</filename>.
       In our example it therefore will look like the following:
 <screen>
-INSTALL_PATH=/tmp/test/gLitePROOFpackage
+INSTALL_PATH=/tmp/test/PoD
 </screen>
       You may want to change some other setting. Here the description of the variables,
       which could be used to adjust POD installation:

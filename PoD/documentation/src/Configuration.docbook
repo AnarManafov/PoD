@@ -17,7 +17,7 @@ Configuration
       <para>
       GAW needed for gLite plug-in (if you want to use gLite workers as your PROOF workers).
       There is GAW's configuration file in the
-      <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> directory, it's called
+      <filename class="directory">/tmp/test/PoDpackage/etc</filename> directory, it's called
       <filename>glite-api-wrapper.cfg.xml</filename>. Through this file one can configure GAW engine.
       The file is an XML file and it's XML Schema documentation and description of all configuration keys could
       be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
@@ -42,7 +42,7 @@ Configuration
       <para>
       PROOFAgent is a kind of proxy and manager application for POD. This application manages
       communication with POD workers, where PROOFAgent clients are working.
-      There is PROOFAgent's configuration file in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
+      There is PROOFAgent's configuration file in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
       directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
       holds both client and server configuration, so be careful while changing it.
       The file is an XML file and it's XML Schema documentation and description of all configuration keys could
@@ -70,7 +70,7 @@ Configuration
     <sect1 id="XROOTD">
       <title>XROOTD</title>
       <para>
-      There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename>
+      There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
       directory and it's called <filename>xpd.cf</filename>. POD uses this file to configure both local redirector and
       remote workers.
             
@@ -123,7 +123,7 @@ Configuration
       <title>A JDL file</title>
       <para>
       POD submits its workers with help of a JDL file. Default JDL files are a part of POD packages.
-      User can find them in the <filename class="directory">/tmp/test/gLitePROOFpackage/etc</filename> folder.
+      User can find them in the <filename class="directory">/tmp/test/PoDpackage/etc</filename> folder.
       There are <filename>gLitePROOF.jdl</filename> and <filename>gLitePROOF_FZK.jdl</filename> files in this folder.
       The first file is the generic POD jdl file and the second one is optimized for a specific FZK gLite computing element.
         This files could be used as examples or real job files.
@@ -137,7 +137,7 @@ Configuration
        If you want to use a custom JDL file, be advised that
        the following keys of JDL file must be kept unchanged:
        RetryCount, ParameterStart, PARAMETERS, JobType, Executable, ParameterStep, StdOutput, OutputSandbox, Type,
-       StdError, InputSandbox. Otherwise gLitePROOF functionality could be broken.
+       StdError, InputSandbox. Otherwise PoD functionality could be broken.
       </para></important>
       
     </sect1>    
