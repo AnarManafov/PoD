@@ -5,7 +5,7 @@
   ParameterStart = 0; 
   PARAMETERS = 3; 
   JobType = "parametric"; 
-  Executable = "gLitePROOF.sh"; 
+  Executable = "PoDWorker.sh"; 
   ParameterStep = 1; 
   StdOutput = "gLitePROOF.out"; 
   OutputSandbox = { "gLitePROOF.out","gLitePROOF.err","xpd.log","proofagent.client.log", "proof_log.tgz" }; 

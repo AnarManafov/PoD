@@ -2,8 +2,8 @@
 
 #/************************************************************************/
 #/**
-# * @file Server_gLitePROOF.sh
-# * @brief a script, which starts gLitePROOF's server side
+# * @file Server_Pod.sh
+# * @brief a script, which starts PoD's server side
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
@@ -12,10 +12,10 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
-# Usage: ./Server_gLitePROOF.sh <pid_dir> start|stop|status 
+# Usage: ./Server_PoD.sh <pid_dir> start|stop|status 
 #
 
 start() 
@@ -54,7 +54,7 @@ status()
 
 # checking the number of parameters
 if [ $# -ne 2 ]; then
-    echo "Usage: ./Server_gLitePROOF.sh <pid_dir> start|stop|status"
+    echo "Usage: ./Server_PoD.sh <pid_dir> start|stop|status"
     exit 1
 fi
 

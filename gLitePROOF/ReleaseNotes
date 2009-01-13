@@ -1,4 +1,5 @@
 ********************* Release 2.0.6 not yet released ************************
+- Project has been renamed to PoD
 - PAConsole now supports job manager plug-ins
 - implemented a support of LSF workers
 

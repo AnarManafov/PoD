@@ -33,6 +33,10 @@
 #
 G_WRK_DIR=_G_WRK_DIR
 #
+## User's ROOTSYS to use on workers
+#
+G_ROOTSYS=/misc/manafov/ROOT/root_trunk_64b/root
+#
 ## log dir
 #
 LOG_DIR=$G_WRK_DIR/log/$LSB_JOBID
@@ -41,6 +45,7 @@ mkdir -p $LOG_DIR
 ## create a working folder
 #
 WRK_DIR=`mktemp -d /tmp/gLitePROOF_XXXXXXXXXX`
+echo "working directory: " $WRK_DIR
 cd $WRK_DIR || return 1
 #
 ## input files.
@@ -48,13 +53,13 @@ cd $WRK_DIR || return 1
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
 cp $G_WRK_DIR/etc/proofagent.cfg.xml $WRK_DIR/proofagent.cfg.xml
-cp $G_WRK_DIR/etc/gLitePROOF.sh $WRK_DIR/gLitePROOF.sh
+cp $G_WRK_DIR/etc/PoDworker.sh $WRK_DIR/PoDWorker.sh
 #
 ## Here you can specify your own version of ROOT
 ## or you can delete -r <ROOTSYS> parameter and 
-## gLitePROOF will use its own settings
+## PoDWorker will use its own settings
 #
-$WRK_DIR/gLitePROOF.sh -r "/misc/manafov/ROOT/root_trunk_64b/root"
+$WRK_DIR/PoDWorker.sh -r $ROOTSYS
 #
 ## logs
 #
@@ -66,4 +71,4 @@ if [[ -d $WRK_DIR ]]; then
 	rm -rf $WRK_DIR
 fi
 
-return 0
+exit 0

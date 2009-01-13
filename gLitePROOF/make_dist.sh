@@ -8,11 +8,11 @@
 ##                             2008-02-06
 ##         last changed by:    $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
 VERSION=2.0.6
 
-PKG_NAME=gLitePROOFpackage
+PKG_NAME=PoDpackage
 
 
 # building documentation
