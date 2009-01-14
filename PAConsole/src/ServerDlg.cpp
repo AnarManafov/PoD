@@ -87,7 +87,7 @@ void CServerDlg::on_btnStatusServer_clicked()
 
 void CServerDlg::CommandServer( EServerCommands _command )
 {
-    string cmd( "$GLITE_PROOF_LOCATION/bin/Server_gLitePROOF.sh" );
+    string cmd( "$GLITE_PROOF_LOCATION/bin/Server_PoD.sh" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
