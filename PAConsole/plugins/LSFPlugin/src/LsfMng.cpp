@@ -49,7 +49,7 @@ void CLsfMng::init()
 
 void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
 {
-    m_submitRequest.insert( propertyDict_t::value_type( _type, _val ) );
+    m_submitRequest[_type] = _val;
 }
 
 lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )

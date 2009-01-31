@@ -176,7 +176,7 @@ void CMainDlg::createIcons()
 
     QListWidgetItem *workersButton = new QListWidgetItem( m_ui.contentsWidget );
     workersButton->setIcon( QIcon( ":/images/workers.png" ) );
-    workersButton->setText( tr( "Workers" ) );
+    workersButton->setText( tr( "PROOF Workers" ) );
     workersButton->setTextAlignment( Qt::AlignHCenter );
     workersButton->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
