@@ -15,7 +15,7 @@
 	<xsl:template name="user.header.content">
 		<div class="projection">
 			<div class="logo">
-				<img src="PoD_logo.png" style="position: top: 1em; left; height: 50; width: 50;"/>
+				<img src="PoD_logo.png" height="122" widht="250" style="position: top: 1em; left;"/>
 			</div>
 		</div>
 	</xsl:template>
