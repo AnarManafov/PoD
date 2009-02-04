@@ -53,7 +53,7 @@ CSS_FILES=docbook.css
 
 XMLTO=xmlto
 
-XMLTO_PARAM=-o $(HTML_OUT_DIR) xhtml -m config.xsl
+XMLTO_PARAM=-vv -o $(HTML_OUT_DIR) xhtml -m config.xsl
 XMLTO_PARAM_NOCHUNKS=-o $(HTML_OUT_DIR) xhtml-nochunks -m config.xsl
 
 all: gen_html

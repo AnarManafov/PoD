@@ -1,0 +1,27 @@
+KNOWN Issues
+
+#1
+You may need to install dockbook catalog: http://www.linuxfromscratch.org/blfs/view/stable/pst/DocBook.html or see DocBook4.5_DTD_Catalog.pdf
+
+#0 
+if you get something like the following during the compilatiuon of the doc:
+/mnt/vfs/svn/dgrid/PoD/trunk/PoD/documentation/src/POD.docbook:4: element chapter: validity error : Element chapter content does not follow the DTD, expecting (beginpage? , chapterinfo? , (title , subtitle? , titleabbrev?) , (toc | lot | index | glossary | bibliography)* , tocchap? , (((calloutlist | glosslist | bibliolist | itemizedlist | orderedlist | segmentedlist | simplelist | variablelist | caution | important | note | tip | warning | literallayout | programlisting | programlistingco | screen | screenco | screenshot | synopsis | cmdsynopsis | funcsynopsis | classsynopsis | fieldsynopsis | constructorsynopsis | destructorsynopsis | methodsynopsis | formalpara | para | simpara | address | blockquote | graphic | graphicco | mediaobject | mediaobjectco | informalequation | informalexample | informalfigure | informaltable | equation | example | figure | table | msgset | procedure | sidebar | qandaset | task | anchor | bridgehead | remark | highlights | abstract | authorblurb | epigraph | indexterm | beginpage)+ , (sect1* | refentry* | simplesect* | section*)) | sect1+ | refentry+ | simplesect+ | section+) , (toc | lot | index | glossary | bibliography)*), got (title chapterinfo sect1 sect1 ) 
+
+
+try yo check, thether your xmlto tool uses "-noent" parameter to xmllint. Remove this parameter from xmlto and everything should be fine. 
+
+This is the patch to xmlto, which led to the problem:
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 483503_postvalid_needs_noent.dpatch by Daniel Leidert (dale) <daniel.leidert@wgdd.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: * xmlto.in: The xmllint call uses --pistvalid switch, which may not try to
+## DP:   fetch external parsed entities and therefor can lead to errors:
+## DP:
+## DP:       IDREF attribute linkend references an unknown ID
+## DP:
+## DP:   Adding the --noent switch solves the issue.
+## DP:
+## DP: <URL:http://bugs.debian.org/483503>
+## DP: <URL:http://mail.gnome.org/archives/xml/2004-December/msg00062.html>
+
