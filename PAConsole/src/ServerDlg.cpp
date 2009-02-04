@@ -127,13 +127,13 @@ void CServerDlg::on_btnStartServer_clicked()
 
     if ( !IsRunning( true ) )
     {
-    	QString msg = tr( "<p>An error occurred while starting the Server!" );
+    	QString msg = tr( "An error occurred while starting the Server!" );
     	char *chRootsys = getenv("ROOTSYS");
     	CServerInfo si;
     	// TODO: we need check processes and its user name, not only existance of the process
     	if( /*!si.IsXROOTDRunning() && */!chRootsys )
-    		msg += "\n PAConsole has detected that $ROOTSYS is not set. If you use xrootd from a ROOT instalaltion,\n"
-    			"then you need to set ROOTSYS before starting PACosnole.";
+    		msg += tr("\nPAConsole has detected that $ROOTSYS is not set. If you use xrootd from a ROOT instalaltion,\n"
+    			"then you need to set ROOTSYS before starting PACosnole.");
         QMessageBox::critical( this, tr( "PROOFAgent Console" ), msg );
     }
 

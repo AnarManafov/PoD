@@ -74,7 +74,7 @@ string CServerInfo::GetPAInfo() const
     stringstream ss;
     ss
     << "PROOFAgent" << spid.str() << ": is "
-    << ( pid ? "running" : "not running" );
+    << ( pid ? "RUNNING" : "NOT RUNNING" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
