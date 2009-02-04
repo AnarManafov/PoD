@@ -126,7 +126,15 @@ void CServerDlg::on_btnStartServer_clicked()
     CommandServer( srvSTART );
 
     if ( !IsRunning( true ) )
-        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "<p>An error occurred while starting the Server!" ) );
+    {
+    	QString msg = tr( "<p>An error occurred while starting the Server!" );
+    	char *chRootsys = getenv("ROOTSYS");
+    	CServerInfo si;
+    	if( !si.IsXROOTDRunning() && !chRootsys )
+    		msg += "\n PAConsole has detected that $ROOTSYS is not set. If you use xrootd from a ROOT instalaltion,\n"
+    			"then you need to set ROOTSYS before starting PACosnole.";
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), msg );
+    }
 
     on_btnStatusServer_clicked();
 }
