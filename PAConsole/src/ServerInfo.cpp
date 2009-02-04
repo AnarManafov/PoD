@@ -58,7 +58,7 @@ string CServerInfo::GetXROOTDInfo() const
     stringstream ss;
     ss
     << "XROOTD" << spid.str() << ": is "
-    << ( pid ? "running" : "not running" );
+    << ( pid ? "running" : "NOT RUNNING" );
 
     return ss.str();
 }
@@ -74,7 +74,7 @@ string CServerInfo::GetPAInfo() const
     stringstream ss;
     ss
     << "PROOFAgent" << spid.str() << ": is "
-    << ( pid ? "RUNNING" : "NOT RUNNING" );
+    << ( pid ? "running" : "NOT RUNNING" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
