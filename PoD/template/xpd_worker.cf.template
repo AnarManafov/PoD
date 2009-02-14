@@ -1,0 +1,61 @@
+##/************************************************************************/
+###/*! \file xpd.cf.template
+###  *//*
+###
+###         version number:     $LastChangedRevision$
+###         created by:         Anar Manafov
+###                             2007-02-06
+###         last changed by:    $LastChangedBy$ $LastChangedDate$
+###
+###         Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+###*************************************************************************/
+#
+## XRD port
+#
+xrd.port _POD_XRD_PORT
+#
+## FS lib
+#
+xrootd.fslib libXrdOfs.so
+#
+## We can't use "_G_WRK_DIR/" for adminpath because:
+## "Local TCP socket names are limited to 108 characters.
+## Up to 32 characters are needed to define actual socket files;
+## leaving 76 characters that may be specified as the path." (from xrootd documentation)
+## comment if you want to help the WN pools
+#
+xrd.adminpath _G_WORKER_TMP_DIR group
+xrootd.export _G_WRK_DIR/
+
+#
+## logging
+#
+xrd.trace all debug
+#
+## setting a PROOF temp dir.
+#
+set PROOFTMP=_G_WORKER_TMP_DIR
+
+#
+## Load the XrdProofd protocol:
+## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
+#
+if exec xrootd
+ xrd.protocol xproofd:_POD_XPROOF_PORT libXrdProofd.so tmp:/$PROOFTMP
+fi
+#
+## Resource finder
+#
+xpd.resource static _G_WRK_DIR/proof.conf
+xpd.workdir _G_WRK_DIR/proof
+
+#
+## Server role (master, submaster, worker) [default: any]
+## Allows to control the cluster structure.
+#
+xpd.role worker
+
+#
+## Log
+#
+xpd.trace all debug

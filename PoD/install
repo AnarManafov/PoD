@@ -8,7 +8,7 @@
 ##                             2008-02-06
 ##         last changed by:    $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2008 GSI GridTeam. All rights reserved.
+##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
 VERSION=2.0.7
 
@@ -67,6 +67,15 @@ CreateCFG()
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
     eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd.cf
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd.cf
+
+# generating etc/xpd_worker.cf
+    cp -f template/xpd.cf.template etc/xpd_worker.cf
+    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd_worker.cf
+    # populating the tmp dir.
+    _TMP_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
+    eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd_worker.cf
+    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd_worker.cf
+    eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd_worker.cf
 
 # generating etc/proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml

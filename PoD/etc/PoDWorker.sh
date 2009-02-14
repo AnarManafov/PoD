@@ -22,19 +22,20 @@
 #
 
 # ************************************************************************
+# F U N C T I O N S
+# ************************************************************************
 # ***** Perform program exit housekeeping *****
-function clean_up {
-# Killing all xrootd in anyway (TODO: must be removed, needs an elegant solution)
-   # pkill -9 olbd
+clean_up()
+{
     pkill -9 -U $UID xrootd
     pkill -9 -U $UID proofserv
     
 # Archive and removing local proof directory
     _WD=`pwd`
     proof_dir="$_WD/proof"
-
+    
     tar -czvf proof_log.tgz $proof_dir
-
+    
     if [ -e "$proof_dir" ]; then
 	echo "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir
@@ -42,6 +43,55 @@ function clean_up {
     
     exit $1
 }
+# ************************************************************************
+# ***** detects ports for XRD and XPROOF  *****
+xrd_detect()
+{
+# get a pid of our xrd. We get any xrd running by $UID
+    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd| awk '{print $1}'`
+    
+    if [ -n "$XRD_PID" ]
+    then
+	echo "XRD is running under PID: "$XRD_PID
+    else
+	echo "XRD is NOT running"
+	return 1
+    fi
+    
+# getting an array of XRD LISTEN ports
+# oreder: the lowerst port goes firstand its a XRD port.
+# XPROOF port must be greater
+    XRD_PORTS=(`lsof -p $XRD_PID -P  | grep LISTEN | awk '{print $9}' | awk -F":" '{print $2}' |sort -b -n -u`)
+    
+    echo "PoD detected XRD port:"${XRD_PORTS[0]}
+    echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
+    return 0
+}
+# ************************************************************************
+# ***** returns a free port from a given range  *****
+get_freeport()
+{
+    perl -e '
+    use IO::Socket;
+    my $port = $ARGV[0];
+    for (; $port < $ARGV[1]; $port++) {
+        $fh = IO::Socket::INET->new( Proto     => "tcp",
+                                     LocalPort => $port,
+                                     Listen    => SOMAXCONN,
+                                     Reuse     => 0);
+        if ($fh){
+            $fh->close();
+            print "$port";
+            exit(0);
+        }
+
+
+    }
+    die "%Error: Cant find free socket port\n";
+    exit(1);
+' $1 $2
+}
+
 # ************************************************************************
 
 
@@ -61,7 +111,8 @@ done
 
 
 # ************************************************************************
-# ***** Main *****
+# M A I N
+# ************************************************************************
 
 # handle signals
 trap clean_up SIGHUP SIGINT SIGTERM 
@@ -138,8 +189,20 @@ else
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
 
+
+
+# ************************************************************************
+# H E R E    U S E R S   C A N   D E C L A  R E   A   C U S T O M   E N V I R O N M E N T
+# ************************************************************************
+
+
+# ************************************************************************
+
+
+
+
 # **********************
-# ***** PROOFAgent *****
+# ***** getting PROOFAgent from the repository site *****
 wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
@@ -155,17 +218,33 @@ fi
 # creating an empty proof.conf, so that xproof will be happy
 touch $WD/proof.conf
 
-# start xrootd
-#echo "Starting olbd..."
-#olbd -c $WD/xpd.cf -b -l $WD/xpd.log
+# detecting whether xrd is running and on whihc ports xrd and xproof are listning
+xrd_detect
+if [ -n "$XRD_PID" ]
+then
+    # use existing ports for xrd and xproof
+    eval sed -i 's%_POD_XRD_PORT%${XRD_PORTS[0]}%g' ./xpd.cf
+    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./xpd.cf
+else
+    # TODO: get new free ports here and write to xrd config file
+    XRD_PORTS_RANGE_MIN=20000
+    XRD_PORTS_RANGE_MAX=22000
+    XPROOF_PORTS_RANGE_MIN=22001
+    XPROOF_PORTS_RANGE_MAX=25000
+    NEW_XRD_PORT=get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX
+    NEW_XPROOF_POR=get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX
+    echo "using XRD port:"$NEW_XRD_PORT
+    echo "using XPROOF port"$NEW_XPROOF_PORT
+    eval sed -i 's%_POD_XRD_PORT%$NEW_XRD_PORT%g' ./xpd.cf
+    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./xpd.cf
+fi
 
-# start xrootd
+# starting xrootd
 echo "Starting xrootd..."
-xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
-
+xrootd -c $WD/xpd_worker.cf -b -l $WD/xpd.log
 # detect that xrootd failed to start
 sleep 10
-XRD=`pgrep xrootd`
+XRD=`pgrep -U $UID xrootd`
 XRD_RET_VAL=$?
 if [ "X$XRD_RET_VAL" = "X0" ]; then
     echo "XROOTD successful."
