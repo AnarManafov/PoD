@@ -223,8 +223,9 @@ xrd_detect
 if [ -n "$XRD_PID" ]
 then
     # use existing ports for xrd and xproof
-    eval sed -i 's%_POD_XRD_PORT%${XRD_PORTS[0]}%g' ./xpd.cf
-    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./xpd.cf
+    eval sed -i 's%_POD_XRD_PORT%${XRD_PORTS[0]}%g' ./xpd_worker.cf
+    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./xpd_worker.cf
+    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./proofagent.cfg.xml
 else
     # TODO: get new free ports here and write to xrd config file
     XRD_PORTS_RANGE_MIN=20000
@@ -235,8 +236,9 @@ else
     NEW_XPROOF_POR=get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX
     echo "using XRD port:"$NEW_XRD_PORT
     echo "using XPROOF port"$NEW_XPROOF_PORT
-    eval sed -i 's%_POD_XRD_PORT%$NEW_XRD_PORT%g' ./xpd.cf
-    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./xpd.cf
+    eval sed -i 's%_POD_XRD_PORT%$NEW_XRD_PORT%g' ./xpd_worker.cf
+    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./xpd_worker.cf
+    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./proofagent.cfg.xml
 fi
 
 # starting xrootd
