@@ -61,7 +61,7 @@ xrd_detect()
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -p $XRD_PID -P  | grep LISTEN | awk '{print $9}' | awk -F":" '{print $2}' |sort -b -n -u`)
+    XRD_PORTS=(`lsof  -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p'`)
     
     echo "PoD detected XRD port:"${XRD_PORTS[0]}
     echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
@@ -125,11 +125,11 @@ echo "$y"
 
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd_worker.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 # populating the tmp dir.
 _TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
-eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
+eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd_worker.cf
 
 # host's CPU/instruction set
 host_arch=`( uname -p ) 2>&1`
@@ -235,7 +235,7 @@ else
     NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
     NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
     echo "using XRD port:"$NEW_XRD_PORT
-    echo "using XPROOF port"$NEW_XPROOF_PORT
+    echo "using XPROOF port:"$NEW_XPROOF_PORT
     eval sed -i 's%_POD_XRD_PORT%$NEW_XRD_PORT%g' ./xpd_worker.cf
     eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./xpd_worker.cf
     eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./proofagent.cfg.xml
