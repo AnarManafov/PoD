@@ -252,7 +252,7 @@ mv $WD/proofagent.cfg.xml.temp $WD/proofagent.cfg.xml
 
 # starting xrootd
 echo "Starting xrootd..."
-xrootd -c $WD/xpd_worker.cf -b -l $WD/xpd.log
+xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 # detect that xrootd failed to start
 sleep 10
 XRD=`pgrep -U $UID xrootd`
