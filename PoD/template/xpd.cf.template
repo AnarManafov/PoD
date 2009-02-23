@@ -11,16 +11,8 @@
 ###*************************************************************************/
 #
 ## XRD port
-# if there is no 1094 opened on WNs, then
-# this port should be in a Globus port range.
-# The range is opened on most of the sites
-# on the Grid for outgoing connections.
-# If there is no incoming traffic allowed (even for 1094),
-# then you can't use WNs as a xrootd POOLs and need
-# to find another source of data files, like an external XROOTD cluster
-# or any other source.
 #
-xrd.port 20094 #1094
+xrd.port 1094
 #
 ## FS lib
 #
@@ -56,7 +48,7 @@ fi
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 #
 if exec xrootd
- xrd.protocol xproofd:_G_PROOF_PORT libXrdProofd.so tmp:/$PROOFTMP
+ xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
 fi
 #
 ## Resource finder

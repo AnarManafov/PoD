@@ -19,7 +19,6 @@ VERSION=2.0.7
 INSTALL_PATH=/tmp/test/PoDpackage
 
 XRD_EXPORT_DIR=$INSTALL_PATH/test
-PROOF_PORT=21093
 
 
 GAW_PKG=glite-api-wrapper-3.2.0
@@ -65,22 +64,11 @@ CreateCFG()
     # populating the tmp dir.
     _TMP_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
-    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd.cf
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd.cf
-
-# generating etc/xpd_worker.cf
-    cp -f template/xpd.cf.template etc/xpd_worker.cf
-    eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/xpd_worker.cf
-    # populating the tmp dir.
-    _TMP_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
-    eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd_worker.cf
-    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/xpd_worker.cf
-    eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd_worker.cf
 
 # generating etc/proofagent.cfg.xml
     cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' etc/proofagent.cfg.xml
-    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' etc/proofagent.cfg.xml
 
 # generating etc/Job.lsf
     cp -f template/Job.lsf.template etc/Job.lsf
@@ -89,7 +77,6 @@ CreateCFG()
 # generate test/simple_test0.C
     cp -f template/simple_test0.C.template test/simple_test0.C
     eval sed -i 's%_G_MASTER_HOSTNAME%$MASTER_HOST%g' test/simple_test0.C
-    eval sed -i 's%_G_PROOF_PORT%$PROOF_PORT%g' test/simple_test0.C
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' test/simple_test0.C    
     
 # linking datafile for tests

@@ -17,7 +17,7 @@
 #
 # Arguments for the script:
 #
-# -r <ROOTSYS> : PoDWorker will not install its own version of ROOT on workers, instead it will use provided ROOTSYS
+# -r <ROOTSYS> : PoDWorker will not use its own version of ROOT on workers, instead it will use provided ROOTSYS
 #
 #
 
@@ -125,11 +125,11 @@ echo "$y"
 
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd_worker.cf
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg.xml
 # populating the tmp dir.
 _TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
-eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd_worker.cf
+eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
 host_arch=`( uname -p ) 2>&1`
@@ -223,23 +223,32 @@ xrd_detect
 if [ -n "$XRD_PID" ]
 then
     # use existing ports for xrd and xproof
-    eval sed -i 's%_POD_XRD_PORT%${XRD_PORTS[0]}%g' ./xpd_worker.cf
-    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./xpd_worker.cf
-    eval sed -i 's%_POD_XPROOF_PORT%${XRD_PORTS[1]}%g' ./proofagent.cfg.xml
+    POD_XRD_PORT_TOSET=${XRD_PORTS[0]}
+    POD_XPROOF_PORT_TOSET=${XRD_PORTS[1]}
 else
     # TODO: get new free ports here and write to xrd config file
     XRD_PORTS_RANGE_MIN=20000
     XRD_PORTS_RANGE_MAX=22000
     XPROOF_PORTS_RANGE_MIN=22001
     XPROOF_PORTS_RANGE_MAX=25000
-    NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
-    NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
+    POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
+    POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
     echo "using XRD port:"$NEW_XRD_PORT
     echo "using XPROOF port:"$NEW_XPROOF_PORT
-    eval sed -i 's%_POD_XRD_PORT%$NEW_XRD_PORT%g' ./xpd_worker.cf
-    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./xpd_worker.cf
-    eval sed -i 's%_POD_XPROOF_PORT%$NEW_XPROOF_PORT%g' ./proofagent.cfg.xml
 fi
+
+regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
+sed -e $regexp xpd.cf > xpd.cf.temp
+mv xpd.cf.temp xpd.cf
+
+regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+sed -e $regexp xpd.cf > xpd.cf.temp
+mv xpd.cf.temp xpd.cf
+
+regexp="sed  's/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_PORT_TOSET\2/g"
+sed -e $regexp proofagent.cfg.xml > proofagent.cfg.xml.temp
+mv proofagent.cfg.xml.temp proofagent.cfg.xml
+
 
 # starting xrootd
 echo "Starting xrootd..."

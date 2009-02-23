@@ -15,16 +15,87 @@
 #        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
-# Usage: ./Server_PoD.sh <pid_dir> start|stop|status 
+# Usage:
+#      Server_PoD.sh <work_dir> start|stop|status 
 #
 
+
+# ************************************************************************
+# ***** detects ports for XRD and XPROOF  *****
+xrd_detect()
+{
+# get a pid of our xrd. We get any xrd running by $UID
+    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd| awk '{print $1}'`
+    
+    if [ -n "$XRD_PID" ]
+    then
+	echo "XRD is running under PID: "$XRD_PID
+    else
+	echo "XRD is NOT running"
+	return 1
+    fi
+    
+# getting an array of XRD LISTEN ports
+# oreder: the lowerst port goes firstand its a XRD port.
+# XPROOF port must be greater
+    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p'`)
+    
+    echo "-XRD port: "${XRD_PORTS[0]}
+    echo "-XPROOF port: "${XRD_PORTS[1]}
+    return 0
+}
+# ************************************************************************
+# ***** returns a free port from a given range  *****
+get_freeport()
+{
+    perl -e '
+    use IO::Socket;
+    my $port = $ARGV[0];
+    for (; $port < $ARGV[1]; $port++) {
+        $fh = IO::Socket::INET->new( Proto     => "tcp",
+                                     LocalPort => $port,
+                                     Listen    => SOMAXCONN,
+                                     Reuse     => 0);
+        if ($fh){
+            $fh->close();
+            print "$port";
+            exit(0);
+        }
+
+
+    }
+    die "%Error: Cant find free socket port\n";
+    exit(1);
+' $1 $2
+}
+# ************************************************************************
+# ***** START  *****
 start() 
 {
-    echo "Starting..."
+    echo "Starting PoD server..."
     # proof.conf must be presented before xrootd is started
     touch ~/proof.conf
+    
+    XRD_PORTS_RANGE_MIN=20000
+    XRD_PORTS_RANGE_MAX=22000
+    XPROOF_PORTS_RANGE_MIN=22001
+    XPROOF_PORTS_RANGE_MAX=25000
+    NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
+    NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
+    echo "using XRD port:"$NEW_XRD_PORT
+    echo "using XPROOF port:"$NEW_XPROOF_PORT
+    # replacing xrd port
+    regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
+    sed -e $regexp xpd.cf > xpd.cf.temp
+    mv xpd.cf.temp xpd.cf
 
- #   olbd -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
+    # replacing xproof port
+    regexp="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+    sed -e $regexp xpd.cf > xpd.cf.temp
+    mv xpd.cf.temp xpd.cf
+
+    # TODO: replacing ports in the PROOF example script
+
 
     xrootd -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
     
@@ -32,11 +103,13 @@ start()
     
     return 0
 }
-
+# ************************************************************************
+# ***** STOP  *****
 stop()
 {
-    echo "Stoping..."
-#    pkill -9 olbd
+    echo "Stoping PoD server..."
+
+    #TODO: make it less aggressive
     pkill -9 -U $UID xrootd
     pkill -9 -U $UID proofserv
 
@@ -44,23 +117,26 @@ stop()
     
     return 0
 }
-
+# ************************************************************************
+# ***** STATUS  *****
 status()
 {
-    echo `ps -A | grep xrootd`
- #   echo `ps -A | grep olbd`
+    # XRD
+    xrd_detect
+
+    # PROOFAgent
     $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --status
 }
 
 # checking the number of parameters
 if [ $# -ne 2 ]; then
-    echo "Usage: ./Server_PoD.sh <pid_dir> start|stop|status"
+    echo "Usage: ./Server_PoD.sh <working dir> start|stop|status"
     exit 1
 fi
 
-# pid_dir must be a valid dir
+# work_dir must be a valid dir
 if [ ! -e "$1" ]; then
-    echo "error: pid director: \"$1\" doesn't exist!"
+    echo "error: working director: \"$1\" doesn't exist!"
     exit 1
 fi
 
