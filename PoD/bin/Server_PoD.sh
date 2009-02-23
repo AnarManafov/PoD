@@ -86,13 +86,13 @@ start()
     echo "using XPROOF port:"$NEW_XPROOF_PORT
     # replacing xrd port
     regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
-    sed -e $regexp xpd.cf > xpd.cf.temp
-    mv xpd.cf.temp xpd.cf
+    sed -e $regexp $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
+    mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
     # replacing xproof port
     regexp="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    sed -e $regexp xpd.cf > xpd.cf.temp
-    mv xpd.cf.temp xpd.cf
+    sed -e $regexp $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
+    mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
     # TODO: replacing ports in the PROOF example script
 

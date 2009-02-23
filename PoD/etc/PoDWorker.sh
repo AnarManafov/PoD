@@ -233,21 +233,21 @@ else
     XPROOF_PORTS_RANGE_MAX=25000
     POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
     POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
-    echo "using XRD port:"$NEW_XRD_PORT
-    echo "using XPROOF port:"$NEW_XPROOF_PORT
+    echo "using XRD port:"$POD_XRD_PORT_TOSET
+    echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
 fi
 
 regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
-sed -e $regexp xpd.cf > xpd.cf.temp
-mv xpd.cf.temp xpd.cf
+sed -e $regexp $WD/xpd.cf > $WD/xpd.cf.temp
+mv $WD/xpd.cf.temp $WD/xpd.cf
 
-regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-sed -e $regexp xpd.cf > xpd.cf.temp
-mv xpd.cf.temp xpd.cf
+regexp="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+sed -e $regexp $WD/xpd.cf > $WD/xpd.cf.temp
+mv $WD/xpd.cf.temp $WD/xpd.cf
 
-regexp="sed  's/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_PORT_TOSET\2/g"
-sed -e $regexp proofagent.cfg.xml > proofagent.cfg.xml.temp
-mv proofagent.cfg.xml.temp proofagent.cfg.xml
+regexp="s/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_PORT_TOSET\2/g"
+sed -e $regexp $WD/proofagent.cfg.xml > $WD/proofagent.cfg.xml.temp
+mv $WD/proofagent.cfg.xml.temp $WD/proofagent.cfg.xml
 
 
 # starting xrootd
