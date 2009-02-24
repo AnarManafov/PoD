@@ -38,7 +38,7 @@ xrd_detect()
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p'`)
+    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
     echo "-XRD port: "${XRD_PORTS[0]}
     echo "-XPROOF port: "${XRD_PORTS[1]}
@@ -94,7 +94,22 @@ start()
     sed -e $regexp $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
     mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
-    # TODO: replacing ports in the PROOF example script
+    # replacing ports in the PROOF example script
+    regexp="s/\(TProof::Open(\"\).*:[0-9]*\(\")\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
+    sed -e $regexp $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
+    mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
+
+    regexp="s/\(root:\/\/\).*:[0-9]*/\1$(hostname -f):$NEW_XRD_PORT/g"
+    sed -e $regexp $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
+    mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
+    # replacing ports in the PROOF example script
+    regexp="s/\(TProof::Open(\"\).*:[0-9]*\(\")\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
+    sed -e $regexp $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
+    mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
+
+    regexp="s/\(root:\/\/\).*:[0-9]*/\1$(hostname -f):$NEW_XRD_PORT/g"
+    sed -e $regexp $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
+    mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
 
 
     xrootd -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"

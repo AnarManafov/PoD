@@ -61,7 +61,7 @@ xrd_detect()
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p'`)
+    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -u -n`)
     
     echo "PoD detected XRD port:"${XRD_PORTS[0]}
     echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
@@ -249,19 +249,23 @@ regexp="s/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_P
 sed -e $regexp $WD/proofagent.cfg.xml > $WD/proofagent.cfg.xml.temp
 mv $WD/proofagent.cfg.xml.temp $WD/proofagent.cfg.xml
 
-
 # starting xrootd
-echo "Starting xrootd..."
-xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
-# detect that xrootd failed to start
-sleep 10
-XRD=`pgrep -U $UID xrootd`
-XRD_RET_VAL=$?
-if [ "X$XRD_RET_VAL" = "X0" ]; then
-    echo "XROOTD successful."
+if [ -n "$XRD_PID" ]
+    then
+    echo "using existing XRD instance..."
 else
-    echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
-    clean_up 1
+    echo "Starting xrootd..."
+    xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
+# detect that xrootd failed to start
+    sleep 10
+    XRD=`pgrep -U $UID xrootd`
+    XRD_RET_VAL=$?
+    if [ "X$XRD_RET_VAL" = "X0" ]; then
+	echo "XROOTD successful."
+    else
+	echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
+	clean_up 1
+    fi
 fi
 
 # start proofagent
