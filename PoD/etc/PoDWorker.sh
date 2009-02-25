@@ -34,9 +34,10 @@ clean_up()
     _WD=`pwd`
     proof_dir="$_WD/proof"
     
-    tar -czvf proof_log.tgz $proof_dir
-    
     if [ -e "$proof_dir" ]; then
+	# making an archive of proof logs
+	# it will be transfered to a user
+	tar -czvf proof_log.tgz $proof_dir
 	echo "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir
     fi
@@ -228,30 +229,28 @@ then
 else
     # TODO: get new free ports here and write to xrd config file
     XRD_PORTS_RANGE_MIN=20000
-    XRD_PORTS_RANGE_MAX=22000
-    XPROOF_PORTS_RANGE_MIN=22001
-    XPROOF_PORTS_RANGE_MAX=25000
+    XRD_PORTS_RANGE_MAX=21000
+    XPROOF_PORTS_RANGE_MIN=21001
+    XPROOF_PORTS_RANGE_MAX=22000
     POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
     POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
     echo "using XRD port:"$POD_XRD_PORT_TOSET
     echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
 fi
 
-regexp="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
-sed -e $regexp $WD/xpd.cf > $WD/xpd.cf.temp
+# updating XRD configuration file
+regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
+regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
 mv $WD/xpd.cf.temp $WD/xpd.cf
 
-regexp="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-sed -e $regexp $WD/xpd.cf > $WD/xpd.cf.temp
-mv $WD/xpd.cf.temp $WD/xpd.cf
-
+#updating PROOFAgent configuration file
 regexp="s/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_PORT_TOSET\2/g"
-sed -e $regexp $WD/proofagent.cfg.xml > $WD/proofagent.cfg.xml.temp
+sed -e "$regexp" $WD/proofagent.cfg.xml > $WD/proofagent.cfg.xml.temp
 mv $WD/proofagent.cfg.xml.temp $WD/proofagent.cfg.xml
 
 # starting xrootd
-if [ -n "$XRD_PID" ]
-    then
+if [ -n "$XRD_PID" ]; then
     echo "using existing XRD instance..."
 else
     echo "Starting xrootd..."
