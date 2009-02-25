@@ -61,7 +61,7 @@ xrd_detect()
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -u -n`)
+    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
     echo "PoD detected XRD port:"${XRD_PORTS[0]}
     echo "PoD detected XPROOF port:"${XRD_PORTS[1]}

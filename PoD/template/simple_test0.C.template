@@ -19,12 +19,14 @@
   TDSet *set = new TDSet( "TTree","h42" );
   
   // Files to analyze 
-  set->Add( "root://_G_MASTER_HOSTNAME:20094/_G_XRD_EXPORT_DIR/dstarmb.root" );
-  set->Add( "root://_G_MASTER_HOSTNAME:20094/_G_XRD_EXPORT_DIR/dstarmb1.root" );
+  set->Add( "root://MASTER_HOSTNAME:000/_G_XRD_EXPORT_DIR/dstarmb.root" );
+  set->Add( "root://MASTER_HOSTNAME:000/_G_XRD_EXPORT_DIR/dstarmb1.root" );
   
   // connecting to local PROOF server
-  proof = TProof::Open( "_G_MASTER_HOSTNAME:_G_PROOF_PORT" );
-  
+  proof = TProof::Open( "MASTER_HOSTNAME:0000" );
+
+  proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)1000 );  
+
   // Processing our test analysis
   set->Process( "test/myselector.C" );
 }
