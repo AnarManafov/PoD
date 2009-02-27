@@ -1,7 +1,10 @@
 ********************* Release 2.0.7 not yet released ************************
-- Project has been renamed to PoD
-- PAConsole now supports job manager plug-ins
-- implemented a support of LSF workers
+- project has been renamed to "PROOF on Demand" (PoD)
+- PAConsole now supports job manager plug-ins. Currently gLite and LSF plug-ins are officially supported.
+- supporting LSF workers
+- dynamic ports configuration is now sopported on PoD workers and server. PoD chooses ports for XRD, XPROOF and PROOFAgent on the fly during the start of the server of workers.
+
+
 
 ********************* Release 2.0.6 2008-09-02 ************************
 

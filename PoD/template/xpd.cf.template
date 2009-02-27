@@ -7,12 +7,12 @@
 ###                             2007-02-06
 ###         last changed by:    $LastChangedBy$ $LastChangedDate$
 ###
-###         Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+###         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 ###*************************************************************************/
 #
 ## XRD port
 #
-xrd.port 1094
+xrd.port 000
 #
 ## FS lib
 #
@@ -24,7 +24,7 @@ xrootd.fslib libXrdOfs.so
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 ## comment if you want to help the WN pools
 #
-if  _G_MASTER_HOSTNAME
+if named PoDServer
  xrd.adminpath _G_SERVER_TMP_DIR group
  xrootd.export _G_XRD_EXPORT_DIR
 else
@@ -38,7 +38,7 @@ xrd.trace all debug
 #
 ## setting a PROOF temp dir.
 #
-if _G_MASTER_HOSTNAME
+if named PoDServer
  set PROOFTMP=_G_SERVER_TMP_DIR
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
@@ -48,12 +48,12 @@ fi
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 #
 if exec xrootd
- xrd.protocol xproofd:1093 libXrdProofd.so tmp:/$PROOFTMP
+ xrd.protocol xproofd:000 libXrdProofd.so tmp:/$PROOFTMP
 fi
 #
 ## Resource finder
 #
-if _G_MASTER_HOSTNAME
+if named PoDServer
  xpd.resource static ~/proof.conf
 else
  xpd.resource static _G_WRK_DIR/proof.conf
@@ -63,7 +63,7 @@ fi
 ## Server role (master, submaster, worker) [default: any]
 ## Allows to control the cluster structure.
 #
-if _G_MASTER_HOSTNAME
+if named PoDServer
 xpd.role master
 else
 xpd.role worker
