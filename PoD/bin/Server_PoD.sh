@@ -25,7 +25,7 @@
 xrd_detect()
 {
 # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd| awk '{print $1}'`
+    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd | awk '{print $1}'`
     
     if [ -n "$XRD_PID" ]
     then
@@ -40,8 +40,29 @@ xrd_detect()
 # XPROOF port must be greater
     XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
-    echo "-XRD port: "${XRD_PORTS[0]}
-    echo "-XPROOF port: "${XRD_PORTS[1]}
+    echo "- XRD port: "${XRD_PORTS[0]}
+    echo "- XPROOF port: "${XRD_PORTS[1]}
+    return 0
+}
+# ************************************************************************
+# ***** detects ports for PROOFAgent  *****
+proofagent_detect()
+{
+# get a pid of our proofagent. We get any xrd running by $UID
+    PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep proofagent | awk '{print $1}'`
+    
+    if [ -n "$PA_PID" ]
+    then
+	echo "PROOFAgent is running under PID: "$PA_PID
+    else
+	echo "PROOFAgent is NOT running"
+	return 1
+    fi
+    
+# getting an array of PA LISTEN ports
+    PA_PORTS=(`lsof -w -a -c proofagent -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+    
+    echo "- PROOFAgent server port: "${PA_PORTS[0]}
     return 0
 }
 # ************************************************************************
@@ -97,7 +118,8 @@ start()
     # updating XRD configuration file
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
     regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
+    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$(hostname -f)\2/g"
+    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
     mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
     # replacing ports in the PROOF example script
@@ -145,7 +167,7 @@ status()
     xrd_detect
 
     # PROOFAgent
-    $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --status
+    proofagent_detect
 }
 
 # checking the number of parameters
