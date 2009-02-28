@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef SERVERDLG_H_
 #define SERVERDLG_H_

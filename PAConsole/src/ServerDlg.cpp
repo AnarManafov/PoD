@@ -10,7 +10,7 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QWidget>
@@ -104,7 +104,9 @@ void CServerDlg::CommandServer( EServerCommands _command )
     }
     try
     {
-        do_execv( cmd, params, 30, false );
+    	string output;
+        do_execv( cmd, params, 30, &output );
+        m_ui.edtServerInfo->setText( QString(output.c_str()) );
     }
     catch ( const exception &_e )
     {
