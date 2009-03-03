@@ -53,13 +53,13 @@
         <widget class="QListWidget" name="contentsWidget" >
          <property name="minimumSize" >
           <size>
-           <width>90</width>
+           <width>105</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize" >
           <size>
-           <width>90</width>
+           <width>105</width>
            <height>16777215</height>
           </size>
          </property>
@@ -75,6 +75,9 @@
            <height>56</height>
           </size>
          </property>
+         <property name="textElideMode" >
+          <enum>Qt::ElideMiddle</enum>
+         </property>
          <property name="resizeMode" >
           <enum>QListView::Adjust</enum>
          </property>
@@ -85,7 +88,7 @@
           <enum>QListView::IconMode</enum>
          </property>
          <property name="uniformItemSizes" >
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="wordWrap" >
           <bool>true</bool>
