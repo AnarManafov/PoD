@@ -38,7 +38,7 @@ xrd_detect()
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+    XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
     echo "- XRD port: "${XRD_PORTS[0]}
     echo "- XPROOF port: "${XRD_PORTS[1]}
@@ -60,7 +60,7 @@ proofagent_detect()
     fi
     
 # getting an array of PA LISTEN ports
-    PA_PORTS=(`lsof -w -a -c proofagent -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+    PA_PORTS=(`lsof -P -w -a -c proofagent -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
     echo "- PROOFAgent server port: "${PA_PORTS[0]}
     return 0
