@@ -132,6 +132,8 @@ start()
     #
     xrootd -n PoDServer -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
     
+    sleep 2 # let XRD to start
+	
     # setting a port to listen for PROOFAgent server and server's host name
     regexp_listen="s/\(<listen_port>\)[0-9]*\(<\/listen_port>\)/\1$NEW_PROOFAGENT_PORT\2/g"
     regexp_server="s/\(<server_port>\)[0-9]*\(<\/server_port>\)/\1$NEW_PROOFAGENT_PORT\2/g"
