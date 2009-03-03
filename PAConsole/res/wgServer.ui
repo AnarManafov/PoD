@@ -66,6 +66,14 @@
           </item>
           <item>
            <widget class="QPushButton" name="btnBrowsePIDDir" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize" >
              <size>
               <width>75</width>
@@ -143,6 +151,14 @@
               </property>
               <item>
                <widget class="QPushButton" name="btnStartServer" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>0</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize" >
                  <size>
                   <width>75</width>
@@ -156,6 +172,14 @@
               </item>
               <item>
                <widget class="QPushButton" name="btnStopServer" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>0</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize" >
                  <size>
                   <width>75</width>
