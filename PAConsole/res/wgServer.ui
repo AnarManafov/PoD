@@ -171,6 +171,12 @@
                   <height>27</height>
                  </size>
                 </property>
+                <property name="maximumSize" >
+                 <size>
+                  <width>75</width>
+                  <height>27</height>
+                 </size>
+                </property>
                 <property name="text" >
                  <string>St&amp;art</string>
                 </property>
@@ -187,6 +193,12 @@
                  </sizepolicy>
                 </property>
                 <property name="minimumSize" >
+                 <size>
+                  <width>75</width>
+                  <height>27</height>
+                 </size>
+                </property>
+                <property name="maximumSize" >
                  <size>
                   <width>75</width>
                   <height>27</height>
