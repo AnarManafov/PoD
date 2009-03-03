@@ -10,7 +10,7 @@
                             2007-05-23
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QtGui>
@@ -60,7 +60,7 @@ void _savecfg( const T &_s, string _FileName )
 }
 
 CMainDlg::CMainDlg( QDialog *_Parent ):
-        QDialog( _Parent ),
+		QDialog( _Parent ),
         m_CurrentPage( 0 )
 {
     m_ui.setupUi( this );

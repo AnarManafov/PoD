@@ -84,7 +84,6 @@ class CPreferencesDlg: public QWidget
         Ui::wgPreferences m_ui;
         int m_JobStatusUpdInterval;
         int m_WorkersUpdInterval;
-
 };
 
 BOOST_CLASS_VERSION( CPreferencesDlg, 1 )

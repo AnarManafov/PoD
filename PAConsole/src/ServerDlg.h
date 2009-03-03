@@ -40,7 +40,6 @@ class CServerDlg: public QWidget
         virtual ~CServerDlg();
 
     private slots:
-        void on_btnStatusServer_clicked();
         void on_btnStartServer_clicked();
         void on_btnStopServer_clicked();
         void on_btnBrowsePIDDir_clicked();
@@ -71,7 +70,7 @@ class CServerDlg: public QWidget
     private:
         Ui::wgServer m_ui;
         int m_SrvPort;
-        QTimer *m_TimerSrvSocket;
+        QTimer *m_Timer;
         std::string m_PIDDir;
 };
 

@@ -17,7 +17,6 @@
 // PAConsole
 #include "PreferencesDlg.h"
 
-
 CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
         QWidget( _parent ),
         m_JobStatusUpdInterval( 15 ),// in seconds

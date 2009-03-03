@@ -202,6 +202,6 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
 void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 {
     m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
-    if ( m_bMonitorWorkers )
+    if ( m_bMonitorWorkers > 0)
         m_Timer->start( m_WorkersUpdInterval );
 }

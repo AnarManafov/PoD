@@ -30,7 +30,7 @@
 #include "ServerDlg.h"
 #include "ServerInfo.h"
 
-const size_t g_TimeoutCheckSrvSocket = 4000;  // in milliseconds
+const size_t g_UpdateInterval = 4000;  // in milliseconds
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 // default pid/log directory
 const char * const g_szPID_Dir = "$GLITE_PROOF_LOCATION/";
@@ -46,41 +46,26 @@ CServerDlg::CServerDlg( QWidget *_parent ):
     m_ui.setupUi( this );
 
     // PROOFAgent server's Port number
-    getSrvPort( &m_SrvPort );
+    //getSrvPort( &m_SrvPort );
 
     // pid/log directory
     smart_path( &m_PIDDir );
     m_ui.edtPIDDir->setText( m_PIDDir.c_str() );
 
     // Enabling timer which checks Server's socket availability
-    m_TimerSrvSocket = new QTimer( this );
-    connect( m_TimerSrvSocket, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
-    m_TimerSrvSocket->start( g_TimeoutCheckSrvSocket );
+    m_Timer = new QTimer( this );
+    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
+    m_Timer->start( g_UpdateInterval );
     update_check_srv_socket();
 }
 
 CServerDlg::~CServerDlg()
 {
-    if ( m_TimerSrvSocket )
+    if ( m_Timer )
     {
-        m_TimerSrvSocket->stop();
-        delete m_TimerSrvSocket;
+        m_Timer->stop();
+        delete m_Timer;
     }
-}
-
-void CServerDlg::on_btnStatusServer_clicked()
-{
- /*   const QColor c = ( IsRunning( true ) ) ? QColor( 0, 0, 255 ) : QColor( 255, 0, 0 );
-    m_ui.edtServerInfo->setTextColor( c );
-
-    CServerInfo si;
-    stringstream ss;
-    ss
-    << si.GetXROOTDInfo() << "\n"
-    << "-----------------------\n"
-    << si.GetPAInfo() << "\n";
-
-    m_ui.edtServerInfo->setText( QString( ss.str().c_str() ) );*/
 }
 
 void CServerDlg::CommandServer( EServerCommands _command )
@@ -104,12 +89,13 @@ void CServerDlg::CommandServer( EServerCommands _command )
     {
         string output;
         do_execv( cmd, params, 30, &output );
-        m_ui.edtServerInfo->setText( QString(output.c_str()) );
     }
     catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
     }
+
+    update_check_srv_socket();
 }
 
 bool CServerDlg::IsRunning( bool _check_all )
@@ -120,35 +106,12 @@ bool CServerDlg::IsRunning( bool _check_all )
 
 void CServerDlg::on_btnStartServer_clicked()
 {
- //   if ( IsRunning( true ) )
- //       return;
-
-    CommandServer( srvSTART );
-
-//    if ( !IsRunning( true ) )
-//    {
-//        QString msg = tr( "An error occurred while starting the Server!" );
-//        char *chRootsys = getenv("ROOTSYS");
-//        CServerInfo si;
-//        // TODO: we need check processes and its user name, not only existance of the process
-//        if ( /*!si.IsXROOTDRunning() && */!chRootsys )
-//            msg += tr("\nPAConsole has detected that $ROOTSYS is not set. If you use xrootd from a ROOT instalaltion,\n"
-//                      "then you need to set ROOTSYS before starting PACosnole.");
-//        QMessageBox::critical( this, tr( "PROOFAgent Console" ), msg );
-//    }
-//    on_btnStatusServer_clicked();
+	CommandServer( srvSTART );
 }
 
 void CServerDlg::on_btnStopServer_clicked()
 {
-//    if ( !IsRunning( false ) )
-//        return;
-
-    CommandServer( srvSTOP );
-//    if ( IsRunning( true ) )
-//        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "<p>An error occurred while stopping the Server!" ) );
-//
-//    on_btnStatusServer_clicked();
+	CommandServer( srvSTOP );
 }
 
 void CServerDlg::on_btnBrowsePIDDir_clicked()
