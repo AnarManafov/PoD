@@ -80,6 +80,12 @@
               <height>27</height>
              </size>
             </property>
+            <property name="maximumSize" >
+             <size>
+              <width>75</width>
+              <height>27</height>
+             </size>
+            </property>
             <property name="text" >
              <string>&amp;Browse...</string>
             </property>
