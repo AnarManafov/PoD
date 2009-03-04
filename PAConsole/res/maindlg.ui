@@ -63,6 +63,12 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="font" >
+          <font>
+           <family>Sans Serif</family>
+           <pointsize>7</pointsize>
+          </font>
+         </property>
          <property name="showDropIndicator" stdset="0" >
           <bool>false</bool>
          </property>
@@ -78,14 +84,17 @@
          <property name="textElideMode" >
           <enum>Qt::ElideNone</enum>
          </property>
-         <property name="movement" >
-          <enum>QListView::Static</enum>
-         </property>
          <property name="resizeMode" >
           <enum>QListView::Adjust</enum>
          </property>
          <property name="spacing" >
           <number>12</number>
+         </property>
+         <property name="gridSize" >
+          <size>
+           <width>2</width>
+           <height>2</height>
+          </size>
          </property>
          <property name="viewMode" >
           <enum>QListView::IconMode</enum>
