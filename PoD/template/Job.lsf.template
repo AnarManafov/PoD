@@ -26,7 +26,7 @@ G_WRK_DIR=_G_WRK_DIR
 #
 ## User's ROOTSYS to use on workers
 #
-G_ROOTSYS=/misc/manafov/ROOT/root_trunk_64b/root
+G_ROOTSYS=/usr/local/pub/debian4.0/x86_64/gcc411-21/rootmgr/522-00
 #
 ## log dir
 #
