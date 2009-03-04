@@ -16,7 +16,8 @@ VERSION=2.0.7
 ############ Vars ######################
 # Users may change these variables
 ###
-INSTALL_PATH=/tmp/test/PoDpackage
+INSTALL_PATH=`pwd`
+
 
 XRD_EXPORT_DIR=$INSTALL_PATH/test
 
