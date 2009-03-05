@@ -211,7 +211,7 @@ void CGridDlg::on_btnBrowseJDL_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
-                                                           tr( "JDL Files (*.jdl)" ) );
+                             tr( "JDL Files (*.jdl)" ) );
     if ( QFileInfo( filename ).exists() )
     {
         m_JDLFileName = filename.toAscii().data();
@@ -338,7 +338,7 @@ void CGridDlg::getJobOutput()
     try
     {
         CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
-                                                                &joboutput_path, true );
+                &joboutput_path, true );
     }
     catch ( const exception &_e )
     {
@@ -443,7 +443,8 @@ QIcon CGridDlg::getIcon()
 void CGridDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
-    m_Timer->start( _JobStatusUpdInterval * 1000 );
+    if ( _JobStatusUpdInterval > 0 )
+        m_Timer->start( _JobStatusUpdInterval * 1000 );
 }
 int CGridDlg::getJobsCount() const
 {

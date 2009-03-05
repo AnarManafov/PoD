@@ -33,7 +33,8 @@ using namespace MiscCommon;
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
         QWidget( parent ),
-        m_bMonitorWorkers( true )
+        m_bMonitorWorkers( true ),
+        m_WorkersUpdInterval(0)
 {
     m_ui.setupUi( this );
 
@@ -145,7 +146,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
     // Reading only comment blocks of proof.conf
     const char chCmntSign( '#' );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                             SFindComment<string>( chCmntSign ) );
+                                    SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
@@ -175,7 +176,7 @@ void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
 
     if ( !m_bMonitorWorkers )
         m_Timer->stop();
-    else
+    else if ( m_WorkersUpdInterval > 0 )
         m_Timer->start( m_WorkersUpdInterval );
 }
 

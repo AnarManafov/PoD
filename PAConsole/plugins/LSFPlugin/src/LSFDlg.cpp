@@ -190,7 +190,7 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
-                                                           tr( "LSF script (*.lsf)" ) );
+                             tr( "LSF script (*.lsf)" ) );
     if ( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
@@ -394,7 +394,8 @@ QIcon CLSFDlg::getIcon()
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
-    m_Timer->start( _JobStatusUpdInterval * 1000 );
+    if ( _JobStatusUpdInterval > 0 )
+        m_Timer->start( _JobStatusUpdInterval * 1000 );
 }
 int CLSFDlg::getJobsCount() const
 {
