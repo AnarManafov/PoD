@@ -30,7 +30,9 @@
 #include "ServerDlg.h"
 #include "ServerInfo.h"
 
-const size_t g_UpdateInterval = 4000;  // in milliseconds
+// TODO: optimize the call of the status of PoD
+// this is very expensive call, we therefore using 30 sec. timeout
+const size_t g_UpdateInterval = 30000;  // in milliseconds
 const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
 // default pid/log directory
 const char * const g_szPID_Dir = "$GLITE_PROOF_LOCATION/";
