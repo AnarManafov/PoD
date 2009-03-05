@@ -53,13 +53,13 @@
         <widget class="QListWidget" name="contentsWidget" >
          <property name="minimumSize" >
           <size>
-           <width>95</width>
+           <width>98</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize" >
           <size>
-           <width>95</width>
+           <width>98</width>
            <height>16777215</height>
           </size>
          </property>
@@ -80,6 +80,9 @@
            <width>70</width>
            <height>70</height>
           </size>
+         </property>
+         <property name="spacing" >
+          <number>10</number>
          </property>
          <property name="viewMode" >
           <enum>QListView::IconMode</enum>
