@@ -61,11 +61,6 @@ CServerDlg::CServerDlg( QWidget *_parent ):
 
 CServerDlg::~CServerDlg()
 {
-    if ( m_Timer )
-    {
-        m_Timer->stop();
-        delete m_Timer;
-    }
 }
 
 void CServerDlg::CommandServer( EServerCommands _command )

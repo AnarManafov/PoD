@@ -55,11 +55,6 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
 
 CWorkersDlg::~CWorkersDlg()
 {
-    if ( m_Timer )
-    {
-        m_Timer->stop();
-        delete m_Timer;
-    }
 }
 
 /// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)

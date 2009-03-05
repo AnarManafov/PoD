@@ -122,12 +122,6 @@ CGridDlg::~CGridDlg()
     catch ( ... )
     {
     }
-
-    if ( m_Timer )
-    {
-        m_Timer->stop();
-        delete m_Timer;
-    }
 }
 
 void CGridDlg::setAllDefault()
