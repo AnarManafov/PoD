@@ -97,6 +97,20 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( static_cast<int>( m_jobinfo.getCount() ) <= _row )
         return QModelIndex();
 
+    SJobInfo *parent_job = NULL;
+
+    if ( _parent.isValid() )
+        parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+    else
+        return createIndex( _row, _column, m_jobinfo.at( _row ) );
+
+    if ( static_cast<int>(parent_job->m_children.size()) > _row )
+        return createIndex(_row, _column, parent_job->m_children[_row].get());
+    else
+    {
+        return QModelIndex();
+    }
+
     return createIndex( _row, _column, m_jobinfo.at( _row ) );
 }
 
@@ -179,7 +193,7 @@ void CJobInfoItemModel::endRemoveRow()
 
 void CJobInfoItemModel::_setupJobsContainer()
 {
-    connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo * ) ), this, SLOT( socketChanged( SJobInfo * ) ) );
+    connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo * ) ), this, SLOT( jobChanged( SJobInfo * ) ) );
     connect( &m_jobinfo, SIGNAL( beginAddJob( SJobInfo * ) ), this, SLOT( beginInsertRow( SJobInfo * ) ) );
     connect( &m_jobinfo, SIGNAL( endAddJob() ), this, SLOT( endInsertRow() ) );
     connect( &m_jobinfo, SIGNAL( beginRemoveJob( SJobInfo * ) ), this, SLOT( beginRemoveRow( SJobInfo * ) ) );
