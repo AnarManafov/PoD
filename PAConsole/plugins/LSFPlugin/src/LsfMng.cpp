@@ -123,7 +123,7 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     return LSB_JOBID(jobId, 0);
 }
 
-CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID )
+CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
 {
     if ( !m_bInit )
         return JS_JOB_STAT_UNKWN;
@@ -150,7 +150,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID )
     return status;
 }
 
-std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID )
+std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
 {
     switch ( jobStatus( _jobID ) )
     {

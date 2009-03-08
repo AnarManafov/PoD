@@ -16,6 +16,7 @@
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 // PAConsole LSF plug-in
+#include "JobInfoItemModel.h"
 #include "LSFDlg.h"
 // Qt
 #include <QtGui>
@@ -99,6 +100,9 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     // TODO: move this to GUI setting
     m_JobSubmitter.setQueue( "proof" );
+
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter );
+    m_ui.treeJobs->setModel(m_treeModel);
 }
 
 CLSFDlg::~CLSFDlg()
@@ -111,6 +115,8 @@ CLSFDlg::~CLSFDlg()
     catch ( ... )
     {
     }
+
+    delete m_treeModel;
 }
 
 void CLSFDlg::setAllDefault()
@@ -183,7 +189,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
 
 void CLSFDlg::updateJobsTree()
 {
-    m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
+  //  m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
 
 void CLSFDlg::on_btnBrowseJobScript_clicked()
@@ -235,7 +241,7 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
         return;
 
     // We need to disable menu items when no jobID is selected
-    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+//    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
 
     QMenu menu( this );
 //   menu.addAction( copyJobIDAct );
@@ -247,15 +253,15 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 //    menu.addAction( getJobLoggingInfoAct );
 //    getJobLoggingInfoAct->setEnabled( item );
 
-    menu.addSeparator();
-    menu.addAction( removeJobAct );
-    removeJobAct->setEnabled( item );
+//    menu.addSeparator();
+//    menu.addAction( removeJobAct );
+//    removeJobAct->setEnabled( item );
 
 //    menu.addSeparator();
 //    menu.addAction( cancelJobAct );
 //    cancelJobAct->setEnabled( item );
 
-    menu.exec( event->globalPos() );
+//    menu.exec( event->globalPos() );
 }
 
 //void CLSFDlg::copyJobID() const
@@ -347,14 +353,14 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 void CLSFDlg::removeJob()
 {
     // Job ID
-    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if ( !item )
-        return;
-
-    const string jobid( item->text( 0 ).toAscii().data() );
-
-    m_JobSubmitter.removeJob( jobid );
-    updateJobsTree();
+//    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
+//    if ( !item )
+//        return;
+//
+//    const string jobid( item->text( 0 ).toAscii().data() );
+//
+//    m_JobSubmitter.removeJob( jobid );
+//    updateJobsTree();
 }
 
 void CLSFDlg::setProgress( int _Val )

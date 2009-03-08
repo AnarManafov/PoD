@@ -177,7 +177,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QTreeWidget" name="treeJobs" >
+         <widget class="QTreeView" name="treeJobs" >
           <property name="alternatingRowColors" >
            <bool>false</bool>
           </property>

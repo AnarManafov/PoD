@@ -1,0 +1,68 @@
+/************************************************************************/
+/**
+ * @file JobInfoItemModel.h
+ * @brief $$File comment$$
+ * @author Anar Manafov Anar.Manafov@gmail.com
+ *//*
+
+        version number:    $LastChangedRevision$
+        created by:        Anar Manafov
+                           2009-03-08
+        last changed by:   $LastChangedBy$ $LastChangedDate$
+
+        Copyright (c) 2009 Anar Manafov. All rights reserved.
+*************************************************************************/
+#ifndef JOBINFOITEMMODEL_H_
+#define JOBINFOITEMMODEL_H_
+// LSF plug-in
+#include "JobsContainer.h"
+// Qt
+#include <QAbstractItemModel>
+#include <QStringList>
+
+class CJobInfoItemModel: public QAbstractItemModel
+{
+        Q_OBJECT
+
+    public:
+        CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QObject * _parent = NULL );
+        virtual ~CJobInfoItemModel();
+
+    public:
+        /** The headings in the model.
+         *  The order here is the order that they are shown in.
+         *  If you change this, make sure you also change the
+         *  _setupHeader method
+         */
+        enum { TitleJobID, TitleJobStatus };
+
+        int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+        int columnCount( const QModelIndex & parent = QModelIndex() ) const;
+        QVariant data( const QModelIndex &_index, int _role ) const;
+        QVariant headerData( int _section, Qt::Orientation _orientation, int _role = Qt::DisplayRole ) const;
+        QModelIndex index( int _row, int _column, const QModelIndex & _parent = QModelIndex() ) const;
+        virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
+        QModelIndex parent( const QModelIndex &_index ) const;
+        /** This is used from SockInfoFilter to get the socket info at a given index */
+        SJobInfo *getJobInfoAtIndex(int _index) const;
+
+    private slots:
+        void jobChanged( SJobInfo *_info );
+        void beginInsertRow( SJobInfo *_info );
+        void endInsertRow();
+        void beginRemoveRow( SJobInfo *_info );
+        void endRemoveRow();
+
+    private:
+        void _setupJobsContainer();
+        void _setupHeader();
+
+    private:
+        CJobsContainer m_jobinfo;
+        /**
+         * A translated list of column titles in the order we want to display them. Used in headerData().
+         * */
+        QStringList m_Titles;
+};
+
+#endif /* JOBINFOITEMMODEL_H_ */

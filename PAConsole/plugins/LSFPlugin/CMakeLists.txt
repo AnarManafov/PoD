@@ -26,11 +26,16 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 set( MOC_HDRS_lsf
     ./src/LSFDlg.h
     ./src/LSFJobSubmitter.h
+    ./src/JobInfoItemModel.h
+    ./src/JobsContainer.h
 )
 
 set( SOURCE_FILES_lsf
     ./src/LSFDlg.cpp
     ./src/LsfMng.cpp
+    ./src/JobInfo.cpp
+    ./src/JobInfoItemModel.cpp
+    ./src/JobsContainer.cpp
 )
 
 set( UI_FILES_lsf

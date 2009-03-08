@@ -66,8 +66,8 @@ class CLsfMng
         // TODO: implement
         //void removeProperty();
         lsf_jobid_t jobSubmit( const std::string &_Cmd );
-        EJobStatus_t jobStatus( lsf_jobid_t _jobID );
-        std::string jobStatusString( lsf_jobid_t _jobID );
+        EJobStatus_t jobStatus( lsf_jobid_t _jobID ) const;
+        std::string jobStatusString( lsf_jobid_t _jobID ) const;
         int getNumberOfChildren( lsf_jobid_t _jobID ) const;
         void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
 

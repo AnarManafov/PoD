@@ -63,10 +63,10 @@ class CLSFJobSubmitter: public QThread
             }
             return true;
         }
-        const jobslist_t &getActiveJobList()
+        const jobslist_t &getActiveJobList() const
         {
             // Retrieving a number of children of the parametric job
-            emit changeNumberOfJobs( getNumberOfJobs() );
+    //        emit changeNumberOfJobs( getNumberOfJobs() );
 
             return m_JobsList;
         }
@@ -102,6 +102,11 @@ class CLSFJobSubmitter: public QThread
             m_mutex.unlock();
 
             emit changeNumberOfJobs( getNumberOfJobs() );
+        }
+
+        const CLsfMng &getLSF() const
+        {
+        	return m_lsf;
         }
 
     signals:
