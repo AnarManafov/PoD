@@ -27,13 +27,10 @@ CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QOb
 {
     _setupHeader();
     _setupJobsContainer();
-
-    m_rootItem = new SJobInfo();
 }
 
 CJobInfoItemModel::~CJobInfoItemModel()
 {
-    delete m_rootItem;
 }
 
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
@@ -177,9 +174,21 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
 void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
 {
     Q_ASSERT( _info );
-    const int row = m_jobinfo.getCount();
-    beginInsertRows( QModelIndex(), row, row );
+//    const int row = m_jobinfo.getCount();
+//    beginInsertRows( QModelIndex(), row, row );
 
+    if( !_info->m_parent )
+    {
+    	return;
+    }
+    int row = _info->m_parent->m_children.size();
+ // else
+//    	row = m_jobinfo.getCount();
+
+    QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
+
+           //Only here can we actually change the model.  First notify the view/proxy models then modify
+           beginInsertRows(parentModelIndex, row, row);
 }
 
 void CJobInfoItemModel::endInsertRow()

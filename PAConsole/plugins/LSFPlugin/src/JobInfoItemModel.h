@@ -63,7 +63,6 @@ class CJobInfoItemModel: public QAbstractItemModel
          * A translated list of column titles in the order we want to display them. Used in headerData().
          * */
         QStringList m_Titles;
-        SJobInfo *m_rootItem;
 };
 
 #endif /* JOBINFOITEMMODEL_H_ */
