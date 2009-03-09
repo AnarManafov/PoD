@@ -60,7 +60,7 @@ struct SJobInfo
     		return m_parent->indexOf( this );
     	}
 
-    	return 0;
+    	return -1;
     }
 
     lsf_jobid_t m_id;

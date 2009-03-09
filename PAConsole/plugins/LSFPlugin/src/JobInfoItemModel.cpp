@@ -112,10 +112,12 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _parent.isValid() )
     {
         SJobInfo *parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
-        return createIndex(_row, _column, parent_job->m_children[_row]);
+        if(_row < parent_job->m_children.size())
+        	return createIndex(_row, _column, parent_job->m_children[_row]);
     }
     else
-        return createIndex( _row, _column, m_jobinfo.at(_row) );
+    	if( _row < m_jobinfo.getCount() )
+    		return createIndex( _row, _column, m_jobinfo.at(_row) );
 
     return QModelIndex();
 }
@@ -126,14 +128,17 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
         return QModelIndex();
 
     SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
-    if( !childItem )
-    	return QModelIndex();
+    if ( !childItem )
+        return QModelIndex();
 
     SJobInfo *parentItem = childItem->m_parent;
     if ( !parentItem)
-    	return QModelIndex();
+        return QModelIndex();
 
-    return createIndex( parentItem->row(), 0, parentItem);
+    int row = parentItem->row();
+    if(-1 == row)
+    	row = m_jobinfo.getIndex(parentItem);
+    return createIndex( row, 0, parentItem);
 }
 
 SJobInfo *CJobInfoItemModel::getJobInfoAtIndex(int _index) const
@@ -177,18 +182,16 @@ void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
 //    const int row = m_jobinfo.getCount();
 //    beginInsertRows( QModelIndex(), row, row );
 
-    if( !_info->m_parent )
+    if ( !_info->m_parent )
     {
-    	return;
+        const int row = m_jobinfo.getCount();
+        beginInsertRows( QModelIndex(), row, row );
+        return;
     }
+
     int row = _info->m_parent->m_children.size();
- // else
-//    	row = m_jobinfo.getCount();
-
     QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
-
-           //Only here can we actually change the model.  First notify the view/proxy models then modify
-           beginInsertRows(parentModelIndex, row, row);
+    beginInsertRows(parentModelIndex, row, row);
 }
 
 void CJobInfoItemModel::endInsertRow()
