@@ -56,7 +56,6 @@ class CJobInfoItemModel: public QAbstractItemModel
     private:
         void _setupJobsContainer();
         void _setupHeader();
-        QModelIndex getQModelIndex( SJobInfo *_job, int column) const;
 
     private:
         CJobsContainer m_jobinfo;

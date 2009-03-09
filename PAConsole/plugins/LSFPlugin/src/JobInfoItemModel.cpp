@@ -97,6 +97,14 @@ QVariant CJobInfoItemModel::headerData( int _section, Qt::Orientation _orientati
     return m_Titles[_section];
 }
 
+Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
+{
+    if ( !_index.isValid() )
+        return 0;
+
+    return QAbstractItemModel::flags( _index ) & ( ~Qt::ItemIsEditable );
+}
+
 QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex & _parent ) const
 {
     if ( _row < 0 )
@@ -104,25 +112,15 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _column < 0 || _column >= m_Titles.count() )
         return QModelIndex();
 
-    SJobInfo *parent_job = NULL;
     if ( _parent.isValid() )
-        parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+    {
+        SJobInfo *parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+        return createIndex(_row, _column, parent_job->m_children[_row]);
+    }
     else
-    	return QModelIndex();
-        //return createIndex( _row, _column, m_rootItem );
+        return createIndex( _row, _column, m_jobinfo.at(_row) );
 
-    if( !parent_job )
-    	return QModelIndex();
-
-    return createIndex(_row, _column, parent_job->m_children[_row]);
-}
-
-Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
-{
-    if ( !_index.isValid() )
-        return 0;
-
-    return QAbstractItemModel::flags( _index ) & ( ~Qt::ItemIsEditable );
+    return QModelIndex();
 }
 
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
