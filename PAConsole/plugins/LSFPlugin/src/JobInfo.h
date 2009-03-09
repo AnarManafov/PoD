@@ -23,8 +23,8 @@
 
 struct SJobInfo;
 
-typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
-typedef std::vector<SJobInfoPTR_t> jobs_children_t;
+typedef std::vector<SJobInfo *> jobs_children_t;
+
 
 struct SJobInfo
 {
@@ -45,7 +45,23 @@ struct SJobInfo
     }
     void addChild( SJobInfo *_child )
     {
-        m_children.push_back( SJobInfoPTR_t(_child) );
+        m_children.push_back( _child );
+    }
+    int indexOf (const SJobInfo *_info) const
+    {
+    	// TODO: find a faster algorithm
+    	jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(), _info );
+        return std::distance( m_children.begin(), iter );
+    }
+    int row() const
+    {
+    	if( m_parent )
+    	{
+    		//SJobInfo *info = const_cast<SJobInfo*>(m_parent);
+    		return m_parent->indexOf( this );
+    	}
+
+    	return 0;
     }
 
     lsf_jobid_t m_id;
@@ -86,7 +102,6 @@ private:
 private:
     JobsContainer_t m_Container;
     const CLsfMng &m_lsf;
-    size_t m_itemsMaxNumber;
 };
 
 #endif /* JOBINFO_H_ */

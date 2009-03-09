@@ -24,6 +24,7 @@
 // BOOST
 #include <boost/shared_ptr.hpp>
 
+typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
 typedef std::map<unsigned int, SJobInfoPTR_t> JobPTRContainer_t;
 typedef std::vector<SJobInfo *> SJobInfoVec_t;
 
