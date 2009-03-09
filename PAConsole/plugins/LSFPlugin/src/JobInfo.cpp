@@ -19,7 +19,9 @@
 
 using namespace std;
 
-CJobInfo::CJobInfo(const CLsfMng &_lsf): m_lsf(_lsf)
+CJobInfo::CJobInfo(const CLsfMng &_lsf):
+        m_lsf(_lsf),
+        m_itemsMaxNumber(0)
 {
 }
 
@@ -44,6 +46,7 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
         info.m_strID = str.str();
         info.m_status = m_lsf.jobStatus(*iter);
         info.m_strStatus = m_lsf.jobStatusString(*iter);
+        info.m_index = m_itemsMaxNumber++;
         try
         {
             CLsfMng::IDContainer_t children;
@@ -71,6 +74,7 @@ void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent )
     info->m_status = m_lsf.jobStatus(_JobID);
     info->m_strStatus = m_lsf.jobStatusString(_JobID);
     info->m_parent = _parent;
+    info->m_index = m_itemsMaxNumber++;
     _parent->addChild( info );
 }
 

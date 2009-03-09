@@ -33,7 +33,7 @@ CJobInfoItemModel::~CJobInfoItemModel()
 {
 }
 
-int CJobInfoItemModel::rowCount( const QModelIndex &parent ) const
+int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
     SJobInfo *parent_job = NULL;
 
@@ -129,14 +129,22 @@ Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
     return QAbstractItemModel::flags( _index ) & ( ~Qt::ItemIsEditable );
 }
 
+QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_job, int column) const
+{
+        Q_ASSERT(_job);
+        int row = _job->m_index;
+        Q_ASSERT(row != -1);
+        return createIndex(row, column, _job);
+}
+
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
-    if (!index.isValid())
+    if (!_index.isValid())
         return QModelIndex();
 
-    job = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
+    SJobInfo *job = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
     if (job && job->m_parent)
-        return getQModelIndex( job->parent, 0 );
+        return getQModelIndex( job->m_parent, 0 );
 
     return QModelIndex();
 }
