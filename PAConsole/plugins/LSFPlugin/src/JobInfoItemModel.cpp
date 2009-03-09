@@ -128,7 +128,8 @@ Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
 QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_job, int column) const
 {
     Q_ASSERT(_job);
-    int row = m_jobinfo.getIndex(_job);//_job->m_index;
+    CJobsContainer *container = const_cast<CJobsContainer*>(&m_jobinfo);
+    int row = container->getIndex(_job);//_job->m_index;
     Q_ASSERT(row != -1);
     return createIndex(row, column, _job);
 }
