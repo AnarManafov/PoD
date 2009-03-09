@@ -78,7 +78,7 @@ class CJobsContainer: public QObject
                 return NULL;
             return m_container[_pos];
         }
-        SJobInfoVec_t::size_type getIndex( SJobInfo *_info )
+        SJobInfoVec_t::size_type getIndex( SJobInfo *_info ) const
         {
             // TODO: This should be optimized. maybe we can add an index member in the SJobInfo or something
            // SJobInfoVec_t::iterator iter = std::find( m_container.begin(), m_container.end(), _info );
