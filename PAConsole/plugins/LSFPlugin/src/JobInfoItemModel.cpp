@@ -27,10 +27,13 @@ CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QOb
 {
     _setupHeader();
     _setupJobsContainer();
+
+    m_rootItem = new SJobInfo();
 }
 
 CJobInfoItemModel::~CJobInfoItemModel()
 {
+	delete m_rootItem;
 }
 
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
@@ -101,24 +104,19 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _column < 0 || _column >= m_Titles.count() )
         return QModelIndex();
 
-    if ( static_cast<int>( m_jobinfo.getCount() ) <= _row )
-        return QModelIndex();
-
     SJobInfo *parent_job = NULL;
 
     if ( _parent.isValid() )
         parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
     else
-        return createIndex( _row, _column, m_jobinfo.at( _row ) );
+        return createIndex( _row, _column, m_rootItem );
 
     if ( static_cast<int>(parent_job->m_children.size()) > _row )
         return createIndex(_row, _column, parent_job->m_children[_row].get());
-    else
-    {
-        return QModelIndex();
-    }
 
-    return createIndex( _row, _column, m_jobinfo.at( _row ) );
+    return QModelIndex();
+
+    //return createIndex( _row, _column, m_jobinfo.at( _row ) );
 }
 
 Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
