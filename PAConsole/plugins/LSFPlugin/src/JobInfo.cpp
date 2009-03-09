@@ -70,6 +70,7 @@ void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent )
     info->m_strID = str.str();
     info->m_status = m_lsf.jobStatus(_JobID);
     info->m_strStatus = m_lsf.jobStatusString(_JobID);
+    info->m_parent = _parent;
     _parent->addChild( info );
 }
 

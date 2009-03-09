@@ -35,6 +35,13 @@ CJobInfoItemModel::~CJobInfoItemModel()
 
 int CJobInfoItemModel::rowCount( const QModelIndex &parent ) const
 {
+    SJobInfo *parent_job = NULL;
+
+    if ( _parent.isValid() )
+    {
+        parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+        return parent_job->m_children.size();
+    }
     return m_jobinfo.getCount();
 }
 
@@ -124,6 +131,13 @@ Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
 
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
+    if (!index.isValid())
+        return QModelIndex();
+
+    job = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
+    if (job && job->m_parent)
+        return getQModelIndex( job->parent, 0 );
+
     return QModelIndex();
 }
 
