@@ -33,7 +33,7 @@ CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QOb
 
 CJobInfoItemModel::~CJobInfoItemModel()
 {
-	delete m_rootItem;
+    delete m_rootItem;
 }
 
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
@@ -129,10 +129,10 @@ Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
 
 QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_job, int column) const
 {
-        Q_ASSERT(_job);
-        int row = _job->m_index;
-        Q_ASSERT(row != -1);
-        return createIndex(row, column, _job);
+    Q_ASSERT(_job);
+    int row = _job->m_index;
+    Q_ASSERT(row != -1);
+    return createIndex(row, column, _job);
 }
 
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const

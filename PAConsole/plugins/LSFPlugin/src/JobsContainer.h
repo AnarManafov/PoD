@@ -61,7 +61,16 @@ class CJobsContainer: public QObject
         void update( long _update_time_ms = 0 );
         SJobInfoVec_t::size_type getCount() const
         {
-            return m_container.size();
+           // return m_container.size();
+        	size_t count = 0;
+        	SJobInfoVec_t::const_iterator iter = m_container.begin();
+        	SJobInfoVec_t::const_iterator iter_end = m_container.end();
+        	for(; iter != iter_end; ++iter)
+        	{
+        		++count;
+        		count = (*iter)->m_children.size();
+        	}
+        	return count;
         }
         SJobInfo *at( SJobInfoVec_t::size_type _pos ) const
         {
@@ -72,8 +81,9 @@ class CJobsContainer: public QObject
         SJobInfoVec_t::size_type getIndex( SJobInfo *_info )
         {
             // TODO: This should be optimized. maybe we can add an index member in the SJobInfo or something
-            SJobInfoVec_t::iterator iter = std::find( m_container.begin(), m_container.end(), _info );
-            return std::distance( m_container.begin(), iter );
+           // SJobInfoVec_t::iterator iter = std::find( m_container.begin(), m_container.end(), _info );
+           // return std::distance( m_container.begin(), iter );
+        	return _info->m_index;
         }
 
     private slots:
