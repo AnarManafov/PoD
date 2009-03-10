@@ -79,6 +79,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 {
     SJobInfoPTR_t info( _node.second );
 
+    // parent jobs
     emit beginAddJob( info.get() );
     m_curinfo.insert( JobsContainer_t::value_type( info->m_id, info ) );
     m_cur_ids.insert( JobsContainer_t::value_type( info->m_id, info ) );
@@ -91,6 +92,8 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     for(; iter != iter_end; ++iter)
     {
     	emit beginAddJob( *iter );
+        m_curinfo.insert( JobsContainer_t::value_type( (*iter)->m_id, *iter ) );
+        m_cur_ids.insert( JobsContainer_t::value_type( (*iter)->m_id, *iter ) );
     	emit endAddJob();
     }
 }
