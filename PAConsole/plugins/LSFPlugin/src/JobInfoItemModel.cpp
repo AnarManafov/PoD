@@ -113,12 +113,12 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _parent.isValid() )
     {
         SJobInfo *parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
-        if(_row < static_cast<int>(parent_job->m_children.size()))
-        	return createIndex(_row, _column, parent_job->m_children[_row]);
+        if (_row < static_cast<int>(parent_job->m_children.size()))
+            return createIndex(_row, _column, parent_job->m_children[_row]);
     }
     else
-    	if( _row < static_cast<int>(m_jobinfo.getCount()) )
-    		return createIndex( _row, _column, m_jobinfo.at(_row) );
+        if ( _row < static_cast<int>(m_jobinfo.getCount()) )
+            return createIndex( _row, _column, m_jobinfo.at(_row) );
 
     return QModelIndex();
 }
@@ -137,8 +137,8 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
         return QModelIndex();
 
     int row = parentItem->row();
-    if(-1 == row)
-    	row = m_jobinfo.getIndex(parentItem);
+    if (-1 == row)
+        row = m_jobinfo.getIndex(parentItem);
     return createIndex( row, 0, parentItem);
 }
 
@@ -166,12 +166,23 @@ void CJobInfoItemModel::_setupHeader()
 
 void CJobInfoItemModel::jobChanged( SJobInfo *_info )
 {
-    Q_ASSERT( _info );
-
-    const size_t row = m_jobinfo.getIndex( _info );
-    if ( row >= m_jobinfo.getCount() )
+    if ( !_info )
         return;
 
+    size_t row = 0;
+    if ( !_info->m_parent )
+    { // it is a parent job
+        row = m_jobinfo.getIndex( _info );
+        if ( row >= m_jobinfo.getCount() )
+            return;
+    }
+    else
+    { // its one of the children
+    	SJobInfo *parent = _info->m_parent;
+    	row = parent->indexOf(_info);
+    	if( row >= parent->m_children.size() )
+    		return;
+    }
     QModelIndex startIndex = createIndex( row, 0, _info );
     QModelIndex endIndex = createIndex( row, m_Titles.count() - 1, _info );
     emit dataChanged( startIndex, endIndex );
@@ -180,8 +191,6 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
 void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
 {
     Q_ASSERT( _info );
-//    const int row = m_jobinfo.getCount();
-//    beginInsertRows( QModelIndex(), row, row );
 
     if ( !_info->m_parent )
     {
@@ -229,6 +238,6 @@ void CJobInfoItemModel::_setupJobsContainer()
 
 void CJobInfoItemModel::setUpdateInterval( int _newVal )
 {
-	m_updateInterval = _newVal;
-	m_jobinfo.update( m_updateInterval );
+    m_updateInterval = _newVal;
+    m_jobinfo.update( m_updateInterval );
 }

@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QTimer>
 
-typedef std::map<unsigned int, SJobInfoPTR_t> JobPTRContainer_t;
+
 typedef std::vector<SJobInfo *> SJobInfoVec_t;
 
 class CJobsContainer: public QObject
@@ -84,8 +84,8 @@ class CJobsContainer: public QObject
 
     private:
         SJobInfoVec_t m_container;
-        JobPTRContainer_t m_curinfo;
-        JobsContainer_t m_curinods;
+        JobsContainer_t m_curinfo;
+        JobsContainer_t m_cur_ids;
         QTimer *m_timer;
         const CLSFJobSubmitter *m_lsfsubmitter;
 };

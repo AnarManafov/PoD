@@ -51,7 +51,7 @@ void CJobsContainer::_update()
 
     // Checking jobs for removal
     JobsContainer_t tmp;
-    set_difference( m_curinods.begin(), m_curinods.end(),
+    set_difference( m_cur_ids.begin(), m_cur_ids.end(),
                     newinfo.begin(), newinfo.end(),
                     inserter( tmp, tmp.begin() ) );
     for_each( tmp.begin(), tmp.end(),
@@ -60,7 +60,7 @@ void CJobsContainer::_update()
     // Checking all jobs for update
     tmp.clear();
     set_intersection( newinfo.begin(), newinfo.end(),
-                      m_curinods.begin(), m_curinods.end(),
+                      m_cur_ids.begin(), m_cur_ids.end(),
                       inserter( tmp, tmp.begin() ) );
     for_each( tmp.begin(), tmp.end(),
               boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );
@@ -69,7 +69,7 @@ void CJobsContainer::_update()
     // Checking for newly added jobs
     tmp.clear();
     set_difference( newinfo.begin(), newinfo.end(),
-                    m_curinods.begin(), m_curinods.end(),
+                    m_cur_ids.begin(), m_cur_ids.end(),
                     inserter( tmp, tmp.begin() ) );
     for_each( tmp.begin(), tmp.end(),
               boost::bind( &CJobsContainer::_addJobInfo, this, _1 ) );
@@ -80,8 +80,8 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     SJobInfoPTR_t info( _node.second );
 
     emit beginAddJob( info.get() );
-    m_curinfo.insert( JobPTRContainer_t::value_type( info->m_id, info ) );
-    m_curinods.insert( JobsContainer_t::value_type( info->m_id, info ) );
+    m_curinfo.insert( JobsContainer_t::value_type( info->m_id, info ) );
+    m_cur_ids.insert( JobsContainer_t::value_type( info->m_id, info ) );
     m_container.push_back( info.get() );
     emit endAddJob();
 
@@ -97,12 +97,12 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 {
-    JobPTRContainer_t::iterator found = m_curinfo.find( _node.first );
+	JobsContainer_t::iterator found = m_curinfo.find( _node.first );
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
     emit beginRemoveJob( found->second.get() );
-    m_curinods.erase( found->first );
+    m_cur_ids.erase( found->first );
     m_curinfo.erase( found );
     m_container.erase( remove( m_container.begin(), m_container.end(), found->second.get() ),
                        m_container.end() );
@@ -111,7 +111,7 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
-    JobPTRContainer_t::iterator found = m_curinfo.find( _node.first );
+	JobsContainer_t::iterator found = m_curinfo.find( _node.first );
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
