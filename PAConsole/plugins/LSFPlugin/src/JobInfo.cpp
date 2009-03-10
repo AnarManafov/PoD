@@ -37,20 +37,20 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
     CLSFJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
     for (; iter != iter_end; ++iter)
     {
-        SJobInfo info;
-        info.m_id = *iter;
+        SJobInfo *info = new SJobInfo();
+        info->m_id = *iter;
         std::ostringstream str;
         // TODO: LsfMng should have methods to return string representations of jobID
         str << LSB_ARRAY_JOBID(*iter);
-        info.m_strID = str.str();
-        info.m_status = m_lsf.jobStatus(*iter);
-        info.m_strStatus = m_lsf.jobStatusString(*iter);
+        info->m_strID = str.str();
+        info->m_status = m_lsf.jobStatus(*iter);
+        info->m_strStatus = m_lsf.jobStatusString(*iter);
         try
         {
             CLsfMng::IDContainer_t children;
             m_lsf.getChildren( *iter, &children );
             std::for_each( children.begin(), children.end(),
-                           boost::bind( boost::mem_fn( &CJobInfo::addChildItem ), this, _1, &info ) );
+                           boost::bind( boost::mem_fn( &CJobInfo::addChildItem ), this, _1, info ) );
         }
         catch ( const std::exception &_e )
             {}

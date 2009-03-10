@@ -77,11 +77,11 @@ void CJobsContainer::_update()
 
 void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 {
-    SJobInfoPTR_t info( new SJobInfo( _node.second ) );
+    SJobInfoPTR_t info( _node.second );
 
     emit beginAddJob( info.get() );
     m_curinfo.insert( JobPTRContainer_t::value_type( info->m_id, info ) );
-    m_curinods.insert( JobsContainer_t::value_type( info->m_id, *info ) );
+    m_curinods.insert( JobsContainer_t::value_type( info->m_id, info.get() ) );
     m_container.push_back( info.get() );
     emit endAddJob();
 
@@ -115,9 +115,9 @@ void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
-    if ( *( found->second.get() ) == _node.second )
+    if ( *( found->second.get() ) == *(_node.second) )
         return;
 
-    *( found->second.get() ) = _node.second;
+    *( found->second.get() ) = *(_node.second);
     emit jobChanged( found->second.get() );
 }

@@ -72,7 +72,7 @@ struct SJobInfo
 };
 
 
-typedef std::map<lsf_jobid_t, SJobInfo> JobsContainer_t;
+typedef std::map<lsf_jobid_t, SJobInfo*> JobsContainer_t;
 /**
  *
  *  this comparison operator is required to use the container with generic algorithms
