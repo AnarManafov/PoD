@@ -112,11 +112,11 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _parent.isValid() )
     {
         SJobInfo *parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
-        if(_row < parent_job->m_children.size())
+        if(_row < static_cast<int>(parent_job->m_children.size()))
         	return createIndex(_row, _column, parent_job->m_children[_row]);
     }
     else
-    	if( _row < m_jobinfo.getCount() )
+    	if( _row < static_cast<int>(m_jobinfo.getCount()) )
     		return createIndex( _row, _column, m_jobinfo.at(_row) );
 
     return QModelIndex();

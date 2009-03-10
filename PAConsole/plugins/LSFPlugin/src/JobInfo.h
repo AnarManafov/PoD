@@ -17,6 +17,10 @@
 
 // BOOST
 #include <boost/shared_ptr.hpp>
+#include <boost/bind.hpp>
+#include <boost/checked_delete.hpp>
+// STD
+#include <algorithm>
 // lsf plug-in
 #include "LSFJobSubmitter.h"
 
@@ -33,6 +37,11 @@ struct SJobInfo
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
             m_parent(NULL)
     {}
+    ~SJobInfo()
+    {
+    	std::for_each(m_children.begin(), m_children.end(),
+    	              boost::bind(boost::checked_deleter<SJobInfo>(), _1));
+    }
     bool operator ==( const SJobInfo &_info )
     {
         if ( m_id != _info.m_id )
@@ -71,8 +80,8 @@ struct SJobInfo
     SJobInfo *m_parent; //!< parent of this job or NULL
 };
 
-
-typedef std::map<lsf_jobid_t, SJobInfo*> JobsContainer_t;
+typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
+typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
 /**
  *
  *  this comparison operator is required to use the container with generic algorithms

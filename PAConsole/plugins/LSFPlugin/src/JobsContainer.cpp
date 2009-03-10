@@ -81,7 +81,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 
     emit beginAddJob( info.get() );
     m_curinfo.insert( JobPTRContainer_t::value_type( info->m_id, info ) );
-    m_curinods.insert( JobsContainer_t::value_type( info->m_id, info.get() ) );
+    m_curinods.insert( JobsContainer_t::value_type( info->m_id, info ) );
     m_container.push_back( info.get() );
     emit endAddJob();
 
