@@ -50,7 +50,6 @@ class CLSFDlg: public QWidget, IJobManager
 
     public slots:
         void on_btnSubmitClient_clicked();
-        void updateJobsTree();
         void recieveThreadMsg( const QString &_Msg );
         void setProgress( int _Val );
         void on_btnBrowseJobScript_clicked();
@@ -94,7 +93,6 @@ class CLSFDlg: public QWidget, IJobManager
 
     private:
         Ui::wgGrid m_ui;
-        QTimer *m_Timer;
         QAction *copyJobIDAct;
         QAction *cancelJobAct;
         QAction *getJobOutputAct;
@@ -105,8 +103,8 @@ class CLSFDlg: public QWidget, IJobManager
         int m_AllJobsCount;
         int m_WorkersCount;
         CLSFJobSubmitter m_JobSubmitter;
-       // CTreeItemContainer m_TreeItems;
         CJobInfoItemModel *m_treeModel;
+        int m_updateInterval;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )

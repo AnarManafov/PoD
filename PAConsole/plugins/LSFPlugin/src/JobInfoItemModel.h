@@ -25,7 +25,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         Q_OBJECT
 
     public:
-        CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QObject * _parent = NULL );
+        CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent = NULL );
         virtual ~CJobInfoItemModel();
 
     public:
@@ -45,6 +45,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         QModelIndex parent( const QModelIndex &_index ) const;
         /** This is used from SockInfoFilter to get the socket info at a given index */
         SJobInfo *getJobInfoAtIndex(int _index) const;
+        void setUpdateInterval( int _newVal );
 
     private slots:
         void jobChanged( SJobInfo *_info );
@@ -63,6 +64,7 @@ class CJobInfoItemModel: public QAbstractItemModel
          * A translated list of column titles in the order we want to display them. Used in headerData().
          * */
         QStringList m_Titles;
+        int m_updateInterval;
 };
 
 #endif /* JOBINFOITEMMODEL_H_ */

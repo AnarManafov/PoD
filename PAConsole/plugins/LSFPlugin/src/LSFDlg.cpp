@@ -68,12 +68,10 @@ void _savecfg( const T &_s, string _FileName )
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
         m_AllJobsCount( 0 ),
-        m_JobSubmitter( this )
+        m_JobSubmitter( this ),
+        m_updateInterval(10000) // default value: 10 sec.
 {
     m_ui.setupUi( this );
-
-    m_Timer = new QTimer( this );
-    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( updateJobsTree() ) );
 
     connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
@@ -101,7 +99,7 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     // TODO: move this to GUI setting
     m_JobSubmitter.setQueue( "proof" );
 
-    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter );
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
     m_ui.treeJobs->setModel(m_treeModel);
 }
 
@@ -132,8 +130,6 @@ void CLSFDlg::UpdateAfterLoad()
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
     m_ui.spinNumWorkers->setValue( m_WorkersCount );
-
-    updateJobsTree();
 }
 
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
@@ -185,11 +181,6 @@ void CLSFDlg::on_btnSubmitClient_clicked()
         setProgress( 0 );
         m_ui.btnSubmitClient->setEnabled( true );
     }
-}
-
-void CLSFDlg::updateJobsTree()
-{
-  //  m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
 
 void CLSFDlg::on_btnBrowseJobScript_clicked()
@@ -368,8 +359,6 @@ void CLSFDlg::setProgress( int _Val )
     if ( 100 == _Val )
     {
         m_ui.btnSubmitClient->setEnabled( true );
-        // The job is submitted, we need to update the tree
-        updateJobsTree();
     }
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
@@ -401,7 +390,7 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
     if ( _JobStatusUpdInterval > 0 )
-        m_Timer->start( _JobStatusUpdInterval * 1000 );
+        m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
 }
 int CLSFDlg::getJobsCount() const
 {

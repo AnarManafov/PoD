@@ -21,9 +21,10 @@
 
 using namespace std;
 
-CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, QObject * _parent ):
+CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
         QAbstractItemModel( _parent ),
-        m_jobinfo(_lsfsubmitter)
+        m_jobinfo(_lsfsubmitter),
+        m_updateInterval(_updateInterval)
 {
     _setupHeader();
     _setupJobsContainer();
@@ -223,5 +224,11 @@ void CJobInfoItemModel::_setupJobsContainer()
     connect( &m_jobinfo, SIGNAL( beginRemoveJob( SJobInfo * ) ), this, SLOT( beginRemoveRow( SJobInfo * ) ) );
     connect( &m_jobinfo, SIGNAL( endRemoveJob() ), this, SLOT( endRemoveRow() ) );
 
-    m_jobinfo.update( 10000 );
+    m_jobinfo.update( m_updateInterval );
+}
+
+void CJobInfoItemModel::setUpdateInterval( int _newVal )
+{
+	m_updateInterval = _newVal;
+	m_jobinfo.update( m_updateInterval );
 }
