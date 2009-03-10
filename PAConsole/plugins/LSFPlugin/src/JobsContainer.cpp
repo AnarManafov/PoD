@@ -84,6 +84,15 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     m_curinods.insert( JobsContainer_t::value_type( info->m_id, *info ) );
     m_container.push_back( info.get() );
     emit endAddJob();
+
+    // adding children to the model
+    jobs_children_t::const_iterator iter = info.get()->m_children.begin();
+    jobs_children_t::const_iterator iter_end = info.get()->m_children.end();
+    for(; iter != iter_end; ++iter)
+    {
+    	emit beginAddJob( *iter );
+    	emit endAddJob();
+    }
 }
 
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
