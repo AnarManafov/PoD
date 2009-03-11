@@ -27,7 +27,9 @@
 
 struct SJobInfo;
 
-typedef std::vector<SJobInfo *> jobs_children_t;
+typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
+typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
+typedef std::vector<SJobInfoPTR_t> jobs_children_t;
 
 
 struct SJobInfo
@@ -39,8 +41,6 @@ struct SJobInfo
     {}
     ~SJobInfo()
     {
-    	std::for_each(m_children.begin(), m_children.end(),
-    	              boost::bind(boost::checked_deleter<SJobInfo>(), _1));
     }
     bool operator ==( const SJobInfo &_info )
     {
@@ -53,23 +53,24 @@ struct SJobInfo
     }
     void addChild( SJobInfo *_child )
     {
-        m_children.push_back( _child );
+        m_children.push_back( SJobInfoPTR_t(_child) );
     }
     int indexOf (const SJobInfo *_info) const
     {
-    	// TODO: find a faster algorithm
-    	jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(), _info );
+        // TODO: find a faster algorithm
+        jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(),
+                                               SJobInfoPTR_t(const_cast<SJobInfo*>(_info)) );
         return std::distance( m_children.begin(), iter );
     }
     int row() const
     {
-    	if( m_parent )
-    	{
-    		//SJobInfo *info = const_cast<SJobInfo*>(m_parent);
-    		return m_parent->indexOf( this );
-    	}
+        if ( m_parent )
+        {
+            //SJobInfo *info = const_cast<SJobInfo*>(m_parent);
+            return m_parent->indexOf( this );
+        }
 
-    	return -1;
+        return -1;
     }
 
     lsf_jobid_t m_id;
@@ -80,8 +81,6 @@ struct SJobInfo
     SJobInfo *m_parent; //!< parent of this job or NULL
 };
 
-typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
-typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
 /**
  *
  *  this comparison operator is required to use the container with generic algorithms
@@ -104,7 +103,7 @@ public:
     void getInfo( JobsContainer_t *_Container );
 
 private:
-	void addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent );
+    void addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent );
 
 private:
     JobsContainer_t m_Container;
