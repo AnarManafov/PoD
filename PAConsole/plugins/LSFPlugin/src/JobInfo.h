@@ -28,7 +28,8 @@
 struct SJobInfo;
 
 typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
-typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
+//typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
+typedef std::map<std::string, SJobInfoPTR_t> JobsContainer_t;
 typedef std::vector<SJobInfoPTR_t> jobs_children_t;
 
 

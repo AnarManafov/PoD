@@ -55,7 +55,7 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
         catch ( const std::exception &_e )
             {}
 
-        m_Container.insert( JobsContainer_t::value_type( *iter, SJobInfoPTR_t(info) ) );
+        m_Container.insert( JobsContainer_t::value_type( info->m_strID, SJobInfoPTR_t(info) ) );
     }
 
     // a result set
