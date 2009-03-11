@@ -45,7 +45,7 @@ struct SJobInfo
     }
     bool operator ==( const SJobInfo &_info )
     {
-        if ( m_id != _info.m_id )
+        if ( m_strID != _info.m_strID )
             return false;
         if ( m_status != _info.m_status )
             return false;
