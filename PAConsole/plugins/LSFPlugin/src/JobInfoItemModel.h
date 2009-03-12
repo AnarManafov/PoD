@@ -53,6 +53,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         void endInsertRow();
         void beginRemoveRow( SJobInfo *_info );
         void endRemoveRow();
+        void numberOfJobsChanged( int _count );
 
     private:
         void _setupJobsContainer();

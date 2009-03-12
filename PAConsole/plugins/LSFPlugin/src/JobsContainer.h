@@ -57,6 +57,7 @@ class CJobsContainer: public QObject
 
     public:
         void update( long _update_time_ms = 0 );
+        void updateNumberOfJobs();
         SJobInfoVec_t::size_type getCount() const
         {
             return m_container.size();

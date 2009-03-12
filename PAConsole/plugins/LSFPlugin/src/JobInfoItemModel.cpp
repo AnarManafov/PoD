@@ -143,7 +143,7 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
     int row = parentItem->row();
     if (-1 == row)
         row = m_jobinfo.getIndex(parentItem);
- 
+
     return createIndex( row, 0, parentItem);
 }
 
@@ -183,10 +183,10 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
     }
     else
     { // its one of the children
-    	SJobInfo *parent = _info->m_parent;
-    	row = _info->row();
-    	if( row >= parent->m_children.size() )
-	  return;
+        SJobInfo *parent = _info->m_parent;
+        row = _info->row();
+        if ( row >= parent->m_children.size() )
+            return;
     }
     QModelIndex startIndex = createIndex( row, 0, _info );
     QModelIndex endIndex = createIndex( row, m_Titles.count(), _info );
@@ -245,4 +245,9 @@ void CJobInfoItemModel::setUpdateInterval( int _newVal )
 {
     m_updateInterval = _newVal;
     m_jobinfo.update( m_updateInterval );
+}
+
+void CJobInfoItemModel::numberOfJobsChanged( int _count )
+{
+    m_jobinfo.updateNumberOfJobs();
 }

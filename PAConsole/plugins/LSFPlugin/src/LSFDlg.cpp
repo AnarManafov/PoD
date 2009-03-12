@@ -101,6 +101,8 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
     m_ui.treeJobs->setModel(m_treeModel);
+
+    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), m_treeModel, SLOT( numberOfJobsChanged( int ) ) );
 }
 
 CLSFDlg::~CLSFDlg()
