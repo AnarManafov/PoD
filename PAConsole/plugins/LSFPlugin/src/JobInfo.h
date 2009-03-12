@@ -39,28 +39,28 @@ struct SJobInfo
     SJobInfo():
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
-       m_parent(NULL),
-       m_index(-1)
+            m_parent(NULL),
+            m_index(-1)
     {}
 
-  SJobInfo& operator=(const SJobInfo &_info)
-  {
-    if (this != &_info)
-      {
-	m_id = _info.m_id;
-	m_strID = _info.m_strID;
-	m_status = _info.m_status;
-	m_strStatus = _info.m_strStatus;
-	// keep the old list of children and the parent reference (ee the following TODO)
-	// TODO: very ugly. Revise that.
-	//m_children = _info.m_children;
-	//m_parent = _info.m_parent;
-	m_index = _info.m_index;
-      }
-    return *this;
-  }
+    SJobInfo& operator=(const SJobInfo &_info)
+    {
+        if (this != &_info)
+        {
+            m_id = _info.m_id;
+            m_strID = _info.m_strID;
+            m_status = _info.m_status;
+            m_strStatus = _info.m_strStatus;
+            // keep the old list of children and the parent reference (ee the following TODO)
+            // TODO: very ugly. Revise that.
+            //m_children = _info.m_children;
+            //m_parent = _info.m_parent;
+            m_index = _info.m_index;
+        }
+        return *this;
+    }
 
-  ~SJobInfo()
+    ~SJobInfo()
     {
     }
     bool operator ==( const SJobInfo &_info )
@@ -75,22 +75,16 @@ struct SJobInfo
     int addChild( SJobInfoPTR_t _child )
     {
         m_children.push_back( _child );
-	return m_children.size() - 1;
+        return m_children.size() - 1;
     }
     int indexOf (const SJobInfo *_info) const
     {
-        // TODO: find a faster algorithm
-      //  SJobInfoPTR_t p( const_cast<SJobInfo*>(_info) );
-      //  jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(),
-      //                  p );
-  //  return std::distance( m_children.begin(), iter );
-      return _info->m_index;
+        return _info->m_index;
     }
     int row() const
     {
         if ( m_parent )
         {
-            //SJobInfo *info = const_cast<SJobInfo*>(m_parent);
             return m_parent->indexOf( this );
         }
 
@@ -125,7 +119,6 @@ public:
 
 public:
     void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-  //  void updateStatus( JobsContainer_t *_Container ) const;
     void getInfo( JobsContainer_t *_Container ) const;
 
 private:

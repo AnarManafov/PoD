@@ -25,71 +25,75 @@
 
 typedef std::vector<SJobInfo *> SJobInfoVec_t;
 
-class CJobsContainer: public QObject
+class CJobsContainer: public QThread
 {
-        Q_OBJECT
+    Q_OBJECT
 
-    public:
-        CJobsContainer(const CLSFJobSubmitter *_lsfsubmitter);
-        virtual ~CJobsContainer();
+public:
+    CJobsContainer(const CLSFJobSubmitter *_lsfsubmitter);
+    virtual ~CJobsContainer();
 
-    signals:
-        /**
-         *  The data for a job has changed.
-         */
-        void jobChanged( SJobInfo *_info );
-        /**
-         *  This indicates we are about to add a job information in the model.
-         */
-        void beginAddJob( SJobInfo *_info );
-        /**
-         *  We have finished inserting a job.
-         */
-        void endAddJob();
-        /**
-         *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
-         */
-        void beginRemoveJob( SJobInfo *_info );
-        /**
-         *  We have finished removing a job.
-         */
-        void endRemoveJob();
+signals:
+    /**
+     *  The data for a job has changed.
+     */
+    void jobChanged( SJobInfo *_info );
+    /**
+     *  This indicates we are about to add a job information in the model.
+     */
+    void beginAddJob( SJobInfo *_info );
+    /**
+     *  We have finished inserting a job.
+     */
+    void endAddJob();
+    /**
+     *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
+     */
+    void beginRemoveJob( SJobInfo *_info );
+    /**
+     *  We have finished removing a job.
+     */
+    void endRemoveJob();
 
-    public:
-        void update( long _update_time_ms = 0 );
-        void updateNumberOfJobs();
-        SJobInfoVec_t::size_type getCount() const
-        {
-            return m_container.size();
-        }
-        SJobInfo *at( SJobInfoVec_t::size_type _pos ) const
-        {
-            if ( _pos < 0 || _pos >= m_container.size() )
-                return NULL;
-            return m_container[_pos];
-        }
-        SJobInfoVec_t::size_type getIndex( SJobInfo *_info ) const
-        {
-            // TODO: This should be optimized. maybe we can add an index member in the SJobInfo or something
-            SJobInfoVec_t::const_iterator iter = std::find( m_container.begin(), m_container.end(), _info );
-            return std::distance( m_container.begin(), iter );
-        }
+public:
+    void run();
+    void update( long _update_time_ms = 0 );
+    void updateNumberOfJobs();
+    SJobInfoVec_t::size_type getCount() const
+    {
+        return m_container.size();
+    }
+    SJobInfo *at( SJobInfoVec_t::size_type _pos ) const
+    {
+        if ( _pos < 0 || _pos >= m_container.size() )
+            return NULL;
+        return m_container[_pos];
+    }
+    SJobInfoVec_t::size_type getIndex( SJobInfo *_info ) const
+    {
+        // TODO: This should be optimized. maybe we can add an index member in the SJobInfo or something
+        SJobInfoVec_t::const_iterator iter = std::find( m_container.begin(), m_container.end(), _info );
+        return std::distance( m_container.begin(), iter );
+    }
 
-    private slots:
-        void _update();
+private slots:
+    void _update();
+    void _updateJobsStatus();
+    void _updateNumberOfJobs();
 
-    private:
-        void _addJobInfo( const JobsContainer_t::value_type &_node );
-        void _removeJobInfo( const JobsContainer_t::value_type &_node );
-        void _updateJobInfo( const JobsContainer_t::value_type &_node );
+private:
+    void _addJobInfo( const JobsContainer_t::value_type &_node );
+    void _removeJobInfo( const JobsContainer_t::value_type &_node );
+    void _updateJobInfo( const JobsContainer_t::value_type &_node );
 
-    private:
-        SJobInfoVec_t m_container;
-        JobsContainer_t m_curinfo;
-        JobsContainer_t m_cur_ids;
-        QTimer *m_timer;
-        const CLSFJobSubmitter *m_lsfsubmitter;
-        CJobInfo m_jobInfo;
+private:
+    SJobInfoVec_t m_container;
+    JobsContainer_t m_curinfo;
+    JobsContainer_t m_cur_ids;
+    QTimer *m_timer;
+    const CLSFJobSubmitter *m_lsfsubmitter;
+    CJobInfo m_jobInfo;
+    bool m_updateNumberOfJobs;
 };
 
 #endif /* JOBSCONTAINER_H_ */
