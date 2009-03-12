@@ -25,12 +25,13 @@ using namespace std;
 CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
         m_lsfsubmitter(_lsfsubmitter),
         m_jobInfo(_lsfsubmitter->getLSF()),
-        m_updateNumberOfJobs(false)
+        m_updateNumberOfJobs(false),
+        m_updateInterval(0)
 {
-    m_timer = new QTimer( this );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( _update() ) );
+    //  m_timer = new QTimer( this );
+    //  connect( m_timer, SIGNAL( timeout() ), this, SLOT( _update() ) );
 
-    updateNumberOfJobs();
+    _updateNumberOfJobs();
 }
 
 CJobsContainer::~CJobsContainer()
@@ -39,29 +40,37 @@ CJobsContainer::~CJobsContainer()
 
 void CJobsContainer::update( long _update_time_ms )
 {
-    // Let view immediately get an update
-    _updateJobsStatus();
     // Resetting a timer
-    m_timer->start( _update_time_ms );
+    //m_timer->start( _update_time_ms );
+
+    m_updateInterval = _update_time_ms;
+
+    if ( !isRunning() )
+        run();
 }
 
-void CJobsContainer::_update()
-{
-    if ( isRunning() )
-        return;
-
-    run();
-}
+//void CJobsContainer::_update()
+//{
+//    if ( isRunning() )
+//        return;
+//
+//    run();
+//}
 
 void CJobsContainer::run()
 {
-    if (m_updateNumberOfJobs)
+    while (true)
     {
-        _updateNumberOfJobs();
-        m_updateNumberOfJobs = false;
+        if (m_updateNumberOfJobs)
+        {
+            _updateNumberOfJobs();
+            m_updateNumberOfJobs = false;
+        }
+        else
+            _updateJobsStatus();
+
+        msleep(m_updateInterval);
     }
-    else
-        _updateJobsStatus();
 }
 
 void CJobsContainer::updateNumberOfJobs()
@@ -155,24 +164,14 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
-    CLsfMng lsf;
-    try
-    {
-        lsf.init();
-    }
-    catch ( ... )
-    {
-        return;
-    }
-
     // checking status of the given job
     SJobInfo *info = _node.second.get();
-    const CLsfMng::EJobStatus_t newStatus = lsf.jobStatus(info->m_id);
+    const CLsfMng::EJobStatus_t newStatus = m_lsfsubmitter->getLSF().jobStatus(info->m_id);
     if ( info->m_status == newStatus )
         return;
 
     info->m_status = newStatus;
-    info->m_strStatus = lsf.jobStatusString(newStatus);
+    info->m_strStatus = m_lsfsubmitter->getLSF().jobStatusString(newStatus);
     cout << "update: " << info->m_strID << "; Status: " << info->m_strStatus << endl;
     emit jobChanged( info );
 }

@@ -77,7 +77,7 @@ public:
     }
 
 private slots:
-    void _update();
+    //void _update();
     void _updateJobsStatus();
     void _updateNumberOfJobs();
 
@@ -90,10 +90,11 @@ private:
     SJobInfoVec_t m_container;
     JobsContainer_t m_curinfo;
     JobsContainer_t m_cur_ids;
-    QTimer *m_timer;
+  //  QTimer *m_timer;
     const CLSFJobSubmitter *m_lsfsubmitter;
     CJobInfo m_jobInfo;
     bool m_updateNumberOfJobs;
+    unsigned long m_updateInterval;
 };
 
 #endif /* JOBSCONTAINER_H_ */
