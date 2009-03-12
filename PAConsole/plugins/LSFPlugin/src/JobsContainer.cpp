@@ -64,7 +64,6 @@ void CJobsContainer::run()
         _updateJobsStatus();
 }
 
-
 void CJobsContainer::updateNumberOfJobs()
 {
     m_updateNumberOfJobs = true;
@@ -156,14 +155,24 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
+    CLsfMng lsf;
+    try
+    {
+        lsf.init();
+    }
+    catch ( ... )
+    {
+        return;
+    }
+
     // checking status of the given job
     SJobInfo *info = _node.second.get();
-    const CLsfMng::EJobStatus_t newStatus = m_lsfsubmitter->getLSF().jobStatus(info->m_id);
+    const CLsfMng::EJobStatus_t newStatus = lsf.jobStatus(info->m_id);
     if ( info->m_status == newStatus )
         return;
 
     info->m_status = newStatus;
-    info->m_strStatus = m_lsfsubmitter->getLSF().jobStatusString(newStatus);
+    info->m_strStatus = lsf.jobStatusString(newStatus);
     cout << "update: " << info->m_strID << "; Status: " << info->m_strStatus << endl;
     emit jobChanged( info );
 }
