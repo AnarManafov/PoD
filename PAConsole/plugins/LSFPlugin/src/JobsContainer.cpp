@@ -67,6 +67,9 @@ void CJobsContainer::run()
 {
     while (true)
     {
+    	if( 0 == m_updateNumberOfJobs )
+    		return;
+
         if (m_updateNumberOfJobs)
         {
             _updateNumberOfJobs();
