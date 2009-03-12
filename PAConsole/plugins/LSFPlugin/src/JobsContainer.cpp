@@ -36,6 +36,12 @@ CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
 
 CJobsContainer::~CJobsContainer()
 {
+    // stop the thread
+    unsigned long wait_time = m_updateInterval * 2;
+    m_updateInterval = 0;
+    wait( wait_time );
+    if ( isRunning() )
+        terminate();
 }
 
 void CJobsContainer::update( long _update_time_ms )
