@@ -24,6 +24,7 @@
 // lsf plug-in
 #include "LSFJobSubmitter.h"
 
+#include <iostream>
 
 struct SJobInfo;
 
@@ -41,7 +42,25 @@ struct SJobInfo
        m_parent(NULL),
        m_index(-1)
     {}
-    ~SJobInfo()
+
+  SJobInfo& operator=(const SJobInfo &_info)
+  {
+    if (this != &_info)
+      {
+	m_id = _info.m_id;
+	m_strID = _info.m_strID;
+	m_status = _info.m_status;
+	m_strStatus = _info.m_strStatus;
+	// keep the old list of children and the parent reference (ee the following TODO)
+	// TODO: very ugly. Revise that.
+	//m_children = _info.m_children;
+	//m_parent = _info.m_parent;
+	m_index = _info.m_index;
+      }
+    return *this;
+  }
+  
+  ~SJobInfo()
     {
     }
     bool operator ==( const SJobInfo &_info )
@@ -84,7 +103,7 @@ struct SJobInfo
     std::string m_strStatus;
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
-  int m_index;
+    int m_index;
 };
 
 /**

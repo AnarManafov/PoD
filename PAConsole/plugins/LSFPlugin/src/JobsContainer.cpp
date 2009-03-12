@@ -134,11 +134,11 @@ void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
-    if ( *( found->second.get() ) == *(_node.second.get()) )
+    SJobInfo *p_cur = found->second.get();
+    SJobInfo *p_new = _node.second.get();
+    if ( *p_cur == *p_new )
         return;
-
-    cout << "update: " << _node.second->m_strID << "; Status: " << _node.second->m_strStatus << endl;
-    //*(found->second.get()) = *(_node.second.get());
-    found->second.get()->m_strStatus = _node.second.get()->m_strStatus;
-    emit jobChanged( found->second.get() );
+    cout << "update: " << p_new->m_strID << "; Status: " << p_new->m_strStatus << endl;
+    *p_cur = *p_new;
+    emit jobChanged( p_cur );
 }
