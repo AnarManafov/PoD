@@ -22,7 +22,9 @@
 
 using namespace std;
 
-CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):m_lsfsubmitter(_lsfsubmitter)
+CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
+        m_lsfsubmitter(_lsfsubmitter),
+        m_jobInfo(_lsfsubmitter->getLSF())
 {
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( _update() ) );
@@ -45,8 +47,7 @@ void CJobsContainer::update( long _update_time_ms )
 void CJobsContainer::updateNumberOfJobs()
 {
     JobsContainer_t newinfo;
-    CJobInfo job_info( m_lsfsubmitter->getLSF() );
-    job_info.update( m_lsfsubmitter->getActiveJobList(), &newinfo );
+    m_jobInfo.update( m_lsfsubmitter->getActiveJobList(), &newinfo );
 
     // adding all jobs for the first time
     if ( m_curinfo.empty() )
@@ -75,16 +76,17 @@ void CJobsContainer::updateNumberOfJobs()
 
 void CJobsContainer::_update()
 {
-    JobsContainer_t newinfo(m_curinfo);
-    CJobInfo job_info( m_lsfsubmitter->getLSF() );
-    job_info.updateStatus( &newinfo );
+    /*   JobsContainer_t newinfo(m_curinfo);
+       m_jobInfo.updateStatus( &newinfo );
 
-    // Checking all jobs for update
-    JobsContainer_t tmp;
-    set_intersection( newinfo.begin(), newinfo.end(),
-                      m_curinfo.begin(), m_curinfo.end(),
-                      inserter( tmp, tmp.begin() ) );
-    for_each( tmp.begin(), tmp.end(),
+       // Checking all jobs for update
+       JobsContainer_t tmp;
+       set_intersection( newinfo.begin(), newinfo.end(),
+                         m_curinfo.begin(), m_curinfo.end(),
+                         inserter( tmp, tmp.begin() ) );
+       for_each( tmp.begin(), tmp.end(),
+                 boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );*/
+    for_each( m_curinfo.begin(), m_curinfo.end(),
               boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );
 }
 
@@ -138,15 +140,24 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
-    JobsContainer_t::iterator found = m_curinfo.find( _node.first );
-    if ( m_curinfo.end() == found )
-        return; // TODO: assert here?
+    /*    JobsContainer_t::iterator found = m_curinfo.find( _node.first );
+        if ( m_curinfo.end() == found )
+            return; // TODO: assert here?
 
-    SJobInfo *p_cur = found->second.get();
-    SJobInfo *p_new = _node.second.get();
-    if ( *p_cur == *p_new )
+        SJobInfo *p_cur = found->second.get();
+        SJobInfo *p_new = _node.second.get();
+        if ( *p_cur == *p_new )
+            return;
+        cout << "update: " << p_new->m_strID << "; Status: " << p_new->m_strStatus << endl;
+        *p_cur = *p_new;*/
+    // checking status of the given job
+    SJobInfo *info = _node.second.get();
+    const CLsfMng::EJobStatus_t newStatus = m_lsfsubmitter->getLSF().jobStatus(info->m_id);
+    if ( info->m_status == newStatus )
         return;
-    cout << "update: " << p_new->m_strID << "; Status: " << p_new->m_strStatus << endl;
-    *p_cur = *p_new;
-    emit jobChanged( p_cur );
+
+    info->m_status = newStatus;
+    info->m_strStatus = m_lsfsubmitter->getLSF().jobStatusString(newStatus);
+    cout << "update: " << info->m_strID << "; Status: " << info->m_strStatus << endl;
+    emit jobChanged( info );
 }

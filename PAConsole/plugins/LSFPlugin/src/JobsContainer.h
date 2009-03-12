@@ -89,6 +89,7 @@ class CJobsContainer: public QObject
         JobsContainer_t m_cur_ids;
         QTimer *m_timer;
         const CLSFJobSubmitter *m_lsfsubmitter;
+        CJobInfo m_jobInfo;
 };
 
 #endif /* JOBSCONTAINER_H_ */

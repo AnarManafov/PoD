@@ -95,14 +95,14 @@ void CJobInfo::getInfo( JobsContainer_t *_Container ) const
               inserter( *_Container, _Container->begin() ) );
 }
 
-void CJobInfo::updateStatus( JobsContainer_t *_Container ) const
-{
-    JobsContainer_t::iterator iter = _Container->begin();
-    JobsContainer_t::iterator iter_end = _Container->end();
-    for (; iter != iter_end; ++iter)
-    {
-        SJobInfo *info = iter->second.get();
-        info->m_status = m_lsf.jobStatus(info->m_id);
-        info->m_strStatus = m_lsf.jobStatusString(info->m_status);
-    }
-}
+//void CJobInfo::updateStatus( JobsContainer_t *_Container ) const
+//{
+//    JobsContainer_t::iterator iter = _Container->begin();
+//    JobsContainer_t::iterator iter_end = _Container->end();
+//    for (; iter != iter_end; ++iter)
+//    {
+//        SJobInfo *info = iter->second.get();
+//        info->m_status = m_lsf.jobStatus(info->m_id);
+//        info->m_strStatus = m_lsf.jobStatusString(info->m_status);
+//    }
+//}

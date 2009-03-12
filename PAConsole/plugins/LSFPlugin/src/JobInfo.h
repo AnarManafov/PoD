@@ -125,7 +125,7 @@ public:
 
 public:
     void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-    void updateStatus( JobsContainer_t *_Container ) const;
+  //  void updateStatus( JobsContainer_t *_Container ) const;
     void getInfo( JobsContainer_t *_Container ) const;
 
 private:
