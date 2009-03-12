@@ -38,7 +38,8 @@ struct SJobInfo
     SJobInfo():
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
-            m_parent(NULL)
+       m_parent(NULL),
+       m_index(-1)
     {}
     ~SJobInfo()
     {
@@ -52,16 +53,19 @@ struct SJobInfo
 
         return true;
     }
-    void addChild( SJobInfo *_child )
+    int addChild( SJobInfoPTR_t _child )
     {
-        m_children.push_back( SJobInfoPTR_t(_child) );
+        m_children.push_back( _child );
+	return m_children.size() - 1;
     }
     int indexOf (const SJobInfo *_info) const
     {
         // TODO: find a faster algorithm
-        jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(),
-                                               SJobInfoPTR_t(const_cast<SJobInfo*>(_info)) );
-        return std::distance( m_children.begin(), iter );
+      //  SJobInfoPTR_t p( const_cast<SJobInfo*>(_info) );
+      //  jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(),
+      //                  p );
+  //  return std::distance( m_children.begin(), iter );
+      return _info->m_index; 
     }
     int row() const
     {
@@ -80,6 +84,7 @@ struct SJobInfo
     std::string m_strStatus;
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
+  int m_index;
 };
 
 /**
@@ -104,7 +109,7 @@ public:
     void getInfo( JobsContainer_t *_Container );
 
 private:
-    void addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent );
+    void addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent );
 
 private:
     JobsContainer_t m_Container;

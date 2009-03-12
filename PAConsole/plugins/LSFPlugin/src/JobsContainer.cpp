@@ -17,6 +17,9 @@
 // LSF plug-in
 #include "JobsContainer.h"
 
+// TODO: remove this include (was used for debug only)
+#include <iostream>
+
 using namespace std;
 
 CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):m_lsfsubmitter(_lsfsubmitter)
@@ -58,15 +61,15 @@ void CJobsContainer::_update()
                     inserter( tmp, tmp.begin() ));
     for_each( tmp.begin(), tmp.end(),
               boost::bind( &CJobsContainer::_removeJobInfo, this, _1 ) );
-
+   
     // Checking all jobs for update
     tmp.clear();
-    set_intersection( newinfo.begin(), newinfo.end(),
+       set_intersection( newinfo.begin(), newinfo.end(),
                       m_cur_ids.begin(), m_cur_ids.end(),
                       inserter( tmp, tmp.begin() ) );
     for_each( tmp.begin(), tmp.end(),
               boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );
-
+    
 
     // Checking for newly added jobs
     tmp.clear();
@@ -84,7 +87,9 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
 
     if ( res.second )
-    {
+    { 
+      cout << "add: " << _node.second->m_strID << endl;
+      
         // parent jobs
         emit beginAddJob( info.get() );
         m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
@@ -100,6 +105,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
         res = m_cur_ids.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
         if ( res.second )
         {
+	   cout << "add: " << iter->get()->m_strID << endl;
             emit beginAddJob( iter->get() );
             m_curinfo.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
             emit endAddJob();
@@ -109,7 +115,8 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 {
-    JobsContainer_t::iterator found = m_curinfo.find( _node.first );
+  cout << "remove: " << _node.second->m_strID << endl;
+  JobsContainer_t::iterator found = m_curinfo.find( _node.first );
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
@@ -118,18 +125,20 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
     m_curinfo.erase( found );
     m_container.erase( remove( m_container.begin(), m_container.end(), found->second.get() ),
                        m_container.end() );
-    emit endRemoveJob();
+		       emit endRemoveJob();
 }
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
-    JobsContainer_t::iterator found = m_curinfo.find( _node.first );
+  JobsContainer_t::iterator found = m_curinfo.find( _node.first );
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
 
     if ( *( found->second.get() ) == *(_node.second.get()) )
         return;
 
-    found->second = _node.second;
+    cout << "update: " << _node.second->m_strID << "; Status: " << _node.second->m_strStatus << endl;
+    //*(found->second.get()) = *(_node.second.get());
+    found->second.get()->m_strStatus = _node.second.get()->m_strStatus;
     emit jobChanged( found->second.get() );
 }

@@ -37,7 +37,7 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
     CLSFJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
     for (; iter != iter_end; ++iter)
     {
-        SJobInfo *info = new SJobInfo();
+        SJobInfoPTR_t info(new SJobInfo());
         info->m_id = *iter;
         std::ostringstream str;
         // TODO: LsfMng should have methods to return string representations of jobID
@@ -53,26 +53,39 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
                            boost::bind( boost::mem_fn( &CJobInfo::addChildItem ), this, _1, info ) );
         }
         catch ( const std::exception &_e )
-            {}
-
-        m_Container.insert( JobsContainer_t::value_type( info->m_strID, SJobInfoPTR_t(info) ) );
-    }
-
+	  {}
+	// adding parent job
+        m_Container.insert( JobsContainer_t::value_type( info->m_strID, info ) );
+	
+	
+	if( _Container )
+	  {
+	// adding child jobs to the output container
+	// TODO: do it in getInfo method
+	jobs_children_t::const_iterator iter = info->m_children.begin();
+	jobs_children_t::const_iterator iter_end = info->m_children.end();
+	for (; iter != iter_end; ++iter)
+	  {
+	    _Container->insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter) );
+	  }
+	  }   
+    } 
+    
     // a result set
     getInfo( _Container );
 }
 
-void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent )
+void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent )
 {
     std::ostringstream str;
     str << LSB_ARRAY_JOBID(_JobID) << "[" << LSB_ARRAY_IDX(_JobID) << "]";
-    SJobInfo *info = new SJobInfo();
+    SJobInfoPTR_t info(new SJobInfo());
     info->m_id = LSB_ARRAY_JOBID(_JobID);
     info->m_strID = str.str();
     info->m_status = m_lsf.jobStatus(_JobID);
     info->m_strStatus = m_lsf.jobStatusString(_JobID);
-    info->m_parent = _parent;
-    _parent->addChild( info );
+    info->m_parent = _parent.get();
+    info->m_index = _parent->addChild( info );
 }
 
 void CJobInfo::getInfo( JobsContainer_t *_Container )

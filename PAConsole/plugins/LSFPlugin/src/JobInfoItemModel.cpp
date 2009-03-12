@@ -19,6 +19,10 @@
 // vnetstat
 #include "JobInfoItemModel.h"
 
+// TODO: remove this include
+#include <iostream>
+
+
 using namespace std;
 
 CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
@@ -139,6 +143,7 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
     int row = parentItem->row();
     if (-1 == row)
         row = m_jobinfo.getIndex(parentItem);
+ 
     return createIndex( row, 0, parentItem);
 }
 
@@ -179,12 +184,12 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
     else
     { // its one of the children
     	SJobInfo *parent = _info->m_parent;
-    	row = parent->indexOf(_info);
+    	row = _info->row();
     	if( row >= parent->m_children.size() )
-    		return;
+	  return;
     }
     QModelIndex startIndex = createIndex( row, 0, _info );
-    QModelIndex endIndex = createIndex( row, m_Titles.count() - 1, _info );
+    QModelIndex endIndex = createIndex( row, m_Titles.count(), _info );
     emit dataChanged( startIndex, endIndex );
 }
 
