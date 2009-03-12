@@ -59,7 +59,7 @@ struct SJobInfo
       }
     return *this;
   }
-  
+
   ~SJobInfo()
     {
     }
@@ -84,7 +84,7 @@ struct SJobInfo
       //  jobs_children_t::const_iterator iter = std::find( m_children.begin(), m_children.end(),
       //                  p );
   //  return std::distance( m_children.begin(), iter );
-      return _info->m_index; 
+      return _info->m_index;
     }
     int row() const
     {
@@ -125,7 +125,8 @@ public:
 
 public:
     void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-    void getInfo( JobsContainer_t *_Container );
+    void updateStatus( JobsContainer_t *_Container ) const;
+    void getInfo( JobsContainer_t *_Container ) const;
 
 private:
     void addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent );

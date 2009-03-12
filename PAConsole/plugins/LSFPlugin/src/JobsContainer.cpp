@@ -75,16 +75,11 @@ void CJobsContainer::updateNumberOfJobs()
 
 void CJobsContainer::_update()
 {
-    JobsContainer_t newinfo;
-    CJobInfo job_info( m_lsfsubmitter->getLSF() );
-    job_info.update( m_lsfsubmitter->getActiveJobList(), &newinfo );
+	CJobInfo job_info( m_lsfsubmitter->getLSF() );
+    job_info.updateStatus( &m_cur_ids );
 
     // Checking all jobs for update
-    JobsContainer_t tmp;
-    set_intersection( newinfo.begin(), newinfo.end(),
-                      m_cur_ids.begin(), m_cur_ids.end(),
-                      inserter( tmp, tmp.begin() ) );
-    for_each( tmp.begin(), tmp.end(),
+    for_each( m_cur_ids.begin(), m_cur_ids.end(),
               boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );
 }
 

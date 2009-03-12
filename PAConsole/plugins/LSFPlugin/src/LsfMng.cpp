@@ -72,32 +72,32 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
         // TODO: investigate whether LSF really needs "char *"! Meantime removing const from our const strings.
         switch ( iter->first )
         {
-            case JP_SUB_JOB_NAME:
-                request.options |= SUB_JOB_NAME;
-                request.jobName = const_cast<char*>( iter->second.c_str() );
-                break;
-            case JP_SUB_QUEUE:
-                request.options |= SUB_QUEUE;
-                request.queue = const_cast<char*>( iter->second.c_str() );
-                break;
-            case JP_SUB_HOST:
-                request.options |= SUB_HOST;
-                request.hostSpec = const_cast<char*>( iter->second.c_str() );
-                break;
-            case JP_SUB_IN_FILE:
-                request.options |= SUB_IN_FILE;
-                request.inFile = const_cast<char*>( iter->second.c_str() );
-                break;
-            case JP_SUB_OUT_FILE:
-                request.options |= SUB_OUT_FILE;
-                request.outFile = const_cast<char*>( iter->second.c_str() );
-                break;
-            case JP_SUB_ERR_FILE:
-                request.options |= SUB_ERR_FILE;
-                request.errFile = const_cast<char*>( iter->second.c_str() );
-                break;
-            default:
-                return 0; //TODO: Assert here
+        case JP_SUB_JOB_NAME:
+            request.options |= SUB_JOB_NAME;
+            request.jobName = const_cast<char*>( iter->second.c_str() );
+            break;
+        case JP_SUB_QUEUE:
+            request.options |= SUB_QUEUE;
+            request.queue = const_cast<char*>( iter->second.c_str() );
+            break;
+        case JP_SUB_HOST:
+            request.options |= SUB_HOST;
+            request.hostSpec = const_cast<char*>( iter->second.c_str() );
+            break;
+        case JP_SUB_IN_FILE:
+            request.options |= SUB_IN_FILE;
+            request.inFile = const_cast<char*>( iter->second.c_str() );
+            break;
+        case JP_SUB_OUT_FILE:
+            request.options |= SUB_OUT_FILE;
+            request.outFile = const_cast<char*>( iter->second.c_str() );
+            break;
+        case JP_SUB_ERR_FILE:
+            request.options |= SUB_ERR_FILE;
+            request.errFile = const_cast<char*>( iter->second.c_str() );
+            break;
+        default:
+            return 0; //TODO: Assert here
         }
     }
 
@@ -112,11 +112,11 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
         // if job submission fails, lsb_submit returns -1
         switch ( lsberrno )
         {
-                // and sets lsberrno to indicate the error
-            case LSBE_QUEUE_USE:
-            case LSBE_QUEUE_CLOSED:
-            default:
-                throw runtime_error( "job submission failed" ); // TODO: report a proper error here
+            // and sets lsberrno to indicate the error
+        case LSBE_QUEUE_USE:
+        case LSBE_QUEUE_CLOSED:
+        default:
+            throw runtime_error( "job submission failed" ); // TODO: report a proper error here
         }
         return 0;
     }
@@ -133,14 +133,14 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
-    	return JS_JOB_STAT_UNKWN;
+        return JS_JOB_STAT_UNKWN;
 
     // number of remaining jobs unread
     int more = 0;
     // get the job details
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
-    	return JS_JOB_STAT_UNKWN;
+        return JS_JOB_STAT_UNKWN;
 
     EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
 
@@ -154,28 +154,57 @@ std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
 {
     switch ( jobStatus( _jobID ) )
     {
-        case JS_JOB_STAT_PEND:
-            return "pending";
-        case JS_JOB_STAT_PSUSP:
-            return "held";
-        case JS_JOB_STAT_RUN:
-            return "running";
-        case JS_JOB_STAT_SSUSP:
-            return "suspended by LSF";
-        case JS_JOB_STAT_USUSP:
-            return "suspended by user";
-        case JS_JOB_STAT_EXIT:
-            return "exited";
-        case JS_JOB_STAT_DONE:
-            return "completed";
-        case JS_JOB_STAT_PDONE:
-            return "done";
-        case JS_JOB_STAT_PERROR:
-            return "job process error";
-        case JS_JOB_STAT_WAIT:
-            return "waiting";
-        default:
-            return "unknown";
+    case JS_JOB_STAT_PEND:
+        return "pending";
+    case JS_JOB_STAT_PSUSP:
+        return "held";
+    case JS_JOB_STAT_RUN:
+        return "running";
+    case JS_JOB_STAT_SSUSP:
+        return "suspended by LSF";
+    case JS_JOB_STAT_USUSP:
+        return "suspended by user";
+    case JS_JOB_STAT_EXIT:
+        return "exited";
+    case JS_JOB_STAT_DONE:
+        return "completed";
+    case JS_JOB_STAT_PDONE:
+        return "done";
+    case JS_JOB_STAT_PERROR:
+        return "job process error";
+    case JS_JOB_STAT_WAIT:
+        return "waiting";
+    default:
+        return "unknown";
+    }
+}
+
+std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
+{
+    switch ( _jobStatus )
+    {
+    case JS_JOB_STAT_PEND:
+        return "pending";
+    case JS_JOB_STAT_PSUSP:
+        return "held";
+    case JS_JOB_STAT_RUN:
+        return "running";
+    case JS_JOB_STAT_SSUSP:
+        return "suspended by LSF";
+    case JS_JOB_STAT_USUSP:
+        return "suspended by user";
+    case JS_JOB_STAT_EXIT:
+        return "exited";
+    case JS_JOB_STAT_DONE:
+        return "completed";
+    case JS_JOB_STAT_PDONE:
+        return "done";
+    case JS_JOB_STAT_PERROR:
+        return "job process error";
+    case JS_JOB_STAT_WAIT:
+        return "waiting";
+    default:
+        return "unknown";
     }
 }
 
@@ -189,14 +218,14 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
-    	return 0;
+        return 0;
 
     // number of remaining jobs unread
     int more = 0;
     // get the job details
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
-    	return 0;
+        return 0;
 
     int retNumberOfJobsInArray = 0;
     // check whether it is an array job

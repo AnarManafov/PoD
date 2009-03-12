@@ -26,54 +26,55 @@ typedef long long int lsf_jobid_t;
 
 class CLsfMng
 {
-    public:
-        typedef enum EJobProperty
-        {
-            JP_SUB_JOB_NAME,  //!< job name specified
-            JP_SUB_QUEUE,   //!< queue specified
-            JP_SUB_HOST,   //!< execution host(s) specified
-            JP_SUB_IN_FILE,   //!< input file specified
-            JP_SUB_OUT_FILE,  //!< output file specified
-            JP_SUB_ERR_FILE   //!< error file specified
-        }EJobProperty_t;
+public:
+    typedef enum EJobProperty
+    {
+        JP_SUB_JOB_NAME,  //!< job name specified
+        JP_SUB_QUEUE,   //!< queue specified
+        JP_SUB_HOST,   //!< execution host(s) specified
+        JP_SUB_IN_FILE,   //!< input file specified
+        JP_SUB_OUT_FILE,  //!< output file specified
+        JP_SUB_ERR_FILE   //!< error file specified
+    }EJobProperty_t;
 
-        // possible values for the status field
-        typedef enum EJobStatus
-        {
-            JS_JOB_STAT_PEND  	= 0x01,   	//!< job is pending
-            JS_JOB_STAT_PSUSP 	= 0x02,   	//!< job is held
-            JS_JOB_STAT_RUN	  	= 0x04,   	//!< job is running
-            JS_JOB_STAT_SSUSP 	= 0x08,   	//!< job is suspended by LSF Batch system
-            JS_JOB_STAT_USUSP	= 0x10,   	//!< job is suspended by user
-            JS_JOB_STAT_EXIT	= 0x20,   	//!< job exited
-            JS_JOB_STAT_DONE	= 0x40,   	//!< job is completed successfully
-            JS_JOB_STAT_PDONE	= 0x80,   	//!< post job process done successfully
-            JS_JOB_STAT_PERROR	= 0x100,  	//!< post job process error
-            JS_JOB_STAT_WAIT	= 0x200,   	//!< chunk job waiting its execution turn
-            JS_JOB_STAT_UNKWN	= 0x1000,   //!< unknown status
-        } EJobStatus_t;
+    // possible values for the status field
+    typedef enum EJobStatus
+    {
+        JS_JOB_STAT_PEND  	= 0x01,   	//!< job is pending
+        JS_JOB_STAT_PSUSP 	= 0x02,   	//!< job is held
+        JS_JOB_STAT_RUN	  	= 0x04,   	//!< job is running
+        JS_JOB_STAT_SSUSP 	= 0x08,   	//!< job is suspended by LSF Batch system
+        JS_JOB_STAT_USUSP	= 0x10,   	//!< job is suspended by user
+        JS_JOB_STAT_EXIT	= 0x20,   	//!< job exited
+        JS_JOB_STAT_DONE	= 0x40,   	//!< job is completed successfully
+        JS_JOB_STAT_PDONE	= 0x80,   	//!< post job process done successfully
+        JS_JOB_STAT_PERROR	= 0x100,  	//!< post job process error
+        JS_JOB_STAT_WAIT	= 0x200,   	//!< chunk job waiting its execution turn
+        JS_JOB_STAT_UNKWN	= 0x1000,   //!< unknown status
+    } EJobStatus_t;
 
-        typedef std::map<EJobProperty_t, std::string> propertyDict_t;
-        typedef std::vector<lsf_jobid_t> IDContainer_t;
+    typedef std::map<EJobProperty_t, std::string> propertyDict_t;
+    typedef std::vector<lsf_jobid_t> IDContainer_t;
 
-    public:
-        CLsfMng();
-        virtual ~CLsfMng();
+public:
+    CLsfMng();
+    virtual ~CLsfMng();
 
-    public:
-        void init();
-        void addProperty( EJobProperty_t _type, const std::string &_val );
-        // TODO: implement
-        //void removeProperty();
-        lsf_jobid_t jobSubmit( const std::string &_Cmd );
-        EJobStatus_t jobStatus( lsf_jobid_t _jobID ) const;
-        std::string jobStatusString( lsf_jobid_t _jobID ) const;
-        int getNumberOfChildren( lsf_jobid_t _jobID ) const;
-        void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
+public:
+    void init();
+    void addProperty( EJobProperty_t _type, const std::string &_val );
+    // TODO: implement
+    //void removeProperty();
+    lsf_jobid_t jobSubmit( const std::string &_Cmd );
+    EJobStatus_t jobStatus( lsf_jobid_t _jobID ) const;
+    std::string jobStatusString( lsf_jobid_t _jobID ) const;
+    std::string jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const;
+    int getNumberOfChildren( lsf_jobid_t _jobID ) const;
+    void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
 
-    private:
-        propertyDict_t m_submitRequest;
-        bool m_bInit;
+private:
+    propertyDict_t m_submitRequest;
+    bool m_bInit;
 };
 
 #endif /* LSFMNG_H_ */
