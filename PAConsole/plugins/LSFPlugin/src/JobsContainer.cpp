@@ -46,7 +46,7 @@ void CJobsContainer::update( long _update_time_ms )
     m_updateInterval = _update_time_ms;
 
     if ( !isRunning() )
-        run();
+        start();
 }
 
 //void CJobsContainer::_update()
