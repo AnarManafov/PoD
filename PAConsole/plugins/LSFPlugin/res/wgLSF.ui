@@ -181,16 +181,9 @@
           <property name="alternatingRowColors" >
            <bool>false</bool>
           </property>
-          <column>
-           <property name="text" >
-            <string>ID</string>
-           </property>
-          </column>
-          <column>
-           <property name="text" >
-            <string>Status</string>
-           </property>
-          </column>
+          <property name="uniformRowHeights" >
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
