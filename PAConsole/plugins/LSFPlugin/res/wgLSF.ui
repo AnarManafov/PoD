@@ -114,7 +114,7 @@
             </property>
             <property name="minimumSize" >
              <size>
-              <width>202</width>
+              <width>40</width>
               <height>0</height>
              </size>
             </property>
@@ -125,6 +125,9 @@
              <string/>
             </property>
             <property name="minimum" >
+             <number>1</number>
+            </property>
+            <property name="value" >
              <number>1</number>
             </property>
            </widget>
@@ -140,10 +143,22 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>worker(s)</string>
+             <string>worker(s) to queue</string>
             </property>
             <property name="alignment" >
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="lsfQueueList" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
