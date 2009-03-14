@@ -254,3 +254,27 @@ void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
         _container->push_back( LSB_JOBID(_jobID, i ) );
     }
 }
+
+void CLsfMng::getQueues( MiscCommon::StringVector_t *_retVal ) const
+{
+	if(!_retVal)
+		return;
+
+    struct queueInfoEnt *qInfo;
+    char *queues;
+    int numQueues = 0;
+    char *host = NULL;
+    char *user = NULL;
+    int options = 0;
+
+    // get queue information about the specified queue
+    qInfo = lsb_queueinfo(&queues, &numQueues, host, user, options);
+    if (NULL == qInfo) {
+        //lsb_perror("simbqueues: lsb_queueinfo() failed");
+        return; // TODO: need exception here
+    }
+    for(int i = 0; i < numQueues; ++i )
+    {
+    	_retVal->push_back( qInfo->queue );
+    }
+}

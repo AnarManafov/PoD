@@ -26,85 +26,88 @@ class CJobInfoItemModel;
 
 class CLSFDlg: public QWidget, IJobManager
 {
-        Q_OBJECT
-        Q_INTERFACES( IJobManager )
+    Q_OBJECT
+    Q_INTERFACES( IJobManager )
 
-        friend class boost::serialization::access;
+    friend class boost::serialization::access;
 
-    public:
-        CLSFDlg( QWidget *parent = NULL );
-        virtual ~CLSFDlg();
+public:
+    CLSFDlg( QWidget *parent = NULL );
+    virtual ~CLSFDlg();
 
-    public:
-        // IJobManager interface
-        QString getName() const;
-        QWidget *getWidget();
-        QIcon getIcon();
-        void startUpdTimer( int _JobStatusUpdInterval );
-        int getJobsCount() const;
+public:
+    // IJobManager interface
+    QString getName() const;
+    QWidget *getWidget();
+    QIcon getIcon();
+    void startUpdTimer( int _JobStatusUpdInterval );
+    int getJobsCount() const;
 
-        void setAllDefault();
+    void setAllDefault();
 
-    signals:
-        void changeNumberOfJobs( int _count );
+signals:
+    void changeNumberOfJobs( int _count );
 
-    public slots:
-        void on_btnSubmitClient_clicked();
-        void recieveThreadMsg( const QString &_Msg );
-        void setProgress( int _Val );
-        void on_btnBrowseJobScript_clicked();
-        void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
-        void setNumberOfJobs( int _count );
+public slots:
+    void on_btnSubmitClient_clicked();
+    void recieveThreadMsg( const QString &_Msg );
+    void setProgress( int _Val );
+    void on_btnBrowseJobScript_clicked();
+    void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
+    void setNumberOfJobs( int _count );
 
 
-    private slots:
+private slots:
 //        void copyJobID() const;
 //        void cancelJob();
 //        void getJobOutput();
 //        void getJobLoggingInfo();
-        void removeJob();
+    void removeJob();
 
-    protected:
-        void contextMenuEvent( QContextMenuEvent *event );
+protected:
+    void contextMenuEvent( QContextMenuEvent *event );
 
-    private:
-        void createActions();
-        void UpdateAfterLoad();
+private:
+    void createActions();
+    void UpdateAfterLoad();
 
-        // serialization
-        template<class Archive>
-        void save( Archive & _ar, const unsigned int /*_version*/ ) const
-        {
-            _ar
-            & BOOST_SERIALIZATION_NVP( m_JobScript )
-            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
-            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-        }
-        template<class Archive>
-        void load( Archive & _ar, const unsigned int /*_version*/ )
-        {
-            _ar
-            & BOOST_SERIALIZATION_NVP( m_JobScript )
-            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
-            & BOOST_SERIALIZATION_NVP( m_JobSubmitter );
-            UpdateAfterLoad();
-        }
-        BOOST_SERIALIZATION_SPLIT_MEMBER()
+    // serialization
+    template<class Archive>
+    void save( Archive & _ar, const unsigned int /*_version*/ ) const
+    {
+        _ar
+        & BOOST_SERIALIZATION_NVP( m_JobScript )
+        & BOOST_SERIALIZATION_NVP( m_WorkersCount )
+        & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
+        & BOOST_SERIALIZATION_NVP( m_queue );
+    }
+    template<class Archive>
+    void load( Archive & _ar, const unsigned int /*_version*/ )
+    {
+        _ar
+        & BOOST_SERIALIZATION_NVP( m_JobScript )
+        & BOOST_SERIALIZATION_NVP( m_WorkersCount )
+        & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
+        & BOOST_SERIALIZATION_NVP( m_queue );
+        UpdateAfterLoad();
+    }
+    BOOST_SERIALIZATION_SPLIT_MEMBER()
 
-    private:
-        Ui::wgGrid m_ui;
-        QAction *copyJobIDAct;
-        QAction *cancelJobAct;
-        QAction *getJobOutputAct;
-        QAction *getJobLoggingInfoAct;
-        QAction *removeJobAct;
-        QClipboard *clipboard;
-        std::string m_JobScript;
-        int m_AllJobsCount;
-        int m_WorkersCount;
-        CLSFJobSubmitter m_JobSubmitter;
-        CJobInfoItemModel *m_treeModel;
-        int m_updateInterval;
+private:
+    Ui::wgGrid m_ui;
+    QAction *copyJobIDAct;
+    QAction *cancelJobAct;
+    QAction *getJobOutputAct;
+    QAction *getJobLoggingInfoAct;
+    QAction *removeJobAct;
+    QClipboard *clipboard;
+    std::string m_JobScript;
+    int m_AllJobsCount;
+    int m_WorkersCount;
+    CLSFJobSubmitter m_JobSubmitter;
+    CJobInfoItemModel *m_treeModel;
+    int m_updateInterval;
+    std::string m_queue;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )

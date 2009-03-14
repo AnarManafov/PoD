@@ -21,6 +21,8 @@
 #include <string>
 #include <map>
 #include <vector>
+// MiscCommon
+#include "def.h"
 
 typedef long long int lsf_jobid_t;
 
@@ -71,6 +73,7 @@ public:
     std::string jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const;
     int getNumberOfChildren( lsf_jobid_t _jobID ) const;
     void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
+    void getQueues( MiscCommon::StringVector_t *_retVal ) const;
 
 private:
     propertyDict_t m_submitRequest;

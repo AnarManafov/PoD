@@ -96,8 +96,19 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
         setAllDefault();
     }
 
-    // TODO: move this to GUI setting
-    m_JobSubmitter.setQueue( "proof" );
+    StringVector_t queues;
+    m_JobSubmitter.getLSF().getQueues(&queues);
+    // TODO: handle errors here.
+    StringVector_t::const_iterator iter = queues.begin();
+    StringVector_t::const_iterator iter_end = queues.end();
+    for(; iter != iter_end; ++iter )
+    {
+    	m_ui.lsfQueueList->addItem( iter->c_str() );
+    	// selecting default
+    	//if( !m_queue.empty() )
+    }
+
+    m_JobSubmitter.setQueue( m_queue );
 
     m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
     m_ui.treeJobs->setModel(m_treeModel);
@@ -124,6 +135,7 @@ void CLSFDlg::setAllDefault()
     m_JobScript = g_szDefaultJobScript;
     m_WorkersCount = 1;
     m_JobSubmitter.setAllDefault();
+    m_queue = "proof";
     UpdateAfterLoad();
 }
 
@@ -142,6 +154,9 @@ void CLSFDlg::recieveThreadMsg( const QString &_Msg )
 
 void CLSFDlg::on_btnSubmitClient_clicked()
 {
+	// Checking queue up
+	m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
+	m_JobSubmitter.setQueue( m_queue );
     // Checking first that gLitePROOF server is running
     CServerInfo si;
     if ( !si.IsRunning( true ) )
