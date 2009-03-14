@@ -275,6 +275,6 @@ void CLsfMng::getQueues( MiscCommon::StringVector_t *_retVal ) const
     }
     for(int i = 0; i < numQueues; ++i )
     {
-    	_retVal->push_back( qInfo->queue );
+    	_retVal->push_back( qInfo[i].queue );
     }
 }
