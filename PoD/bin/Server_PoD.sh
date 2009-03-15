@@ -123,7 +123,7 @@ start()
     mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
     # replacing ports in the PROOF example script
-    regexp_xproof_port="s/\(TProof::Open(\"\).*:[0-9]*\(\")\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
+    regexp_xproof_port="s/\(TProof::Open([[:space:]]\"\).*:[0-9]*\(\"[[:space:]])\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
     regexp_xrd_port="s/\(root:\/\/\).*:[0-9]*/\1$(hostname -f):$NEW_XRD_PORT/g"
     sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
     mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
