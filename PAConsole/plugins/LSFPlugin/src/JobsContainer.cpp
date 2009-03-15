@@ -129,7 +129,6 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
         res = m_cur_ids.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
         if ( res.second )
         {
-            cout << "add: " << iter->get()->m_strID << endl;
             emit beginAddJob( iter->get() );
             m_curinfo.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
             emit endAddJob();
