@@ -10,7 +10,7 @@
                            2008-12-09
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef LSFDLG_H_
 #define LSFDLG_H_

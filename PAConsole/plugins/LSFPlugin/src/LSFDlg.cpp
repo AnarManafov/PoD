@@ -10,7 +10,7 @@
                            2008-12-09
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // BOOST
 #include <boost/archive/xml_oarchive.hpp>
@@ -99,13 +99,23 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     StringVector_t queues;
     m_JobSubmitter.getLSF().getQueues(&queues);
     // TODO: handle errors here.
-    StringVector_t::const_iterator iter = queues.begin();
-    StringVector_t::const_iterator iter_end = queues.end();
-    for(; iter != iter_end; ++iter )
+    StringVector_t::iterator iter = queues.begin();
+    StringVector_t::iterator iter_end = queues.end();
+    for (; iter != iter_end; ++iter )
     {
-    	m_ui.lsfQueueList->addItem( iter->c_str() );
-    	// selecting default
-    	//if( !m_queue.empty() )
+        m_ui.lsfQueueList->addItem( iter->c_str() );
+        // selecting default
+        if ( m_queue.empty() )
+        {
+            // if there is no default queue set, then select any queue with the "proof" word in the name
+            if ( string::npos != iter->find("proof") )
+                m_ui.lsfQueueList->setCurrentIndex( distance(queues.begin(), iter) );
+        }
+        else
+        {
+            if ( *iter == m_queue )
+                m_ui.lsfQueueList->setCurrentIndex( distance(queues.begin(), iter) );
+        }
     }
 
     m_JobSubmitter.setQueue( m_queue );
@@ -154,9 +164,9 @@ void CLSFDlg::recieveThreadMsg( const QString &_Msg )
 
 void CLSFDlg::on_btnSubmitClient_clicked()
 {
-	// Checking queue up
-	m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
-	m_JobSubmitter.setQueue( m_queue );
+    // Checking queue up
+    m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
+    m_JobSubmitter.setQueue( m_queue );
     // Checking first that gLitePROOF server is running
     CServerInfo si;
     if ( !si.IsRunning( true ) )

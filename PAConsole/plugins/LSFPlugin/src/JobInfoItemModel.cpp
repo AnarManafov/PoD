@@ -19,10 +19,6 @@
 // vnetstat
 #include "JobInfoItemModel.h"
 
-// TODO: remove this include
-#include <iostream>
-
-
 using namespace std;
 
 CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):

@@ -17,9 +17,6 @@
 // LSF plug-in
 #include "JobsContainer.h"
 
-// TODO: remove this include (was used for debug only)
-#include <iostream>
-
 using namespace std;
 
 CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
@@ -28,9 +25,6 @@ CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
         m_updateNumberOfJobs(false),
         m_updateInterval(0)
 {
-    //  m_timer = new QTimer( this );
-    //  connect( m_timer, SIGNAL( timeout() ), this, SLOT( _update() ) );
-
     _updateNumberOfJobs();
 }
 
@@ -46,22 +40,11 @@ CJobsContainer::~CJobsContainer()
 
 void CJobsContainer::update( long _update_time_ms )
 {
-    // Resetting a timer
-    //m_timer->start( _update_time_ms );
-
     m_updateInterval = _update_time_ms;
 
     if ( !isRunning() )
         start();
 }
-
-//void CJobsContainer::_update()
-//{
-//    if ( isRunning() )
-//        return;
-//
-//    run();
-//}
 
 void CJobsContainer::run()
 {
@@ -131,8 +114,6 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 
     if ( res.second )
     {
-        cout << "add: " << _node.second->m_strID << endl;
-
         // parent jobs
         emit beginAddJob( info.get() );
         m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
@@ -158,7 +139,6 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 {
-    cout << "remove: " << _node.second->m_strID << endl;
     JobsContainer_t::iterator found = m_curinfo.find( _node.first );
     if ( m_curinfo.end() == found )
         return; // TODO: assert here?
@@ -181,6 +161,5 @@ void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 
     info->m_status = newStatus;
     info->m_strStatus = m_lsfsubmitter->getLSF().jobStatusString(newStatus);
-    cout << "update: " << info->m_strID << "; Status: " << info->m_strStatus << endl;
     emit jobChanged( info );
 }
