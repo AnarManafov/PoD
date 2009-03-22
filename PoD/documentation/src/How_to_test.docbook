@@ -11,8 +11,8 @@ Test
    	<sect1 id="simple_test">
    	<title>Simple test</title>    
    		<para>
-    		To test your <application>POD</application> installation you can use a simple test provided with the distributive
-    		(see the test directory in your <application>POD</application> installation folder). The test performs a simple ROOT analysis.
+    		To test your <application>PoD</application> installation you can use a simple test provided with the distributive
+    		(see the test directory in your <application>PoD</application> installation folder). The test performs a simple ROOT analysis.
     		</para>
     		<para>
     		It is also recommended to make several copies of the root file,
@@ -28,7 +28,7 @@ set->Add( "root://depc218.gsi.de:20094//opt/PROOF_DATA/dstarmb1.root" );
 <screen>
 <prompt>root [0] </prompt><command>.x test/simple_test0.C</command>
 </screen>
-			This macro will connect to the PROOF (POD's workers) workers and perform a test analysis.
+			This macro will connect to the PROOF (PoD's workers) workers and perform a test analysis.
    		</para>
 		</sect1>
 	</chapter>
