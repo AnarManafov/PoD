@@ -16,74 +16,50 @@ Introduction
     	data analysis on Grid and batch clusters.
     	</para>
     	<para>
-    	<application>POD</application> provides a plug-in system, which helps to use it with different job submission machinaries.
-    	Current implementation of POD ships a gLite plug-in (for gLite Grid) and LSF plug-in (for LSF batch system). 
+    	<application>PoD</application> provides a plug-in system, which helps to use it with different job submission machinaries.
+    	Current implementation of PoD ships a gLite plug-in (for gLite Grid) and LSF plug-in (for LSF batch system). 
     	The gLite plug-in uses <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/GAW">glite-api-wrapper library</ulink>
     	(<acronym>GAW</acronym>) to perform gLite job submission and other Grid-related procedures.
     	</para>
     	<para>
 		<itemizedlist>
-			<title><application>POD</application> consists of the following main components:</title>
+			<title><application>PoD</application> consists of the following main components:</title>
   			<listitem>
     			<para>
     			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
     			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
     			remote worker nodes behind a firewall. Also PROOFAgent has a number of additional
     			useful functionality which help to start, process, and control PROOF interactive analysis.
-    			Its default configuration file is provided with the PODs distribution.
+    			Its default configuration file is provided with the PoDs distribution.
     			</para>
   			</listitem>
   		  	<listitem>
     			<para>
                 <guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
-                to simplify the usage of PROOFAgent and POD configuration files.
+                to simplify the usage of PROOFAgent and PoD configuration files.
                 PAConsole implements a plug-in system, which helps to have different job managers and
                 submit workers to a different Grid or batch systems.
-                Currently POD provides gLite and LSF plug-ins.
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>xpd.cfg</guilabel> &mdash; a generic XROOTD configuration file (configures redirector
-    			and remote workers).
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>Server_gLitePROOF.sh</guilabel> &mdash; a server side script. Helps to start/stop
-    			services of POD. Could be used via command line or PAConsole GUI.
-    			</para>
-  			</listitem>
-  		  	<listitem>
-    			<para>
-    			<guilabel>gLitePROOF.jdl</guilabel> &mdash; a JDL file, describes a generic, parametric Grid job,
-    			which is submitted to gLite and aims to execute POD workers on Grid worker nodes.  
+                Currently PoD provides gLite and LSF plug-ins.
     			</para>
   			</listitem>
   			<listitem>
     			<para>
-    			<guilabel>gLitePROOF.sh</guilabel> &mdash; a job script executed on remote machines.  
+    			<guilabel>PoDWorker.sh</guilabel> &mdash; a generic job script executed on remote machines.  
     			</para>
   			</listitem>
-  			<listitem>
+			<listitem>
     			<para>
-    			<guilabel>PoD_env.sh</guilabel> &mdash; this script sets environment of POD and
-    			should be sourced before a use of POD.  
-    			</para>
-			</listitem>
-			  	<listitem>
-    			<para>
-    			<guilabel>Job.lsf</guilabel> &mdash; this is a default job script for LSF plug-in.  
+    			<guilabel>PoD utilities</guilabel> &mdash; this is a default job script for plug-ins, configuration files and helper utilities.  
     			</para>
 			</listitem>
 		</itemizedlist>
 		</para>
 		<para>
-		<figure id="fig_POD" float="0">
-			<title>A generic schema of POD with gLite plug-in</title>
+		<figure id="fig_PoD" float="0">
+			<title>A generic schema of PoD</title>
 			<screenshot><mediaobject>
 			<imageobject>
-			<imagedata fileref="gLite_PROOF.png" format="PNG"/>
+			<imagedata fileref="PoD_Components.png" format="PNG"/>
 			</imageobject>
 			<textobject>
 			<phrase>phrase</phrase>
@@ -95,7 +71,7 @@ Introduction
 		<sect1 id="use_case">
       <title>Use case</title>
 		<para>
-		The following describes one of the main use case of POD (see <xref linkend="fig_POD"/>):
+		The following describes one of the main use case of PoD (see <xref linkend="fig_PoD"/>):
 		<orderedlist>
   		<title>Set up PROOF on the Grid</title>
   			<listitem>
@@ -106,7 +82,7 @@ Introduction
     			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
 			</listitem>
 			<listitem>
-				<para>Using PAConsole the user submits POD parametric job to the Grid.</para>
+				<para>Using PAConsole the user submits PoD parametric job to the Grid.</para>
 			</listitem>
 			<listitem>
 				<para>When the job arrives to a remote worker node it configures the environment
@@ -130,7 +106,7 @@ Introduction
 			</listitem>
 			<listitem>
 				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
-				POD Grid jobs.</para>
+				PoD Grid jobs.</para>
 			</listitem>			
 			</orderedlist>
 		</para>

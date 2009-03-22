@@ -20,7 +20,9 @@ HTML_OUT_DIR=../html_help
 
 IMGS= \
 	PoD_logo.png\
-	gLite_PROOF.png\
+	PoD_Components.png\
+	PoD_OverView.png\
+	PoD_UI_Worker.png\
 	important.png\
 	tip.png\
 	warning.png\
