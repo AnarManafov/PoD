@@ -11,26 +11,27 @@ Requirements
        <sect1 id="User_workspace_requirements">
        <title>User's workspace requirements</title>
         <para>
-        POD works as a client/server application.
+        PoD works as a client/server application.
         We define user's workspace as a side, which is located on the local (for the user) space,
         on users laptop, for example. For simplification we will call it a user's workspace or
-        local workspace. There POD server is running.
+        local workspace. There PoD server is running.
         </para>
         <para>
 	<itemizedlist>
 		<title>General workspace requirements: </title>
-		<listitem>ROOT 5.18+ (xrootd enabled)</listitem>
-		<listitem>Qt 4.2.x</listitem>
+		<listitem>ROOT 5.22+ (xrootd enabled)</listitem>
+		<listitem>Qt 4.2+</listitem>
 		<listitem>BOOST 1.32</listitem>
+		<listitem>XERCES-C 2.7</listitem>		
 		<listitem>cmake 2.6.2</listitem>
 	</itemizedlist>
         <itemizedlist>
-                <title>Additional requirements for gLite plug-in: </title>
+                <title>Additional requirements for gLite plug-in:</title>
                 <listitem>gLite UI 3.1</listitem>
         </itemizedlist>
         <itemizedlist>
-                <title>Additional requirements for LSF plug-in: </title>
-                        <listitem>LSF 6.1 API (headers and libraries)</listitem>
+                <title>Additional requirements for LSF plug-in:</title>
+                        <listitem>LSF 6.x API (headers and libraries)</listitem>
         </itemizedlist>
         </para>
         </sect1>

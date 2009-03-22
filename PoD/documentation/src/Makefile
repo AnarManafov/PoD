@@ -27,13 +27,13 @@ IMGS= \
 	tip.png\
 	warning.png\
 	note.png\
-	PAConsole_ServersOff.png\
-	PAConsole_ServersOn.png\
+	PAConsole_Server_snapshot.png\
 	PAConsole_Grid0.png\
 	PAConsole_Grid1.png\
 	PAConsole_Grid2.png\
 	PAConsole_Grid3.png\
-	PAConsole_Workers.png\
+	PAConsole_LSF_plugin_snapshot.png\
+	PAConsole_Workers_LSF_snapshot.png\
 	PAConsole_Preferences.png\
 	PAConsole_LogInfo.png
 

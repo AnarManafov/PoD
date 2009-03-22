@@ -9,8 +9,8 @@ Configuration
               <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
     <para>
-    As it was mentioned above <application>POD</application> consists of several modules
-    and to configure <application>POD</application> one should configure some of these modules.
+    As it was mentioned above <application>PoD</application> consists of several modules
+    and to fine tune <application>PoD</application> one may want to configure some of these modules.
     </para>
     <sect1 id="GAW">
       <title>GAW</title>
@@ -34,14 +34,14 @@ Configuration
       the configuration file.      
       </para>
       </tip>
-        All other settings may be changed to adjust POD according to personal needs.
+        All other settings may be changed to adjust PoD according to personal needs.
         </para>
     </sect1>
     <sect1 id="PROOFAgent">
       <title>PROOFAgent</title>
       <para>
-      PROOFAgent is a kind of proxy and manager application for POD. This application manages
-      communication with POD workers, where PROOFAgent clients are working.
+      PROOFAgent is a kind of proxy and manager application for PoD. This application manages
+      communication with PoD workers, where PROOFAgent clients are working.
       There is PROOFAgent's configuration file in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
       directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
       holds both client and server configuration, so be careful while changing it.
@@ -55,23 +55,18 @@ Configuration
       </para>
       </warning>
       <para>
-      The default configuration of PROOFAgent assumes, that:
-      <itemizedlist>
-      <listitem><para>the PROOF port is 21093 (user may want to change it, but then xrootd config (<xref linkend="XROOTD"/>)
-      should be modified accordingly),</para></listitem>
-      <listitem><para>the port range 20000-25000 (well known as default Globus port range)
-      is open on worker nodes for outgoing connection,</para></listitem>
-        <listitem><para>PROOFAgent server located on the machine where POD has been installed,</para></listitem>
-        <listitem><para>PROOFAgent server accepts connections on 21111 port
-        (open this port if you have a firewall on your UI or reconfigure PROOFAgent to use any other available port).</para></listitem>
-        </itemizedlist>
-        </para>   
+      The default configuration of PROOFAgent uses a dynamic ports mechanism of PoD. It looks dynamicly for needed ports
+      in a default range of 20000-25000 (well known as default Globus port range)
+      </para>
+      <para>
+      (TODO: provide configuration possibilities for advanced users.)
+      </para>   
     </sect1>
     <sect1 id="XROOTD">
       <title>XROOTD</title>
       <para>
       There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
-      directory and it's called <filename>xpd.cf</filename>. POD uses this file to configure both local redirector and
+      directory and it's called <filename>xpd.cf</filename>. PoD uses this file to configure both local redirector and
       remote workers.
             
       <tip>
@@ -81,15 +76,15 @@ Configuration
       </para>
       </tip>
       
-      The default xrootd configuration, which comes with POD should be sufficient for basic operations.
+      The default xrootd configuration, which comes with PoD should be sufficient for basic operations.
       In most of use cases it is not needed to modify the configuration.
       </para>
       <para>
-      POD is only meant to help to setup a PROOF cluster on the fly using a remote worker nodes. A data access is not
-      really a part of responsibility of POD. The default configuration of POD offers a possibility to access data
+      PoD is only meant to help to setup a PROOF cluster on the fly using a remote worker nodes. A data access is not
+      really a part of responsibility of PoD. The default configuration of PoD offers a possibility to access data
       files from the server machine (user's workspace) using xrootd vie port 20094 and the following shared folder
       <filename class="directory">/tmp/</filename>. Users may want to use another xrootd facility to access data or
-      reconfigure POD's xrootd to use different port and location. To do so the following variables must be updated in
+      reconfigure PoD's xrootd to use different port and location. To do so the following variables must be updated in
       <filename>xpd.cf</filename> file: <varname>xrd.port</varname>, <varname>xrootd.export</varname> (for the server host),
       <varname>olb.path</varname>(for the server host).
 
@@ -97,18 +92,18 @@ Configuration
       <para>
       It is recommended to use your own xrootd facility to access data files.
       Using user's local machine for data access is very
-      inefficient. POD provides this ability only for testing purpose.
+      inefficient. PoD provides this ability only for testing purpose.
       </para>
       </tip>
       
       <tip>
       <para>
-      By a slight change of default POD's <filename>xrd.cf</filename>, users can have a dynamic xrootd pools on remote WNs.
+      By a slight change of default PoD's <filename>xrd.cf</filename>, users can have a dynamic xrootd pools on remote WNs.
       To do so, you need to set <varname>all.role</varname> parameter to <constant>manager</constant> instead of
       <constant>server</constant> (default) for your UI host.
 		<para>
 		
-		But, POD doesn't provide yet [<ulink url="https://subversion.gsi.de/trac/dgrid/ticket/53">POD Trac Ticket #53</ulink>]
+		But, PoD doesn't provide yet [<ulink url="https://subversion.gsi.de/trac/dgrid/ticket/53">PoD Trac Ticket #53</ulink>]
 		a proxy mechanism for xrootd file transfer,
 		WNs therefore must have XROOTD ports opened in both directions (which is very unusual for Grid worker nodes).
 		Once again, for best performance and security reasons it is recommend to use external data storage,
@@ -122,10 +117,10 @@ Configuration
     <sect1 id="A_JDL_file">
       <title>A JDL file</title>
       <para>
-      POD submits its workers with help of a JDL file. Default JDL files are a part of POD packages.
+      PoD submits its workers with help of a JDL file. Default JDL files are a part of PoD packages.
       User can find them in the <filename class="directory">/tmp/test/PoDpackage/etc</filename> folder.
       There are <filename>gLitePROOF.jdl</filename> and <filename>gLitePROOF_FZK.jdl</filename> files in this folder.
-      The first file is the generic POD jdl file and the second one is optimized for a specific FZK gLite computing element.
+      The first file is the generic PoD jdl file and the second one is optimized for a specific FZK gLite computing element.
         This files could be used as examples or real job files.
       </para>
       <para>

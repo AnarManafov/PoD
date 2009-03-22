@@ -14,10 +14,10 @@ How to run
       <para>
       In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
 <screen>
-<command>cd /tmp/test/gLitePROOFpackage</command>
+<command>cd /tmp/test/PoDpackage</command>
 <command>source PoD_env.sh</command>
 </screen>
-		Also don't forget, before starting POD the ROOT should be in the PATH as well.
+		Also don't forget, before starting PoD the ROOT should be in the PATH as well.
       </para>    
     </sect1>
     
@@ -28,16 +28,15 @@ How to run
 <screen>
 <command>PAConsole&amp;</command>
 </screen>
-        The <xref linkend="PAConsole_Server1"/> shows a screen shot of PAConsole's Server page. You can see that
-        the information window has a red font, which means one or all of the services are down. Currently POD
+        The <xref linkend="PAConsole_Server"/> shows a screen shot of PAConsole's Server page. Currently PoD
         requires two services: xrootd and PROOFAgent (+ oldb, a part of xrootd, if you want to use pool workers.
-        Pool workers are not officially supported. ).
+        Pool workers are not officially supported).
 
-        <para><figure float="0" id="PAConsole_Server1">
-        <title>PAConsole: Server is Off</title>
+        <para><figure float="0" id="PAConsole_Server">
+        <title>PAConsole: Server page</title>
         <screenshot><mediaobject>
         <imageobject>
-        <imagedata fileref="PAConsole_ServersOff.png" format="PNG"/>
+        <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG"/>
         </imageobject>
         <textobject>
         <phrase></phrase>
@@ -45,40 +44,23 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        Click the <guibutton>Start</guibutton> button in order to start POD services. To stop POD
-        the <guibutton>Stop</guibutton> button should be pressed and to get current status just press the
-        <guibutton>Status</guibutton> button.
+        Click the <guibutton>Start</guibutton> button in order to start PoD services. To stop PoD
+        the <guibutton>Stop</guibutton> button should be pressed. Status of the PoD server is retrieved automatically
+        by a timer event.
         </para>
         
         <para>
-        The <xref linkend="PAConsole_Server2"/> shows the interface after the <guibutton>Start</guibutton> button has
-        been clicked and POD services are up.
-        
-        <para><figure float="0" id="PAConsole_Server2">
-        <title>PAConsole: Server is ON</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_ServersOn.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-        
-        <tip><para>You have probably noticed that the <guibutton>Start</guibutton> button is now inactive. PAConsle marks this button
-        inactive whenever it is not possible to start POD services. For example, if PROOFAgent's port is in use on
-        in CLOSE_WAIT stat, PAConsole will disable the <guibutton>Start</guibutton> button.</para></tip>
-    
+        The <xref linkend="PAConsole_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
+        been pressed and PoD services are up - PoD Server is up and running.
       </para>
     </sect1>
 
 	 <sect1 id="JobManagerPlugins">
       <title>Job Manager plug-ins</title>
       <para>
-      The next step is to submit remote workers using POD's job manager.
-      Starting from version 2.0.7 the POD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
-      That means POD could be used on different Grid and batch sites. For instance currently POD supports gLite and LSF job submissions.
+      The next step is to submit remote workers using PoD's job manager.
+      Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
+      That means PoD could be used on different Grid and batch sites. For instance currently PoD supports gLite and LSF job submissions.
       It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
       </para>
       <para>
@@ -92,15 +74,15 @@ How to run
     <sect1 id="PROOF_workers">
       <title>PROOF workers</title>
       <para>
-       As soon as a single job reaches remote worker node (WN), it tries to connect to POD server to transfer information
-       about itself and environment of WN. When negotiations are done and POD server accepts WNs, it became a normal
+       As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
+       about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
        PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
        (see the <xref linkend="PAConsole_Workers"/>).        
           <para><figure float="0" id="PAConsole_Workers">
         <title>PAConsole: Workers</title>
         <screenshot><mediaobject>
         <imageobject>
-        <imagedata fileref="PAConsole_Workers.png" format="PNG"/>
+        <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG"/>
         </imageobject>
         <textobject>
         <phrase></phrase>
@@ -113,8 +95,8 @@ How to run
         arrived workers.                 
        </para>
        <tip><para>
-       POD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
-       need to resubmit POD jobs. You just need to close current root session, open it again. POD will manage
+       PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
+       need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
        reconnection with its worker nodes automatically. Worker nodes will be on-line until the PROOFAgent service is on-line or
        until s Grid and/or batch queue time is over.
        </para></tip>
@@ -146,7 +128,7 @@ How to run
     <sect1 id="Analysis">
       <title>Analysis</title>
       <para>
-      Now when your remote PROOF workers (POD workers) are on-line, you can process you ROOT/PROOF
+      Now when your remote PROOF workers (PoD workers) are on-line, you can process you ROOT/PROOF
       analysis normally, if it would be a usual PROOF session.      
        </para>
        <para>
@@ -154,10 +136,10 @@ How to run
        </para>
        </sect1>      
       
-    <sect1 id="How_to_shut_down_POD">
-      <title>How to shut down POD</title>
+    <sect1 id="How_to_shut_down_PoD">
+      <title>How to shut down PoD</title>
       <para>
-      In order to shut down POD the POD server should be stopped. On the Server page, click the
+      In order to shut down PoD the PoD server should be stopped. On the Server page, click the
       <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
       remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
       plug-in page, after some time statuses of jobs should be equal to "Done".

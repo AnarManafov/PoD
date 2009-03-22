@@ -11,18 +11,18 @@ Installation
     
     <sect1 id="step1">
       <title>Step #1</title>
-      <para>Choose a directory where you want to install <application>POD</application>,
-      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>POD</application> tarball to this directory:
+      <para>Choose a directory where you want to install <application>PoD</application>,
+      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>PoD</application> tarball to this directory:
 <screen>
 <command>tar -C /tmp/test -xzvf <replaceable>PoDPackage.2.0.7.tgz</replaceable></command>
 </screen>
 		Tar will created a new directory <filename class="directory">/tmp/test/PoD</filename>,
-		where <application>POD</application> package will be located.</para>
+		where <application>PoD</application> package will be located.</para>
     </sect1>
     <sect1 id="step2">
       <title>Step #2</title>
       <para>
-      Change to the POD directory:
+      Change to the PoD directory:
 <screen>
 <command>cd <replaceable>/tmp/test/PoDpackage</replaceable></command>
 </screen>
@@ -34,9 +34,9 @@ Installation
 INSTALL_PATH=/tmp/test/PoD
 </screen>
       You may want to change some other setting. Here the description of the variables,
-      which could be used to adjust POD installation:
+      which could be used to adjust PoD installation:
       <table>
-		<title>POD configuration variables</title>
+		<title>PoD configuration variables</title>
   		<tgroup cols="2">
     		<thead>
       	<row>
@@ -47,7 +47,7 @@ INSTALL_PATH=/tmp/test/PoD
     		<tbody>
       		<row>
         			<entry>INSTALL_PATH</entry>
-        			<entry>A full path to the POD installation.</entry>
+        			<entry>A full path to the PoD installation.</entry>
       		</row>
       		<row>
         			<entry>PROOF_PORT</entry>
@@ -118,7 +118,7 @@ INSTALL_PATH=/tmp/test/PoD
 		</table>
 		<note><para>
         If variables such as GLITE_LOCATION, XERCESC_LOCATION, CLASSADS_LOCATION,
-        BOOST_LOCATION, GRIDSITE_INSTALL_PATH are not defined, then POD modules will try to find according libraries
+        BOOST_LOCATION, GRIDSITE_INSTALL_PATH are not defined, then PoD modules will try to find according libraries
         during configuration. Unfortunately PAConsole doesn't support auto-detection and still requires these variables.
         This will be fixed in the next release.
 		</para></note>
@@ -141,7 +141,7 @@ INSTALL_PATH=/tmp/test/PoD
 <screen>
 <command>source PoD_env.sh</command>
 </screen>
-      You need to source this script every time when you want to use <application>POD</application>
+      You need to source this script every time when you want to use <application>PoD</application>
       or source it from your bash profile.
       </para>
       <para>

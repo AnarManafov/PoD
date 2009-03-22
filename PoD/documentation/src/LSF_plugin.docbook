@@ -15,9 +15,17 @@ How to run
       Currently LSF plug-in GUI page for PAConsole is in development and going to be release in the end of November, 2008.
       This will give LSF users ability to submit and monitor POD's LSF jobs as it is done in gLite plug-in, for example.
       </para>
-      <para> 
-      Anyway, POD already supports LSF job manager without GUI.
-      </para>
+      <para><figure float="0" id="PAConsole_LSF_plug-in">
+        <title>PAConsole: Server page</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_LSF_plugin_snapshot.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
       <para>
       In order to submit POD jobs to LSF you need to issue the following command from the POD's working folder:
 <screen>
