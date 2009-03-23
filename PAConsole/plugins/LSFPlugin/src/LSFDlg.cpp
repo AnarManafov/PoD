@@ -259,7 +259,8 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
         return;
 
     // We need to disable menu items when no jobID is selected
-//    const QTreeWidgetItem * item( m_ui.treeJobs->currentItem() );
+    const QModelIndex item = m_ui.treeJobs->currentIndex();
+    const bool enable( item.isValid() );
 
     QMenu menu( this );
 //   menu.addAction( copyJobIDAct );
@@ -271,9 +272,9 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 //    menu.addAction( getJobLoggingInfoAct );
 //    getJobLoggingInfoAct->setEnabled( item );
 
-//    menu.addSeparator();
-//    menu.addAction( removeJobAct );
-//    removeJobAct->setEnabled( item );
+    menu.addSeparator();
+    menu.addAction( removeJobAct );
+    removeJobAct->setEnabled( enable );
 
 //    menu.addSeparator();
 //    menu.addAction( cancelJobAct );
@@ -371,14 +372,15 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 void CLSFDlg::removeJob()
 {
     // Job ID
-//    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-//    if ( !item )
-//        return;
-//
-//    const string jobid( item->text( 0 ).toAscii().data() );
-//
-//    m_JobSubmitter.removeJob( jobid );
-//    updateJobsTree();
+    QModelIndex item = m_ui.treeJobs->currentIndex();
+    if ( !item.isValid() )
+        return;
+
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
+    if (!info)
+        return;
+
+    m_JobSubmitter.removeJob( (NULL != info->m_parent)?info->m_parent->m_id: info->m_id );
 }
 
 void CLSFDlg::setProgress( int _Val )
