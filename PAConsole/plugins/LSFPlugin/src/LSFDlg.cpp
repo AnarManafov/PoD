@@ -256,11 +256,14 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
     // Checking that *treeJobs* has been selected
     QPoint pos = event->globalPos();
     if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
-        return;
+       return;
 
     // We need to disable menu items when no jobID is selected
-    const QModelIndex item = m_ui.treeJobs->currentIndex();
-    const bool enable( item.isValid() );
+    const QModelIndex clicked = m_ui.treeJobs->indexAt( event->pos() );
+    if( !clicked.isValid() )
+      return;
+
+    //const bool enable( clicked == m_ui.treeJobs->currentIndex() );
 
     QMenu menu( this );
 //   menu.addAction( copyJobIDAct );
@@ -274,13 +277,13 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 
     menu.addSeparator();
     menu.addAction( removeJobAct );
-    removeJobAct->setEnabled( enable );
-
+    removeJobAct->setEnabled( true);//enable );
+    //cout << "debug enable:" << enable << endl;
 //    menu.addSeparator();
 //    menu.addAction( cancelJobAct );
 //    cancelJobAct->setEnabled( item );
 
-//    menu.exec( event->globalPos() );
+    menu.exec( event->globalPos() );
 }
 
 //void CLSFDlg::copyJobID() const
