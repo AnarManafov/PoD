@@ -63,9 +63,7 @@ private slots:
 //        void getJobOutput();
 //        void getJobLoggingInfo();
     void removeJob();
-
-protected:
-    void contextMenuEvent( QContextMenuEvent *event );
+ void showContextMenu(const QPoint &_point);
 
 private:
     void createActions();

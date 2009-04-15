@@ -20,7 +20,7 @@
 using namespace std;
 
 CJobInfo::CJobInfo(const CLsfMng &_lsf):
-        m_lsf(_lsf)
+  m_lsf(_lsf)
 {
 }
 
@@ -85,7 +85,8 @@ void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent )
     info->m_status = m_lsf.jobStatus(_JobID);
     info->m_strStatus = m_lsf.jobStatusString(info->m_status);
     info->m_parent = _parent.get();
-    info->m_index = _parent->addChild( info );
+
+     _parent->addChild( info );
 }
 
 void CJobInfo::getInfo( JobsContainer_t *_Container ) const

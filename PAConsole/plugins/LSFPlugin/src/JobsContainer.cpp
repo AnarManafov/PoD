@@ -19,13 +19,18 @@
 
 using namespace std;
 
+QWaitCondition g_signalIsPosted;
+QMutex mutex;
+
 CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter):
         m_lsfsubmitter(_lsfsubmitter),
         m_jobInfo(_lsfsubmitter->getLSF()),
-        m_updateNumberOfJobs(false),
+        m_updateNumberOfJobs(true),
         m_updateInterval(0)
 {
-    _updateNumberOfJobs();
+  // we need to register SJobInfoPTR_t, so that Qt will be able to
+  // marshal this type
+   qRegisterMetaType<SJobInfoPTR_t>("SJobInfoPTR_t");
 }
 
 CJobsContainer::~CJobsContainer()
@@ -48,20 +53,20 @@ void CJobsContainer::update( long _update_time_ms )
 
 void CJobsContainer::run()
 {
-    while (true)
+  forever
     {
-        if ( 0 == m_updateInterval )
-            return;
-
-        if (m_updateNumberOfJobs)
+      if ( 0 == m_updateInterval )
+	return;
+      
+      if (m_updateNumberOfJobs)
         {
-            _updateNumberOfJobs();
-            m_updateNumberOfJobs = false;
+	  _updateNumberOfJobs();
+	  m_updateNumberOfJobs = false;
         }
-        else
-            _updateJobsStatus();
-
-        msleep(m_updateInterval);
+      else
+	_updateJobsStatus();
+      
+      msleep(m_updateInterval);
     }
 }
 
@@ -88,8 +93,22 @@ void CJobsContainer::_updateNumberOfJobs()
     set_difference( m_cur_ids.begin(), m_cur_ids.end(),
                     newinfo.begin(), newinfo.end(),
                     inserter( tmp, tmp.begin() ));
-    for_each( tmp.begin(), tmp.end(),
-              boost::bind( &CJobsContainer::_removeJobInfo, this, _1 ) );
+
+    // Delete children first
+    JobsContainer_t::const_iterator iter = tmp.begin();
+    JobsContainer_t::const_iterator iter_end = tmp.end();
+    for(; iter != iter_end; ++iter)
+      {
+	if( NULL != iter->second->m_parent && 0 != iter->second->m_parent->m_id )
+	  _removeJobInfo( *iter );
+      }
+    // Delete parents
+    iter = tmp.begin();
+    for(; iter != iter_end; ++iter)
+      {
+	if( NULL == iter->second->m_parent || 0 == iter->second->m_parent->m_id )
+	  _removeJobInfo( *iter );
+      }
 
     // Checking for newly added jobs
     tmp.clear();
@@ -108,17 +127,16 @@ void CJobsContainer::_updateJobsStatus()
 
 void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 {
-    SJobInfoPTR_t info( _node.second );
+    SJobInfoPTR_t info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
 
     if ( res.second )
     {
         // parent jobs
-        emit beginAddJob( info.get() );
-        m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-        m_container.push_back( info.get() );
-        emit endAddJob();
+      emit addJob( info );
+      m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
+      m_container.push_back( info.get() );
     }
 
     // adding children to the model
@@ -129,25 +147,25 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
         res = m_cur_ids.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
         if ( res.second )
         {
-            emit beginAddJob( iter->get() );
-            m_curinfo.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
-            emit endAddJob();
+	  emit addJob( *iter );
+	  m_curinfo.insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
         }
     }
 }
 
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
-{
-    JobsContainer_t::iterator found = m_curinfo.find( _node.first );
-    if ( m_curinfo.end() == found )
-        return; // TODO: assert here?
+{ 
+  //   mutex.lock();
+  m_container.erase( remove( m_container.begin(), m_container.end(), _node.second.get() ),
+		     m_container.end() );
+  m_cur_ids.erase( _node.first );
+  m_curinfo.erase( _node.first );
 
-    emit beginRemoveJob( found->second.get() );
-    m_cur_ids.erase( found->first );
-    m_curinfo.erase( found );
-    m_container.erase( remove( m_container.begin(), m_container.end(), found->second.get() ),
-                       m_container.end() );
-    emit endRemoveJob();
+  emit removeJob( _node.second );
+  // TODO: for Qt 4.3 use Qt::BlockingQueuedConnection
+  // so-far we must support Qt 4.2, I therefore use this duty trick
+  //g_signalIsPosted.wait(&mutex);
+  //mutex.unlock();
 }
 
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )

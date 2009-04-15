@@ -27,7 +27,7 @@
 #include <iostream>
 
 struct SJobInfo;
-
+ 
 typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
 //typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
 typedef std::map<std::string, SJobInfoPTR_t> JobsContainer_t;
@@ -39,8 +39,7 @@ struct SJobInfo
     SJobInfo():
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
-            m_parent(NULL),
-            m_index(-1)
+       m_parent(NULL)
     {}
 
     SJobInfo& operator=(const SJobInfo &_info)
@@ -51,11 +50,6 @@ struct SJobInfo
             m_strID = _info.m_strID;
             m_status = _info.m_status;
             m_strStatus = _info.m_strStatus;
-            // keep the old list of children and the parent reference (ee the following TODO)
-            // TODO: very ugly. Revise that.
-            //m_children = _info.m_children;
-            //m_parent = _info.m_parent;
-            m_index = _info.m_index;
         }
         return *this;
     }
@@ -79,7 +73,15 @@ struct SJobInfo
     }
     int indexOf (const SJobInfo *_info) const
     {
-        return _info->m_index;
+       jobs_children_t::const_iterator iter = m_children.begin();
+       jobs_children_t::const_iterator iter_end = m_children.end();
+       for(size_t i = 0; iter != iter_end; ++iter, ++i)
+	 {
+	   if( iter->get() == _info )
+	     return i;
+	 }
+       std::cerr << "indexOf returns bad index: child can't be found" << std::endl;
+       return -2;
     }
     int row() const
     {
@@ -97,7 +99,6 @@ struct SJobInfo
     std::string m_strStatus;
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
-    int m_index;
 };
 
 /**

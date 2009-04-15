@@ -43,16 +43,13 @@ public:
     QModelIndex index( int _row, int _column, const QModelIndex & _parent = QModelIndex() ) const;
     virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
     QModelIndex parent( const QModelIndex &_index ) const;
-    /** This is used from SockInfoFilter to get the socket info at a given index */
     SJobInfo *getJobInfoAtIndex(int _index) const;
     void setUpdateInterval( int _newVal );
 
 private slots:
     void jobChanged( SJobInfo *_info );
-    void beginInsertRow( SJobInfo *_info );
-    void endInsertRow();
-    void beginRemoveRow( SJobInfo *_info );
-    void endRemoveRow();
+    void beginInsertRow( const SJobInfoPTR_t &_info );
+    void beginRemoveRow( const SJobInfoPTR_t &_info );
     void numberOfJobsChanged( int _count );
 
 private:
@@ -66,6 +63,7 @@ private:
      * */
     QStringList m_Titles;
     int m_updateInterval;
+    SJobInfo *m_rootItem;
 };
 
 #endif /* JOBINFOITEMMODEL_H_ */

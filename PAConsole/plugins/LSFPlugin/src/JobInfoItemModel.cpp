@@ -26,24 +26,27 @@ CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int
         m_jobinfo(_lsfsubmitter),
         m_updateInterval(_updateInterval)
 {
+  m_rootItem = new SJobInfo();
+  
     _setupHeader();
     _setupJobsContainer();
 }
 
 CJobInfoItemModel::~CJobInfoItemModel()
 {
+  delete m_rootItem;
 }
 
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
-    SJobInfo *parent_job = NULL;
+    SJobInfo *parentItem = NULL;
 
-    if ( _parent.isValid() )
-    {
-        parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
-        return parent_job->m_children.size();
-    }
-    return m_jobinfo.getCount();
+    if( !_parent.isValid() )
+      parentItem = m_rootItem;
+    else
+      parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+
+    return parentItem->m_children.size();
 }
 
 int CJobInfoItemModel::columnCount( const QModelIndex & parent ) const
@@ -110,37 +113,35 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _column < 0 || _column >= m_Titles.count() )
         return QModelIndex();
 
-    if ( _parent.isValid() )
-    {
-        SJobInfo *parent_job = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
-        if (_row < static_cast<int>(parent_job->m_children.size()))
-            return createIndex(_row, _column, parent_job->m_children[_row].get());
-    }
+    SJobInfo *parentItem = NULL;
+    
+    if( !_parent.isValid() )
+      parentItem = m_rootItem;
     else
-        if ( _row < static_cast<int>(m_jobinfo.getCount()) )
-            return createIndex( _row, _column, m_jobinfo.at(_row) );
+      parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
-    return QModelIndex();
+    if( _row >= static_cast<int>( parentItem->m_children.size()) )
+      return QModelIndex();
+
+    SJobInfo *childItem = parentItem->m_children[_row].get();
+    if( childItem )
+      return createIndex(_row, _column, childItem);
+    else
+      return QModelIndex();
 }
 
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
-    if (!_index.isValid())
-        return QModelIndex();
+  if( !_index.isValid() )
+    return QModelIndex();
 
-    SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
-    if ( !childItem )
-        return QModelIndex();
+  SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
+  SJobInfo *parentItem = childItem->m_parent;
 
-    SJobInfo *parentItem = childItem->m_parent;
-    if ( !parentItem)
-        return QModelIndex();
+  if( parentItem == m_rootItem )
+    return QModelIndex();
 
-    int row = parentItem->row();
-    if (-1 == row)
-        row = m_jobinfo.getIndex(parentItem);
-
-    return createIndex( row, 0, parentItem);
+  return createIndex(parentItem->row(), 0, parentItem);
 }
 
 SJobInfo *CJobInfoItemModel::getJobInfoAtIndex(int _index) const
@@ -189,50 +190,60 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
     emit dataChanged( startIndex, endIndex );
 }
 
-void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
+void CJobInfoItemModel::beginInsertRow( const SJobInfoPTR_t &_info )
 {
-    Q_ASSERT( _info );
-
-    if ( !_info->m_parent )
+  if ( !_info->m_parent )
     {
-        const int row = m_jobinfo.getCount();
-        beginInsertRows( QModelIndex(), row, row );
-        return;
+      const int row = m_rootItem->m_children.size(); //m_jobinfo.getCount();
+      
+      beginInsertRows( QModelIndex(), row, row );
+      _info->m_parent = m_rootItem;
+      m_rootItem->addChild(_info);
+      endInsertRows();
+      return;
+    }
+  
+  const int row = _info->m_parent->m_children.size();
+  QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
+  
+  beginInsertRows(parentModelIndex, row, row);
+  endInsertRows();
+}
+
+void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
+{
+  // mutex.lock();
+
+
+    size_t row = 0;
+    if ( _info->m_parent == m_rootItem )
+    { // it is a parent job
+       jobs_children_t::iterator iter = find(  m_rootItem->m_children.begin(),  m_rootItem->m_children.end(), _info );
+       row = distance(  m_rootItem->m_children.begin(), iter );
+       emit beginRemoveRows( QModelIndex(), row, row );
+
+	 // removing the item from the root item children list
+	 m_rootItem->m_children.erase( remove( m_rootItem->m_children.begin(), m_rootItem->m_children.end(), _info ),
+		     m_rootItem->m_children.end() );
+    }
+    else
+    { // its one of the children
+        row = _info->row();
+	QModelIndex idx = createIndex( row, 0, _info->m_parent );
+	emit beginRemoveRows( idx, row, row );
     }
 
-    int row = _info->m_parent->m_children.size();
-    QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
-    beginInsertRows(parentModelIndex, row, row);
-}
-
-void CJobInfoItemModel::endInsertRow()
-{
-    endInsertRows();
-}
-
-void CJobInfoItemModel::beginRemoveRow( SJobInfo *_info )
-{
-    Q_ASSERT( _info );
-
-    const size_t row = m_jobinfo.getIndex( _info );
-    if ( row >= m_jobinfo.getCount() )
-        return;
-
-    return beginRemoveRows( QModelIndex(), row, row );
-}
-
-void CJobInfoItemModel::endRemoveRow()
-{
-    endRemoveRows();
+  //   g_signalIsPosted.wakeAll();
+  //  mutex.unlock();
+ 
+  endRemoveRows();
 }
 
 void CJobInfoItemModel::_setupJobsContainer()
 {
     connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo * ) ), this, SLOT( jobChanged( SJobInfo * ) ) );
-    connect( &m_jobinfo, SIGNAL( beginAddJob( SJobInfo * ) ), this, SLOT( beginInsertRow( SJobInfo * ) ) );
-    connect( &m_jobinfo, SIGNAL( endAddJob() ), this, SLOT( endInsertRow() ) );
-    connect( &m_jobinfo, SIGNAL( beginRemoveJob( SJobInfo * ) ), this, SLOT( beginRemoveRow( SJobInfo * ) ) );
-    connect( &m_jobinfo, SIGNAL( endRemoveJob() ), this, SLOT( endRemoveRow() ) );
+    connect( &m_jobinfo, SIGNAL( addJob( const SJobInfoPTR_t& ) ), this, SLOT( beginInsertRow( const SJobInfoPTR_t& ) ) );
+    connect( &m_jobinfo, SIGNAL( removeJob( const SJobInfoPTR_t& ) ), this, SLOT( beginRemoveRow( const SJobInfoPTR_t& ) ) );
 
     m_jobinfo.update( m_updateInterval );
 }

@@ -124,6 +124,12 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     m_ui.treeJobs->setModel(m_treeModel);
 
     connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), m_treeModel, SLOT( numberOfJobsChanged( int ) ) );
+   
+    // a context menu of the table view
+    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect(m_ui.treeJobs, SIGNAL(customContextMenuRequested(const QPoint &)),
+            this, SLOT(showContextMenu(const QPoint &)));
+
 }
 
 CLSFDlg::~CLSFDlg()
@@ -251,19 +257,12 @@ void CLSFDlg::createActions()
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
 }
 
-void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
+void CLSFDlg::showContextMenu(const QPoint &_point)
 {
-    // Checking that *treeJobs* has been selected
-    QPoint pos = event->globalPos();
-    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
-       return;
-
     // We need to disable menu items when no jobID is selected
-    const QModelIndex clicked = m_ui.treeJobs->indexAt( event->pos() );
-    if( !clicked.isValid() )
-      return;
+  const QModelIndex clicked = m_ui.treeJobs->indexAt( _point );
 
-    //const bool enable( clicked == m_ui.treeJobs->currentIndex() );
+    const bool enable( clicked.isValid() );
 
     QMenu menu( this );
 //   menu.addAction( copyJobIDAct );
@@ -277,13 +276,12 @@ void CLSFDlg::contextMenuEvent( QContextMenuEvent *event )
 
     menu.addSeparator();
     menu.addAction( removeJobAct );
-    removeJobAct->setEnabled( true);//enable );
-    //cout << "debug enable:" << enable << endl;
+    removeJobAct->setEnabled( enable );
 //    menu.addSeparator();
 //    menu.addAction( cancelJobAct );
 //    cancelJobAct->setEnabled( item );
 
-    menu.exec( event->globalPos() );
+    menu.exec( m_ui.treeJobs->mapToGlobal(_point) );
 }
 
 //void CLSFDlg::copyJobID() const
@@ -378,12 +376,14 @@ void CLSFDlg::removeJob()
     QModelIndex item = m_ui.treeJobs->currentIndex();
     if ( !item.isValid() )
         return;
-
+   
     SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
     if (!info)
         return;
 
-    m_JobSubmitter.removeJob( (NULL != info->m_parent)?info->m_parent->m_id: info->m_id );
+    // if the m_id == 0, then it means it is a rootItem - parent of
+    // all parents
+    m_JobSubmitter.removeJob( (NULL != info->m_parent && info->m_parent->m_id != 0)?info->m_parent->m_id: info->m_id );
 }
 
 void CLSFDlg::setProgress( int _Val )

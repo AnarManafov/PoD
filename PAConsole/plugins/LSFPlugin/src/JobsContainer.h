@@ -20,8 +20,11 @@
 #include <iterator>
 // Qt
 #include <QObject>
-
+#include <QtCore>
 typedef std::vector<SJobInfo *> SJobInfoVec_t;
+
+extern QWaitCondition g_signalIsPosted;
+extern QMutex mutex;
 
 class CJobsContainer: public QThread
 {
@@ -39,19 +42,11 @@ signals:
     /**
      *  This indicates we are about to add a job information in the model.
      */
-    void beginAddJob( SJobInfo *_info );
-    /**
-     *  We have finished inserting a job.
-     */
-    void endAddJob();
+    void addJob( const SJobInfoPTR_t &_info );
     /**
      *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
      */
-    void beginRemoveJob( SJobInfo *_info );
-    /**
-     *  We have finished removing a job.
-     */
-    void endRemoveJob();
+    void removeJob( const SJobInfoPTR_t &_info );
 
 public:
     void run();
@@ -69,9 +64,8 @@ public:
     }
     SJobInfoVec_t::size_type getIndex( SJobInfo *_info ) const
     {
-        // TODO: This should be optimized. maybe we can add an index member in the SJobInfo or something
-        SJobInfoVec_t::const_iterator iter = std::find( m_container.begin(), m_container.end(), _info );
-        return std::distance( m_container.begin(), iter );
+       SJobInfoVec_t::const_iterator iter = std::find( m_container.begin(), m_container.end(), _info );
+       return std::distance( m_container.begin(), iter );
     }
 
 private slots:

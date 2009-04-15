@@ -17,7 +17,7 @@ endif ( NOT $ENV{GLITE_PROOF_LOCATION} STREQUAL "" )
 
 # set cmake build type, default value is: RelWithDebInfo
 # possible options are: None Debug Release RelWithDebInfo MinSizeRel
-set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
+set( CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Choose the type of build" FORCE )
 #set(CMAKE_VERBOSE_MAKEFILE TRUE CACHE BOOL "This is useful for debugging only." FORCE)
 
 # This is needed if you want to use gLite plug-in and have several version of BOOST installed
