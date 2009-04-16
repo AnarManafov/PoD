@@ -26,25 +26,25 @@ CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int
         m_jobinfo(_lsfsubmitter),
         m_updateInterval(_updateInterval)
 {
-  m_rootItem = new SJobInfo();
-  
+    m_rootItem = new SJobInfo();
+
     _setupHeader();
     _setupJobsContainer();
 }
 
 CJobInfoItemModel::~CJobInfoItemModel()
 {
-  delete m_rootItem;
+    delete m_rootItem;
 }
 
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
     SJobInfo *parentItem = NULL;
 
-    if( !_parent.isValid() )
-      parentItem = m_rootItem;
+    if ( !_parent.isValid() )
+        parentItem = m_rootItem;
     else
-      parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+        parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
     return parentItem->m_children.size();
 }
@@ -114,45 +114,45 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
         return QModelIndex();
 
     SJobInfo *parentItem = NULL;
-    
-    if( !_parent.isValid() )
-      parentItem = m_rootItem;
-    else
-      parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
-    if( _row >= static_cast<int>( parentItem->m_children.size()) )
-      return QModelIndex();
+    if ( !_parent.isValid() )
+        parentItem = m_rootItem;
+    else
+        parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
+
+    if ( _row >= static_cast<int>( parentItem->m_children.size()) )
+        return QModelIndex();
 
     SJobInfo *childItem = parentItem->m_children[_row].get();
-    if( childItem )
-      return createIndex(_row, _column, childItem);
+    if ( childItem )
+        return createIndex(_row, _column, childItem);
     else
-      return QModelIndex();
+        return QModelIndex();
 }
 
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
-  if( !_index.isValid() )
-    return QModelIndex();
+    if ( !_index.isValid() )
+        return QModelIndex();
 
-  SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
-  SJobInfo *parentItem = childItem->m_parent;
+    SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
+    SJobInfo *parentItem = childItem->m_parent;
 
-  if( parentItem == m_rootItem )
-    return QModelIndex();
+    if ( parentItem == m_rootItem )
+        return QModelIndex();
 
-  return createIndex(parentItem->row(), 0, parentItem);
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 
-SJobInfo *CJobInfoItemModel::getJobInfoAtIndex(int _index) const
-{
-    if ( _index < 0 )
-        return NULL;
-    if ( static_cast<int>( m_jobinfo.getCount() ) <= _index )
-        return NULL;
-
-    return m_jobinfo.at( _index );
-}
+//SJobInfo *CJobInfoItemModel::getJobInfoAtIndex(int _index) const
+//{
+//    if ( _index < 0 )
+//        return NULL;
+//    if ( static_cast<int>( m_jobinfo.getCount() ) <= _index )
+//        return NULL;
+//
+//    return m_jobinfo.at( _index );
+//}
 
 void CJobInfoItemModel::_setupHeader()
 {
@@ -172,10 +172,10 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
         return;
 
     size_t row = 0;
-    if ( !_info->m_parent )
+    if ( _info->m_parent == m_rootItem )
     { // it is a parent job
-        row = m_jobinfo.getIndex( _info );
-        if ( row >= m_jobinfo.getCount() )
+        row = _info->row();//m_jobinfo.getIndex( _info );
+        if ( row < 0)//>= m_jobinfo.getCount() )
             return;
     }
     else
@@ -192,51 +192,51 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
 
 void CJobInfoItemModel::beginInsertRow( const SJobInfoPTR_t &_info )
 {
-  if ( !_info->m_parent )
+    if ( !_info->m_parent )
     {
-      const int row = m_rootItem->m_children.size(); //m_jobinfo.getCount();
-      
-      beginInsertRows( QModelIndex(), row, row );
-      _info->m_parent = m_rootItem;
-      m_rootItem->addChild(_info);
-      endInsertRows();
-      return;
+        const int row = m_rootItem->m_children.size(); //m_jobinfo.getCount();
+
+        beginInsertRows( QModelIndex(), row, row );
+        _info->m_parent = m_rootItem;
+        m_rootItem->addChild(_info);
+        endInsertRows();
+        return;
     }
-  
-  const int row = _info->m_parent->m_children.size();
-  QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
-  
-  beginInsertRows(parentModelIndex, row, row);
-  endInsertRows();
+
+    const int row = _info->m_parent->m_children.size();
+    QModelIndex parentModelIndex = createIndex(row, 0, _info->m_parent);
+
+    beginInsertRows(parentModelIndex, row, row);
+    endInsertRows();
 }
 
 void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
 {
-  // mutex.lock();
+    // mutex.lock();
 
 
     size_t row = 0;
     if ( _info->m_parent == m_rootItem )
     { // it is a parent job
-       jobs_children_t::iterator iter = find(  m_rootItem->m_children.begin(),  m_rootItem->m_children.end(), _info );
-       row = distance(  m_rootItem->m_children.begin(), iter );
-       emit beginRemoveRows( QModelIndex(), row, row );
+        //jobs_children_t::iterator iter = find(  m_rootItem->m_children.begin(),  m_rootItem->m_children.end(), _info );
+        row = _info->row();//distance(  m_rootItem->m_children.begin(), iter );
+        emit beginRemoveRows( QModelIndex(), row, row );
 
-	 // removing the item from the root item children list
-	 m_rootItem->m_children.erase( remove( m_rootItem->m_children.begin(), m_rootItem->m_children.end(), _info ),
-		     m_rootItem->m_children.end() );
+        // removing the item from the root item children list
+        m_rootItem->m_children.erase( remove( m_rootItem->m_children.begin(), m_rootItem->m_children.end(), _info ),
+                                      m_rootItem->m_children.end() );
     }
     else
     { // its one of the children
         row = _info->row();
-	QModelIndex idx = createIndex( row, 0, _info->m_parent );
-	emit beginRemoveRows( idx, row, row );
+        QModelIndex idx = createIndex( row, 0, _info->m_parent );
+        emit beginRemoveRows( idx, row, row );
     }
 
-  //   g_signalIsPosted.wakeAll();
-  //  mutex.unlock();
- 
-  endRemoveRows();
+    //   g_signalIsPosted.wakeAll();
+    //  mutex.unlock();
+
+    endRemoveRows();
 }
 
 void CJobInfoItemModel::_setupJobsContainer()
