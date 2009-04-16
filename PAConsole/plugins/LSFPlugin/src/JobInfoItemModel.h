@@ -43,7 +43,6 @@ public:
     QModelIndex index( int _row, int _column, const QModelIndex & _parent = QModelIndex() ) const;
     virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
     QModelIndex parent( const QModelIndex &_index ) const;
-    //  SJobInfo *getJobInfoAtIndex(int _index) const;
     void setUpdateInterval( int _newVal );
 
 private slots:

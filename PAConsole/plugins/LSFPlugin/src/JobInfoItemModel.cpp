@@ -144,16 +144,6 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
     return createIndex(parentItem->row(), 0, parentItem);
 }
 
-//SJobInfo *CJobInfoItemModel::getJobInfoAtIndex(int _index) const
-//{
-//    if ( _index < 0 )
-//        return NULL;
-//    if ( static_cast<int>( m_jobinfo.getCount() ) <= _index )
-//        return NULL;
-//
-//    return m_jobinfo.at( _index );
-//}
-
 void CJobInfoItemModel::_setupHeader()
 {
     QStringList titles;
@@ -171,20 +161,10 @@ void CJobInfoItemModel::jobChanged( SJobInfo *_info )
     if ( !_info )
         return;
 
-    size_t row = 0;
-    if ( _info->m_parent == m_rootItem )
-    { // it is a parent job
-        row = _info->row();//m_jobinfo.getIndex( _info );
-        if ( row < 0)//>= m_jobinfo.getCount() )
-            return;
-    }
-    else
-    { // its one of the children
-        SJobInfo *parent = _info->m_parent;
-        row = _info->row();
-        if ( row >= parent->m_children.size() )
-            return;
-    }
+    const size_t row = _info->row();
+    if ( row < 0)
+      return;
+    
     QModelIndex startIndex = createIndex( row, 0, _info );
     QModelIndex endIndex = createIndex( row, m_Titles.count(), _info );
     emit dataChanged( startIndex, endIndex );
@@ -194,7 +174,7 @@ void CJobInfoItemModel::beginInsertRow( const SJobInfoPTR_t &_info )
 {
     if ( !_info->m_parent )
     {
-        const int row = m_rootItem->m_children.size(); //m_jobinfo.getCount();
+      const int row = m_rootItem->m_children.size();
 
         beginInsertRows( QModelIndex(), row, row );
         _info->m_parent = m_rootItem;
@@ -218,10 +198,8 @@ void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
     size_t row = 0;
     if ( _info->m_parent == m_rootItem )
     { // it is a parent job
-        //jobs_children_t::iterator iter = find(  m_rootItem->m_children.begin(),  m_rootItem->m_children.end(), _info );
-        row = _info->row();//distance(  m_rootItem->m_children.begin(), iter );
+        row = _info->row();
         emit beginRemoveRows( QModelIndex(), row, row );
-
         // removing the item from the root item children list
         m_rootItem->m_children.erase( remove( m_rootItem->m_children.begin(), m_rootItem->m_children.end(), _info ),
                                       m_rootItem->m_children.end() );

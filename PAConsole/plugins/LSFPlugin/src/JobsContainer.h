@@ -21,7 +21,6 @@
 // Qt
 #include <QObject>
 #include <QtCore>
-typedef std::vector<SJobInfo *> SJobInfoVec_t;
 
 extern QWaitCondition g_signalIsPosted;
 extern QMutex mutex;
@@ -52,21 +51,6 @@ public:
     void run();
     void update( long _update_time_ms = 0 );
     void updateNumberOfJobs();
-//    SJobInfoVec_t::size_type getCount() const
-//    {
-//        return m_container.size();
-//    }
-//    SJobInfo *at( SJobInfoVec_t::size_type _pos ) const
-//    {
-//        if ( _pos < 0 || _pos >= m_container.size() )
-//            return NULL;
-//        return m_container[_pos];
-//    }
-//    SJobInfoVec_t::size_type getIndex( SJobInfo *_info ) const
-//    {
-//       SJobInfoVec_t::const_iterator iter = std::find( m_container.begin(), m_container.end(), _info );
-//       return std::distance( m_container.begin(), iter );
-//    }
 
 private slots:
     void _updateJobsStatus();
@@ -78,7 +62,6 @@ private:
     void _updateJobInfo( const JobsContainer_t::value_type &_node );
 
 private:
-    SJobInfoVec_t m_container;
     JobsContainer_t m_curinfo;
     JobsContainer_t m_cur_ids;
     const CLSFJobSubmitter *m_lsfsubmitter;

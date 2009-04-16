@@ -136,7 +136,6 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
         // parent jobs
       emit addJob( info );
       m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-      m_container.push_back( info.get() );
     }
 
     // adding children to the model
@@ -156,8 +155,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 { 
   //   mutex.lock();
-  m_container.erase( remove( m_container.begin(), m_container.end(), _node.second.get() ),
-		     m_container.end() );
+
   m_cur_ids.erase( _node.first );
   m_curinfo.erase( _node.first );
 
