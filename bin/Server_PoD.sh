@@ -170,6 +170,12 @@ status()
 
     # PROOFAgent
     proofagent_detect
+   
+    # check that ROOTSYS is set
+    if [ -z $ROOTSYS ]; then
+       echo ""
+       echo 'WARNING: $ROOTSYS is not set.'
+    fi
 }
 
 # checking the number of parameters
