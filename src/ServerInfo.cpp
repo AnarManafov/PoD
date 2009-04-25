@@ -24,7 +24,17 @@ using namespace MiscCommon;
 // TODO: we need check processes and its user name, not only existance of the process
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
-    return getprocbyname( _Srv );
+    pid_t pid( getprocbyname( _Srv ) );
+    if( 0 == pid )
+    	return pid;
+
+    // checking that the process is running under current's user id
+    CProcStatus p;
+    p.Open( pid );
+    istringstream ss( p.GetValue( "Uid" ) );
+    uid_t realUid(0);
+    ss >> realUid;
+    return ( getuid() == realUid? pid: 0 );
 }
 
 bool CServerInfo::IsRunning( bool _check_all ) const
