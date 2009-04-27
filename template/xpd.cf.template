@@ -49,6 +49,8 @@ fi
 #
 if exec xrootd
  xrd.protocol xproofd:000 libXrdProofd.so tmp:/$PROOFTMP
+ # see Savannah bug# 49680
+ xpd.port 000
 fi
 #
 ## Resource finder
