@@ -177,7 +177,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
     CServerInfo si;
     if ( !si.IsRunning( true ) )
     {
-        const string msg( "gLitePROOF server is not running.\n"
+        const string msg( "PoD server is not running.\n"
                           "Do you want to submit this job anyway?" );
         const QMessageBox::StandardButton reply =
             QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),

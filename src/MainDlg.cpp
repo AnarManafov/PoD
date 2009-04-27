@@ -24,6 +24,7 @@
 #include "def.h"
 // PAConsole
 #include "IJobManager.h"
+#include "ServerInfo.h"
 #include "MainDlg.h"
 
 using namespace std;
@@ -244,4 +245,22 @@ void CMainDlg::changeNumberOfJobs( int /*_count*/ )
     }
 
     emit numberOfJobs( count );
+}
+
+void CMainDlg::on_closeButton_clicked()
+{
+  CServerInfo si;
+  if ( si.IsRunning( true ) )
+    {
+      const string msg( "PoD server is running.\n"
+			"Do you want to stop the server and shut all workers down?\n"
+			"If you answer NO, then the server and workers will continue to run after PAConsole is closed.");
+      const QMessageBox::StandardButton reply =
+	QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+			       QMessageBox::Yes | QMessageBox::No );
+      if ( QMessageBox::Yes == reply )
+	m_server.CommandServer( CServerDlg::srvSTOP );    
+    }
+
+  close();
 }

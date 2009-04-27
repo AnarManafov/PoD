@@ -33,11 +33,14 @@ class CServerDlg: public QWidget
 
         friend class boost::serialization::access;
 
-        enum EServerCommands{ srvSTART, srvSTOP };
-
     public:
         CServerDlg( QWidget *_parent = NULL );
         virtual ~CServerDlg();
+
+    public:
+	 enum EServerCommands{ srvSTART, srvSTOP };
+
+	 void CommandServer( EServerCommands _command );
 
     private slots:
         void on_btnStartServer_clicked();
@@ -48,7 +51,6 @@ class CServerDlg: public QWidget
 
     private:
         void getSrvPort( int *_Port );
-        void CommandServer( EServerCommands _command );
         bool IsRunning( bool _check_all );
 
         template<class Archive>

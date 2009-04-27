@@ -49,6 +49,9 @@ class CMainDlg: public QDialog
         void updatePluginTimer( int _interval );
         void changeNumberOfJobs( int _count );
 
+   private slots:
+     void on_closeButton_clicked();
+
     private:
         void createIcons();
         void loadPlugins();
