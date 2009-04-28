@@ -119,9 +119,7 @@ start()
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
     regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$(hostname -f)\2/g"
-    # see Savannah Bug #49680
-    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_xpd_port" -e "$regexp_server_host" $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
+    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
     mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
 
     # replacing ports in the PROOF example script
