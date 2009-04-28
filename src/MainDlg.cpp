@@ -257,9 +257,11 @@ void CMainDlg::on_closeButton_clicked()
 			"If you answer NO, then the server and workers will continue to run after PAConsole is closed.");
       const QMessageBox::StandardButton reply =
 	QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
-			       QMessageBox::Yes | QMessageBox::No );
+			       QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+      if ( QMessageBox::Cancel == reply)
+	return;
       if ( QMessageBox::Yes == reply )
-	m_server.CommandServer( CServerDlg::srvSTOP );    
+	m_server.CommandServer( CServerDlg::srvSTOP );   
     }
 
   close();
