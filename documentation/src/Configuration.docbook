@@ -11,6 +11,7 @@ Configuration
     <para>
     As it was mentioned above <application>PoD</application> consists of several modules
     and to fine tune <application>PoD</application> one may want to configure some of these modules.
+    Recommended only for advanced users.
     </para>
     <sect1 id="GAW">
       <title>GAW</title>

@@ -27,13 +27,56 @@ How to run
         </figure></para>
     </sect1>
       
-     <sect1 id="LSF_Settings">
-      <title>Plug-in settings</title>
+     <sect1 id="LSF_JobScript">
+      <title>LSF Job Script</title>
       <para>
       Using the plug-ins GUI (see. <xref linkend="PAConsole_LSF_plug-in"/>) users are able to specify a number of workers and an LSF queue. Users also able to change default
       Job's script, but it id not recommended (anyway advanced users have possibility to tune it or just choose another one). 
       </para>
     </sect1>
-    
+    <sect1 id="LSF_PlugIn_Custom_environment">
+      <title>Custom environment</title>
+      <para>
+     	If you need tune the environment on your workers, then your can setup your custom environment using
+     	<filename>etc/PoDWorker.sh</filename> script. This is a worker script which is executed by the LSF.
+     	Every process of PoD is a child of this process, including your PROOF workers. The environment, which 
+     	<filename>etc/PoDWorker.sh</filename> setups is also inherited by its children. 
+      </para>
+      <para>
+      There is no way to set your environment using <application>PAConsole</application>. This is ongoing development.
+      Currently users need to add additional environment settings manually.
+      </para>
+      <para>
+      Open <filename>etc/PoDWorker.sh</filename> script and find a place marked by the following message:
+      <screen>
+# ************************************************************************
+# H E R E    U S E R S   C A N   D E C L A  R E   A   C U S T O M   E N V I R O N M E N T
+# ************************************************************************
+
+
+# ************************************************************************
+		</screen>
+		There you can add your settings. For example, we want to export a <envar>MY_PATH</envar> variable, since our analysis script relays on it.
+		We therefore can do it like the following:
+		<screen>
+# ************************************************************************
+# H E R E    U S E R S   C A N   D E C L A  R E   A   C U S T O M   E N V I R O N M E N T
+# ************************************************************************
+
+export MY_PATH=/home/user1/test_folder
+
+# ************************************************************************
+		</screen>
+		<warning><para>
+		Be advised, that if you decide to call a script from that place, which sets an environment for your workers, then it won't work.
+		Since your script will only modify its own environment and not environment of his father - <filename>etc/PoDWorker.sh</filename>.
+		As a result, environment of the children of <filename>etc/PoDWorker.sh</filename> will NOT be modified.
+		<para>
+		Instead, you need explicitly set all variables in <filename>etc/PoDWorker.sh</filename> directly as it shown in the example.
+		</para>   
+		</para></warning>
+      </para>
+    </sect1>
+        
   </chapter>
  

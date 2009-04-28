@@ -19,6 +19,7 @@ Requirements
         <para>
 	<itemizedlist>
 		<title>General workspace requirements: </title>
+		<listitem>Incomming connection on PROOFAgent port (configurable)</listitem>
 		<listitem>ROOT 5.22+ (xrootd enabled)</listitem>
 		<listitem>Qt 4.2+</listitem>
 		<listitem>BOOST 1.32</listitem>
