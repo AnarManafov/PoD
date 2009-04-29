@@ -73,7 +73,11 @@ export MY_PATH=/home/user1/test_folder
 		As a result, environment of the children of <filename>etc/PoDWorker.sh</filename> will NOT be modified.
 		<para>
 		Instead, you need explicitly set all variables in <filename>etc/PoDWorker.sh</filename> directly as it shown in the example.
-		</para>   
+		</para>
+		<para>
+		Another possibility would be (on shared home LSF systems) is to execute your environment script just before a job submission.
+		That environment will be used then on the workers.
+		</para>
 		</para></warning>
       </para>
     </sect1>
