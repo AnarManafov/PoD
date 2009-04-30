@@ -1,7 +1,8 @@
-********************* Release 1.0.6 not yet released ************************
+********************* Release 1.0.6 2009-04-30 ************************
 - using new build system - cmake [Trac Ticket #79]
 - implemented plug-in system for PAConsole's job managers [Trac Ticket #80]
 - implemented gLite job manager plug-in [Trac Ticket #80]
+- implemented LSF job manager plug-in [Trac Ticket #81]
 
 ********************* Release 1.0.5 2008-08-30 ************************
 - The project has been moved to Eclipse 3.4 "Ganymede".
