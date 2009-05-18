@@ -10,13 +10,16 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 // STD
 #include <stdexcept>
+// BOOST
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
 // PROOFAgent
 #include "PROOFAgent.h"
 // MiscCommon
@@ -29,17 +32,104 @@
 
 using namespace std;
 using namespace MiscCommon;
-using namespace MiscCommon::XMLHelper;
+//using namespace MiscCommon::XMLHelper;
 using namespace PROOFAgent;
-XERCES_CPP_NAMESPACE_USE;
 
+//XERCES_CPP_NAMESPACE_USE;
+
+
+template<class T>
+void _loadcfg( T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() || !is_file_exists( _FileName ) )
+        throw exception();
+
+    ifstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_iarchive ia( f );
+    ia >> BOOST_SERIALIZATION_NVP( _s );
+}
+
+template<class T>
+void _savecfg( const T &_s, string _FileName )
+{
+    smart_path( &_FileName );
+    if ( _FileName.empty() )
+        throw exception();
+
+    // make an archive
+    ofstream f( _FileName.c_str() );
+    //assert(f.good());
+    boost::archive::xml_oarchive oa( f );
+    oa << BOOST_SERIALIZATION_NVP( _s );
+}
+
+CPROOFAgent::CPROOFAgent()
+{
+    // Strategy if looking for Cfg file:
+    // 1 - current working directory
+    // 2 - $HOME/
+    // 3 - $PROOFAGENT_LOCATION/etc/
+    // 4 - /etc/
+    string cur_dir;
+    CHARVector_t buf( MAX_PATH );
+    if ( ::getcwd( &buf[0], MAX_PATH ) )
+    {
+        string path( &buf[0] );
+        smart_append( &path, '/' );
+        cur_dir += _xmlFileName;
+    }
+
+    CFindCfgFile<string> cfg_file;
+    cfg_file.SetOrder
+    ( cur_dir )
+    ( "$HOME/" + _xmlFileName )
+    ( "$PROOFAGENT_LOCATION/etc/" + _xmlFileName )
+    ( "/etc/" + _xmlFileName );
+
+    cfg_file.GetCfg( &m_cfgFileName );
+    smart_path( &m_cfgFileName );
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, m_cfgFileName );
+    }
+    catch ( ... )
+    {
+        cerr << "PROOFAgent error: "
+        << "Can't load configuration file "
+        << m_cfgFileName << endl;
+        exit(0); // TODO: revise this case
+    }
+}
+
+CPROOFAgent::~CPROOFAgent()
+{
+    try
+    {
+        // Saving class to the config file
+        _savecfg( *this, m_cfgFileName );
+    }
+    catch ( const exception &_e )
+    {
+        // TODO: log message
+    }
+    catch ( ... )
+    {
+        // TODO: log message
+    }
+
+    ExecuteLastCmd();
+}
 
 void CPROOFAgent::Start() throw( exception )
 {
     m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 
-void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( exception )
+/*void CPROOFAgent::ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( exception )
 {
     // Strategy if looking for Cfg file:
     // 1 - current working directory
@@ -211,7 +301,7 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
 
     XMLPlatformUtils::Terminate();
 }
-
+*/
 void CPROOFAgent::ExecuteLastCmd()
 {
     if ( !m_Data.m_sLastExecCmd.empty() )
