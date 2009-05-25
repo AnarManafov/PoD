@@ -49,11 +49,11 @@ AC_PROG_INSTALL
 ## -----------------------------------------------------------------------
 ## ----------------------------- >>> XERCES <<<----------------------------
 ## -----------------------------------------------------------------------
-AC_XERCES([])
+#AC_XERCES([])
 
-LDFLAGS="$LDFLAGS"
-LIBS="$LIBS $XERCESC_LIBS"
-CPPFLAGS="$CPPFLAGS $XERCESC_CFLAGS"
+#LDFLAGS="$LDFLAGS"
+#LIBS="$LIBS $XERCESC_LIBS"
+#CPPFLAGS="$CPPFLAGS $XERCESC_CFLAGS"
 ## -----------------------------------------------------------------------
 ## ----------------------------- >>> BOOST <<<----------------------------
 ## -----------------------------------------------------------------------
@@ -66,6 +66,10 @@ LIBS="$LIBS $BOOST_PROGRAM_OPTIONS_LDFLAGS $BOOST_PROGRAM_OPTIONS_LIBS"
 
 BOOST_THREADS([])
 LIBS="$LIBS $BOOST_THREAD_LDFLAGS $BOOST_THREAD_LIBS"
+
+BOOST_SERIALIZATION([])
+LIBS="$LIBS $BOOST_SERIALIZATION_LDFLAGS $BOOST_SERIALIZATION_LIBS"
+
 
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 ## -----------------------------------------------------------------------

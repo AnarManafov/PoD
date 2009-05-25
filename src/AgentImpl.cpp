@@ -15,10 +15,10 @@
 // API
 #include <sys/types.h>
 // XML parser
-#include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/framework/LocalFileFormatTarget.hpp>
-#include <xercesc/parsers/XercesDOMParser.hpp>
-#include <xercesc/sax/HandlerBase.hpp>
+//#include <xercesc/util/PlatformUtils.hpp>
+//#include <xercesc/framework/LocalFileFormatTarget.hpp>
+//#include <xercesc/parsers/XercesDOMParser.hpp>
+//#include <xercesc/sax/HandlerBase.hpp>
 // PROOFAgent
 #include "AgentImpl.h"
 #include "INet.h"
@@ -26,9 +26,9 @@
 
 using namespace std;
 using namespace MiscCommon;
-using namespace MiscCommon::XMLHelper;
+//using namespace MiscCommon::XMLHelper;
 using namespace MiscCommon::INet;
-XERCES_CPP_NAMESPACE_USE;
+//XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 
 const size_t g_READ_READY_INTERVAL = 10;

@@ -24,10 +24,10 @@ namespace PROOFAgent
 {
     typedef std::auto_ptr<CAgentBase> pAgentBase_t;
     /**
-     * 
+     *
      * @brief A simple object factory class.
-     * @brief It produces Agents objects according to the given mode. 
-     * 
+     * @brief It produces Agents objects according to the given mode.
+     *
      */
     class CAgent
     {
@@ -41,9 +41,9 @@ namespace PROOFAgent
                 m_Mode = _Mode;
                 RefreshAgent ();
             }
-            void Init( xercesc::DOMNode* _element ) throw(std::exception)
+            void Init( /*xercesc::DOMNode* _element*/ ) throw(std::exception)
             {
-                m_Agent->Init( _element );
+                m_Agent->Init( /*_element*/ );
             }
             void Start( const std::string &_PROOFCfg ) throw(std::exception)
             {
@@ -63,11 +63,11 @@ namespace PROOFAgent
                     case Server:
                         return new CAgentServer;
                     case Client:
-                        return new CAgentClient;                        
+                        return new CAgentClient;
                     case Unknown:
                     default:
-                        return NULL;                        
-                }                
+                        return NULL;
+                }
             }
 
         private:

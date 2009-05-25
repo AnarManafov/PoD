@@ -24,7 +24,6 @@
 #include "PROOFAgent.h"
 // MiscCommon
 #include "MiscUtils.h"
-#include "TimeoutGuard.h"
 #include "SysHelper.h"
 #include "FindCfgFile.h"
 
@@ -67,42 +66,6 @@ void _savecfg( const T &_s, string _FileName )
 
 CPROOFAgent::CPROOFAgent()
 {
-    // Strategy if looking for Cfg file:
-    // 1 - current working directory
-    // 2 - $HOME/
-    // 3 - $PROOFAGENT_LOCATION/etc/
-    // 4 - /etc/
-    string cur_dir;
-    CHARVector_t buf( MAX_PATH );
-    if ( ::getcwd( &buf[0], MAX_PATH ) )
-    {
-        string path( &buf[0] );
-        smart_append( &path, '/' );
-        cur_dir += _xmlFileName;
-    }
-
-    CFindCfgFile<string> cfg_file;
-    cfg_file.SetOrder
-    ( cur_dir )
-    ( "$HOME/" + _xmlFileName )
-    ( "$PROOFAGENT_LOCATION/etc/" + _xmlFileName )
-    ( "/etc/" + _xmlFileName );
-
-    cfg_file.GetCfg( &m_cfgFileName );
-    smart_path( &m_cfgFileName );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, m_cfgFileName );
-    }
-    catch ( ... )
-    {
-        cerr << "PROOFAgent error: "
-        << "Can't load configuration file "
-        << m_cfgFileName << endl;
-        exit(0); // TODO: revise this case
-    }
 }
 
 CPROOFAgent::~CPROOFAgent()
@@ -302,6 +265,59 @@ void CPROOFAgent::_ReadCfg( const std::string &_xmlFileName, const std::string &
     XMLPlatformUtils::Terminate();
 }
 */
+void CPROOFAgent::loadCfg( const std::string &_fileName )
+{
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, _fileName );
+    }
+    catch ( ... )
+    {
+        cerr << "PROOFAgent error: "
+        << "Can't load configuration file "
+        << m_cfgFileName << endl;
+        exit(0); // TODO: revise this case
+    }
+}
+
+void CPROOFAgent::postLoad()
+{
+    // Correcting configuration values
+    // resolving user's home dir from (~/ or $HOME, if present)
+    MiscCommon::smart_path( &m_Data.m_sWorkDir );
+    // We need to be sure that there is "/" always at the end of the path
+    MiscCommon::smart_append<string>( &m_Data.m_sWorkDir, '/' );
+
+    MiscCommon::smart_path( &m_Data.m_sLogFileDir );
+    MiscCommon::smart_append<string>( &m_Data.m_sLogFileDir, '/' );
+
+    MiscCommon::smart_path( &m_Data.m_sPROOFCfg );
+
+    m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
+
+    // Initializing log engine
+    // log file name: proofagent.<instance_name>.pid
+    std::stringstream logfile_name;
+    logfile_name
+    << m_Data.m_sLogFileDir
+    << "proofagent."
+    << (( m_Data.m_isServerMode ) ? "server" : "client")
+    << ".log";
+
+    CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
+    InfoLog( erOK, PACKAGE + string( " v." ) + VERSION );
+
+    // Timeout Guard
+    if ( 0 != m_Data.m_nTimeout )
+        CTimeoutGuard::Instance().Init( getpid(), m_Data.m_nTimeout );
+
+    // Spawning new Agent in requested mode
+    m_Agent.SetMode( m_Data.m_AgentMode );
+    // TODO: we now use a BOOST serialization
+    m_Agent.Init( );
+}
+
 void CPROOFAgent::ExecuteLastCmd()
 {
     if ( !m_Data.m_sLastExecCmd.empty() )

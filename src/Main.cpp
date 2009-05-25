@@ -34,9 +34,9 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 
 /**
- * 
+ *
  * @brief PROOFAgent's container of options
- * 
+ *
  */
 typedef struct SOptions
 {
@@ -80,11 +80,9 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
     ("start", "start PROOFAgent daemon (default action)")
     ("stop", "stop PROOFAgent daemon")
     ("status", "query current status of PROOFAgent daemon")
-    ("instance,i", value<string>(), "name of the instance of PROOFAgent")
     ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
     ("daemonize,d", "run PROOFAgent as a daemon")
     ("version,v", "Version information")
-    ("validate,l", "validate configuration file before parsing it")
     ;
 
     // Parsing command-line
@@ -104,9 +102,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         return false;
     }
 
-    if ( !vm.count("instance") )
-        throw runtime_error("You need to specify instance name by using \"instance\" option.");
-
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "status" );
     boost_hlp::conflicting_options( vm, "stop", "status" );
@@ -122,8 +117,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         _Options->m_Command = SOptions_t::Stop;
     if ( vm.count("status") )
         _Options->m_Command = SOptions_t::Status;
-    if ( vm.count("instance") )
-        _Options->m_sInstanceName = vm["instance"].as<string>();
     if ( vm.count("pidfile") )
     {
         _Options->m_sPidfileDir = vm["pidfile"].as<string>();
@@ -131,7 +124,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (excep
         smart_append( &_Options->m_sPidfileDir, '/' );
     }
     _Options->m_bDaemonize = vm.count("daemonize");
-    _Options->m_bValidate = vm.count("validate");
 
     return true;
 }
@@ -246,7 +238,7 @@ int main( int argc, char *argv[] )
         CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
-        agent.ReadCfg( Options.m_sConfigFile, Options.m_sInstanceName, Options.m_bValidate );
+        agent.loadCfg( Options.m_sConfigFile );
 
         if ( Options.m_bDaemonize )
         {

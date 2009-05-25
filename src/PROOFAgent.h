@@ -22,6 +22,8 @@
 #include <boost/serialization/split_member.hpp>
 // PROOFAgent
 #include "Agent.h"
+#include "TimeoutGuard.h"
+
 
 /**
  *
@@ -104,6 +106,7 @@ public:
 
 public:
     // void ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML = false ) throw( std::exception );
+	void loadCfg( const std::string &_fileName );
     void Start() throw( std::exception );
 
 private:
@@ -142,50 +145,22 @@ private:
         & BOOST_SERIALIZATION_NVP( m_Data.m_sLastExecCmd )
         & BOOST_SERIALIZATION_NVP( m_Data.m_sPROOFCfg );
 
-        // Correcting configuration values
-        // resolving user's home dir from (~/ or $HOME, if present)
-        MiscCommon::smart_path( &m_Data.m_sWorkDir );
-        // We need to be sure that there is "/" always at the end of the path
-        MiscCommon::smart_append<std::string>( &m_Data.m_sWorkDir, '/' );
-
-        MiscCommon::smart_path( &m_Data.m_sLogFileDir );
-        MiscCommon::smart_append<std::string>( &m_Data.m_sLogFileDir, '/' );
-
-        MiscCommon::smart_path( &m_Data.m_sPROOFCfg );
-
-        m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
-
-        // Initializing log engine
-        // log file name: proofagent.<instance_name>.pid
-        std::stringstream logfile_name;
-        logfile_name
-        << m_Data.m_sLogFileDir
-        << "proofagent."
-        << (( m_Data.m_isServerMode ) ? server : client)
-        << ".log";
-
-        MiscCommon::CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
-        InfoLog( erOK, PACKAGE + string( " v." ) + VERSION );
-
-        // Timeout Guard
-        if ( 0 != m_Data.m_nTimeout )
-            CTimeoutGuard::Instance().Init( getpid(), m_Data.m_nTimeout );
-
-        // Spawning new Agent in requested mode
-        m_Agent.SetMode( m_Data.m_AgentMode );
-        m_Agent.Init( instance );
-    }
+        postLoad();
+     }
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 
     void ExecuteLastCmd();
     // void _ReadCfg( const std::string &_xmlFileName, const std::string &_Instance, bool _bValidateXML ) throw( std::exception );
+    void postLoad();
 
 private:
     SAgentData_t m_Data;
     CAgent m_Agent;
     std::string m_cfgFileName;
 };
-BOOST_CLASS_VERSION( CPROOFAgent, 1 )
+
 };
+BOOST_CLASS_VERSION( PROOFAgent::CPROOFAgent, 1 )
+
 #endif
 
