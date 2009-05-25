@@ -1,6 +1,3 @@
 [submodule "Include"]
 	path = Include
 	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/MiscCommon
-[submodule "custom_m4"]
-	path = custom_m4
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/custom_m4
