@@ -12,8 +12,6 @@
 
         Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#include "config.h"
-
 // BOOST
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -59,9 +57,10 @@ typedef struct SOptions
 
 void PrintVersion()
 {
+	// TODO: make VERSION to be taken from the build
     cout
-    << "PROOFAgent v." << VERSION << "\n"
-    << "application file name: " << PACKAGE << "\n"
+    << "PROOFAgent v." << "2.0.0" << "\n"
+    << "application file name: " << "proofagent" << "\n"
     << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }

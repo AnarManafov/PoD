@@ -306,7 +306,8 @@ void CPROOFAgent::postLoad()
     << ".log";
 
     CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
-    InfoLog( erOK, PACKAGE + string( " v." ) + VERSION );
+// TODO:take VERSION from the build automatically
+    InfoLog( erOK, string( "proofagent v." ) + "2.0.0" );
 
     // Timeout Guard
     if ( 0 != m_Data.m_nTimeout )
