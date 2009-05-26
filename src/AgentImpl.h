@@ -25,6 +25,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
+#include <boost/serialization/export.hpp>
 // MiscCommon
 #include "LogImp.h"
 #include "SysHelper.h"
@@ -35,6 +36,7 @@
 #include "PacketForwarder.h"
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
+
 //=============================================================================
 namespace PROOFAgent
 {
@@ -53,6 +55,7 @@ namespace PROOFAgent
      */
     class CAgentBase
     {
+            friend class boost::serialization::access;
         public:
             CAgentBase()
             {
@@ -102,6 +105,10 @@ namespace PROOFAgent
         protected:
             virtual void ThreadWorker() = 0;
 
+        private:
+//         template<class Archive>
+//             void serialize(Archive & ar, const unsigned int file_version){}
+
         protected:
             std::string m_sPROOFCfg;
     };
@@ -114,9 +121,9 @@ namespace PROOFAgent
     typedef struct SAgentServerData
     {
         SAgentServerData() :
-                m_nPort( 0 ),
-                m_nLocalClientPortMin( 0 ),
-                m_nLocalClientPortMax( 0 )
+                m_nPort( 22222 ),
+                m_nLocalClientPortMin( 20000 ),
+                m_nLocalClientPortMax( 25000 )
         {}
         unsigned short m_nPort;
         unsigned short m_nLocalClientPortMin;
@@ -139,8 +146,8 @@ namespace PROOFAgent
     typedef struct SAgentClientData
     {
         SAgentClientData() :
-                m_nServerPort( 0 ),
-                m_nLocalClientPort( 0 )
+                m_nServerPort( 22222 ),
+                m_nLocalClientPort( 1093 )
         {}
         unsigned short m_nServerPort;       //!< PROOFAgent's server port
         std::string m_strServerHost;        //!< PROOFAgent's server host
@@ -169,6 +176,7 @@ namespace PROOFAgent
                 protected CPROOFCfgImpl<CAgentServer>
 
     {
+            friend class boost::serialization::access;
         public:
             virtual ~CAgentServer()
             {}
@@ -198,6 +206,7 @@ namespace PROOFAgent
             template<class Archive>
             void save( Archive & _ar, const unsigned int /*_version*/ ) const
             {
+                boost::serialization::void_cast_register<CAgentServer, CAgentBase>();
                 _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
@@ -206,6 +215,7 @@ namespace PROOFAgent
             template<class Archive>
             void load( Archive & _ar, const unsigned int /*_version*/ )
             {
+                boost::serialization::void_cast_register<CAgentServer, CAgentBase>();
                 _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
@@ -220,6 +230,7 @@ namespace PROOFAgent
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
     };
+
     //=============================================================================
     /**
      *
@@ -231,6 +242,7 @@ namespace PROOFAgent
                 MiscCommon::CLogImp<CAgentClient>,
                 protected CPROOFCfgImpl<CAgentClient>
     {
+            friend class boost::serialization::access;
         public:
             virtual ~CAgentClient()
             {}
@@ -249,6 +261,7 @@ namespace PROOFAgent
             template<class Archive>
             void save( Archive & _ar, const unsigned int /*_version*/ ) const
             {
+                boost::serialization::void_cast_register<CAgentClient, CAgentBase>();
                 _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
@@ -257,6 +270,7 @@ namespace PROOFAgent
             template<class Archive>
             void load( Archive & _ar, const unsigned int /*_version*/ )
             {
+                boost::serialization::void_cast_register<CAgentClient, CAgentBase>();
                 _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
@@ -272,8 +286,10 @@ namespace PROOFAgent
 
 }
 
-
 BOOST_CLASS_VERSION( PROOFAgent::CAgentServer, 1 )
 BOOST_CLASS_VERSION( PROOFAgent::CAgentClient, 1 )
+
+BOOST_CLASS_EXPORT_GUID( PROOFAgent::CAgentServer, "Server" )
+BOOST_CLASS_EXPORT_GUID( PROOFAgent::CAgentClient, "Client" )
 
 #endif

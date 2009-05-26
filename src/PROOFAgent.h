@@ -131,6 +131,7 @@ namespace PROOFAgent
 
 };
 BOOST_CLASS_VERSION( PROOFAgent::CPROOFAgent, 1 )
+BOOST_CLASS_EXPORT_GUID( PROOFAgent::CPROOFAgent, "PROOFAgent" )
 
 #endif
 
