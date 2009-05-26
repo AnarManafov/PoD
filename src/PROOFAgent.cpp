@@ -66,19 +66,19 @@ CPROOFAgent::CPROOFAgent()
 //=============================================================================
 CPROOFAgent::~CPROOFAgent()
 {
-    try
-    {
-        // Saving class to the config file
-        _savecfg( *this, m_cfgFileName );
-    }
-    catch ( const exception &_e )
-    {
-        FaultLog( erError, _e.what() );
-    }
-    catch ( ... )
-    {
-        // TODO: log message
-    }
+//    try
+//    {
+//        // Saving class to the config file
+//        _savecfg( *this, m_cfgFileName );
+//    }
+//    catch ( const exception &_e )
+//    {
+//        FaultLog( erError, _e.what() );
+//    }
+//    catch ( ... )
+//    {
+//        // TODO: log message
+//    }
 
     ExecuteLastCmd();
 }
@@ -103,13 +103,9 @@ void CPROOFAgent::loadCfg( const std::string &_fileName )
         << m_cfgFileName << endl;
         //   exit(0); // TODO: revise this case
     }
-//
-//    // TODO: remove that
-//    m_Agent.SetMode( Server );
-//    postLoad();
 }
 //=============================================================================
-void CPROOFAgent::postLoad()
+void CPROOFAgent::initLogEngine()
 {
     // Correcting configuration values
     // resolving user's home dir from (~/ or $HOME, if present)
@@ -121,8 +117,6 @@ void CPROOFAgent::postLoad()
     MiscCommon::smart_append<string>( &m_Data.m_sLogFileDir, '/' );
 
     MiscCommon::smart_path( &m_Data.m_sPROOFCfg );
-
-    m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
 
     // Initializing log engine
     // log file name: proofagent.<instance_name>.pid

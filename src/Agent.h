@@ -22,7 +22,7 @@
 
 namespace PROOFAgent
 {
-    typedef std::auto_ptr<CAgentBase> pAgentBase_t;
+    typedef boost::shared_ptr<CAgentBase> pAgentBase_t;
     /**
      *
      * @brief A simple object factory class.
@@ -75,9 +75,8 @@ namespace PROOFAgent
             template<class Archive>
             void load( Archive & _ar, const unsigned int /*_version*/ )
             {
-                CAgentBase *p = Spawn();
+                CAgentBase *p = m_Agent.get();
                 _ar & BOOST_SERIALIZATION_NVP( p );
-                m_Agent.reset( p );
             }
             BOOST_SERIALIZATION_SPLIT_MEMBER()
 

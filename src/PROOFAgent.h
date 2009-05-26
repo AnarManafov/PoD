@@ -103,7 +103,10 @@ namespace PROOFAgent
             {
                 _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_isServerMode )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_sWorkDir )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_sWorkDir );
+                initLogEngine();
+
+                _ar
                 & BOOST_SERIALIZATION_NVP( m_Data.m_sLogFileDir )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_bLogFileOverwrite )
                 & BOOST_SERIALIZATION_NVP( m_Data.m_nTimeout )
@@ -113,15 +116,12 @@ namespace PROOFAgent
                 m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
                 // Spawning new Agent in requested mode
                 m_Agent.SetMode( m_Data.m_AgentMode );
-				std::cout << "DEBUG " << m_Data.m_isServerMode << std::endl;
                 _ar & BOOST_SERIALIZATION_NVP( m_Agent );
-
-                postLoad();
             }
             BOOST_SERIALIZATION_SPLIT_MEMBER()
 
             void ExecuteLastCmd();
-            void postLoad();
+            void initLogEngine();
 
         private:
             SAgentData_t m_Data;

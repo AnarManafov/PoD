@@ -16,6 +16,8 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/cmdline.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/token_functions.hpp>
 // API
 #include <sys/wait.h>
 // OUR
@@ -27,6 +29,7 @@
 using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
+using namespace boost;
 using namespace boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
@@ -41,10 +44,10 @@ typedef struct SOptions
     typedef enum ECommand { Start, Stop, Status } ECommand_t;
 
     SOptions():                        // Default options' values
-            m_Command(Start),
-            m_sPidfileDir("/tmp/"),
-            m_bDaemonize(false),
-            m_bValidate(false)
+            m_Command( Start ),
+            m_sPidfileDir( "/tmp/" ),
+            m_bDaemonize( false ),
+            m_bValidate( false )
     {}
 
     string m_sConfigFile;
@@ -65,68 +68,100 @@ void PrintVersion()
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
+// Additional command line parser which interprets '@something' as a
+// option "config-file" with the value "something"
+pair<string, string> at_option_parser( string const&s )
+{
+    if ( '@' == s[0] )
+        return std::make_pair( string( "response-file" ), s.substr( 1 ) );
+    else
+        return pair<string, string>();
+}
+
 // Command line parser
-bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw (exception)
+bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( exception )
 {
     if ( !_Options )
-        throw runtime_error("Internal error: options' container is empty.");
+        throw runtime_error( "Internal error: options' container is empty." );
 
     // Declare the supported options.
-    options_description desc("PROOFAgent command line options"); // TODO: Move to the resource file
+    options_description desc( "PROOFAgent command line options" ); // TODO: Move to the resource file
     desc.add_options()
-    ("help,h", "produce help message")
-    ("config,c", value<string>(), "configuration file")
-    ("start", "start PROOFAgent daemon (default action)")
-    ("stop", "stop PROOFAgent daemon")
-    ("status", "query current status of PROOFAgent daemon")
-    ("pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)") // TODO: I am thinking to move this option to config file
-    ("daemonize,d", "run PROOFAgent as a daemon")
-    ("version,v", "Version information")
+    ( "help,h", "produce help message" )
+    ( "config,c", value<string>(), "configuration file" )
+    ( "start", "start PROOFAgent daemon (default action)" )
+    ( "stop", "stop PROOFAgent daemon" )
+    ( "status", "query current status of PROOFAgent daemon" )
+    ( "pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)" ) // TODO: I am thinking to move this option to config file
+    ( "daemonize,d", "run PROOFAgent as a daemon" )
+    ( "version,v", "Version information" )
+    ( "response-file", value<string>(),
+      "can be specified with '@name', too" )
     ;
 
     // Parsing command-line
     variables_map vm;
-    store(parse_command_line(_Argc, _Argv, desc), vm);
-    notify(vm);
+    //store(parse_command_line(_Argc, _Argv, desc), vm);
+    store( command_line_parser( _Argc, _Argv ).options( desc )
+           .extra_parser( at_option_parser ).run(), vm );
 
-    if ( vm.count("help") || vm.empty() )
+    notify( vm );
+
+    if ( vm.count( "help" ) || vm.empty() )
     {
         cout << desc << endl;
         return false;
     }
-
-    if ( vm.count("version") )
+    if ( vm.count( "version" ) )
     {
         PrintVersion();
         return false;
     }
-
+    if ( vm.count( "response-file" ) )
+    {
+        // Load the file and tokenize it
+        ifstream ifs( vm["response-file"].as<string>().c_str() );
+        if ( !ifs )
+        {
+            cout << "Could not open the response file\n";
+            return 1;
+        }
+        // Read the whole file into a string
+        stringstream ss;
+        ss << ifs.rdbuf();
+        // Split the file content
+        char_separator<char> sep( " \n\r" );
+        tokenizer<char_separator<char> > tok( ss.str(), sep );
+        vector<string> args;
+        copy( tok.begin(), tok.end(), back_inserter( args ) );
+        // Parse the file and store the options
+        store( command_line_parser( args ).options( desc ).run(), vm );
+    }
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "status" );
     boost_hlp::conflicting_options( vm, "stop", "status" );
-    boost_hlp::option_dependency(vm, "start", "daemonize" );
-    boost_hlp::option_dependency(vm, "stop", "daemonize" );
-    boost_hlp::option_dependency(vm, "status", "daemonize" );
+    boost_hlp::option_dependency( vm, "start", "daemonize" );
+    boost_hlp::option_dependency( vm, "stop", "daemonize" );
+    boost_hlp::option_dependency( vm, "status", "daemonize" );
 
-    if ( vm.count("config") )
+    if ( vm.count( "config" ) )
         _Options->m_sConfigFile = vm["config"].as<string>();
-    if ( vm.count("start") )
+    if ( vm.count( "start" ) )
         _Options->m_Command = SOptions_t::Start;
-    if ( vm.count("stop") )
+    if ( vm.count( "stop" ) )
         _Options->m_Command = SOptions_t::Stop;
-    if ( vm.count("status") )
+    if ( vm.count( "status" ) )
         _Options->m_Command = SOptions_t::Status;
-    if ( vm.count("pidfile") )
+    if ( vm.count( "pidfile" ) )
     {
         _Options->m_sPidfileDir = vm["pidfile"].as<string>();
         // We need to be sure that there is "/" always at the end of the path
         smart_append( &_Options->m_sPidfileDir, '/' );
     }
-    _Options->m_bDaemonize = vm.count("daemonize");
+    _Options->m_bDaemonize = vm.count( "daemonize" );
 
     return true;
 }
-
 
 int main( int argc, char *argv[] )
 {
@@ -156,7 +191,7 @@ int main( int argc, char *argv[] )
     if ( Options.m_Command == SOptions_t::Status )
     {
         pid_t pid = CPIDFile::GetPIDFromFile( pidfile_name.str() );
-        if ( pid > 0 && IsProcessExist(pid) )
+        if ( pid > 0 && IsProcessExist( pid ) )
         {
             cout << "PROOFAgent process ("
             << pid
@@ -175,7 +210,7 @@ int main( int argc, char *argv[] )
     {
         // TODO: make wait for the process here to check for errors
         const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
-        if ( pid_to_kill > 0 && IsProcessExist(pid_to_kill) )
+        if ( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
         {
             cout
             << "PROOFAgent: closing PROOFAgent ("
@@ -184,7 +219,7 @@ int main( int argc, char *argv[] )
             ::kill( pid_to_kill, SIGTERM ); // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
 
             // Waiting for the process to finish
-            size_t iter(0);
+            size_t iter( 0 );
             const size_t max_iter = 30;
             while ( iter <= max_iter )
             {
@@ -195,7 +230,7 @@ int main( int argc, char *argv[] )
                 }
                 cout << ".";
                 cout.flush();
-                sleep(2); // sleeping 2 seconds
+                sleep( 2 ); // sleeping 2 seconds
                 ++iter;
             }
             if ( IsProcessExist( pid_to_kill ) )
@@ -234,7 +269,7 @@ int main( int argc, char *argv[] )
 
     try
     {
-        CPIDFile pidfile( pidfile_name.str(), (Options.m_bDaemonize) ? ::getpid() : 0 );
+        CPIDFile pidfile( pidfile_name.str(), ( Options.m_bDaemonize ) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
         agent.loadCfg( Options.m_sConfigFile );
@@ -255,9 +290,9 @@ int main( int argc, char *argv[] )
 
             // Establish new open descriptors for stdin, stdout, and stderr. Even if
             //  we don't plan to use them, it is still a good idea to have them open.
-            int fd = open("/dev/null", O_RDWR); // stdin - file handle 0.
-            dup(fd);                        // stdout - file handle 1.
-            dup(fd);                        // stderr - file handle 2.
+            int fd = open( "/dev/null", O_RDWR ); // stdin - file handle 0.
+            dup( fd );                      // stdout - file handle 1.
+            dup( fd );                      // stderr - file handle 2.
         }
 
         // Starting Agent
