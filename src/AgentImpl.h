@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
@@ -21,9 +21,12 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/serialization/version.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/split_member.hpp>
 // MiscCommon
 #include "LogImp.h"
-//#include "IXMLPersist.h"
 #include "SysHelper.h"
 #include "CustomIterator.h"
 #include "PARes.h"
@@ -32,15 +35,17 @@
 #include "PacketForwarder.h"
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
-
+//=============================================================================
 namespace PROOFAgent
 {
+    //=============================================================================
     /**
      *
      * @brief declaration of a signal handler
      *
      */
     void signal_handler( int _SignalNumber );
+    //=============================================================================
     /**
      *
      * @brief A base class for PROOFAgent modes - agents.
@@ -71,10 +76,6 @@ namespace PROOFAgent
             }
 
         public:
-            virtual void Init( /*xercesc::DOMNode* _element*/ )
-            {
-                _Init( /*_element*/ );
-            }
             MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
             {
                 m_sPROOFCfg = _PROOFCfg;
@@ -100,11 +101,11 @@ namespace PROOFAgent
 
         protected:
             virtual void ThreadWorker() = 0;
-            virtual void _Init( /*xercesc::DOMNode* _element */) = 0;
 
         protected:
             std::string m_sPROOFCfg;
     };
+    //=============================================================================
     /**
      *
      * @brief Agent's data structure (for server mode).
@@ -129,6 +130,7 @@ namespace PROOFAgent
         << "a Local Clients Ports: " << _data.m_nLocalClientPortMin << "-" << _data.m_nLocalClientPortMax << std::endl;
         return _stream;
     }
+    //=============================================================================
     /**
      *
      * @brief Agent's data structure (for client mode).
@@ -145,6 +147,7 @@ namespace PROOFAgent
         unsigned short m_nLocalClientPort;  //!< PROOF's local port (on worker nodes)
     }
     AgentClientData_t;
+    //=============================================================================
     inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
     {
         _stream
@@ -154,6 +157,7 @@ namespace PROOFAgent
         << std::endl;
         return _stream;
     }
+    //=============================================================================
     /**
      *
      * @brief An agent class, for the server mode of PROOFAgent
@@ -162,7 +166,6 @@ namespace PROOFAgent
     class CAgentServer :
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentServer>,
-                //MiscCommon::IXMLPersistImpl<CAgentServer>,
                 protected CPROOFCfgImpl<CAgentServer>
 
     {
@@ -170,18 +173,8 @@ namespace PROOFAgent
             virtual ~CAgentServer()
             {}
             REGISTER_LOG_MODULE( "AgentServer" )
-        //    DECLARE_XMLPERSIST_IMPL( CAgentServer )
 
         public:
-//            BEGIN_READ_XML_NODE( CAgentServer, "agent_server" )
-//            READ_NODE_VALUE( "listen_port", m_Data.m_nPort )
-//            READ_NODE_VALUE( "local_client_port_min", m_Data.m_nLocalClientPortMin )
-//            READ_NODE_VALUE( "local_client_port_max", m_Data.m_nLocalClientPortMax )
-//            END_READ_XML_NODE
-//
-//            BEGIN_WRITE_XML_CFG( CAgentServer )
-//            END_WRITE_XML_CFG
-
             virtual EAgentMode_t GetMode() const
             {
                 return Server;
@@ -200,17 +193,34 @@ namespace PROOFAgent
 
         protected:
             void ThreadWorker();
-            void _Init( /*xercesc::DOMNode* _element*/ )
+
+        private:
+            template<class Archive>
+            void save( Archive & _ar, const unsigned int /*_version*/ ) const
             {
-               // Read( _element );
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMax );
+            }
+            template<class Archive>
+            void load( Archive & _ar, const unsigned int /*_version*/ )
+            {
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMax );
+
                 InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
             }
+            BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         private:
             AgentServerData_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
     };
+    //=============================================================================
     /**
      *
      * @brief An agent class, for the client mode of PROOFAgent
@@ -219,25 +229,14 @@ namespace PROOFAgent
     class CAgentClient:
                 public CAgentBase,
                 MiscCommon::CLogImp<CAgentClient>,
-                //MiscCommon::IXMLPersistImpl<CAgentClient>,
                 protected CPROOFCfgImpl<CAgentClient>
     {
         public:
             virtual ~CAgentClient()
             {}
             REGISTER_LOG_MODULE( "AgentClient" )
- //           DECLARE_XMLPERSIST_IMPL( CAgentClient )
 
         public:
-//            BEGIN_READ_XML_NODE( CAgentClient, "agent_client" )
-//            READ_NODE_VALUE( "server_port", m_Data.m_nServerPort )
-//            READ_NODE_VALUE( "server_addr", m_Data.m_strServerHost )
-//            READ_NODE_VALUE( "local_proofd_port", m_Data.m_nLocalClientPort )
-//            END_READ_XML_NODE
-//
-//            BEGIN_WRITE_XML_CFG( CAgentClient )
-//            END_WRITE_XML_CFG
-
             virtual EAgentMode_t GetMode() const
             {
                 return Client;
@@ -245,16 +244,36 @@ namespace PROOFAgent
 
         protected:
             void ThreadWorker();
-            void _Init( /*xercesc::DOMNode* _element*/ )
+
+        private:
+            template<class Archive>
+            void save( Archive & _ar, const unsigned int /*_version*/ ) const
             {
-              //  Read( _element );
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPort );
+            }
+            template<class Archive>
+            void load( Archive & _ar, const unsigned int /*_version*/ )
+            {
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
+                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPort );
+
                 InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
             }
+            BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         private:
             AgentClientData_t m_Data;
     };
 
 }
+
+
+BOOST_CLASS_VERSION( PROOFAgent::CAgentServer, 1 )
+BOOST_CLASS_VERSION( PROOFAgent::CAgentClient, 1 )
 
 #endif

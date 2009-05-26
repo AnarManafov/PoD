@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007,2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // BOOST
 #include <boost/program_options/options_description.hpp>
@@ -57,7 +57,7 @@ typedef struct SOptions
 
 void PrintVersion()
 {
-	// TODO: make VERSION to be taken from the build
+    // TODO: make VERSION to be taken from the build
     cout
     << "PROOFAgent v." << "2.0.0" << "\n"
     << "application file name: " << "proofagent" << "\n"

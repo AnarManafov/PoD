@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // API
 #include <sys/types.h>
@@ -23,23 +23,23 @@
 #include "AgentImpl.h"
 #include "INet.h"
 #include "PARes.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 //using namespace MiscCommon::XMLHelper;
 using namespace MiscCommon::INet;
 //XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
-
+//=============================================================================
 const size_t g_READ_READY_INTERVAL = 10;
 
 sig_atomic_t graceful_quit = 0;
-
+//=============================================================================
 void PROOFAgent::signal_handler( int _SignalNumber )
 {
     graceful_quit = 1;
 }
-
+//=============================================================================
 //------------------------- Agent SERVER ------------------------------------------------------------
 void CAgentServer::ThreadWorker()
 {
@@ -122,8 +122,7 @@ void CAgentServer::ThreadWorker()
         FaultLog( erError, e.what() );
     }
 }
-
-
+//=============================================================================
 //------------------------- Agent CLIENT ------------------------------------------------------------
 void CAgentClient::ThreadWorker()
 {
