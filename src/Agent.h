@@ -75,8 +75,9 @@ namespace PROOFAgent
             template<class Archive>
             void load( Archive & _ar, const unsigned int /*_version*/ )
             {
-                CAgentBase *p = m_Agent.get();
+                CAgentBase *p = Spawn();
                 _ar & BOOST_SERIALIZATION_NVP( p );
+                m_Agent.reset( p );
             }
             BOOST_SERIALIZATION_SPLIT_MEMBER()
 

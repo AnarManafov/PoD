@@ -103,10 +103,10 @@ void CPROOFAgent::loadCfg( const std::string &_fileName )
         << m_cfgFileName << endl;
         //   exit(0); // TODO: revise this case
     }
-
-    // TODO: remove that
-    m_Agent.SetMode( Server );
-    postLoad();
+//
+//    // TODO: remove that
+//    m_Agent.SetMode( Server );
+//    postLoad();
 }
 //=============================================================================
 void CPROOFAgent::postLoad()
@@ -133,7 +133,7 @@ void CPROOFAgent::postLoad()
     << (( m_Data.m_isServerMode ) ? "server" : "client" )
     << ".log";
 
-    CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
+    CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
 // TODO:take VERSION from the build automatically
     InfoLog( erOK, string( "proofagent v." ) + "2.0.0" );
 

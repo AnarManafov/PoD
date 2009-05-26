@@ -113,7 +113,7 @@ namespace PROOFAgent
                 m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
                 // Spawning new Agent in requested mode
                 m_Agent.SetMode( m_Data.m_AgentMode );
-
+				std::cout << "DEBUG " << m_Data.m_isServerMode << std::endl;
                 _ar & BOOST_SERIALIZATION_NVP( m_Agent );
 
                 postLoad();
