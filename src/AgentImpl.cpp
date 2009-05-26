@@ -31,7 +31,7 @@ using namespace MiscCommon::INet;
 //XERCES_CPP_NAMESPACE_USE;
 using namespace PROOFAgent;
 //=============================================================================
-const size_t g_READ_READY_INTERVAL = 10;
+const size_t g_READ_READY_INTERVAL = 5;
 
 sig_atomic_t graceful_quit = 0;
 //=============================================================================
@@ -49,7 +49,7 @@ void CAgentServer::ThreadWorker()
     {
         CSocketServer server;
         server.Bind( m_Data.m_nPort );
-        server.Listen( 10 ); // TODO: Move this number of queued clients to config
+        server.Listen( 100 ); // TODO: Move this number of queued clients to config
         server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
         {

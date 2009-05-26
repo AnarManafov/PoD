@@ -51,7 +51,7 @@ void _savecfg( const T &_s, string _FileName )
 {
     smart_path( &_FileName );
     if ( _FileName.empty() )
-        throw exception();
+        throw runtime_error("Can't update the configuration file. Illigal name of the file.");
 
     // make an archive
     ofstream f( _FileName.c_str() );
@@ -73,7 +73,7 @@ CPROOFAgent::~CPROOFAgent()
     }
     catch ( const exception &_e )
     {
-        // TODO: log message
+        FaultLog( erError, _e.what() );
     }
     catch ( ... )
     {
@@ -90,6 +90,7 @@ void CPROOFAgent::Start() throw( exception )
 //=============================================================================
 void CPROOFAgent::loadCfg( const std::string &_fileName )
 {
+	m_cfgFileName = _fileName;
     try
     {
         // Loading class from the config file
@@ -100,8 +101,12 @@ void CPROOFAgent::loadCfg( const std::string &_fileName )
         cerr << "PROOFAgent error: "
         << "Can't load configuration file "
         << m_cfgFileName << endl;
-        exit(0); // TODO: revise this case
+        //   exit(0); // TODO: revise this case
     }
+
+    // TODO: remove that
+    m_Agent.SetMode( Server );
+    postLoad();
 }
 //=============================================================================
 void CPROOFAgent::postLoad()
@@ -125,7 +130,7 @@ void CPROOFAgent::postLoad()
     logfile_name
     << m_Data.m_sLogFileDir
     << "proofagent."
-    << (( m_Data.m_isServerMode ) ? "server" : "client")
+    << (( m_Data.m_isServerMode ) ? "server" : "client" )
     << ".log";
 
     CLogSinglton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
