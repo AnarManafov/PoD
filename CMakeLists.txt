@@ -44,7 +44,7 @@ set( SOURCE_FILES
 # search for Boost
 #
 
-find_package( Boost REQUIRED COMPONENTS thread program_options serialization)
+find_package( Boost REQUIRED COMPONENTS thread program_options)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")

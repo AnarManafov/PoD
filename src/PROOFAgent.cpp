@@ -46,6 +46,9 @@ void CPROOFAgent::setConfiguration( const SOptions_t *_data )
     swap( m_Data, tmp );
 
     initLogEngine();
+
+    InfoLog( MiscCommon::erOK, "PROOFAgent general configuration:" ) << m_Data;
+
     m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
     // Spawning new Agent in requested mode
     m_Agent.SetMode( m_Data.m_AgentMode, _data );

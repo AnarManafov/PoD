@@ -121,6 +121,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         }
         // Parse the config file
         store( parse_config_file( ifs, desc ), vm );
+        notify( vm );
     }
 
     boost_hlp::conflicting_options( vm, "start", "stop" );

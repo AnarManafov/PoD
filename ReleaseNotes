@@ -1,5 +1,5 @@
 ********************* Release 2.0.0 not yet released ************************
-- moved from the self-made-cfg (using xerces) to the BOOST serialization
+- moved from the self-made-cfg (using xerces) to the BOOST program_options
 - moved from GNU Autotools to cmake
   
 ********************* Release 1.0.5 2008-08-20 ************************
