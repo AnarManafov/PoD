@@ -34,32 +34,6 @@ using namespace boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 
-/**
- *
- * @brief PROOFAgent's container of options
- *
- */
-typedef struct SOptions
-{
-    typedef enum ECommand { Start, Stop, Status } ECommand_t;
-
-    SOptions():                        // Default options' values
-            m_Command( Start ),
-            m_sPidfileDir( "/tmp/" ),
-            m_bDaemonize( false ),
-            m_bValidate( false )
-    {}
-
-    string m_sConfigFile;
-    string m_sInstanceName;
-    ECommand_t m_Command;
-    string m_sPidfileDir;
-    bool m_bDaemonize;
-    bool m_bValidate;
-
-    SAgentData m_GeneralData;
-} SOptions_t;
-
 void PrintVersion()
 {
     // TODO: make VERSION to be taken from the build
@@ -99,21 +73,21 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "version,v", "Version information" )
 
     ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true ), "todo: desc" )
-    ( "general.work_dir", value<string>()->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
-    ( "general.logfile_dir", value<string>()->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
-    ( "general.logfile_overwrite", value<bool>()->default_value( false ), "" )
-    ( "general.log_level", value<int>()->default_value( 0 ), "" )
-    ( "general.timeout", value<int>()->default_value( 0 ), "" )
-    ( "general.proof_cfg_path", value<string>()->default_value( "~/proof.conf" ), "" )
-    ( "general.last_execute_cmd", value<string>(), "" )
+    ( "general.work_dir", value<string>(&_Options->m_GeneralData.m_sWorkDir)->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
+    ( "general.logfile_dir", value<string>(&_Options->m_GeneralData.m_sLogFileDir)->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
+    ( "general.logfile_overwrite", value<bool>(&_Options->m_GeneralData.m_bLogFileOverwrite)->default_value( false ), "" )
+    ( "general.log_level", value<size_t>(&_Options->m_GeneralData.m_logLevel)->default_value( 0 ), "" )
+    ( "general.timeout", value<size_t>(&_Options->m_GeneralData.m_nTimeout)->default_value( 0 ), "" )
+    ( "general.proof_cfg_path", value<string>(&_Options->m_GeneralData.m_sPROOFCfg)->default_value( "~/proof.conf" ), "" )
+    ( "general.last_execute_cmd", value<string>(&_Options->m_GeneralData.m_sLastExecCmd), "" )
 
-    ( "server.listen_port", value<int>()->default_value( 22001 ), "" )
-    ( "server.local_client_port_min", value<int>()->default_value( 20000 ), "" )
-    ( "server.local_client_port_max", value<int>()->default_value( 25000 ), "" )
+    ( "server.listen_port", value<unsigned short>(&_Options->m_serverData.m_nPort)->default_value( 22001 ), "" )
+    ( "server.local_client_port_min", value<unsigned short>(&_Options->m_serverData.m_nLocalClientPortMin)->default_value( 20000 ), "" )
+    ( "server.local_client_port_max", value<unsigned short>(&_Options->m_serverData.m_nLocalClientPortMax)->default_value( 25000 ), "" )
 
-    ( "client.server_port", value<int>()->default_value( 22001 ), "" )
-    ( "client.server_addr", value<string>()->default_value( "lxi020.gsi.de" ), "" )
-    ( "client.local_proofd_port", value<int>()->default_value( 111 ), "" )
+    ( "client.server_port", value<unsigned short>(&_Options->m_clientData.m_nServerPort)->default_value( 22001 ), "" )
+    ( "client.server_addr", value<string>(&_Options->m_clientData.m_strServerHost)->default_value( "lxi020.gsi.de" ), "" )
+    ( "client.local_proofd_port", value<unsigned short>(&_Options->m_clientData.m_nLocalClientPort)->default_value( 111 ), "" )
     ;
 
     // Parsing command-line
@@ -282,7 +256,7 @@ int main( int argc, char *argv[] )
         CPIDFile pidfile( pidfile_name.str(), ( Options.m_bDaemonize ) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
-        //agent.loadCfg( Options.m_sConfigFile );
+        agent.setConfiguration( &Options );
 
         if ( Options.m_bDaemonize )
         {

@@ -31,16 +31,14 @@ namespace PROOFAgent
      */
     class CAgent
     {
-            friend class boost::serialization::access;
         public:
             CAgent( EAgentMode_t _Mode = Unknown ) : m_Mode( _Mode )
             {
-                RefreshAgent();
             }
-            void SetMode( EAgentMode_t _Mode )
+            void SetMode( EAgentMode_t _Mode, const SOptions_t *_data )
             {
                 m_Mode = _Mode;
-                RefreshAgent();
+                RefreshAgent( _data );
             }
             void Start( const std::string &_PROOFCfg ) throw( std::exception )
             {
@@ -48,37 +46,24 @@ namespace PROOFAgent
             }
 
         private:
-            void RefreshAgent()
+            void RefreshAgent( const SOptions_t *_data )
             {
                 if (( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
-                    m_Agent.reset( Spawn() );
+                    m_Agent.reset( Spawn(_data) );
             }
-            CAgentBase* Spawn()
+            CAgentBase* Spawn( const SOptions_t *_data )
             {
                 switch ( m_Mode )
                 {
                     case Server:
-                        return new CAgentServer;
+                        return new CAgentServer( _data );
                     case Client:
-                        return new CAgentClient;
+                        return new CAgentClient( _data );
                     case Unknown:
                     default:
                         return NULL;
                 }
             }
-            template<class Archive>
-            void save( Archive & _ar, const unsigned int /*_version*/ ) const
-            {
-                const CAgentBase * const p = m_Agent.get();
-                _ar & BOOST_SERIALIZATION_NVP( p );
-            }
-            template<class Archive>
-            void load( Archive & _ar, const unsigned int /*_version*/ )
-            {
-                CAgentBase *p = m_Agent.get();
-                _ar & BOOST_SERIALIZATION_NVP( p );
-            }
-            BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         private:
             pAgentBase_t m_Agent;
@@ -86,6 +71,5 @@ namespace PROOFAgent
     };
 
 };
-BOOST_CLASS_VERSION( PROOFAgent::CAgent, 1 )
 
 #endif

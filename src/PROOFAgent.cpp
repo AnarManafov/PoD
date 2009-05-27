@@ -17,9 +17,6 @@
 #endif
 // STD
 #include <stdexcept>
-// BOOST
-#include <boost/archive/xml_oarchive.hpp>
-#include <boost/archive/xml_iarchive.hpp>
 // PROOFAgent
 #include "PROOFAgent.h"
 // MiscCommon
@@ -32,33 +29,7 @@
 using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
-//=============================================================================
-template<class T>
-void _loadcfg( T &_s, string _FileName )
-{
-    smart_path( &_FileName );
-    if ( _FileName.empty() || !is_file_exists( _FileName ) )
-        throw exception();
 
-    ifstream f( _FileName.c_str() );
-    //assert(f.good());
-    boost::archive::xml_iarchive ia( f );
-    ia >> BOOST_SERIALIZATION_NVP( _s );
-}
-//=============================================================================
-template<class T>
-void _savecfg( const T &_s, string _FileName )
-{
-    smart_path( &_FileName );
-    if ( _FileName.empty() )
-        throw runtime_error("Can't update the configuration file. Illigal name of the file.");
-
-    // make an archive
-    ofstream f( _FileName.c_str() );
-    //assert(f.good());
-    boost::archive::xml_oarchive oa( f );
-    oa << BOOST_SERIALIZATION_NVP( _s );
-}
 //=============================================================================
 CPROOFAgent::CPROOFAgent()
 {
@@ -66,26 +37,18 @@ CPROOFAgent::CPROOFAgent()
 //=============================================================================
 CPROOFAgent::~CPROOFAgent()
 {
-//    try
-//    {
-//        // Saving class to the config file
-//        _savecfg( *this, m_cfgFileName );
-//    }
-//    catch ( const exception &_e )
-//    {
-//        FaultLog( erError, _e.what() );
-//    }
-//    catch ( ... )
-//    {
-//        // TODO: log message
-//    }
-
     ExecuteLastCmd();
 }
 //=============================================================================
-void CPROOFAgent::setConfiguration( SAgentData _data )
+void CPROOFAgent::setConfiguration( const SOptions_t *_data )
 {
-	swap(m_Data, _data);
+    SAgentData_t tmp = _data->m_GeneralData;
+    swap( m_Data, tmp );
+
+    initLogEngine();
+    m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
+    // Spawning new Agent in requested mode
+    m_Agent.SetMode( m_Data.m_AgentMode, _data );
 }
 //=============================================================================
 void CPROOFAgent::Start() throw( exception )
@@ -95,7 +58,7 @@ void CPROOFAgent::Start() throw( exception )
 //=============================================================================
 //void CPROOFAgent::loadCfg( const std::string &_fileName )
 //{
-//	m_cfgFileName = _fileName;
+// m_cfgFileName = _fileName;
 //    try
 //    {
 //        // Loading class from the config file

@@ -21,11 +21,6 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/split_member.hpp>
-#include <boost/serialization/export.hpp>
 // MiscCommon
 #include "LogImp.h"
 #include "SysHelper.h"
@@ -36,6 +31,7 @@
 #include "PacketForwarder.h"
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
+#include "Options.h"
 
 //=============================================================================
 namespace PROOFAgent
@@ -55,7 +51,6 @@ namespace PROOFAgent
      */
     class CAgentBase
     {
-            friend class boost::serialization::access;
         public:
             CAgentBase()
             {
@@ -105,65 +100,10 @@ namespace PROOFAgent
         protected:
             virtual void ThreadWorker() = 0;
 
-        private:
-//         template<class Archive>
-//             void serialize(Archive & ar, const unsigned int file_version){}
-
         protected:
             std::string m_sPROOFCfg;
     };
-    //=============================================================================
-    /**
-     *
-     * @brief Agent's data structure (for server mode).
-     *
-     */
-    typedef struct SAgentServerData
-    {
-        SAgentServerData() :
-                m_nPort( 22222 ),
-                m_nLocalClientPortMin( 20000 ),
-                m_nLocalClientPortMax( 25000 )
-        {}
-        unsigned short m_nPort;
-        unsigned short m_nLocalClientPortMin;
-        unsigned short m_nLocalClientPortMax;
-    }
-    AgentServerData_t;
-    inline std::ostream &operator <<( std::ostream &_stream, const AgentServerData_t &_data )
-    {
-        _stream
-        << "Listen on Port: " << _data.m_nPort << "\n"
-        << "a Local Clients Ports: " << _data.m_nLocalClientPortMin << "-" << _data.m_nLocalClientPortMax << std::endl;
-        return _stream;
-    }
-    //=============================================================================
-    /**
-     *
-     * @brief Agent's data structure (for client mode).
-     *
-     */
-    typedef struct SAgentClientData
-    {
-        SAgentClientData() :
-                m_nServerPort( 22222 ),
-                m_nLocalClientPort( 1093 )
-        {}
-        unsigned short m_nServerPort;       //!< PROOFAgent's server port
-        std::string m_strServerHost;        //!< PROOFAgent's server host
-        unsigned short m_nLocalClientPort;  //!< PROOF's local port (on worker nodes)
-    }
-    AgentClientData_t;
-    //=============================================================================
-    inline std::ostream &operator <<( std::ostream &_stream, const AgentClientData_t &_data )
-    {
-        _stream
-        << "server info: [" << _data.m_strServerHost << ":" << _data.m_nServerPort << "];"
-        << "\n"
-        << "local listen port: " << _data.m_nLocalClientPort
-        << std::endl;
-        return _stream;
-    }
+
     //=============================================================================
     /**
      *
@@ -176,8 +116,14 @@ namespace PROOFAgent
                 protected CPROOFCfgImpl<CAgentServer>
 
     {
-            friend class boost::serialization::access;
         public:
+        	CAgentServer(const SOptions_t *_data):CAgentBase()
+        	{
+        		AgentServerData_t tmp = _data->m_serverData;
+        	    std::swap( m_Data, tmp );
+
+        	    InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+        	}
             virtual ~CAgentServer()
             {}
             REGISTER_LOG_MODULE( "AgentServer" )
@@ -203,29 +149,6 @@ namespace PROOFAgent
             void ThreadWorker();
 
         private:
-            template<class Archive>
-            void save( Archive & _ar, const unsigned int /*_version*/ ) const
-            {
-                boost::serialization::void_cast_register<CAgentServer, CAgentBase>();
-                _ar
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMax );
-            }
-            template<class Archive>
-            void load( Archive & _ar, const unsigned int /*_version*/ )
-            {
-                boost::serialization::void_cast_register<CAgentServer, CAgentBase>();
-                _ar
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nPort )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMin )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPortMax );
-
-                InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-            }
-            BOOST_SERIALIZATION_SPLIT_MEMBER()
-
-        private:
             AgentServerData_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
@@ -242,8 +165,14 @@ namespace PROOFAgent
                 MiscCommon::CLogImp<CAgentClient>,
                 protected CPROOFCfgImpl<CAgentClient>
     {
-            friend class boost::serialization::access;
         public:
+        	CAgentClient(const SOptions_t *_data): CAgentBase()
+        	{
+        		AgentClientData_t tmp = _data->m_clientData;
+        	    std::swap( m_Data, tmp );
+
+        	    InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
+        	}
             virtual ~CAgentClient()
             {}
             REGISTER_LOG_MODULE( "AgentClient" )
@@ -258,38 +187,9 @@ namespace PROOFAgent
             void ThreadWorker();
 
         private:
-            template<class Archive>
-            void save( Archive & _ar, const unsigned int /*_version*/ ) const
-            {
-                boost::serialization::void_cast_register<CAgentClient, CAgentBase>();
-                _ar
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPort );
-            }
-            template<class Archive>
-            void load( Archive & _ar, const unsigned int /*_version*/ )
-            {
-                boost::serialization::void_cast_register<CAgentClient, CAgentBase>();
-                _ar
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nServerPort )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_strServerHost )
-                & BOOST_SERIALIZATION_NVP( m_Data.m_nLocalClientPort );
-
-                InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
-            }
-            BOOST_SERIALIZATION_SPLIT_MEMBER()
-
-        private:
             AgentClientData_t m_Data;
     };
 
 }
-
-BOOST_CLASS_VERSION( PROOFAgent::CAgentServer, 1 )
-BOOST_CLASS_VERSION( PROOFAgent::CAgentClient, 1 )
-
-BOOST_CLASS_EXPORT_GUID( PROOFAgent::CAgentServer, "Server" )
-BOOST_CLASS_EXPORT_GUID( PROOFAgent::CAgentClient, "Client" )
 
 #endif
