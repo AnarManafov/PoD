@@ -12,9 +12,6 @@
 
         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 // STD
 #include <stdexcept>
 // PROOFAgent
@@ -58,23 +55,6 @@ void CPROOFAgent::Start() throw( exception )
 {
     m_Agent.Start( m_Data.m_sPROOFCfg );
 }
-//=============================================================================
-//void CPROOFAgent::loadCfg( const std::string &_fileName )
-//{
-// m_cfgFileName = _fileName;
-//    try
-//    {
-//        // Loading class from the config file
-//        _loadcfg( *this, _fileName );
-//    }
-//    catch ( ... )
-//    {
-//        cerr << "PROOFAgent error: "
-//        << "Can't load configuration file "
-//        << m_cfgFileName << endl;
-//        //   exit(0); // TODO: revise this case
-//    }
-//}
 //=============================================================================
 void CPROOFAgent::initLogEngine()
 {
