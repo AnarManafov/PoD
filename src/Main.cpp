@@ -60,47 +60,59 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     if ( !_Options )
         throw runtime_error( "Internal error: options' container is empty." );
 
-    // Declare the supported options.
-    options_description desc( "PROOFAgent command line options" ); // TODO: Move to the resource file
-    desc.add_options()
+    // Generic options
+    options_description generic( "Generic options" );
+    generic.add_options()
     ( "help,h", "produce help message" )
+    ( "version,v", "Version information" )
     ( "config,c", value<string>(), "configuration file" )
+    ( "daemonize,d", "run PROOFAgent as a daemon" )
     ( "start", "start PROOFAgent daemon (default action)" )
     ( "stop", "stop PROOFAgent daemon" )
     ( "status", "query current status of PROOFAgent daemon" )
     ( "pidfile,p", value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
-    ( "daemonize,d", "run PROOFAgent as a daemon" )
-    ( "version,v", "Version information" )
-
-    ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true ), "todo: desc" )
-    ( "general.work_dir", value<string>(&_Options->m_GeneralData.m_sWorkDir)->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
-    ( "general.logfile_dir", value<string>(&_Options->m_GeneralData.m_sLogFileDir)->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
-    ( "general.logfile_overwrite", value<bool>(&_Options->m_GeneralData.m_bLogFileOverwrite)->default_value( false ), "" )
-    ( "general.log_level", value<size_t>(&_Options->m_GeneralData.m_logLevel)->default_value( 0 ), "" )
-    ( "general.timeout", value<size_t>(&_Options->m_GeneralData.m_nTimeout)->default_value( 0 ), "" )
-    ( "general.proof_cfg_path", value<string>(&_Options->m_GeneralData.m_sPROOFCfg)->default_value( "~/proof.conf" ), "" )
-    ( "general.last_execute_cmd", value<string>(&_Options->m_GeneralData.m_sLastExecCmd), "" )
-
-    ( "server.listen_port", value<unsigned short>(&_Options->m_serverData.m_nPort)->default_value( 22001 ), "" )
-    ( "server.local_client_port_min", value<unsigned short>(&_Options->m_serverData.m_nLocalClientPortMin)->default_value( 20000 ), "" )
-    ( "server.local_client_port_max", value<unsigned short>(&_Options->m_serverData.m_nLocalClientPortMax)->default_value( 25000 ), "" )
-
-    ( "client.server_port", value<unsigned short>(&_Options->m_clientData.m_nServerPort)->default_value( 22001 ), "" )
-    ( "client.server_addr", value<string>(&_Options->m_clientData.m_strServerHost)->default_value( "lxi020.gsi.de" ), "" )
-    ( "client.local_proofd_port", value<unsigned short>(&_Options->m_clientData.m_nLocalClientPort)->default_value( 111 ), "" )
     ;
+
+    options_description config( "Configuration" );
+    config.add_options()
+    ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true, "yes" ), "todo: desc" )
+    ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
+    ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
+    ( "general.logfile_overwrite", value<bool>( &_Options->m_GeneralData.m_bLogFileOverwrite )->default_value( false, "no" ), "" )
+    ( "general.log_level", value<size_t>( &_Options->m_GeneralData.m_logLevel )->default_value( 0 ), "" )
+    ( "general.timeout", value<size_t>( &_Options->m_GeneralData.m_nTimeout )->default_value( 0 ), "" )
+    ( "general.proof_cfg_path", value<string>( &_Options->m_GeneralData.m_sPROOFCfg )->default_value( "~/proof.conf" ), "" )
+    ( "general.last_execute_cmd", value<string>( &_Options->m_GeneralData.m_sLastExecCmd ), "" )
+
+    ( "server.listen_port", value<unsigned short>( &_Options->m_serverData.m_nPort )->default_value( 22001 ), "" )
+    ( "server.local_client_port_min", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMin )->default_value( 20000 ), "" )
+    ( "server.local_client_port_max", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMax )->default_value( 25000 ), "" )
+
+    ( "client.server_port", value<unsigned short>( &_Options->m_clientData.m_nServerPort )->default_value( 22001 ), "" )
+    ( "client.server_addr", value<string>( &_Options->m_clientData.m_strServerHost )->default_value( "lxi020.gsi.de" ), "" )
+    ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
+    ;
+
+    options_description cmdline_options;
+    cmdline_options.add( generic ).add( config );
+
+    options_description config_file_options;
+    config_file_options.add( config );
+
+    options_description visible( "PROOFAgent options" );
+    visible.add( generic ).add( config );
 
     // Parsing command-line
     variables_map vm;
     //store(parse_command_line(_Argc, _Argv, desc), vm);
-    store( command_line_parser( _Argc, _Argv ).options( desc )
+    store( command_line_parser( _Argc, _Argv ).options( visible )
            .extra_parser( at_option_parser ).run(), vm );
 
     notify( vm );
 
     if ( vm.count( "help" ) || vm.empty() )
     {
-        cout << desc << endl;
+        cout << visible << endl;
         return false;
     }
     if ( vm.count( "version" ) )
@@ -109,7 +121,10 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         return false;
     }
     if ( !vm.count( "config" ) )
-        throw runtime_error( "You need to specify a configuration file." );
+    {
+        cout << visible << endl;
+        throw runtime_error( "You need to specify a configuration file at least." );
+    }
     else
     {
         // Load the file and tokenize it
@@ -120,7 +135,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
             return 1;
         }
         // Parse the config file
-        store( parse_config_file( ifs, desc ), vm );
+        store( parse_config_file( ifs, visible ), vm );
         notify( vm );
     }
 
