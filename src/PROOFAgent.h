@@ -14,12 +14,12 @@
 *************************************************************************/
 #ifndef PROOFAGENT_H
 #define PROOFAGENT_H
-
 // BOOST
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
+
 // PROOFAgent
 #include "Agent.h"
 #include "TimeoutGuard.h"
@@ -81,7 +81,8 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( "PROOFAgent" )
 
         public:
-            void loadCfg( const std::string &_fileName );
+            //void loadCfg( const std::string &_fileName );
+        	void setConfiguration( SAgentData _data );
             void Start() throw( std::exception );
 
         private:

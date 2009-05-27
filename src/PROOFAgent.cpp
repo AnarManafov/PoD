@@ -83,27 +83,32 @@ CPROOFAgent::~CPROOFAgent()
     ExecuteLastCmd();
 }
 //=============================================================================
+void CPROOFAgent::setConfiguration( SAgentData _data )
+{
+	swap(m_Data, _data);
+}
+//=============================================================================
 void CPROOFAgent::Start() throw( exception )
 {
     m_Agent.Start( m_Data.m_sPROOFCfg );
 }
 //=============================================================================
-void CPROOFAgent::loadCfg( const std::string &_fileName )
-{
-	m_cfgFileName = _fileName;
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, _fileName );
-    }
-    catch ( ... )
-    {
-        cerr << "PROOFAgent error: "
-        << "Can't load configuration file "
-        << m_cfgFileName << endl;
-        //   exit(0); // TODO: revise this case
-    }
-}
+//void CPROOFAgent::loadCfg( const std::string &_fileName )
+//{
+//	m_cfgFileName = _fileName;
+//    try
+//    {
+//        // Loading class from the config file
+//        _loadcfg( *this, _fileName );
+//    }
+//    catch ( ... )
+//    {
+//        cerr << "PROOFAgent error: "
+//        << "Can't load configuration file "
+//        << m_cfgFileName << endl;
+//        //   exit(0); // TODO: revise this case
+//    }
+//}
 //=============================================================================
 void CPROOFAgent::initLogEngine()
 {

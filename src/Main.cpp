@@ -56,6 +56,8 @@ typedef struct SOptions
     string m_sPidfileDir;
     bool m_bDaemonize;
     bool m_bValidate;
+
+    SAgentData m_GeneralData;
 } SOptions_t;
 
 void PrintVersion()
@@ -92,11 +94,26 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "start", "start PROOFAgent daemon (default action)" )
     ( "stop", "stop PROOFAgent daemon" )
     ( "status", "query current status of PROOFAgent daemon" )
-    ( "pidfile,p", value<string>(), "directory where daemon can keep its pid file. (Default: /tmp/)" ) // TODO: I am thinking to move this option to config file
+    ( "pidfile,p", value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
     ( "daemonize,d", "run PROOFAgent as a daemon" )
     ( "version,v", "Version information" )
-    ( "response-file", value<string>(),
-      "can be specified with '@name', too" )
+
+    ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true ), "todo: desc" )
+    ( "general.work_dir", value<string>()->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
+    ( "general.logfile_dir", value<string>()->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
+    ( "general.logfile_overwrite", value<bool>()->default_value( false ), "" )
+    ( "general.log_level", value<int>()->default_value( 0 ), "" )
+    ( "general.timeout", value<int>()->default_value( 0 ), "" )
+    ( "general.proof_cfg_path", value<string>()->default_value( "~/proof.conf" ), "" )
+    ( "general.last_execute_cmd", value<string>(), "" )
+
+    ( "server.listen_port", value<int>()->default_value( 22001 ), "" )
+    ( "server.local_client_port_min", value<int>()->default_value( 20000 ), "" )
+    ( "server.local_client_port_max", value<int>()->default_value( 25000 ), "" )
+
+    ( "client.server_port", value<int>()->default_value( 22001 ), "" )
+    ( "client.server_addr", value<string>()->default_value( "lxi020.gsi.de" ), "" )
+    ( "client.local_proofd_port", value<int>()->default_value( 111 ), "" )
     ;
 
     // Parsing command-line
@@ -117,26 +134,21 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         PrintVersion();
         return false;
     }
-    if ( vm.count( "response-file" ) )
+    if ( !vm.count( "config" ) )
+        throw runtime_error( "You need to specify a configuration file." );
+    else
     {
         // Load the file and tokenize it
-        ifstream ifs( vm["response-file"].as<string>().c_str() );
-        if ( !ifs )
+        ifstream ifs( vm["config"].as<string>().c_str() );
+        if ( !ifs.good() )
         {
-            cout << "Could not open the response file\n";
+            cout << "Could not open the configuration file" << endl;
             return 1;
         }
-        // Read the whole file into a string
-        stringstream ss;
-        ss << ifs.rdbuf();
-        // Split the file content
-        char_separator<char> sep( " \n\r" );
-        tokenizer<char_separator<char> > tok( ss.str(), sep );
-        vector<string> args;
-        copy( tok.begin(), tok.end(), back_inserter( args ) );
-        // Parse the file and store the options
-        store( command_line_parser( args ).options( desc ).run(), vm );
+        // Parse the config file
+        store( parse_config_file( ifs, desc ), vm );
     }
+
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "status" );
     boost_hlp::conflicting_options( vm, "stop", "status" );
@@ -144,8 +156,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     boost_hlp::option_dependency( vm, "stop", "daemonize" );
     boost_hlp::option_dependency( vm, "status", "daemonize" );
 
-    if ( vm.count( "config" ) )
-        _Options->m_sConfigFile = vm["config"].as<string>();
     if ( vm.count( "start" ) )
         _Options->m_Command = SOptions_t::Start;
     if ( vm.count( "stop" ) )
@@ -272,7 +282,7 @@ int main( int argc, char *argv[] )
         CPIDFile pidfile( pidfile_name.str(), ( Options.m_bDaemonize ) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
-        agent.loadCfg( Options.m_sConfigFile );
+        //agent.loadCfg( Options.m_sConfigFile );
 
         if ( Options.m_bDaemonize )
         {
