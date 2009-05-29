@@ -42,20 +42,53 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     if ( !_Output->is_valid() || !_Input->is_valid() )
         return false;
 
-    if ( _Input->is_read_ready( g_CHECK_INTERVAL ) )
+    fd_set readset;
+    FD_ZERO( &readset );
+
+    FD_SET( _Input->get(), &readset );
+    FD_SET( _Output->get(), &readset );
+
+    // Setting time-out
+    timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = g_CHECK_INTERVAL;
+
+    int fd_max = max( _Input->get(), _Output->get() );
+    // TODO: Send errno to log
+    int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
+
+    if ( retval < 0 )
+        throw std::runtime_error( "Server socket got error while calling \"select\"" );
+
+    if ( 0 == retval )
+        return true;
+
+    smart_socket *readSock = NULL;
+    smart_socket *writeSock = NULL;
+
+    if ( FD_ISSET( _Input->get(), &readset ) )
     {
-        boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf( g_BUF_SIZE );
-        *_Input >> &buf;
-
-        // DISCONNECT has been detected
-        if ( !_Output->is_valid() || !_Input->is_valid() )
-            return false;
-
-        *_Output << buf;
-
-        ReportPackage( *_Input, *_Output, buf );
+        readSock = _Input;
+        writeSock = _Output;
     }
+    else
+    {
+        readSock = _Output;
+        writeSock = _Input;
+    }
+
+    boost::mutex::scoped_lock lock( m_mutex );
+    BYTEVector_t buf( g_BUF_SIZE );
+    *readSock >> &buf;
+
+    // DISCONNECT has been detected
+    if ( !_Output->is_valid() || !_Input->is_valid() )
+        return false;
+
+    *writeSock << buf;
+
+    ReportPackage( *readSock, *writeSock, buf );
+
     return true;
 }
 
@@ -155,14 +188,14 @@ void CPacketForwarder::SpawnClientMode()
     // executing PF threads
     m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
                                                boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-    ++m_Counter;
-    m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-                                              boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+    //  ++m_Counter;
+    //  m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
+    //                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
     ++m_Counter;
 
     // in the Client mode we wait for the threads
     m_thrd_clnt->join();
-    m_thrd_srv->join();
+    // m_thrd_srv->join();
 }
 
 void CPacketForwarder::SpawnServerMode()
@@ -191,9 +224,9 @@ void CPacketForwarder::SpawnServerMode()
             // executing PF threads
             m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
                                                        boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-            ++m_Counter;
-            m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-                                                      boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
+            //    ++m_Counter;
+            //    m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
+            //                                              boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
             ++m_Counter;
             break;
         }
