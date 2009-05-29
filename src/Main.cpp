@@ -73,8 +73,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "pidfile,p", value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
     ;
 
-    options_description config( "Configuration" );
-    config.add_options()
+    options_description config_file_options( "Configuration" );
+    config_file_options.add_options()
     ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true, "yes" ), "todo: desc" )
     ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
     ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
@@ -93,14 +93,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
     ;
 
-    options_description cmdline_options;
-    cmdline_options.add( generic ).add( config );
-
-    options_description config_file_options;
-    config_file_options.add( config );
-
     options_description visible( "PROOFAgent options" );
-    visible.add( generic ).add( config );
+    visible.add( generic ).add( config_file_options );
 
     // Parsing command-line
     variables_map vm;
@@ -135,7 +129,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
             return 1;
         }
         // Parse the config file
-        store( parse_config_file( ifs, visible ), vm );
+        store( parse_config_file( ifs, config_file_options ), vm );
         notify( vm );
     }
 
