@@ -117,13 +117,13 @@ namespace PROOFAgent
 
     {
         public:
-        	CAgentServer(const SOptions_t *_data):CAgentBase()
-        	{
-        		AgentServerData_t tmp = _data->m_serverData;
-        	    std::swap( m_Data, tmp );
+            CAgentServer( const SOptions_t *_data ): CAgentBase()
+            {
+                AgentServerData_t tmp = _data->m_serverData;
+                std::swap( m_Data, tmp );
 
-        	    InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-        	}
+                InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+            }
             virtual ~CAgentServer()
             {}
             REGISTER_LOG_MODULE( "AgentServer" )
@@ -166,13 +166,13 @@ namespace PROOFAgent
                 protected CPROOFCfgImpl<CAgentClient>
     {
         public:
-        	CAgentClient(const SOptions_t *_data): CAgentBase()
-        	{
-        		AgentClientData_t tmp = _data->m_clientData;
-        	    std::swap( m_Data, tmp );
+            CAgentClient( const SOptions_t *_data ): CAgentBase()
+            {
+                AgentClientData_t tmp = _data->m_clientData;
+                std::swap( m_Data, tmp );
 
-        	    InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
-        	}
+                InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
+            }
             virtual ~CAgentClient()
             {}
             REGISTER_LOG_MODULE( "AgentClient" )

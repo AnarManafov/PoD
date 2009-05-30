@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROOFAGENTPACKETFORWARDER_H
 #define PROOFAGENTPACKETFORWARDER_H
@@ -87,7 +87,6 @@ namespace PROOFAgent
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerSocket;
             unsigned short m_nPort;
-            //MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_pf;
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_serversocket;
             boost::mutex m_mutex;
     };

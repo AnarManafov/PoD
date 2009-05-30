@@ -24,7 +24,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 using namespace PROOFAgent;
 //=============================================================================
-const size_t g_READ_READY_INTERVAL = 5;
+const size_t g_READ_READY_INTERVAL = 4;
 
 sig_atomic_t graceful_quit = 0;
 //=============================================================================
