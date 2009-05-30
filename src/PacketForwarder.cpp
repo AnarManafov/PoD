@@ -28,8 +28,8 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 // a number of seconds, which is define an interval for select function
 const size_t g_CHECK_INTERVAL = 2;
-const size_t g_CHECK_SERVERMSG_INTERVAL = 10;
-const size_t g_SERVER_INTERVAL = 10;
+const size_t g_CHECK_SERVERMSG_INTERVAL = 3;
+const size_t g_SERVER_INTERVAL = 3;
 // a regular Ethernet frame size - datagram
 // TODO: Move it to config.
 const unsigned int g_BUF_SIZE = 1500;
@@ -50,8 +50,8 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 
     // Setting time-out
     timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = g_CHECK_INTERVAL;
+    timeout.tv_sec = g_CHECK_INTERVAL;
+    timeout.tv_usec = 0;
 
     int fd_max = max( _Input->get(), _Output->get() );
     // TODO: Send errno to log
@@ -77,18 +77,19 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
         writeSock = _Input;
     }
 
-    boost::mutex::scoped_lock lock( m_mutex );
-    BYTEVector_t buf( g_BUF_SIZE );
-    *readSock >> &buf;
+    {
+        boost::mutex::scoped_lock lock( m_mutex );
+        BYTEVector_t buf( g_BUF_SIZE );
+        *readSock >> &buf;
 
-    // DISCONNECT has been detected
-    if ( !_Output->is_valid() || !_Input->is_valid() )
-        return false;
+        // DISCONNECT has been detected
+        if ( !_Output->is_valid() || !_Input->is_valid() )
+            return false;
 
-    *writeSock << buf;
+        *writeSock << buf;
 
-    ReportPackage( *readSock, *writeSock, buf );
-
+        ReportPackage( *readSock, *writeSock, buf );
+    }
     return true;
 }
 
@@ -117,21 +118,11 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
             break;
         }
     }
-    // TODO: see comments of the m_Counter member in the header file
-    {
-        boost::mutex::scoped_lock lock( m_mutex );
-        --m_Counter;
-        stringstream ss;
-        ss << "Thread counter = " << m_Counter;
-        DebugLog( erOK, ss.str() );
-    }
-    if ( m_Counter <= 0 ) // All threads are finished
-    {
-        InfoLog( erOK, "Forcing all PF sockets to be closed..." );
-        m_ClientSocket.close();
-        m_ServerSocket.close();
-        InfoLog( erOK, "All PF sockets are closed." );
-    }
+
+    InfoLog( erOK, "Forcing PF sockets to close..." );
+    m_ClientSocket.close();
+    m_ServerSocket.close();
+    InfoLog( erOK, "PF sockets are closed." );
 }
 
 ERRORCODE CPacketForwarder::Start( bool _ClientMode )
@@ -186,16 +177,10 @@ void CPacketForwarder::SpawnClientMode()
     m_ServerSocket.set_nonblock();
 
     // executing PF threads
-    m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
-                                               boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-    //  ++m_Counter;
-    //  m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-    //                                            boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
-    ++m_Counter;
-
+    m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
+                                             boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
     // in the Client mode we wait for the threads
-    m_thrd_clnt->join();
-    // m_thrd_srv->join();
+    m_thrd_pf->join();
 }
 
 void CPacketForwarder::SpawnServerMode()
@@ -222,12 +207,8 @@ void CPacketForwarder::SpawnServerMode()
             m_ServerSocket = server.Accept();
 
             // executing PF threads
-            m_thrd_clnt = boost_hlp::Thread_PTR_t( new boost::thread(
-                                                       boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
-            //    ++m_Counter;
-            //    m_thrd_srv = boost_hlp::Thread_PTR_t( new boost::thread(
-            //                                              boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ClientSocket, &m_ServerSocket ) ) );
-            ++m_Counter;
+            m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
+                                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
             break;
         }
     }

@@ -38,8 +38,7 @@ namespace PROOFAgent
         public:
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
-                    m_nPort( _nNewLocalPort ),
-                    m_Counter( 0 )
+                    m_nPort( _nNewLocalPort )
             {}
 
             ~CPacketForwarder()
@@ -88,13 +87,9 @@ namespace PROOFAgent
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerSocket;
             unsigned short m_nPort;
-            MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_clnt;
-            MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_srv;
+            MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_pf;
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_serversocket;
             boost::mutex m_mutex;
-            // TODO: remove this member whenever a boost::thread::joinable() will be accessible (gLite UI 3.1 it is not)
-            // This is a workaround in order to properly close sockets in PF in server mode.
-            unsigned short m_Counter;
     };
 
 }

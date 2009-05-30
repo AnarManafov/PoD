@@ -44,16 +44,6 @@ void PrintVersion()
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
-// Additional command line parser which interprets '@something' as a
-// option "config-file" with the value "something"
-pair<string, string> at_option_parser( string const&s )
-{
-    if ( '@' == s[0] )
-        return std::make_pair( string( "response-file" ), s.substr( 1 ) );
-    else
-        return pair<string, string>();
-}
-
 // Command line parser
 bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( exception )
 {
@@ -99,8 +89,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     // Parsing command-line
     variables_map vm;
     //store(parse_command_line(_Argc, _Argv, desc), vm);
-    store( command_line_parser( _Argc, _Argv ).options( visible )
-           .extra_parser( at_option_parser ).run(), vm );
+    store( command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
 
     notify( vm );
 
