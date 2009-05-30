@@ -20,7 +20,8 @@ set(CPACK_PACKAGE_VERSION_MINOR "0")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 
 # Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
+# because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
+cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")

@@ -1,7 +1,9 @@
 ********************* Release 2.0.0 not yet released ************************
+- dramatically reduced a number of threads PA produces (on both server and client sides)
 - removed the dependency on XERCES-C library
 - the configuration file has been redesigned
 - the build system has been switched from GNU Autotools to cmake
+- because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
 - cosmetic changes
   
 ********************* Release 1.0.5 2008-08-20 ************************
