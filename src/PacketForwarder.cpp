@@ -177,10 +177,13 @@ void CPacketForwarder::SpawnClientMode()
     m_ServerSocket.set_nonblock();
 
     // executing PF threads
-    m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
-                                             boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+//   m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
+//                                             boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
     // in the Client mode we wait for the threads
-    m_thrd_pf->join();
+//   m_thrd_pf->join();
+
+    // Executing PF routine
+    ThreadWorker( &m_ServerSocket, &m_ClientSocket );
 }
 
 void CPacketForwarder::SpawnServerMode()
@@ -207,11 +210,14 @@ void CPacketForwarder::SpawnServerMode()
             m_ServerSocket = server.Accept();
 
             // executing PF threads
-            m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
-                                                     boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
+//           m_thrd_pf = boost_hlp::Thread_PTR_t( new boost::thread(
+//                                                    boost::bind( &CPacketForwarder::ThreadWorker, this, &m_ServerSocket, &m_ClientSocket ) ) );
             break;
         }
     }
+
+    // Executing PF routine
+    ThreadWorker( &m_ServerSocket, &m_ClientSocket );
 }
 
 ERRORCODE CPacketForwarder::_Start( bool _ClientMode )

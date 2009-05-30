@@ -87,7 +87,7 @@ namespace PROOFAgent
             MiscCommon::INet::smart_socket m_ClientSocket;
             MiscCommon::INet::smart_socket m_ServerSocket;
             unsigned short m_nPort;
-            MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_pf;
+            //MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_pf;
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_serversocket;
             boost::mutex m_mutex;
     };
