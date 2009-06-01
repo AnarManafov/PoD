@@ -66,8 +66,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     options_description config_file_options( "Configuration" );
     config_file_options.add_options()
     ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true, "yes" ), "todo: desc" )
-    ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$GLITE_PROOF_LOCATION/" ), "" )
-    ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$GLITE_PROOF_LOCATION/log" ), "" )
+    ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$POD_LOCATION/" ), "" )
+    ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$POD_LOCATION/log" ), "" )
     ( "general.logfile_overwrite", value<bool>( &_Options->m_GeneralData.m_bLogFileOverwrite )->default_value( false, "no" ), "" )
     ( "general.log_level", value<size_t>( &_Options->m_GeneralData.m_logLevel )->default_value( 0 ), "" )
     ( "general.timeout", value<size_t>( &_Options->m_GeneralData.m_nTimeout )->default_value( 0 ), "" )
