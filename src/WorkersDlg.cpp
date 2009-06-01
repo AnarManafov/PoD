@@ -10,39 +10,88 @@
                            2007-08-24
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QWidget>
-#include <QtXml/QDomDocument>
 #include <QMessageBox>
 #include <QFile>
 #include <QTimer>
 // STD
 #include <fstream>
+// BOOST
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
 // MiscCommon
 #include "CustomIterator.h"
 #include "SysHelper.h"
 // PAConsole
 #include "WorkersDlg.h"
 
-const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml";
+const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg";
 
 using namespace std;
 using namespace MiscCommon;
+using namespace boost;
+using namespace boost::program_options;
+
+void parsePROOFAgentCfgFile( const string &_cfgFileName, string *_retVal )
+{
+    string proofCfgFileName;
+
+    options_description config_file_options( "Configuration" );
+    config_file_options.add_options()
+    ( "general.proof_cfg_path", value<string>( &proofCfgFileName ), "" )
+
+    // TODO: use allow_unregistered when BOOST 1.36+ can be used and the following options can be removed from here
+    ( "general.isServerMode", value<bool>(), "" )
+    ( "general.work_dir", value<string>(), "" )
+    ( "general.logfile_dir", value<string>(), "" )
+    ( "general.logfile_overwrite", value<bool>(), "" )
+    ( "general.log_level", value<size_t>(), "" )
+    ( "general.timeout", value<size_t>(), "" )
+    ( "general.last_execute_cmd", value<string>(), "" )
+    ( "server.listen_port", value<unsigned short>(), "" )
+    ( "server.local_client_port_min", value<unsigned short>(), "" )
+    ( "server.local_client_port_max", value<unsigned short>(), "" )
+    ( "client.server_port", value<unsigned short>(), "" )
+    ( "client.server_addr", value<string>(), "" )
+    ( "client.local_proofd_port", value<unsigned short>(), "" )
+    ;
+
+    variables_map vm;
+    // Load the file and tokenize it
+    ifstream ifs( _cfgFileName.c_str() );
+    if ( !ifs.good() )
+    {
+        // TODO: show an msg box
+        cerr << "Could not open the PROOFAgent configuration file" << endl;
+        return;
+    }
+    // Parse the config file
+    // TODO: use allow_unregistered when BOOST 1.36+ can be used
+    store( parse_config_file( ifs, config_file_options ), vm );
+    notify( vm );
+
+    if ( !vm.count( "general.proof_cfg_path" ) )
+        return;
+
+    *_retVal = vm["general.proof_cfg_path"].as<string>();
+}
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
         QWidget( parent ),
         m_bMonitorWorkers( true ),
-        m_WorkersUpdInterval(0)
+        m_WorkersUpdInterval( 0 )
 {
     m_ui.setupUi( this );
 
-    getPROOFCfg( &m_CfgFileName );
+    parsePROOFAgentCfgFile( g_szPROOF_CFG, &m_CfgFileName );
     smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {
-        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving proof.conf full name from proofagent.cfg.xml" ) );
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving proof.conf full name from proofagent.cfg" ) );
         //return ;
     }
 
@@ -56,72 +105,6 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
 
 CWorkersDlg::~CWorkersDlg()
 {
-}
-
-/// Simple method to read full name of the proof.conf from proofagent.cfg.xml (cfg file is hard-coded so far)
-// TODO: Revise method and remove hard-coded reference to proofagent.cfg.xml
-void CWorkersDlg::getPROOFCfg( string *_FileName )
-{
-    if ( !_FileName )
-        return ;
-
-    string cfg( g_szPROOF_CFG );
-    smart_path( &cfg );
-
-    QFile file( cfg.c_str() );
-    if ( !file.open( QFile::ReadOnly | QFile::Text ) )
-    {
-        QMessageBox::warning( this, tr( "PROOFAgent Console" ),
-                              tr( "Cannot read file %1:\n%2." )
-                              .arg( cfg.c_str() )
-                              .arg( file.errorString() ) );
-        return ;
-    }
-
-    QDomDocument domDocument;
-    QString errorStr;
-    int errorLine;
-    int errorColumn;
-
-    if ( !domDocument.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
-    {
-        QMessageBox::information( window(), tr( "PROOFAgent Console" ),
-                                  tr( "Parse error at line %1, column %2:\n%3" )
-                                  .arg( errorLine )
-                                  .arg( errorColumn )
-                                  .arg( errorStr ) );
-        return ;
-    }
-
-    QDomNodeList instance = domDocument.elementsByTagName( "instance" );
-    if ( instance.isEmpty() )
-        return; // TODO: msg me!
-
-    QDomNode server;
-    for ( int i = 0; i < instance.count(); ++i )
-    {
-        const QDomNode name(
-            instance.item( i ).attributes().namedItem( "name" ) );
-        if ( name.isNull() )
-            continue;
-        // TODO: We look exactly for "server" instance!
-        // Change it. Move instance name to the PAConsole settings.
-        if ( name.nodeValue() == "server" )
-        {
-            server = instance.item( i );
-            break;
-        }
-    }
-
-    QDomNode config = server.namedItem( "config" );
-    if ( config.isNull() )
-        return ; // TODO: Msg me!
-
-    QDomNode proof_cfg = config.namedItem( tr( "proof_cfg_path" ) ).firstChild();
-    if ( proof_cfg.isNull() )
-        return ; // TODO: Msg me!
-
-    *_FileName = proof_cfg.nodeValue().toAscii().data();
 }
 
 int CWorkersDlg::getWorkersFromPROOFCfg()
@@ -146,7 +129,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
     // Reading only comment blocks of proof.conf
     const char chCmntSign( '#' );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                    SFindComment<string>( chCmntSign ) );
+                                             SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {
@@ -198,6 +181,6 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
 void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 {
     m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
-    if ( m_bMonitorWorkers > 0)
+    if ( m_bMonitorWorkers > 0 )
         m_Timer->start( m_WorkersUpdInterval );
 }

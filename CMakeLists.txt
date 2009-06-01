@@ -20,7 +20,7 @@ set(CPACK_PACKAGE_VERSION_MINOR "0")
 set(CPACK_PACKAGE_VERSION_PATCH "6")
 
 # Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
@@ -59,7 +59,6 @@ set( UI_RESOURCE
 )
 
 find_package( Qt4 REQUIRED )
-set(QT_USE_QTXML 1)
 #include_directories ( ${QT_INCLUDES} )
 #The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script
 include( ${QT_USE_FILE} )
@@ -76,7 +75,7 @@ QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
 # wich is linked with gLite version of BOOST :(
 set(BOOST_ROOT "$ENV{BOOST_LOCATION}")
 
-find_package( Boost 1.32 REQUIRED COMPONENTS serialization)
+find_package( Boost 1.32 REQUIRED COMPONENTS serialization program_options)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")

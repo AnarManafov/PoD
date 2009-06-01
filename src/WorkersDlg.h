@@ -67,7 +67,6 @@ class CWorkersDlg: public QWidget
         void restartUpdTimer( int _WorkersUpdInterval );
 
     private:
-        void getPROOFCfg( std::string *_FileName );
         int getWorkersFromPROOFCfg();
 
         template<class Archive>
