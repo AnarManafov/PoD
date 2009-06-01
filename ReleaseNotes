@@ -1,5 +1,7 @@
 ********************* Release 1.0.7 not yet released ************************
 - source code cleaning
+- switched from $GLITE_PROOF_LOCATION to $POD_LOCATION
+- using the new proofagent.cfg (PROOFAgent's configuration file)
 
 ********************* Release 1.0.6 2009-04-30 ************************
 - using new build system - cmake [Trac Ticket #79]
