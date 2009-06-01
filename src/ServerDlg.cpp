@@ -33,7 +33,7 @@
 // this is very expensive call, we therefore using 20 sec. timeout
 const size_t g_UpdateInterval = 20000;  // in milliseconds
 // default pid/log directory
-const char * const g_szPID_Dir = "$GLITE_PROOF_LOCATION/";
+const char * const g_szPID_Dir = "$POD_LOCATION/";
 
 using namespace std;
 using namespace MiscCommon::INet;
@@ -62,7 +62,7 @@ CServerDlg::~CServerDlg()
 
 void CServerDlg::CommandServer( EServerCommands _command )
 {
-    string cmd( "$GLITE_PROOF_LOCATION/bin/Server_PoD.sh" );
+    string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
@@ -122,7 +122,7 @@ void CServerDlg::on_btnBrowsePIDDir_clicked()
 
 void CServerDlg::update_check_srv_socket()
 {
-    string cmd( "$GLITE_PROOF_LOCATION/bin/Server_PoD.sh" );
+    string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );

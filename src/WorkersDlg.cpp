@@ -29,7 +29,7 @@
 // PAConsole
 #include "WorkersDlg.h"
 
-const char * const g_szPROOF_CFG = "$GLITE_PROOF_LOCATION/etc/proofagent.cfg";
+const char * const g_szPROOF_CFG = "$POD_LOCATION/etc/proofagent.cfg";
 
 using namespace std;
 using namespace MiscCommon;

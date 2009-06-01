@@ -31,9 +31,9 @@
 using namespace std;
 using namespace MiscCommon;
 // default Job Script file
-const LPCTSTR g_szDefaultJobScript = "$GLITE_PROOF_LOCATION/etc/Job.lsf";
+const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.lsf";
 // configuration file of the plug-in
-const LPCTSTR g_szLSFPluginCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_LSF.xml.cfg";
+const LPCTSTR g_szLSFPluginCfgFileName = "$POD_LOCATION/etc/PAConsole_LSF.xml.cfg";
 
 
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)

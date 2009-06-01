@@ -34,9 +34,9 @@ using namespace MiscCommon::gLite;
 using namespace glite_api_wrapper;
 
 // default JDL file
-const LPCTSTR g_szDefaultJDL = "$GLITE_PROOF_LOCATION/etc/gLitePROOF.jdl";
+const LPCTSTR g_szDefaultJDL = "$POD_LOCATION/etc/gLitePROOF.jdl";
 // configuration file of the plug-in
-const LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole_gLite.xml.cfg";
+const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/PAConsole_gLite.xml.cfg";
 
 typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
 

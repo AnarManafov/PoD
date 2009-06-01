@@ -11,9 +11,9 @@
 #
 
 # Install directory
-if ( NOT $ENV{GLITE_PROOF_LOCATION} STREQUAL "" )
-set (CMAKE_INSTALL_PREFIX "$ENV{GLITE_PROOF_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
-endif ( NOT $ENV{GLITE_PROOF_LOCATION} STREQUAL "" )
+if ( NOT $ENV{POD_LOCATION} STREQUAL "" )
+set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+endif ( NOT $ENV{POD_LOCATION} STREQUAL "" )
 
 # set cmake build type, default value is: RelWithDebInfo
 # possible options are: None Debug Release RelWithDebInfo MinSizeRel

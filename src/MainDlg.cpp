@@ -30,8 +30,8 @@
 using namespace std;
 using namespace MiscCommon;
 
-const LPCTSTR g_szCfgFileName = "$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg";
-const LPCTSTR g_szPluginDir = "$GLITE_PROOF_LOCATION/plugins";
+const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/PAConsole.xml.cfg";
+const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 
 template<class T>
 void _loadcfg( T &_s, string _FileName )
@@ -84,7 +84,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     {
         cerr << "PROOFAgent Console Warning: "
         << "Can't load configuration from "
-        << "\"$GLITE_PROOF_LOCATION/etc/PAConsole.xml.cfg\". "
+        << "\"$POD_LOCATION/etc/PAConsole.xml.cfg\". "
         << "PAConsole will use its default settings." << endl;
     }
 
@@ -138,13 +138,13 @@ CMainDlg::~CMainDlg()
     {
         QMessageBox::warning( this, "PROOFAgent Console",
                               "Can't save configuration to\n"
-                              "\"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\"\n Error: " + QString( _e.what() ) );
+                              "\"$POD_LOCATION / etc / PAConsole.xml.cfg\"\n Error: " + QString( _e.what() ) );
     }
     catch ( ... )
     {
         QMessageBox::warning( this, "PROOFAgent Console",
                               "Can't save configuration to\n"
-                              "\"$GLITE_PROOF_LOCATION / etc / PAConsole.xml.cfg\"" );
+                              "\"$POD_LOCATION / etc / PAConsole.xml.cfg\"" );
     }
 }
 
