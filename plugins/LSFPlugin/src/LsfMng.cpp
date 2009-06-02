@@ -10,7 +10,7 @@
                            2008-12-30
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // STD
 #include <stdexcept>
@@ -72,32 +72,32 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
         // TODO: investigate whether LSF really needs "char *"! Meantime removing const from our const strings.
         switch ( iter->first )
         {
-        case JP_SUB_JOB_NAME:
-            request.options |= SUB_JOB_NAME;
-            request.jobName = const_cast<char*>( iter->second.c_str() );
-            break;
-        case JP_SUB_QUEUE:
-            request.options |= SUB_QUEUE;
-            request.queue = const_cast<char*>( iter->second.c_str() );
-            break;
-        case JP_SUB_HOST:
-            request.options |= SUB_HOST;
-            request.hostSpec = const_cast<char*>( iter->second.c_str() );
-            break;
-        case JP_SUB_IN_FILE:
-            request.options |= SUB_IN_FILE;
-            request.inFile = const_cast<char*>( iter->second.c_str() );
-            break;
-        case JP_SUB_OUT_FILE:
-            request.options |= SUB_OUT_FILE;
-            request.outFile = const_cast<char*>( iter->second.c_str() );
-            break;
-        case JP_SUB_ERR_FILE:
-            request.options |= SUB_ERR_FILE;
-            request.errFile = const_cast<char*>( iter->second.c_str() );
-            break;
-        default:
-            return 0; //TODO: Assert here
+            case JP_SUB_JOB_NAME:
+                request.options |= SUB_JOB_NAME;
+                request.jobName = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_QUEUE:
+                request.options |= SUB_QUEUE;
+                request.queue = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_HOST:
+                request.options |= SUB_HOST;
+                request.hostSpec = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_IN_FILE:
+                request.options |= SUB_IN_FILE;
+                request.inFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_OUT_FILE:
+                request.options |= SUB_OUT_FILE;
+                request.outFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            case JP_SUB_ERR_FILE:
+                request.options |= SUB_ERR_FILE;
+                request.errFile = const_cast<char*>( iter->second.c_str() );
+                break;
+            default:
+                return 0; //TODO: Assert here
         }
     }
 
@@ -112,15 +112,15 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
         // if job submission fails, lsb_submit returns -1
         switch ( lsberrno )
         {
-            // and sets lsberrno to indicate the error
-        case LSBE_QUEUE_USE:
-        case LSBE_QUEUE_CLOSED:
-        default:
-            throw runtime_error( "job submission failed" ); // TODO: report a proper error here
+                // and sets lsberrno to indicate the error
+            case LSBE_QUEUE_USE:
+            case LSBE_QUEUE_CLOSED:
+            default:
+                throw runtime_error( "job submission failed" ); // TODO: report a proper error here
         }
         return 0;
     }
-    return LSB_JOBID(jobId, 0);
+    return LSB_JOBID( jobId, 0 );
 }
 
 CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
@@ -154,28 +154,28 @@ std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
 {
     switch ( jobStatus( _jobID ) )
     {
-    case JS_JOB_STAT_PEND:
-        return "pending";
-    case JS_JOB_STAT_PSUSP:
-        return "held";
-    case JS_JOB_STAT_RUN:
-        return "running";
-    case JS_JOB_STAT_SSUSP:
-        return "suspended by LSF";
-    case JS_JOB_STAT_USUSP:
-        return "suspended by user";
-    case JS_JOB_STAT_EXIT:
-        return "exited";
-    case JS_JOB_STAT_DONE:
-        return "completed";
-    case JS_JOB_STAT_PDONE:
-        return "done";
-    case JS_JOB_STAT_PERROR:
-        return "job process error";
-    case JS_JOB_STAT_WAIT:
-        return "waiting";
-    default:
-        return "unknown";
+        case JS_JOB_STAT_PEND:
+            return "pending";
+        case JS_JOB_STAT_PSUSP:
+            return "held";
+        case JS_JOB_STAT_RUN:
+            return "running";
+        case JS_JOB_STAT_SSUSP:
+            return "suspended by LSF";
+        case JS_JOB_STAT_USUSP:
+            return "suspended by user";
+        case JS_JOB_STAT_EXIT:
+            return "exited";
+        case JS_JOB_STAT_DONE:
+            return "completed";
+        case JS_JOB_STAT_PDONE:
+            return "done";
+        case JS_JOB_STAT_PERROR:
+            return "job process error";
+        case JS_JOB_STAT_WAIT:
+            return "waiting";
+        default:
+            return "unknown";
     }
 }
 
@@ -183,28 +183,28 @@ std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
 {
     switch ( _jobStatus )
     {
-    case JS_JOB_STAT_PEND:
-        return "pending";
-    case JS_JOB_STAT_PSUSP:
-        return "held";
-    case JS_JOB_STAT_RUN:
-        return "running";
-    case JS_JOB_STAT_SSUSP:
-        return "suspended by LSF";
-    case JS_JOB_STAT_USUSP:
-        return "suspended by user";
-    case JS_JOB_STAT_EXIT:
-        return "exited";
-    case JS_JOB_STAT_DONE:
-        return "completed";
-    case JS_JOB_STAT_PDONE:
-        return "done";
-    case JS_JOB_STAT_PERROR:
-        return "job process error";
-    case JS_JOB_STAT_WAIT:
-        return "waiting";
-    default:
-        return "unknown";
+        case JS_JOB_STAT_PEND:
+            return "pending";
+        case JS_JOB_STAT_PSUSP:
+            return "held";
+        case JS_JOB_STAT_RUN:
+            return "running";
+        case JS_JOB_STAT_SSUSP:
+            return "suspended by LSF";
+        case JS_JOB_STAT_USUSP:
+            return "suspended by user";
+        case JS_JOB_STAT_EXIT:
+            return "exited";
+        case JS_JOB_STAT_DONE:
+            return "completed";
+        case JS_JOB_STAT_PDONE:
+            return "done";
+        case JS_JOB_STAT_PERROR:
+            return "job process error";
+        case JS_JOB_STAT_WAIT:
+            return "waiting";
+        default:
+            return "unknown";
     }
 }
 
@@ -251,14 +251,14 @@ void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
 
     for ( int i = 0; i < children_count; ++i )
     {
-        _container->push_back( LSB_JOBID(_jobID, i ) );
+        _container->push_back( LSB_JOBID( _jobID, i ) );
     }
 }
 
-void CLsfMng::getQueues( MiscCommon::StringVector_t *_retVal ) const
+void CLsfMng::getQueues( LSFQueueInfoMap_t *_retVal ) const
 {
-	if(!_retVal)
-		return;
+    if ( !_retVal )
+        return;
 
     struct queueInfoEnt *qInfo;
     char *queues;
@@ -268,13 +268,16 @@ void CLsfMng::getQueues( MiscCommon::StringVector_t *_retVal ) const
     int options = 0;
 
     // get queue information about the specified queue
-    qInfo = lsb_queueinfo(&queues, &numQueues, host, user, options);
-    if (NULL == qInfo) {
+    qInfo = lsb_queueinfo( &queues, &numQueues, host, user, options );
+    if ( NULL == qInfo )
+    {
         //lsb_perror("simbqueues: lsb_queueinfo() failed");
         return; // TODO: need exception here
     }
-    for(int i = 0; i < numQueues; ++i )
+    for ( int i = 0; i < numQueues; ++i )
     {
-    	_retVal->push_back( qInfo[i].queue );
+        SLSFQueueInfo_t info;
+        info.m_maxJobs = qInfo[i].maxJobs;
+        _retVal->insert( LSFQueueInfoMap_t::value_type( qInfo[i].queue, info ) );
     }
 }
