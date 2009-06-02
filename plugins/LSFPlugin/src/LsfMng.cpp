@@ -277,7 +277,7 @@ void CLsfMng::getQueues( LSFQueueInfoMap_t *_retVal ) const
     for ( int i = 0; i < numQueues; ++i )
     {
         SLSFQueueInfo_t info;
-        info.m_maxJobs = qInfo[i].maxJobs;
+        info.m_userJobLimit = qInfo[i].userJobLimit;
         _retVal->insert( LSFQueueInfoMap_t::value_type( qInfo[i].queue, info ) );
     }
 }

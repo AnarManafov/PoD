@@ -229,12 +229,12 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
     }
 }
 
-void CLSFDlg::on_lsfQueueList_currentIndexChanged(int _index)
+void CLSFDlg::on_lsfQueueList_currentIndexChanged( int _index )
 {
     // max number of workers
     const QVariant data = m_ui.lsfQueueList->itemData( _index );
-    m_ui.spinNumWorkers->setMaximum( data.value<SLSFQueueInfo_t>().m_maxJobs );
-    cout << "Max number of jobs: " << data.value<SLSFQueueInfo_t>().m_maxJobs << endl;
+    m_ui.spinNumWorkers->setMaximum( data.value<SLSFQueueInfo_t>().m_userJobLimit );
+    cout << "Max number of jobs: " << data.value<SLSFQueueInfo_t>().m_userJobLimit << endl;
 }
 
 void CLSFDlg::createActions()

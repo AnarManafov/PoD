@@ -30,10 +30,10 @@ typedef long long int lsf_jobid_t;
 
 typedef struct _SLSFQueueInfo
 {
-    _SLSFQueueInfo(): m_maxJobs( 100 )
+    _SLSFQueueInfo(): m_userJobLimit( 100 )
     {}
 
-    int m_maxJobs;
+    int m_userJobLimit;
 
 }SLSFQueueInfo_t;
 // making Qt to know this data type
