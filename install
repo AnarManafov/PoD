@@ -66,9 +66,6 @@ CreateCFG()
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd.cf
 
-# generating etc/proofagent.cfg.xml 
-    cp -f template/proofagent.cfg.xml.template etc/proofagent.cfg.xml 
-
 # generating etc/Job.lsf
     cp -f template/Job.lsf.template etc/Job.lsf
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' etc/Job.lsf

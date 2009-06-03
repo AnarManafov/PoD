@@ -245,9 +245,9 @@ sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
 mv $WD/xpd.cf.temp $WD/xpd.cf
 
 #updating PROOFAgent configuration file
-regexp="s/\(<local_proofd_port>\)[0-9]*\(<\/local_proofd_port>\)/\1$POD_XPROOF_PORT_TOSET\2/g"
-sed -e "$regexp" $WD/proofagent.cfg.xml > $WD/proofagent.cfg.xml.temp
-mv $WD/proofagent.cfg.xml.temp $WD/proofagent.cfg.xml
+regexp="s/\(local_proofd_port\)[0-9]*\/\1$POD_XPROOF_PORT_TOSET/g"
+sed -e "$regexp" $WD/proofagent.client.cfg > $WD/proofagent.client.cfg.temp
+mv $WD/proofagent.client.cfg.temp $WD/proofagent.client.cfg
 
 # starting xrootd
 if [ -n "$XRD_PID" ]; then
@@ -268,7 +268,7 @@ else
 fi
 
 # start proofagent
-proofagent -i client -c $WD/proofagent.cfg.xml
+proofagent -c $WD/proofagent.cfg
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"

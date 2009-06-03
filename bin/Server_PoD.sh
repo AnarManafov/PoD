@@ -19,6 +19,15 @@
 #      Server_PoD.sh <work_dir> start|stop|status 
 #
 
+#######
+# TODO: take this info from proofagent.cfg file
+XRD_PORTS_RANGE_MIN=20000
+XRD_PORTS_RANGE_MAX=21000
+XPROOF_PORTS_RANGE_MIN=21001
+XPROOF_PORTS_RANGE_MAX=22000
+PROOFAGENT_PORTS_RANGE_MIN=22001
+PROOFAGENT_PORTS_RANGE_MAX=23000
+#######
 
 # ************************************************************************
 # ***** detects ports for XRD and XPROOF  *****
@@ -27,8 +36,7 @@ xrd_detect()
 # get a pid of our xrd. We get any xrd running by $UID
     XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd | awk '{print $1}'`
     
-    if [ -n "$XRD_PID" ]
-    then
+    if [ -n "$XRD_PID" ]; then
 	echo "XRD is running under PID: "$XRD_PID
     else
 	echo "XRD is NOT running"
@@ -51,8 +59,7 @@ proofagent_detect()
 # get a pid of our proofagent. We get any xrd running by $UID
     PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep proofagent | awk '{print $1}'`
     
-    if [ -n "$PA_PID" ]
-    then
+    if [ -n "$PA_PID" ]; then
 	echo "PROOFAgent is running under PID: "$PA_PID
     else
 	echo "PROOFAgent is NOT running"
@@ -99,14 +106,7 @@ start()
     # S T A R T I N G the server
     echo "Starting PoD server..."
     # proof.conf must be presented before xrootd is started
-    touch ~/proof.conf
-    
-    XRD_PORTS_RANGE_MIN=20000
-    XRD_PORTS_RANGE_MAX=21000
-    XPROOF_PORTS_RANGE_MIN=21001
-    XPROOF_PORTS_RANGE_MAX=22000
-    PROOFAGENT_PORTS_RANGE_MIN=22001
-    PROOFAGENT_PORTS_RANGE_MAX=23000
+    #touch $POD_LOCATION/proof.conf
 
     NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
     NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
@@ -119,31 +119,35 @@ start()
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
     regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$(hostname -f)\2/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $GLITE_PROOF_LOCATION/etc/xpd.cf > $GLITE_PROOF_LOCATION/etc/xpd.cf.temp
-    mv $GLITE_PROOF_LOCATION/etc/xpd.cf.temp $GLITE_PROOF_LOCATION/etc/xpd.cf
+    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
+    mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
 
     # replacing ports in the PROOF example script
     regexp_xproof_port="s/\(TProof::Open([[:space:]]\"\).*:[0-9]*\(\"[[:space:]])\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
     regexp_xrd_port="s/\(root:\/\/\).*:[0-9]*/\1$(hostname -f):$NEW_XRD_PORT/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $GLITE_PROOF_LOCATION/test/simple_test0.C > $GLITE_PROOF_LOCATION/test/simple_test0.C.temp
-    mv $GLITE_PROOF_LOCATION/test/simple_test0.C.temp $GLITE_PROOF_LOCATION/test/simple_test0.C
+    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $POD_LOCATION/test/simple_test0.C > $POD_LOCATION/test/simple_test0.C.temp
+    mv $POD_LOCATION/test/simple_test0.C.temp $POD_LOCATION/test/simple_test0.C
 
     # Start XRD
-    #
-    xrootd -n PoDServer -c $GLITE_PROOF_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
+    ####
+    xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l "$1/xpd.log"
     
     sleep 2 # let XRD to start
 	
     # setting a port to listen for PROOFAgent server and server's host name
-    regexp_listen="s/\(<listen_port>\)[0-9]*\(<\/listen_port>\)/\1$NEW_PROOFAGENT_PORT\2/g"
-    regexp_server="s/\(<server_port>\)[0-9]*\(<\/server_port>\)/\1$NEW_PROOFAGENT_PORT\2/g"
-    regexp_serverhostname="s/\(<server_addr>\).*\(<\/server_addr>\)/\1$(hostname -f)\2/g"
-    sed -e "$regexp_listen" -e "$regexp_server" -e "$regexp_serverhostname" $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml > $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml.temp
-    mv $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml.temp $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml
+    regexp_listen="s/\(listen_port\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
+    regexp_server="s/\(server_port\)[0-9]*\/\1$NEW_PROOFAGENT_PORT/g"
+    regexp_serverhostname="s/\(server_addr\).*\/\1$(hostname -f)/g"
+    sed -e "$regexp_listen" $POD_LOCATION/etc/proofagent.cfg > $POD_LOCATION/etc/proofagent.cfg.temp
+    mv $POD_LOCATION/etc/proofagent.cfg.temp $POD_LOCATION/etc/proofagent.cfg
+
+    # PROOFAgent client configuration file
+    sed -e "$regexp_server" -e "$regexp_serverhostname" $POD_LOCATION/etc/proofagent.client.cfg > $POD_LOCATION/etc/proofagent.client.cfg.temp
+    mv $POD_LOCATION/etc/proofagent.client.cfg.temp $POD_LOCATION/etc/proofagent.client.cfg
 
     # Start Proofagent
-    #
-    $GLITE_PROOF_LOCATION/bin/proofagent --validate -d -i server -p "$1/" -c $GLITE_PROOF_LOCATION/etc/proofagent.cfg.xml --start
+    ####
+    $POD_LOCATION/bin/proofagent -d -p "$1/" -c $POD_LOCATION/etc/proofagent.cfg --start
     
     return 0
 }
@@ -157,7 +161,7 @@ stop()
     pkill -9 -U $UID xrootd
     pkill -9 -U $UID proofserv
 
-    $GLITE_PROOF_LOCATION/bin/proofagent -d -i server -p "$1/" --stop
+    $POD_LOCATION/bin/proofagent -d -p "$1/" -c $POD_LOCATION/etc/proofagent.cfg --stop
     
     return 0
 }
