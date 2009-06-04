@@ -5,6 +5,7 @@
 - the build system has been switched from GNU Autotools to cmake
 - because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
 - switched from $GLITE_PROOF_LOCATION to $POD_LOCATION
+- new configuration parameter - client.shutdown_if_idle_for_sec. Shut down a worker if its idle time is higher this value.
 - cosmetic changes
   
 ********************* Release 1.0.5 2008-08-20 ************************

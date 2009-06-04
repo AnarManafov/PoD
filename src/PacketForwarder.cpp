@@ -77,9 +77,12 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
         writeSock = _Input;
     }
 
+    m_idleWatch.touch();
+
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf( g_BUF_SIZE );
+        BYTEVector_t buf;
+        buf.reserve( g_BUF_SIZE );
         *readSock >> &buf;
 
         // DISCONNECT has been detected
@@ -95,12 +98,20 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 
 void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_CltSocket )
 {
+    m_idleWatch.touch();
+
     while ( true )
     {
         // Checking whether signal has arrived
         if ( graceful_quit )
         {
             InfoLog( erOK, "STOP signal received on PF worker thread." );
+            break;
+        }
+
+        if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
+        {
+            InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
             break;
         }
 
@@ -125,8 +136,9 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
     InfoLog( erOK, "PF sockets are closed." );
 }
 
-ERRORCODE CPacketForwarder::Start( bool _ClientMode )
+ERRORCODE CPacketForwarder::Start( bool _ClientMode, int _shutdownIfIdleForSec )
 {
+    m_shutdownIfIdleForSec = _shutdownIfIdleForSec;
     // executing PF threads
     m_thrd_serversocket = boost_hlp::Thread_PTR_t( new boost::thread(
                                                        boost::bind( &CPacketForwarder::_Start, this, _ClientMode ) ) );
@@ -139,6 +151,8 @@ ERRORCODE CPacketForwarder::Start( bool _ClientMode )
 
 void CPacketForwarder::SpawnClientMode()
 {
+    m_idleWatch.touch();
+
     m_ClientSocket.set_nonblock();
     // Waiting a server peer for data
     // PROOF server connects to its client (to us), not other way around.
@@ -149,6 +163,11 @@ void CPacketForwarder::SpawnClientMode()
         {
             InfoLog( erOK, "STOP signal received on the Client mode." );
             return ;
+        }
+        if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
+        {
+            InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
+            break;
         }
 
         try

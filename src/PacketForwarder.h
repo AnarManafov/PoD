@@ -25,6 +25,25 @@
 
 namespace PROOFAgent
 {
+    class CIdleWatch
+    {
+        public:
+            void touch()
+            {
+                m_startTime = time( NULL );
+            }
+            bool isTimedout( int _numSeconds )
+            {
+            	if( _numSeconds <= 0 )
+            		return false;
+
+                time_t curTime = time( NULL );
+                return (( curTime - m_startTime ) >= _numSeconds );
+            }
+
+        private:
+            time_t m_startTime;
+    };
     /**
      *
      * @brief The CPacketForwarder class, creates a proxy between client sockets and server's socket given by a port number.
@@ -38,7 +57,8 @@ namespace PROOFAgent
         public:
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
-                    m_nPort( _nNewLocalPort )
+                    m_nPort( _nNewLocalPort ),
+                    m_shutdownIfIdleForSec( 0 )
             {}
 
             ~CPacketForwarder()
@@ -47,7 +67,7 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( "PacketForwarder" );
 
         public:
-            MiscCommon::ERRORCODE Start( bool _ClientMode = false );
+            MiscCommon::ERRORCODE Start( bool _ClientMode = false, int _shutdownIfIdleForSec = 0 );
             bool IsValid() const
             {
                 return ( m_ClientSocket.is_valid() || m_ServerSocket.is_valid() );
@@ -89,6 +109,8 @@ namespace PROOFAgent
             unsigned short m_nPort;
             MiscCommon::BOOSTHelper::Thread_PTR_t m_thrd_serversocket;
             boost::mutex m_mutex;
+            int m_shutdownIfIdleForSec;
+            CIdleWatch m_idleWatch;
     };
 
 }

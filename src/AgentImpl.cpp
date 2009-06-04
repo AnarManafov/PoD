@@ -162,7 +162,7 @@ void CAgentClient::ThreadWorker()
 
             // Spawn PortForwarder
             CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
-            pf.Start( true );
+            pf.Start( true, m_Data.m_shutdownIfIdleForSec );
         }
     }
     catch ( exception & e )

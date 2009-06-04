@@ -100,11 +100,13 @@ namespace PROOFAgent
     {
         SAgentClientData() :
                 m_nServerPort( 22222 ),
-                m_nLocalClientPort( 1093 )
+                m_nLocalClientPort( 1093 ),
+                m_shutdownIfIdleForSec(1800)
         {}
         unsigned short m_nServerPort;       //!< PROOFAgent's server port
         std::string m_strServerHost;        //!< PROOFAgent's server host
         unsigned short m_nLocalClientPort;  //!< PROOF's local port (on worker nodes)
+        int m_shutdownIfIdleForSec;			//!< Shut down a worker if its idle time is higher this value. If value is 0 then the feature is off.
     }
     AgentClientData_t;
 
@@ -115,6 +117,8 @@ namespace PROOFAgent
         << "server info: [" << _data.m_strServerHost << ":" << _data.m_nServerPort << "];"
         << "\n"
         << "local listen port: " << _data.m_nLocalClientPort
+        << "\n"
+        << "Shut down if idle for: " <<  _data.m_shutdownIfIdleForSec
         << std::endl;
         return _stream;
     }

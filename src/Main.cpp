@@ -81,6 +81,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "client.server_port", value<unsigned short>( &_Options->m_clientData.m_nServerPort )->default_value( 22001 ), "" )
     ( "client.server_addr", value<string>( &_Options->m_clientData.m_strServerHost )->default_value( "lxi020.gsi.de" ), "" )
     ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
+    ( "client.shutdown_if_idle_for_sec", value<int>( &_Options->m_clientData.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
     ;
 
     options_description visible( "PROOFAgent options" );
@@ -88,7 +89,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
 
     // Parsing command-line
     variables_map vm;
-    //store(parse_command_line(_Argc, _Argv, desc), vm);
     store( command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
 
     notify( vm );
