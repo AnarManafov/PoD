@@ -54,8 +54,8 @@ fi
 ## Resource finder
 #
 if named PoDServer
- set PROOF_CFG_DIR=$POD_LOCATION
- xpd.resource static $PROOF_CFG_DIR/proof.conf
+ set PROOFCfgDir=$POD_LOCATION
+ xpd.resource static $PROOFCfgDir/proof.conf
 else
  xpd.resource static _G_WRK_DIR/proof.conf
  xpd.workdir _G_WRK_DIR/proof
