@@ -135,9 +135,9 @@ start()
     sleep 2 # let XRD to start
 	
     # setting a port to listen for PROOFAgent server and server's host name
-    regexp_listen="s/\(listen_port\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
-    regexp_server="s/\(server_port\)[0-9]*\/\1$NEW_PROOFAGENT_PORT/g"
-    regexp_serverhostname="s/\(server_addr\).*\/\1$(hostname -f)/g"
+    regexp_listen="s/\(listen_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
+    regexp_server="s/\(server_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
+    regexp_serverhostname="s/\(server_addr=\).*/\1$(hostname -f)/g"
     sed -e "$regexp_listen" $POD_LOCATION/etc/proofagent.cfg > $POD_LOCATION/etc/proofagent.cfg.temp
     mv $POD_LOCATION/etc/proofagent.cfg.temp $POD_LOCATION/etc/proofagent.cfg
 
