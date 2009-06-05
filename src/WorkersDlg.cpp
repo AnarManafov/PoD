@@ -39,45 +39,49 @@ using namespace boost::program_options;
 void parsePROOFAgentCfgFile( const string &_cfgFileName, string *_retVal )
 {
     string proofCfgFileName;
-
-    options_description config_file_options( "Configuration" );
-    config_file_options.add_options()
-    ( "general.proof_cfg_path", value<string>( &proofCfgFileName ), "" )
-
-    // TODO: use allow_unregistered when BOOST 1.36+ can be used and the following options can be removed from here
-    ( "general.isServerMode", value<bool>(), "" )
-    ( "general.work_dir", value<string>(), "" )
-    ( "general.logfile_dir", value<string>(), "" )
-    ( "general.logfile_overwrite", value<bool>(), "" )
-    ( "general.log_level", value<size_t>(), "" )
-    ( "general.timeout", value<size_t>(), "" )
-    ( "general.last_execute_cmd", value<string>(), "" )
-    ( "server.listen_port", value<unsigned short>(), "" )
-    ( "server.local_client_port_min", value<unsigned short>(), "" )
-    ( "server.local_client_port_max", value<unsigned short>(), "" )
-    ( "client.server_port", value<unsigned short>(), "" )
-    ( "client.server_addr", value<string>(), "" )
-    ( "client.local_proofd_port", value<unsigned short>(), "" )
-    ;
-
     variables_map vm;
-    // Load the file and tokenize it
-    ifstream ifs( _cfgFileName.c_str() );
-    if ( !ifs.good() )
+
+    try
     {
-        // TODO: show an msg box
-        cerr << "Could not open the PROOFAgent configuration file" << endl;
+        options_description config_file_options( "Configuration" );
+        config_file_options.add_options()
+        ( "general.proof_cfg_path", value<string>( &proofCfgFileName ), "" )
+
+        // TODO: use allow_unregistered when BOOST 1.36+ can be used and the following options can be removed from here
+        ( "general.isServerMode", value<bool>(), "" )
+        ( "general.work_dir", value<string>(), "" )
+        ( "general.logfile_dir", value<string>(), "" )
+        ( "general.logfile_overwrite", value<bool>(), "" )
+        ( "general.log_level", value<size_t>(), "" )
+        ( "general.timeout", value<size_t>(), "" )
+        ( "general.last_execute_cmd", value<string>(), "" )
+        ( "server.listen_port", value<unsigned short>(), "" )
+        ( "server.local_client_port_min", value<unsigned short>(), "" )
+        ( "server.local_client_port_max", value<unsigned short>(), "" )
+        ( "client.server_port", value<unsigned short>(), "" )
+        ( "client.server_addr", value<string>(), "" )
+        ( "client.local_proofd_port", value<unsigned short>(), "" )
+        ;
+
+        // Load the file and tokenize it
+        ifstream ifs( _cfgFileName.c_str() );
+        if ( !ifs.good() )
+        {
+            // TODO: show an msg box
+            cerr << "Could not open the PROOFAgent configuration file" << endl;
+            return;
+        }
+        // Parse the config file
+        // TODO: use allow_unregistered when BOOST 1.36+ can be used
+        store( parse_config_file( ifs, config_file_options ), vm );
+        notify( vm );
+    }
+    catch ( ... )
+    {
         return;
     }
-    // Parse the config file
-    // TODO: use allow_unregistered when BOOST 1.36+ can be used
-    store( parse_config_file( ifs, config_file_options ), vm );
-    notify( vm );
 
-    if ( !vm.count( "general.proof_cfg_path" ) )
-        return;
-
-    *_retVal = vm["general.proof_cfg_path"].as<string>();
+    *_retVal = proofCfgFileName;
 }
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
