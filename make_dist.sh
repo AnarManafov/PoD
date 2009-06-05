@@ -43,10 +43,7 @@ if [[ -d $PKG_NAME  ]] ; then
 	rm -rf $PKG_NAME/test/.svn
 fi
 
-# a revision number
-REV=`svn info https://subversion.gsi.de/dgrid/PoD/trunk/PoD  | grep "Revision: " | head -1 | awk -F": " '{printf("%s", $ 2)}'`
-echo "REV=$REV"
-THE_NAME=$PKG_NAME.$VERSION.$REV
+THE_NAME=$PKG_NAME.$VERSION
 rm -f $THE_NAME.tar.* 
 tar  -cvf $THE_NAME.tar $PKG_NAME || exit 1
 gzip -9 $THE_NAME.tar || exit 1
