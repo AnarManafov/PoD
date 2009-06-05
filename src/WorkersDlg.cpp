@@ -36,8 +36,10 @@ using namespace MiscCommon;
 using namespace boost;
 using namespace boost::program_options;
 
-void parsePROOFAgentCfgFile( const string &_cfgFileName, string *_retVal )
+void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 {
+    smart_path( &_cfgFileName );
+
     string proofCfgFileName;
     variables_map vm;
 
@@ -61,6 +63,7 @@ void parsePROOFAgentCfgFile( const string &_cfgFileName, string *_retVal )
         ( "client.server_port", value<unsigned short>(), "" )
         ( "client.server_addr", value<string>(), "" )
         ( "client.local_proofd_port", value<unsigned short>(), "" )
+        ( "client.shutdown_if_idle_for_sec", value<int>(), "" )
         ;
 
         // Load the file and tokenize it
@@ -75,6 +78,11 @@ void parsePROOFAgentCfgFile( const string &_cfgFileName, string *_retVal )
         // TODO: use allow_unregistered when BOOST 1.36+ can be used
         store( parse_config_file( ifs, config_file_options ), vm );
         notify( vm );
+    }
+    catch ( const exception &_e )
+    {
+        cerr << "Exception has been caught while reading PROOFAgent's configuration file: " << _e.what() << endl;
+        return;
     }
     catch ( ... )
     {
