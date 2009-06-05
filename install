@@ -10,7 +10,7 @@
 ##
 ##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
-VERSION=2.0.7
+VERSION=2.0.8
 
 ###
 ############ Vars ######################
@@ -26,14 +26,14 @@ GAW_PKG=glite-api-wrapper-3.2.0
 GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
-PROOFAgent_PKG=proofagent-1.0.5
+PROOFAgent_PKG=proofagent-2.0.0-Source
 PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
 PROOFAgent_OPTIONS="--prefix=$INSTALL_PATH"
 
-PAConsole_PKG=PAConsole-1.0.6-Source
+PAConsole_PKG=PAConsole-1.0.7-Source
 PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
 PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
-# gLite
+# only for gLite plug-in
 #export GLITE_LOCATION=
 export XERCESC_LOCATION=$GLITE_LOCATION/../external/opt/xerces-c
 export CLASSADS_LOCATION=$GLITE_LOCATION/../classads
