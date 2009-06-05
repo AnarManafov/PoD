@@ -127,7 +127,7 @@ echo "$y"
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.cfg
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.client.cfg
 # populating the tmp dir.
 _TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
@@ -245,7 +245,7 @@ sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
 mv $WD/xpd.cf.temp $WD/xpd.cf
 
 #updating PROOFAgent configuration file
-regexp="s/\(local_proofd_port\)[0-9]*\/\1$POD_XPROOF_PORT_TOSET/g"
+regexp="s/\(local_proofd_port=\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
 sed -e "$regexp" $WD/proofagent.client.cfg > $WD/proofagent.client.cfg.temp
 mv $WD/proofagent.client.cfg.temp $WD/proofagent.client.cfg
 
@@ -268,7 +268,7 @@ else
 fi
 
 # start proofagent
-proofagent -c $WD/proofagent.cfg
+proofagent -c $WD/proofagent.client.cfg
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"

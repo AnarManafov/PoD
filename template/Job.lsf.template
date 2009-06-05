@@ -43,7 +43,7 @@ cd $WRK_DIR || return 1
 ## we don't use BSUB-f since it doens't support env. variables in paths
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
-cp $G_WRK_DIR/etc/proofagent.cfg.xml $WRK_DIR/proofagent.cfg.xml
+cp $G_WRK_DIR/etc/proofagent.client.cfg $WRK_DIR/proofagent.client.cfg
 cp $G_WRK_DIR/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 ## Here you can specify your own version of ROOT
