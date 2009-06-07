@@ -130,7 +130,7 @@ start()
 
     # Start XRD
     ####
-    xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l "$POD_LOCATION/xpd.log"
+    xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/xpd.log
     
     sleep 2 # let XRD to start
 	
