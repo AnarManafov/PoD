@@ -140,7 +140,6 @@ namespace PROOFAgent
         {}
 
         std::string m_sConfigFile;
-        std::string m_sInstanceName;
         ECommand_t m_Command;
         std::string m_sPidfileDir;
         bool m_bDaemonize;

@@ -166,9 +166,7 @@ int main( int argc, char *argv[] )
     stringstream pidfile_name;
     pidfile_name
     << Options.m_sPidfileDir
-    << "proofagent."
-    << Options.m_sInstanceName
-    << ".pid";
+    << "proofagent.pid";
 
     // Checking for "status" option
     if ( Options.m_Command == SOptions_t::Status )
