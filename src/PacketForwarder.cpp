@@ -35,6 +35,7 @@ const size_t g_SERVER_INTERVAL = 3;
 const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
+extern sig_atomic_t shutdown_client;
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 {
@@ -116,6 +117,7 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
             graceful_quit = 1;
+	    shutdown_client = 1;
 	    break;
         }
 
@@ -172,6 +174,7 @@ void CPacketForwarder::SpawnClientMode()
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
 	    graceful_quit = 1;
+	    shutdown_client = 1;
             return;
         }
 
