@@ -66,29 +66,34 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     smart_socket *readSock = NULL;
     smart_socket *writeSock = NULL;
 
+  InfoLog( erOK, "DEBUG: " ) << retval << endl;
+
     if ( FD_ISSET( _Input->get(), &readset ) )
     {
         readSock = _Input;
         writeSock = _Output;
     }
-    else
+    else if ( FD_ISSET( _Output->get(), &readset ) )
     {
         readSock = _Output;
         writeSock = _Input;
     }
+    else 
+      return true;
 
     m_idleWatch.touch();
 
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf;
-        buf.reserve( g_BUF_SIZE );
+        BYTEVector_t buf( g_BUF_SIZE );
+	InfoLog( erOK, "there is a message to redirect." );
         *readSock >> &buf;
 
         // DISCONNECT has been detected
         if ( !_Output->is_valid() || !_Input->is_valid() )
             return false;
 
+	InfoLog( erOK, "redirecting the message..." );
         *writeSock << buf;
 
         ReportPackage( *readSock, *writeSock, buf );
@@ -167,7 +172,7 @@ void CPacketForwarder::SpawnClientMode()
         if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
-            break;
+            return;
         }
 
         try
@@ -183,7 +188,9 @@ void CPacketForwarder::SpawnClientMode()
     }
     // Connecting to the local client (a proof slave)
     CSocketClient proof_client;
+    InfoLog( erOK, "connecting to a local proof service on port: " ) << m_nPort << endl;
     proof_client.Connect( m_nPort, "127.0.0.1" );
+    InfoLog( erOK, "connected to the local proof service" );
 
     // Checking whether signal has arrived
     if ( graceful_quit )
@@ -195,6 +202,7 @@ void CPacketForwarder::SpawnClientMode()
 
     m_ServerSocket.set_nonblock();
 
+    InfoLog( erOK, "starting PF routine..." );
     // Executing PF routine
     ThreadWorker( &m_ServerSocket, &m_ClientSocket );
 }
