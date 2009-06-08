@@ -66,8 +66,6 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     smart_socket *readSock = NULL;
     smart_socket *writeSock = NULL;
 
-  InfoLog( erOK, "DEBUG: " ) << retval << endl;
-
     if ( FD_ISSET( _Input->get(), &readset ) )
     {
         readSock = _Input;
@@ -117,7 +115,8 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
-            break;
+            graceful_quit = 1;
+	    break;
         }
 
         try
@@ -172,6 +171,7 @@ void CPacketForwarder::SpawnClientMode()
         if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
+	    graceful_quit = 1;
             return;
         }
 
