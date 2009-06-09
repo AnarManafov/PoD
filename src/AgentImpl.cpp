@@ -27,6 +27,7 @@ using namespace PROOFAgent;
 const size_t g_READ_READY_INTERVAL = 4;
 
 sig_atomic_t graceful_quit = 0;
+sig_atomic_t shutdown_client = 0;
 //=============================================================================
 void PROOFAgent::signal_handler( int _SignalNumber )
 {
@@ -127,6 +128,10 @@ void CAgentClient::ThreadWorker()
     {
         while ( true )
         {
+	    // worker needs to be closed
+	    if( shutdown_client )
+	    	break;
+
             if ( !IsPROOFReady( m_Data.m_nLocalClientPort ) )
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
