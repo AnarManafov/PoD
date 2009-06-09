@@ -225,12 +225,40 @@ void CPacketForwarder::SpawnServerMode()
             return ;
         }
 
-        if ( server.GetSocket().is_read_ready( g_SERVER_INTERVAL ) )
-        {
-            // A PROOF master connection
-            m_ServerSocket = server.Accept();
-            break;
-        }
+	// Check whether worker has disconnected (m_ClientSocket)
+	// and also check that a user (or better to say xrootd redirector) is connecting to a PROOF cluster (server.GetSocket())
+	fd_set readset;
+	FD_ZERO( &readset );
+
+	FD_SET( server.GetSocket().get(), &readset );
+	FD_SET( m_ClientSocket.get(), &readset );
+
+	// Setting time-out
+	timeval timeout;
+	timeout.tv_sec = g_SERVER_INTERVAL;
+	timeout.tv_usec = 0;
+	
+	int fd_max = max( server.GetSocket().get(), m_ClientSocket.get() );
+	// TODO: Send errno to log
+	int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
+	if ( retval < 0 )
+		throw std::runtime_error( "Server socket got error while calling \"select\"" );
+	     
+	if ( FD_ISSET( server.GetSocket().get(), &readset ) )
+	{
+		// A PROOF master connection
+		m_ServerSocket = server.Accept();
+		break;
+	}
+	else if ( FD_ISSET( m_ClientSocket.get(), &readset ) )
+	{
+		// worker is sending something, but we don't expect anything
+		// in this version of protocol it means, that the workers disconnects
+		// TODO: make check for the size of data to read (ioctl). if the size is 0, then it is a dissconnect
+		InfoLog( erOK, "A DISCONNECT has been detected of a PA worker. The worker will be removed from the active list." );
+		m_ClientSocket.close();
+		return;
+	}
     }
 
     // Executing PF routine
