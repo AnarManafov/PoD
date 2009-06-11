@@ -2,6 +2,7 @@
 - source code cleaning
 - switched from $GLITE_PROOF_LOCATION to $POD_LOCATION
 - using the new proofagent.cfg (PROOFAgent's configuration file)
+- fixed a case when several users run the PoD server and PAConsole couldn't recognize properly whether PoD runs or not
 - LSF plug-in:
 	- use LSF's queue information to limit the maximum number of workers in GUI
 
