@@ -1,6 +1,7 @@
 ********************* Release 2.0.8 not yet released ************************
 - switch to $POD_LOCATION instead of $GLITE_PROOF_LOCATION
 - using PROOFAgent's new configuration file
+- a better handling of multiple PoD workers on the same worker node started in the same time
 
 ********************* Release 2.0.7 2009-04-30 ************************
 - project has been renamed to "PROOF on Demand" (PoD).

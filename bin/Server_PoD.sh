@@ -28,6 +28,8 @@ XPROOF_PORTS_RANGE_MAX=22000
 PROOFAGENT_PORTS_RANGE_MIN=22001
 PROOFAGENT_PORTS_RANGE_MAX=23000
 #######
+# a number of seconds we wait until xrd is started 
+XRD_START_TIMEOUT=3 
 
 # ************************************************************************
 # ***** detects ports for XRD and XPROOF  *****
@@ -132,7 +134,7 @@ start()
     ####
     xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
     
-    sleep 2 # let XRD to start
+    sleep $XRD_START_TIMEOUT # let XRD to start
 	
     # setting a port to listen for PROOFAgent server and server's host name
     regexp_listen="s/\(listen_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"

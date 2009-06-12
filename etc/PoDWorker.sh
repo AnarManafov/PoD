@@ -51,22 +51,36 @@ xrd_detect()
 # get a pid of our xrd. We get any xrd running by $UID
     XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd| awk '{print $1}'`
     
-    if [ -n "$XRD_PID" ]
-    then
+    if [ -n "$XRD_PID" ]; then
 	echo "XRD is running under PID: "$XRD_PID
     else
 	echo "XRD is NOT running"
 	return 1
     fi
     
+    var0=0
+    RETRY_CNT=3
+    # we try for 3 times to detect xrd ports
+    # it is needed in case when several PoD workers are started in the same time on one machine
+    while [ "$var0" -lt "$RETRY_CNT" ]
+      do
+      echo "detecting xrd ports. Try $var0"
 # getting an array of XRD LISTEN ports
 # oreder: the lowerst port goes firstand its a XRD port.
 # XPROOF port must be greater
-    XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
-    
-    echo "PoD detected XRD port:"${XRD_PORTS[0]}
-    echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
-    return 0
+      XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+      
+      echo "PoD detected XRD port:"${XRD_PORTS[0]}
+      echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
+      if [ -n "${XRD_PORTS[0]}" ] && [ -n "${XRD_PORTS[1]}" ]; then
+	  return 0;
+      else
+	  var0=`expr $var0 + 1`
+	  # TODO: move the magic number to a var
+	  sleep 2
+      fi
+    done
+    return 1
 }
 # ************************************************************************
 # ***** returns a free port from a given range  *****
@@ -219,53 +233,73 @@ fi
 # creating an empty proof.conf, so that xproof will be happy
 touch $WD/proof.conf
 
+
+# we try for 3 times to detect xrd
+# it is needed in case when several PoD workers are started in the same time on one machine
+COUNT=0
+MAX_COUNT=3
+while [ "$COUNT" -lt "$MAX_COUNT" ]
+  do
 # detecting whether xrd is running and on whihc ports xrd and xproof are listning
-xrd_detect
-if [ -n "$XRD_PID" ]
-then
+  xrd_detect
+  if [ -n "$XRD_PID" ]; then
     # use existing ports for xrd and xproof
-    POD_XRD_PORT_TOSET=${XRD_PORTS[0]}
-    POD_XPROOF_PORT_TOSET=${XRD_PORTS[1]}
-else
+      POD_XRD_PORT_TOSET=${XRD_PORTS[0]}
+      POD_XPROOF_PORT_TOSET=${XRD_PORTS[1]}
+  else
     # TODO: get new free ports here and write to xrd config file
-    XRD_PORTS_RANGE_MIN=20000
-    XRD_PORTS_RANGE_MAX=21000
-    XPROOF_PORTS_RANGE_MIN=21001
-    XPROOF_PORTS_RANGE_MAX=22000
-    POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
-    POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
-    echo "using XRD port:"$POD_XRD_PORT_TOSET
-    echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
-fi
-
+      XRD_PORTS_RANGE_MIN=20000
+      XRD_PORTS_RANGE_MAX=21000
+      XPROOF_PORTS_RANGE_MIN=21001
+      XPROOF_PORTS_RANGE_MAX=22000
+      POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
+      POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
+      echo "using XRD port:"$POD_XRD_PORT_TOSET
+      echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
+  fi
+  
 # updating XRD configuration file
-regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
-regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
-mv $WD/xpd.cf.temp $WD/xpd.cf
-
+  regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
+  regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+  sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
+  mv $WD/xpd.cf.temp $WD/xpd.cf
+  
 #updating PROOFAgent configuration file
-regexp="s/\(local_proofd_port=\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-sed -e "$regexp" $WD/proofagent.client.cfg > $WD/proofagent.client.cfg.temp
-mv $WD/proofagent.client.cfg.temp $WD/proofagent.client.cfg
-
+  regexp="s/\(local_proofd_port=\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+  sed -e "$regexp" $WD/proofagent.client.cfg > $WD/proofagent.client.cfg.temp
+  mv $WD/proofagent.client.cfg.temp $WD/proofagent.client.cfg
+  
 # starting xrootd
-if [ -n "$XRD_PID" ]; then
-    echo "using existing XRD instance..."
-else
-    echo "Starting xrootd..."
-    xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
+  if [ -n "$XRD_PID" ]; then
+      echo "using existing XRD instance..."
+      break
+  else
+      echo "Starting xrootd..."
+      xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
 # detect that xrootd failed to start
-    sleep 10
-    XRD=`pgrep -U $UID xrootd`
-    XRD_RET_VAL=$?
-    if [ "X$XRD_RET_VAL" = "X0" ]; then
-	echo "XROOTD successful."
-    else
-	echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
-	clean_up 1
-    fi
+      sleep 10
+      XRD=`pgrep -U $UID xrootd`
+      XRD_RET_VAL=$?
+      if [ "X$XRD_RET_VAL" = "X0" ]; then
+	  break
+      else
+	  echo "problem to start xrootd! I will try once again..."
+	  COUNT=`expr $COUNT + 1`
+	  sleep 3
+      fi
+  fi
+done
+
+# detect that xrootd failed to start
+XRD=`pgrep -U $UID xrootd`
+XRD_RET_VAL=$?
+if [ "X$XRD_RET_VAL" = "X0" ]; then
+    echo "XROOTD successful."
+else
+    echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
+    clean_up 1
 fi
+
 
 # start proofagent
 proofagent -c $WD/proofagent.client.cfg
