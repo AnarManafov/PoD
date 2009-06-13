@@ -46,6 +46,10 @@ clean_up()
 }
 # ************************************************************************
 # ***** detects ports for XRD and XPROOF  *****
+# return 1 if XRD/XPD ports were not detected, otherwise returns 0
+# sets XRD_PID to a pid of a found XRD
+# sets ${XRD_PORTS[0]} - XRD port
+# sets ${XRD_PORTS[1]} - XPD port
 xrd_detect()
 {
 # get a pid of our xrd. We get any xrd running by $UID
@@ -55,7 +59,7 @@ xrd_detect()
 	echo "XRD is running under PID: "$XRD_PID
     else
 	echo "XRD is NOT running"
-	return 1
+	return 0
     fi
     
     var0=0
@@ -242,6 +246,14 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   do
 # detecting whether xrd is running and on whihc ports xrd and xproof are listning
   xrd_detect
+  return_val=$?
+  if [ "X$return_val" = "X0" ]; then
+      echo "XRD/XPD ports were detected."
+  else
+      echo "problem to detect XRD/XPD ports. Exiting..."
+      clean_up 1
+  fi
+
   if [ -n "$XRD_PID" ]; then
     # use existing ports for xrd and xproof
       POD_XRD_PORT_TOSET=${XRD_PORTS[0]}
