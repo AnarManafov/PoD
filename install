@@ -36,11 +36,11 @@ GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
 PROOFAgent_PKG=PROOFAgent-2.0.0-Source
-PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
+PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PROOFAgent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 
 PAConsole_PKG=PAConsole-1.0.7-Source
-PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
+PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # only for gLite plug-in
 #export GLITE_LOCATION=
