@@ -10,6 +10,15 @@
 ##
 ##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
+#
+# Arguments:
+# 
+#  -c : process the configuration only (recomented for GSI's binary installation) 
+#  -b : process full build
+#  -h : show the help message
+#
+#
+
 VERSION=2.0.8
 
 ###
@@ -49,13 +58,21 @@ TMP_PATH=$APP_PATH/tmp
 ###
 ############ Funstions ##################
 ###
+printHelp()
+{
+    echo "PoD intallation script arguments:"
+    echo "    -c : process the configuration only (recomented for GSI's binary installation" 
+    echo "    -b : process full build and configuration"
+    echo "    -h : show the help message"
+}
+
 CreateCFG()
 {
     echo "---> INFO: Creating default cfg files..."
 # generating ./PoD_env.sh
     cp -f template/PoD_env.sh.template ./PoD_env.sh
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' ./PoD_env.sh
-
+    
 # Using eval to force variable substitution
 # changing _G_MASTER_HOSTNAME to a host name (FQDN) of the xrootd master:
     MASTER_HOST=`hostname -f`
@@ -65,11 +82,11 @@ CreateCFG()
     _TMP_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
     eval sed -i 's%_G_SERVER_TMP_DIR%$_TMP_DIR%g' etc/xpd.cf
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' etc/xpd.cf
-
+    
 # generating etc/Job.lsf
     cp -f template/Job.lsf.template etc/Job.lsf
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' etc/Job.lsf
-
+    
 # generate test/simple_test0.C
     cp -f template/simple_test0.C.template test/simple_test0.C
     eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' test/simple_test0.C    
@@ -78,7 +95,7 @@ CreateCFG()
     ln -s $INSTALL_PATH/test/dstarmb.root $INSTALL_PATH/test/dstarmb1.root
 # creating a log dir
     mkdir -p log
-
+    
     return 0
 }
 
@@ -91,13 +108,13 @@ _GetModule() #parameters: $1 - package name; $2 - URL
 InstallGAW()
 {
     _GetModule $GAW_PKG $GAW_LINK
-
+    
     pushd $APP_PATH/$GAW_PKG || return 1
     ./configure $GAW_OPTIONS || { popd; return 1; }
     gmake || { popd; return 1; }
     gmake install || { popd; return 1; }
     popd
-     
+    
     # source GAW's config - other modules need it
     GAW_ENV=$INSTALL_PATH/bin/gaw_env.sh
     if [ -e $GAW_ENV ]; then
@@ -107,7 +124,7 @@ InstallGAW()
 	# TODO: msg me!
 	return 1
     fi
-  
+    
     echo
     echo "---> INFO: GAW has been installed."
     return 0
@@ -116,13 +133,13 @@ InstallGAW()
 InstallPROOFAgent()
 {
     _GetModule $PROOFAgent_PKG $PROOFAgent_LINK
-
+    
     pushd $APP_PATH/$PROOFAgent_PKG || return 1
     cmake $PROOFAgent_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
     gmake || { popd; return 1; }
     gmake install || { popd; return 1; }
     popd
-       
+    
     echo
     echo "---> INFO: PROOFAgent has been installed."
     return 0
@@ -131,7 +148,7 @@ InstallPROOFAgent()
 InstallPAConsole()
 {
     _GetModule $PAConsole_PKG $PAConsole_LINK
- 
+    
     pushd  $APP_PATH/$PAConsole_PKG || return 1
     cmake $PAConsole_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
     gmake || { popd; return 1; }
@@ -160,16 +177,46 @@ InstallApps()
 	echo "Press any key to continue, or Ctrl+C to abort..."
 	read -s -n 1	
     fi
-
+    
     InstallPROOFAgent || return 1
     InstallPAConsole || return 1
-
+    
     return 0
 }
 
 
 
+#
+# Reading scripts arguments
+#
+# Script invoked with no command-line args?
+NO_ARGS=0 
+if [ $# -eq "$NO_ARGS" ]; then
+    printHelp;
+    exit 65
+fi
 
+CONFIGURE=""
+FULL_BUILD=""
+SHOW_HELP=""
+while getopts "hcb" Options
+  do
+  case $Options in
+      h ) 
+	  printHelp 
+	  exit 0;;
+      c ) CONFIGURE="1" ;;
+      b ) FULL_BUILD="1" ;;
+      * ) 
+	  printHelp
+	  exit;
+  esac
+done
+
+if [ $CONFIGURE ] && [ $FULL_BUILD ]; then
+    echo "options -c and -b must not be used together";
+    exit 65
+fi
 
 
 ####### Main
@@ -178,27 +225,38 @@ echo "PROOF on Demand v."$VERSION
 echo "--------------------"
 echo
 
-InstallApps
 
-RET_VAL=$?
-echo
-echo
-if [ "X$RET_VAL" = "X0" ]; then
-  echo "---> INFO: All PoD modules have been successfully installed."
-else
-  echo "---> ERROR: Failed to install PoD modules."
+#
+# Building modules
+#
+if [ $FULL_BUILD ]; then
+    InstallApps
+    
+    RET_VAL=$?
+    echo
+    echo
+    if [ "X$RET_VAL" = "X0" ]; then
+	echo "---> INFO: All PoD modules have been successfully installed."
+    else
+	echo "---> ERROR: Failed to install PoD modules."
+    fi
+    
+    if [[ -d $TMP_PATH ]]; then
+	echo "---> INFO: deleting temporary files..."
+	rm -rf $TMP_PATH
+    fi
+    
+    if [ "X$RET_VAL" != "X0" ]; then
+	exit 1;
+    fi
 fi
-
-if [[ -d $TMP_PATH ]]; then
-    echo "---> INFO: deleting temporary files..."
-    rm -rf $TMP_PATH
+#
+# Configuring
+#
+if [ $CONFIGURE ] || [ $FULL_BUILD ]; then
+    CreateCFG || { echo "---> Error: can't create cfg files."; exit 1; }  
 fi
-
-if [ "X$RET_VAL" != "X0" ]; then
-    exit 1;
-fi
-
-CreateCFG || { echo "---> Error: can't create cfg files."; exit 1; }
 
 echo "Installation successfully done."
+
 exit 0
