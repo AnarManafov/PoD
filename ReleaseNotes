@@ -1,10 +1,10 @@
-********************* Release 1.0.7 not yet released ************************
-- source code cleaning
-- switched from $GLITE_PROOF_LOCATION to $POD_LOCATION
-- using the new proofagent.cfg (PROOFAgent's configuration file)
-- fixed a case when several users run the PoD server and PAConsole couldn't recognize properly whether PoD runs or not
+********************* Release 1.0.7 2009-06-15 ************************
+- Source code cleaning.
+- Switched from $GLITE_PROOF_LOCATION to $POD_LOCATION.
+- Using new PROOFAgent's configuration file.
+- Fixed a case when several users run a PoD server and PAConsole couldn't recognize properly whether PoD runs or not.
 - LSF plug-in:
-	- use LSF's queue information to limit the maximum number of workers in GUI
+   * use LSF's queue information to limit the maximum number of workers in GUI.
 
 ********************* Release 1.0.6 2009-04-30 ************************
 - using new build system - cmake [Trac Ticket #79]

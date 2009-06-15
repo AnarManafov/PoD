@@ -10,7 +10,7 @@
 #                           2008-10-07
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( PAConsole )
 
