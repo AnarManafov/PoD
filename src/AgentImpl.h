@@ -87,13 +87,12 @@ namespace PROOFAgent
                 // #1  - Check whether xrootd process exists
                 MiscCommon::vectorPid_t pids = MiscCommon::getprocbyname( "xrootd" );
 		if( pids.empty() )
-        	   return 0;
+        	   return false;
 
     		MiscCommon::vectorPid_t::const_iterator iter = pids.begin();
     		MiscCommon::vectorPid_t::const_iterator iter_end = pids.end();
-
     		// checking that the process is running under current's user id
-    		bool found = false;	
+    		bool found = false;
 		for(; iter != iter_end; ++iter)
     		{
     			MiscCommon::CProcStatus p;
