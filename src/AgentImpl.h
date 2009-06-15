@@ -85,8 +85,30 @@ namespace PROOFAgent
             bool IsPROOFReady( unsigned short _Port ) const
             {
                 // #1  - Check whether xrootd process exists
-                pid_t pid = MiscCommon::getprocbyname( "xrootd" );
-                if ( !MiscCommon::IsProcessExist( pid ) )
+                MiscCommon::vectorPid_t pids = MiscCommon::getprocbyname( "xrootd" );
+		if( pids.empty() )
+        	   return 0;
+
+    		MiscCommon::vectorPid_t::const_iterator iter = pids.begin();
+    		MiscCommon::vectorPid_t::const_iterator iter_end = pids.end();
+
+    		// checking that the process is running under current's user id
+    		bool found = false;	
+		for(; iter != iter_end; ++iter)
+    		{
+    			MiscCommon::CProcStatus p;
+    			p.Open( *iter );
+    			std::istringstream ss( p.GetValue( "Uid" ) );
+    			uid_t realUid(0);
+    			ss >> realUid;
+    			if( getuid() == realUid )
+			  {
+			   found = true;
+    			   break;
+			  }
+    		}
+
+                if ( !found )
                     return false;
                 // #2 - Check whether PROOF port is in use
                 if ( 0 == _Port )
