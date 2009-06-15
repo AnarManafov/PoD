@@ -1,13 +1,14 @@
-********************* Release 2.0.0 not yet released ************************
-- dramatically reduced a number of threads PA produces (on both server and client sides)
-- removed the dependency on XERCES-C library
-- the configuration file has been redesigned
-- the build system has been switched from GNU Autotools to cmake
-- because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
-- switched from $GLITE_PROOF_LOCATION to $POD_LOCATION
-- new configuration parameter - client.shutdown_if_idle_for_sec. Shut down a worker if its idle time is higher than this value.
-- cosmetic changes
-  
+********************* Release 2.0.0 2009-06-15 ************************
+- Dramatically reduced a number of threads, which PA produces (on both server and client sides).
+- Slight redesign of the packet forwarder. PA now requires a factor of 3 less resources to handle each worker.
+- Removed the dependency on XERCES-C library.
+- The configuration file has been redesigned. Now using an INI style.
+- The build system has been switched from GNU Autotools to cmake.
+- Due to many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4.
+- Switched from $GLITE_PROOF_LOCATION to $POD_LOCATION.
+- New configuration parameter - client.shutdown_if_idle_for_sec. Shut down a worker if its idle time is higher than this value.
+- Cosmetic changes.
+
 ********************* Release 1.0.5 2008-08-20 ************************
 - Fixed typos.
 - The project has been moved to Eclipse 3.4 "Ganymede".
