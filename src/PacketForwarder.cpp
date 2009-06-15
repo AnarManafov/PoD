@@ -35,6 +35,7 @@ const size_t g_SERVER_INTERVAL = 3;
 const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
+extern sig_atomic_t shutdown_client;
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 {
@@ -71,24 +72,27 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
         readSock = _Input;
         writeSock = _Output;
     }
-    else
+    else if ( FD_ISSET( _Output->get(), &readset ) )
     {
         readSock = _Output;
         writeSock = _Input;
     }
+    else 
+      return true;
 
     m_idleWatch.touch();
 
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf;
-        buf.reserve( g_BUF_SIZE );
+        BYTEVector_t buf( g_BUF_SIZE );
+	InfoLog( erOK, "there is a message to redirect." );
         *readSock >> &buf;
 
         // DISCONNECT has been detected
         if ( !_Output->is_valid() || !_Input->is_valid() )
             return false;
 
+	InfoLog( erOK, "redirecting the message..." );
         *writeSock << buf;
 
         ReportPackage( *readSock, *writeSock, buf );
@@ -112,7 +116,9 @@ void CPacketForwarder::ThreadWorker( smart_socket *_SrvSocket, smart_socket *_Cl
         if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
-            break;
+            graceful_quit = 1;
+	    shutdown_client = 1;
+	    break;
         }
 
         try
@@ -167,7 +173,9 @@ void CPacketForwarder::SpawnClientMode()
         if ( m_idleWatch.isTimedout( m_shutdownIfIdleForSec ) )
         {
             InfoLog( erOK, "PF reached an idle timeout. Exiting..." );
-            break;
+	    graceful_quit = 1;
+	    shutdown_client = 1;
+            return;
         }
 
         try
@@ -183,7 +191,9 @@ void CPacketForwarder::SpawnClientMode()
     }
     // Connecting to the local client (a proof slave)
     CSocketClient proof_client;
+    InfoLog( erOK, "connecting to a local proof service on port: " ) << m_nPort << endl;
     proof_client.Connect( m_nPort, "127.0.0.1" );
+    InfoLog( erOK, "connected to the local proof service" );
 
     // Checking whether signal has arrived
     if ( graceful_quit )
@@ -195,6 +205,7 @@ void CPacketForwarder::SpawnClientMode()
 
     m_ServerSocket.set_nonblock();
 
+    InfoLog( erOK, "starting PF routine..." );
     // Executing PF routine
     ThreadWorker( &m_ServerSocket, &m_ClientSocket );
 }
@@ -217,12 +228,40 @@ void CPacketForwarder::SpawnServerMode()
             return ;
         }
 
-        if ( server.GetSocket().is_read_ready( g_SERVER_INTERVAL ) )
-        {
-            // A PROOF master connection
-            m_ServerSocket = server.Accept();
-            break;
-        }
+	// Check whether worker has disconnected (m_ClientSocket)
+	// and also check that a user (or better to say xrootd redirector) is connecting to a PROOF cluster (server.GetSocket())
+	fd_set readset;
+	FD_ZERO( &readset );
+
+	FD_SET( server.GetSocket().get(), &readset );
+	FD_SET( m_ClientSocket.get(), &readset );
+
+	// Setting time-out
+	timeval timeout;
+	timeout.tv_sec = g_SERVER_INTERVAL;
+	timeout.tv_usec = 0;
+	
+	int fd_max = max( server.GetSocket().get(), m_ClientSocket.get() );
+	// TODO: Send errno to log
+	int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
+	if ( retval < 0 )
+		throw std::runtime_error( "Server socket got error while calling \"select\"" );
+	     
+	if ( FD_ISSET( server.GetSocket().get(), &readset ) )
+	{
+		// A PROOF master connection
+		m_ServerSocket = server.Accept();
+		break;
+	}
+	else if ( FD_ISSET( m_ClientSocket.get(), &readset ) )
+	{
+		// worker is sending something, but we don't expect anything
+		// in this version of protocol it means, that the workers disconnects
+		// TODO: make check for the size of data to read (ioctl). if the size is 0, then it is a dissconnect
+		InfoLog( erOK, "A DISCONNECT has been detected of a PA worker. The worker will be removed from the active list." );
+		m_ClientSocket.close();
+		return;
+	}
     }
 
     // Executing PF routine
