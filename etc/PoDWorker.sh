@@ -81,7 +81,7 @@ xrd_detect()
       else
 	  var0=`expr $var0 + 1`
 	  # TODO: move the magic number to a var
-	  sleep 2
+	  sleep 5
       fi
     done
     return 1
