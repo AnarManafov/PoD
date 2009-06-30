@@ -18,7 +18,7 @@
 #include <QtGui>
 
 
-CAlienDlg::CalienDlg( QWidget *parent ) :
+CAlienDlg::CAlienDlg( QWidget *parent ) :
         QWidget( parent )
 {
     m_ui.setupUi( this );
@@ -28,26 +28,26 @@ CAlienDlg::~CAlienDlg()
 {
 }
 
-QString CLSFDlg::getName() const
+QString CAlienDlg::getName() const
 {
     return QString( "Alien\nJob Manager" );
 }
 
-QWidget* CLSFDlg::getWidget()
+QWidget* CAlienDlg::getWidget()
 {
     return this;
 }
 
-QIcon CLSFDlg::getIcon()
+QIcon CAlienDlg::getIcon()
 {
     return QIcon( ":/images/alien.png" );
 }
 
-void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
+void CAlienDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
   // TODO: implement me!
 }
-int CLSFDlg::getJobsCount() const
+int CAlienDlg::getJobsCount() const
 {
   // TODO: implement me!
     return 0;

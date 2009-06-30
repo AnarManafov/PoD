@@ -24,15 +24,19 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 
 set( MOC_HDRS_lsf
+     ./src/AlienDlg.h
 )
 
 set( SOURCE_FILES_lsf
+    ./src/AlienDlg.cpp
 )
 
 set( UI_FILES_lsf
+     ./res/wgAlien.ui
 )
 
-set( UI_SRSC_lsf 
+set( UI_SRSC_lsf
+     ./res/paconsole_alien.qrc
 )
 
 QT4_WRAP_CPP( MOC_SRCS_lsf ${MOC_HDRS_lsf} OPTIONS -f )

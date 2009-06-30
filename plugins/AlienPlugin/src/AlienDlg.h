@@ -20,7 +20,7 @@
 // PAConsole
 #include "IJobManager.h"
 
-class CLSFDlg: public QWidget, IJobManager
+class CAlienDlg: public QWidget, IJobManager
 {
         Q_OBJECT
         Q_INTERFACES( IJobManager )
