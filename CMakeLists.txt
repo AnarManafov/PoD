@@ -16,8 +16,8 @@ project( PAConsole )
 
 
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "8b")
+set(CPACK_PACKAGE_VERSION_MINOR "1")
+set(CPACK_PACKAGE_VERSION_PATCH "0b")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
