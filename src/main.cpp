@@ -42,11 +42,11 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         throw runtime_error( "Internal error: options' container is empty." );
 
     // Generic options
-    bpo::options_description generic( "Generic options" );
-    generic.add_options()
+    bpo::options_description visible( "Options" );
+    visible.add_options()
     ( "help,h", "produce help message" )
-    ( "version,v", "Version information" )
-    ( "config,c", bpo::value<string>(), "configuration file" )
+    ( "version,v", "version information" )
+    ( "config,c", bpo::value<string>(), "PoD user-defaults configuration file" )
     ;
 
     bpo::options_description config_file_options( "PoD user defaults options" );
@@ -69,9 +69,6 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
 //    ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
 //    ( "client.shutdown_if_idle_for_sec", value<int>( &_Options->m_clientData.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
     ;
-
-    bpo::options_description visible( "PoD options" );
-    visible.add( generic ).add( config_file_options );
 
     // Parsing command-line
     bpo::variables_map vm;
@@ -135,7 +132,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
 int main( int argc, char *argv[] )
 {
     // Command line parser
-	SPoDUserDefaultsOptions_t Options;
+    SPoDUserDefaultsOptions_t Options;
     try
     {
         if ( !parseCmdLine( argc, argv, &Options ) )
@@ -147,6 +144,8 @@ int main( int argc, char *argv[] )
         cerr << e.what() << endl;
         return 1;
     }
+
+    cout << Options.test << endl;
 
     return 0;
 }
