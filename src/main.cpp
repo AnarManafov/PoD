@@ -145,7 +145,6 @@ int main( int argc, char *argv[] )
         return 1;
     }
 
-    cout << Options.test << endl;
 
     return 0;
 }
