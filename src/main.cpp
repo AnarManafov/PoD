@@ -51,29 +51,39 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
 
     bpo::options_description config_file_options( "PoD user defaults options" );
     config_file_options.add_options()
-//    ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true, "yes" ), "todo: desc" )
-//    ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$POD_LOCATION/" ), "" )
-//    ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$POD_LOCATION/log" ), "" )
-//    ( "general.logfile_overwrite", value<bool>( &_Options->m_GeneralData.m_bLogFileOverwrite )->default_value( false, "no" ), "" )
-//    ( "general.log_level", value<size_t>( &_Options->m_GeneralData.m_logLevel )->default_value( 0 ), "" )
-//    ( "general.timeout", value<size_t>( &_Options->m_GeneralData.m_nTimeout )->default_value( 0 ), "" )
-//    ( "general.proof_cfg_path", value<string>( &_Options->m_GeneralData.m_sPROOFCfg )->default_value( "~/proof.conf" ), "" )
-//    ( "general.last_execute_cmd", value<string>( &_Options->m_GeneralData.m_sLastExecCmd ), "" )
-//
-//    ( "server.listen_port", value<unsigned short>( &_Options->m_serverData.m_nPort )->default_value( 22001 ), "" )
-//    ( "server.local_client_port_min", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMin )->default_value( 20000 ), "" )
-//    ( "server.local_client_port_max", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMax )->default_value( 25000 ), "" )
-//
-//    ( "client.server_port", value<unsigned short>( &_Options->m_clientData.m_nServerPort )->default_value( 22001 ), "" )
-//    ( "client.server_addr", value<string>( &_Options->m_clientData.m_strServerHost )->default_value( "lxi020.gsi.de" ), "" )
-//    ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
-//    ( "client.shutdown_if_idle_for_sec", value<int>( &_Options->m_clientData.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
+    ( "general.work_dir", bpo::value<string>( &_Options->m_workDir )->default_value( "$POD_LOCATION/" ), "" )
+    ( "general.logfile_dir", bpo::value<string>( &_Options->m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
+    ( "general.logfile_overwrite", bpo::value<bool>( &_Options->m_logFileOverwrite )->default_value( false, "no" ), "" )
+    ( "general.log_level", bpo::value<size_t>( &_Options->m_logLevel )->default_value( 0 ), "" )
+    ( "general.agent_timeout", bpo::value<size_t>( &_Options->m_agentTimeout )->default_value( 0 ), "" )
+    ( "general.proof_cfg_path", bpo::value<string>( &_Options->m_PROOFCfg )->default_value( "~/proof.conf" ), "" )
+    ( "general.last_execute_cmd", bpo::value<string>( &_Options->m_lastExecCmd ), "" )
+    ;
+    config_file_options.add_options()
+    ( "server.agent_server_listen_port", bpo::value<unsigned int>( &_Options->m_agentServerListenPort )->default_value( 22001 ), "" )
+    ( "server.agent_server_host", bpo::value<string>( &_Options->m_agentServerHost ), "" )
+    ( "server.agent_server_local_client_port_min", bpo::value<unsigned int>( &_Options->m_agentServerLocalClientPortMin )->default_value( 20000 ), "" )
+    ( "server.agent_server_local_client_port_max", bpo::value<unsigned int>( &_Options->m_agentServerLocalClientPortMax )->default_value( 25000 ), "" )
+    ( "server.xrd_ports_range_min", bpo::value<unsigned int>( &_Options->m_serverXrdPortsRangeMin ) )
+    ( "server.xrd_ports_range_max", bpo::value<unsigned int>( &_Options->m_serverXrdPortsRangeMax ) )
+    ( "server.xproof_ports_range_min", bpo::value<unsigned int>( &_Options->m_serverXproofPortsRangeMin ) )
+    ( "server.xproof_ports_range_max", bpo::value<unsigned int>( &_Options->m_serverXproofPortsRangeMax ) )
+    ( "server.agent_server_ports_range_min", bpo::value<unsigned int>( &_Options->m_agentServerPortsRangeMin ) )
+    ( "server.agent_server_ports_range_max", bpo::value<unsigned int>( &_Options->m_agentServerPortsRangeMax ) )
+    ;
+ 
+   config_file_options.add_options()
+    ( "worker.local_proofd_port", bpo::value<unsigned int>( &_Options->m_workerLocalXPROOFPort )->default_value( 111 ), "" )
+    ( "worker.shutdown_if_idle_for_sec", bpo::value<int>( &_Options->m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
+    ( "worker.xrd_ports_range_min", bpo::value<unsigned int>( &_Options->m_workerXrdPortsRangeMin ) )
+    ( "worker.xrd_ports_range_max", bpo::value<unsigned int>( &_Options->m_workerXrdPortsRangeMax ) )
+    ( "worker.xproof_ports_range_min", bpo::value<unsigned int>( &_Options->m_workerXproofPortsRangeMin ) )
+    ( "worker.xproof_ports_range_max", bpo::value<unsigned int>( &_Options->m_workerXproofPortsRangeMax ) )
     ;
 
     // Parsing command-line
     bpo::variables_map vm;
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
-
     bpo::notify( vm );
 
     if ( vm.count( "help" ) || vm.empty() )
