@@ -35,6 +35,27 @@ void printVersion()
     cout << "TODO: print version information" << endl;
 }
 
+
+// TODO: we use boost 1.32. This is the only method I found to conver boost::any to string.
+// In the next version of boost its solved.
+std::string convertAnyToString( const boost::any &_any )
+{
+    if ( _any.type() == typeid( string ) )
+        return boost::any_cast<string>( _any );
+
+    ostringstream ss;
+    if ( _any.type() == typeid( int ) )
+        ss << boost::any_cast<int>( _any );
+
+    if ( _any.type() == typeid( unsigned int ) )
+        ss << boost::any_cast<unsigned int>( _any );
+
+    if ( _any.type() == typeid( bool ) )
+        ss << boost::any_cast<bool>( _any );
+
+    return ss.str();
+}
+
 // Command line parser
 bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options ) throw( exception )
 {
@@ -47,15 +68,17 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     ( "help,h", "produce help message" )
     ( "version,v", "version information" )
     ( "config,c", bpo::value<string>(), "PoD user-defaults configuration file" )
+    ( "key", bpo::value<string>(), "get a value for the given key" )
     ;
 
     bpo::options_description config_file_options( "PoD user defaults options" );
+    // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT idexer can't handle it
     config_file_options.add_options()
     ( "general.work_dir", bpo::value<string>( &_Options->m_workDir )->default_value( "$POD_LOCATION/" ), "" )
     ( "general.logfile_dir", bpo::value<string>( &_Options->m_logFileDir )->default_value( "$POD_LOCATION/log" ), "" )
     ( "general.logfile_overwrite", bpo::value<bool>( &_Options->m_logFileOverwrite )->default_value( false, "no" ), "" )
-    ( "general.log_level", bpo::value<size_t>( &_Options->m_logLevel )->default_value( 0 ), "" )
-    ( "general.agent_timeout", bpo::value<size_t>( &_Options->m_agentTimeout )->default_value( 0 ), "" )
+    ( "general.log_level", bpo::value<unsigned int>( &_Options->m_logLevel )->default_value( 0 ), "" )
+    ( "general.agent_timeout", bpo::value<unsigned int>( &_Options->m_agentTimeout )->default_value( 0 ), "" )
     ( "general.proof_cfg_path", bpo::value<string>( &_Options->m_PROOFCfg )->default_value( "~/proof.conf" ), "" )
     ( "general.last_execute_cmd", bpo::value<string>( &_Options->m_lastExecCmd ), "" )
     ;
@@ -71,10 +94,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     ( "server.agent_server_ports_range_min", bpo::value<unsigned int>( &_Options->m_agentServerPortsRangeMin ) )
     ( "server.agent_server_ports_range_max", bpo::value<unsigned int>( &_Options->m_agentServerPortsRangeMax ) )
     ;
- 
-   config_file_options.add_options()
-    ( "worker.local_proofd_port", bpo::value<unsigned int>( &_Options->m_workerLocalXPROOFPort )->default_value( 111 ), "" )
-    ( "worker.shutdown_if_idle_for_sec", bpo::value<int>( &_Options->m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
+    config_file_options.add_options()
+    ( "worker.local_xproof_port", bpo::value<unsigned int>( &_Options->m_workerLocalXPROOFPort )->default_value( 111 ), "" )
+    ( "worker.agent_shutdown_if_idle_for_sec", bpo::value<int>( &_Options->m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
     ( "worker.xrd_ports_range_min", bpo::value<unsigned int>( &_Options->m_workerXrdPortsRangeMin ) )
     ( "worker.xrd_ports_range_max", bpo::value<unsigned int>( &_Options->m_workerXrdPortsRangeMax ) )
     ( "worker.xproof_ports_range_min", bpo::value<unsigned int>( &_Options->m_workerXproofPortsRangeMin ) )
@@ -96,6 +118,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         printVersion();
         return false;
     }
+
+    boost_hlp::option_dependency( vm, "key", "config" );
+
     if ( !vm.count( "config" ) )
     {
         cout << visible << endl;
@@ -113,6 +138,11 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         // Parse the config file
         bpo::store( parse_config_file( ifs, config_file_options ), vm );
         bpo::notify( vm );
+    }
+
+    if ( vm.count( "key" ) )
+    {
+        cout << convertAnyToString( vm[vm["key"].as<string>()].value() ) << endl;
     }
 
 //    boost_hlp::conflicting_options( vm, "start", "stop" );
