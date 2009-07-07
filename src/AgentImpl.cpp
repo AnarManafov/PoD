@@ -42,7 +42,7 @@ void CAgentServer::ThreadWorker()
     try
     {
         CSocketServer server;
-        server.Bind( m_Data.m_nPort );
+        server.Bind( m_Data.m_agentServerListenPort );
         server.Listen( 100 ); // TODO: Move this number of queued clients to config
         server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
@@ -93,7 +93,7 @@ void CAgentServer::ThreadWorker()
                 << " for peer: " << strSocketPeerInfo;
                 InfoLog( erOK, ss.str() );
 
-                const int port = get_free_port( m_Data.m_nLocalClientPortMin, m_Data.m_nLocalClientPortMax );
+                const int port = get_free_port( m_Data.m_agentServerLocalClientPortMin, m_Data.m_agentServerLocalClientPortMax );
                 if ( 0 == port )
                     throw runtime_error( "Can't find any free port from the given range." );
 
@@ -132,7 +132,7 @@ void CAgentClient::ThreadWorker()
 	    if( shutdown_client )
 	    	break;
 
-            if ( !IsPROOFReady( m_Data.m_nLocalClientPort ) )
+            if ( !IsPROOFReady( m_Data.m_workerLocalXPROOFPort ) )
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
                 graceful_quit = 1;
@@ -141,7 +141,7 @@ void CAgentClient::ThreadWorker()
 
             DebugLog( erOK, "looking for PROOFAgent server to connect..." );
             CSocketClient client;
-            client.Connect( m_Data.m_nServerPort, m_Data.m_strServerHost );
+            client.Connect( m_Data.m_agentServerListenPort, m_Data.m_agentServerHost );
             DebugLog( erOK, "connected!" );
 
             // sending protocol version to the server
@@ -166,7 +166,7 @@ void CAgentClient::ThreadWorker()
 
 
             // Spawn PortForwarder
-            CPacketForwarder pf( client.GetSocket(), m_Data.m_nLocalClientPort );
+            CPacketForwarder pf( client.GetSocket(), m_Data.m_workerLocalXPROOFPort );
             pf.Start( true, m_Data.m_shutdownIfIdleForSec );
         }
     }

@@ -52,7 +52,8 @@ namespace PROOFAgent
             void initLogEngine();
 
         private:
-            SAgentData_t m_Data;
+            PoD::SPoDUserDefaultsOptions_t m_Data;
+            EAgentMode_t m_Mode;
             CAgent m_Agent;
             std::string m_cfgFileName;
     };

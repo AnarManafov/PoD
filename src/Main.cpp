@@ -12,15 +12,9 @@
 
         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-// BOOST
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/cmdline.hpp>
-//#include <boost/tokenizer.hpp>
-//#include <boost/token_functions.hpp>
 // API
 #include <sys/wait.h>
-// OUR
+// Our
 #include "Process.h"
 #include "PROOFAgent.h"
 #include "PARes.h"
@@ -30,7 +24,7 @@ using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
 using namespace boost;
-using namespace boost::program_options;
+namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 
@@ -38,7 +32,7 @@ void PrintVersion()
 {
     // TODO: make VERSION to be taken from the build
     cout
-    << "PROOFAgent v." << "2.0.0" << "\n"
+    << "pod-agent v." << "2.1.0b" << "\n"
     << "application file name: " << "proofagent" << "\n"
     << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
@@ -51,51 +45,28 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         throw runtime_error( "Internal error: options' container is empty." );
 
     // Generic options
-    options_description generic( "Generic options" );
-    generic.add_options()
+    bpo::options_description options( "pod-agent options" );
+    options.add_options()
     ( "help,h", "produce help message" )
     ( "version,v", "Version information" )
-    ( "config,c", value<string>(), "configuration file" )
+    ( "config,c", bpo::value<string>(), "a PoD configuration file" )
+    ( "mode,m", bpo::value<string>()->default_value( "server" ), "agent mode (use: server or worker)" )
     ( "daemonize,d", "run PROOFAgent as a daemon" )
     ( "start", "start PROOFAgent daemon (default action)" )
     ( "stop", "stop PROOFAgent daemon" )
     ( "status", "query current status of PROOFAgent daemon" )
-    ( "pidfile,p", value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
+    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
     ;
-
-    options_description config_file_options( "Configuration" );
-    config_file_options.add_options()
-    ( "general.isServerMode", value<bool>( &_Options->m_GeneralData.m_isServerMode )->default_value( true, "yes" ), "todo: desc" )
-    ( "general.work_dir", value<string>( &_Options->m_GeneralData.m_sWorkDir )->default_value( "$POD_LOCATION/" ), "" )
-    ( "general.logfile_dir", value<string>( &_Options->m_GeneralData.m_sLogFileDir )->default_value( "$POD_LOCATION/log" ), "" )
-    ( "general.logfile_overwrite", value<bool>( &_Options->m_GeneralData.m_bLogFileOverwrite )->default_value( false, "no" ), "" )
-    ( "general.log_level", value<size_t>( &_Options->m_GeneralData.m_logLevel )->default_value( 0 ), "" )
-    ( "general.timeout", value<size_t>( &_Options->m_GeneralData.m_nTimeout )->default_value( 0 ), "" )
-    ( "general.proof_cfg_path", value<string>( &_Options->m_GeneralData.m_sPROOFCfg )->default_value( "~/proof.conf" ), "" )
-    ( "general.last_execute_cmd", value<string>( &_Options->m_GeneralData.m_sLastExecCmd ), "" )
-
-    ( "server.listen_port", value<unsigned short>( &_Options->m_serverData.m_nPort )->default_value( 22001 ), "" )
-    ( "server.local_client_port_min", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMin )->default_value( 20000 ), "" )
-    ( "server.local_client_port_max", value<unsigned short>( &_Options->m_serverData.m_nLocalClientPortMax )->default_value( 25000 ), "" )
-
-    ( "client.server_port", value<unsigned short>( &_Options->m_clientData.m_nServerPort )->default_value( 22001 ), "" )
-    ( "client.server_addr", value<string>( &_Options->m_clientData.m_strServerHost )->default_value( "lxi020.gsi.de" ), "" )
-    ( "client.local_proofd_port", value<unsigned short>( &_Options->m_clientData.m_nLocalClientPort )->default_value( 111 ), "" )
-    ( "client.shutdown_if_idle_for_sec", value<int>( &_Options->m_clientData.m_shutdownIfIdleForSec )->default_value( 1800 ), "" )
-    ;
-
-    options_description visible( "PROOFAgent options" );
-    visible.add( generic ).add( config_file_options );
 
     // Parsing command-line
-    variables_map vm;
-    store( command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
+    bpo::variables_map vm;
+    bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( options ).run(), vm );
 
-    notify( vm );
+    bpo::notify( vm );
 
     if ( vm.count( "help" ) || vm.empty() )
     {
-        cout << visible << endl;
+        cout << options << endl;
         return false;
     }
     if ( vm.count( "version" ) )
@@ -103,23 +74,17 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         PrintVersion();
         return false;
     }
+
     if ( !vm.count( "config" ) )
     {
-        cout << visible << endl;
-        throw runtime_error( "You need to specify a configuration file at least." );
+        cout << options << endl;
+        throw runtime_error( "You need to specify a PoD configuration file at least." );
     }
     else
     {
-        // Load the file and tokenize it
-        ifstream ifs( vm["config"].as<string>().c_str() );
-        if ( !ifs.good() )
-        {
-            cout << "Could not open the configuration file" << endl;
-            return 1;
-        }
-        // Parse the config file
-        store( parse_config_file( ifs, config_file_options ), vm );
-        notify( vm );
+    	PoD::CPoDUserDefaults user_defaults;
+    	user_defaults.init( vm["config"].as<string>() );
+    	_Options->m_podOptions = user_defaults.getOptions();
     }
 
     boost_hlp::conflicting_options( vm, "start", "stop" );
@@ -128,6 +93,13 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     boost_hlp::option_dependency( vm, "start", "daemonize" );
     boost_hlp::option_dependency( vm, "stop", "daemonize" );
     boost_hlp::option_dependency( vm, "status", "daemonize" );
+
+    if( vm.count("mode") )
+    {
+    	string mode( vm["mode"].as<string>() );
+    	if( "worker" == mode )
+    		_Options->m_agentMode = Client;
+    }
 
     if ( vm.count( "start" ) )
         _Options->m_Command = SOptions_t::Start;

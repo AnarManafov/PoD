@@ -140,10 +140,9 @@ namespace PROOFAgent
         public:
             CAgentServer( const SOptions_t *_data ): CAgentBase()
             {
-                AgentServerData_t tmp = _data->m_serverData;
-                std::swap( m_Data, tmp );
+                m_Data = _data->m_podOptions;
 
-                InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+                //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
             }
             virtual ~CAgentServer()
             {}
@@ -170,7 +169,7 @@ namespace PROOFAgent
             void ThreadWorker();
 
         private:
-            AgentServerData_t m_Data;
+            PoD::SPoDUserDefaultsOptions_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
     };
@@ -189,10 +188,9 @@ namespace PROOFAgent
         public:
             CAgentClient( const SOptions_t *_data ): CAgentBase()
             {
-                AgentClientData_t tmp = _data->m_clientData;
-                std::swap( m_Data, tmp );
+                m_Data = _data->m_podOptions;
 
-                InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
+                //InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
             }
             virtual ~CAgentClient()
             {}
@@ -208,7 +206,7 @@ namespace PROOFAgent
             void ThreadWorker();
 
         private:
-            AgentClientData_t m_Data;
+            PoD::SPoDUserDefaultsOptions_t m_Data;
     };
 
 }

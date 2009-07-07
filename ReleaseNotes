@@ -1,5 +1,5 @@
 ********************* Release 2.1.0 not yet released ************************
-
+- project's has been renamed to pod-agent
 
 ********************* Release 2.0.0 2009-06-15 ************************
 - Dramatically reduced a number of threads, which PA produces (on both server and client sides).

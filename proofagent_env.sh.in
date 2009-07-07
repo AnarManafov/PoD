@@ -1,7 +1,0 @@
-#! /bin/bash
-
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-
-export PROOFAGENT_BIN=@bindir@
-

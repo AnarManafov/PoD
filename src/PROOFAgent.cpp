@@ -39,60 +39,58 @@ CPROOFAgent::~CPROOFAgent()
 //=============================================================================
 void CPROOFAgent::setConfiguration( const SOptions_t *_data )
 {
-    SAgentData_t tmp = _data->m_GeneralData;
-    swap( m_Data, tmp );
-
+    m_Data = _data->m_podOptions;
+    m_Mode = _data->m_agentMode;
     initLogEngine();
 
-    InfoLog( MiscCommon::erOK, "PROOFAgent general configuration:" ) << m_Data;
+    //InfoLog( MiscCommon::erOK, "PROOFAgent general configuration:" ) << m_Data;
 
-    m_Data.m_AgentMode = ( m_Data.m_isServerMode ) ? Server : Client;
     // Spawning new Agent in requested mode
-    m_Agent.SetMode( m_Data.m_AgentMode, _data );
+    m_Agent.SetMode( m_Mode, _data );
 }
 //=============================================================================
 void CPROOFAgent::Start() throw( exception )
 {
-    m_Agent.Start( m_Data.m_sPROOFCfg );
+    m_Agent.Start( m_Data.m_PROOFCfg );
 }
 //=============================================================================
 void CPROOFAgent::initLogEngine()
 {
     // Correcting configuration values
     // resolving user's home dir from (~/ or $HOME, if present)
-    MiscCommon::smart_path( &m_Data.m_sWorkDir );
+    MiscCommon::smart_path( &m_Data.m_workDir );
     // We need to be sure that there is "/" always at the end of the path
-    MiscCommon::smart_append<string>( &m_Data.m_sWorkDir, '/' );
+    MiscCommon::smart_append<string>( &m_Data.m_workDir, '/' );
 
-    MiscCommon::smart_path( &m_Data.m_sLogFileDir );
-    MiscCommon::smart_append<string>( &m_Data.m_sLogFileDir, '/' );
+    MiscCommon::smart_path( &m_Data.m_logFileDir );
+    MiscCommon::smart_append<string>( &m_Data.m_logFileDir, '/' );
 
-    MiscCommon::smart_path( &m_Data.m_sPROOFCfg );
+    MiscCommon::smart_path( &m_Data.m_PROOFCfg );
 
     // Initializing log engine
     // log file name: proofagent.<instance_name>.pid
     std::stringstream logfile_name;
     logfile_name
-    << m_Data.m_sLogFileDir
+    << m_Data.m_logFileDir
     << "proofagent."
-    << (( m_Data.m_isServerMode ) ? "server" : "client" )
+    << ( m_Mode? "server" : "client" )
     << ".log";
 
-    CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_bLogFileOverwrite );
+    CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_logFileOverwrite );
 // TODO:take VERSION from the build automatically
     InfoLog( erOK, string( "proofagent v." ) + "2.0.0" );
 
     // Timeout Guard
-    if ( 0 != m_Data.m_nTimeout )
-        CTimeoutGuard::Instance().Init( getpid(), m_Data.m_nTimeout );
+    if ( 0 != m_Data.m_agentTimeout )
+        CTimeoutGuard::Instance().Init( getpid(), m_Data.m_agentTimeout );
 }
 //=============================================================================
 void CPROOFAgent::ExecuteLastCmd()
 {
-    if ( !m_Data.m_sLastExecCmd.empty() )
+    if ( !m_Data.m_lastExecCmd.empty() )
     {
-        InfoLog( erOK, "executing last command: " + m_Data.m_sLastExecCmd );
-        if ( -1 == ::system( m_Data.m_sLastExecCmd.c_str() ) )
-            FaultLog( erError, "Can't execute last command: " + m_Data.m_sLastExecCmd );
+        InfoLog( erOK, "executing last command: " + m_Data.m_lastExecCmd );
+        if ( -1 == ::system( m_Data.m_lastExecCmd.c_str() ) )
+            FaultLog( erError, "Can't execute last command: " + m_Data.m_lastExecCmd );
     }
 }

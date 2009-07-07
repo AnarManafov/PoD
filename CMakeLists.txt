@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2008 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( PROOFAgent )
+project( pod-agent )
 
 
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
@@ -66,14 +66,14 @@ include_directories( ${CMAKE_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-add_executable(proofagent ${SOURCE_FILES})
+add_executable(pod-agent ${SOURCE_FILES})
 
 target_link_libraries (
-    proofagent
+    pod-agent
     ${Boost_LIBRARIES}
 )
 
-install(TARGETS proofagent DESTINATION bin)
+install(TARGETS pod-agent DESTINATION bin)
 
 
 #

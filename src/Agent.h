@@ -44,6 +44,10 @@ namespace PROOFAgent
             {
                 m_Agent->Start( _PROOFCfg );
             }
+            EAgentMode_t getMode()
+            {
+            	return m_Mode;
+            }
 
         private:
             void RefreshAgent( const SOptions_t *_data )
