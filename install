@@ -30,18 +30,23 @@ INSTALL_PATH=`pwd`
 
 XRD_EXPORT_DIR=$INSTALL_PATH/test
 
-
+# pod-user-defaults app
+pod_user_defaults_PKG=pod-user_defaults-1.0.0b-Source
+pod_user_defaults_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
+pod_user_defaults_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
+# pod-agent app
+pod_agent_PKG=pod-agent-2.1.0b-Source
+pod_agent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
+pod_agent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
+# PAConsole app
+PAConsole_PKG=PAConsole-1.0.7-Source
+PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
+PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
+# gLite API wrapper (needed to PoD gLite plug-in)
 GAW_PKG=glite-api-wrapper-3.2.0
-GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
+GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
-PROOFAgent_PKG=PROOFAgent-2.0.0-Source
-PROOFAgent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
-PROOFAgent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
-
-PAConsole_PKG=PAConsole-1.0.7-Source
-PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/
-PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # only for gLite plug-in
 #export GLITE_LOCATION=
 export XERCESC_LOCATION=$GLITE_LOCATION/../external/opt/xerces-c
@@ -130,18 +135,33 @@ InstallGAW()
     return 0
 }
 
-InstallPROOFAgent()
+Install_pod_user_defaults()
 {
-    _GetModule $PROOFAgent_PKG $PROOFAgent_LINK
+    _GetModule $pod_user_defaults_PKG $pod_user_defaults_LINK
+
+    pushd $APP_PATH/$pod_user_defaults_PKG || return 1
+    cmake $pod_user_defaults_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
+    gmake || { popd; return 1; }
+    gmake install || { popd; return 1; }
+    popd
+
+    echo
+    echo "---> INFO: pod-user-defaults has been installed."
+    return 0
+}
+
+Install_pod_agent()
+{
+    _GetModule $pod_agent_PKG $pod_agent_LINK
     
-    pushd $APP_PATH/$PROOFAgent_PKG || return 1
-    cmake $PROOFAgent_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
+    pushd $APP_PATH/$pod_agent_PKG || return 1
+    cmake $pod_agent_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
     gmake || { popd; return 1; }
     gmake install || { popd; return 1; }
     popd
     
     echo
-    echo "---> INFO: PROOFAgent has been installed."
+    echo "---> INFO: pod-agent has been installed."
     return 0
 }
 
@@ -163,7 +183,7 @@ InstallPAConsole()
 InstallApps()
 {
     mkdir -p $TMP_PATH
-    
+
     InstallGAW
     GAW_RET_VAL=$?
     echo
@@ -178,7 +198,7 @@ InstallApps()
 	read -s -n 1	
     fi
     
-    InstallPROOFAgent || return 1
+    Install_pod_agent || return 1
     InstallPAConsole || return 1
     
     return 0
@@ -230,6 +250,15 @@ echo
 # Building modules
 #
 if [ $FULL_BUILD ]; then
+    
+# The very first step is to install pod-user-defaults app
+    Install_pod_user_defaults
+    if [ "X$?" != "X0" ]; then
+	echo "---> ERROR: pod-user-defaults can't be installed. Please check its build output for error messages."
+	exit 1;
+    fi
+    
+
     InstallApps
     
     RET_VAL=$?
