@@ -54,7 +54,8 @@ fi
 ## Resource finder
 #
 if named PoDServer
- xpd.resource static $POD_LOCATION/proof.conf
+  set PODHOME=$POD_LOCATION
+  xpd.resource static $(PODHOME)/proof.conf
 else
  xpd.resource static _G_WRK_DIR/proof.conf
  xpd.workdir _G_WRK_DIR/proof
