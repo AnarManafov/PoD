@@ -14,7 +14,7 @@
 #*************************************************************************
 project( PAConsole )
 
-
+set(VERSION "1.1.0b")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "0b")
@@ -24,6 +24,11 @@ cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+
+#
+# configure files
+# 
+configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
 
 #
 # Options

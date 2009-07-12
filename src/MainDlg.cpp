@@ -26,6 +26,7 @@
 #include "IJobManager.h"
 #include "ServerInfo.h"
 #include "MainDlg.h"
+#include "version.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -74,6 +75,9 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     flags |= Qt::WindowMaximizeButtonHint;
     flags |= Qt::WindowMinimizeButtonHint;
     setWindowFlags( flags );
+
+    QString title( PROJECT_NAME" - " PROJECT_VERSION_STRING );
+    setWindowTitle( title );
 
     try
     {
