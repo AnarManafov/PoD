@@ -20,13 +20,12 @@
 #
 
 #######
-# TODO: take this info from proofagent.cfg file
-XRD_PORTS_RANGE_MIN=20000
-XRD_PORTS_RANGE_MAX=21000
-XPROOF_PORTS_RANGE_MIN=21001
-XPROOF_PORTS_RANGE_MAX=22000
-PROOFAGENT_PORTS_RANGE_MIN=22001
-PROOFAGENT_PORTS_RANGE_MAX=23000
+XRD_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_min`
+XRD_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_max`
+XPROOF_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_min`
+XPROOF_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max`
+PROOFAGENT_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_server_ports_range_min`
+PROOFAGENT_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_server_ports_range_max`
 #######
 # a number of seconds we wait until xrd is started 
 XRD_START_TIMEOUT=3 
@@ -55,11 +54,11 @@ xrd_detect()
     return 0
 }
 # ************************************************************************
-# ***** detects ports for PROOFAgent  *****
-proofagent_detect()
+# ***** detects ports for pod-agent  *****
+pod_agent_detect()
 {
-# get a pid of our proofagent. We get any xrd running by $UID
-    PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep proofagent | awk '{print $1}'`
+# get a pid of our pod-agent. We get any pod-agent running by $UID
+    PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep pod-agent | awk '{print $1}'`
     
     if [ -n "$PA_PID" ]; then
 	echo "PROOFAgent is running under PID: "$PA_PID
@@ -68,10 +67,10 @@ proofagent_detect()
 	return 1
     fi
     
-# getting an array of PA LISTEN ports
-    PA_PORTS=(`lsof -P -w -a -c proofagent -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+# getting an array of pod-agent LISTEN ports
+    PA_PORTS=(`lsof -P -w -a -c pod-agent -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
-    echo "- PROOFAgent server port: "${PA_PORTS[0]}
+    echo "- PoD Agent server port: "${PA_PORTS[0]}
     return 0
 }
 # ************************************************************************
@@ -136,20 +135,15 @@ start()
     
     sleep $XRD_START_TIMEOUT # let XRD to start
 	
-    # setting a port to listen for PROOFAgent server and server's host name
-    regexp_listen="s/\(listen_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
-    regexp_server="s/\(server_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
-    regexp_serverhostname="s/\(server_addr=\).*/\1$(hostname -f)/g"
-    sed -e "$regexp_listen" $POD_LOCATION/etc/proofagent.cfg > $POD_LOCATION/etc/proofagent.cfg.temp
-    mv $POD_LOCATION/etc/proofagent.cfg.temp $POD_LOCATION/etc/proofagent.cfg
-
-    # PROOFAgent client configuration file
-    sed -e "$regexp_server" -e "$regexp_serverhostname" $POD_LOCATION/etc/proofagent.client.cfg > $POD_LOCATION/etc/proofagent.client.cfg.temp
-    mv $POD_LOCATION/etc/proofagent.client.cfg.temp $POD_LOCATION/etc/proofagent.client.cfg
-
+    # setting a port to listen for pod-agent server and server's host name
+    regexp_listen="s/\(agent_server_listen_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
+    regexp_serverhostname="s/\(agent_server_host=\).*/\1$(hostname -f)/g"
+    # TODO: implement error handling
+    sed -e "$regexp_listen" -e "$regexp_serverhostname" $POD_LOCATION/etc/PoD.cfg > $POD_LOCATION/etc/PoD.cfg.temp
+    mv $POD_LOCATION/etc/PoD.cfg.temp $POD_LOCATION/etc/PoD.cfg
     # Start Proofagent
     ####
-    $POD_LOCATION/bin/proofagent -d -p "$1/" -c $POD_LOCATION/etc/proofagent.cfg --start
+    $POD_LOCATION/bin/pod-agent -d -m server -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --start
     
     return 0
 }
@@ -163,7 +157,7 @@ stop()
     pkill -9 -U $UID xrootd
     pkill -9 -U $UID proofserv
 
-    $POD_LOCATION/bin/proofagent -d -p "$1/" -c $POD_LOCATION/etc/proofagent.cfg --stop
+    $POD_LOCATION/bin/pod-agent -d -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --stop
     
     return 0
 }
@@ -175,7 +169,7 @@ status()
     xrd_detect
 
     # PROOFAgent
-    proofagent_detect
+    pod_agent_detect
    
     # check that ROOTSYS is set
     if [ -z $ROOTSYS ]; then

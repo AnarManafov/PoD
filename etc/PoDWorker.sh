@@ -15,12 +15,7 @@
 #        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
-# Arguments for the script:
 #
-# -r <ROOTSYS> : PoDWorker will not use its own version of ROOT on workers, instead it will use provided ROOTSYS
-#
-#
-
 # ************************************************************************
 # F U N C T I O N S
 # ************************************************************************
@@ -115,21 +110,6 @@ get_freeport()
 
 
 # ************************************************************************
-# ***** Arguments *****
-WN_INSTALL_ROOT=True
-WN_ROOTSYS=
-while getopts "r:" Option
-do
-  case $Option in
-    r) 
-	  WN_INSTALL_ROOT=False 
-	  WN_ROOTSYS=$OPTARG ;;
-  esac
-done
-
-
-
-# ************************************************************************
 # M A I N
 # ************************************************************************
 
@@ -187,15 +167,16 @@ echo "*** host's CPU/instruction set: " $host_arch
 case "$host_arch" in
     x86)
 	PROOFAGENT_ARC="proofagent-2_0_0-x86-linux-gcc_4_1.tar.gz"
-	ROOT_ARC="root_v5.18.00.Linux.slc4.gcc3.4.tar.gz" ;;
+	ROOT_ARC="root_v5.24.00.Linux.slc4.gcc3.4.tar.gz" ;;
     x86_64)
         PROOFAGENT_ARC="proofagent-2_0_0-x86_64-linux-gcc_4_1.tar.gz"
-        ROOT_ARC="root_v5.18.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
+        ROOT_ARC="root_v5.24.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
 esac
 
 # ****************
 # ***** ROOT *****
-if [ "$WN_INSTALL_ROOT" = "True" ]; then
+set_my_rootsys=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys`
+if [ "$set_my_rootsys" = "no" ]; then
     wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || clean_up 1
     tar -xzvf $ROOT_ARC || clean_up 1
 
@@ -203,7 +184,7 @@ if [ "$WN_INSTALL_ROOT" = "True" ]; then
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 else
-    export ROOTSYS=$WN_ROOTSYS
+    export ROOTSYS=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys`
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
@@ -260,10 +241,10 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
       POD_XPROOF_PORT_TOSET=${XRD_PORTS[1]}
   else
     # TODO: get new free ports here and write to xrd config file
-      XRD_PORTS_RANGE_MIN=20000
-      XRD_PORTS_RANGE_MAX=21000
-      XPROOF_PORTS_RANGE_MIN=21001
-      XPROOF_PORTS_RANGE_MAX=22000
+      XRD_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min`
+      XRD_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max`
+      XPROOF_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_ports_range_min`
+      XPROOF_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_ports_range_min`
       POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
       POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
       echo "using XRD port:"$POD_XRD_PORT_TOSET

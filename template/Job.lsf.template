@@ -24,10 +24,6 @@
 #
 G_WRK_DIR=_G_WRK_DIR
 #
-## User's ROOTSYS to use on workers
-#
-G_ROOTSYS=/usr/local/pub/debian4.0/x86_64/gcc411-21/rootmgr/522-00
-#
 ## log dir
 #
 LOG_DIR=$G_WRK_DIR/log/$LSB_JOBID
@@ -43,14 +39,14 @@ cd $WRK_DIR || return 1
 ## we don't use BSUB-f since it doens't support env. variables in paths
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
-cp $G_WRK_DIR/etc/proofagent.client.cfg $WRK_DIR/proofagent.client.cfg
+cp $G_WRK_DIR/etc/PoD.cfg $WRK_DIR/PoD.cfg
 cp $G_WRK_DIR/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 ## Here you can specify your own version of ROOT
 ## or you can delete -r <ROOTSYS> parameter and 
 ## PoDWorker will use its own settings
 #
-$WRK_DIR/PoDWorker.sh -r $ROOTSYS
+$WRK_DIR/PoDWorker.sh
 #
 ## logs
 #

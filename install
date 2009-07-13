@@ -31,7 +31,7 @@ INSTALL_PATH=`pwd`
 XRD_EXPORT_DIR=$INSTALL_PATH/test
 
 # pod-user-defaults app
-pod_user_defaults_PKG=pod-user_defaults-1.0.0b-Source
+pod_user_defaults_PKG=pod-user-defaults-1.0.0b-Source
 pod_user_defaults_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 pod_user_defaults_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # pod-agent app
@@ -39,7 +39,7 @@ pod_agent_PKG=pod-agent-2.1.0b-Source
 pod_agent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 pod_agent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # PAConsole app
-PAConsole_PKG=PAConsole-1.0.7-Source
+PAConsole_PKG=PAConsole-1.1.0b-Source
 PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # gLite API wrapper (needed to PoD gLite plug-in)
