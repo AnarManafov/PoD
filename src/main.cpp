@@ -75,34 +75,13 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     }
     else
     {
-    	user_defaults.init( vm["config"].as<string>() );
+        user_defaults.init( vm["config"].as<string>() );
     }
 
     if ( vm.count( "key" ) )
     {
         cout << user_defaults.getValueForKey( vm["key"].as<string>() ) << endl;
     }
-
-//    boost_hlp::conflicting_options( vm, "start", "stop" );
-//    boost_hlp::conflicting_options( vm, "start", "status" );
-//    boost_hlp::conflicting_options( vm, "stop", "status" );
-//    boost_hlp::option_dependency( vm, "start", "daemonize" );
-//    boost_hlp::option_dependency( vm, "stop", "daemonize" );
-//    boost_hlp::option_dependency( vm, "status", "daemonize" );
-//
-//    if ( vm.count( "start" ) )
-//        _Options->m_Command = SOptions_t::Start;
-//    if ( vm.count( "stop" ) )
-//        _Options->m_Command = SOptions_t::Stop;
-//    if ( vm.count( "status" ) )
-//        _Options->m_Command = SOptions_t::Status;
-//    if ( vm.count( "pidfile" ) )
-//    {
-//        _Options->m_sPidfileDir = vm["pidfile"].as<string>();
-//        // We need to be sure that there is "/" always at the end of the path
-//        smart_append( &_Options->m_sPidfileDir, '/' );
-//    }
-//    _Options->m_bDaemonize = vm.count( "daemonize" );
 
     return true;
 }
