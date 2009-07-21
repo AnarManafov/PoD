@@ -1,6 +1,11 @@
 ********************* Release 2.1.0 not yet released ************************
 - project's has been renamed to pod-agent
 
+********************* Release 2.0.1 2009-07-21 ************************
+A patch release.
+The patch addresses some stability issues and most importantly fixes a hanging-on-merging issue, which was due to a loose of TCP packages.
+Workers where sending data without checking that server could be temporary unavailable due to a full buffer of the socket.
+
 ********************* Release 2.0.0 2009-06-15 ************************
 - Dramatically reduced a number of threads, which PA produces (on both server and client sides).
 - Slight redesign of the packet forwarder. PA now requires a factor of 3 less resources to handle each worker.

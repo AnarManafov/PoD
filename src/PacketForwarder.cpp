@@ -27,15 +27,31 @@ using namespace std;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 // a number of seconds, which is define an interval for select function
-const size_t g_CHECK_INTERVAL = 2;
+const size_t g_CHECK_INTERVAL = 3;
 const size_t g_CHECK_SERVERMSG_INTERVAL = 3;
 const size_t g_SERVER_INTERVAL = 3;
-// a regular Ethernet frame size - datagram
-// TODO: Move it to config.
-const unsigned int g_BUF_SIZE = 1500;
 
 extern sig_atomic_t graceful_quit;
 extern sig_atomic_t shutdown_client;
+
+bool CPacketForwarder::dealWithData( smart_socket *_Input, smart_socket *_Output )
+{
+    if( !_Input->is_valid()  )
+    	return false;
+
+    m_bytesToSend = read_from_socket( *_Input, &m_buf );
+
+    // DISCONNECT has been detected
+    if ( m_bytesToSend <= 0 || !_Output->is_valid() )
+        return false;
+   
+    sendall( *_Output, &m_buf[0], m_bytesToSend, 0 );
+
+    // TODO: uncomment when log level is implemented
+    // ReportPackage( *_Input, *_Output, buf );
+    m_idleWatch.touch();
+    return true;
+}
 
 bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
 {
@@ -57,46 +73,24 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
     int fd_max = max( _Input->get(), _Output->get() );
     // TODO: Send errno to log
     int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
-
     if ( retval < 0 )
         throw std::runtime_error( "Server socket got error while calling \"select\"" );
 
     if ( 0 == retval )
         return true;
 
-    smart_socket *readSock = NULL;
-    smart_socket *writeSock = NULL;
-
     if ( FD_ISSET( _Input->get(), &readset ) )
     {
-        readSock = _Input;
-        writeSock = _Output;
+        if( !dealWithData( _Input, _Output ) )
+	  return false;
     }
-    else if ( FD_ISSET( _Output->get(), &readset ) )
+    
+    if ( FD_ISSET( _Output->get(), &readset ) )
     {
-        readSock = _Output;
-        writeSock = _Input;
+        if( !dealWithData( _Output, _Input ) )
+	   return false;
     }
-    else 
-      return true;
 
-    m_idleWatch.touch();
-
-    {
-        boost::mutex::scoped_lock lock( m_mutex );
-        BYTEVector_t buf( g_BUF_SIZE );
-	InfoLog( erOK, "there is a message to redirect." );
-        *readSock >> &buf;
-
-        // DISCONNECT has been detected
-        if ( !_Output->is_valid() || !_Input->is_valid() )
-            return false;
-
-	InfoLog( erOK, "redirecting the message..." );
-        *writeSock << buf;
-
-        ReportPackage( *readSock, *writeSock, buf );
-    }
     return true;
 }
 
