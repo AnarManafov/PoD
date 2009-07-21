@@ -23,6 +23,9 @@
 #include "BOOSTHelper.h"
 #include "HexView.h"
 
+// TODO: Move it to config.
+const unsigned int g_BUF_SIZE = 5000;
+
 namespace PROOFAgent
 {
     class CIdleWatch
@@ -58,7 +61,9 @@ namespace PROOFAgent
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
                     m_nPort( _nNewLocalPort ),
-                    m_shutdownIfIdleForSec( 0 )
+	            m_shutdownIfIdleForSec( 0 ),
+	            m_buf(g_BUF_SIZE),
+	            m_bytesToSend(0)
             {}
 
             ~CPacketForwarder()
@@ -80,7 +85,8 @@ namespace PROOFAgent
             MiscCommon::ERRORCODE _Start( bool _ClientMode );
             void SpawnServerMode();
             void SpawnClientMode();
-            bool ForwardBuf( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
+            bool dealWithData( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
+	    bool ForwardBuf( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
             void ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2,
                                 const MiscCommon::BYTEVector_t &_buf )
             {
@@ -111,6 +117,8 @@ namespace PROOFAgent
             boost::mutex m_mutex;
             int m_shutdownIfIdleForSec;
             CIdleWatch m_idleWatch;
+            MiscCommon::BYTEVector_t m_buf;
+	    size_t m_bytesToSend;
     };
 
 }
