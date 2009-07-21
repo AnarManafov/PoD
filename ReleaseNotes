@@ -4,6 +4,12 @@ Configuration update:
    - added <worker.set_my_rootsys>. Set to "yes" if you want to use a custom version of the ROOT on workers. PoD set ROOTSYS env.variable to a value defined by <worker.my_rootsys>.
    - added <worker.my_rootsys>. Set to a path to a custom ROOT version.
 
+********************* Release 2.0.10 2009-07-21 ************************
+Using new PROOFAgent.
+   - A patch release.
+     The patch addresses some stability issues and most importantly fixes a hanging-on-merging issue, which was due to a loose of TCP packages.
+     Workers where sending data without checking that server could be temporary unavailable due to a full buffer of the socket.
+
 ********************* Release 2.0.9 2009-07-11 ************************
 - A patched version, tuned for ROOT 5.24. Released because PROOF changed the way it handles variables in xr
 d config file.
