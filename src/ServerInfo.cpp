@@ -25,23 +25,23 @@ using namespace MiscCommon;
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
     vectorPid_t pids = getprocbyname( _Srv );
-    if( pids.empty() )
-    	return 0;
+    if ( pids.empty() )
+        return 0;
 
     vectorPid_t::const_iterator iter = pids.begin();
     vectorPid_t::const_iterator iter_end = pids.end();
-    
+
     // checking that the process is running under current's user id
-    for(; iter != iter_end; ++iter)
-      {
-	CProcStatus p;
-	p.Open( *iter );
-	istringstream ss( p.GetValue( "Uid" ) );
-	uid_t realUid(0);
-	ss >> realUid;
-	if( getuid() == realUid )
-	  return *iter;
-      }
+    for (; iter != iter_end; ++iter)
+    {
+        CProcStatus p;
+        p.Open( *iter );
+        istringstream ss( p.GetValue( "Uid" ) );
+        uid_t realUid(0);
+        ss >> realUid;
+        if ( getuid() == realUid )
+            return *iter;
+    }
     return 0;
 }
 
@@ -62,7 +62,7 @@ pid_t CServerInfo::IsXROOTDRunning() const
 
 pid_t CServerInfo::IsPROOFAgentRunning() const
 {
-    return _IsRunning( "proofagent" );
+    return _IsRunning( "pod-agent" );
 }
 
 string CServerInfo::GetXROOTDInfo() const
@@ -91,13 +91,13 @@ string CServerInfo::GetPAInfo() const
 
     stringstream ss;
     ss
-    << "PROOFAgent" << spid.str() << ": is "
+    << "pod-agent" << spid.str() << ": is "
     << ( pid ? "running" : "NOT RUNNING" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
     if ( !ver.empty() )
-        ss << "\n" << "PROOFAgent's version:\n" << ver;
+        ss << "\n" << "pod-agent version:\n" << ver;
 
     return ss.str();
 }
@@ -107,7 +107,7 @@ void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
     if ( !_Ver )
         return ;
 
-    FILE *f = popen( "proofagent --version", "r" );
+    FILE *f = popen( "pod-agent --version", "r" );
     if ( !f )
         return ;
 

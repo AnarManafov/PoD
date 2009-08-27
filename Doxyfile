@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME = PAConsole
+PROJECT_NAME = pod-console
 PROJECT_NUMBER = "ver. 1.1.0b"
 OUTPUT_DIRECTORY = documentation
 CREATE_SUBDIRS = NO

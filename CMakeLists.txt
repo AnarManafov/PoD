@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( PAConsole )
+project( pod-console )
 
 set(VERSION "1.1.0b")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
@@ -95,16 +95,16 @@ if(BUILD_DOCUMENTATION)
 endif(BUILD_DOCUMENTATION)
 									
 #
-## PAConsole executable
+## pod-console executable
 #
 include_directories( ${CMAKE_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-add_executable(PAConsole ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS} ${UI_HDRS})
+add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS} ${UI_HDRS})
 
 target_link_libraries (
-    PAConsole
+    pod-console
     ${QT_LIBRARIES}
     ${Boost_LIBRARIES}
 )
@@ -156,7 +156,7 @@ endif (ALIEN_FOUND)
 #
 # Install Target
 #
-install(TARGETS PAConsole DESTINATION bin)
+install(TARGETS pod-console DESTINATION bin)
 
 
 #

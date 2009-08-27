@@ -62,7 +62,7 @@ void _savecfg( const T &_s, string _FileName )
 }
 
 CMainDlg::CMainDlg( QDialog *_Parent ):
-		QDialog( _Parent ),
+        QDialog( _Parent ),
         m_CurrentPage( 0 )
 {
     m_ui.setupUi( this );
@@ -253,20 +253,20 @@ void CMainDlg::changeNumberOfJobs( int /*_count*/ )
 
 void CMainDlg::on_closeButton_clicked()
 {
-  CServerInfo si;
-  if ( si.IsRunning( true ) )
+    CServerInfo si;
+    if ( si.IsRunning( true ) )
     {
-      const string msg( "PoD server is running.\n"
-			"Do you want to stop the server and shut all workers down?\n"
-			"If you answer NO, then the server and workers will continue to run after PAConsole is closed.");
-      const QMessageBox::StandardButton reply =
-	QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
-			       QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-      if ( QMessageBox::Cancel == reply)
-	return;
-      if ( QMessageBox::Yes == reply )
-	m_server.CommandServer( CServerDlg::srvSTOP );   
+        const string msg( "PoD server is running.\n"
+                          "Do you want to stop the server and shut all workers down?\n"
+                          "If you answer NO, then the server and workers will continue to run after PAConsole is closed.");
+        const QMessageBox::StandardButton reply =
+            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+        if ( QMessageBox::Cancel == reply)
+            return;
+        if ( QMessageBox::Yes == reply )
+            m_server.CommandServer( CServerDlg::srvSTOP );
     }
 
-  close();
+    close();
 }

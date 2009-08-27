@@ -26,10 +26,11 @@
 // MiscCommon
 #include "CustomIterator.h"
 #include "SysHelper.h"
+#include "PoDUserDefaultsOptions.h"
 // PAConsole
 #include "WorkersDlg.h"
 
-const char * const g_szPROOF_CFG = "$POD_LOCATION/etc/proofagent.cfg";
+const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
 
 using namespace std;
 using namespace MiscCommon;
@@ -40,56 +41,10 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 {
     smart_path( &_cfgFileName );
 
-    string proofCfgFileName;
-    variables_map vm;
+    PoD::CPoDUserDefaults user_defaults;
+    user_defaults.init( _cfgFileName );
 
-    try
-    {
-        options_description config_file_options( "Configuration" );
-        config_file_options.add_options()
-        ( "general.proof_cfg_path", value<string>( &proofCfgFileName ), "" )
-
-        // TODO: use allow_unregistered when BOOST 1.36+ can be used and the following options can be removed from here
-        ( "general.isServerMode", value<bool>(), "" )
-        ( "general.work_dir", value<string>(), "" )
-        ( "general.logfile_dir", value<string>(), "" )
-        ( "general.logfile_overwrite", value<bool>(), "" )
-        ( "general.log_level", value<size_t>(), "" )
-        ( "general.timeout", value<size_t>(), "" )
-        ( "general.last_execute_cmd", value<string>(), "" )
-        ( "server.listen_port", value<unsigned short>(), "" )
-        ( "server.local_client_port_min", value<unsigned short>(), "" )
-        ( "server.local_client_port_max", value<unsigned short>(), "" )
-        ( "client.server_port", value<unsigned short>(), "" )
-        ( "client.server_addr", value<string>(), "" )
-        ( "client.local_proofd_port", value<unsigned short>(), "" )
-        ( "client.shutdown_if_idle_for_sec", value<int>(), "" )
-        ;
-
-        // Load the file and tokenize it
-        ifstream ifs( _cfgFileName.c_str() );
-        if ( !ifs.good() )
-        {
-            // TODO: show an msg box
-            cerr << "Could not open the PROOFAgent configuration file" << endl;
-            return;
-        }
-        // Parse the config file
-        // TODO: use allow_unregistered when BOOST 1.36+ can be used
-        store( parse_config_file( ifs, config_file_options ), vm );
-        notify( vm );
-    }
-    catch ( const exception &_e )
-    {
-        cerr << "Exception has been caught while reading PROOFAgent's configuration file: " << _e.what() << endl;
-        return;
-    }
-    catch ( ... )
-    {
-        return;
-    }
-
-    *_retVal = proofCfgFileName;
+    *_retVal = user_defaults.getValueForKey("general.proof_cfg_path");
 }
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
@@ -99,12 +54,11 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
 {
     m_ui.setupUi( this );
 
-    parsePROOFAgentCfgFile( g_szPROOF_CFG, &m_CfgFileName );
+    parsePROOFAgentCfgFile( g_szPoDcfg, &m_CfgFileName );
     smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {
-        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving proof.conf full name from proofagent.cfg" ) );
-        //return ;
+        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
     }
 
     m_Timer = new QTimer( this );
@@ -141,7 +95,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
     // Reading only comment blocks of proof.conf
     const char chCmntSign( '#' );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                             SFindComment<string>( chCmntSign ) );
+                                    SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {

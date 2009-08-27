@@ -20,22 +20,22 @@
 
 class CServerInfo
 {
-    public:
-        CServerInfo()
-        {}
-        virtual ~CServerInfo()
-        {}
+public:
+    CServerInfo()
+    {}
+    virtual ~CServerInfo()
+    {}
 
-    public:
-        bool IsRunning( bool _check_all ) const;
-        pid_t IsXROOTDRunning() const;
-        pid_t IsPROOFAgentRunning() const;
-        std::string GetXROOTDInfo() const;
-        std::string GetPAInfo() const;
+public:
+    bool IsRunning( bool _check_all ) const;
+    pid_t IsXROOTDRunning() const;
+    pid_t IsPROOFAgentRunning() const;
+    std::string GetXROOTDInfo() const;
+    std::string GetPAInfo() const;
 
-    private:
-        pid_t _IsRunning( const std::string &_Srv ) const;
-        void GetPROOFAgentVersion( std::string *_Ver ) const;
+private:
+    pid_t _IsRunning( const std::string &_Srv ) const;
+    void GetPROOFAgentVersion( std::string *_Ver ) const;
 };
 
 #endif /*SERVERINFO_H_*/
