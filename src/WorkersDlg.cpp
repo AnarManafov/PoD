@@ -58,7 +58,9 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
     smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {
-        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
+        QMessageBox::critical( this,
+                               tr( "PROOFAgent Console" ),
+                               tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
     }
 
     m_Timer = new QTimer( this );
