@@ -168,7 +168,7 @@ void CAgentClient::ThreadWorker()
             if ( shutdown_client )
                 break;
 
-            if ( !IsPROOFReady( m_Data.m_workerLocalXPROOFPort ) )
+            if ( !IsPROOFReady( m_proofPort ) )
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
                 graceful_quit = 1;
@@ -204,7 +204,7 @@ void CAgentClient::ThreadWorker()
 
 
             // Spawn PortForwarder
-            CPacketForwarder pf( client.GetSocket(), m_Data.m_workerLocalXPROOFPort );
+            CPacketForwarder pf( client.GetSocket(), m_proofPort );
             pf.Start( true, m_Data.m_shutdownIfIdleForSec );
         }
     }

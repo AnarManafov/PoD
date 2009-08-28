@@ -1,6 +1,9 @@
 ********************* Release 2.1.0 not yet released ************************
 - project's has been renamed to pod-agent.
 - use a server_info.cfg file, where a host name and a port number of the agent server are stored.
+- new program options: 
+	- "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
+	- "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
 
 ********************* Release 2.0.1 2009-07-21 ************************
 A patch release.

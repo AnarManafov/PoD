@@ -202,6 +202,7 @@ public:
     {
         m_Data = _data->m_podOptions;
         m_serverInfoFile = _data->m_serverInfoFile;
+        m_proofPort = _data->m_proofPort;
 
         //InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
     }
@@ -221,6 +222,7 @@ protected:
 private:
     PoD::SPoDUserDefaultsOptions_t m_Data;
     std::string m_serverInfoFile;
+    unsigned int m_proofPort;
 };
 
 }

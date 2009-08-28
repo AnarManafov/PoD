@@ -57,6 +57,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "status", "query current status of PROOFAgent daemon" )
     ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file" ) // TODO: I am thinking to move this option to config file
     ( "serverinfo", bpo::value<string>()->default_value("$POD_LOCATION/etc/server_info.cfg"), "a server info file name" )
+    ( "proofport", bpo::value<unsigned int>(), "a PROOF (xproof) port. Used only by agents in a worker mode" )
     ;
 
     // Parsing command-line
@@ -121,6 +122,9 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     	_Options->m_serverInfoFile = vm["serverinfo"].as<string>();
     	smart_path( &_Options->m_serverInfoFile );
     }
+
+    if( vm.count("proofport") )
+    	_Options->m_proofPort = vm["proofport"].as<unsigned int>();
 
     return true;
 }
