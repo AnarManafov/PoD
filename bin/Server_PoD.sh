@@ -102,7 +102,7 @@ get_freeport()
 # takes two parameters, pod agent server host name and port number
 create_agent_server_info_file()
 {
-    SERVERINFO_FILE="server_info.cfg"
+    SERVERINFO_FILE="$POD_LOCATION/etc/server_info.cfg"
     echo "[server]" > $SERVERINFO_FILE
     echo "host=$1" >> $SERVERINFO_FILE
     echo "port=$2" >> $SERVERINFO_FILE
