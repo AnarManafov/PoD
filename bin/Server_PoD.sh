@@ -98,6 +98,16 @@ get_freeport()
 ' $1 $2
 }
 # ************************************************************************
+# ***** returns a free port from a given range  *****
+# takes two parameters, pod agent server host name and port number
+create_agent_server_info_file()
+{
+    SERVERINFO_FILE="server_info.cfg"
+    echo "[server]" > $SERVERINFO_FILE
+    echo "host=$1" >> $SERVERINFO_FILE
+    echo "port=$2" >> $SERVERINFO_FILE
+}
+# ************************************************************************
 # ***** START  *****
 start() 
 {
@@ -136,11 +146,9 @@ start()
     sleep $XRD_START_TIMEOUT # let XRD to start
 	
     # setting a port to listen for pod-agent server and server's host name
-    regexp_listen="s/\(agent_server_listen_port=\)[0-9]*/\1$NEW_PROOFAGENT_PORT/g"
-    regexp_serverhostname="s/\(agent_server_host=\).*/\1$(hostname -f)/g"
-    # TODO: implement error handling
-    sed -e "$regexp_listen" -e "$regexp_serverhostname" $POD_LOCATION/etc/PoD.cfg > $POD_LOCATION/etc/PoD.cfg.temp
-    mv $POD_LOCATION/etc/PoD.cfg.temp $POD_LOCATION/etc/PoD.cfg
+    ####
+    create_agent_server_info_file $(hostname -f) $NEW_PROOFAGENT_PORT
+
     # Start Proofagent
     ####
     $POD_LOCATION/bin/pod-agent -d -m server -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --start
