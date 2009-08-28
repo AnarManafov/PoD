@@ -12,5 +12,5 @@
   Rank = 0; 
   Type = "job"; 
   StdError = "gLitePROOF.err"; 
-  InputSandbox = { "$POD_LOCATION/etc/PoDWorker.sh","$POD_LOCATION/etc/xpd.cf","$POD_LOCATION/etc/PoD.cfg" }
+  InputSandbox = { "$POD_LOCATION/etc/PoDWorker.sh","$POD_LOCATION/etc/xpd.cf","$POD_LOCATION/etc/server_info.cfg","$POD_LOCATION/etc/PoD.cfg" }
  ]

@@ -40,6 +40,7 @@ cd $WRK_DIR || return 1
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
 cp $G_WRK_DIR/etc/PoD.cfg $WRK_DIR/PoD.cfg
+cp $G_WRK_DIR/etc/server_info.cfg $WRK_DIR/server_info.cfg
 cp $G_WRK_DIR/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 ## Here you can specify your own version of ROOT
