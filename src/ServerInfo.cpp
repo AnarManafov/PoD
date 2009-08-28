@@ -10,7 +10,7 @@
                             2007-05-28
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2008 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // MiscCommon
 #include "Process.h"
@@ -75,7 +75,7 @@ string CServerInfo::GetXROOTDInfo() const
 
     stringstream ss;
     ss
-    << "XROOTD" << spid.str() << ": is "
+    << "xrootd" << spid.str() << ": is "
     << ( pid ? "running" : "NOT RUNNING" );
 
     return ss.str();
