@@ -15,6 +15,7 @@
 // STD
 #include <stdexcept>
 // PROOFAgent
+#include "version.h"
 #include "PROOFAgent.h"
 // MiscCommon
 #include "MiscUtils.h"
@@ -78,7 +79,7 @@ void CPROOFAgent::initLogEngine()
 
     CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_logFileOverwrite );
 // TODO:take VERSION from the build automatically
-    InfoLog( erOK, string( "proofagent v." ) + "2.0.0" );
+    InfoLog( erOK, PROJECT_NAME + string( " v.") + PROJECT_VERSION_STRING );
 
     // Timeout Guard
     if ( 0 != m_Data.m_agentTimeout )

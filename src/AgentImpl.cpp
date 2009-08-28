@@ -34,6 +34,34 @@ void PROOFAgent::signal_handler( int _SignalNumber )
     graceful_quit = 1;
 }
 //=============================================================================
+//------------------------- Agent Base class --------------------------------------------------------
+void CAgentBase::readServerInfoFile( const string &_filename )
+{
+    boost::program_options::variables_map keys;
+    boost::program_options::options_description options( "Agent's server info config" );
+    // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT idexer can't handle it
+    options.add_options()
+    ( "server.host", boost::program_options::value<std::string>(), "" )
+    ( "server.port", boost::program_options::value<unsigned int>(), "" )
+    ;
+
+    std::ifstream ifs( _filename.c_str() );
+    if ( !ifs.good() )
+    {
+        std::string msg( "Could not open a server info configuration file: " );
+        msg += _filename;
+        throw runtime_error( msg );
+    }
+    // Parse the config file
+    boost::program_options::store( boost::program_options::parse_config_file( ifs, options ), keys );
+    boost::program_options::notify( keys );
+
+    if ( keys.count("server.host") )
+        m_agentServerHost = keys["server.host"].as<string>();
+    if ( keys.count("server.port") )
+        m_agentServerListenPort = keys["server.port"].as<unsigned int>();
+}
+//=============================================================================
 //------------------------- Agent SERVER ------------------------------------------------------------
 void CAgentServer::ThreadWorker()
 {
@@ -41,8 +69,10 @@ void CAgentServer::ThreadWorker()
     CreatePROOFCfg( m_sPROOFCfg );
     try
     {
+        readServerInfoFile( m_serverInfoFile );
+
         CSocketServer server;
-        server.Bind( m_Data.m_agentServerListenPort );
+        server.Bind( m_agentServerListenPort );
         server.Listen( 100 ); // TODO: Move this number of queued clients to config
         server.GetSocket().set_nonblock(); // Nonblocking server socket
         while ( true )
@@ -117,6 +147,12 @@ void CAgentServer::ThreadWorker()
     }
 }
 //=============================================================================
+void CAgentServer::deleteServerInfoFile()
+{
+    // TODO: check error code
+    unlink( m_serverInfoFile.c_str() );
+}
+//=============================================================================
 //------------------------- Agent CLIENT ------------------------------------------------------------
 void CAgentClient::ThreadWorker()
 {
@@ -128,9 +164,9 @@ void CAgentClient::ThreadWorker()
     {
         while ( true )
         {
-	    // worker needs to be closed
-	    if( shutdown_client )
-	    	break;
+            // worker needs to be closed
+            if ( shutdown_client )
+                break;
 
             if ( !IsPROOFReady( m_Data.m_workerLocalXPROOFPort ) )
             {
@@ -139,9 +175,11 @@ void CAgentClient::ThreadWorker()
                 break;
             }
 
+            readServerInfoFile( m_serverInfoFile );
+
             DebugLog( erOK, "looking for PROOFAgent server to connect..." );
             CSocketClient client;
-            client.Connect( m_Data.m_agentServerListenPort, m_Data.m_agentServerHost );
+            client.Connect( m_agentServerListenPort, m_agentServerHost );
             DebugLog( erOK, "connected!" );
 
             // sending protocol version to the server

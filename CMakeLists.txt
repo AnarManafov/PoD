@@ -10,11 +10,11 @@
 #                           2008-10-07
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( pod-agent )
 
-
+set(VERSION "2.1.0b")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "0b")
@@ -25,6 +25,11 @@ cmake_minimum_required( VERSION 2.6.4 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+
+#
+# configure files
+# 
+configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
 
 #
 # Options

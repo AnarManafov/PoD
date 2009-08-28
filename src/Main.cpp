@@ -15,6 +15,7 @@
 // API
 #include <sys/wait.h>
 // Our
+#include "version.h"
 #include "Process.h"
 #include "PROOFAgent.h"
 #include "PARes.h"
@@ -32,8 +33,7 @@ void PrintVersion()
 {
     // TODO: make VERSION to be taken from the build
     cout
-    << "pod-agent v." << "2.1.0b" << "\n"
-    << "application file name: " << "proofagent" << "\n"
+    << PROJECT_NAME << " v." << PROJECT_VERSION_STRING << "\n"
     << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
@@ -55,7 +55,8 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "start", "start PROOFAgent daemon (default action)" )
     ( "stop", "stop PROOFAgent daemon" )
     ( "status", "query current status of PROOFAgent daemon" )
-    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file." ) // TODO: I am thinking to move this option to config file
+    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file" ) // TODO: I am thinking to move this option to config file
+    ( "serverinfo", bpo::value<string>()->default_value("$POD_LOCATION/etc/server_info.cfg"), "a server info file name" )
     ;
 
     // Parsing command-line
@@ -82,9 +83,9 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     }
     else
     {
-    	PoD::CPoDUserDefaults user_defaults;
-    	user_defaults.init( vm["config"].as<string>() );
-    	_Options->m_podOptions = user_defaults.getOptions();
+        PoD::CPoDUserDefaults user_defaults;
+        user_defaults.init( vm["config"].as<string>() );
+        _Options->m_podOptions = user_defaults.getOptions();
     }
 
     boost_hlp::conflicting_options( vm, "start", "stop" );
@@ -94,11 +95,11 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     boost_hlp::option_dependency( vm, "stop", "daemonize" );
     boost_hlp::option_dependency( vm, "status", "daemonize" );
 
-    if( vm.count("mode") )
+    if ( vm.count("mode") )
     {
-    	string mode( vm["mode"].as<string>() );
-    	if( "worker" == mode )
-    		_Options->m_agentMode = Client;
+        string mode( vm["mode"].as<string>() );
+        if ( "worker" == mode )
+            _Options->m_agentMode = Client;
     }
 
     if ( vm.count( "start" ) )
@@ -114,6 +115,12 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         smart_append( &_Options->m_sPidfileDir, '/' );
     }
     _Options->m_bDaemonize = vm.count( "daemonize" );
+
+    if( vm.count("serverinfo") )
+    {
+    	_Options->m_serverInfoFile = vm["serverinfo"].as<string>();
+    	smart_path( &_Options->m_serverInfoFile );
+    }
 
     return true;
 }
