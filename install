@@ -38,10 +38,10 @@ pod_user_defaults_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 pod_agent_PKG=pod-agent-2.1.0b-Source
 pod_agent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 pod_agent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
-# PAConsole app
-PAConsole_PKG=PAConsole-1.1.0b-Source
-PAConsole_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
-PAConsole_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
+# pod-console app
+pod_console_PKG=pod-console-1.1.0b-Source
+pod_console_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
+pod_console_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # gLite API wrapper (needed to PoD gLite plug-in)
 GAW_PKG=glite-api-wrapper-3.2.0
 GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
@@ -165,18 +165,18 @@ Install_pod_agent()
     return 0
 }
 
-InstallPAConsole()
+Install_pod_console()
 {
-    _GetModule $PAConsole_PKG $PAConsole_LINK
+    _GetModule $pod_console_PKG $pod_console_LINK
     
-    pushd  $APP_PATH/$PAConsole_PKG || return 1
-    cmake $PAConsole_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
+    pushd  $APP_PATH/$pod_console_PKG || return 1
+    cmake $pod_console_OPTIONS -C BuildSetup.cmake . || { popd; return 1; }
     gmake || { popd; return 1; }
     gmake install || { popd; return 1; }
     popd
     
     echo
-    echo "---> INFO: PAConsole has been installed."
+    echo "---> INFO: pod-console has been installed."
     return 0
 }
 
@@ -191,15 +191,15 @@ InstallApps()
     if [ "X$GAW_RET_VAL" != "X0" ]; then
 	echo "---> WARNING: Can't install gLite API Wrapper (GAW) library."
 	echo "---> WARNING: Do you want to use gLite plug-in?"
-	echo "---> WARNING: Without GAW there can be no gLite plug-in for PAConsole installed."
-	echo "---> WARNING: Please fix GAW configuration options (in the install script) and resolve missing dependencies, if you still want to use gLite plug-in for PAConsole."
+	echo "---> WARNING: Without GAW there can be no gLite plug-in for pod-console installed."
+	echo "---> WARNING: Please fix GAW configuration options (in the install script) and resolve missing dependencies, if you still want to use gLite plug-in for pod-console."
 	echo
 	echo "Press any key to continue, or Ctrl+C to abort..."
 	read -s -n 1	
     fi
     
     Install_pod_agent || return 1
-    InstallPAConsole || return 1
+    Install_pod_console || return 1
     
     return 0
 }

@@ -69,8 +69,8 @@ xrd_detect()
 # XPROOF port must be greater
       XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
       
-      echo "PoD detected XRD port:"${XRD_PORTS[0]}
-      echo "PoD detected XPROOF port:"${XRD_PORTS[1]}
+      echo "PoD has detected XRD port:"${XRD_PORTS[0]}
+      echo "PoD has detected XPROOF port:"${XRD_PORTS[1]}
       if [ -n "${XRD_PORTS[0]}" ] && [ -n "${XRD_PORTS[1]}" ]; then
 	  return 0;
       else
@@ -125,7 +125,6 @@ echo "$y"
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./proofagent.client.cfg
 # populating the tmp dir.
 _TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
@@ -166,10 +165,10 @@ echo "*** host's CPU/instruction set: " $host_arch
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="proofagent-2_0_0-x86-linux-gcc_4_1.tar.gz"
+	PROOFAGENT_ARC="pod-agent-2_1_0b-x86-linux-gcc_4_1.tar.gz"
 	ROOT_ARC="root_v5.24.00.Linux.slc4.gcc3.4.tar.gz" ;;
     x86_64)
-        PROOFAGENT_ARC="proofagent-2_0_0-x86_64-linux-gcc_4_1.tar.gz"
+        PROOFAGENT_ARC="pod-agent-2_1_0b-x86_64-linux-gcc_4_1.tar.gz"
         ROOT_ARC="root_v5.24.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
 esac
 
@@ -202,17 +201,17 @@ fi
 
 
 # **********************
-# ***** getting PROOFAgent from the repository site *****
+# ***** getting pod-agent from the repository site *****
 wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
-export PROOFAGENTSYS="/$WD/proofagent"
+export PROOFAGENTSYS="/$WD/pod-agent"
 export PATH=$PROOFAGENTSYS/:$PATH 
 export LD_LIBRARY_PATH=$PROOFAGENTSYS/:$LD_LIBRARY_PATH
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
-if [ ! -x $PROOFAGENTSYS/proofagent ]; then 
-    chmod +x $PROOFAGENTSYS/proofagent
+if [ ! -x $PROOFAGENTSYS/pod-agent ]; then 
+    chmod +x $PROOFAGENTSYS/pod-agent
 fi
 
 # creating an empty proof.conf, so that xproof will be happy
@@ -243,8 +242,8 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
     # TODO: get new free ports here and write to xrd config file
       XRD_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min`
       XRD_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max`
-      XPROOF_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_ports_range_min`
-      XPROOF_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_ports_range_min`
+      XPROOF_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min`
+      XPROOF_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max`
       POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
       POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
       echo "using XRD port:"$POD_XRD_PORT_TOSET
@@ -256,11 +255,6 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
   sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
   mv $WD/xpd.cf.temp $WD/xpd.cf
-  
-#updating PROOFAgent configuration file
-  regexp="s/\(local_proofd_port=\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-  sed -e "$regexp" $WD/proofagent.client.cfg > $WD/proofagent.client.cfg.temp
-  mv $WD/proofagent.client.cfg.temp $WD/proofagent.client.cfg
   
 # starting xrootd
   if [ -n "$XRD_PID" ]; then
@@ -295,7 +289,7 @@ fi
 
 
 # start proofagent
-proofagent -c $WD/proofagent.client.cfg
+pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server-info.cfg --proofport $POD_XPROOF_PORT_TOSET
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"

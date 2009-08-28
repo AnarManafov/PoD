@@ -38,9 +38,9 @@ xrd_detect()
     XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd | awk '{print $1}'`
     
     if [ -n "$XRD_PID" ]; then
-	echo "XRD is running under PID: "$XRD_PID
+	echo "XROOTD is running under PID: "$XRD_PID
     else
-	echo "XRD is NOT running"
+	echo "XROOTD is NOT running"
 	return 1
     fi
     
@@ -49,7 +49,7 @@ xrd_detect()
 # XPROOF port must be greater
     XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
     
-    echo "- XRD port: "${XRD_PORTS[0]}
+    echo "- XROOTD port: "${XRD_PORTS[0]}
     echo "- XPROOF port: "${XRD_PORTS[1]}
     return 0
 }
@@ -61,9 +61,9 @@ pod_agent_detect()
     PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep pod-agent | awk '{print $1}'`
     
     if [ -n "$PA_PID" ]; then
-	echo "PROOFAgent is running under PID: "$PA_PID
+	echo "PoD Agent is running under PID: "$PA_PID
     else
-	echo "PROOFAgent is NOT running"
+	echo "PoD Agent is NOT running"
 	return 1
     fi
     
