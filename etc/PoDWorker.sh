@@ -289,7 +289,7 @@ fi
 
 
 # start proofagent
-pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server-info.cfg --proofport $POD_XPROOF_PORT_TOSET
+pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server-info.cfg --proofport $POD_XPROOF_PORT_TOSET --workdir $WD --logfiledir $WD
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"
