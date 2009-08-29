@@ -47,17 +47,19 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     // Generic options
     bpo::options_description options( "pod-agent options" );
     options.add_options()
-    ( "help,h", "produce help message" )
+    ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
-    ( "config,c", bpo::value<string>(), "a PoD configuration file" )
-    ( "mode,m", bpo::value<string>()->default_value( "server" ), "agent mode (use: server or worker)" )
-    ( "daemonize,d", "run PROOFAgent as a daemon" )
-    ( "start", "start PROOFAgent daemon (default action)" )
-    ( "stop", "stop PROOFAgent daemon" )
-    ( "status", "query current status of PROOFAgent daemon" )
-    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "directory where daemon can keep its pid file" ) // TODO: I am thinking to move this option to config file
-    ( "serverinfo", bpo::value<string>()->default_value("$POD_LOCATION/etc/server_info.cfg"), "a server info file name" )
-    ( "proofport", bpo::value<unsigned int>(), "a PROOF (xproof) port. Used only by agents in a worker mode" )
+    ( "config,c", bpo::value<string>(), "A PoD configuration file" )
+    ( "mode,m", bpo::value<string>()->default_value( "server" ), "Agent's mode (use: server or worker)" )
+    ( "daemonize,d", "Run agent as a daemon" )
+    ( "start", "Start agent daemon (default action)" )
+    ( "stop", "Stop agent daemon" )
+    ( "status", "Query current status of agent daemon" )
+    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "Directory, where daemon can keep its pid file" ) // TODO: I am thinking to move this option to config file
+    ( "serverinfo", bpo::value<string>()->default_value("$POD_LOCATION/etc/server_info.cfg"), "A server info file name" )
+    ( "proofport", bpo::value<unsigned int>(), "A PROOF (xproof) port. Used only by agents in a worker mode" )
+    ( "workdir", bpo::value<string>(), "Agent's working directory. Agent will use this value if provided instead of PoD's configuration file options." )
+    ( "logfiledir", bpo::value<string>(), "Agent's log file directory. Agent will use this value if provided instead of PoD's configuration file options." )
     ;
 
     // Parsing command-line
@@ -87,6 +89,13 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         PoD::CPoDUserDefaults user_defaults;
         user_defaults.init( vm["config"].as<string>() );
         _Options->m_podOptions = user_defaults.getOptions();
+
+        // Some of Agent's command line options have a higher priority than PoD's user default options.
+        // we therefore overwrite PoD's settings with the provided in a command line
+        if ( vm.count("workdir") )
+            _Options->m_podOptions.m_workDir = vm["workdir"].as<string>();
+        if ( vm.count("logfiledir") )
+            _Options->m_podOptions.m_logFileDir = vm["logfiledir"].as<string>();
     }
 
     boost_hlp::conflicting_options( vm, "start", "stop" );
@@ -117,14 +126,14 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     }
     _Options->m_bDaemonize = vm.count( "daemonize" );
 
-    if( vm.count("serverinfo") )
+    if ( vm.count("serverinfo") )
     {
-    	_Options->m_serverInfoFile = vm["serverinfo"].as<string>();
-    	smart_path( &_Options->m_serverInfoFile );
+        _Options->m_serverInfoFile = vm["serverinfo"].as<string>();
+        smart_path( &_Options->m_serverInfoFile );
     }
 
-    if( vm.count("proofport") )
-    	_Options->m_proofPort = vm["proofport"].as<unsigned int>();
+    if ( vm.count("proofport") )
+        _Options->m_proofPort = vm["proofport"].as<unsigned int>();
 
     return true;
 }
