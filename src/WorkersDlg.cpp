@@ -114,6 +114,10 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 
 void CWorkersDlg::update()
 {
+    // Don't process if the page is hidden
+    if ( isHidden() )
+        return;
+
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 

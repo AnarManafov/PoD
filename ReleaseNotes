@@ -1,5 +1,6 @@
 ********************* Release 1.1.0 not yet released ************************
-- Renamed to pod-console
+- Renamed to pod-console.
+- Don't update server or workers page if the page is hidden.
 
 ********************* Release 1.0.7 2009-06-15 ************************
 - Source code cleaning.

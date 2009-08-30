@@ -32,6 +32,7 @@
 // TODO: optimize the call of the status of PoD
 // this is very expensive call, we therefore using 20 sec. timeout
 const size_t g_UpdateInterval = 20000;  // in milliseconds
+const size_t g_WaitTimeout = 15;
 // default pid/log directory
 const char * const g_szPID_Dir = "$POD_LOCATION/";
 
@@ -122,6 +123,10 @@ void CServerDlg::on_btnBrowsePIDDir_clicked()
 
 void CServerDlg::update_check_srv_socket()
 {
+    // Don't process if the page is hidden
+    if ( isHidden() )
+        return;
+
     string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
     smart_path( &cmd );
     StringVector_t params;
@@ -130,7 +135,7 @@ void CServerDlg::update_check_srv_socket()
     string output;
     try
     {
-        do_execv( cmd, params, 20, &output );
+        do_execv( cmd, params, g_WaitTimeout, &output );
     }
     catch (...)
     {
