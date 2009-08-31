@@ -74,7 +74,7 @@ void CPROOFAgent::initLogEngine()
     logfile_name
     << m_Data.m_logFileDir
     << "proofagent."
-    << ( m_Mode? "server" : "client" )
+    << ( (Server == m_Mode)? "server" : "client" )
     << ".log";
 
     CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_logFileOverwrite );
