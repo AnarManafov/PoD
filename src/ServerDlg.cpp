@@ -32,7 +32,7 @@
 // TODO: optimize the call of the status of PoD
 // this is very expensive call, we therefore using 20 sec. timeout
 const size_t g_UpdateInterval = 20000;  // in milliseconds
-const size_t g_WaitTimeout = 15;
+const size_t g_WaitTimeout = 15; // in sec.
 // default pid/log directory
 const char * const g_szPID_Dir = "$POD_LOCATION/";
 
@@ -54,7 +54,8 @@ CServerDlg::CServerDlg( QWidget *_parent ):
     m_Timer = new QTimer( this );
     connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
     m_Timer->start( g_UpdateInterval );
-    update_check_srv_socket();
+
+    update_check_srv_socket( true );
 }
 
 CServerDlg::~CServerDlg()
@@ -121,10 +122,10 @@ void CServerDlg::on_btnBrowsePIDDir_clicked()
     }
 }
 
-void CServerDlg::update_check_srv_socket()
+void CServerDlg::update_check_srv_socket( bool _force )
 {
     // Don't process if the page is hidden
-    if ( isHidden() )
+    if ( !_force && isHidden() )
         return;
 
     string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );

@@ -46,8 +46,7 @@ private slots:
     void on_btnStartServer_clicked();
     void on_btnStopServer_clicked();
     void on_btnBrowsePIDDir_clicked();
-
-    void update_check_srv_socket();
+    void update_check_srv_socket( bool _force = false);
 
 private:
     bool IsRunning( bool _check_all );
