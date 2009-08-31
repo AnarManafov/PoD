@@ -52,7 +52,9 @@ void signal_handler( int _SignalNumber );
 class CAgentBase
 {
 public:
-    CAgentBase(): m_agentServerListenPort(0)
+    CAgentBase(const PoD::SCommonOptions_t _common):
+            m_commonOptions(_common),
+            m_agentServerListenPort(0)
     {
         // Registering signals handlers
         struct sigaction sa;
@@ -69,14 +71,13 @@ public:
     virtual ~CAgentBase()
     {
         // deleting proof configuration file
-        if ( !m_sPROOFCfg.empty() )
-            ::unlink( m_sPROOFCfg.c_str() );
+        if ( !m_commonOptions.m_proofCFG.empty() )
+            ::unlink( m_commonOptions.m_proofCFG.c_str() );
     }
 
 public:
-    MiscCommon::ERRORCODE Start( const std::string &_PROOFCfg )
+    MiscCommon::ERRORCODE Start()
     {
-        m_sPROOFCfg = _PROOFCfg;
         boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
         thrd.join();
         return MiscCommon::erOK;
@@ -123,7 +124,7 @@ protected:
     void readServerInfoFile( const std::string &_filename );
 
 protected:
-    std::string m_sPROOFCfg;
+    const PoD::SCommonOptions_t &m_commonOptions;
     unsigned int m_agentServerListenPort;
     std::string m_agentServerHost;
 };
@@ -141,10 +142,10 @@ class CAgentServer :
 
 {
 public:
-    CAgentServer( const SOptions_t *_data ): CAgentBase()
+    CAgentServer( const SOptions_t &_data ): CAgentBase(_data.m_podOptions.m_server.m_common)
     {
-        m_Data = _data->m_podOptions;
-        m_serverInfoFile = _data->m_serverInfoFile;
+        m_Data = _data.m_podOptions.m_server;
+        m_serverInfoFile = _data.m_serverInfoFile;
 
         //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
     }
@@ -180,7 +181,7 @@ private:
     void deleteServerInfoFile();
 
 private:
-    PoD::SPoDUserDefaultsOptions_t m_Data;
+    PoD::SServerOptions_t m_Data;
     CPFContainer m_PFList;
     boost::mutex m_PFList_mutex;
     std::string m_serverInfoFile;
@@ -198,11 +199,11 @@ class CAgentClient:
             protected CPROOFCfgImpl<CAgentClient>
 {
 public:
-    CAgentClient( const SOptions_t *_data ): CAgentBase()
+    CAgentClient( const SOptions_t &_data ): CAgentBase(_data.m_podOptions.m_worker.m_common)
     {
-        m_Data = _data->m_podOptions;
-        m_serverInfoFile = _data->m_serverInfoFile;
-        m_proofPort = _data->m_proofPort;
+        m_Data = _data.m_podOptions.m_worker;
+        m_serverInfoFile = _data.m_serverInfoFile;
+        m_proofPort = _data.m_proofPort;
 
         //InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
     }
@@ -220,7 +221,7 @@ protected:
     void ThreadWorker();
 
 private:
-    PoD::SPoDUserDefaultsOptions_t m_Data;
+    PoD::SWorkerOptions_t m_Data;
     std::string m_serverInfoFile;
     unsigned int m_proofPort;
 };

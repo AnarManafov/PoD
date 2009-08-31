@@ -22,57 +22,57 @@
 
 namespace PROOFAgent
 {
-    typedef boost::shared_ptr<CAgentBase> pAgentBase_t;
-    /**
-     *
-     * @brief A simple object factory class.
-     * @brief It produces Agents objects according to the given mode.
-     *
-     */
-    class CAgent
+typedef boost::shared_ptr<CAgentBase> pAgentBase_t;
+/**
+ *
+ * @brief A simple object factory class.
+ * @brief It produces Agents objects according to the given mode.
+ *
+ */
+class CAgent
+{
+public:
+    CAgent( EAgentMode_t _Mode = Unknown ) : m_Mode( _Mode )
     {
-        public:
-            CAgent( EAgentMode_t _Mode = Unknown ) : m_Mode( _Mode )
-            {
-            }
-            void SetMode( EAgentMode_t _Mode, const SOptions_t *_data )
-            {
-                m_Mode = _Mode;
-                RefreshAgent( _data );
-            }
-            void Start( const std::string &_PROOFCfg ) throw( std::exception )
-            {
-                m_Agent->Start( _PROOFCfg );
-            }
-            EAgentMode_t getMode()
-            {
-            	return m_Mode;
-            }
+    }
+    void SetMode( EAgentMode_t _Mode, const SOptions_t &_data )
+    {
+        m_Mode = _Mode;
+        RefreshAgent( _data );
+    }
+    void Start() throw( std::exception )
+    {
+        m_Agent->Start();
+    }
+    EAgentMode_t getMode()
+    {
+        return m_Mode;
+    }
 
-        private:
-            void RefreshAgent( const SOptions_t *_data )
-            {
-                if (( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
-                    m_Agent.reset( Spawn(_data) );
-            }
-            CAgentBase* Spawn( const SOptions_t *_data )
-            {
-                switch ( m_Mode )
-                {
-                    case Server:
-                        return new CAgentServer( _data );
-                    case Client:
-                        return new CAgentClient( _data );
-                    case Unknown:
-                    default:
-                        return NULL;
-                }
-            }
+private:
+    void RefreshAgent( const SOptions_t &_data )
+    {
+        if (( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
+            m_Agent.reset( Spawn(_data) );
+    }
+    CAgentBase* Spawn( const SOptions_t &_data )
+    {
+        switch ( m_Mode )
+        {
+        case Server:
+            return new CAgentServer( _data );
+        case Client:
+            return new CAgentClient( _data );
+        case Unknown:
+        default:
+            return NULL;
+        }
+    }
 
-        private:
-            pAgentBase_t m_Agent;
-            EAgentMode_t m_Mode;
-    };
+private:
+    pAgentBase_t m_Agent;
+    EAgentMode_t m_Mode;
+};
 
 };
 

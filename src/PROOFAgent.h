@@ -44,18 +44,16 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( "PROOFAgent" )
 
         public:
-            void setConfiguration( const SOptions_t *_data );
+            void setConfiguration( const SOptions_t &_data );
             void Start() throw( std::exception );
 
         private:
-            void ExecuteLastCmd();
             void initLogEngine();
 
         private:
-            PoD::SPoDUserDefaultsOptions_t m_Data;
+            PoD::SCommonOptions_t m_Data;
             EAgentMode_t m_Mode;
             CAgent m_Agent;
-            std::string m_cfgFileName;
     };
 
 };

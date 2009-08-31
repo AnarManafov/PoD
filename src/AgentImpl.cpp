@@ -66,7 +66,7 @@ void CAgentBase::readServerInfoFile( const string &_filename )
 void CAgentServer::ThreadWorker()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( m_sPROOFCfg );
+    CreatePROOFCfg( m_commonOptions.m_proofCFG );
     try
     {
         readServerInfoFile( m_serverInfoFile );
@@ -123,7 +123,7 @@ void CAgentServer::ThreadWorker()
                 << " for peer: " << strSocketPeerInfo;
                 InfoLog( erOK, ss.str() );
 
-                const int port = get_free_port( m_Data.m_agentServerLocalClientPortMin, m_Data.m_agentServerLocalClientPortMax );
+                const int port = get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
                 if ( 0 == port )
                     throw runtime_error( "Can't find any free port from the given range." );
 
@@ -131,14 +131,14 @@ void CAgentServer::ThreadWorker()
                 string strRealWrkHost;
                 string strPROOFCfgString;
                 peer2string( socket, &strRealWrkHost );
-                AddWrk2PROOFCfg( m_sPROOFCfg, sUsrName, port, strRealWrkHost, &strPROOFCfgString );
+                AddWrk2PROOFCfg( m_commonOptions.m_proofCFG, sUsrName, port, strRealWrkHost, &strPROOFCfgString );
 
                 // Spawn PortForwarder
                 AddPF( socket.detach(), port, strPROOFCfgString );
             }
             // TODO: Needs to be optimized. Maybe moved to a different thread
             // cleaning all PF which are in disconnect state
-            CleanDisconnectsPF( m_sPROOFCfg );
+            CleanDisconnectsPF( m_commonOptions.m_proofCFG );
         }
     }
     catch ( exception & e )
@@ -158,7 +158,7 @@ void CAgentClient::ThreadWorker()
 {
     DebugLog( erOK, "Starting main thread..." );
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( m_sPROOFCfg );
+    CreatePROOFCfg( m_commonOptions.m_proofCFG );
     CSocketClient client;
     try
     {
