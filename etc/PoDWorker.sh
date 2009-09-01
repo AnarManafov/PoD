@@ -122,6 +122,10 @@ echo "Current working directory: $WD"
 y=`eval ls -l`
 echo "$y"
 
+#Exporting PoD variables
+export POD_LOCATION=$WD
+export POD_PROOFCFG_FILE=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_cfg_path`
+
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
@@ -166,10 +170,10 @@ echo "*** host's CPU/instruction set: " $host_arch
 case "$host_arch" in
     x86)
 	PROOFAGENT_ARC="pod-agent-2_1_0b-x86-linux-gcc_4_1.tar.gz"
-	ROOT_ARC="root_v5.24.00.Linux.slc4.gcc3.4.tar.gz" ;;
+	ROOT_ARC="root_v5.24.00.Linux-slc5-gcc3.4.tar.gz" ;;
     x86_64)
         PROOFAGENT_ARC="pod-agent-2_1_0b-x86_64-linux-gcc_4_1.tar.gz"
-        ROOT_ARC="root_v5.24.00.Linux.slc4_amd64.gcc3.4.tar.gz" ;;
+        ROOT_ARC="root_v5.24.00.Linux-slc4_amd64-gcc3.4.tar.gz" ;;
 esac
 
 # ****************
@@ -215,8 +219,7 @@ if [ ! -x $PROOFAGENTSYS/pod-agent ]; then
 fi
 
 # creating an empty proof.conf, so that xproof will be happy
-touch $WD/proof.conf
-
+touch $POD_PROOFCFG_FILE
 
 # we try for 3 times to detect xrd
 # it is needed in case when several PoD workers are started in the same time on one machine
@@ -289,7 +292,7 @@ fi
 
 
 # start proofagent
-pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workdir $WD --logfiledir $WD
+pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     echo "proofagent successful. Exit code: $RET_VAL"

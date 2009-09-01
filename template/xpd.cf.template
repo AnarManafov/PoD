@@ -53,21 +53,17 @@ fi
 #
 ## Resource finder
 #
-if named PoDServer
-  set PODHOME=$POD_LOCATION
-  xpd.resource static $(PODHOME)/proof.conf
-else
- xpd.resource static _G_WRK_DIR/proof.conf
- xpd.workdir _G_WRK_DIR/proof
-fi
+set PROOFCFGFILE=$POD_PROOFCFG_FILE
+xpd.resource static $(PROOFCFGFILE)
 #
 ## Server role (master, submaster, worker) [default: any]
 ## Allows to control the cluster structure.
 #
 if named PoDServer
-xpd.role master
+ xpd.role master
 else
-xpd.role worker
+ xpd.workdir _G_WRK_DIR/proof
+ xpd.role worker
 fi
 #
 ## Log
