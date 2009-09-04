@@ -291,13 +291,13 @@ else
 fi
 
 
-# start proofagent
+# start pod-agent
 pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
-    echo "proofagent successful. Exit code: $RET_VAL"
+    echo "pod-agent successful. Exit code: $RET_VAL"
 else
-    echo "cant start proofagent. Exit code: $RET_VAL"
+    echo "cant start pod-agent. Exit code: $RET_VAL"
     clean_up 1
 fi
 
