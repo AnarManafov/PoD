@@ -44,7 +44,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
     PoD::CPoDUserDefaults user_defaults;
     user_defaults.init( _cfgFileName );
 
-    *_retVal = user_defaults.getValueForKey("general.proof_cfg_path");
+    *_retVal = user_defaults.getValueForKey("server.proof_cfg_path");
 }
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
