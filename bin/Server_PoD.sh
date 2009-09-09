@@ -117,7 +117,7 @@ start()
     # S T A R T I N G the server
     echo "Starting PoD server..."
     # proof.conf must be presented before xrootd is started
-    touch $POD_PROOFCFG_FILE
+    touch '$POD_PROOFCFG_FILE'
 
     NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
     NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
