@@ -52,7 +52,7 @@ void signal_handler( int _SignalNumber );
 class CAgentBase
 {
 public:
-    CAgentBase(const PoD::SCommonOptions_t _common):
+    CAgentBase(const PoD::SCommonOptions_t &_common):
             m_commonOptions(_common),
             m_agentServerListenPort(0)
     {
