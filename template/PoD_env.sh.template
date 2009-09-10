@@ -14,7 +14,9 @@
 # PoD Variables
 export POD_LOCATION=_G_WRK_DIR
 export PATH=$POD_LOCATION/bin:$PATH
-export POD_PROOFCFG_FILE=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path`
+
+eval POD_PROOFCFG_FILE=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
+export POD_PROOFCFG_FILE
 
 # sourcing PoD environment, if installed
 if [[ -f $POD_LOCATION/bin/gaw_env.sh ]]; then

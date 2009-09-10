@@ -219,7 +219,7 @@ if [ ! -x $PROOFAGENTSYS/pod-agent ]; then
 fi
 
 # creating an empty proof.conf, so that xproof will be happy
-touch '$POD_PROOFCFG_FILE'
+touch $POD_PROOFCFG_FILE
 
 # we try for 3 times to detect xrd
 # it is needed in case when several PoD workers are started in the same time on one machine
