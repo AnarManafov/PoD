@@ -58,15 +58,15 @@ public:
     {
         // Registering signals handlers
         struct sigaction sa;
-        ::sigemptyset( &sa.sa_mask );
+        sigemptyset( &sa.sa_mask );
         sa.sa_flags = 0;
 
         // Register the handler for SIGINT.
         sa.sa_handler = signal_handler;
-        ::sigaction( SIGINT, &sa, 0 );
+        sigaction( SIGINT, &sa, 0 );
         // Register the handler for SIGTERM
         sa.sa_handler = signal_handler;
-        ::sigaction( SIGTERM, &sa, 0 );
+        sigaction( SIGTERM, &sa, 0 );
     }
     virtual ~CAgentBase()
     {

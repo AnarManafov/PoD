@@ -4,6 +4,7 @@
 - new program options: 
 	- "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
 	- "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
+- support Mac OS X 10.5 and 10.6
 
 ********************* Release 2.0.1 2009-07-21 ************************
 A patch release.
