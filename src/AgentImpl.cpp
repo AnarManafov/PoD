@@ -39,7 +39,7 @@ void CAgentBase::readServerInfoFile( const string &_filename )
 {
     boost::program_options::variables_map keys;
     boost::program_options::options_description options( "Agent's server info config" );
-    // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT idexer can't handle it
+    // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
     options.add_options()
     ( "server.host", boost::program_options::value<std::string>(), "" )
     ( "server.port", boost::program_options::value<unsigned int>(), "" )

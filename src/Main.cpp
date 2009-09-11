@@ -145,7 +145,7 @@ int main( int argc, char *argv[] )
         return erError;
     }
 
-    // normolizing paths of common options
+    // Normalizing paths of common options
     PoD::SCommonOptions_t &common = (Server == Options.m_agentMode)?
                                     Options.m_podOptions.m_server.m_common:
                                     Options.m_podOptions.m_worker.m_common;
@@ -193,7 +193,8 @@ int main( int argc, char *argv[] )
             << "PROOFAgent: closing PROOFAgent ("
             << pid_to_kill
             << ")..." << endl;
-            ::kill( pid_to_kill, SIGTERM ); // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
+            // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
+            kill( pid_to_kill, SIGTERM );
 
             // Waiting for the process to finish
             size_t iter( 0 );

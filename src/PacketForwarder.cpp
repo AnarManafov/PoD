@@ -251,7 +251,7 @@ void CPacketForwarder::SpawnServerMode()
 	{
 		// worker is sending something, but we don't expect anything
 		// in this version of protocol it means, that the workers disconnects
-		// TODO: make check for the size of data to read (ioctl). if the size is 0, then it is a dissconnect
+		// TODO: make check for the size of data to read (ioctl). if the size is 0, then it is a disconnect
 		InfoLog( erOK, "A DISCONNECT has been detected of a PA worker. The worker will be removed from the active list." );
 		m_ClientSocket.close();
 		return;
