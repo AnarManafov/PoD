@@ -44,18 +44,16 @@ void CAgentBase::readServerInfoFile( const string &_filename )
     ( "server.host", boost::program_options::value<std::string>(), "" )
     ( "server.port", boost::program_options::value<unsigned int>(), "" )
     ;
-
     std::ifstream ifs( _filename.c_str() );
-    if ( !ifs.good() )
+    if ( !ifs.is_open() || !ifs.good() )
     {
-        std::string msg( "Could not open a server info configuration file: " );
+        string msg( "Could not open a server info configuration file: " );
         msg += _filename;
         throw runtime_error( msg );
     }
     // Parse the config file
     boost::program_options::store( boost::program_options::parse_config_file( ifs, options ), keys );
     boost::program_options::notify( keys );
-
     if ( keys.count("server.host") )
         m_agentServerHost = keys["server.host"].as<string>();
     if ( keys.count("server.port") )
@@ -90,7 +88,6 @@ void CAgentServer::ThreadWorker()
                 InfoLog( erOK, "STOP signal received." );
                 return ;
             }
-
             if ( server.GetSocket().is_read_ready( g_READ_READY_INTERVAL ) )
             {
                 smart_socket socket( server.Accept() );
@@ -138,7 +135,7 @@ void CAgentServer::ThreadWorker()
             }
             // TODO: Needs to be optimized. Maybe moved to a different thread
             // cleaning all PF which are in disconnect state
-            CleanDisconnectsPF( m_commonOptions.m_proofCFG );
+	    CleanDisconnectsPF( m_commonOptions.m_proofCFG );
         }
     }
     catch ( exception & e )
