@@ -38,7 +38,7 @@ CLsfMng::~CLsfMng()
 void CLsfMng::init()
 {
     // initialize LSBLIB  and  get  the  configuration environment
-    // FIX: for some reason lsb_init requares char * insted of const char *. This needs to be investigated
+    // FIX: for some reason lsb_init requires char * instead of const char *. This needs to be investigated
     if ( lsb_init( const_cast<char*>( g_szAppName ) ) < 0 )
         throw runtime_error( "Can't initialize LSF." ); // TODO: get error description here (get it from LSF, lsberrno)
 

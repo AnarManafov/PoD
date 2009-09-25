@@ -21,7 +21,7 @@
 using namespace std;
 using namespace MiscCommon;
 
-// TODO: we need check processes and its user name, not only existance of the process
+// TODO: we need check processes and its user name, not only existence of the process
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
     vectorPid_t pids = getprocbyname( _Srv );
