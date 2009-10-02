@@ -61,8 +61,10 @@ namespace PROOFAgent
         private:
             void deleteServerInfoFile();
             void createClientNode( MiscCommon::INet::smart_socket &_sock );
+            void mainSelect( const MiscCommon::INet::CSocketServer &_server );
 
         private:
+            MiscCommon::INet::Socket_t f_serverSocket;
             CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
 

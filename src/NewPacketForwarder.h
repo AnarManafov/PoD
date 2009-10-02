@@ -50,6 +50,10 @@ namespace PROOFAgent
         {
             m_active = false;
         }
+        bool isActive()
+        {
+        	return m_active;
+        }
         bool isValid()
         {
             return ( NULL != m_first && NULL != m_second &&
@@ -80,6 +84,12 @@ namespace PROOFAgent
         private:
             container_type m_1stSockBasedContainer;
             container_type m_2ndSockBasedContainer;
+    };
+
+//=============================================================================
+    class CNewPacketForwarder
+    {
+
     };
 
 }

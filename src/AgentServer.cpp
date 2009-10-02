@@ -61,7 +61,6 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-//------------------------- Agent SERVER ------------------------------------------------------------
     void CAgentServer::ThreadWorker()
     {
         DebugLog( erOK, "Creating a PROOF configuration file..." );
@@ -76,7 +75,8 @@ namespace PROOFAgent
             server.GetSocket().set_nonblock(); // Nonblocking server socket
 
             // Add main server's socket to the list of sockets to select
-            m_socksToSelect.insert( server.GetSocket().get() );
+            f_serverSocket = server.GetSocket().get();
+            m_socksToSelect.insert( f_serverSocket );
             while ( true )
             {
                 // TODO: we need to check real PROOF port here (from cfg)
@@ -100,59 +100,70 @@ namespace PROOFAgent
                 // ------------------------
                 // A Global "select"
                 // ------------------------Ê
-                fd_set readset;
-                FD_ZERO( &readset );
+                mainSelect( server );
 
-                // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
-                Sockets_type::const_iterator iter = m_socksToSelect.begin();
-                Sockets_type::const_iterator iter_end = m_socksToSelect.end();
-                for ( ; iter != iter_end; ++iter )
-                {
-                    FD_SET( *iter, &readset );
-                }
-
-                // Setting time-out
-                timeval timeout;
-                timeout.tv_sec = g_READ_READY_INTERVAL;
-                timeout.tv_usec = 0;
-
-                int fd_max = *( m_socksToSelect.rbegin() );
-                // TODO: Send errno to log
-                int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
-                if ( retval < 0 )
-                {
-                    FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
-                    return;
-                }
-
-                if ( 0 == retval )
-                    continue;
-
-                // check whether agent's client tries to connect..
-                if ( FD_ISSET( server.GetSocket().get(), &readset ) )
-                {
-                    inet::smart_socket socket( server.Accept() );
-                    createClientNode( socket );
-                }
-
-                // check whether a proof server tries to connect to proof workers
-                iter = m_socksToSelect.begin();
-                iter_end = m_socksToSelect.end();
-                for ( ; iter != iter_end; ++iter )
-                {
-                    if ( FD_ISSET( *iter, &readset ) )
-                    {
-                        // if yes, then we need to activate this node and
-                        // add it to the packetforwarder
-                        // TODO:
-                    }
-                }
             }
         }
         catch ( exception & e )
         {
             FaultLog( erError, e.what() );
         }
+    }
+
+//=============================================================================
+    void CAgentServer::mainSelect( const inet::CSocketServer &_server )
+    {
+        fd_set readset;
+        FD_ZERO( &readset );
+
+        // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
+        Sockets_type::const_iterator iter = m_socksToSelect.begin();
+        Sockets_type::const_iterator iter_end = m_socksToSelect.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            FD_SET( *iter, &readset );
+        }
+
+        // Setting time-out
+        timeval timeout;
+        timeout.tv_sec = g_READ_READY_INTERVAL;
+        timeout.tv_usec = 0;
+
+        int fd_max = *( m_socksToSelect.rbegin() );
+        // TODO: Send errno to log
+        int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
+        if ( retval < 0 )
+        {
+            FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
+            return;
+        }
+
+        if ( 0 == retval )
+            return;
+
+        // check whether a proof server tries to connect to proof workers
+        iter = m_socksToSelect.begin();
+        iter_end = m_socksToSelect.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            if ( FD_ISSET( *iter, &readset ) )
+            {
+                // if yes, then we need to activate this node and
+                // add it to the packetforwarder
+                // TODO:
+
+                // remove this socket from the list
+                m_socksToSelect.erase( iter++ );
+            }
+        }
+
+        // check whether agent's client tries to connect..
+        if ( FD_ISSET( f_serverSocket, &readset ) )
+        {
+            inet::smart_socket socket( _server.Accept() );
+            createClientNode( socket );
+        }
+
     }
 
 //=============================================================================
