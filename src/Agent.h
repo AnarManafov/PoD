@@ -18,7 +18,8 @@
 // STD
 #include <memory>
 // PROOFAgent
-#include "AgentImpl.h"
+#include "AgentServer.h"
+#include "AgentClient.h"
 
 namespace PROOFAgent
 {
