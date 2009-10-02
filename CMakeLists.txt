@@ -40,9 +40,11 @@ configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/ver
 set( SOURCE_FILES
     ./src/
     ./src/Main.cpp
+    ./src/AgentBase.cpp
+    ./src/AgentServer.cpp
+    ./src/AgentClient.cpp
     ./src/PacketForwarder.cpp
     ./src/PROOFAgent.cpp
-    ./src/AgentImpl.cpp
 )
 
 

@@ -121,17 +121,14 @@
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
-<pathentry include="/home/anar/workspace/PROOFAgent" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PROOFAgent/src" kind="inc" path="" system="true"/>
-<pathentry include="/home/anar/workspace/PROOFAgent/Include" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include" kind="inc" path="" system="true"/>
-<pathentry include="/usr/local/include" kind="inc" path="" system="true"/>
-<pathentry include="/usr/lib/gcc/i386-redhat-linux/4.3.2/include" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/c++/4.3.2" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/c++/4.3.2/i386-redhat-linux" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/c++/4.3.2/backward" kind="inc" path="" system="true"/>
 <pathentry excluding="**/build/CMakeFiles/" kind="out" path=""/>
 <pathentry kind="src" path=""/>
+<pathentry kind="con" path="org.eclipse.cdt.make.core.DISCOVERED_SCANNER_INFO"/>
+<pathentry include="/usr/include" kind="inc" path="" system="true"/>
+<pathentry include="/usr/local/include" kind="inc" path="" system="true"/>
+<pathentry base-path="pod-agent" include="src" kind="inc" path="" system="true"/>
+<pathentry base-path="pod-agent" include="" kind="inc" path="" system="true"/>
+<pathentry base-path="pod-agent" include="Include" kind="inc" path="" system="true"/>
 </storageModule>
 </cconfiguration>
 </storageModule>

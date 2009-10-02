@@ -14,6 +14,8 @@
 *************************************************************************/
 #ifndef PFCONTAINER_H_
 #define PFCONTAINER_H_
+// PROOFAgent
+#include "PacketForwarder.h"
 
 namespace PROOFAgent
 {

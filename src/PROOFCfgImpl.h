@@ -14,6 +14,10 @@
 *************************************************************************/
 #ifndef PROOFCFGIMP_H_
 #define PROOFCFGIMP_H_
+// MiscCommon
+#include "CustomIterator.h"
+// PROOFAgent
+#include "PARes.h"
 
 namespace PROOFAgent
 {
