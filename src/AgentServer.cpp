@@ -12,20 +12,54 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// BOOST
+#include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "ErrorCode.h"
+#include "INet.h"
 // PROOFAgent
 #include "AgentServer.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
-using namespace MiscCommon::INet;
+namespace inet = MiscCommon::INet;
 //=============================================================================
 const size_t g_READ_READY_INTERVAL = 4;
 extern sig_atomic_t graceful_quit;
 //=============================================================================
 namespace PROOFAgent
 {
+
+//=============================================================================
+    CAgentServer::CAgentServer( const SOptions_t &_data ): CAgentBase( _data.m_podOptions.m_server.m_common )
+    {
+        m_Data = _data.m_podOptions.m_server;
+        m_serverInfoFile = _data.m_serverInfoFile;
+
+        //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+    }
+
+//=============================================================================
+    CAgentServer::~CAgentServer()
+    {
+        deleteServerInfoFile();
+    }
+
+//=============================================================================
+    void CAgentServer::AddPF( inet::Socket_t _ClientSocket,
+                unsigned short _nNewLocalPort,
+                const string &_sPROOFCfgString )
+    {
+        boost::mutex::scoped_lock lock( m_PFList_mutex );
+        m_PFList.add( _ClientSocket, _nNewLocalPort, _sPROOFCfgString );
+    }
+
+//=============================================================================
+    void CAgentServer::CleanDisconnectsPF( const string &_sPROOFCfg )
+    {
+        m_PFList.clean_disconnects( _sPROOFCfg );
+    }
+
 //=============================================================================
 //------------------------- Agent SERVER ------------------------------------------------------------
     void CAgentServer::ThreadWorker()
@@ -36,7 +70,7 @@ namespace PROOFAgent
         {
             readServerInfoFile( m_serverInfoFile );
 
-            CSocketServer server;
+            inet::CSocketServer server;
             server.Bind( m_agentServerListenPort );
             server.Listen( 100 ); // TODO: Move this number of queued clients to config
             server.GetSocket().set_nonblock(); // Nonblocking server socket
@@ -57,17 +91,17 @@ namespace PROOFAgent
                 }
                 if ( server.GetSocket().is_read_ready( g_READ_READY_INTERVAL ) )
                 {
-                    smart_socket socket( server.Accept() );
+                    inet::smart_socket socket( server.Accept() );
 
                     // checking protocol version
                     string sReceive;
-                    receive_string( socket, &sReceive, g_nBUF_SIZE );
+                    inet::receive_string( socket, &sReceive, g_nBUF_SIZE );
                     DebugLog( erOK, "Server received: " + sReceive );
 
                     // TODO: Implement protocol version check
                     string sOK( g_szRESPONSE_OK );
                     DebugLog( erOK, "Server sends: " + sOK );
-                    send_string( socket, sOK );
+                    inet::send_string( socket, sOK );
 
                     // TODO: Receiving user name -- now we always assume that this is a user name -- WE NEED to implement a simple protocol!!!
                     string sUsrName;
@@ -78,23 +112,23 @@ namespace PROOFAgent
                     send_string( socket, sOK );
 
                     string strSocketInfo;
-                    socket2string( socket, &strSocketInfo );
+                    inet::socket2string( socket, &strSocketInfo );
                     string strSocketPeerInfo;
-                    peer2string( socket, &strSocketPeerInfo );
+                    inet::peer2string( socket, &strSocketPeerInfo );
                     stringstream ss;
                     ss
                     << "Accepting connection on : " << strSocketInfo
                     << " for peer: " << strSocketPeerInfo;
                     InfoLog( erOK, ss.str() );
 
-                    const int port = get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
+                    const int port = inet::get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
                     if ( 0 == port )
                         throw runtime_error( "Can't find any free port from the given range." );
 
                     // Add a worker to PROOF cfg
                     string strRealWrkHost;
                     string strPROOFCfgString;
-                    peer2string( socket, &strRealWrkHost );
+                    inet::peer2string( socket, &strRealWrkHost );
                     AddWrk2PROOFCfg( m_commonOptions.m_proofCFG, sUsrName, port, strRealWrkHost, &strPROOFCfgString );
 
                     // Spawn PortForwarder
@@ -110,6 +144,7 @@ namespace PROOFAgent
             FaultLog( erError, e.what() );
         }
     }
+
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()
     {

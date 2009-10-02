@@ -14,15 +14,13 @@
 *************************************************************************/
 #ifndef AGENTSERVER_H_
 #define AGENTSERVER_H_
-// BOOST
-#include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "LogImp.h"
 // PROOFAgent
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
 #include "AgentBase.h"
-
+//=============================================================================
 
 namespace PROOFAgent
 {
@@ -40,17 +38,9 @@ namespace PROOFAgent
 
     {
         public:
-            CAgentServer( const SOptions_t &_data ): CAgentBase( _data.m_podOptions.m_server.m_common )
-            {
-                m_Data = _data.m_podOptions.m_server;
-                m_serverInfoFile = _data.m_serverInfoFile;
+            CAgentServer( const SOptions_t &_data );
+            virtual ~CAgentServer();
 
-                //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-            }
-            virtual ~CAgentServer()
-            {
-                deleteServerInfoFile();
-            }
             REGISTER_LOG_MODULE( "AgentServer" )
 
         public:
@@ -58,19 +48,10 @@ namespace PROOFAgent
             {
                 return Server;
             }
-
             void AddPF( MiscCommon::INet::Socket_t _ClientSocket,
                         unsigned short _nNewLocalPort,
-                        const std::string &_sPROOFCfgString )
-            {
-                boost::mutex::scoped_lock lock( m_PFList_mutex );
-                m_PFList.add( _ClientSocket, _nNewLocalPort, _sPROOFCfgString );
-            }
-
-            void CleanDisconnectsPF( const std::string &_sPROOFCfg )
-            {
-                m_PFList.clean_disconnects( _sPROOFCfg );
-            }
+                        const std::string &_sPROOFCfgString );
+            void CleanDisconnectsPF( const std::string &_sPROOFCfg );
 
         protected:
             void ThreadWorker();
