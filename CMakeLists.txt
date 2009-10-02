@@ -44,6 +44,7 @@ set( SOURCE_FILES
     ./src/AgentServer.cpp
     ./src/AgentClient.cpp
     ./src/PacketForwarder.cpp
+    ./src/NewPacketForwarder.cpp
     ./src/PROOFAgent.cpp
 )
 

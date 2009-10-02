@@ -16,20 +16,33 @@
 //=============================================================================
 namespace PROOFAgent {
 //=============================================================================
-CNewPacketForwarder::CNewPacketForwarder() {
+CNodeContainer::CNodeContainer() {
 	// TODO Auto-generated constructor stub
 
 }
 
 //=============================================================================
-CNewPacketForwarder::~CNewPacketForwarder() {
+CNodeContainer::~CNodeContainer() {
 	// TODO Auto-generated destructor stub
 }
 
 //=============================================================================
-void CNewPacketForwarder::addNode( const sock_type &_first, const sock_type &_second)
+void CNodeContainer::addNode( node_type _node )
 {
-	SNode * node = new SNode(_first, _second);
-	m_1stSockBasedContainer.insert( container_type::value_type(_first, node) );
-	m_2ndSockBasedContainer.insert( container_type::value_type(_second, node) );
+	m_1stSockBasedContainer.insert( container_type::value_type(_node->m_first->get(), _node) );
+	m_2ndSockBasedContainer.insert( container_type::value_type(_node->m_second->get(), _node) );
+}
+
+//=============================================================================
+SNode *getNode1stBase( MiscCommon::INet::Socket_t _fd )
+{
+	return NULL;
+}
+
+//=============================================================================
+SNode *getNode2ndBase( MiscCommon::INet::Socket_t _fd )
+{
+	return NULL;
+}
+
 }

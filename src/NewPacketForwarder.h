@@ -15,50 +15,67 @@
 
 #ifndef NEWPACKETFORWARDER_H_
 #define NEWPACKETFORWARDER_H_
+// BOOST
+#include <boost/shared_ptr.hpp>
 // MiscCommon
 #include "INet.h"
 
 namespace PROOFAgent
 {
 
-typedef MiscCommon::INet::Socket_t sock_type;
+    typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================
     struct SNode
     {
-        typedef std::pair<sock_type*, sock_type*> container_type;
+        SNode();
+        SNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second, const std::string &_proofCFGString ):
+                m_first( new sock_type( _first ) ),
+                m_second( new sock_type( _second ) ),
+                m_proofCfgEntry( _proofCFGString ),
+                m_active( false )
 
-        SNode( const sock_type &_first,
-               const sock_type &_second ):
-                m_sockets( new typename container_type::value_type( _first ),
-                           new typename container_type::value_type( _second ) )
         {
         }
         ~SNode()
         {
-            delete m_sockets.first;
-            delete m_sockets.second;
+            delete m_first;
+            delete m_second;
         }
-        bool IsValid()
+        bool activate()
         {
-            return ( m_sockets.first.is_valid() && m_sockets.second.is_valid() );
+            m_active = isValid();
+            return m_active;
+        }
+        void disable()
+        {
+            m_active = false;
+        }
+        bool isValid()
+        {
+            return ( NULL != m_first && NULL != m_second &&
+                     m_first->is_valid() && m_second->is_valid() );
         }
 
-        container_type m_sockets;
-        std::string m_PROOFCfgEntry;
+        sock_type *m_first;
+        sock_type *m_second;
+        std::string m_proofCfgEntry;
+        bool m_active;
     };
 
 //=============================================================================
-    class CNewPacketForwarder
+    class CNodeContainer
     {
-    	typedef boost::shared_ptr<SNode> node_type;
-    	typedef std::map<sock_type, node_type> container_type;
+        public:
+            typedef boost::shared_ptr<SNode> node_type;
+            typedef std::map<MiscCommon::INet::Socket_t, node_type> container_type;
 
         public:
-            CNewPacketForwarder();
-            virtual ~CNewPacketForwarder();
+            CNodeContainer();
+            virtual ~CNodeContainer();
 
-            void addNode( const sock_type &_first, const sock_type &_second);
-
+            void addNode( node_type _node );
+            SNode *getNode1stBase( MiscCommon::INet::Socket_t _fd );
+            SNode *getNode2ndBase( MiscCommon::INet::Socket_t _fd );
 
         private:
             container_type m_1stSockBasedContainer;

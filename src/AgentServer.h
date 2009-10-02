@@ -20,6 +20,7 @@
 #include "PROOFCfgImpl.h"
 #include "PFContainer.h"
 #include "AgentBase.h"
+#include "NewPacketForwarder.h"
 //=============================================================================
 
 namespace PROOFAgent
@@ -37,6 +38,7 @@ namespace PROOFAgent
             protected CPROOFCfgImpl<CAgentServer>
 
     {
+            typedef std::set<MiscCommon::INet::Socket_t> Sockets_type;
         public:
             CAgentServer( const SOptions_t &_data );
             virtual ~CAgentServer();
@@ -58,8 +60,12 @@ namespace PROOFAgent
 
         private:
             void deleteServerInfoFile();
+            void createClientNode( MiscCommon::INet::smart_socket &_sock );
 
         private:
+            CNodeContainer m_nodes;
+            Sockets_type m_socksToSelect;
+
             PoD::SServerOptions_t m_Data;
             CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
