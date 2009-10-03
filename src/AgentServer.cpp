@@ -150,7 +150,18 @@ namespace PROOFAgent
             {
                 // if yes, then we need to activate this node and
                 // add it to the packetforwarder
-                // TODO:
+                int fd = accept( *iter, NULL, NULL );
+                if ( fd < 0 )
+                {
+                    FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
+                    continue;
+                }
+
+                // update the second socket fd in the container
+                // and activate the node
+                SNode *node = m_nodes.getNode2ndBase( *iter );
+                node->updateSecond(fd);
+                node->activate();
 
                 // remove this socket from the list
                 m_socksToSelect.erase( iter++ );
@@ -227,7 +238,7 @@ namespace PROOFAgent
         // Update proof.cfg according to a current number of active workers
 
         // add new worker's localPROOFServer socket to the main "select"
-        m_socksToSelect.insert( node->m_second->get() );
+        m_socksToSelect.insert( node->second() );
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()

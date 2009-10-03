@@ -15,8 +15,11 @@
 
 #ifndef NEWPACKETFORWARDER_H_
 #define NEWPACKETFORWARDER_H_
+// STD
+#include <queue>
 // BOOST
 #include <boost/shared_ptr.hpp>
+#include <boost/thread/thread.hpp>
 // MiscCommon
 #include "INet.h"
 
@@ -41,6 +44,14 @@ namespace PROOFAgent
             delete m_first;
             delete m_second;
         }
+        void updateFirst( MiscCommon::INet::Socket_t _fd )
+        {
+            *m_first = _fd;
+        }
+        void updateSecond( MiscCommon::INet::Socket_t _fd )
+        {
+            *m_second = _fd;
+        }
         bool activate()
         {
             m_active = isValid();
@@ -52,18 +63,28 @@ namespace PROOFAgent
         }
         bool isActive()
         {
-        	return m_active;
+            return m_active;
         }
         bool isValid()
         {
             return ( NULL != m_first && NULL != m_second &&
                      m_first->is_valid() && m_second->is_valid() );
         }
+        MiscCommon::INet::Socket_t first()
+        {
+            return m_first->get();
+        }
+        MiscCommon::INet::Socket_t second()
+        {
+            return m_second->get();
+        }
 
+private:
         sock_type *m_first;
         sock_type *m_second;
         std::string m_proofCfgEntry;
         bool m_active;
+        bool m_locked;
     };
 
 //=============================================================================
@@ -78,6 +99,8 @@ namespace PROOFAgent
             virtual ~CNodeContainer();
 
             void addNode( node_type _node );
+            void removeNode1stBase( MiscCommon::INet::Socket_t _fd );
+            void removeNode2ndBase( MiscCommon::INet::Socket_t _fd );
             SNode *getNode1stBase( MiscCommon::INet::Socket_t _fd );
             SNode *getNode2ndBase( MiscCommon::INet::Socket_t _fd );
 
@@ -89,7 +112,16 @@ namespace PROOFAgent
 //=============================================================================
     class CNewPacketForwarder
     {
+            typedef std::queue<MiscCommon::INet::Socket_t> taskqueue_t;
+            enum {ReadFromFirst, ReadFromSecond};
+        public:
+            void start( size_t _threadsCount );
+            void pushTask( SNode );
+            void removeTopTask();
 
+        private:
+            boost::thread_group m_threads;
+            taskqueue_t m_tasks;
     };
 
 }

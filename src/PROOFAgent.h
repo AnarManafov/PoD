@@ -18,7 +18,6 @@
 // PROOFAgent
 #include "Options.h"
 #include "Agent.h"
-#include "TimeoutGuard.h"
 
 //=============================================================================
 /**
