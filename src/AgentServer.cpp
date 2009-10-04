@@ -173,6 +173,10 @@ namespace PROOFAgent
                     // activate the node
                     node->updateSecond( fd );
                     node->activate();
+
+                    // add both sockets to "select"
+                    m_socksToSelect.insert( node->first() );
+                    m_socksToSelect.insert( node->second() );
                 }
                 else
                 {
