@@ -14,6 +14,7 @@
 *************************************************************************/
 // BOOST
 #include <boost/bind.hpp>
+#include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "ErrorCode.h"
 // PROOFAgent
@@ -38,7 +39,7 @@ namespace PROOFAgent
         sock_type *output = pairedWith( _fd );
 
         // blocking the read operation on the second if it's already processing by some of the thread
-        boost::mutex::scoped_try_lock lock(( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
+        boost::try_mutex::scoped_try_lock lock(( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
         if ( !lock )
             return 1;
 

@@ -17,9 +17,11 @@
 #define NEWPACKETFORWARDER_H_
 // STD
 #include <queue>
+#include <csignal>
 // BOOST
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/thread/condition.hpp>
 // MiscCommon
 #include "INet.h"
 #include "LogImp.h"
@@ -103,8 +105,8 @@ namespace PROOFAgent
             bool m_active;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
-            boost::mutex m_mutexReadFirst;
-            boost::mutex m_mutexReadSecond;
+            boost::try_mutex m_mutexReadFirst;
+            boost::try_mutex m_mutexReadSecond;
     };
 
 //=============================================================================
@@ -143,8 +145,8 @@ namespace PROOFAgent
             boost::thread_group m_threads;
             taskqueue_t m_tasks;
             boost::mutex m_mutex;
-            boost::condition_variable m_threadNeeded;
-            boost::condition_variable m_threadAvailable;
+            boost::condition m_threadNeeded;
+            boost::condition m_threadAvailable;
             bool m_stopped;
             bool m_stopping;
     };

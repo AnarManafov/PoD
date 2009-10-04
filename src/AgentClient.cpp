@@ -14,6 +14,8 @@
 *************************************************************************/
 // API
 #include <sys/types.h>
+// STD
+#include <csignal>
 // PROOFAgent
 #include "AgentClient.h"
 #include "PARes.h"
