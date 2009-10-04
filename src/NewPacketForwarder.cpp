@@ -38,7 +38,7 @@ namespace PROOFAgent
         sock_type *output = pairedWith( _fd );
 
         // blocking the read operation on the second if it's already processing by some of the thread
-        boost::mutex::scoped_try_lock lock( (input == m_first)? m_mutexReadFirst: m_mutexReadSecond );
+        boost::mutex::scoped_try_lock lock(( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
         if ( !lock )
             return 1;
 
@@ -146,7 +146,18 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-                task->second->dealWithData( task->first );
+                int res = task->second->dealWithData( task->first );
+                switch ( res )
+                {
+                    case -1:
+                        break;
+                    case 0:
+                        break;
+                        // task is locked already, pushing it back
+                    case 1:
+                        m_tasks.push( task );
+                        break;
+                }
                 delete task;
                 task = NULL;
             }
