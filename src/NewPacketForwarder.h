@@ -22,76 +22,96 @@
 #include <boost/thread/thread.hpp>
 // MiscCommon
 #include "INet.h"
+#include "LogImp.h"
 
 namespace PROOFAgent
 {
+// TODO: Move it to config.
+    const unsigned int g_BUF_SIZE = 5000;
 
     typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================
-    struct SNode
+    class CNode
     {
-        SNode();
-        SNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second, const std::string &_proofCFGString ):
-                m_first( new sock_type( _first ) ),
-                m_second( new sock_type( _second ) ),
-                m_proofCfgEntry( _proofCFGString ),
-                m_active( false )
+        public:
+            CNode();
+            CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second, const std::string &_proofCFGString ):
+                    m_first( new sock_type( _first ) ),
+                    m_second( new sock_type( _second ) ),
+                    m_proofCfgEntry( _proofCFGString ),
+                    m_active( false ),
+                    m_buf( g_BUF_SIZE ),
+                    m_bytesToSend( 0 )
 
-        {
-        }
-        ~SNode()
-        {
-            delete m_first;
-            delete m_second;
-        }
-        void updateFirst( MiscCommon::INet::Socket_t _fd )
-        {
-            *m_first = _fd;
-        }
-        void updateSecond( MiscCommon::INet::Socket_t _fd )
-        {
-            *m_second = _fd;
-        }
-        bool activate()
-        {
-            m_active = isValid();
-            return m_active;
-        }
-        void disable()
-        {
-            m_active = false;
-        }
-        bool isActive()
-        {
-            return m_active;
-        }
-        bool isValid()
-        {
-            return ( NULL != m_first && NULL != m_second &&
-                     m_first->is_valid() && m_second->is_valid() );
-        }
-        MiscCommon::INet::Socket_t first()
-        {
-            return m_first->get();
-        }
-        MiscCommon::INet::Socket_t second()
-        {
-            return m_second->get();
-        }
+            {
+            }
+            ~CNode()
+            {
+                delete m_first;
+                delete m_second;
+            }
+            void updateFirst( MiscCommon::INet::Socket_t _fd )
+            {
+                *m_first = _fd;
+            }
+            void updateSecond( MiscCommon::INet::Socket_t _fd )
+            {
+                *m_second = _fd;
+            }
+            bool activate()
+            {
+                m_active = isValid();
+                return m_active;
+            }
+            void disable()
+            {
+                m_active = false;
+            }
+            bool isActive()
+            {
+                return m_active;
+            }
+            bool isValid()
+            {
+                return ( NULL != m_first && NULL != m_second &&
+                         m_first->is_valid() && m_second->is_valid() );
+            }
+            MiscCommon::INet::Socket_t first()
+            {
+                return m_first->get();
+            }
+            MiscCommon::INet::Socket_t second()
+            {
+                return m_second->get();
+            }
+            sock_type *pairedWith( MiscCommon::INet::Socket_t _fd )
+            {
+                return (( m_first->get() == _fd ) ? m_second : m_first );
+            }
+            sock_type *socketByFD( MiscCommon::INet::Socket_t _fd )
+            {
+                return (( m_first->get() == _fd ) ? m_first : m_second );
+            }
+            /// returns 0 if everything is OK, -1 if socket or sockets are not valid
+            /// 1 if can't lock the mutex
+            int dealWithData( MiscCommon::INet::Socket_t _fd );
 
-private:
-        sock_type *m_first;
-        sock_type *m_second;
-        std::string m_proofCfgEntry;
-        bool m_active;
-        bool m_locked;
+        private:
+            sock_type *m_first;
+            sock_type *m_second;
+            std::string m_proofCfgEntry;
+            bool m_active;
+            MiscCommon::BYTEVector_t m_buf;
+            size_t m_bytesToSend;
+            boost::mutex m_mutexReadFirst;
+            boost::mutex m_mutexReadSecond;
     };
 
 //=============================================================================
     class CNodeContainer
     {
         public:
-            typedef boost::shared_ptr<SNode> node_type;
+            typedef boost::shared_ptr<CNode> node_type;
             typedef std::map<MiscCommon::INet::Socket_t, node_type> container_type;
 
         public:
@@ -99,29 +119,34 @@ private:
             virtual ~CNodeContainer();
 
             void addNode( node_type _node );
-            void removeNode1stBase( MiscCommon::INet::Socket_t _fd );
-            void removeNode2ndBase( MiscCommon::INet::Socket_t _fd );
-            SNode *getNode1stBase( MiscCommon::INet::Socket_t _fd );
-            SNode *getNode2ndBase( MiscCommon::INet::Socket_t _fd );
+            void removeNode( MiscCommon::INet::Socket_t _fd );
+            CNode *getNode( MiscCommon::INet::Socket_t _fd );
 
         private:
-            container_type m_1stSockBasedContainer;
-            container_type m_2ndSockBasedContainer;
+            container_type m_sockBasedContainer;
     };
 
 //=============================================================================
-    class CNewPacketForwarder
+    class CThreadPool: public MiscCommon::CLogImp<CThreadPool>
     {
-            typedef std::queue<MiscCommon::INet::Socket_t> taskqueue_t;
-            enum {ReadFromFirst, ReadFromSecond};
+            typedef std::pair<MiscCommon::INet::Socket_t, CNode*> task_t;
+            typedef std::queue<task_t*> taskqueue_t;
         public:
-            void start( size_t _threadsCount );
-            void pushTask( SNode );
-            void removeTopTask();
+            CThreadPool( size_t _threadsCount );
+            ~CThreadPool();
+
+            void pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node );
+            void execute();
+            void stop( bool processRemainingJobs = false );
 
         private:
             boost::thread_group m_threads;
             taskqueue_t m_tasks;
+            boost::mutex m_mutex;
+            boost::condition_variable m_threadNeeded;
+            boost::condition_variable m_threadAvailable;
+            bool m_stopped;
+            bool m_stopping;
     };
 
 }

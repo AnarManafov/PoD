@@ -37,8 +37,8 @@ namespace PROOFAgent
             }
             bool isTimedout( int _numSeconds )
             {
-            	if( _numSeconds <= 0 )
-            		return false;
+                if ( _numSeconds <= 0 )
+                    return false;
 
                 time_t curTime = time( NULL );
                 return (( curTime - m_startTime ) >= _numSeconds );
@@ -54,16 +54,16 @@ namespace PROOFAgent
      *
      */
     class CPacketForwarder:
-                public MiscCommon::CLogImp<CPacketForwarder>,
-                MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
+            public MiscCommon::CLogImp<CPacketForwarder>,
+            MiscCommon::NONCopyable  //HACK: Since smart_socket doesn't support copy-constructor and ref. count
     {
         public:
             CPacketForwarder( MiscCommon::INet::Socket_t _ClientSocket, unsigned short _nNewLocalPort ) :
                     m_ClientSocket( _ClientSocket ),
                     m_nPort( _nNewLocalPort ),
-	            m_shutdownIfIdleForSec( 0 ),
-	            m_buf(g_BUF_SIZE),
-	            m_bytesToSend(0)
+                    m_shutdownIfIdleForSec( 0 ),
+                    m_buf( g_BUF_SIZE ),
+                    m_bytesToSend( 0 )
             {}
 
             ~CPacketForwarder()
@@ -86,7 +86,7 @@ namespace PROOFAgent
             void SpawnServerMode();
             void SpawnClientMode();
             bool dealWithData( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
-	    bool ForwardBuf( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
+            bool ForwardBuf( MiscCommon::INet::smart_socket *_Input, MiscCommon::INet::smart_socket *_Output );
             void ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2,
                                 const MiscCommon::BYTEVector_t &_buf )
             {
@@ -118,7 +118,7 @@ namespace PROOFAgent
             int m_shutdownIfIdleForSec;
             CIdleWatch m_idleWatch;
             MiscCommon::BYTEVector_t m_buf;
-	    size_t m_bytesToSend;
+            size_t m_bytesToSend;
     };
 
 }

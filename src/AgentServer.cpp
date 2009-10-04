@@ -26,12 +26,17 @@ namespace inet = MiscCommon::INet;
 //=============================================================================
 const size_t g_READ_READY_INTERVAL = 4;
 extern sig_atomic_t graceful_quit;
+
+// TODO: Move to config or make it autodetectable...
+const size_t g_numThreads = 4;
 //=============================================================================
 namespace PROOFAgent
 {
 
 //=============================================================================
-    CAgentServer::CAgentServer( const SOptions_t &_data ): CAgentBase( _data.m_podOptions.m_server.m_common )
+    CAgentServer::CAgentServer( const SOptions_t &_data ):
+            CAgentBase( _data.m_podOptions.m_server.m_common ),
+            m_threadPool( g_numThreads )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
@@ -90,6 +95,7 @@ namespace PROOFAgent
                 if ( graceful_quit )
                 {
                     InfoLog( erOK, "STOP signal received." );
+                    m_threadPool.stop();
                     return ;
                 }
 
@@ -159,10 +165,20 @@ namespace PROOFAgent
 
                 // update the second socket fd in the container
                 // and activate the node
-                SNode *node = m_nodes.getNode2ndBase( *iter );
-                node->updateSecond(fd);
-                node->activate();
+                CNode *node = m_nodes.getNode( *iter );
 
+                if ( !node->isActive() )
+                {
+                    // we got a connected proof server here
+                    // activate the node
+                    node->updateSecond( fd );
+                    node->activate();
+                }
+                else
+                {
+                    // we get a task for packet forwarder
+                    m_threadPool.pushTask( *iter, node );
+                }
                 // remove this socket from the list
                 m_socksToSelect.erase( iter++ );
             }
@@ -232,7 +248,7 @@ namespace PROOFAgent
         localPROOFclient.GetSocket().set_nonblock();
 
         // Then we add this node to a nodes container
-        CNodeContainer::node_type node( new SNode( _sock.detach(), localPROOFclient.GetSocket().detach(), strPROOFCfgString ) );
+        CNodeContainer::node_type node( new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(), strPROOFCfgString ) );
         node->disable();
         m_nodes.addNode( node );
         // Update proof.cfg according to a current number of active workers

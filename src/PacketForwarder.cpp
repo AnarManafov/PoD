@@ -44,7 +44,7 @@ bool CPacketForwarder::dealWithData( smart_socket *_Input, smart_socket *_Output
     // DISCONNECT has been detected
     if ( m_bytesToSend <= 0 || !_Output->is_valid() )
         return false;
-   
+
     sendall( *_Output, &m_buf[0], m_bytesToSend, 0 );
 
     // TODO: uncomment when log level is implemented
@@ -84,7 +84,7 @@ bool CPacketForwarder::ForwardBuf( smart_socket *_Input, smart_socket *_Output )
         if( !dealWithData( _Input, _Output ) )
 	  return false;
     }
-    
+
     if ( FD_ISSET( _Output->get(), &readset ) )
     {
         if( !dealWithData( _Output, _Input ) )
@@ -234,13 +234,13 @@ void CPacketForwarder::SpawnServerMode()
 	timeval timeout;
 	timeout.tv_sec = g_SERVER_INTERVAL;
 	timeout.tv_usec = 0;
-	
+
 	int fd_max = max( server.GetSocket().get(), m_ClientSocket.get() );
 	// TODO: Send errno to log
 	int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
 	if ( retval < 0 )
 		throw std::runtime_error( "Server socket got error while calling \"select\"" );
-	     
+
 	if ( FD_ISSET( server.GetSocket().get(), &readset ) )
 	{
 		// A PROOF master connection

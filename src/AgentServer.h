@@ -67,7 +67,7 @@ namespace PROOFAgent
             MiscCommon::INet::Socket_t f_serverSocket;
             CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
-            CNewPacketForwarder m_packetForwarder;
+            CThreadPool m_threadPool;
 
             PoD::SServerOptions_t m_Data;
             CPFContainer m_PFList;

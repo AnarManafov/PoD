@@ -12,10 +12,54 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// BOOST
+#include <boost/bind.hpp>
+// MiscCommon
+#include "ErrorCode.h"
+// PROOFAgent
 #include "NewPacketForwarder.h"
+
+//=============================================================================
+using namespace MiscCommon;
+//=============================================================================
+extern sig_atomic_t graceful_quit;
 //=============================================================================
 namespace PROOFAgent
 {
+//=============================================================================
+// CNode
+//=============================================================================
+    int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
+    {
+        if ( !isValid() )
+            return -1;
+
+        sock_type *input = socketByFD( _fd );
+        sock_type *output = pairedWith( _fd );
+
+        // blocking the read operation on the second if it's already processing by some of the thread
+        boost::mutex::scoped_try_lock lock( (input == m_first)? m_mutexReadFirst: m_mutexReadSecond );
+        if ( !lock )
+            return 1;
+
+        m_bytesToSend = read_from_socket( *input, &m_buf );
+
+        // DISCONNECT has been detected
+        if ( m_bytesToSend <= 0 || !isValid() )
+            return -1;
+
+        sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+
+        // TODO: uncomment when log level is implemented
+        // ReportPackage( *_Input, *_Output, buf );
+//    m_idleWatch.touch();
+        return 0;
+    }
+
+
+
+//=============================================================================
+// CNodeContainer
 //=============================================================================
     CNodeContainer::CNodeContainer()
     {
@@ -32,44 +76,120 @@ namespace PROOFAgent
 //=============================================================================
     void CNodeContainer::addNode( node_type _node )
     {
-        m_1stSockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
-        m_2ndSockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
+        m_sockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
+        m_sockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
     }
 
 //=============================================================================
-    void CNodeContainer::removeNode1stBase( MiscCommon::INet::Socket_t _fd )
+    void CNodeContainer::removeNode( MiscCommon::INet::Socket_t _fd )
     {
-        container_type::iterator found = m_1stSockBasedContainer.find( _fd );
-        if ( m_1stSockBasedContainer.end() != found )
-            m_1stSockBasedContainer.erase( found );
+        container_type::iterator found = m_sockBasedContainer.find( _fd );
+        if ( m_sockBasedContainer.end() != found )
+            m_sockBasedContainer.erase( found );
     }
 
 //=============================================================================
-    void CNodeContainer::removeNode2ndBase( MiscCommon::INet::Socket_t _fd )
+    CNode *CNodeContainer::getNode( MiscCommon::INet::Socket_t _fd )
     {
-        container_type::iterator found = m_2ndSockBasedContainer.find( _fd );
-        if ( m_2ndSockBasedContainer.end() != found )
-        	m_2ndSockBasedContainer.erase( found );
-    }
-
-//=============================================================================
-    SNode *CNodeContainer::getNode1stBase( MiscCommon::INet::Socket_t _fd )
-    {
-        container_type::const_iterator found = m_1stSockBasedContainer.find( _fd );
-        if ( m_1stSockBasedContainer.end() != found )
+        container_type::const_iterator found = m_sockBasedContainer.find( _fd );
+        if ( m_sockBasedContainer.end() != found )
             return found->second.get();
 
         return NULL;
     }
 
-//=============================================================================
-    SNode *CNodeContainer::getNode2ndBase( MiscCommon::INet::Socket_t _fd )
-    {
-        container_type::const_iterator found = m_2ndSockBasedContainer.find( _fd );
-        if ( m_2ndSockBasedContainer.end() != found )
-            return found->second.get();
 
-        return NULL;
+//=============================================================================
+// CThreadPool
+//=============================================================================
+    CThreadPool::CThreadPool( size_t _threadsCount )
+    {
+        for ( size_t i = 0; i < _threadsCount; ++i )
+            m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
+    }
+
+//=============================================================================
+    CThreadPool::~CThreadPool()
+    {
+        stop();
+    }
+
+//=============================================================================
+    void CThreadPool::execute()
+    {
+        InfoLog( erOK, "starting a thread worker." );
+
+        do
+        {
+            task_t* task = NULL;
+
+            // Checking whether signal has arrived
+            if ( graceful_quit )
+            {
+                InfoLog( erOK, "STOP signal received by worker thread." );
+                stop();
+                break;
+            }
+
+            { // Find a job to perform
+                boost::mutex::scoped_lock lock( m_mutex );
+                if ( m_tasks.empty() && !m_stopped )
+                {
+                    m_threadNeeded.wait( lock );
+                }
+                if ( !m_stopped && !m_tasks.empty() )
+                {
+                    task = m_tasks.front();
+                    m_tasks.pop();
+                }
+            }
+            //Execute job
+            if ( task )
+            {
+                task->second->dealWithData( task->first );
+                delete task;
+                task = NULL;
+            }
+            m_threadAvailable.notify_all();
+        }
+        while ( !m_stopped );
+
+        InfoLog( erOK, "stopping a thread worker." );
+    }
+
+//=============================================================================
+    void CThreadPool::pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node )
+    {
+        task_t *task = new task_t( _fd, _node );
+        m_tasks.push( task );
+    }
+
+//=============================================================================
+    void CThreadPool::stop( bool processRemainingJobs )
+    {
+        {
+            //prevent more jobs from being added to the queue
+            boost::mutex::scoped_lock lock( m_mutex );
+            if ( m_stopped ) return;
+            m_stopping = true;
+        }
+        if ( processRemainingJobs )
+        {
+            boost::mutex::scoped_lock lock( m_mutex );
+            //wait for queue to drain.
+            while ( !m_tasks.empty() && !m_stopped )
+            {
+                m_threadAvailable.wait( lock );
+            }
+        }
+        //tell all threads to stop
+        {
+            boost::mutex::scoped_lock lock( m_mutex );
+            m_stopped = true;
+        }
+        m_threadNeeded.notify_all();
+
+        m_threads.join_all();
     }
 
 }
