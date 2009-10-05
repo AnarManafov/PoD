@@ -55,7 +55,7 @@ namespace PROOFAgent
 
         // TODO: uncomment when log level is implemented
         BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
-        ReportPackage( *input, *output, m_buf );
+        ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
         return 0;
     }
@@ -208,6 +208,9 @@ namespace PROOFAgent
                         break;
                     case 0: // everything was redirected without problems
                         DebugLog( erOK, "done processing" );
+
+                        // send notification to process tasks, which were pushed back because of a busy socket
+                        m_threadNeeded.notify_all();
                         break;
                     case 1:
                         // task is locked already, pushing it back
