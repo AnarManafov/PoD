@@ -157,6 +157,7 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
+                	DebugLog(erOK, "wait for a task");
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
@@ -168,6 +169,7 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
+            	DebugLog(erOK, "processing a task");
                 int res = task->second->dealWithData( task->first );
                 switch ( res )
                 {
@@ -176,9 +178,11 @@ namespace PROOFAgent
                         task->second->disable();
                         break;
                     case 0: // everything was redirected without problems
+                    	DebugLog(erOK, "done processing");
                         break;
                     case 1:
                         // task is locked already, pushing it back
+                    	DebugLog(erOK, "task's socket is busy, giving the task back");
                         m_tasks.push( task );
                         break;
                 }
@@ -197,6 +201,8 @@ namespace PROOFAgent
     {
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
+
+        DebugLog(erOK, "task is ready");
 
         m_threadNeeded.notify_all();
     }
