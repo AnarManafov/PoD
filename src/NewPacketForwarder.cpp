@@ -17,10 +17,12 @@
 #include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "ErrorCode.h"
+#include "HexView.h"
 // PROOFAgent
 #include "NewPacketForwarder.h"
 
 //=============================================================================
+using namespace std;
 using namespace MiscCommon;
 //=============================================================================
 extern sig_atomic_t graceful_quit;
@@ -39,7 +41,8 @@ namespace PROOFAgent
         sock_type *output = pairedWith( _fd );
 
         // blocking the read operation on the second if it's already processing by some of the thread
-        boost::try_mutex::scoped_try_lock lock(( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
+
+        boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
         if ( !lock )
             return 1;
 
@@ -52,9 +55,32 @@ namespace PROOFAgent
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
         // TODO: uncomment when log level is implemented
-        // ReportPackage( *_Input, *_Output, buf );
+        ReportPackage( *input, *output, m_buf );
 //    m_idleWatch.touch();
         return 0;
+    }
+
+//=============================================================================
+    void CNode::ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2,
+                               const BYTEVector_t &_buf )
+    {
+        string strSocket1;
+        MiscCommon::INet::socket2string( _socket1, &strSocket1 );
+        string strSocket2;
+        MiscCommon::INet::socket2string( _socket2, &strSocket2 );
+
+        stringstream ss;
+        ss
+        << strSocket1 << " > " << strSocket2
+        << " (" << _buf.size() << " bytes): ";
+        if ( !_buf.empty() )
+        {
+            ss
+            << "\n"
+            << BYTEVectorHexView_t( _buf )
+            << "\n";
+        }
+        DebugLog( erOK, ss.str() );
     }
 
 

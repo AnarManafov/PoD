@@ -33,9 +33,10 @@ namespace PROOFAgent
 
     typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================
-    class CNode
+    class CNode: public MiscCommon::CLogImp<CNode>
     {
         public:
+            REGISTER_LOG_MODULE( "Node" )
             CNode();
             CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second, const std::string &_proofCFGString ):
                     m_first( new sock_type( _first ) ),
@@ -101,7 +102,8 @@ namespace PROOFAgent
             {
                 return m_proofCfgEntry;
             }
-
+            void ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2,
+                                const MiscCommon::BYTEVector_t &_buf );
         private:
             sock_type *m_first;
             sock_type *m_second;
@@ -110,7 +112,7 @@ namespace PROOFAgent
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
             boost::try_mutex m_mutexReadFirst;
-            boost::try_mutex m_mutexReadSecond;
+            // boost::try_mutex m_mutexReadSecond;
     };
 
 //=============================================================================
