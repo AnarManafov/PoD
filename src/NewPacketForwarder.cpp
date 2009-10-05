@@ -34,17 +34,16 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
+        // blocking the read operation on the second if it's already processing by some of the thread
+        boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
+        if ( !lock )
+            return 1;
+
         if ( !isValid() )
             return -1;
 
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
-
-        // blocking the read operation on the second if it's already processing by some of the thread
-
-        boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
-        if ( !lock )
-            return 1;
 
         m_bytesToSend = read_from_socket( *input, &m_buf );
 
@@ -55,6 +54,7 @@ namespace PROOFAgent
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
         // TODO: uncomment when log level is implemented
+        BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
         ReportPackage( *input, *output, m_buf );
 //    m_idleWatch.touch();
         return 0;
