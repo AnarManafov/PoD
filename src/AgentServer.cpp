@@ -297,27 +297,21 @@ namespace PROOFAgent
         if ( !f.is_open() )
             throw std::runtime_error( "Can't open the PROOF configuration file: " + m_commonOptions.m_proofCFG );
 
-        CNodeContainer::container_type *nodes = m_nodes.getContainer();
+        // remove bad nodes
+        m_nodes.removeBadNodes();
+
+        const CNodeContainer::unique_container_type *const nodes = m_nodes.getNods();
 
         // a master host
         f << m_masterEntryInPROOFCfg << endl;
 
         // write entries to proof.cfg
         // proof workers
-        CNodeContainer::container_type::iterator iter = nodes->begin();
-        CNodeContainer::container_type::iterator iter_end = nodes->end();
-        for ( ; iter != iter_end; )
+        CNodeContainer::unique_container_type::const_iterator iter = nodes->begin();
+        CNodeContainer::unique_container_type::const_iterator iter_end = nodes->end();
+        for ( ; iter != iter_end; ++iter )
         {
-            // remove bad nodes
-            if ( !iter->second->isActive() && !iter->second->isValid() )
-            {
-                nodes->erase( iter++ );
-            }
-            else
-            {
-                f << iter->second->getPROOFCfgEntry() << endl;
-                ++iter;
-            }
+            f << (*iter)->getPROOFCfgEntry() << endl;
         }
     }
 }

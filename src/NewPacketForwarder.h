@@ -119,6 +119,7 @@ namespace PROOFAgent
         public:
             typedef boost::shared_ptr<CNode> node_type;
             typedef std::map<MiscCommon::INet::Socket_t, node_type> container_type;
+            typedef std::set<node_type> unique_container_type;
 
         public:
             CNodeContainer();
@@ -126,18 +127,20 @@ namespace PROOFAgent
 
             void addNode( node_type _node );
             void removeNode( MiscCommon::INet::Socket_t _fd );
+            void removeBadNodes();
             CNode *getNode( MiscCommon::INet::Socket_t _fd );
             const container_type *const getContainer() const
             {
                 return &m_sockBasedContainer;
             }
-            container_type *getContainer()
+            const unique_container_type *const getNods()
             {
-                return &m_sockBasedContainer;
+                return &m_nodes;
             }
 
         private:
             container_type m_sockBasedContainer;
+            unique_container_type m_nodes;
     };
 
 //=============================================================================

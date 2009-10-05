@@ -79,6 +79,7 @@ namespace PROOFAgent
     {
         m_sockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
         m_sockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
+        m_nodes.insert( _node );
     }
 
 //=============================================================================
@@ -87,6 +88,26 @@ namespace PROOFAgent
         container_type::iterator found = m_sockBasedContainer.find( _fd );
         if ( m_sockBasedContainer.end() != found )
             m_sockBasedContainer.erase( found );
+    }
+
+//=============================================================================
+    void CNodeContainer::removeBadNodes()
+    {
+        // remove bad nodes
+        container_type::iterator iter = m_sockBasedContainer.begin();
+        container_type::iterator iter_end = m_sockBasedContainer.end();
+        for ( ; iter != iter_end; )
+        {
+            if ( !iter->second->isActive() && !iter->second->isValid() )
+            {
+                m_nodes.erase( iter->second );
+                m_sockBasedContainer.erase( iter++ );
+            }
+            else
+            {
+                ++iter;
+            }
+        }
     }
 
 //=============================================================================
