@@ -34,7 +34,8 @@ void CAgentClient::ThreadWorker()
 {
     DebugLog( erOK, "Starting main thread..." );
     DebugLog( erOK, "Creating a PROOF configuration file..." );
-    CreatePROOFCfg( m_commonOptions.m_proofCFG );
+    // TODO: Implement createPROOFCfg for the client mode
+    //CreatePROOFCfg( m_commonOptions.m_proofCFG );
     CSocketClient client;
     try
     {

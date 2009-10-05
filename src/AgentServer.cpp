@@ -51,25 +51,10 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CAgentServer::AddPF( inet::Socket_t _ClientSocket,
-                              unsigned short _nNewLocalPort,
-                              const string &_sPROOFCfgString )
-    {
-        boost::mutex::scoped_lock lock( m_PFList_mutex );
-        m_PFList.add( _ClientSocket, _nNewLocalPort, _sPROOFCfgString );
-    }
-
-//=============================================================================
-    void CAgentServer::CleanDisconnectsPF( const string &_sPROOFCfg )
-    {
-        m_PFList.clean_disconnects( _sPROOFCfg );
-    }
-
-//=============================================================================
     void CAgentServer::ThreadWorker()
     {
         DebugLog( erOK, "Creating a PROOF configuration file..." );
-        CreatePROOFCfg( m_commonOptions.m_proofCFG );
+        createPROOFCfg();
         try
         {
             readServerInfoFile( m_serverInfoFile );
@@ -107,7 +92,6 @@ namespace PROOFAgent
                 // A Global "select"
                 // ------------------------Ê
                 mainSelect( server );
-
             }
         }
         catch ( exception & e )
@@ -234,13 +218,10 @@ namespace PROOFAgent
 
         // Add a worker to PROOF cfg
         string strRealWrkHost;
-        string strPROOFCfgString;
         inet::peer2string( _sock, &strRealWrkHost );
 
-        //AddWrk2PROOFCfg( m_commonOptions.m_proofCFG, sUsrName, port, strRealWrkHost, &strPROOFCfgString );
-
-        // Spawn PortForwarder
-        //   AddPF( _sock.detach(), port, strPROOFCfgString );
+        // Update proof.cfg with active workers
+        string strPROOFCfgString( createPROOFCfgEntryString( sUsrName, port, strRealWrkHost ) );
 
         // Now when we got a connection from our worker, we need to create a local server (for that worker)
         // which actually will emulate a local worker node for a proof server
@@ -256,6 +237,7 @@ namespace PROOFAgent
         node->disable();
         m_nodes.addNode( node );
         // Update proof.cfg according to a current number of active workers
+        updatePROOFCfg();
 
         // add new worker's localPROOFServer socket to the main "select"
         m_socksToSelect.insert( node->second() );
@@ -265,5 +247,61 @@ namespace PROOFAgent
     {
         // TODO: check error code
         unlink( m_serverInfoFile.c_str() );
+    }
+
+//=============================================================================
+    void CAgentServer::createPROOFCfg() const
+    {
+        std::ofstream f_out( m_commonOptions.m_proofCFG.c_str() );
+
+        // getting local host name
+        std::string host;
+        MiscCommon::get_hostname( &host );
+        // master host name is the same for Server and Worker and equal to local host name
+        f_out << "#master " << host << std::endl;
+        f_out << "master " << host << std::endl;
+
+        //if ( pThis->GetMode() == Client )
+        // {
+        //     f_out << "worker " << host << " perf=100" << std::endl;
+        // }
+    }
+
+//=============================================================================
+    string CAgentServer::createPROOFCfgEntryString( const std::string &_UsrName,
+                                                    unsigned short _Port, const std::string &_RealWrkHost )
+    {
+        std::stringstream ss;
+        ss
+        << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")\n"
+        << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << std::endl;
+
+        return ss.str();
+    }
+
+//=============================================================================
+    void CAgentServer::updatePROOFCfg()
+    {
+        std::ofstream f( m_commonOptions.m_proofCFG.c_str() );
+        if ( !f.is_open() )
+            throw std::runtime_error( "Can't open the PROOF configuration file: " + m_commonOptions.m_proofCFG );
+
+        CNodeContainer::container_type *nodes = m_nodes.getContainer();
+
+        // write entries to proof.cfg
+        CNodeContainer::container_type::iterator iter = nodes->begin();
+        CNodeContainer::container_type::iterator iter_end = nodes->end();
+        for ( ; iter != iter_end; )
+        {
+            if ( !iter->second->isActive() && !iter->second->isValid() )
+            {
+                nodes->erase( iter++ );
+            }
+            else
+            {
+                f << iter->second->getPROOFCfgEntry() << endl;
+                ++iter;
+            }
+        }
     }
 }

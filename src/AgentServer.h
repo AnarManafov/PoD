@@ -17,8 +17,6 @@
 // MiscCommon
 #include "LogImp.h"
 // PROOFAgent
-#include "PROOFCfgImpl.h"
-#include "PFContainer.h"
 #include "AgentBase.h"
 #include "NewPacketForwarder.h"
 //=============================================================================
@@ -34,9 +32,7 @@ namespace PROOFAgent
      */
     class CAgentServer :
             public CAgentBase,
-            MiscCommon::CLogImp<CAgentServer>,
-            protected CPROOFCfgImpl<CAgentServer>
-
+            MiscCommon::CLogImp<CAgentServer>
     {
             typedef std::set<MiscCommon::INet::Socket_t> Sockets_type;
         public:
@@ -50,10 +46,6 @@ namespace PROOFAgent
             {
                 return Server;
             }
-            void AddPF( MiscCommon::INet::Socket_t _ClientSocket,
-                        unsigned short _nNewLocalPort,
-                        const std::string &_sPROOFCfgString );
-            void CleanDisconnectsPF( const std::string &_sPROOFCfg );
 
         protected:
             void ThreadWorker();
@@ -62,6 +54,30 @@ namespace PROOFAgent
             void deleteServerInfoFile();
             void createClientNode( MiscCommon::INet::smart_socket &_sock );
             void mainSelect( const MiscCommon::INet::CSocketServer &_server );
+            void createPROOFCfg() const;
+            /**
+              *
+              * @brief This method creates proof.conf entries for nodes
+              * @note
+              example of proof.conf for server
+              @verbatim
+
+              master depc218.gsi.de  workdir=~/proof
+              worker manafov@localhost port=20001 perf=100 workdir=~/
+
+              @endverbatim
+              example of proof.conf for client
+              @verbatim
+
+              master lxial24.gsi.de
+              worker lxial24.gsi.de perf=100
+
+              @endverbatim
+              *
+              */
+            std::string createPROOFCfgEntryString( const std::string &_UsrName,
+                                                   unsigned short _Port, const std::string &_RealWrkHost );
+            void updatePROOFCfg();
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
@@ -70,7 +86,6 @@ namespace PROOFAgent
             CThreadPool m_threadPool;
 
             PoD::SServerOptions_t m_Data;
-            CPFContainer m_PFList;
             boost::mutex m_PFList_mutex;
             std::string m_serverInfoFile;
     };

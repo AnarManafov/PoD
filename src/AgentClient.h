@@ -21,8 +21,6 @@
 #include "SysHelper.h"
 // PROOFAgent
 #include "PacketForwarder.h"
-#include "PROOFCfgImpl.h"
-#include "PFContainer.h"
 #include "AgentBase.h"
 
 //=============================================================================
@@ -36,8 +34,7 @@ namespace PROOFAgent
      */
     class CAgentClient:
             public CAgentBase,
-            MiscCommon::CLogImp<CAgentClient>,
-            protected CPROOFCfgImpl<CAgentClient>
+            MiscCommon::CLogImp<CAgentClient>
     {
         public:
             CAgentClient( const SOptions_t &_data ): CAgentBase( _data.m_podOptions.m_worker.m_common )

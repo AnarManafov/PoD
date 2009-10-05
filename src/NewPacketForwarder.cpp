@@ -151,11 +151,13 @@ namespace PROOFAgent
                 switch ( res )
                 {
                     case -1:
+                        // disable node if there were disconnect detected
+                        task->second->disable();
                         break;
-                    case 0:
+                    case 0: // everything was redirected without problems
                         break;
-                        // task is locked already, pushing it back
                     case 1:
+                        // task is locked already, pushing it back
                         m_tasks.push( task );
                         break;
                 }

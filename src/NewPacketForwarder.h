@@ -97,6 +97,10 @@ namespace PROOFAgent
             /// returns 0 if everything is OK, -1 if socket or sockets are not valid
             /// 1 if can't lock the mutex
             int dealWithData( MiscCommon::INet::Socket_t _fd );
+            std::string getPROOFCfgEntry()
+            {
+                return m_proofCfgEntry;
+            }
 
         private:
             sock_type *m_first;
@@ -123,6 +127,14 @@ namespace PROOFAgent
             void addNode( node_type _node );
             void removeNode( MiscCommon::INet::Socket_t _fd );
             CNode *getNode( MiscCommon::INet::Socket_t _fd );
+            const container_type *const getContainer() const
+            {
+                return &m_sockBasedContainer;
+            }
+            container_type *getContainer()
+            {
+                return &m_sockBasedContainer;
+            }
 
         private:
             container_type m_sockBasedContainer;
