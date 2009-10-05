@@ -137,9 +137,9 @@ namespace PROOFAgent
         iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
-        	// exclude a server socket
-        	if( *iter == f_serverSocket )
-				continue;
+            // exclude a server socket
+            if ( *iter == f_serverSocket )
+                continue;
 
             if ( FD_ISSET( *iter, &readset ) )
             {
@@ -255,17 +255,22 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CAgentServer::createPROOFCfg() const
+    void CAgentServer::createPROOFCfg()
     {
-        std::ofstream f( m_commonOptions.m_proofCFG.c_str() );
+        ofstream f( m_commonOptions.m_proofCFG.c_str() );
 
         // getting local host name
-        std::string host;
+        string host;
         MiscCommon::get_hostname( &host );
         // master host name is the same for Server and Worker and equal to local host name
-        f
+        stringstream ss;
+        ss
         << "#master " << host << "\n"
-        << "master " << host << std::endl;
+        << "master " << host;
+
+        m_masterEntryInPROOFCfg = ss.str();
+
+        f << m_masterEntryInPROOFCfg << endl;
 
         //if ( pThis->GetMode() == Client )
         // {
@@ -274,13 +279,13 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    string CAgentServer::createPROOFCfgEntryString( const std::string &_UsrName,
-                                                    unsigned short _Port, const std::string &_RealWrkHost )
+    string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
+                                                    unsigned short _Port, const string &_RealWrkHost )
     {
-        std::stringstream ss;
+        stringstream ss;
         ss
         << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")\n"
-        << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << std::endl;
+        << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
 
         return ss.str();
     }
@@ -294,7 +299,11 @@ namespace PROOFAgent
 
         CNodeContainer::container_type *nodes = m_nodes.getContainer();
 
+        // a master host
+        f << m_masterEntryInPROOFCfg << endl;
+
         // write entries to proof.cfg
+        // proof workers
         CNodeContainer::container_type::iterator iter = nodes->begin();
         CNodeContainer::container_type::iterator iter_end = nodes->end();
         for ( ; iter != iter_end; )

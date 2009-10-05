@@ -54,7 +54,7 @@ namespace PROOFAgent
             void deleteServerInfoFile();
             void createClientNode( MiscCommon::INet::smart_socket &_sock );
             void mainSelect( const MiscCommon::INet::CSocketServer &_server );
-            void createPROOFCfg() const;
+            void createPROOFCfg();
             /**
               *
               * @brief This method creates proof.conf entries for nodes
@@ -88,6 +88,7 @@ namespace PROOFAgent
             PoD::SServerOptions_t m_Data;
             boost::mutex m_PFList_mutex;
             std::string m_serverInfoFile;
+            std::string m_masterEntryInPROOFCfg;
     };
 
 }
