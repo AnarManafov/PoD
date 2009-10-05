@@ -197,6 +197,8 @@ namespace PROOFAgent
     {
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
+
+        m_threadNeeded.notify_all();
     }
 
 //=============================================================================
