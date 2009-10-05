@@ -137,6 +137,10 @@ namespace PROOFAgent
         iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
+        	// exclude a server socket
+        	if( *iter == f_serverSocket )
+				continue;
+
             if ( FD_ISSET( *iter, &readset ) )
             {
                 // if yes, then we need to activate this node and
