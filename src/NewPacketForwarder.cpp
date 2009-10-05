@@ -111,13 +111,13 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    CNode *CNodeContainer::getNode( MiscCommon::INet::Socket_t _fd )
+    CNodeContainer::node_type CNodeContainer::getNode( MiscCommon::INet::Socket_t _fd )
     {
         container_type::const_iterator found = m_sockBasedContainer.find( _fd );
         if ( m_sockBasedContainer.end() != found )
-            return found->second.get();
+            return found->second;
 
-        return NULL;
+        return node_type();
     }
 
 

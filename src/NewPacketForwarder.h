@@ -128,7 +128,7 @@ namespace PROOFAgent
             void addNode( node_type _node );
             void removeNode( MiscCommon::INet::Socket_t _fd );
             void removeBadNodes();
-            CNode *getNode( MiscCommon::INet::Socket_t _fd );
+            node_type getNode( MiscCommon::INet::Socket_t _fd );
             const container_type *const getContainer() const
             {
                 return &m_sockBasedContainer;

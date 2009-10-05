@@ -143,7 +143,9 @@ namespace PROOFAgent
 
             if ( FD_ISSET( *iter, &readset ) )
             {
-                CNode *node = m_nodes.getNode( *iter );
+                CNodeContainer::node_type node = m_nodes.getNode( *iter );
+                if ( node.get() == NULL )
+                    continue; // TODO: Log me!
 
                 if ( !node->isActive() )
                 {
@@ -156,10 +158,17 @@ namespace PROOFAgent
                         continue;
                     }
 
+                    // remove the node from the container
+                    m_nodes.removeNode( *iter );
+                    m_nodes.removeNode( node->first() );
+
                     // update the second socket fd in the container
                     // and activate the node
                     node->updateSecond( fd );
                     node->activate();
+
+                    // add the updated node to the container
+                    m_nodes.addNode( node );
 
                     // add both sockets to "select"
                     m_socksToSelect.insert( node->first() );
@@ -168,7 +177,7 @@ namespace PROOFAgent
                 else
                 {
                     // we get a task for packet forwarder
-                    m_threadPool.pushTask( *iter, node );
+                    m_threadPool.pushTask( *iter, node.get() );
                 }
                 // remove this socket from the list
                 m_socksToSelect.erase( iter++ );
