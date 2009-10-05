@@ -85,10 +85,6 @@ namespace PROOFAgent
                     return ;
                 }
 
-                // TODO: Needs to be optimized. Maybe moved to a different thread
-                // cleaning all PF which are in disconnect state
-                //CleanDisconnectsPF( m_commonOptions.m_proofCFG );
-
                 // ------------------------
                 // A Global "select"
                 // ------------------------Ê
@@ -112,6 +108,12 @@ namespace PROOFAgent
         Sockets_type::const_iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
+            // don't include node which are being processed at this moment
+            CNodeContainer::node_type node = m_nodes.getNode( *iter );
+            if ( node.get() == NULL )
+                continue;
+            if ( node->isInUse() )
+                continue;
             FD_SET( *iter, &readset );
         }
 

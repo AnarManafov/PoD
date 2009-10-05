@@ -43,6 +43,7 @@ namespace PROOFAgent
                     m_second( new sock_type( _second ) ),
                     m_proofCfgEntry( _proofCFGString ),
                     m_active( false ),
+                    m_inUse(false),
                     m_buf( g_BUF_SIZE ),
                     m_bytesToSend( 0 )
 
@@ -79,6 +80,10 @@ namespace PROOFAgent
                 return ( NULL != m_first && NULL != m_second &&
                          m_first->is_valid() && m_second->is_valid() );
             }
+            bool isInUse()
+            {
+            	return m_inUse;
+            }
             MiscCommon::INet::Socket_t first()
             {
                 return m_first->get();
@@ -109,6 +114,7 @@ namespace PROOFAgent
             sock_type *m_second;
             std::string m_proofCfgEntry;
             bool m_active;
+            bool m_inUse;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
             boost::try_mutex m_mutexReadFirst;

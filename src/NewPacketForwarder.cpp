@@ -34,13 +34,25 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
+    	m_inUse = true;
+
         // blocking the read operation on the second if it's already processing by some of the thread
-        boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
-        if ( !lock )
+        try
+        {
+            boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
+            if ( !lock.try_lock() )
+                return 1;
+        }
+        catch ( ... )
+        {
             return 1;
+        }
 
         if ( !isValid() )
+        {
+        	m_inUse = false;
             return -1;
+        }
 
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
@@ -49,7 +61,10 @@ namespace PROOFAgent
 
         // DISCONNECT has been detected
         if ( m_bytesToSend <= 0 || !isValid() )
+        {
+        	m_inUse = false;
             return -1;
+        }
 
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
@@ -57,6 +72,8 @@ namespace PROOFAgent
         BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
         ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
+
+        m_inUse = false;
         return 0;
     }
 
