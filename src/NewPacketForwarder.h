@@ -146,6 +146,8 @@ namespace PROOFAgent
             typedef std::pair<MiscCommon::INet::Socket_t, CNode*> task_t;
             typedef std::queue<task_t*> taskqueue_t;
         public:
+            REGISTER_LOG_MODULE( "ThreadPool" )
+
             CThreadPool( size_t _threadsCount );
             ~CThreadPool();
 
