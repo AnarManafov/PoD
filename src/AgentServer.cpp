@@ -170,7 +170,11 @@ namespace PROOFAgent
                     // add the updated node to the container
                     m_nodes.addNode( node );
 
+                    // remove this socket from the list
+                    // we don't need to monitor it anymore
+                    m_socksToSelect.erase( iter++ );
                     // add both sockets to "select"
+                    // these are proxy sockets for a packet forwarding
                     m_socksToSelect.insert( node->first() );
                     m_socksToSelect.insert( node->second() );
                 }
@@ -179,8 +183,6 @@ namespace PROOFAgent
                     // we get a task for packet forwarder
                     m_threadPool.pushTask( *iter, node.get() );
                 }
-                // remove this socket from the list
-                m_socksToSelect.erase( iter++ );
             }
         }
 
