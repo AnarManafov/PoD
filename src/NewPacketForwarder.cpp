@@ -124,7 +124,9 @@ namespace PROOFAgent
 //=============================================================================
 // CThreadPool
 //=============================================================================
-    CThreadPool::CThreadPool( size_t _threadsCount )
+    CThreadPool::CThreadPool( size_t _threadsCount ):
+            m_stopped( false ),
+            m_stopping( false )
     {
         for ( size_t i = 0; i < _threadsCount; ++i )
             m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
@@ -157,11 +159,12 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                	DebugLog(erOK, "wait for a task");
+                    DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
+                    DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     m_tasks.pop();
                 }
@@ -169,7 +172,7 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-            	DebugLog(erOK, "processing a task");
+                DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
                 switch ( res )
                 {
@@ -178,11 +181,11 @@ namespace PROOFAgent
                         task->second->disable();
                         break;
                     case 0: // everything was redirected without problems
-                    	DebugLog(erOK, "done processing");
+                        DebugLog( erOK, "done processing" );
                         break;
                     case 1:
                         // task is locked already, pushing it back
-                    	DebugLog(erOK, "task's socket is busy, giving the task back");
+                        DebugLog( erOK, "task's socket is busy, giving the task back" );
                         m_tasks.push( task );
                         break;
                 }
@@ -202,7 +205,7 @@ namespace PROOFAgent
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
 
-        DebugLog(erOK, "task is ready");
+        DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }
