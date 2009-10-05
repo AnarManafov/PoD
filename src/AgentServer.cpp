@@ -67,6 +67,7 @@ namespace PROOFAgent
             // Add main server's socket to the list of sockets to select
             f_serverSocket = server.GetSocket().get();
             m_socksToSelect.insert( f_serverSocket );
+            DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
                 // TODO: we need to check real PROOF port here (from cfg)
@@ -252,14 +253,15 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::createPROOFCfg() const
     {
-        std::ofstream f_out( m_commonOptions.m_proofCFG.c_str() );
+        std::ofstream f( m_commonOptions.m_proofCFG.c_str() );
 
         // getting local host name
         std::string host;
         MiscCommon::get_hostname( &host );
         // master host name is the same for Server and Worker and equal to local host name
-        f_out << "#master " << host << std::endl;
-        f_out << "master " << host << std::endl;
+        f
+        << "#master " << host << "\n"
+        << "master " << host << std::endl;
 
         //if ( pThis->GetMode() == Client )
         // {
@@ -293,6 +295,7 @@ namespace PROOFAgent
         CNodeContainer::container_type::iterator iter_end = nodes->end();
         for ( ; iter != iter_end; )
         {
+            // remove bad nodes
             if ( !iter->second->isActive() && !iter->second->isValid() )
             {
                 nodes->erase( iter++ );
