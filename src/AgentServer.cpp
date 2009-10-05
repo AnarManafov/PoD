@@ -143,23 +143,21 @@ namespace PROOFAgent
 
             if ( FD_ISSET( *iter, &readset ) )
             {
-                // if yes, then we need to activate this node and
-                // add it to the packetforwarder
-                int fd = accept( *iter, NULL, NULL );
-                if ( fd < 0 )
-                {
-                    FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
-                    continue;
-                }
-
-                // update the second socket fd in the container
-                // and activate the node
                 CNode *node = m_nodes.getNode( *iter );
 
                 if ( !node->isActive() )
                 {
-                    // we got a connected proof server here
-                    // activate the node
+                    // if yes, then we need to activate this node and
+                    // add it to the packetforwarder
+                    int fd = accept( *iter, NULL, NULL );
+                    if ( fd < 0 )
+                    {
+                        FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
+                        continue;
+                    }
+
+                    // update the second socket fd in the container
+                    // and activate the node
                     node->updateSecond( fd );
                     node->activate();
 
@@ -311,7 +309,7 @@ namespace PROOFAgent
         CNodeContainer::unique_container_type::const_iterator iter_end = nodes->end();
         for ( ; iter != iter_end; ++iter )
         {
-            f << (*iter)->getPROOFCfgEntry() << endl;
+            f << ( *iter )->getPROOFCfgEntry() << endl;
         }
     }
 }

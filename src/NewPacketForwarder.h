@@ -139,7 +139,10 @@ namespace PROOFAgent
             }
 
         private:
+            // Contains all sockets from nodes,
+            // that simply means for each node it keeps two sockets
             container_type m_sockBasedContainer;
+            // Contains only pointers to nodes
             unique_container_type m_nodes;
     };
 
