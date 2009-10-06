@@ -256,6 +256,14 @@ namespace PROOFAgent
         boost::mutex::scoped_lock lock( m_mutex );
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
+        // report if queued too many tasks
+        if( m_tasks.size() > m_threads.size() )
+        {
+        	stringstream ss;
+        	ss << "Queued " << m_tasks.size() << " tasks.";
+        	InfoLog( erOK, ss.str() );
+        }
+
 
       //  DebugLog( erOK, "task is ready" );
 
