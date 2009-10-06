@@ -111,11 +111,14 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
-            CNodeContainer::node_type node = m_nodes.getNode( *iter );
-            if ( node.get() == NULL )
-                continue;
-            if ( node->isInUse() )
-                continue;
+            if ( *iter != f_serverSocket )
+            {
+                CNodeContainer::node_type node = m_nodes.getNode( *iter );
+                if ( node.get() == NULL )
+                    continue;
+                if ( node->isInUse() )
+                    continue;
+            }
 
             FD_SET( *iter, &readset );
         }
