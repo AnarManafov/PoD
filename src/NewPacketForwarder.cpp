@@ -34,7 +34,7 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
-    	m_inUse = true;
+        m_inUse = 1;
 
         // blocking the read operation on the second if it's already processing by some of the thread
         try
@@ -50,7 +50,7 @@ namespace PROOFAgent
 
         if ( !isValid() )
         {
-        	m_inUse = false;
+            m_inUse = 0;
             return -1;
         }
 
@@ -62,7 +62,7 @@ namespace PROOFAgent
         // DISCONNECT has been detected
         if ( m_bytesToSend <= 0 || !isValid() )
         {
-        	m_inUse = false;
+            m_inUse = 0;
             return -1;
         }
 
@@ -73,7 +73,7 @@ namespace PROOFAgent
         ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
 
-        m_inUse = false;
+        m_inUse = 0;
         return 0;
     }
 
@@ -209,7 +209,10 @@ namespace PROOFAgent
                 {
                     DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
-                    m_tasks.pop();
+                    if ( 0 == task->second->isInUse() )
+                        m_tasks.pop();
+                    else
+                    	task = NULL;
                 }
             }
             //Execute job
@@ -248,6 +251,7 @@ namespace PROOFAgent
 //=============================================================================
     void CThreadPool::pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node )
     {
+        boost::mutex::scoped_lock lock( m_mutex );
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
 
