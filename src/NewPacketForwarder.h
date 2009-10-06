@@ -80,6 +80,10 @@ namespace PROOFAgent
                 return ( NULL != m_first && NULL != m_second &&
                          m_first->is_valid() && m_second->is_valid() );
             }
+            void setInUse( bool _Val)
+            {
+            	m_inUse = _Val;
+            }
             bool isInUse()
             {
             	return m_inUse;

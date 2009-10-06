@@ -34,13 +34,8 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
-        m_inUse = 1;
-
         if ( !isValid() )
-        {
-            m_inUse = 0;
             return -1;
-        }
 
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
@@ -49,10 +44,7 @@ namespace PROOFAgent
 
         // DISCONNECT has been detected
         if ( m_bytesToSend <= 0 || !isValid() )
-        {
-            m_inUse = 0;
             return -1;
-        }
 
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
@@ -61,7 +53,6 @@ namespace PROOFAgent
      //   ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
 
-        m_inUse = 0;
         return 0;
     }
 
@@ -178,14 +169,6 @@ namespace PROOFAgent
         {
             task_t* task = NULL;
 
-            // Checking whether signal has arrived
-            if ( graceful_quit )
-            {
-                InfoLog( erOK, "STOP signal received by worker thread." );
-                stop();
-                break;
-            }
-
             { // Find a job to perform
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
@@ -198,12 +181,6 @@ namespace PROOFAgent
                     DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     m_tasks.pop();
-                    if ( task->second->isInUse() )
-                    {
-                    	delete task;
-                    	task = NULL;
-                    	DebugLog(erOK, "*** Can't take the task from the queue. Socket is busy ***");
-                    }
                 }
             }
             //Execute job
@@ -211,6 +188,7 @@ namespace PROOFAgent
             {
                 DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
+                task->second->setInUse(false);
                 switch ( res )
                 {
                     case -1:

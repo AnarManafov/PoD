@@ -24,7 +24,7 @@ using namespace std;
 using namespace MiscCommon;
 namespace inet = MiscCommon::INet;
 //=============================================================================
-const size_t g_READ_READY_INTERVAL = 4;
+const size_t g_READ_READY_INTERVAL = 2;
 extern sig_atomic_t graceful_quit;
 
 // TODO: Move to config or make it autodetectable...
@@ -189,6 +189,10 @@ namespace PROOFAgent
                 else
                 {
                     // we get a task for packet forwarder
+                	if( node->isInUse() )
+                		continue;
+
+                	node->setInUse(true);
                     m_threadPool.pushTask( *iter, node.get() );
                 }
             }
