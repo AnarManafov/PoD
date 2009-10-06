@@ -83,7 +83,10 @@ namespace PROOFAgent
             MiscCommon::INet::Socket_t f_serverSocket;
             CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
-         //   CThreadPool m_threadPool;
+            CThreadPool m_threadPool;
+
+            fd_set m_readset;
+            bool m_isReadsetChanged;
 
             PoD::SServerOptions_t m_Data;
             boost::mutex m_PFList_mutex;

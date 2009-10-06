@@ -250,7 +250,7 @@ namespace PROOFAgent
         if( m_tasks.size() > m_threads.size() )
         {
         	stringstream ss;
-        	ss << "Queued " << m_tasks.size() << " tasks.";
+        	ss << "*** Queued " << m_tasks.size() << " tasks ***";
         	InfoLog( erOK, ss.str() );
         }
 
