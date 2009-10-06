@@ -35,8 +35,8 @@ namespace PROOFAgent
 
 //=============================================================================
     CAgentServer::CAgentServer( const SOptions_t &_data ):
-            CAgentBase( _data.m_podOptions.m_server.m_common ),
-            m_threadPool( g_numThreads )
+            CAgentBase( _data.m_podOptions.m_server.m_common )
+           // m_threadPool( g_numThreads )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
@@ -81,7 +81,7 @@ namespace PROOFAgent
                 if ( graceful_quit )
                 {
                     InfoLog( erOK, "STOP signal received." );
-                    m_threadPool.stop();
+                  //  m_threadPool.stop();
                     return ;
                 }
 
@@ -184,7 +184,8 @@ namespace PROOFAgent
                 else
                 {
                     // we get a task for packet forwarder
-                    m_threadPool.pushTask( *iter, node.get() );
+                  //  m_threadPool.pushTask( *iter, node.get() );
+                	node->dealWithData( *iter );
                 }
             }
         }

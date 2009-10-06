@@ -101,7 +101,6 @@ namespace PROOFAgent
                 return (( m_first->get() == _fd ) ? m_first : m_second );
             }
             /// returns 0 if everything is OK, -1 if socket or sockets are not valid
-            /// 1 if can't lock the mutex
             int dealWithData( MiscCommon::INet::Socket_t _fd );
             std::string getPROOFCfgEntry()
             {
@@ -117,9 +116,6 @@ namespace PROOFAgent
             bool m_inUse;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
-            //boost::mutex m_mutex;
-           // boost::try_mutex m_mutexReadFirst;
-            // boost::try_mutex m_mutexReadSecond;
     };
 
 //=============================================================================
