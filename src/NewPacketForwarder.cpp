@@ -34,19 +34,21 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
+    	boost::mutex::scoped_lock lock( m_mutex );
         m_inUse = 1;
 
         // blocking the read operation on the second if it's already processing by some of the thread
-        try
-        {
-            boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
-            if ( !lock.try_lock() )
-                return 1;
-        }
-        catch ( ... )
-        {
-            return 1;
-        }
+     //   try
+     //   {
+
+          //  boost::try_mutex::scoped_try_lock lock( m_mutexReadFirst );//( input == m_first ) ? m_mutexReadFirst : m_mutexReadSecond );
+         //   if ( !lock.try_lock() )
+          //      return 1;
+      //  }
+      //  catch ( ... )
+      //  {
+      //      return 1;
+      //  }
 
         if ( !isValid() )
         {
@@ -234,8 +236,8 @@ namespace PROOFAgent
                         break;
                     case 1:
                         // task is locked already, pushing it back
-                        DebugLog( erOK, "task's socket is busy, giving the task back" );
-                        m_tasks.push( task );
+                       // DebugLog( erOK, "task's socket is busy, giving the task back" );
+                       // m_tasks.push( task );
                         break;
                 }
                 delete task;
