@@ -71,8 +71,8 @@ namespace PROOFAgent
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
         // TODO: uncomment when log level is implemented
-        BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
-        ReportPackage( *input, *output, tmp_buf );
+      //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
+     //   ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
 
         m_inUse = 0;
@@ -204,12 +204,12 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                    DebugLog( erOK, "wait for a task" );
+                  //  DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
-                    DebugLog( erOK, "taking a task from the queue" );
+                 //   DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     if ( 0 == task->second->isInUse() )
                         m_tasks.pop();
@@ -220,7 +220,7 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-                DebugLog( erOK, "processing a task" );
+               // DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
                 switch ( res )
                 {
@@ -229,7 +229,7 @@ namespace PROOFAgent
                         task->second->disable();
                         break;
                     case 0: // everything was redirected without problems
-                        DebugLog( erOK, "done processing" );
+                      //  DebugLog( erOK, "done processing" );
 
                         // send notification to process tasks, which were pushed back because of a busy socket
                         m_threadNeeded.notify_all();
@@ -257,7 +257,7 @@ namespace PROOFAgent
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
 
-        DebugLog( erOK, "task is ready" );
+      //  DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }
