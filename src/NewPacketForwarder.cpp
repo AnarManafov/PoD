@@ -34,7 +34,7 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
-    	boost::mutex::scoped_lock lock( m_mutex );
+    	//boost::mutex::scoped_lock lock( m_mutex );
         m_inUse = 1;
 
         // blocking the read operation on the second if it's already processing by some of the thread
@@ -211,7 +211,7 @@ namespace PROOFAgent
                 {
                     DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
-                    if ( task->second->isInUse() )
+                    if ( !task->second->isInUse() )
                         m_tasks.pop();
                     else
                     {

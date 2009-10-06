@@ -117,7 +117,7 @@ namespace PROOFAgent
             bool m_inUse;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
-            boost::mutex m_mutex;
+            //boost::mutex m_mutex;
            // boost::try_mutex m_mutexReadFirst;
             // boost::try_mutex m_mutexReadSecond;
     };
