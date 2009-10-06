@@ -204,23 +204,26 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                  //  DebugLog( erOK, "wait for a task" );
+                	DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
-                 //   DebugLog( erOK, "taking a task from the queue" );
+                    DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
-                    if ( 0 == task->second->isInUse() )
+                    if ( task->second->isInUse() )
                         m_tasks.pop();
                     else
+                    {
                     	task = NULL;
+                    	DebugLog(erOK, "*** Can't take the task from the queue. Socket is busy ***");
+                    }
                 }
             }
             //Execute job
             if ( task )
             {
-               // DebugLog( erOK, "processing a task" );
+                DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
                 switch ( res )
                 {
@@ -229,10 +232,11 @@ namespace PROOFAgent
                         task->second->disable();
                         break;
                     case 0: // everything was redirected without problems
-                      //  DebugLog( erOK, "done processing" );
+                        DebugLog( erOK, "done processing" );
 
                         // send notification to process tasks, which were pushed back because of a busy socket
-                        m_threadNeeded.notify_all();
+                        if ( !m_stopped && !m_tasks.empty() )
+                        	m_threadNeeded.notify_all();
                         break;
                     case 1:
                         // task is locked already, pushing it back
@@ -265,7 +269,7 @@ namespace PROOFAgent
         }
 
 
-      //  DebugLog( erOK, "task is ready" );
+        DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }
