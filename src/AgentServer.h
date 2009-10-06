@@ -85,9 +85,6 @@ namespace PROOFAgent
             Sockets_type m_socksToSelect;
             CThreadPool m_threadPool;
 
-            fd_set m_readset;
-            bool m_isReadsetChanged;
-
             PoD::SServerOptions_t m_Data;
             boost::mutex m_PFList_mutex;
             std::string m_serverInfoFile;

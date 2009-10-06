@@ -36,8 +36,7 @@ namespace PROOFAgent
 //=============================================================================
     CAgentServer::CAgentServer( const SOptions_t &_data ):
             CAgentBase( _data.m_podOptions.m_server.m_common ),
-            m_threadPool( g_numThreads ),
-            m_isReadsetChanged( true )
+            m_threadPool( g_numThreads )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
@@ -71,12 +70,14 @@ namespace PROOFAgent
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
+                // TODO: THIS IS FUCKING expensive to call every time we receive a package
+                // find a better way
                 // TODO: we need to check real PROOF port here (from cfg)
-                if ( !IsPROOFReady( 0 ) )
-                {
-                    FaultLog( erError, "Can't connect to PROOF/XRD service." );
-                    graceful_quit = 1;
-                }
+//                if ( !IsPROOFReady( 0 ) )
+//                {
+//                    FaultLog( erError, "Can't connect to PROOF/XRD service." );
+//                    graceful_quit = 1;
+//                }
 
                 // Checking whether signal has arrived
                 if ( graceful_quit )
@@ -101,24 +102,22 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     {
-    	fd_set readset;
-        if ( m_isReadsetChanged )
-        {
-            FD_ZERO( &readset );
+        fd_set readset;
+        FD_ZERO( &readset );
 
-            // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
-            Sockets_type::const_iterator iter = m_socksToSelect.begin();
-            Sockets_type::const_iterator iter_end = m_socksToSelect.end();
-            for ( ; iter != iter_end; ++iter )
-            {
-                FD_SET( *iter, &readset );
-            }
-            memcpy(&m_readset, &readset, sizeof(fd_set));
-            m_isReadsetChanged = false;
-        }
-        else
+        // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
+        Sockets_type::const_iterator iter = m_socksToSelect.begin();
+        Sockets_type::const_iterator iter_end = m_socksToSelect.end();
+        for ( ; iter != iter_end; ++iter )
         {
-        	memcpy(&readset, &m_readset, sizeof(fd_set));
+            // don't include node which are being processed at this moment
+            CNodeContainer::node_type node = m_nodes.getNode( *iter );
+            if ( node.get() == NULL )
+                continue;
+            if ( node->isInUse() )
+                continue;
+
+            FD_SET( *iter, &readset );
         }
 
         // Setting time-out
@@ -139,8 +138,8 @@ namespace PROOFAgent
             return;
 
         // check whether a proof server tries to connect to proof workers
-        Sockets_type::const_iterator iter = m_socksToSelect.begin();
-        Sockets_type::const_iterator iter_end = m_socksToSelect.end();
+        iter = m_socksToSelect.begin();
+        iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
             // exclude a server socket
@@ -183,7 +182,6 @@ namespace PROOFAgent
                     // these are proxy sockets for a packet forwarding
                     m_socksToSelect.insert( node->first() );
                     m_socksToSelect.insert( node->second() );
-                    m_isReadsetChanged = true;
                 }
                 else
                 {
@@ -262,7 +260,6 @@ namespace PROOFAgent
 
         // add new worker's localPROOFServer socket to the main "select"
         m_socksToSelect.insert( node->second() );
-        m_isReadsetChanged = true;
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()

@@ -197,10 +197,10 @@ namespace PROOFAgent
                 {
                     DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
-                    if ( !task->second->isInUse() )
-                        m_tasks.pop();
-                    else
+                    m_tasks.pop();
+                    if ( task->second->isInUse() )
                     {
+                    	delete task;
                     	task = NULL;
                     	DebugLog(erOK, "*** Can't take the task from the queue. Socket is busy ***");
                     }
