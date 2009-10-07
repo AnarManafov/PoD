@@ -31,7 +31,7 @@ const size_t g_READ_READY_INTERVAL = 2;
 extern sig_atomic_t graceful_quit;
 
 // TODO: Move to config or make it autodetectable...
-const size_t g_numThreads = 4;
+const size_t g_numThreads = 8;
 //=============================================================================
 namespace PROOFAgent
 {

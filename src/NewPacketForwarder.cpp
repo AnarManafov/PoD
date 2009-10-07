@@ -180,12 +180,12 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                    DebugLog( erOK, "wait for a task" );
+                    //DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
-                    DebugLog( erOK, "taking a task from the queue" );
+                    //DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     m_tasks.pop();
                 }
@@ -193,10 +193,10 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-                DebugLog( erOK, "processing a task" );
+                //DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
                 task->second->setInUse( false );
-                DebugLog( erOK, "done processing" );
+                //DebugLog( erOK, "done processing" );
 
                 // report to the owner that socket is free to be added to the "select"
                 if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
@@ -242,7 +242,7 @@ namespace PROOFAgent
         }
 
 
-        DebugLog( erOK, "task is ready" );
+        //DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }
