@@ -139,7 +139,7 @@ namespace PROOFAgent
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
                 if ( node.get() == NULL ||
-                     !node->isActive()  || // TODO: remove disabled nodes from the list
+                     !node->isValid() ||
                      node->isInUse() )
                     continue;
             }
@@ -176,7 +176,7 @@ namespace PROOFAgent
             if ( FD_ISSET( *iter, &readset ) )
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
-                if ( node.get() == NULL )
+                if ( node.get() == NULL || !node->isValid() )
                     continue; // TODO: Log me!
 
                 if ( !node->isActive() )
