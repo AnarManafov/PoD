@@ -156,7 +156,7 @@ namespace PROOFAgent
         // open our signal pipe for writing
         string path( _signalPipePath );
         smart_path( &path );
-        m_fdSignalPipe = open( path.c_str(), O_WRONLY );
+        m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
     }
 
 //=============================================================================

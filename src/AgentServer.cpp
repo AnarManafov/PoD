@@ -46,20 +46,6 @@ namespace PROOFAgent
         m_serverInfoFile = _data.m_serverInfoFile;
 
         //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-    }
-
-//=============================================================================
-    CAgentServer::~CAgentServer()
-    {
-        deleteServerInfoFile();
-        close( m_fdSignalPipe );
-    }
-
-//=============================================================================
-    void CAgentServer::run()
-    {
-        DebugLog( erOK, "Creating a PROOF configuration file..." );
-        createPROOFCfg();
 
         // create a named pipe (our signal pipe)
         // it's use to interrupt "select" and give a chance to new sockets to be added
@@ -76,7 +62,22 @@ namespace PROOFAgent
         }
 
         /* Open the pipe for reading */
-        m_fdSignalPipe = open( path.c_str(), O_RDONLY );
+        m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
+    }
+
+//=============================================================================
+    CAgentServer::~CAgentServer()
+    {
+        deleteServerInfoFile();
+        close( m_fdSignalPipe );
+    }
+
+//=============================================================================
+    void CAgentServer::run()
+    {
+        DebugLog( erOK, "Creating a PROOF configuration file..." );
+        createPROOFCfg();
+
         try
         {
             readServerInfoFile( m_serverInfoFile );
