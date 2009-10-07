@@ -163,7 +163,7 @@ namespace PROOFAgent
         public:
             REGISTER_LOG_MODULE( "ThreadPool" )
 
-            CThreadPool( size_t _threadsCount );
+            CThreadPool( size_t _threadsCount, const std::string &_signalPipePath );
             ~CThreadPool();
 
             void pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node );
@@ -178,6 +178,7 @@ namespace PROOFAgent
             boost::condition m_threadAvailable;
             bool m_stopped;
             bool m_stopping;
+            int m_fdSignalPipe;
     };
 
 }

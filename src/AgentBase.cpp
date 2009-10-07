@@ -12,11 +12,8 @@
 
  Copyright (c) 2009 GSI GridTeam. All rights reserved.
  *************************************************************************/
-// API
-#include <signal.h>
-// BOOST
-//#include <boost/thread/thread.hpp>
-//#include <boost/bind.hpp>
+// STD
+#include <csignal>
 // MiscCommon
 #include "INet.h"
 #include "Process.h"
@@ -92,9 +89,7 @@ namespace PROOFAgent
 //=============================================================================
     MiscCommon::ERRORCODE CAgentBase::Start()
     {
-       // boost::thread thrd( boost::bind( &CAgentBase::ThreadWorker, this ) );
-       // thrd.join();
-    	ThreadWorker();
+    	run();
         return erOK;
     }
 

@@ -48,7 +48,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker();
+            void run();
 
         private:
             void deleteServerInfoFile();
@@ -84,11 +84,10 @@ namespace PROOFAgent
             CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
             CThreadPool m_threadPool;
-
             PoD::SServerOptions_t m_Data;
-            boost::mutex m_PFList_mutex;
             std::string m_serverInfoFile;
             std::string m_masterEntryInPROOFCfg;
+            int m_fdSignalPipe;
     };
 
 }

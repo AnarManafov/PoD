@@ -30,7 +30,7 @@ extern sig_atomic_t graceful_quit;
 sig_atomic_t shutdown_client = 0;
 //=============================================================================
 //------------------------- Agent CLIENT ------------------------------------------------------------
-void CAgentClient::ThreadWorker()
+void CAgentClient::run()
 {
     DebugLog( erOK, "Starting main thread..." );
     DebugLog( erOK, "Creating a PROOF configuration file..." );

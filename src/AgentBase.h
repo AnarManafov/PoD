@@ -47,7 +47,7 @@ namespace PROOFAgent
             bool IsPROOFReady( unsigned short _Port ) const;
 
         protected:
-            virtual void ThreadWorker() = 0;
+            virtual void run() = 0;
             void readServerInfoFile( const std::string &_filename );
 
         protected:

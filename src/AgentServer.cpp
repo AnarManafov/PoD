@@ -17,8 +17,11 @@
 // MiscCommon
 #include "ErrorCode.h"
 #include "INet.h"
+#include "SysHelper.h"
 // PROOFAgent
 #include "AgentServer.h"
+//=============================================================================
+#define SIGNAL_PIPE_PATH        "$POD_LOCATION/etc/signal_pipe"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -36,22 +39,40 @@ namespace PROOFAgent
 //=============================================================================
     CAgentServer::CAgentServer( const SOptions_t &_data ):
             CAgentBase( _data.m_podOptions.m_server.m_common ),
-            m_threadPool( g_numThreads )
+            m_threadPool( g_numThreads, SIGNAL_PIPE_PATH ),
+            m_fdSignalPipe( 0 )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
 
         //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
+
+        // create a named pipe (our signal pipe)
+        // it's use to interrupt "select" and give a chance to new sockets to be added
+        // to the "select"
+        string path( SIGNAL_PIPE_PATH );
+        smart_path( &path );
+        int ret_val = mkfifo( path.c_str(), 0666 );
+
+        if (( ret_val == -1 ) && ( errno != EEXIST ) )
+        {
+            FaultLog( erError, "Error creating the named pipe:" ) << path << endl;
+            graceful_quit = 1;
+        }
+
+        /* Open the pipe for reading */
+        m_fdSignalPipe = open( path.c_str(), O_RDONLY );
     }
 
 //=============================================================================
     CAgentServer::~CAgentServer()
     {
         deleteServerInfoFile();
+        close( m_fdSignalPipe );
     }
 
 //=============================================================================
-    void CAgentServer::ThreadWorker()
+    void CAgentServer::run()
     {
         DebugLog( erOK, "Creating a PROOF configuration file..." );
         createPROOFCfg();
@@ -67,6 +88,7 @@ namespace PROOFAgent
             // Add main server's socket to the list of sockets to select
             f_serverSocket = server.GetSocket().get();
             m_socksToSelect.insert( f_serverSocket );
+            m_socksToSelect.insert( m_fdSignalPipe );
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
@@ -111,7 +133,7 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
-            if ( *iter != f_serverSocket )
+            if ( *iter != f_serverSocket && *iter != m_fdSignalPipe )
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
                 if ( node.get() == NULL )
@@ -146,7 +168,7 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // exclude a server socket
-            if ( *iter == f_serverSocket )
+            if ( *iter == f_serverSocket || *iter == m_fdSignalPipe )
                 continue;
 
             if ( FD_ISSET( *iter, &readset ) )
@@ -189,10 +211,9 @@ namespace PROOFAgent
                 else
                 {
                     // we get a task for packet forwarder
-                	if( node->isInUse() )
-                		continue;
-
-                	node->setInUse(true);
+                    if ( node->isInUse() )
+                        continue;
+                    node->setInUse( true );
                     m_threadPool.pushTask( *iter, node.get() );
                 }
             }
@@ -203,6 +224,20 @@ namespace PROOFAgent
         {
             inet::smart_socket socket( _server.Accept() );
             createClientNode( socket );
+        }
+
+        // we got a signal for update
+        // reading everything from the pipe and letting select update all of its FDs
+        if ( FD_ISSET( m_fdSignalPipe, &readset ) )
+        {
+            const int read_size = 20;
+            char buf[read_size];
+            int numread( 0 );
+            do
+            {
+                numread = read( m_fdSignalPipe, buf, read_size );
+            }
+            while ( numread > 0 );
         }
 
     }

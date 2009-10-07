@@ -49,8 +49,8 @@ namespace PROOFAgent
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
         // TODO: uncomment when log level is implemented
-      //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
-     //   ReportPackage( *input, *output, tmp_buf );
+        //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
+        //   ReportPackage( *input, *output, tmp_buf );
 //    m_idleWatch.touch();
 
         return 0;
@@ -146,18 +146,25 @@ namespace PROOFAgent
 //=============================================================================
 // CThreadPool
 //=============================================================================
-    CThreadPool::CThreadPool( size_t _threadsCount ):
+    CThreadPool::CThreadPool( size_t _threadsCount, const string &_signalPipePath ):
             m_stopped( false ),
             m_stopping( false )
     {
         for ( size_t i = 0; i < _threadsCount; ++i )
             m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
+
+        // open our signal pipe for writing
+        string path( _signalPipePath );
+        smart_path( &path );
+        m_fdSignalPipe = open( path.c_str(), O_WRONLY );
     }
 
 //=============================================================================
     CThreadPool::~CThreadPool()
     {
         stop();
+
+        close( m_fdSignalPipe );
     }
 
 //=============================================================================
@@ -173,7 +180,7 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                	DebugLog( erOK, "wait for a task" );
+                    DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
@@ -188,7 +195,10 @@ namespace PROOFAgent
             {
                 DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
-                task->second->setInUse(false);
+                task->second->setInUse( false );
+                // report to the owner that socket is free to be added to the "select"
+                write( m_fdSignalPipe, "1", 1 );
+
                 switch ( res )
                 {
                     case -1:
@@ -200,12 +210,9 @@ namespace PROOFAgent
 
                         // send notification to process tasks, which were pushed back because of a busy socket
                         if ( !m_stopped && !m_tasks.empty() )
-                        	m_threadNeeded.notify_all();
+                            m_threadNeeded.notify_all();
                         break;
-                    case 1:
-                        // task is locked already, pushing it back
-                       // DebugLog( erOK, "task's socket is busy, giving the task back" );
-                       // m_tasks.push( task );
+                    default:
                         break;
                 }
                 delete task;
@@ -225,11 +232,11 @@ namespace PROOFAgent
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
         // report if queued too many tasks
-        if( m_tasks.size() > m_threads.size() )
+        if ( m_tasks.size() > m_threads.size() )
         {
-        	stringstream ss;
-        	ss << "*** Queued " << m_tasks.size() << " tasks ***";
-        	InfoLog( erOK, ss.str() );
+            stringstream ss;
+            ss << "*** Queued " << m_tasks.size() << " tasks ***";
+            InfoLog( erOK, ss.str() );
         }
 
 

@@ -56,7 +56,7 @@ namespace PROOFAgent
             }
 
         protected:
-            void ThreadWorker();
+            void run();
 
         private:
             PoD::SWorkerOptions_t m_Data;
