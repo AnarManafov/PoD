@@ -57,7 +57,7 @@ namespace PROOFAgent
 
         if (( ret_val == -1 ) && ( errno != EEXIST ) )
         {
-            FaultLog( erError, "Error creating the named pipe:" ) << path << endl;
+            FaultLog( erError, "Error creating the named pipe: + path" );
             graceful_quit = 1;
         }
 
@@ -138,9 +138,9 @@ namespace PROOFAgent
             if ( *iter != f_serverSocket && *iter != m_fdSignalPipe )
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
-                if ( node.get() == NULL )
-                    continue;
-                if ( node->isInUse() )
+                if ( node.get() == NULL ||
+                     !node->isActive()  || // TODO: remove disabled nodes from the list
+                     node->isInUse() )
                     continue;
             }
 

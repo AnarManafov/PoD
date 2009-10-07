@@ -196,18 +196,20 @@ namespace PROOFAgent
                 DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
                 task->second->setInUse( false );
+                DebugLog( erOK, "done processing" );
+
                 // report to the owner that socket is free to be added to the "select"
-                write( m_fdSignalPipe, "1", 1 );
+                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                    FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
 
                 switch ( res )
                 {
                     case -1:
                         // disable node if there were disconnect detected
                         task->second->disable();
+                        FaultLog( erError, "A disconnect were detected" );
                         break;
                     case 0: // everything was redirected without problems
-                        DebugLog( erOK, "done processing" );
-
                         // send notification to process tasks, which were pushed back because of a busy socket
                         if ( !m_stopped && !m_tasks.empty() )
                             m_threadNeeded.notify_all();
