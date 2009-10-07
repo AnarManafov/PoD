@@ -46,22 +46,6 @@ namespace PROOFAgent
         m_serverInfoFile = _data.m_serverInfoFile;
 
         //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-
-        // create a named pipe (our signal pipe)
-        // it's use to interrupt "select" and give a chance to new sockets to be added
-        // to the "select"
-        string path( SIGNAL_PIPE_PATH );
-        smart_path( &path );
-        int ret_val = mkfifo( path.c_str(), 0666 );
-
-        if (( ret_val == -1 ) && ( errno != EEXIST ) )
-        {
-            FaultLog( erError, "Error creating the named pipe:" ) << path << endl;
-            graceful_quit = 1;
-        }
-
-        /* Open the pipe for reading */
-        m_fdSignalPipe = open( path.c_str(), O_RDONLY );
     }
 
 //=============================================================================
@@ -76,6 +60,23 @@ namespace PROOFAgent
     {
         DebugLog( erOK, "Creating a PROOF configuration file..." );
         createPROOFCfg();
+
+        // create a named pipe (our signal pipe)
+        // it's use to interrupt "select" and give a chance to new sockets to be added
+        // to the "select"
+        DebugLog( erOK, "Creating a communication pipe for the thread pool..." );
+        string path( SIGNAL_PIPE_PATH );
+        smart_path( &path );
+        int ret_val = mkfifo( path.c_str(), 0666 );
+
+        if (( ret_val == -1 ) && ( errno != EEXIST ) )
+        {
+            FaultLog( erError, "Error creating the named pipe:" ) << path << endl;
+            graceful_quit = 1;
+        }
+
+        /* Open the pipe for reading */
+        m_fdSignalPipe = open( path.c_str(), O_RDONLY );
         try
         {
             readServerInfoFile( m_serverInfoFile );
