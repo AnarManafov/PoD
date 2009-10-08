@@ -92,10 +92,11 @@ namespace PROOFAgent
 //=============================================================================
     MiscCommon::ERRORCODE CAgentBase::Start()
     {
-    	// start the main job
-    	run();
     	// start a monitoring job
     	 m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+
+     	// start the main job
+     	run();
 
         return erOK;
     }

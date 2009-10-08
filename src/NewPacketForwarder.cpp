@@ -48,12 +48,6 @@ namespace PROOFAgent
 
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
-        // increase the buffer
-        if ( m_bytesToSend == g_BUF_SIZE )
-        {
-            m_buf.reserve( m_buf.capacity() * 2 );
-        }
-
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
         //   ReportPackage( *input, *output, tmp_buf );
