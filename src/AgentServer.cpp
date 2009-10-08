@@ -128,6 +128,7 @@ namespace PROOFAgent
     {
         fd_set readset;
         FD_ZERO( &readset );
+        int fd_max( -1 );
 
         // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
         bool need_update( false );
@@ -139,6 +140,10 @@ namespace PROOFAgent
             if ( *iter != f_serverSocket && *iter != m_fdSignalPipe )
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
+                if ( node.get() == NULL || node->isInUse() )
+                {
+                    continue;
+                }
                 if ( !node->isValid() )
                 {
                     InfoLog( erOK, "Found a bad worker, removing: " + node->getPROOFCfgEntry() );
@@ -150,12 +155,11 @@ namespace PROOFAgent
                     --iter;
                     continue;
                 }
-
-                if ( node.get() == NULL || node->isInUse() )
-                {
-                    continue;
-                }
             }
+
+            // looking for the highest fd
+            if ( *iter > fd_max )
+                fd_max = *iter;
 
             FD_SET( *iter, &readset );
         }
@@ -172,7 +176,6 @@ namespace PROOFAgent
 //        timeout.tv_sec = g_READ_READY_INTERVAL;
 //        timeout.tv_usec = 0;
 
-        int fd_max = *( m_socksToSelect.rbegin() );
         // TODO: Send errno to log
         int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );//&timeout );
         if ( retval < 0 )
