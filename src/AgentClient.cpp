@@ -26,10 +26,10 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 using namespace PROOFAgent;
 //=============================================================================
+const size_t g_monitorTimeout = 5; // in seconds
 extern sig_atomic_t graceful_quit;
 sig_atomic_t shutdown_client = 0;
 //=============================================================================
-//------------------------- Agent CLIENT ------------------------------------------------------------
 void CAgentClient::run()
 {
     DebugLog( erOK, "Starting main thread..." );
@@ -90,3 +90,30 @@ void CAgentClient::run()
         FaultLog( erError, e.what() );
     }
 }
+
+//=============================================================================
+void CAgentClient::monitor()
+{
+    while ( true )
+    {
+
+//    	if ( shutdown_client )
+//    	                break;
+
+        // TODO: we need to check real PROOF port here (from cfg)
+//        if ( !IsPROOFReady( m_proofPort )  )
+//        {
+//            FaultLog( erError, "Can't connect to PROOF/XRD service." );
+//            graceful_quit = 1;
+//
+//            // wake up (from "select") the main thread, so that it can update it self
+//            if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+//                FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
+//
+//            m_monitorThread.interrupt();
+//        }
+
+        sleep( g_monitorTimeout );
+    }
+}
+

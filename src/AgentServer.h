@@ -49,6 +49,7 @@ namespace PROOFAgent
 
         protected:
             void run();
+            void monitor();
 
         private:
             void deleteServerInfoFile();

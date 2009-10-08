@@ -29,6 +29,8 @@ namespace inet = MiscCommon::INet;
 //=============================================================================
 extern sig_atomic_t graceful_quit;
 
+const size_t g_monitorTimeout = 5; // in seconds
+
 // TODO: Move to config or make it autodetectable...
 const size_t g_numThreads = 8;
 //=============================================================================
@@ -93,15 +95,6 @@ namespace PROOFAgent
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
-                // TODO: THIS IS FUCKING expensive to call every time we receive a package
-                // find a better way
-                // TODO: we need to check real PROOF port here (from cfg)
-//                if ( !IsPROOFReady( 0 ) )
-//                {
-//                    FaultLog( erError, "Can't connect to PROOF/XRD service." );
-//                    graceful_quit = 1;
-//                }
-
                 // Checking whether signal has arrived
                 if ( graceful_quit )
                 {
@@ -119,6 +112,28 @@ namespace PROOFAgent
         catch ( exception & e )
         {
             FaultLog( erError, e.what() );
+        }
+    }
+
+//=============================================================================
+    void CAgentServer::monitor()
+    {
+        while ( true )
+        {
+            // TODO: we need to check real PROOF port here (from cfg)
+            if ( !IsPROOFReady( 0 ) )
+            {
+                FaultLog( erError, "Can't connect to PROOF/XRD service." );
+                graceful_quit = 1;
+
+                // wake up (from "select") the main thread, so that it can update it self
+                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                    FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
+
+                m_monitorThread.interrupt();
+            }
+
+            sleep( g_monitorTimeout );
         }
     }
 

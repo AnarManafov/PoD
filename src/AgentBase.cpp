@@ -12,6 +12,8 @@
 
  Copyright (c) 2009 GSI GridTeam. All rights reserved.
  *************************************************************************/
+// BOOST
+#include <boost/bind.hpp>
 // STD
 #include <csignal>
 // MiscCommon
@@ -89,7 +91,11 @@ namespace PROOFAgent
 //=============================================================================
     MiscCommon::ERRORCODE CAgentBase::Start()
     {
+    	// start the main job
     	run();
+    	// start a monitoring job
+    	 m_monitorThread = boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+
         return erOK;
     }
 

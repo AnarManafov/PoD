@@ -14,6 +14,8 @@
 *************************************************************************/
 #ifndef AGENTBASE_H_
 #define AGENTBASE_H_
+// BOOST
+#include <boost/thread/thread.hpp>
 // MiscCommon
 #include "ErrorCode.h"
 // PROOFAgent
@@ -48,12 +50,14 @@ namespace PROOFAgent
 
         protected:
             virtual void run() = 0;
+            virtual void monitor() = 0;
             void readServerInfoFile( const std::string &_filename );
 
         protected:
             const PoD::SCommonOptions_t &m_commonOptions;
             unsigned int m_agentServerListenPort;
             std::string m_agentServerHost;
+            boost::thread m_monitorThread;
     };
 
 }

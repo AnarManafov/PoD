@@ -29,7 +29,7 @@
 namespace PROOFAgent
 {
 // TODO: Move it to config.
-    const unsigned int g_BUF_SIZE = 124;
+    const unsigned int g_BUF_SIZE = 64;
 
     typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================
@@ -140,6 +140,7 @@ namespace PROOFAgent
             virtual ~CNodeContainer();
 
             void addNode( node_type _node );
+            // is not thread safe
             void removeNode( MiscCommon::INet::Socket_t _fd );
             void removeBadNodes();
             node_type getNode( MiscCommon::INet::Socket_t _fd );

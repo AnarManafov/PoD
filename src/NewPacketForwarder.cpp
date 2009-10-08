@@ -49,8 +49,16 @@ namespace PROOFAgent
                 return -1;
 
             sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+
+            if ( m_bytesToSend == g_BUF_SIZE )
+            {
+                m_buf.reserve( m_buf.capacity() * 2 );
+                continue;
+            }
+
+            break;
         }
-        while ( m_bytesToSend == g_BUF_SIZE );
+        while (true );
 
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
@@ -127,7 +135,9 @@ namespace PROOFAgent
         container_type::iterator iter_end = m_sockBasedContainer.end();
         for ( ; iter != iter_end; )
         {
-            if ( !iter->second->isActive() && !iter->second->isValid() )
+            if ( !iter->second->isActive() &&
+                 !iter->second->isValid() &&
+                 !iter->second->isInUse() )
             {
                 m_nodes.erase( iter->second );
                 m_sockBasedContainer.erase( iter++ );

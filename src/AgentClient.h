@@ -57,6 +57,7 @@ namespace PROOFAgent
 
         protected:
             void run();
+            void monitor();
 
         private:
             PoD::SWorkerOptions_t m_Data;
