@@ -40,13 +40,17 @@ namespace PROOFAgent
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
 
-        m_bytesToSend = read_from_socket( *input, &m_buf );
+        do
+        {
+            m_bytesToSend = read_from_socket( *input, &m_buf );
 
-        // DISCONNECT has been detected
-        if ( m_bytesToSend <= 0 || !isValid() )
-            return -1;
+            // DISCONNECT has been detected
+            if ( m_bytesToSend <= 0 || !isValid() )
+                return -1;
 
-        sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+            sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+        }
+        while ( m_bytesToSend == g_BUF_SIZE );
 
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
@@ -99,8 +103,8 @@ namespace PROOFAgent
 //=============================================================================
     void CNodeContainer::addNode( node_type _node )
     {
-    	// set sockets to O_NONBLOCK mode
-    	_node->setNonblock();
+        // set sockets to O_NONBLOCK mode
+        _node->setNonblock();
 
         m_sockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
         m_sockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
@@ -234,13 +238,13 @@ namespace PROOFAgent
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
         // report if queued too many tasks
-        if ( m_tasks.size() > m_threads.size() )
+        // 2 - is just a factor
+        if ( m_tasks.size() > ( m_threads.size()*2 ) )
         {
             stringstream ss;
             ss << "*** Queued " << m_tasks.size() << " tasks ***";
             InfoLog( erOK, ss.str() );
         }
-
 
         //DebugLog( erOK, "task is ready" );
 

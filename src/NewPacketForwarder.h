@@ -29,7 +29,7 @@
 namespace PROOFAgent
 {
 // TODO: Move it to config.
-    const unsigned int g_BUF_SIZE = 5000;
+    const unsigned int g_BUF_SIZE = 124;
 
     typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================

@@ -27,7 +27,6 @@ using namespace std;
 using namespace MiscCommon;
 namespace inet = MiscCommon::INet;
 //=============================================================================
-const size_t g_READ_READY_INTERVAL = 2;
 extern sig_atomic_t graceful_quit;
 
 // TODO: Move to config or make it autodetectable...
@@ -171,13 +170,8 @@ namespace PROOFAgent
             updatePROOFCfg();
         }
 
-        // Setting time-out
-//        timeval timeout;
-//        timeout.tv_sec = g_READ_READY_INTERVAL;
-//        timeout.tv_usec = 0;
-
-        // TODO: Send errno to log
-        int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );//&timeout );
+        // main "Select"
+        int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
         if ( retval < 0 )
         {
             FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
