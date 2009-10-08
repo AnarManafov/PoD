@@ -28,9 +28,6 @@
 
 namespace PROOFAgent
 {
-// TODO: Move it to config.
-    const unsigned int g_BUF_SIZE = 5000;
-
     typedef MiscCommon::INet::smart_socket sock_type;
 //=============================================================================
     class CNode: public MiscCommon::CLogImp<CNode>
@@ -38,13 +35,14 @@ namespace PROOFAgent
         public:
             REGISTER_LOG_MODULE( "Node" )
             CNode();
-            CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second, const std::string &_proofCFGString ):
+            CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
+            		const std::string &_proofCFGString, unsigned int _readBufSize ):
                     m_first( new sock_type( _first ) ),
                     m_second( new sock_type( _second ) ),
                     m_proofCfgEntry( _proofCFGString ),
                     m_active( false ),
                     m_inUse(false),
-                    m_buf( g_BUF_SIZE ),
+                    m_buf( _readBufSize ),
                     m_bytesToSend( 0 )
 
             {

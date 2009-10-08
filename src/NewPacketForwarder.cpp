@@ -237,12 +237,12 @@ namespace PROOFAgent
         m_tasks.push( task );
         // report if queued too many tasks
         // 2 - is just a factor
-        if ( m_tasks.size() > ( m_threads.size()*2 ) )
-        {
-            stringstream ss;
-            ss << "*** Queued " << m_tasks.size() << " tasks ***";
-            InfoLog( erOK, ss.str() );
-        }
+//        if ( m_tasks.size() > ( m_threads.size()*2 ) )
+//        {
+//            stringstream ss;
+//            ss << "*** Queued " << m_tasks.size() << " tasks ***";
+//            InfoLog( erOK, ss.str() );
+//        }
 
         //DebugLog( erOK, "task is ready" );
 
