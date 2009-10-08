@@ -21,7 +21,8 @@
 using namespace std;
 using namespace MiscCommon;
 
-namespace PROOFAgent {
+namespace PROOFAgent
+{
 
 //=============================================================================
 // CNode
@@ -140,7 +141,5 @@ namespace PROOFAgent {
 
         return node_type();
     }
-
-
 
 }

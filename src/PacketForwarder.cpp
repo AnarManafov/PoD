@@ -185,7 +185,7 @@ void CPacketForwarder::SpawnClientMode()
     }
     // Connecting to the local client (a proof slave)
     CSocketClient proof_client;
-    InfoLog( erOK, "connecting to a local proof service on port: " ) << m_nPort << endl;
+   // InfoLog( erOK, "connecting to a local proof service on port: " ) << m_nPort << endl;
     proof_client.Connect( m_nPort, "127.0.0.1" );
     InfoLog( erOK, "connected to the local proof service" );
 

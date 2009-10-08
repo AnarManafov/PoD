@@ -44,8 +44,6 @@ namespace PROOFAgent
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
 
-        //InfoLog( MiscCommon::erOK, "Agent Server configuration:" ) << m_Data;
-
         // create a named pipe (our signal pipe)
         // it's use to interrupt "select" and give a chance to new sockets to be added
         // to the "select"
@@ -60,7 +58,7 @@ namespace PROOFAgent
             graceful_quit = 1;
         }
 
-        /* Open the pipe for reading */
+        // Open the pipe for reading
         m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
     }
 
@@ -74,9 +72,7 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::run()
     {
-        DebugLog( erOK, "Creating a PROOF configuration file..." );
         createPROOFCfg();
-
         try
         {
             readServerInfoFile( m_serverInfoFile );
@@ -90,6 +86,7 @@ namespace PROOFAgent
             f_serverSocket = server.GetSocket().get();
             m_socksToSelect.push_back( f_serverSocket );
             m_socksToSelect.push_back( m_fdSignalPipe );
+
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
@@ -159,7 +156,7 @@ namespace PROOFAgent
                 }
                 if ( !node->isValid() )
                 {
-                    InfoLog( erOK, "Found a bad worker, removing: " + node->getPROOFCfgEntry() );
+                    InfoLog( erOK, "Removing a bad worker: " + node->getPROOFCfgEntry() );
                     need_update = true;
                     iter = m_socksToSelect.erase( iter );
                     // erase returns a bidirectional iterator pointing to the new location of the
@@ -349,6 +346,8 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::createPROOFCfg()
     {
+    	DebugLog( erOK, "Creating a PROOF configuration file..." );
+
         ofstream f( m_commonOptions.m_proofCFG.c_str() );
 
         // getting local host name

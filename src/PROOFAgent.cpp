@@ -59,7 +59,15 @@ void CPROOFAgent::initLogEngine()
     << ( (Server == m_Mode)? "server" : "client" )
     << ".log";
 
-    CLogSingleton::Instance().Init( logfile_name.str(), m_Data.m_logFileOverwrite );
+    unsigned char logLevel(LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR);
+    switch(m_Data.m_logLevel)
+    {
+    case 3: logLevel |= LOG_SEVERITY_DEBUG;
+    case 2: logLevel |= LOG_SEVERITY_WARNING;
+    case 1:	logLevel |= LOG_SEVERITY_INFO;
+    }
+
+    CLogSingleton::Instance().Init( logfile_name.str(), logLevel);
 // TODO:take VERSION from the build automatically
     InfoLog( erOK, PROJECT_NAME + string( " v.") + PROJECT_VERSION_STRING );
 }
