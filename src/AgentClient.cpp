@@ -110,7 +110,7 @@ void CAgentClient::monitor()
 //            if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
 //                FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
 //
-//            m_monitorThread->interrupt();
+//            return;
 //        }
 
         sleep( g_monitorTimeout );
