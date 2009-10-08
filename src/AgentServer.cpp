@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file AgentServer.cpp
- * @brief Packet Forwarder's implementation
+ * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 

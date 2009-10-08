@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file AgentServer.h
- * @brief Packet Forwarder's implementation
+ * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -18,7 +18,8 @@
 #include "LogImp.h"
 // PROOFAgent
 #include "AgentBase.h"
-#include "NewPacketForwarder.h"
+#include "Node.h"
+#include "ThreadPool.h"
 //=============================================================================
 
 namespace PROOFAgent
