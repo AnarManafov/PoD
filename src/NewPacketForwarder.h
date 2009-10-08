@@ -104,6 +104,11 @@ namespace PROOFAgent
             {
                 return (( m_first->get() == _fd ) ? m_first : m_second );
             }
+            void setNonblock()
+            {
+            	m_first->set_nonblock();
+            	m_second->set_nonblock();
+            }
             /// returns 0 if everything is OK, -1 if socket or sockets are not valid
             int dealWithData( MiscCommon::INet::Socket_t _fd );
             std::string getPROOFCfgEntry()

@@ -99,6 +99,9 @@ namespace PROOFAgent
 //=============================================================================
     void CNodeContainer::addNode( node_type _node )
     {
+    	// set sockets to O_NONBLOCK mode
+    	_node->setNonblock();
+
         m_sockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
         m_sockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
         m_nodes.insert( _node );
@@ -210,9 +213,6 @@ namespace PROOFAgent
                         FaultLog( erError, "A disconnect were detected" );
                         break;
                     case 0: // everything was redirected without problems
-                        // send notification to process tasks, which were pushed back because of a busy socket
-                        if ( !m_stopped && !m_tasks.empty() )
-                            m_threadNeeded.notify_all();
                         break;
                     default:
                         break;
