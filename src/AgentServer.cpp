@@ -118,6 +118,7 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::monitor()
     {
+    	FaultLog( erError, "starting a monitor" );
         while ( true )
         {
             // TODO: we need to check real PROOF port here (from cfg)

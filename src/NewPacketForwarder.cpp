@@ -40,25 +40,19 @@ namespace PROOFAgent
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
 
-        do
+        m_bytesToSend = read_from_socket( *input, &m_buf );
+
+        // DISCONNECT has been detected
+        if ( m_bytesToSend <= 0 || !isValid() )
+            return -1;
+
+        sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+
+        // increase the buffer
+        if ( m_bytesToSend == g_BUF_SIZE )
         {
-            m_bytesToSend = read_from_socket( *input, &m_buf );
-
-            // DISCONNECT has been detected
-            if ( m_bytesToSend <= 0 || !isValid() )
-                return -1;
-
-            sendall( *output, &m_buf[0], m_bytesToSend, 0 );
-
-            if ( m_bytesToSend == g_BUF_SIZE )
-            {
-                m_buf.reserve( m_buf.capacity() * 2 );
-                continue;
-            }
-
-            break;
+            m_buf.reserve( m_buf.capacity() * 2 );
         }
-        while (true );
 
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
