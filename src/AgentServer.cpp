@@ -89,8 +89,8 @@ namespace PROOFAgent
 
             // Add main server's socket to the list of sockets to select
             f_serverSocket = server.GetSocket().get();
-            m_socksToSelect.insert( f_serverSocket );
-            m_socksToSelect.insert( m_fdSignalPipe );
+            m_socksToSelect.push_back( f_serverSocket );
+            m_socksToSelect.push_back( m_fdSignalPipe );
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
             {
@@ -130,31 +130,51 @@ namespace PROOFAgent
         FD_ZERO( &readset );
 
         // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
-        Sockets_type::const_iterator iter = m_socksToSelect.begin();
-        Sockets_type::const_iterator iter_end = m_socksToSelect.end();
+        bool need_update( false );
+        Sockets_type::iterator iter = m_socksToSelect.begin();
+        Sockets_type::iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
             if ( *iter != f_serverSocket && *iter != m_fdSignalPipe )
             {
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
-                if ( node.get() == NULL ||
-                     !node->isValid() ||
-                     node->isInUse() )
+                if ( !node->isValid() )
+                {
+                    InfoLog( erOK, "Found a bad worker, removing: " + node->getPROOFCfgEntry() );
+                    need_update = true;
+                    iter = m_socksToSelect.erase( iter );
+                    // erase returns a bidirectional iterator pointing to the new location of the
+                    // element that followed the last element erased by the function call.
+                    // The loop will increment the iterator, we therefore need to move one step back
+                    --iter;
                     continue;
+                }
+
+                if ( node.get() == NULL || node->isInUse() )
+                {
+                    continue;
+                }
             }
 
             FD_SET( *iter, &readset );
         }
 
+        // Updating nodes list and proof.cfg
+        if ( need_update )
+        {
+            need_update = false;
+            updatePROOFCfg();
+        }
+
         // Setting time-out
-        timeval timeout;
-        timeout.tv_sec = g_READ_READY_INTERVAL;
-        timeout.tv_usec = 0;
+//        timeval timeout;
+//        timeout.tv_sec = g_READ_READY_INTERVAL;
+//        timeout.tv_usec = 0;
 
         int fd_max = *( m_socksToSelect.rbegin() );
         // TODO: Send errno to log
-        int retval = ::select( fd_max + 1, &readset, NULL, NULL, &timeout );
+        int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );//&timeout );
         if ( retval < 0 )
         {
             FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
@@ -204,11 +224,12 @@ namespace PROOFAgent
 
                     // remove this socket from the list
                     // we don't need to monitor it anymore
-                    m_socksToSelect.erase( iter++ );
+                    iter = m_socksToSelect.erase( iter );
+                    --iter;
                     // add both sockets to "select"
                     // these are proxy sockets for a packet forwarding
-                    m_socksToSelect.insert( node->first() );
-                    m_socksToSelect.insert( node->second() );
+                    m_socksToSelect.insert( iter, node->first() );
+                    m_socksToSelect.insert( iter, node->second() );
                 }
                 else
                 {
@@ -303,7 +324,7 @@ namespace PROOFAgent
         updatePROOFCfg();
 
         // add new worker's localPROOFServer socket to the main "select"
-        m_socksToSelect.insert( node->second() );
+        m_socksToSelect.push_back( node->second() );
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()
