@@ -57,6 +57,7 @@ namespace PROOFAgent
 //=============================================================================
     CAgentBase::~CAgentBase()
     {
+    	delete m_monitorThread;
         // deleting proof configuration file
         if ( !m_commonOptions.m_proofCFG.empty() )
             ::unlink( m_commonOptions.m_proofCFG.c_str() );
@@ -94,7 +95,7 @@ namespace PROOFAgent
     	// start the main job
     	run();
     	// start a monitoring job
-    	 m_monitorThread = boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+    	 m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
 
         return erOK;
     }

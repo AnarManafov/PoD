@@ -57,7 +57,7 @@ namespace PROOFAgent
             const PoD::SCommonOptions_t &m_commonOptions;
             unsigned int m_agentServerListenPort;
             std::string m_agentServerHost;
-            boost::thread m_monitorThread;
+            boost::thread *m_monitorThread;
     };
 
 }
