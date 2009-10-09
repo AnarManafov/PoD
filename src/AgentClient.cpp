@@ -109,7 +109,7 @@ void CAgentClient::monitor()
     while ( true )
     {
         // TODO: we need to check real PROOF port here (from cfg)
-        if ( !IsPROOFReady( m_proofPort ) || graceful_quit  )
+        if ( !IsPROOFReady( m_proofPort ) || graceful_quit )
         {
             FaultLog( erError, "Can't connect to PROOF/XRD service." );
             graceful_quit = 1;
@@ -118,6 +118,14 @@ void CAgentClient::monitor()
             if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
 
+            return;
+        }
+
+
+        if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
+        {
+            InfoLog( "Agent's idle time has just reached a defined maximum. Exiting..." );
+            graceful_quit = 1;
             return;
         }
 
@@ -183,7 +191,7 @@ void CAgentClient::mainSelect( CNode *_node )
 {
     while ( true )
     {
-    	m_idleWatch.touch();
+        m_idleWatch.touch();
 
         // Checking whether signal has arrived
         if ( graceful_quit )

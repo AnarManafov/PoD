@@ -54,7 +54,7 @@ namespace PROOFAgent
         while ( true )
         {
             // TODO: we need to check real PROOF port here (from cfg)
-            if ( !IsPROOFReady( 0 ) )
+            if ( !IsPROOFReady( 0 ) || graceful_quit )
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
                 graceful_quit = 1;
