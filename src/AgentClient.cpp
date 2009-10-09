@@ -201,6 +201,10 @@ void CAgentClient::mainSelect( CNode *_node )
 
         fd_set readset;
         FD_ZERO( &readset );
+
+        if ( !_node || !_node->isValid() )
+            return;
+
         FD_SET( _node->first(), &readset );
         FD_SET( _node->second(), &readset );
         int fd_max( _node->first() > _node->second() ? _node->first() : _node->second() );
