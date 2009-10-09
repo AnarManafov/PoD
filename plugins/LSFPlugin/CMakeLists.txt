@@ -20,7 +20,7 @@ project( PAConsole_lsf )
 #set(CPACK_PACKAGE_VERSION_PATCH "1")
 
 # Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 
 set( MOC_HDRS_lsf
