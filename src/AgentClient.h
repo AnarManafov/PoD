@@ -71,6 +71,7 @@ namespace PROOFAgent
             // returns a connection socket to a local PROOF worker
             MiscCommon::INet::Socket_t connectToLocalPROOF( unsigned int _proofPort );
             void mainSelect( CNode *_node );
+            void createPROOFCfg();
 
         private:
             PoD::SWorkerOptions_t m_Data;

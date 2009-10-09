@@ -50,7 +50,6 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::monitor()
     {
-        FaultLog( erError, "starting a monitor" );
         while ( true )
         {
             // TODO: we need to check real PROOF port here (from cfg)
@@ -80,9 +79,10 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::run()
     {
-        createPROOFCfg();
         try
         {
+        	createPROOFCfg();
+
             readServerInfoFile( m_serverInfoFile );
 
             inet::CSocketServer server;
@@ -345,6 +345,9 @@ namespace PROOFAgent
         DebugLog( erOK, "Creating a PROOF configuration file..." );
 
         ofstream f( m_commonOptions.m_proofCFG.c_str() );
+        if ( !f.is_open() )
+            throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
+
 
         // getting local host name
         string host;

@@ -117,6 +117,7 @@ namespace PROOFAgent
         m_idleWatch.touch();
 
         // start a monitoring job
+        log( LOG_SEVERITY_INFO, "starting a monitor" );
         m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
 
         // start the main job

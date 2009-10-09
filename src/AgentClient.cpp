@@ -31,21 +31,12 @@ extern sig_atomic_t graceful_quit;
 //=============================================================================
 void CAgentClient::run()
 {
-    // DebugLog( erOK, "Creating a PROOF configuration file..." );
-    // TODO: Implement createPROOFCfg for the client mode
-    //CreatePROOFCfg( m_commonOptions.m_proofCFG );
-
     try
     {
+    	createPROOFCfg();
+
         while ( true )
         {
-            if ( !IsPROOFReady( m_proofPort ) )
-            {
-                FaultLog( erError, "Can't connect to PROOF/XRD service." );
-                graceful_quit = 1;
-                break;
-            }
-
             readServerInfoFile( m_serverInfoFile );
 
             DebugLog( erOK, "looking for PROOFAgent server to connect..." );
@@ -247,4 +238,19 @@ void CAgentClient::mainSelect( CNode *_node )
         }
 
     }
+}
+
+//=============================================================================
+void CAgentClient::createPROOFCfg()
+{
+    DebugLog( erOK, "Creating a PROOF configuration file..." );
+
+    ofstream f( m_commonOptions.m_proofCFG.c_str() );
+    if ( !f.is_open() )
+        throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
+
+    // getting local host name
+    string host;
+    MiscCommon::get_hostname( &host );
+    f << "worker " << host << " perf=100" << std::endl;
 }
