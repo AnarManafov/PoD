@@ -21,6 +21,10 @@ namespace PROOFAgent
     class CIdleWatch
     {
         public:
+            CIdleWatch()
+            {
+                touch();
+            }
             void touch()
             {
                 m_startTime = time( NULL );

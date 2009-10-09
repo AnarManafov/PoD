@@ -112,7 +112,7 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CThreadPool::pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node )
+    void CThreadPool::pushTask( MiscCommon::INet::Socket_t &_fd, CNode* _node )
     {
         boost::mutex::scoped_lock lock( m_mutex );
         task_t *task = new task_t( _fd, _node );

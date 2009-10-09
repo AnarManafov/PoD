@@ -21,14 +21,11 @@
 // PROOFAgent
 #include "AgentServer.h"
 //=============================================================================
-#define SIGNAL_PIPE_PATH        "$POD_LOCATION/etc/signal_pipe"
-//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 namespace inet = MiscCommon::INet;
 //=============================================================================
 extern sig_atomic_t graceful_quit;
-
 // a monitoring thread timeout (in seconds)
 const size_t g_monitorTimeout = 10;
 //=============================================================================
@@ -38,35 +35,16 @@ namespace PROOFAgent
 //=============================================================================
     CAgentServer::CAgentServer( const SOptions_t &_data ):
             CAgentBase( _data.m_podOptions.m_server.m_common ),
-            m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, SIGNAL_PIPE_PATH ),
-            m_fdSignalPipe( 0 )
+            m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, g_SIGNAL_PIPE_PATH )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;
-
-        // create a named pipe (our signal pipe)
-        // it's use to interrupt "select" and give a chance to new sockets to be added
-        // to the "select"
-        DebugLog( erOK, "Creating a communication pipe for the thread pool..." );
-        string path( SIGNAL_PIPE_PATH );
-        smart_path( &path );
-        int ret_val = mkfifo( path.c_str(), 0666 );
-
-        if (( ret_val == -1 ) && ( errno != EEXIST ) )
-        {
-            FaultLog( erError, "Error creating the named pipe: + path" );
-            graceful_quit = 1;
-        }
-
-        // Open the pipe for reading
-        m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
     }
 
 //=============================================================================
     CAgentServer::~CAgentServer()
     {
         deleteServerInfoFile();
-        close( m_fdSignalPipe );
     }
 
 //=============================================================================
@@ -115,7 +93,7 @@ namespace PROOFAgent
             // Add main server's socket to the list of sockets to select
             f_serverSocket = server.GetSocket().get();
 
-            DebugLog( erOK, "Entering into the \"select\" loop..." );
+            InfoLog( "Entering into the main \"select\" loop..." );
             while ( true )
             {
                 // Checking whether signal has arrived

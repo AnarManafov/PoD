@@ -17,9 +17,9 @@
 // MiscCommon
 #include "LogImp.h"
 // PROOFAgent
-#include "AgentBase.h"
 #include "Node.h"
 #include "ThreadPool.h"
+#include "AgentBase.h"
 //=============================================================================
 
 namespace PROOFAgent
@@ -51,6 +51,10 @@ namespace PROOFAgent
         protected:
             void run();
             void monitor();
+            void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg )
+            {
+            	 msgPush( _Severity, _msg );
+            }
 
         private:
             void deleteServerInfoFile();
@@ -86,11 +90,10 @@ namespace PROOFAgent
             MiscCommon::INet::Socket_t f_serverSocket;
             CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
-            CThreadPool m_threadPool;
             PoD::SServerOptions_t m_Data;
+            CThreadPool m_threadPool;
             std::string m_serverInfoFile;
             std::string m_masterEntryInPROOFCfg;
-            int m_fdSignalPipe;
     };
 
 }

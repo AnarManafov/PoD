@@ -19,13 +19,15 @@
 // MiscCommon
 #include "LogImp.h"
 #include "SysHelper.h"
+#include "INet.h"
 // PROOFAgent
-#include "PacketForwarder.h"
 #include "AgentBase.h"
 
 //=============================================================================
 namespace PROOFAgent
 {
+    class CNode;
+
 //=============================================================================
     /**
      *
@@ -37,7 +39,8 @@ namespace PROOFAgent
             MiscCommon::CLogImp<CAgentClient>
     {
         public:
-            CAgentClient( const SOptions_t &_data ): CAgentBase( _data.m_podOptions.m_worker.m_common )
+            CAgentClient( const SOptions_t &_data ):
+                    CAgentBase( _data.m_podOptions.m_worker.m_common )
             {
                 m_Data = _data.m_podOptions.m_worker;
                 m_serverInfoFile = _data.m_serverInfoFile;
@@ -58,6 +61,16 @@ namespace PROOFAgent
         protected:
             void run();
             void monitor();
+            void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg )
+            {
+                msgPush( _Severity, _msg );
+            }
+
+        private:
+            void waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWait );
+            // returns a connection socket to a local PROOF worker
+            MiscCommon::INet::Socket_t connectToLocalPROOF( unsigned int _proofPort );
+            void mainSelect( CNode *_node );
 
         private:
             PoD::SWorkerOptions_t m_Data;

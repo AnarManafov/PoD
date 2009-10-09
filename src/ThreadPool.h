@@ -26,10 +26,11 @@
 #include "INet.h"
 #include "LogImp.h"
 
-class CNode;
-
 namespace PROOFAgent
 {
+
+class CNode;
+
 //=============================================================================
     class CThreadPool: public MiscCommon::CLogImp<CThreadPool>
     {
@@ -41,7 +42,7 @@ namespace PROOFAgent
             CThreadPool( size_t _threadsCount, const std::string &_signalPipePath );
             ~CThreadPool();
 
-            void pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node );
+            void pushTask( MiscCommon::INet::Socket_t &_fd, CNode* _node );
             void execute();
             void stop( bool processRemainingJobs = false );
 

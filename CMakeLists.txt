@@ -43,7 +43,6 @@ set( SOURCE_FILES
     ./src/AgentBase.cpp
     ./src/AgentServer.cpp
     ./src/AgentClient.cpp
-    ./src/PacketForwarder.cpp
     ./src/ThreadPool.cpp
     ./src/PROOFAgent.cpp
     ./src/Node.cpp

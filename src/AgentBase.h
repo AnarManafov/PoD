@@ -18,6 +18,7 @@
 #include <boost/thread/thread.hpp>
 // MiscCommon
 #include "ErrorCode.h"
+#include "Log.h"
 // PROOFAgent
 #include "Options.h"
 #include "IdleWatch.h"
@@ -52,6 +53,7 @@ namespace PROOFAgent
         protected:
             virtual void run() = 0;
             virtual void monitor() = 0;
+            virtual void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg ) = 0;
             void readServerInfoFile( const std::string &_filename );
 
         protected:
@@ -60,6 +62,7 @@ namespace PROOFAgent
             std::string m_agentServerHost;
             boost::thread *m_monitorThread;
             CIdleWatch m_idleWatch;
+            int m_fdSignalPipe;
     };
 
 }

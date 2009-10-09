@@ -12,6 +12,9 @@
 
  Copyright (c) 2009 GSI GridTeam. All rights reserved.
  *************************************************************************/
+// API
+#include <sys/types.h>
+#include <sys/stat.h>
 // BOOST
 #include <boost/bind.hpp>
 // STD
@@ -19,16 +22,17 @@
 // MiscCommon
 #include "INet.h"
 #include "Process.h"
+#include "SysHelper.h"
 // PROOFAgent
 #include "AgentBase.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 using namespace PoD;
 namespace po = boost::program_options;
-
+//=============================================================================
 sig_atomic_t graceful_quit = 0;
-
+//=============================================================================
 namespace PROOFAgent
 {
 //=============================================================================
@@ -39,7 +43,9 @@ namespace PROOFAgent
 
 //=============================================================================
     CAgentBase::CAgentBase( const SCommonOptions_t &_common ) :
-            m_commonOptions( _common ), m_agentServerListenPort( 0 )
+            m_commonOptions( _common ),
+            m_agentServerListenPort( 0 ),
+            m_fdSignalPipe( 0 )
     {
         // Registering signals handlers
         struct sigaction sa;
@@ -52,12 +58,28 @@ namespace PROOFAgent
         // Register the handler for SIGTERM
         sa.sa_handler = signal_handler;
         sigaction( SIGTERM, &sa, 0 );
+
+        // create a named pipe (our signal pipe)
+        // it's use to interrupt "select" and give a chance to new sockets to be added
+        // to the "select"
+        string path( g_SIGNAL_PIPE_PATH );
+        smart_path( &path );
+        int ret_val = mkfifo( path.c_str(), 0666 );
+
+        if (( ret_val == -1 ) && ( errno != EEXIST ) )
+        {
+            graceful_quit = 1;
+        }
+
+        // Open the pipe for reading
+        m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
     }
 
 //=============================================================================
     CAgentBase::~CAgentBase()
     {
         delete m_monitorThread;
+        close( m_fdSignalPipe );
         // deleting proof configuration file
         if ( !m_commonOptions.m_proofCFG.empty() )
             ::unlink( m_commonOptions.m_proofCFG.c_str() );
