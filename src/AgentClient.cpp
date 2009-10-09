@@ -33,7 +33,7 @@ void CAgentClient::run()
 {
     try
     {
-    	createPROOFCfg();
+        createPROOFCfg();
 
         while ( true )
         {
@@ -41,11 +41,10 @@ void CAgentClient::run()
 
             InfoLog( "looking for PROOFAgent server to connect..." );
             // a connection to a Agent's server
+            // TODO: implement this using nonblock sockets
             inet::CSocketClient client;
-           // client.GetSocket().set_nonblock();
             client.Connect( m_agentServerListenPort, m_agentServerHost );
-            client.GetSocket().set_nonblock();
-            DebugLog( erOK, "connected!" );
+            InfoLog( "connected!" );
 
             // sending protocol version to the server
             string sProtocol( g_szPROTOCOL_VERSION );
@@ -71,6 +70,8 @@ void CAgentClient::run()
 
             try
             {
+                client.GetSocket().set_nonblock();
+
                 // waiting until Agent server sends something
                 // that would mean that a user initializes a PROOF session
                 waitForServerToConnect( client.GetSocket().get() );
@@ -128,6 +129,8 @@ void CAgentClient::monitor()
 //=============================================================================
 void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWait )
 {
+    InfoLog( "waiting for Agent's server to initialize a redirection procedure..." );
+
     fd_set readset;
     FD_ZERO( &readset );
     FD_SET( _sockToWait, &readset );
@@ -163,15 +166,18 @@ void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWai
     m_idleWatch.touch();
 
     // if there were no exception raised we can process further
+    InfoLog( "done waiting for Agent's server. Initializing a redirection procedure..." );
 }
 
 //=============================================================================
 MiscCommon::INet::Socket_t CAgentClient::connectToLocalPROOF( unsigned int _proofPort )
 {
+    InfoLog( "Connecting to a local PROOF worker..." );
+
     // Connecting to the local client (a proof slave)
     inet::CSocketClient proof_client;
     proof_client.Connect( _proofPort, "127.0.0.1" );
-    InfoLog( erOK, "connected to the local proof service" );
+    InfoLog( "connected to the local proof service" );
 
     proof_client.GetSocket().set_nonblock();
 
