@@ -124,7 +124,8 @@ echo "$y"
 
 #Exporting PoD variables
 export POD_LOCATION=$WD
-export POD_PROOFCFG_FILE=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_cfg_path`
+eval POD_PROOFCFG_FILE=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_cfg_path)
+export POD_PROOFCFG_FILE
 
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
