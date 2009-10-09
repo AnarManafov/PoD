@@ -39,11 +39,12 @@ void CAgentClient::run()
         {
             readServerInfoFile( m_serverInfoFile );
 
-            DebugLog( erOK, "looking for PROOFAgent server to connect..." );
+            InfoLog( "looking for PROOFAgent server to connect..." );
             // a connection to a Agent's server
             inet::CSocketClient client;
-            client.GetSocket().set_nonblock();
+           // client.GetSocket().set_nonblock();
             client.Connect( m_agentServerListenPort, m_agentServerHost );
+            client.GetSocket().set_nonblock();
             DebugLog( erOK, "connected!" );
 
             // sending protocol version to the server
