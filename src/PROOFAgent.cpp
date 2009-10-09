@@ -32,8 +32,8 @@ CPROOFAgent::~CPROOFAgent()
 void CPROOFAgent::setConfiguration( const SOptions_t &_data )
 {
     m_Mode = _data.m_agentMode;
-    m_Data = (Server == m_Mode)?
-             _data.m_podOptions.m_server.m_common:
+    m_Data = ( Server == m_Mode ) ?
+             _data.m_podOptions.m_server.m_common :
              _data.m_podOptions.m_worker.m_common;
     initLogEngine();
 
@@ -56,18 +56,23 @@ void CPROOFAgent::initLogEngine()
     logfile_name
     << m_Data.m_logFileDir
     << "proofagent."
-    << ( (Server == m_Mode)? "server" : "client" )
+    << (( Server == m_Mode ) ? "server" : "client" )
     << ".log";
 
-    unsigned char logLevel(LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR);
-    switch(m_Data.m_logLevel)
+    unsigned char logLevel( LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR );
+    switch ( m_Data.m_logLevel )
     {
-    case 3: logLevel |= LOG_SEVERITY_DEBUG;
-    case 2: logLevel |= LOG_SEVERITY_WARNING;
-    case 1:	logLevel |= LOG_SEVERITY_INFO;
+        case 3:
+            logLevel |= LOG_SEVERITY_DEBUG;
+        case 2:
+            logLevel |= LOG_SEVERITY_WARNING;
+        case 1:
+            logLevel |= LOG_SEVERITY_INFO;
     }
 
-    CLogSingleton::Instance().Init( logfile_name.str(), logLevel);
+    CLogSingleton::Instance().Init( logfile_name.str(),
+                                    m_Data.m_logFileOverwrite,
+                                    logLevel );
 // TODO:take VERSION from the build automatically
-    InfoLog( erOK, PROJECT_NAME + string( " v.") + PROJECT_VERSION_STRING );
+    InfoLog( erOK, PROJECT_NAME + string( " v." ) + PROJECT_VERSION_STRING );
 }
