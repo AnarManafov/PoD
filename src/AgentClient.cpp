@@ -82,7 +82,7 @@ void CAgentClient::run()
 
             // Spawn PortForwarder
             CPacketForwarder pf( client.GetSocket(), m_proofPort );
-            pf.Start( true, m_Data.m_shutdownIfIdleForSec );
+            pf.Start( true, m_Data.m_common.m_shutdownIfIdleForSec );
         }
     }
     catch ( exception & e )

@@ -70,6 +70,36 @@ namespace PROOFAgent
     }
 
 //=============================================================================
+    void CAgentServer::monitor()
+    {
+        FaultLog( erError, "starting a monitor" );
+        while ( true )
+        {
+            // TODO: we need to check real PROOF port here (from cfg)
+            if ( !IsPROOFReady( 0 ) )
+            {
+                FaultLog( erError, "Can't connect to PROOF/XRD service." );
+                graceful_quit = 1;
+
+                // wake up (from "select") the main thread, so that it can update it self
+                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                    FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
+
+                return;
+            }
+
+            if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
+            {
+                InfoLog( "Agent's idle time has just reached a defined maximum. Exiting..." );
+                graceful_quit = 1;
+                return;
+            }
+
+            sleep( g_monitorTimeout );
+        }
+    }
+
+//=============================================================================
     void CAgentServer::run()
     {
         createPROOFCfg();
@@ -107,29 +137,6 @@ namespace PROOFAgent
         catch ( exception & e )
         {
             FaultLog( erError, e.what() );
-        }
-    }
-
-//=============================================================================
-    void CAgentServer::monitor()
-    {
-    	FaultLog( erError, "starting a monitor" );
-        while ( true )
-        {
-            // TODO: we need to check real PROOF port here (from cfg)
-            if ( !IsPROOFReady( 0 ) )
-            {
-                FaultLog( erError, "Can't connect to PROOF/XRD service." );
-                graceful_quit = 1;
-
-                // wake up (from "select") the main thread, so that it can update it self
-                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                    FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
-
-                return;
-            }
-
-            sleep( g_monitorTimeout );
         }
     }
 
@@ -203,6 +210,9 @@ namespace PROOFAgent
 
             if ( FD_ISSET( *iter, &readset ) )
             {
+                // update the idle timer
+                m_idleWatch.touch();
+
                 CNodeContainer::node_type node = m_nodes.getNode( *iter );
                 if ( node.get() == NULL || !node->isValid() )
                     continue; // TODO: Log me!
@@ -253,6 +263,9 @@ namespace PROOFAgent
         // check whether agent's client tries to connect..
         if ( FD_ISSET( f_serverSocket, &readset ) )
         {
+            // update the idle timer
+            m_idleWatch.touch();
+
             inet::smart_socket socket( _server.Accept() );
             createClientNode( socket );
         }
@@ -326,8 +339,8 @@ namespace PROOFAgent
 
         // Then we add this node to a nodes container
         CNodeContainer::node_type node(
-        		new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(),
-        				strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
+            new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(),
+                       strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
         node->disable();
         m_nodes.addNode( node );
         // Update proof.cfg according to a current number of active workers
@@ -346,7 +359,7 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::createPROOFCfg()
     {
-    	DebugLog( erOK, "Creating a PROOF configuration file..." );
+        DebugLog( erOK, "Creating a PROOF configuration file..." );
 
         ofstream f( m_commonOptions.m_proofCFG.c_str() );
 

@@ -57,7 +57,7 @@ namespace PROOFAgent
 //=============================================================================
     CAgentBase::~CAgentBase()
     {
-    	delete m_monitorThread;
+        delete m_monitorThread;
         // deleting proof configuration file
         if ( !m_commonOptions.m_proofCFG.empty() )
             ::unlink( m_commonOptions.m_proofCFG.c_str() );
@@ -92,11 +92,13 @@ namespace PROOFAgent
 //=============================================================================
     MiscCommon::ERRORCODE CAgentBase::Start()
     {
-    	// start a monitoring job
-    	 m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+        m_idleWatch.touch();
 
-     	// start the main job
-     	run();
+        // start a monitoring job
+        m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+
+        // start the main job
+        run();
 
         return erOK;
     }

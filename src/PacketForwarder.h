@@ -22,31 +22,13 @@
 #include "LogImp.h"
 #include "BOOSTHelper.h"
 #include "HexView.h"
+#include "IdleWatch.h"
 
 // TODO: Move it to config.
 const unsigned int g_BUF_SIZE = 5000;
 
 namespace PROOFAgent
 {
-    class CIdleWatch
-    {
-        public:
-            void touch()
-            {
-                m_startTime = time( NULL );
-            }
-            bool isTimedout( int _numSeconds )
-            {
-                if ( _numSeconds <= 0 )
-                    return false;
-
-                time_t curTime = time( NULL );
-                return (( curTime - m_startTime ) >= _numSeconds );
-            }
-
-        private:
-            time_t m_startTime;
-    };
     /**
      *
      * @brief The CPacketForwarder class, creates a proxy between client sockets and server's socket given by a port number.

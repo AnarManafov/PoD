@@ -20,6 +20,7 @@
 #include "ErrorCode.h"
 // PROOFAgent
 #include "Options.h"
+#include "IdleWatch.h"
 
 namespace PROOFAgent
 {
@@ -58,6 +59,7 @@ namespace PROOFAgent
             unsigned int m_agentServerListenPort;
             std::string m_agentServerHost;
             boost::thread *m_monitorThread;
+            CIdleWatch m_idleWatch;
     };
 
 }
