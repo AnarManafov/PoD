@@ -114,8 +114,6 @@ namespace PROOFAgent
 
             // Add main server's socket to the list of sockets to select
             f_serverSocket = server.GetSocket().get();
-            m_socksToSelect.push_back( f_serverSocket );
-            m_socksToSelect.push_back( m_fdSignalPipe );
 
             DebugLog( erOK, "Entering into the \"select\" loop..." );
             while ( true )
@@ -141,12 +139,18 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CAgentServer::mainSelect( const inet::CSocketServer &_server )
+    int CAgentServer::prepareFDSet( fd_set *_readset )
     {
-        fd_set readset;
-        FD_ZERO( &readset );
-        int fd_max( -1 );
+        FD_ZERO( _readset );
 
+        // Set server FDs first
+        FD_SET( f_serverSocket, _readset );
+        FD_SET( m_fdSignalPipe, _readset );
+
+        // Max value from of FDs. Used by the "select"
+        int fd_max(( f_serverSocket > m_fdSignalPipe ) ? f_serverSocket : m_fdSignalPipe );
+
+        // Now set all FDs of all of the nodes
         // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
         bool need_update( false );
         Sockets_type::iterator iter = m_socksToSelect.begin();
@@ -154,31 +158,27 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
-            if ( *iter != f_serverSocket && *iter != m_fdSignalPipe )
+            CNodeContainer::node_type node = m_nodes.getNode( *iter );
+            if ( node.get() == NULL || node->isInUse() )
+                continue;
+
+            if ( !node->isValid() )
             {
-                CNodeContainer::node_type node = m_nodes.getNode( *iter );
-                if ( node.get() == NULL || node->isInUse() )
-                {
-                    continue;
-                }
-                if ( !node->isValid() )
-                {
-                    InfoLog( erOK, "Removing a bad worker: " + node->getPROOFCfgEntry() );
-                    need_update = true;
-                    iter = m_socksToSelect.erase( iter );
-                    // erase returns a bidirectional iterator pointing to the new location of the
-                    // element that followed the last element erased by the function call.
-                    // The loop will increment the iterator, we therefore need to move one step back
-                    --iter;
-                    continue;
-                }
+                InfoLog( erOK, "Removing a bad worker: " + node->getPROOFCfgEntry() );
+                need_update = true;
+                iter = m_socksToSelect.erase( iter );
+                // erase returns a bidirectional iterator pointing to the new location of the
+                // element that followed the last element erased by the function call.
+                // The loop will increment the iterator, we therefore need to move one step back
+                --iter;
+                continue;
             }
 
             // looking for the highest fd
             if ( *iter > fd_max )
                 fd_max = *iter;
 
-            FD_SET( *iter, &readset );
+            FD_SET( *iter, _readset );
         }
 
         // Updating nodes list and proof.cfg
@@ -187,6 +187,15 @@ namespace PROOFAgent
             need_update = false;
             updatePROOFCfg();
         }
+
+        return fd_max;
+    }
+
+//=============================================================================
+    void CAgentServer::mainSelect( const inet::CSocketServer &_server )
+    {
+        fd_set readset;
+        int fd_max = prepareFDSet( &readset );
 
         // main "Select"
         int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
@@ -200,14 +209,10 @@ namespace PROOFAgent
             return;
 
         // check whether a proof server tries to connect to proof workers
-        iter = m_socksToSelect.begin();
-        iter_end = m_socksToSelect.end();
+        Sockets_type::iterator iter = m_socksToSelect.begin();
+        Sockets_type::iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
-            // exclude a server socket
-            if ( *iter == f_serverSocket || *iter == m_fdSignalPipe )
-                continue;
-
             if ( FD_ISSET( *iter, &readset ) )
             {
                 // update the idle timer
