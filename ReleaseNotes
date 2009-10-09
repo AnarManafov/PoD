@@ -1,11 +1,12 @@
 ********************* Release 2.1.0 not yet released ************************
 - project's has been renamed to pod-agent.
+- new proxy machinery based on a thread pool pattern.
 - use a server_info.cfg file, where a host name and a port number of the agent server are stored.
 - new program options: 
-	- "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
-	- "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
-- support Mac OS X 10.5 and 10.6
-- new proxy machinary based on a thread pool pattern.
+    - "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
+    - "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
+- support Mac OS X 10.5 and 10.6.
+- a log level now can be defined via PoD's user defaults configuration file.
 
 ********************* Release 2.0.1 2009-07-21 ************************
 A patch release.
@@ -26,7 +27,7 @@ Workers where sending data without checking that server could be temporary unava
 ********************* Release 1.0.5 2008-08-20 ************************
 - Fixed typos.
 - The project has been moved to Eclipse 3.4 "Ganymede".
-- Fixed an improper behaviour when PROOFAgent workers fail to connect to XROOTD on Grid WNs [Trac Ticket #76].
+- Fixed an improper behavior when PROOFAgent workers fail to connect to XROOTD on Grid WNs [Trac Ticket #76].
 
 ********************* Release 1.0.4 2008-06-13 ************************
 - documentation has been updated.
