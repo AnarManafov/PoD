@@ -81,7 +81,7 @@ namespace PROOFAgent
     {
         try
         {
-            createPROOFCfg();
+        	createPROOFCfg();
 
             readServerInfoFile( m_serverInfoFile );
 
@@ -257,11 +257,11 @@ namespace PROOFAgent
             const int read_size = 64;
             char buf[read_size];
             int numread( 0 );
-            //  do
-            //  {
-            numread = read( m_fdSignalPipe, buf, read_size );
-            //   }
-            //   while ( numread > 0 );
+          //  do
+          //  {
+                numread = read( m_fdSignalPipe, buf, read_size );
+         //   }
+         //   while ( numread > 0 );
         }
 
     }

@@ -69,12 +69,12 @@ namespace PROOFAgent
                 boost::mutex::scoped_lock lock( m_mutex );
                 if ( m_tasks.empty() && !m_stopped )
                 {
-                    //DebugLog( erOK, "wait for a task" );
+                    DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
-                    //DebugLog( erOK, "taking a task from the queue" );
+                    DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     m_tasks.pop();
                 }
@@ -82,24 +82,21 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-                //DebugLog( erOK, "processing a task" );
+                DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
 
-                {
-                    boost::mutex::scoped_lock lock( m_mutex );
                     if ( res < 0 )
                     {
                         // disable node if there were disconnect detected
                         task->second->disable();
                         FaultLog( erError, "A disconnect were detected" );
                     }
-                    task->second->setInUse( false );
-                    //DebugLog( erOK, "done processing" );
+                  //  task->second->setInUse( false );
+                    DebugLog( erOK, "done processing" );
 
                     // report to the owner that socket is free to be added back to the "select"
-                    if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                        FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
-                }
+                     if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                          FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
 
                 delete task;
                 task = NULL;
@@ -119,15 +116,14 @@ namespace PROOFAgent
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
         // report if queued too many tasks
-        // 2 - is just a factor
-//        if ( m_tasks.size() > ( m_threads.size()*2 ) )
-//        {
-//            stringstream ss;
-//            ss << "*** Queued " << m_tasks.size() << " tasks ***";
-//            InfoLog( erOK, ss.str() );
-//        }
+        if ( m_tasks.size() > ( m_threads.size() ) )
+        {
+            stringstream ss;
+            ss << "*** Queued " << m_tasks.size() << " tasks ***";
+            DebugLog( erOK, ss.str() );
+        }
 
-        //DebugLog( erOK, "task is ready" );
+        DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }

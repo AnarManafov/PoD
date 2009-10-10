@@ -29,6 +29,7 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
+    	boost::mutex::scoped_lock lock( m_mutex );
         if ( !isValid() )
             return -1;
 
@@ -46,6 +47,8 @@ namespace PROOFAgent
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
         //   ReportPackage( *input, *output, tmp_buf );
+
+        setInUse( false );
 
         return 0;
     }
