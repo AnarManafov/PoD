@@ -15,7 +15,6 @@
 #ifndef NODE_H_
 #define NODE_H_
 // BOOST
-#include <boost/thread/thread.hpp>
 #include <boost/shared_ptr.hpp>
 // MiscCommon
 #include "INet.h"
@@ -120,7 +119,6 @@ namespace PROOFAgent
             bool m_inUse;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
-            boost::mutex m_mutex;
     };
 
     //=============================================================================

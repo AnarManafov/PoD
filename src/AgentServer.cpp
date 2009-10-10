@@ -345,7 +345,6 @@ namespace PROOFAgent
         if ( !f.is_open() )
             throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
 
-
         // getting local host name
         string host;
         MiscCommon::get_hostname( &host );
@@ -358,11 +357,6 @@ namespace PROOFAgent
         m_masterEntryInPROOFCfg = ss.str();
 
         f << m_masterEntryInPROOFCfg << endl;
-
-        //if ( pThis->GetMode() == Client )
-        // {
-        //     f_out << "worker " << host << " perf=100" << std::endl;
-        // }
     }
 
 //=============================================================================

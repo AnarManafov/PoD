@@ -12,11 +12,11 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// Agent
+#include "Node.h"
 // MiscCommon
 #include "ErrorCode.h"
 #include "HexView.h"
-// Agent
-#include "Node.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -29,9 +29,11 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( MiscCommon::INet::Socket_t _fd )
     {
-    	boost::mutex::scoped_lock lock( m_mutex );
         if ( !isValid() )
+        {
+            setInUse( false );
             return -1;
+        }
 
         sock_type *input = socketByFD( _fd );
         sock_type *output = pairedWith( _fd );
@@ -40,7 +42,10 @@ namespace PROOFAgent
 
         // DISCONNECT has been detected
         if ( m_bytesToSend <= 0 || !isValid() )
+        {
+            setInUse( false );
             return -1;
+        }
 
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
@@ -122,16 +127,16 @@ namespace PROOFAgent
     void CNodeContainer::removeBadNodes()
     {
         // remove bad nodes
-        container_type::iterator iter = m_sockBasedContainer.begin();
-        container_type::iterator iter_end = m_sockBasedContainer.end();
+        unique_container_type::iterator iter = m_nodes.begin();
+        unique_container_type::iterator iter_end = m_nodes.end();
         for ( ; iter != iter_end; )
         {
-            if ( !iter->second->isActive() &&
-                 !iter->second->isValid() &&
-                 !iter->second->isInUse() )
+            if ( !( *iter )->isValid() &&
+                 !( *iter )->isInUse() )
             {
-                m_nodes.erase( iter->second );
-                m_sockBasedContainer.erase( iter++ );
+                m_sockBasedContainer.erase(( *iter )->first() );
+                m_sockBasedContainer.erase(( *iter )->second() );
+                m_nodes.erase( iter++ );
             }
             else
             {
