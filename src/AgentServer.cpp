@@ -179,8 +179,7 @@ namespace PROOFAgent
         if ( retval < 0 )
         {
             FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
-            if ( graceful_quit )
-                return;
+            return;
         }
 
         if ( 0 == retval )

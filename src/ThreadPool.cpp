@@ -97,9 +97,8 @@ namespace PROOFAgent
                     //DebugLog( erOK, "done processing" );
 
                     // report to the owner that socket is free to be added back to the "select"
-                    // if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                    //      FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
-                    kill( m_parentPid, SIGUSR1 );
+                    if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                        FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
                 }
 
                 delete task;
