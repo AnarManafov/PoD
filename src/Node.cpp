@@ -106,7 +106,13 @@ namespace PROOFAgent
     {
         container_type::iterator found = m_sockBasedContainer.find( _fd );
         if ( m_sockBasedContainer.end() != found )
-            m_sockBasedContainer.erase( found );
+        {
+            // delete both FDs
+            m_sockBasedContainer.erase( found->second->first() );
+            m_sockBasedContainer.erase( found->second->second() );
+            // delete the node itself
+            m_nodes.erase( found->second );
+        }
     }
 
 //=============================================================================

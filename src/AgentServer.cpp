@@ -142,7 +142,6 @@ namespace PROOFAgent
 
             if ( !node->isValid() )
             {
-                InfoLog( erOK, "Removing a bad worker: " + node->getPROOFCfgEntry() );
                 need_update = true;
                 iter = m_socksToSelect.erase( iter );
                 // erase returns a bidirectional iterator pointing to the new location of the
@@ -211,9 +210,8 @@ namespace PROOFAgent
                         continue;
                     }
 
-                    // remove the node from the container
+                    // remove the node and all of its FDs from the container
                     m_nodes.removeNode( *iter );
-                    m_nodes.removeNode( node->first() );
 
                     // update the second socket fd in the container
                     // and activate the node
@@ -256,14 +254,14 @@ namespace PROOFAgent
         // reading everything from the pipe and letting select update all of its FDs
         if ( FD_ISSET( m_fdSignalPipe, &readset ) )
         {
-            const int read_size = 20;
+            const int read_size = 64;
             char buf[read_size];
             int numread( 0 );
-            do
-            {
+          //  do
+          //  {
                 numread = read( m_fdSignalPipe, buf, read_size );
-            }
-            while ( numread > 0 );
+         //   }
+         //   while ( numread > 0 );
         }
 
     }
