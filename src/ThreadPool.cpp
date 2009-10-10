@@ -44,13 +44,14 @@ namespace PROOFAgent
         string path( _signalPipePath );
         smart_path( &path );
         m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
+        if ( m_fdSignalPipe < 0 )
+            CriticalErrLog( errno, "Can't open a signal pipe: " + errno2str() );
     }
 
 //=============================================================================
     CThreadPool::~CThreadPool()
     {
         stop();
-
         close( m_fdSignalPipe );
     }
 
@@ -82,25 +83,23 @@ namespace PROOFAgent
             {
                 //DebugLog( erOK, "processing a task" );
                 int res = task->second->dealWithData( task->first );
-                task->second->setInUse( false );
-                //DebugLog( erOK, "done processing" );
 
-                // report to the owner that socket is free to be added to the "select"
-                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                    FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
-
-                switch ( res )
                 {
-                    case -1:
+                    boost::mutex::scoped_lock lock( m_mutex );
+                    if ( res < 0 )
+                    {
                         // disable node if there were disconnect detected
                         task->second->disable();
                         FaultLog( erError, "A disconnect were detected" );
-                        break;
-                    case 0: // everything was redirected without problems
-                        break;
-                    default:
-                        break;
+                    }
+                    task->second->setInUse( false );
+                    //DebugLog( erOK, "done processing" );
+
+                    // report to the owner that socket is free to be added back to the "select"
+                    if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                        FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
                 }
+
                 delete task;
                 task = NULL;
             }
@@ -115,6 +114,7 @@ namespace PROOFAgent
     void CThreadPool::pushTask( MiscCommon::INet::Socket_t &_fd, CNode* _node )
     {
         boost::mutex::scoped_lock lock( m_mutex );
+        _node->setInUse( true );
         task_t *task = new task_t( _fd, _node );
         m_tasks.push( task );
         // report if queued too many tasks

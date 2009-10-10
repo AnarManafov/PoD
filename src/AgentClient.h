@@ -14,8 +14,6 @@
 *************************************************************************/
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
-// BOOST
-#include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "LogImp.h"
 #include "SysHelper.h"

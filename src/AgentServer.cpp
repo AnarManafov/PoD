@@ -237,7 +237,6 @@ namespace PROOFAgent
                     // we get a task for packet forwarder
                     if ( node->isInUse() )
                         continue;
-                    node->setInUse( true );
                     m_threadPool.pushTask( *iter, node.get() );
                 }
             }

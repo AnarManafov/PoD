@@ -80,6 +80,8 @@ void CAgentClient::run()
                 MiscCommon::INet::Socket_t proof_socket = connectToLocalPROOF( m_proofPort );
                 CNode node( client.GetSocket().detach(), proof_socket,
                             "", m_Data.m_common.m_agentNodeReadBuffer );
+                node.setNonblock();
+
                 // now we are ready to proxy all packages
                 mainSelect( &node );
             }
@@ -195,7 +197,7 @@ void CAgentClient::mainSelect( CNode *_node )
         if ( graceful_quit )
         {
             InfoLog( erOK, "STOP signal received." );
-            return ;
+            return;
         }
 
 
@@ -212,7 +214,6 @@ void CAgentClient::mainSelect( CNode *_node )
         // we want to be interrupted
         FD_SET( m_fdSignalPipe, &readset );
         fd_max = fd_max > m_fdSignalPipe ? fd_max : m_fdSignalPipe;
-
 
         int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
         if ( retval < 0 )
