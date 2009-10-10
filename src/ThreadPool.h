@@ -55,6 +55,7 @@ class CNode;
             bool m_stopped;
             bool m_stopping;
             int m_fdSignalPipe;
+            pid_t m_parentPid;
     };
 
 }

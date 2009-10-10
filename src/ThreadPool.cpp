@@ -35,7 +35,8 @@ namespace PROOFAgent
 //=============================================================================
     CThreadPool::CThreadPool( size_t _threadsCount, const string &_signalPipePath ):
             m_stopped( false ),
-            m_stopping( false )
+            m_stopping( false ),
+            m_parentPid( getppid() )
     {
         for ( size_t i = 0; i < _threadsCount; ++i )
             m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
@@ -96,8 +97,9 @@ namespace PROOFAgent
                     //DebugLog( erOK, "done processing" );
 
                     // report to the owner that socket is free to be added back to the "select"
-                    if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                        FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
+                    // if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                    //      FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
+                    kill( m_parentPid, SIGUSR1 );
                 }
 
                 delete task;
