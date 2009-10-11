@@ -151,7 +151,8 @@ namespace PROOFAgent
             }
 
             // looking for the highest fd
-            fd_max = ( *iter )->first() > ( *iter )->second() ? ( *iter )->first() : ( *iter )->second();
+            int max = ( *iter )->first() > ( *iter )->second() ? ( *iter )->first() : ( *iter )->second();
+            fd_max = max > fd_max? max: fd_max;
 
             FD_SET(( *iter )->first(), _readset );
             FD_SET(( *iter )->second(), _readset );
