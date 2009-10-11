@@ -35,7 +35,8 @@ namespace PROOFAgent
             public CAgentBase,
             MiscCommon::CLogImp<CAgentServer>
     {
-            typedef std::list<CNode*> Sockets_type;
+            typedef boost::shared_ptr<CNode> node_type;
+            typedef std::list<node_type> Sockets_type;
         public:
             CAgentServer( const SOptions_t &_data );
             virtual ~CAgentServer();
@@ -53,7 +54,7 @@ namespace PROOFAgent
             void monitor();
             void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg )
             {
-            	 msgPush( _Severity, _msg );
+                msgPush( _Severity, _msg );
             }
 
         private:
@@ -88,7 +89,6 @@ namespace PROOFAgent
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
-            CNodeContainer m_nodes;
             Sockets_type m_socksToSelect;
             PoD::SServerOptions_t m_Data;
             CThreadPool m_threadPool;

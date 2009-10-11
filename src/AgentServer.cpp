@@ -199,7 +199,7 @@ namespace PROOFAgent
                 // we get a task for packet forwarder
                 if (( *iter )->isInUse() )
                     continue;
-                m_threadPool.pushTask(( *iter )->first(), *iter );
+                m_threadPool.pushTask(( *iter )->first(), iter->get() );
             }
 
             if ( FD_ISSET(( *iter )->second(), &readset ) )
@@ -231,7 +231,7 @@ namespace PROOFAgent
                     if (( *iter )->isInUse() )
                         continue;
 
-                    m_threadPool.pushTask(( *iter )->second(), *iter );
+                    m_threadPool.pushTask(( *iter )->second(), iter->get() );
                 }
             }
         }
@@ -314,16 +314,14 @@ namespace PROOFAgent
         localPROOFclient.GetSocket().set_nonblock();
 
         // Then we add this node to a nodes container
-        CNodeContainer::node_type node(
+        node_type node(
             new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(),
                        strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
         node->disable();
-        m_nodes.addNode( node );
+        // add new worker's sockets to the main "select"
+        m_socksToSelect.push_back( node );
         // Update proof.cfg according to a current number of active workers
         updatePROOFCfg();
-
-        // add new worker's sockets to the main "select"
-        m_socksToSelect.push_back( node.get() );
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()
@@ -374,18 +372,13 @@ namespace PROOFAgent
         if ( !f.is_open() )
             throw std::runtime_error( "Can't open the PROOF configuration file: " + m_commonOptions.m_proofCFG );
 
-        // remove bad nodes
-        m_nodes.removeBadNodes();
-
-        const CNodeContainer::unique_container_type *const nodes = m_nodes.getNods();
-
         // a master host
         f << m_masterEntryInPROOFCfg << endl;
 
         // write entries to proof.cfg
         // proof workers
-        CNodeContainer::unique_container_type::const_iterator iter = nodes->begin();
-        CNodeContainer::unique_container_type::const_iterator iter_end = nodes->end();
+        Sockets_type::const_iterator iter = m_socksToSelect.begin();
+        Sockets_type::const_iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
             f << ( *iter )->getPROOFCfgEntry() << endl;

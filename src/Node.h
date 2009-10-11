@@ -121,31 +121,6 @@ namespace PROOFAgent
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
     };
-
-    //=============================================================================
-    class CNodeContainer
-    {
-        public:
-            typedef boost::shared_ptr<CNode> node_type;
-            typedef std::set<node_type> unique_container_type;
-
-        public:
-            CNodeContainer();
-            virtual ~CNodeContainer();
-
-            void addNode( node_type _node );
-            // is not thread safe
-            void removeBadNodes();
-            const unique_container_type *const getNods()
-            {
-                return &m_nodes;
-            }
-
-        private:
-            // Contains only pointers to nodes
-            unique_container_type m_nodes;
-    };
-
 }
 
 #endif /* NODE_H_ */

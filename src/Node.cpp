@@ -81,48 +81,4 @@ namespace PROOFAgent
         DebugLog( erOK, ss.str() );
     }
 
-
-
-//=============================================================================
-// CNodeContainer
-//=============================================================================
-    CNodeContainer::CNodeContainer()
-    {
-        // TODO Auto-generated constructor stub
-
-    }
-
-//=============================================================================
-    CNodeContainer::~CNodeContainer()
-    {
-        // TODO Auto-generated destructor stub
-    }
-
-//=============================================================================
-    void CNodeContainer::addNode( node_type _node )
-    {
-        // set sockets to O_NONBLOCK mode
-        m_nodes.insert( _node );
-    }
-
-//=============================================================================
-    void CNodeContainer::removeBadNodes()
-    {
-        // remove bad nodes
-        unique_container_type::iterator iter = m_nodes.begin();
-        unique_container_type::iterator iter_end = m_nodes.end();
-        for ( ; iter != iter_end; )
-        {
-            if ( !( *iter )->isValid() &&
-                 !( *iter )->isInUse() )
-            {
-                m_nodes.erase( iter++ );
-            }
-            else
-            {
-                ++iter;
-            }
-        }
-    }
-
 }
