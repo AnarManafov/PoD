@@ -25,7 +25,28 @@ namespace PROOFAgent
 {
 
 //=============================================================================
-// CNode
+    CNode::CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
+                  const string &_proofCFGString, unsigned int _readBufSize ):
+            m_proofCfgEntry( _proofCFGString ),
+            m_active( false ),
+            m_inUseFirst( false ),
+            m_inUseSecond( false ),
+            m_bufFirst( _readBufSize ),
+            m_bufSecond( _readBufSize )
+    {
+        m_first = new sock_type( _first );
+        m_first->set_nonblock();
+        m_second = new sock_type( _second );
+        m_second->set_nonblock();
+    }
+
+//=============================================================================
+    CNode::~CNode()
+    {
+        delete m_first;
+        delete m_second;
+    }
+
 //=============================================================================
     int CNode::dealWithData( ENodeSocket_t _which )
     {
@@ -94,6 +115,16 @@ namespace PROOFAgent
             << "\n";
         }
         DebugLog( erOK, ss.str() );
+    }
+
+//=============================================================================
+    void CNode::update( MiscCommon::INet::Socket_t _fd, CNode::ENodeSocket_t _which )
+    {
+        sock_type *sock( nodeSocketFirst == _which ? m_first : m_second );
+
+        sock_type tmp( sock->get() );
+        *sock = _fd;
+        sock->set_nonblock();
     }
 
 }

@@ -12,14 +12,13 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+#include "AgentServer.h"
 // BOOST
 #include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "ErrorCode.h"
 #include "INet.h"
 #include "SysHelper.h"
-// PROOFAgent
-#include "AgentServer.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;

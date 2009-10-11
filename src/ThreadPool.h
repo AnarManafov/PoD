@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
- * @file NewPacketForwarder.h
- * @brief Header file of AgentServer and AgentClient
+ * @file ThreadPool.h
+ * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -12,12 +12,10 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-
-#ifndef NEWPACKETFORWARDER_H_
-#define NEWPACKETFORWARDER_H_
+#ifndef THREADPOOL_H
+#define THREADPOOL_H_
 // STD
 #include <queue>
-#include <csignal>
 // BOOST
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
@@ -25,12 +23,10 @@
 // MiscCommon
 #include "INet.h"
 #include "LogImp.h"
+#include "Node.h"
 
 namespace PROOFAgent
 {
-
-class CNode;
-
 //=============================================================================
     class CThreadPool: public MiscCommon::CLogImp<CThreadPool>
     {
@@ -59,4 +55,4 @@ class CNode;
 
 }
 
-#endif /* NEWPACKETFORWARDER_H_ */
+#endif

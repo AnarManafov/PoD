@@ -1,6 +1,7 @@
 ********************* Release 2.1.0 not yet released ************************
 - project's has been renamed to pod-agent.
 - new proxy machinery based on a thread pool pattern.
+- a number of threads in the pool and read buffer can be changed via PoD's user defaults configuration file. 
 - use a server_info.cfg file, where a host name and a port number of the agent server are stored.
 - new program options: 
     - "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode

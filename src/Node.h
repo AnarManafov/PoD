@@ -33,32 +33,11 @@ namespace PROOFAgent
             REGISTER_LOG_MODULE( "Node" )
             CNode();
             CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
-                   const std::string &_proofCFGString, unsigned int _readBufSize ):
-                    m_proofCfgEntry( _proofCFGString ),
-                    m_active( false ),
-                    m_inUseFirst( false ),
-                    m_inUseSecond( false ),
-                    m_bufFirst( _readBufSize ),
-                    m_bufSecond( _readBufSize )
-            {
-                m_first = new sock_type( _first );
-                m_first->set_nonblock();
-                m_second = new sock_type( _second );
-                m_second->set_nonblock();
-            }
-            ~CNode()
-            {
-                delete m_first;
-                delete m_second;
-            }
-            void update( MiscCommon::INet::Socket_t _fd, ENodeSocket_t _which )
-            {
-                sock_type *sock( nodeSocketFirst == _which ? m_first : m_second );
+                   const std::string &_proofCFGString, unsigned int _readBufSize );
+            ~CNode();
 
-                sock_type tmp( sock->get() );
-                *sock = _fd;
-                sock->set_nonblock();
-            }
+            void update( MiscCommon::INet::Socket_t _fd, ENodeSocket_t _which );
+
             bool activate()
             {
                 m_active = isValid();

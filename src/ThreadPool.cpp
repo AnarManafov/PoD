@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
- * @file NewPacketForwarder.cpp
- * @brief Header file of AgentServer and AgentClient
+ * @file ThreadPool.cpp
+ * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
@@ -12,14 +12,12 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+#include "ThreadPool.h"
 // BOOST
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
 // MiscCommon
 #include "ErrorCode.h"
-// PROOFAgent
-#include "Node.h"
-#include "ThreadPool.h"
 
 //=============================================================================
 using namespace std;
@@ -115,7 +113,7 @@ namespace PROOFAgent
             DebugLog( erOK, ss.str() );
         }
 
-       // DebugLog( erOK, "task is ready" );
+        DebugLog( erOK, "task is ready" );
 
         m_threadNeeded.notify_all();
     }
