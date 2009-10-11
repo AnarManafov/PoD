@@ -37,7 +37,7 @@ namespace PROOFAgent
                     m_proofCfgEntry( _proofCFGString ),
                     m_active( false ),
                     m_inUseFirst( false ),
-                    m_inUseSecond( true ),
+                    m_inUseSecond( false ),
                     m_bufFirst( _readBufSize ),
                     m_bufSecond( _readBufSize )
                     //  m_bytesToSend( 0 )
