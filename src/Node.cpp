@@ -102,25 +102,7 @@ namespace PROOFAgent
     void CNodeContainer::addNode( node_type _node )
     {
         // set sockets to O_NONBLOCK mode
-        _node->setNonblock();
-
-        m_sockBasedContainer.insert( container_type::value_type( _node->first(), _node ) );
-        m_sockBasedContainer.insert( container_type::value_type( _node->second(), _node ) );
         m_nodes.insert( _node );
-    }
-
-//=============================================================================
-    void CNodeContainer::removeNode( MiscCommon::INet::Socket_t _fd )
-    {
-        container_type::iterator found = m_sockBasedContainer.find( _fd );
-        if ( m_sockBasedContainer.end() != found )
-        {
-            // delete both FDs
-            m_sockBasedContainer.erase( found->second->first() );
-            m_sockBasedContainer.erase( found->second->second() );
-            // delete the node itself
-            m_nodes.erase( found->second );
-        }
     }
 
 //=============================================================================
@@ -134,8 +116,6 @@ namespace PROOFAgent
             if ( !( *iter )->isValid() &&
                  !( *iter )->isInUse() )
             {
-                m_sockBasedContainer.erase(( *iter )->first() );
-                m_sockBasedContainer.erase(( *iter )->second() );
                 m_nodes.erase( iter++ );
             }
             else
@@ -143,16 +123,6 @@ namespace PROOFAgent
                 ++iter;
             }
         }
-    }
-
-//=============================================================================
-    CNodeContainer::node_type CNodeContainer::getNode( MiscCommon::INet::Socket_t _fd )
-    {
-        container_type::const_iterator found = m_sockBasedContainer.find( _fd );
-        if ( m_sockBasedContainer.end() != found )
-            return found->second;
-
-        return node_type();
     }
 
 }

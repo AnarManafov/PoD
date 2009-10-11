@@ -42,6 +42,8 @@ namespace PROOFAgent
                     m_bytesToSend( 0 )
 
             {
+                m_first->set_nonblock();
+                m_second->set_nonblock();
             }
             ~CNode()
             {
@@ -51,10 +53,12 @@ namespace PROOFAgent
             void updateFirst( MiscCommon::INet::Socket_t _fd )
             {
                 *m_first = _fd;
+                m_first->set_nonblock();
             }
             void updateSecond( MiscCommon::INet::Socket_t _fd )
             {
                 *m_second = _fd;
+                m_second->set_nonblock();
             }
             bool activate()
             {
@@ -98,11 +102,6 @@ namespace PROOFAgent
             {
                 return (( m_first->get() == _fd ) ? m_first : m_second );
             }
-            void setNonblock()
-            {
-                m_first->set_nonblock();
-                m_second->set_nonblock();
-            }
             /// returns 0 if everything is OK, -1 if socket or sockets are not valid
             int dealWithData( MiscCommon::INet::Socket_t _fd );
             std::string getPROOFCfgEntry()
@@ -126,7 +125,6 @@ namespace PROOFAgent
     {
         public:
             typedef boost::shared_ptr<CNode> node_type;
-            typedef std::map<MiscCommon::INet::Socket_t, node_type> container_type;
             typedef std::set<node_type> unique_container_type;
 
         public:
@@ -135,22 +133,13 @@ namespace PROOFAgent
 
             void addNode( node_type _node );
             // is not thread safe
-            void removeNode( MiscCommon::INet::Socket_t _fd );
             void removeBadNodes();
-            node_type getNode( MiscCommon::INet::Socket_t _fd );
-            const container_type *const getContainer() const
-            {
-                return &m_sockBasedContainer;
-            }
             const unique_container_type *const getNods()
             {
                 return &m_nodes;
             }
 
         private:
-            // Contains all sockets from nodes,
-            // that simply means for each node it keeps two sockets
-            container_type m_sockBasedContainer;
             // Contains only pointers to nodes
             unique_container_type m_nodes;
     };

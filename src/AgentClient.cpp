@@ -80,7 +80,6 @@ void CAgentClient::run()
                 MiscCommon::INet::Socket_t proof_socket = connectToLocalPROOF( m_proofPort );
                 CNode node( client.GetSocket().detach(), proof_socket,
                             "", m_Data.m_common.m_agentNodeReadBuffer );
-                node.setNonblock();
 
                 // now we are ready to proxy all packages
                 mainSelect( &node );

@@ -81,7 +81,7 @@ namespace PROOFAgent
     {
         try
         {
-        	createPROOFCfg();
+            createPROOFCfg();
 
             readServerInfoFile( m_serverInfoFile );
 
@@ -136,11 +136,10 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
-            CNodeContainer::node_type node = m_nodes.getNode( *iter );
-            if ( node.get() == NULL || node->isInUse() )
+            if ( *iter == NULL || (*iter)->isInUse() )
                 continue;
 
-            if ( !node->isValid() )
+            if ( !(*iter)->isValid() )
             {
                 need_update = true;
                 iter = m_socksToSelect.erase( iter );
@@ -152,10 +151,10 @@ namespace PROOFAgent
             }
 
             // looking for the highest fd
-            if ( *iter > fd_max )
-                fd_max = *iter;
+            fd_max = (*iter)->first() > (*iter)->second() ? (*iter)->first() : (*iter)->second();
 
-            FD_SET( *iter, _readset );
+            FD_SET( (*iter)->first(), _readset );
+            FD_SET( (*iter)->second(), _readset );
         }
 
         // Updating nodes list and proof.cfg
@@ -190,52 +189,47 @@ namespace PROOFAgent
         Sockets_type::iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
-            if ( FD_ISSET( *iter, &readset ) )
+            if ( *iter == NULL || !(*iter)->isValid() )
+                            continue; // TODO: Log me!
+
+            if ( FD_ISSET( (*iter)->first(), &readset ) && (*iter)->isActive() )
             {
                 // update the idle timer
                 m_idleWatch.touch();
 
-                CNodeContainer::node_type node = m_nodes.getNode( *iter );
-                if ( node.get() == NULL || !node->isValid() )
-                    continue; // TODO: Log me!
+                    // we get a task for packet forwarder
+                    if ( (*iter)->isInUse() )
+                        continue;
+                    m_threadPool.pushTask( (*iter)->first(), *iter );
+            }
 
-                if ( !node->isActive() )
+            if ( FD_ISSET( (*iter)->second(), &readset ) )
+            {
+                // update the idle timer
+                m_idleWatch.touch();
+
+                if ( !(*iter)->isActive() )
                 {
                     // if yes, then we need to activate this node and
                     // add it to the packetforwarder
-                    int fd = accept( *iter, NULL, NULL );
+                    int fd = accept( (*iter)->second(), NULL, NULL );
                     if ( fd < 0 )
                     {
                         FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
                         continue;
                     }
 
-                    // remove the node and all of its FDs from the container
-                    m_nodes.removeNode( *iter );
-
                     // update the second socket fd in the container
                     // and activate the node
-                    node->updateSecond( fd );
-                    node->activate();
-
-                    // add the updated node to the container
-                    m_nodes.addNode( node );
-
-                    // remove this socket from the list
-                    // we don't need to monitor it anymore
-                    iter = m_socksToSelect.erase( iter );
-                    --iter;
-                    // add both sockets to "select"
-                    // these are proxy sockets for a packet forwarding
-                    m_socksToSelect.insert( iter, node->first() );
-                    m_socksToSelect.insert( iter, node->second() );
+                    (*iter)->updateSecond( fd );
+                    (*iter)->activate();
                 }
                 else
                 {
                     // we get a task for packet forwarder
-                    if ( node->isInUse() )
+                    if ( (*iter)->isInUse() )
                         continue;
-                    m_threadPool.pushTask( *iter, node.get() );
+                    m_threadPool.pushTask( (*iter)->second(), *iter );
                 }
             }
         }
@@ -257,11 +251,11 @@ namespace PROOFAgent
             const int read_size = 64;
             char buf[read_size];
             int numread( 0 );
-          //  do
-          //  {
-                numread = read( m_fdSignalPipe, buf, read_size );
-         //   }
-         //   while ( numread > 0 );
+            //  do
+            //  {
+            numread = read( m_fdSignalPipe, buf, read_size );
+            //   }
+            //   while ( numread > 0 );
         }
 
     }
@@ -327,7 +321,7 @@ namespace PROOFAgent
         updatePROOFCfg();
 
         // add new worker's localPROOFServer socket to the main "select"
-        m_socksToSelect.push_back( node->second() );
+        m_socksToSelect.push_back( node.get() );
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()

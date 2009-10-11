@@ -35,7 +35,7 @@ namespace PROOFAgent
             public CAgentBase,
             MiscCommon::CLogImp<CAgentServer>
     {
-            typedef std::list<MiscCommon::INet::Socket_t> Sockets_type;
+            typedef std::list<CNode*> Sockets_type;
         public:
             CAgentServer( const SOptions_t &_data );
             virtual ~CAgentServer();
