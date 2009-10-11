@@ -136,10 +136,10 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             // don't include node which are being processed at this moment
-            if ( *iter == NULL || (*iter)->isInUse() )
+            if ( *iter == NULL || ( *iter )->isInUse() )
                 continue;
 
-            if ( !(*iter)->isValid() )
+            if ( !( *iter )->isValid() )
             {
                 need_update = true;
                 iter = m_socksToSelect.erase( iter );
@@ -151,10 +151,10 @@ namespace PROOFAgent
             }
 
             // looking for the highest fd
-            fd_max = (*iter)->first() > (*iter)->second() ? (*iter)->first() : (*iter)->second();
+            fd_max = ( *iter )->first() > ( *iter )->second() ? ( *iter )->first() : ( *iter )->second();
 
-            FD_SET( (*iter)->first(), _readset );
-            FD_SET( (*iter)->second(), _readset );
+            FD_SET(( *iter )->first(), _readset );
+            FD_SET(( *iter )->second(), _readset );
         }
 
         // Updating nodes list and proof.cfg
@@ -184,35 +184,37 @@ namespace PROOFAgent
         if ( 0 == retval )
             return;
 
-        // check whether a proof server tries to connect to proof workers
         Sockets_type::iterator iter = m_socksToSelect.begin();
         Sockets_type::iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
-            if ( *iter == NULL || !(*iter)->isValid() )
-                            continue; // TODO: Log me!
+            if ( *iter == NULL || !( *iter )->isValid() )
+                continue; // TODO: Log me!
 
-            if ( FD_ISSET( (*iter)->first(), &readset ) && (*iter)->isActive() )
+            if ( FD_ISSET(( *iter )->first(), &readset ) && ( *iter )->isActive() )
             {
+            	InfoLog( "got message on the first socket" );
                 // update the idle timer
                 m_idleWatch.touch();
 
-                    // we get a task for packet forwarder
-                    if ( (*iter)->isInUse() )
-                        continue;
-                    m_threadPool.pushTask( (*iter)->first(), *iter );
+                // we get a task for packet forwarder
+                if (( *iter )->isInUse() )
+                    continue;
+                m_threadPool.pushTask(( *iter )->first(), *iter );
             }
 
-            if ( FD_ISSET( (*iter)->second(), &readset ) )
+            if ( FD_ISSET(( *iter )->second(), &readset ) )
             {
+                // check whether a proof server tries to connect to proof workers
+            	InfoLog( "got message on the second socket ... connecting a user" );
                 // update the idle timer
                 m_idleWatch.touch();
 
-                if ( !(*iter)->isActive() )
+                if ( !( *iter )->isActive() )
                 {
                     // if yes, then we need to activate this node and
                     // add it to the packetforwarder
-                    int fd = accept( (*iter)->second(), NULL, NULL );
+                    int fd = accept(( *iter )->second(), NULL, NULL );
                     if ( fd < 0 )
                     {
                         FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
@@ -221,15 +223,16 @@ namespace PROOFAgent
 
                     // update the second socket fd in the container
                     // and activate the node
-                    (*iter)->updateSecond( fd );
-                    (*iter)->activate();
+                    ( *iter )->updateSecond( fd );
+                    ( *iter )->activate();
                 }
                 else
                 {
                     // we get a task for packet forwarder
-                    if ( (*iter)->isInUse() )
+                    if (( *iter )->isInUse() )
                         continue;
-                    m_threadPool.pushTask( (*iter)->second(), *iter );
+                    InfoLog( "got message on the second socket" );
+                    m_threadPool.pushTask(( *iter )->second(), *iter );
                 }
             }
         }
@@ -320,7 +323,7 @@ namespace PROOFAgent
         // Update proof.cfg according to a current number of active workers
         updatePROOFCfg();
 
-        // add new worker's localPROOFServer socket to the main "select"
+        // add new worker's sockets to the main "select"
         m_socksToSelect.push_back( node.get() );
     }
 //=============================================================================

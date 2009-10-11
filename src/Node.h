@@ -52,11 +52,13 @@ namespace PROOFAgent
             }
             void updateFirst( MiscCommon::INet::Socket_t _fd )
             {
+            	sock_type tmp(m_first->get());
                 *m_first = _fd;
                 m_first->set_nonblock();
             }
             void updateSecond( MiscCommon::INet::Socket_t _fd )
             {
+            	sock_type tmp(m_second->get());
                 *m_second = _fd;
                 m_second->set_nonblock();
             }
