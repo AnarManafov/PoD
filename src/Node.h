@@ -33,8 +33,6 @@ namespace PROOFAgent
             CNode();
             CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
                    const std::string &_proofCFGString, unsigned int _readBufSize ):
-                    m_first( new sock_type( _first ) ),
-                    m_second( new sock_type( _second ) ),
                     m_proofCfgEntry( _proofCFGString ),
                     m_active( false ),
                     m_inUse( false ),
@@ -42,7 +40,9 @@ namespace PROOFAgent
                     m_bytesToSend( 0 )
 
             {
-                m_first->set_nonblock();
+            	m_first = new sock_type( _first );
+            	m_first->set_nonblock();
+            	m_second = new sock_type( _second );
                 m_second->set_nonblock();
             }
             ~CNode()
