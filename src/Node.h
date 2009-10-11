@@ -38,8 +38,9 @@ namespace PROOFAgent
                     m_active( false ),
                     m_inUseFirst( false ),
                     m_inUseSecond( true ),
-                    m_buf( _readBufSize ),
-                    m_bytesToSend( 0 )
+                    m_bufFirst( _readBufSize ),
+                    m_bufSecond( _readBufSize )
+                    //  m_bytesToSend( 0 )
 
             {
                 m_first = new sock_type( _first );
@@ -113,8 +114,9 @@ namespace PROOFAgent
             bool m_active;
             bool m_inUseFirst;
             bool m_inUseSecond;
-            MiscCommon::BYTEVector_t m_buf;
-            size_t m_bytesToSend;
+            MiscCommon::BYTEVector_t m_bufFirst;
+            MiscCommon::BYTEVector_t m_bufSecond;
+            //size_t m_bytesToSend;
     };
 }
 

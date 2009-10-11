@@ -35,10 +35,25 @@ namespace PROOFAgent
             return -1;
         }
 
-        sock_type *input = ( nodeSocketFirst == _which ? m_first : m_second );
-        sock_type *output = ( nodeSocketFirst != _which ? m_first : m_second );
+        sock_type *input( NULL );
+        sock_type *output( NULL );
+        BYTEVector_t *buf( NULL );
 
-        m_bytesToSend = read_from_socket( *input, &m_buf );
+        switch ( _which )
+        {
+            case nodeSocketFirst:
+                input = m_first;
+                output = m_second;
+                buf = &m_bufFirst;
+                break;
+            case nodeSocketSecond:
+                input = m_second;
+                output = m_first;
+                buf = &m_bufSecond;
+                break;
+        }
+
+        size_t m_bytesToSend = read_from_socket( *input, &( *buf ) );
 
         // DISCONNECT has been detected
         if ( m_bytesToSend <= 0 || !isValid() )
@@ -47,7 +62,7 @@ namespace PROOFAgent
             return -1;
         }
 
-        sendall( *output, &m_buf[0], m_bytesToSend, 0 );
+        sendall( *output, &( *buf )[0], m_bytesToSend, 0 );
 
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
