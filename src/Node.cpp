@@ -49,6 +49,19 @@ namespace PROOFAgent
 
         sendall( *output, &m_buf[0], m_bytesToSend, 0 );
 
+
+
+        m_bytesToSend = read_from_socket( *output, &m_buf );
+
+        // DISCONNECT has been detected
+        if ( m_bytesToSend <= 0 || !isValid() )
+        {
+            setInUse( false );
+            return -1;
+        }
+
+        sendall( *input, &m_buf[0], m_bytesToSend, 0 );
+
         // TODO: uncomment when log level is implemented
         //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
         //   ReportPackage( *input, *output, tmp_buf );
