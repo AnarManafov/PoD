@@ -193,7 +193,6 @@ namespace PROOFAgent
 
             if ( FD_ISSET(( *iter )->first(), &readset ) && ( *iter )->isActive() )
             {
-            	InfoLog( "got message on the first socket" );
                 // update the idle timer
                 m_idleWatch.touch();
 
@@ -206,7 +205,7 @@ namespace PROOFAgent
             if ( FD_ISSET(( *iter )->second(), &readset ) )
             {
                 // check whether a proof server tries to connect to proof workers
-            	InfoLog( "got message on the second socket ... connecting a user" );
+
                 // update the idle timer
                 m_idleWatch.touch();
 
@@ -231,7 +230,7 @@ namespace PROOFAgent
                     // we get a task for packet forwarder
                     if (( *iter )->isInUse() )
                         continue;
-                    InfoLog( "got message on the second socket" );
+
                     m_threadPool.pushTask(( *iter )->second(), *iter );
                 }
             }
