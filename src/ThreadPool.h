@@ -34,7 +34,7 @@ class CNode;
 //=============================================================================
     class CThreadPool: public MiscCommon::CLogImp<CThreadPool>
     {
-            typedef std::pair<MiscCommon::INet::Socket_t, CNode*> task_t;
+            typedef std::pair<CNode::ENodeSocket_t, CNode*> task_t;
             typedef std::queue<task_t*> taskqueue_t;
         public:
             REGISTER_LOG_MODULE( "ThreadPool" )
@@ -42,7 +42,7 @@ class CNode;
             CThreadPool( size_t _threadsCount, const std::string &_signalPipePath );
             ~CThreadPool();
 
-            void pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node );
+            void pushTask( CNode::ENodeSocket_t _which, CNode* _node );
             void execute();
             void stop( bool processRemainingJobs = false );
 

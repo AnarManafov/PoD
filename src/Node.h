@@ -29,20 +29,22 @@ namespace PROOFAgent
     class CNode: public MiscCommon::CLogImp<CNode>
     {
         public:
+            typedef enum ENodeSocket {nodeSocketFirst, nodeSocketSecond} ENodeSocket_t;
             REGISTER_LOG_MODULE( "Node" )
             CNode();
             CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
                    const std::string &_proofCFGString, unsigned int _readBufSize ):
                     m_proofCfgEntry( _proofCFGString ),
                     m_active( false ),
-                    m_inUse( false ),
+                    m_inUseFirst( false ),
+                    m_inUseSecond( true ),
                     m_buf( _readBufSize ),
                     m_bytesToSend( 0 )
 
             {
-            	m_first = new sock_type( _first );
-            	m_first->set_nonblock();
-            	m_second = new sock_type( _second );
+                m_first = new sock_type( _first );
+                m_first->set_nonblock();
+                m_second = new sock_type( _second );
                 m_second->set_nonblock();
             }
             ~CNode()
@@ -50,17 +52,13 @@ namespace PROOFAgent
                 delete m_first;
                 delete m_second;
             }
-            void updateFirst( MiscCommon::INet::Socket_t _fd )
+            void update( MiscCommon::INet::Socket_t _fd, ENodeSocket_t _which )
             {
-            	sock_type tmp(m_first->get());
-                *m_first = _fd;
-                m_first->set_nonblock();
-            }
-            void updateSecond( MiscCommon::INet::Socket_t _fd )
-            {
-            	sock_type tmp(m_second->get());
-                *m_second = _fd;
-                m_second->set_nonblock();
+                sock_type *sock( nodeSocketFirst == _which ? m_first : m_second );
+
+                sock_type tmp( sock->get() );
+                *sock = _fd;
+                sock->set_nonblock();
             }
             bool activate()
             {
@@ -80,32 +78,28 @@ namespace PROOFAgent
                 return ( NULL != m_first && NULL != m_second &&
                          m_first->is_valid() && m_second->is_valid() );
             }
-            void setInUse( bool _Val )
+            void setInUse( bool _Val, ENodeSocket_t _which )
             {
-                m_inUse = _Val;
+                switch ( _which )
+                {
+                    case nodeSocketFirst:
+                        m_inUseFirst = _Val;
+                        break;
+                    case nodeSocketSecond:
+                        m_inUseSecond = _Val;
+                        break;
+                }
             }
-            bool isInUse()
+            bool isInUse( ENodeSocket_t _which )
             {
-                return m_inUse;
+                return ( nodeSocketFirst == _which ? m_inUseFirst : m_inUseSecond );
             }
-            MiscCommon::INet::Socket_t first()
+            MiscCommon::INet::Socket_t getSocket( ENodeSocket_t _which )
             {
-                return m_first->get();
-            }
-            MiscCommon::INet::Socket_t second()
-            {
-                return m_second->get();
-            }
-            sock_type *pairedWith( MiscCommon::INet::Socket_t _fd )
-            {
-                return (( m_first->get() == _fd ) ? m_second : m_first );
-            }
-            sock_type *socketByFD( MiscCommon::INet::Socket_t _fd )
-            {
-                return (( m_first->get() == _fd ) ? m_first : m_second );
+                return ( nodeSocketFirst == _which ? m_first->get() : m_second->get() );
             }
             /// returns 0 if everything is OK, -1 if socket or sockets are not valid
-            int dealWithData( MiscCommon::INet::Socket_t _fd );
+            int dealWithData( ENodeSocket_t _which );
             std::string getPROOFCfgEntry()
             {
                 return m_proofCfgEntry;
@@ -117,7 +111,8 @@ namespace PROOFAgent
             sock_type *m_second;
             std::string m_proofCfgEntry;
             bool m_active;
-            bool m_inUse;
+            bool m_inUseFirst;
+            bool m_inUseSecond;
             MiscCommon::BYTEVector_t m_buf;
             size_t m_bytesToSend;
     };

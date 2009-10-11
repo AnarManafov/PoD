@@ -206,9 +206,11 @@ void CAgentClient::mainSelect( CNode *_node )
         if ( !_node || !_node->isValid() )
             return;
 
-        FD_SET( _node->first(), &readset );
-        FD_SET( _node->second(), &readset );
-        int fd_max( _node->first() > _node->second() ? _node->first() : _node->second() );
+        int fd_first = _node->getSocket( CNode::nodeSocketFirst );
+        int fd_second = _node->getSocket( CNode::nodeSocketSecond );
+        FD_SET( fd_first, &readset );
+        FD_SET( fd_second, &readset );
+        int fd_max( fd_first > fd_second ? fd_first : fd_second );
         // setting a signal pipe as well
         // we want to be interrupted
         FD_SET( m_fdSignalPipe, &readset );
@@ -222,13 +224,13 @@ void CAgentClient::mainSelect( CNode *_node )
         if ( 0 == retval )
             throw system_error( "The main select has timeout." );
 
-        if ( FD_ISSET( _node->first(), &readset ) )
+        if ( FD_ISSET( fd_first, &readset ) )
         {
-            _node->dealWithData( _node->first() );
+            _node->dealWithData( CNode::nodeSocketFirst );
         }
-        if ( FD_ISSET( _node->second(), &readset ) )
+        if ( FD_ISSET( fd_second, &readset ) )
         {
-            _node->dealWithData( _node->second() );
+            _node->dealWithData( CNode::nodeSocketSecond );
         }
 
 

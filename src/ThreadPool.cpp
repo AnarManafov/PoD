@@ -101,11 +101,11 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CThreadPool::pushTask( MiscCommon::INet::Socket_t _fd, CNode* _node )
+    void CThreadPool::pushTask( CNode::ENodeSocket_t _which, CNode* _node )
     {
         boost::mutex::scoped_lock lock( m_mutex );
-        _node->setInUse( true );
-        task_t *task = new task_t( _fd, _node );
+        _node->setInUse( true, _which );
+        task_t *task = new task_t( _which, _node );
         m_tasks.push( task );
         // report if queued too many tasks
 //        if ( m_tasks.size() > ( m_threads.size() ) )

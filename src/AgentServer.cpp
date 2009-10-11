@@ -135,8 +135,7 @@ namespace PROOFAgent
         Sockets_type::iterator iter_end = m_socksToSelect.end();
         for ( ; iter != iter_end; ++iter )
         {
-            // don't include node which are being processed at this moment
-            if ( *iter == NULL || ( *iter )->isInUse() )
+            if ( NULL == *iter )
                 continue;
 
             if ( !( *iter )->isValid() )
@@ -150,12 +149,18 @@ namespace PROOFAgent
                 continue;
             }
 
-            // looking for the highest fd
-            int max = ( *iter )->first() > ( *iter )->second() ? ( *iter )->first() : ( *iter )->second();
-            fd_max = max > fd_max? max: fd_max;
-
-            FD_SET(( *iter )->first(), _readset );
-            FD_SET(( *iter )->second(), _readset );
+            if ( !( *iter )->isInUse( CNode::nodeSocketFirst ) )
+            {
+                int fd = ( *iter )->getSocket( CNode::nodeSocketFirst );
+                FD_SET( fd, _readset );
+                fd_max = fd > fd_max ? fd : fd_max;
+            }
+            if ( !( *iter )->isInUse( CNode::nodeSocketSecond ) )
+            {
+                int fd = ( *iter )->getSocket( CNode::nodeSocketSecond );
+                FD_SET( fd, _readset );
+                fd_max = fd > fd_max ? fd : fd_max;
+            }
         }
 
         // Updating nodes list and proof.cfg
@@ -192,18 +197,18 @@ namespace PROOFAgent
             if ( *iter == NULL || !( *iter )->isValid() )
                 continue; // TODO: Log me!
 
-            if ( FD_ISSET(( *iter )->first(), &readset ) && ( *iter )->isActive() )
+            if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketFirst ), &readset ) && ( *iter )->isActive() )
             {
                 // update the idle timer
                 m_idleWatch.touch();
 
                 // we get a task for packet forwarder
-                if (( *iter )->isInUse() )
+                if (( *iter )->isInUse( CNode::nodeSocketFirst ) )
                     continue;
-                m_threadPool.pushTask(( *iter )->first(), iter->get() );
+                m_threadPool.pushTask( CNode::nodeSocketFirst, iter->get() );
             }
 
-            if ( FD_ISSET(( *iter )->second(), &readset ) )
+            if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketSecond ), &readset ) )
             {
                 // check whether a proof server tries to connect to proof workers
 
@@ -214,7 +219,7 @@ namespace PROOFAgent
                 {
                     // if yes, then we need to activate this node and
                     // add it to the packetforwarder
-                    int fd = accept(( *iter )->second(), NULL, NULL );
+                    int fd = accept(( *iter )->getSocket( CNode::nodeSocketSecond ), NULL, NULL );
                     if ( fd < 0 )
                     {
                         FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
@@ -223,16 +228,16 @@ namespace PROOFAgent
 
                     // update the second socket fd in the container
                     // and activate the node
-                    ( *iter )->updateSecond( fd );
+                    ( *iter )->update( fd, CNode::nodeSocketSecond );
                     ( *iter )->activate();
                 }
                 else
                 {
                     // we get a task for packet forwarder
-                    if (( *iter )->isInUse() )
+                    if (( *iter )->isInUse( CNode::nodeSocketSecond ) )
                         continue;
 
-                    m_threadPool.pushTask(( *iter )->second(), iter->get() );
+                    m_threadPool.pushTask( CNode::nodeSocketSecond, iter->get() );
                 }
             }
         }
