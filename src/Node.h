@@ -40,8 +40,6 @@ namespace PROOFAgent
                     m_inUseSecond( false ),
                     m_bufFirst( _readBufSize ),
                     m_bufSecond( _readBufSize )
-                    //  m_bytesToSend( 0 )
-
             {
                 m_first = new sock_type( _first );
                 m_first->set_nonblock();
@@ -116,7 +114,6 @@ namespace PROOFAgent
             bool m_inUseSecond;
             MiscCommon::BYTEVector_t m_bufFirst;
             MiscCommon::BYTEVector_t m_bufSecond;
-            //size_t m_bytesToSend;
     };
 }
 

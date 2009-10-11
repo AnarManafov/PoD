@@ -73,7 +73,7 @@ namespace PROOFAgent
                 }
                 if ( !m_stopped && !m_tasks.empty() )
                 {
-                    //DebugLog( erOK, "taking a task from the queue" );
+                    DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
                     m_tasks.pop();
                 }
@@ -81,10 +81,10 @@ namespace PROOFAgent
             //Execute job
             if ( task )
             {
-                //DebugLog( erOK, "processing a task" );
+                DebugLog( erOK, "processing a task" );
                 task->second->dealWithData( task->first );
                 //  task->second->setInUse( false );
-                //  DebugLog( erOK, "done processing" );
+                  DebugLog( erOK, "done processing" );
 
                 // report to the owner that socket is free to be added back to the "select"
                 if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
@@ -108,12 +108,12 @@ namespace PROOFAgent
         task_t *task = new task_t( _which, _node );
         m_tasks.push( task );
         // report if queued too many tasks
-//        if ( m_tasks.size() > ( m_threads.size() ) )
-//        {
-//            stringstream ss;
-//            ss << "*** Queued " << m_tasks.size() << " tasks ***";
-//            DebugLog( erOK, ss.str() );
-//        }
+        if ( m_tasks.size() > ( m_threads.size() ) )
+        {
+            stringstream ss;
+            ss << "*** Queued " << m_tasks.size() << " tasks ***";
+            DebugLog( erOK, ss.str() );
+        }
 
        // DebugLog( erOK, "task is ready" );
 
