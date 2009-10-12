@@ -14,8 +14,6 @@
 *************************************************************************/
 #ifndef OPTIONS_H
 #define OPTIONS_H
-// STD
-#include <iostream>
 // MiscCommon
 #include "PARes.h"
 #include "PoDUserDefaultsOptions.h"

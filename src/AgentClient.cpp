@@ -12,14 +12,12 @@
 
         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-// API
-#include <sys/types.h>
+#include "AgentClient.h"
 // STD
 #include <csignal>
 // PROOFAgent
 #include "Node.h"
 #include "PARes.h"
-#include "AgentClient.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -28,6 +26,20 @@ namespace inet = MiscCommon::INet;
 //=============================================================================
 const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
+//=============================================================================
+CAgentClient::CAgentClient( const SOptions_t &_data ):
+        CAgentBase( _data.m_podOptions.m_worker.m_common )
+{
+    m_Data = _data.m_podOptions.m_worker;
+    m_serverInfoFile = _data.m_serverInfoFile;
+    m_proofPort = _data.m_proofPort;
+}
+
+//=============================================================================
+CAgentClient::~CAgentClient()
+{
+}
+
 //=============================================================================
 void CAgentClient::run()
 {

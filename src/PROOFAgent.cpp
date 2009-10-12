@@ -37,8 +37,6 @@ void CPROOFAgent::setConfiguration( const SOptions_t &_data )
              _data.m_podOptions.m_worker.m_common;
     initLogEngine();
 
-    //InfoLog( MiscCommon::erOK, "PROOFAgent general configuration:" ) << m_Data;
-
     // Spawning new Agent in requested mode
     m_Agent.SetMode( m_Mode, _data );
 }

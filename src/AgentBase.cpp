@@ -12,6 +12,7 @@
 
  Copyright (c) 2009 GSI GridTeam. All rights reserved.
  *************************************************************************/
+#include "AgentBase.h"
 // API
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -23,8 +24,6 @@
 #include "INet.h"
 #include "Process.h"
 #include "SysHelper.h"
-// PROOFAgent
-#include "AgentBase.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;

@@ -16,7 +16,6 @@
 #define AGENTIMPL_H
 // MiscCommon
 #include "LogImp.h"
-#include "SysHelper.h"
 #include "INet.h"
 // PROOFAgent
 #include "AgentBase.h"
@@ -37,17 +36,8 @@ namespace PROOFAgent
             MiscCommon::CLogImp<CAgentClient>
     {
         public:
-            CAgentClient( const SOptions_t &_data ):
-                    CAgentBase( _data.m_podOptions.m_worker.m_common )
-            {
-                m_Data = _data.m_podOptions.m_worker;
-                m_serverInfoFile = _data.m_serverInfoFile;
-                m_proofPort = _data.m_proofPort;
-
-                //InfoLog( MiscCommon::erOK, "Agent Client configuration:" ) << m_Data;
-            }
-            virtual ~CAgentClient()
-            {}
+            CAgentClient( const SOptions_t &_data );
+            virtual ~CAgentClient();
             REGISTER_LOG_MODULE( "AgentClient" )
 
         public:

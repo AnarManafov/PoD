@@ -21,7 +21,6 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
 // MiscCommon
-#include "INet.h"
 #include "LogImp.h"
 #include "Node.h"
 

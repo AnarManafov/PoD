@@ -95,7 +95,8 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    void CNode::ReportPackage( MiscCommon::INet::Socket_t _socket1, MiscCommon::INet::Socket_t _socket2,
+    void CNode::ReportPackage( MiscCommon::INet::Socket_t _socket1,
+                               MiscCommon::INet::Socket_t _socket2,
                                const BYTEVector_t &_buf )
     {
         string strSocket1;
