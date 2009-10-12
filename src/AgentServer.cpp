@@ -13,6 +13,8 @@
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "AgentServer.h"
+// API
+#include <csignal>
 // BOOST
 #include <boost/thread/mutex.hpp>
 // MiscCommon
