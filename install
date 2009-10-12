@@ -19,7 +19,7 @@
 #
 #
 
-VERSION=2.1.0b
+VERSION=2.1.0c
 
 ###
 ############ Vars ######################
@@ -35,7 +35,7 @@ pod_user_defaults_PKG=pod-user-defaults-1.0.0b-Source
 pod_user_defaults_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 pod_user_defaults_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # pod-agent app
-pod_agent_PKG=pod-agent-2.1.0b-Source
+pod_agent_PKG=pod-agent-2.1.0d-Source
 pod_agent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Nightly
 pod_agent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # pod-console app
