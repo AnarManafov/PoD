@@ -58,18 +58,20 @@ namespace PROOFAgent
             {
                 FaultLog( erError, "Can't connect to PROOF/XRD service." );
                 graceful_quit = 1;
-
-                // wake up (from "select") the main thread, so that it can update it self
-                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
-                    FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
-
-                return;
             }
 
             if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
             {
                 InfoLog( "Agent's idle time has just reached a defined maximum. Exiting..." );
                 graceful_quit = 1;
+            }
+
+            if ( graceful_quit )
+            {
+                // wake up (from "select") the main thread, so that it can update it self
+                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                    FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
+
                 return;
             }
 
