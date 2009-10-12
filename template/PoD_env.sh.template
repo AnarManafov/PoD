@@ -14,6 +14,9 @@
 # PoD Variables
 export POD_LOCATION=_G_WRK_DIR
 export PATH=$POD_LOCATION/bin:$PATH
+# TODO: the following must be revised
+# GSI specific
+export LD_LIBRARY_PATH=/LSF/lsf/lib:$LD_LIBRARY_PATH
 
 eval POD_PROOFCFG_FILE=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
 export POD_PROOFCFG_FILE
@@ -22,8 +25,4 @@ export POD_PROOFCFG_FILE
 if [[ -f $POD_LOCATION/bin/gaw_env.sh ]]; then
     source $POD_LOCATION/bin/gaw_env.sh
 fi
-
-# TODO: the following must be revised
-# GSI specific
-export LD_LIBRARY_PATH=/LSF/lsf/lib:$LD_LIBRARY_PATH
 
