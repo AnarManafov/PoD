@@ -49,6 +49,12 @@ void CAgentClient::run()
 
         while ( true )
         {
+            if ( graceful_quit )
+            {
+                InfoLog( "shutting Agent's instance down..." );
+                return;
+            }
+
             readServerInfoFile( m_serverInfoFile );
 
             InfoLog( "looking for PROOFAgent server to connect..." );
@@ -98,7 +104,7 @@ void CAgentClient::run()
             }
             catch ( exception & e )
             {
-                FaultLog( erError, e.what() );
+                WarningLog( erError, e.what() );
                 continue;
             }
         }
@@ -175,7 +181,7 @@ void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWai
         }
         while ( numread > 0 );
 
-        throw system_error( "Got a wake up signal from the signal pipe." );
+        throw runtime_error( "Got a wake up signal from the signal pipe. Stopping the main select..." );
     }
 
     m_idleWatch.touch();
@@ -255,11 +261,11 @@ void CAgentClient::mainSelect( CNode *_node )
             const int read_size = 20;
             char buf[read_size];
             int numread( 0 );
-            do
-            {
-                numread = read( m_fdSignalPipe, buf, read_size );
-            }
-            while ( numread > 0 );
+            //  do
+            //  {
+            numread = read( m_fdSignalPipe, buf, read_size );
+            //  }
+            //   while ( numread > 0 );
 
             throw system_error( "Got a wake up signal from the signal pipe." );
         }
