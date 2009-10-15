@@ -68,4 +68,4 @@ fi
 #
 ## Log
 #
-xpd.trace all debug
+#xpd.trace all debug
