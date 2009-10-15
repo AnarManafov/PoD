@@ -12,18 +12,19 @@
 
         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+#include "../etc/pod-master.h"
 
-
+run()
 {
   // Creating a TDset of files to analyze
   TDSet *set = new TDSet( "TTree","h42" );
   
   // Files to analyze 
-  set->Add( "root://MASTER_HOSTNAME:000/_G_XRD_EXPORT_DIR/dstarmb.root" );
-  set->Add( "root://MASTER_HOSTNAME:000/_G_XRD_EXPORT_DIR/dstarmb1.root" );
-  
+  set->Add( Form("root://%s:%s//misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package/test/dstarmb.root", POD_MASTER_HOST, POD_XROOTD_PORT) );
+  set->Add( Form("root://%s:%s//misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package/test/dstarmb1.root", POD_MASTER_HOST, POD_XROOTD_PORT) );
+
   // connecting to local PROOF server
-  proof = TProof::Open( "MASTER_HOSTNAME:0000" );
+  proof = TProof::Open( Form("%s:%s", POD_MASTER_HOST, POD_XPROOF_PORT) );
 
   proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)1000 );  
 

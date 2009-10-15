@@ -124,7 +124,7 @@ start()
     echo "using XRD port:"$NEW_XRD_PORT
     echo "using XPROOF port:"$NEW_XPROOF_PORT
     echo "using PROOFAgent server port: "$NEW_PROOFAGENT_PORT
-    
+
     # updating XRD configuration file
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
     regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
@@ -132,11 +132,15 @@ start()
     sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
     mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
 
-    # replacing ports in the PROOF example script
-    regexp_xproof_port="s/\(TProof::Open([[:space:]]\"\).*:[0-9]*\(\"[[:space:]])\)/\1$(hostname -f):$NEW_XPROOF_PORT\2/g"
-    regexp_xrd_port="s/\(root:\/\/\).*:[0-9]*/\1$(hostname -f):$NEW_XRD_PORT/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $POD_LOCATION/test/simple_test0.C > $POD_LOCATION/test/simple_test0.C.temp
-    mv $POD_LOCATION/test/simple_test0.C.temp $POD_LOCATION/test/simple_test0.C
+    # generate a helper header
+    # this helps to keep track of PROOF master's host and port for user's scripts
+    HEADER_HELPER="$POD_LOCATION/etc/pod-master.h"
+    echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
+    echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
+    echo "#define POD_MASTER_HOST \"$(hostname -f)\"" >> $HEADER_HELPER
+    echo "#define POD_XPROOF_PORT \"$NEW_XPROOF_PORT\"" >> $HEADER_HELPER
+    echo "#define POD_XROOTD_PORT \"$NEW_XRD_PORT\"" >> $HEADER_HELPER
+    echo "#endif" >> $HEADER_HELPER
 
     # Start XRD
     ####
