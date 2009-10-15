@@ -14,10 +14,10 @@
 #*************************************************************************
 project( pod-console )
 
-set(VERSION "1.1.0b")
+set(VERSION "1.1.0c")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "0b")
+set(CPACK_PACKAGE_VERSION_PATCH "0c")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
@@ -80,7 +80,7 @@ QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
 # wich is linked with gLite version of BOOST :(
 set(BOOST_ROOT "$ENV{BOOST_LOCATION}")
 
-find_package( Boost 1.32 REQUIRED COMPONENTS serialization program_options)
+find_package( Boost REQUIRED COMPONENTS serialization program_options)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")

@@ -31,7 +31,7 @@
 using namespace std;
 using namespace MiscCommon;
 
-const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/PAConsole.xml.cfg";
+const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
 const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 
 template<class T>
@@ -86,10 +86,10 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     }
     catch ( ... )
     {
-        cerr << "PROOFAgent Console Warning: "
-        << "Can't load configuration from "
-        << "\"$POD_LOCATION/etc/PAConsole.xml.cfg\". "
-        << "PAConsole will use its default settings." << endl;
+        cerr << PROJECT_NAME << " Warning: "
+             << "Can't load configuration from "
+             << g_szCfgFileName
+             << ". PAConsole will use its default settings." << endl;
     }
 
     // loading PAConsole plug-ins
@@ -140,15 +140,14 @@ CMainDlg::~CMainDlg()
     }
     catch ( const exception &_e )
     {
-        QMessageBox::warning( this, "PROOFAgent Console",
-                              "Can't save configuration to\n"
-                              "\"$POD_LOCATION / etc / PAConsole.xml.cfg\"\n Error: " + QString( _e.what() ) );
+        QMessageBox::warning( this, PROJECT_NAME,
+                              "Can't save configuration to\n" + QString( g_szCfgFileName ) +
+                              "\n Error: " + QString( _e.what() ) );
     }
     catch ( ... )
     {
-        QMessageBox::warning( this, "PROOFAgent Console",
-                              "Can't save configuration to\n"
-                              "\"$POD_LOCATION / etc / PAConsole.xml.cfg\"" );
+        QMessageBox::warning( this, PROJECT_NAME,
+                              "Can't save configuration to\n" + QString( g_szCfgFileName ) );
     }
 }
 
@@ -172,8 +171,8 @@ void CMainDlg::createIcons()
             continue;
 
         QListWidgetItem *btn = new QListWidgetItem( m_ui.contentsWidget );
-        btn->setIcon( (*iter)->getIcon() );
-        btn->setText( (*iter)->getName() );
+        btn->setIcon(( *iter )->getIcon() );
+        btn->setText(( *iter )->getName() );
         btn->setTextAlignment( Qt::AlignHCenter );
         btn->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
@@ -258,11 +257,11 @@ void CMainDlg::on_closeButton_clicked()
     {
         const string msg( "PoD server is running.\n"
                           "Do you want to stop the server and shut all workers down?\n"
-                          "If you answer NO, then the server and workers will continue to run after PAConsole is closed.");
+                          "If you answer NO, then the server and workers will continue to run after PAConsole is closed." );
         const QMessageBox::StandardButton reply =
-            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+            QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-        if ( QMessageBox::Cancel == reply)
+        if ( QMessageBox::Cancel == reply )
             return;
         if ( QMessageBox::Yes == reply )
             m_server.CommandServer( CServerDlg::srvSTOP );

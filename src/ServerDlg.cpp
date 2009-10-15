@@ -28,6 +28,7 @@
 // PAConsole
 #include "ServerDlg.h"
 #include "ServerInfo.h"
+#include "version.h"
 
 // TODO: optimize the call of the status of PoD
 // this is very expensive call, we therefore using 20 sec. timeout
@@ -86,7 +87,7 @@ void CServerDlg::CommandServer( EServerCommands _command )
     }
     catch ( const exception &_e )
     {
-        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
+        QMessageBox::critical( this, tr( PROJECT_NAME ), tr( _e.what() ) );
     }
 
     update_check_srv_socket();
@@ -111,7 +112,7 @@ void CServerDlg::on_btnStopServer_clicked()
 void CServerDlg::on_btnBrowsePIDDir_clicked()
 {
     const QString directory = QFileDialog::getExistingDirectory( this,
-                              tr( "Select pid directory of PROOFAgent" ),
+                              tr( "Select pid directory of pod-agent" ),
                               m_ui.edtPIDDir->text(),
                               QFileDialog::DontResolveSymlinks
                               | QFileDialog::ShowDirsOnly );

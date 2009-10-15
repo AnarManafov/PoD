@@ -29,6 +29,7 @@
 #include "PoDUserDefaultsOptions.h"
 // PAConsole
 #include "WorkersDlg.h"
+#include "version.h"
 
 const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
 
@@ -44,7 +45,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
     PoD::CPoDUserDefaults user_defaults;
     user_defaults.init( _cfgFileName );
 
-    *_retVal = user_defaults.getValueForKey("server.proof_cfg_path");
+    *_retVal = user_defaults.getValueForKey( "server.proof_cfg_path" );
 }
 
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
@@ -54,12 +55,23 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
 {
     m_ui.setupUi( this );
 
-    parsePROOFAgentCfgFile( g_szPoDcfg, &m_CfgFileName );
+    try
+    {
+        parsePROOFAgentCfgFile( g_szPoDcfg, &m_CfgFileName );
+    }
+    catch ( exception &e )
+    {
+        QMessageBox::critical( this,
+                               QString(PROJECT_NAME),
+                               tr( e.what() ) );
+        // TODO: implement a graceful quit
+        exit( 1 );
+    }
     smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {
         QMessageBox::critical( this,
-                               tr( "PROOFAgent Console" ),
+                               tr( PROJECT_NAME ),
                                tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
     }
 
@@ -97,7 +109,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
     // Reading only comment blocks of proof.conf
     const char chCmntSign( '#' );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
-                                    SFindComment<string>( chCmntSign ) );
+                                             SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
     while ( iter != iter_end )
     {

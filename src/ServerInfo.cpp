@@ -32,12 +32,12 @@ pid_t CServerInfo::_IsRunning( const string &_Srv ) const
     vectorPid_t::const_iterator iter_end = pids.end();
 
     // checking that the process is running under current's user id
-    for (; iter != iter_end; ++iter)
+    for ( ; iter != iter_end; ++iter )
     {
         CProcStatus p;
         p.Open( *iter );
         istringstream ss( p.GetValue( "Uid" ) );
-        uid_t realUid(0);
+        uid_t realUid( 0 );
         ss >> realUid;
         if ( getuid() == realUid )
             return *iter;
@@ -104,23 +104,23 @@ string CServerInfo::GetPAInfo() const
 
 void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
 {
-    if ( !_Ver )
-        return ;
-
-    FILE *f = popen( "pod-agent --version", "r" );
-    if ( !f )
-        return ;
-
-    char * line = NULL;
-    size_t len = 0;
-    stringstream ss;
-    while ( getline( &line, &len, f ) != -1 )
-    {
-        ss << line;
-    }
-    if ( line )
-        free( line );
-    pclose( f );
-    ss << '\n';
-    *_Ver = ss.str();
+//    if ( !_Ver )
+//        return ;
+//
+//    FILE *f = popen( "pod-agent --version", "r" );
+//    if ( !f )
+//        return ;
+//
+//    char * line = NULL;
+//    size_t len = 0;
+//    stringstream ss;
+//    while ( getline( &line, &len, f ) != -1 )
+//    {
+//        ss << line;
+//    }
+//    if ( line )
+//        free( line );
+//    pclose( f );
+//    ss << '\n';
+//    *_Ver = ss.str();
 }
