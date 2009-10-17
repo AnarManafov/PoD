@@ -20,8 +20,8 @@ run()
   TDSet *set = new TDSet( "TTree","h42" );
   
   // Files to analyze 
-  set->Add( Form("root://%s:%s//misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package/test/dstarmb.root", POD_MASTER_HOST, POD_XROOTD_PORT) );
-  set->Add( Form("root://%s:%s//misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package/test/dstarmb1.root", POD_MASTER_HOST, POD_XROOTD_PORT) );
+  set->Add( Form("root://%s:%s/%s/test/dstarmb.root", POD_MASTER_HOST, POD_XROOTD_PORT, POD_LOCATION) );
+  set->Add( Form("root://%s:%s/%s/test/dstarmb1.root", POD_MASTER_HOST, POD_XROOTD_PORT, POD_LOCATION) );
 
   // connecting to local PROOF server
   proof = TProof::Open( Form("%s:%s", POD_MASTER_HOST, POD_XPROOF_PORT) );

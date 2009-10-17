@@ -92,10 +92,6 @@ CreateCFG()
     cp -f template/Job.lsf.template etc/Job.lsf
     eval sed -i 's%_G_WRK_DIR%$INSTALL_PATH%g' etc/Job.lsf
     
-# generate test/simple_test0.C
-    cp -f template/simple_test0.C.template test/simple_test0.C
-    eval sed -i 's%_G_XRD_EXPORT_DIR%$XRD_EXPORT_DIR%g' test/simple_test0.C    
-    
 # linking datafile for tests
     ln -s $INSTALL_PATH/test/dstarmb.root $INSTALL_PATH/test/dstarmb1.root
 # creating a log dir

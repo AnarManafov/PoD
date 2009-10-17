@@ -29,73 +29,52 @@ PROOFAGENT_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key
 # a number of seconds we wait until xrd is started 
 XRD_START_TIMEOUT=3 
 
+
+# ************************************************************************
+# ***** detects ports for XRD, XPROOF and for PoD Agent  *****
 server_status()
 {
 # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=(`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | egrep "xrootd|pod-agent" | grep -v grep | awk '{print $1}'`)
-    
-    if [ -n "$XRD_PID" ]; then
-	echo "XROOTD is running under PID: "${XRD_PID[0]} ${XRD_PID[1]}
-    else
+    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}'`
+    if [ -z "$XRD_PID" ]; then
 	echo "XROOTD is NOT running"
-	return 1
     fi
-    
-# getting an array of XRD LISTEN ports
-# oreder: the lowerst port goes firstand its a XRD port.
-# XPROOF port must be greater
-    NETSTATS_RET=`netstat -n --inet --program --listening -t 2> /dev/null`
-    XRD_PORTS=(`echo $NETSTATS_RET | grep "10077/"  |  awk '{print $4}' | sed 's/^.*://g' | sort -b -n -u`)
-    echo "- XROOTD port: "${XRD_PORTS[0]}
-    echo "- XPROOF port: "${XRD_PORTS[1]}
 
-    AGENT_PORT=`echo $NETSTATS_RET | grep "/pod-agent"  |  awk '{print $4}' | sed 's/^.*://g' | sort -b -n -u`
-    echo "- AGENT port: "$AGENT_PORT
+    AGENT_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}'`
+    if [ -z "$AGENT_PID" ]; then
+	echo "PoD agent is NOT running"
+    fi  
+    
+    # change a string separator
+    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --inet --program --listening -t 2>/dev/null)) IFS=$O;
+ 
+    for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
+    do
+	port=$(echo ${NETSTAT_RET[$i]} | egrep "xrootd|pod-agent"  | awk '{print $4}' | sed 's/^.*://g')
+	if [ -n "$port" ]; then
+	    if (( ($port >= $XRD_PORTS_RANGE_MIN) && ($port <= $XRD_PORTS_RANGE_MAX) )); then
+		XRD_PORT=$port
+	    elif (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
+		XPROOF_PORT=$port
+	    elif (( ($port >= $PROOFAGENT_PORTS_RANGE_MIN) && ($port <= $PROOFAGENT_PORTS_RANGE_MAX) )); then
+		POD_AGENT_PORT=$port
+	    fi
+	fi
+    done
+
+    if [ -n  $XRD_PID ]; then
+	echo "ROOTD [$XRD_PID]"
+	echo "-- XROOTD port: "$XRD_PORT
+	echo "-- XPROOD port: "$XPROOF_PORT
+    fi
+    if [ -n  $AGENT_PID ]; then
+	echo "PoD agent [$AGENT_PID]"
+	echo "-- PoD agent port: "$POD_AGENT_PORT
+    fi
+    
     return 0
 }
 
-# ************************************************************************
-# ***** detects ports for XRD and XPROOF  *****
-xrd_detect()
-{
-# get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep "xrootd" | grep -v grep | awk '{print $1}'`
-    
-    if [ -n "$XRD_PID" ]; then
-	echo "XROOTD is running under PID: "$XRD_PID
-    else
-	echo "XROOTD is NOT running"
-	return 1
-    fi
-    
-# getting an array of XRD LISTEN ports
-# oreder: the lowerst port goes firstand its a XRD port.
-# XPROOF port must be greater
-    XRD_PORTS=(`netstat -n --inet --program --listening -t 2> /dev/null | grep $XRD_PID  |  awk '{print $4}' | sed 's/^.*://g' | sort -b -n -u`)
-    echo "- XROOTD port: "${XRD_PORTS[0]}
-    echo "- XPROOF port: "${XRD_PORTS[1]}
-    return 0
-}
-# ************************************************************************
-# ***** detects ports for pod-agent  *****
-pod_agent_detect()
-{
-# get a pid of our pod-agent. We get any pod-agent running by $UID
-    PA_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' |  grep pod-agent | grep -v grep | awk '{print $1}'`
-    
-    if [ -n "$PA_PID" ]; then
-	echo "PoD Agent is running under PID: "$PA_PID
-    else
-	echo "PoD Agent is NOT running"
-	return 1
-    fi
-    
-# getting an array of pod-agent LISTEN ports
-    PA_PORTS=(`netstat -n --inet --program --listening -t 2> /dev/null | grep "$PA_PID/" |  awk '{print $4}' | sed 's/^.*://g' | sort -b -n -u`)
-    
-    echo "- PoD Agent server port: "${PA_PORTS[0]}
-    return 0
-}
 # ************************************************************************
 # ***** returns a free port from a given range  *****
 get_freeport()
@@ -161,6 +140,7 @@ start()
     HEADER_HELPER="$POD_LOCATION/etc/pod-master.h"
     echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
     echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
+    echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
     echo "#define POD_MASTER_HOST \"$(hostname -f)\"" >> $HEADER_HELPER
     echo "#define POD_XPROOF_PORT \"$NEW_XPROOF_PORT\"" >> $HEADER_HELPER
     echo "#define POD_XROOTD_PORT \"$NEW_XRD_PORT\"" >> $HEADER_HELPER
@@ -200,13 +180,8 @@ stop()
 # ***** STATUS  *****
 status()
 {
-server_status
-    # XRD
-   # xrd_detect
-
-    # PROOFAgent
-    #pod_agent_detect
-   
+    server_status
+    
     # check that ROOTSYS is set
     if [ -z $ROOTSYS ]; then
        echo ""
