@@ -430,8 +430,22 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
     if ( _JobStatusUpdInterval > 0 )
+    {
+        m_updateInterval = _JobStatusUpdInterval;
         m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
+    }
 }
+
+void CLSFDlg::showEvent( QShowEvent* )
+{
+    startUpdTimer( m_updateInterval );
+}
+
+void CLSFDlg::hideEvent( QHideEvent* )
+{
+    m_treeModel->setUpdateInterval( 0 );
+}
+
 int CLSFDlg::getJobsCount() const
 {
     return m_AllJobsCount;

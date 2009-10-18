@@ -66,6 +66,10 @@ class CWorkersDlg: public QWidget
         void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
         void restartUpdTimer( int _WorkersUpdInterval );
 
+    protected:
+        void showEvent( QShowEvent* );
+        void hideEvent( QHideEvent* );
+
     private:
         int getWorkersFromPROOFCfg();
 

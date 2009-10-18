@@ -62,7 +62,7 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
     catch ( exception &e )
     {
         QMessageBox::critical( this,
-                               QString(PROJECT_NAME),
+                               QString( PROJECT_NAME ),
                                tr( e.what() ) );
         // TODO: implement a graceful quit
         exit( 1 );
@@ -167,4 +167,16 @@ void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
     m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
     if ( m_bMonitorWorkers > 0 )
         m_Timer->start( m_WorkersUpdInterval );
+}
+
+
+void CWorkersDlg::showEvent( QShowEvent* )
+{
+    update();
+    restartUpdTimer( m_WorkersUpdInterval );
+}
+
+void CWorkersDlg::hideEvent( QHideEvent* )
+{
+    m_Timer->stop();
 }

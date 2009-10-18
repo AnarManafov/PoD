@@ -50,6 +50,7 @@ signals:
 public:
     void run();
     void update( long _update_time_ms = 0 );
+    void stopUpdate();
     void updateNumberOfJobs();
 
 private slots:

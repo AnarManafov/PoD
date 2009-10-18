@@ -45,6 +45,10 @@ class CLSFDlg: public QWidget, IJobManager
 
         void setAllDefault();
 
+    protected:
+        void showEvent( QShowEvent* );
+        void hideEvent( QHideEvent* );
+
     signals:
         void changeNumberOfJobs( int _count );
 
@@ -55,7 +59,7 @@ class CLSFDlg: public QWidget, IJobManager
         void on_btnBrowseJobScript_clicked();
         void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
         void setNumberOfJobs( int _count );
-        void on_lsfQueueList_currentIndexChanged(int _index);
+        void on_lsfQueueList_currentIndexChanged( int _index );
 
 
     private slots:

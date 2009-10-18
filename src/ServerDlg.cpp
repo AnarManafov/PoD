@@ -30,9 +30,8 @@
 #include "ServerInfo.h"
 #include "version.h"
 
-// TODO: optimize the call of the status of PoD
-// this is very expensive call, we therefore using 20 sec. timeout
-const size_t g_UpdateInterval = 20000;  // in milliseconds
+// this is very expensive call, we therefore using 10 sec. timeout
+const size_t g_UpdateInterval = 10000;  // in milliseconds
 const size_t g_WaitTimeout = 15; // in sec.
 // default pid/log directory
 const char * const g_szPID_Dir = "$POD_LOCATION/";
@@ -71,14 +70,14 @@ void CServerDlg::CommandServer( EServerCommands _command )
     params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
     switch ( _command )
     {
-    case srvSTART:
-        params.push_back( "start" );
-        break;
-    case srvSTOP:
-        params.push_back( "stop" );
-        break;
-    default:
-        return; //TODO: assert me!
+        case srvSTART:
+            params.push_back( "start" );
+            break;
+        case srvSTOP:
+            params.push_back( "stop" );
+            break;
+        default:
+            return; //TODO: assert me!
     }
     try
     {
@@ -112,10 +111,10 @@ void CServerDlg::on_btnStopServer_clicked()
 void CServerDlg::on_btnBrowsePIDDir_clicked()
 {
     const QString directory = QFileDialog::getExistingDirectory( this,
-                              tr( "Select pid directory of pod-agent" ),
-                              m_ui.edtPIDDir->text(),
-                              QFileDialog::DontResolveSymlinks
-                              | QFileDialog::ShowDirsOnly );
+                                                                 tr( "Select pid directory of pod-agent" ),
+                                                                 m_ui.edtPIDDir->text(),
+                                                                 QFileDialog::DontResolveSymlinks
+                                                                 | QFileDialog::ShowDirsOnly );
     if ( !directory.isEmpty() )
     {
         m_ui.edtPIDDir->setText( directory );
@@ -139,8 +138,19 @@ void CServerDlg::update_check_srv_socket( bool _force )
     {
         do_execv( cmd, params, g_WaitTimeout, &output );
     }
-    catch (...)
+    catch ( ... )
     {
     }
-    m_ui.edtServerInfo->setText( QString(output.c_str()) );
+    m_ui.edtServerInfo->setText( QString( output.c_str() ) );
+}
+
+void CServerDlg::showEvent( QShowEvent* )
+{
+	update_check_srv_socket(true);
+	m_Timer->start( g_UpdateInterval );
+}
+
+void CServerDlg::hideEvent( QHideEvent* )
+{
+	m_Timer->stop();
 }

@@ -51,6 +51,11 @@ void CJobsContainer::update( long _update_time_ms )
         start();
 }
 
+void CJobsContainer::stopUpdate()
+{
+	m_updateInterval = 0;
+}
+
 void CJobsContainer::run()
 {
   forever
