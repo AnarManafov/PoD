@@ -200,8 +200,16 @@ namespace PROOFAgent
             if ( *iter == NULL || !( *iter )->isValid() )
                 continue; // TODO: Log me!
 
-            if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketFirst ), &readset ) && ( *iter )->isActive() )
+            if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketFirst ), &readset ) )
             {
+                // there is a read-ready socket
+                // if the node is active, everything is fine, but
+                // it could be a case when the node is not yet active
+                // probably the worker has dropped a connection (in this case
+                // socket is read-ready but has 0 bytes in the stream.).
+                // we try to read from it in anyway. Further procedures will mark
+                // it as a bad one.
+
                 // update the idle timer
                 m_idleWatch.touch();
 
