@@ -27,7 +27,9 @@ PROOFAGENT_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key
 PROOFAGENT_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max`
 #######
 # a number of seconds we wait until xrd is started 
-XRD_START_TIMEOUT=3 
+XRD_START_TIMEOUT=3
+
+SERVER_HOST_NAME=$(hostname -f)
 
 
 # ************************************************************************
@@ -134,7 +136,7 @@ start()
     # updating XRD configuration file
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
     regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$(hostname -f)\2/g"
+    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
     sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
     mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
 
@@ -144,7 +146,7 @@ start()
     echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
     echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
     echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
-    echo "#define POD_MASTER_HOST \"$(hostname -f)\"" >> $HEADER_HELPER
+    echo "#define POD_MASTER_HOST \"$SERVER_HOST_NAME\"" >> $HEADER_HELPER
     echo "#define POD_XPROOF_PORT \"$NEW_XPROOF_PORT\"" >> $HEADER_HELPER
     echo "#define POD_XROOTD_PORT \"$NEW_XRD_PORT\"" >> $HEADER_HELPER
     echo "#endif" >> $HEADER_HELPER
@@ -157,7 +159,7 @@ start()
 	
     # setting a port to listen for pod-agent server and server's host name
     ####
-    create_agent_server_info_file $(hostname -f) $NEW_PROOFAGENT_PORT
+    create_agent_server_info_file $SERVER_HOST_NAME $NEW_PROOFAGENT_PORT
 
     # Start Proofagent
     ####
