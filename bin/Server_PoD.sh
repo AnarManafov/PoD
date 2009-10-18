@@ -36,18 +36,17 @@ server_status()
 {
 # get a pid of our xrd. We get any xrd running by $UID
     XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}'`
-    if [ -z "$XRD_PID" ]; then
-	echo "XROOTD is NOT running"
-    fi
-
     AGENT_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}'`
-    if [ -z "$AGENT_PID" ]; then
-	echo "PoD agent is NOT running"
+    
+    if [ -z "$XPD_PID" -a  -z "$AGENT_PID" ]; then
+	echo "PoD server is NOT running"
+	return 1
     fi  
     
     # change a string separator
     O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --inet --program --listening -t 2>/dev/null)) IFS=$O;
  
+    # look for ports of the server
     for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
     do
 	port=$(echo ${NETSTAT_RET[$i]} | egrep "xrootd|pod-agent"  | awk '{print $4}' | sed 's/^.*://g')
@@ -62,14 +61,18 @@ server_status()
 	fi
     done
 
-    if [ -n  $XRD_PID ]; then
-	echo "ROOTD [$XRD_PID]"
+    if [ -n  "$XRD_PID" ]; then
+	echo "XROOTD [$XRD_PID]"
 	echo "-- XROOTD port: "$XRD_PORT
-	echo "-- XPROOD port: "$XPROOF_PORT
+	echo "-- XPROOF port: "$XPROOF_PORT
+    else
+	echo "WARNING: XROOTD is NOT running."
     fi
-    if [ -n  $AGENT_PID ]; then
+    if [ -n  "$AGENT_PID" ]; then
 	echo "PoD agent [$AGENT_PID]"
 	echo "-- PoD agent port: "$POD_AGENT_PORT
+    else
+	echo "WARNING: PoD agent is NOT running."
     fi
     
     return 0
@@ -126,7 +129,7 @@ start()
     NEW_PROOFAGENT_PORT=`get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX`
     echo "using XRD port:"$NEW_XRD_PORT
     echo "using XPROOF port:"$NEW_XPROOF_PORT
-    echo "using PROOFAgent server port: "$NEW_PROOFAGENT_PORT
+    echo "using PoD agent port: "$NEW_PROOFAGENT_PORT
 
     # updating XRD configuration file
     regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
