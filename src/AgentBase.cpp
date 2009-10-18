@@ -81,7 +81,11 @@ namespace PROOFAgent
         close( m_fdSignalPipe );
         // deleting proof configuration file
         if ( !m_commonOptions.m_proofCFG.empty() )
-            ::unlink( m_commonOptions.m_proofCFG.c_str() );
+            unlink( m_commonOptions.m_proofCFG.c_str() );
+
+        string path( g_SIGNAL_PIPE_PATH );
+        smart_path( &path );
+        unlink( path.c_str() );
     }
 
 //=============================================================================
