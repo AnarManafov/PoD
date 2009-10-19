@@ -209,6 +209,8 @@ namespace PROOFAgent
                 // socket is read-ready but has 0 bytes in the stream.).
                 // we try to read from it in anyway. Further procedures will mark
                 // it as a bad one.
+                if ( !( *iter )->isActive() )
+                    InfoLog( "An inactive remote worker is in ready-to-read state. It could mean that it has just dropped the connection." );
 
                 // update the idle timer
                 m_idleWatch.touch();
