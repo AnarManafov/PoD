@@ -37,8 +37,8 @@ SERVER_HOST_NAME=$(hostname -f)
 server_status()
 {
 # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}'`
-    AGENT_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}'`
+    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
+    AGENT_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}')
     
     if [ -z "$XRD_PID" -a  -z "$AGENT_PID" ]; then
 	echo "PoD server is NOT running"

@@ -15,6 +15,7 @@
 ##        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
 
+## Important: Assuming a shared file system in LSF!
 
 ######################################################
 
@@ -22,11 +23,11 @@
 #
 ## working directory
 #
-G_WRK_DIR=_G_WRK_DIR
+G_WRK_DIR=$(pod-user-defaults-lite -c $WD/PoD.cfg --section server --key work_dir)
 #
 ## log dir
 #
-LOG_DIR=$G_WRK_DIR/log/$LSB_JOBID
+LOG_DIR=$(pod-user-defaults-lite -c $WD/PoD.cfg --section server --key logfile_dir)/log/$LSB_JOBID
 mkdir -p $LOG_DIR
 #
 ## create a working folder
@@ -36,7 +37,7 @@ echo "working directory: " $WRK_DIR
 cd $WRK_DIR || return 1
 #
 ## input files.
-## we don't use BSUB-f since it doens't support env. variables in paths
+## we don't use BSUB-f since it doesn't support env. variables in paths
 #
 cp $G_WRK_DIR/etc/xpd.cf $WRK_DIR/xpd.cf
 cp $G_WRK_DIR/etc/PoD.cfg $WRK_DIR/PoD.cfg

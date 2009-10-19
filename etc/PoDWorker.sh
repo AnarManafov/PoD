@@ -42,12 +42,12 @@ clean_up()
 # ***** detects ports for XRD and XPROOF  *****
 # return 1 if XRD/XPD ports were not detected, otherwise returns 0
 # sets XRD_PID to a pid of a found XRD
-# sets ${XRD_PORTS[0]} - XRD port
-# sets ${XRD_PORTS[1]} - XPD port
+# sets XRD_PORT - XRD port
+# sets XPROOF_PORT - XPD port
 xrd_detect()
 {
 # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep -v grep | grep xrootd| awk '{print $1}'`
+    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
     
     if [ -n "$XRD_PID" ]; then
 	echo "XRD is running under PID: "$XRD_PID
@@ -55,6 +55,11 @@ xrd_detect()
 	echo "XRD is NOT running"
 	return 0
     fi
+
+    XRD_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min)
+    XRD_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max)
+    XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
+    XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
     
     var0=0
     RETRY_CNT=3
@@ -63,21 +68,34 @@ xrd_detect()
     while [ "$var0" -lt "$RETRY_CNT" ]
       do
       echo "detecting xrd ports. Try $var0"
-# getting an array of XRD LISTEN ports
-# oreder: the lowerst port goes firstand its a XRD port.
-# XPROOF port must be greater
-      XRD_PORTS=(`lsof -P -w -a -c xrootd -u $UID -i -n |  grep LISTEN  | sed -n -e 's/.*:\([0-9]*\).(LISTEN)/\1/p' | sort -b -n -u`)
+      # getting an array of XRD LISTEN ports
+      # change a string separator
+      O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | grep "xrootd")) IFS=$O;
       
-      echo "PoD has detected XRD port:"${XRD_PORTS[0]}
-      echo "PoD has detected XPROOF port:"${XRD_PORTS[1]}
-      if [ -n "${XRD_PORTS[0]}" ] && [ -n "${XRD_PORTS[1]}" ]; then
-	  return 0;
+      # look for ports of the server
+      for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
+	do
+	port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g')
+	if [ -n "$port" ]; then
+	    if (( ($port >= $XRD_PORTS_RANGE_MIN) && ($port <= $XRD_PORTS_RANGE_MAX) )); then
+		XRD_PORT=$port
+	    elif (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
+		XPROOF_PORT=$port
+	    fi
+	fi
+      done
+       
+      echo "PoD has detected XRD port: "$XRD_PORT
+      echo "PoD has detected XPROOF port: "$XPROOF_PORT
+      if [ -n "$XRD_PORT" ] && [ -n "$XPROOF_PORT" ]; then
+	  return 0
       else
 	  var0=`expr $var0 + 1`
 	  # TODO: move the magic number to a var
 	  sleep 5
       fi
     done
+
     return 1
 }
 # ************************************************************************
@@ -230,28 +248,22 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
 # detecting whether xrd is running and on whihc ports xrd and xproof are listning
   xrd_detect
   return_val=$?
-  if [ "X$return_val" = "X0" ]; then
-      echo "XRD/XPD ports were detected."
-  else
+  if [ "X$return_val" != "X0" ]; then
       echo "problem to detect XRD/XPD ports. Exiting..."
       clean_up 1
   fi
-
+  
   if [ -n "$XRD_PID" ]; then
     # use existing ports for xrd and xproof
-      POD_XRD_PORT_TOSET=${XRD_PORTS[0]}
-      POD_XPROOF_PORT_TOSET=${XRD_PORTS[1]}
+      POD_XRD_PORT_TOSET=XRD_PORT
+      POD_XPROOF_PORT_TOSET=XPROOF_PORT
   else
-    # TODO: get new free ports here and write to xrd config file
-      XRD_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min`
-      XRD_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max`
-      XPROOF_PORTS_RANGE_MIN=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min`
-      XPROOF_PORTS_RANGE_MAX=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max`
       POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
       POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
-      echo "using XRD port:"$POD_XRD_PORT_TOSET
-      echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
   fi
+  
+  echo "using XRD port:"$POD_XRD_PORT_TOSET
+  echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
   
 # updating XRD configuration file
   regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
