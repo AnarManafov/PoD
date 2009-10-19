@@ -46,12 +46,12 @@ server_status()
     fi  
     
     # change a string separator
-    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --inet --program --listening -t 2>/dev/null)) IFS=$O;
+    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xrootd|pod-agent")) IFS=$O;
  
     # look for ports of the server
     for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
     do
-	port=$(echo ${NETSTAT_RET[$i]} | egrep "xrootd|pod-agent"  | awk '{print $4}' | sed 's/^.*://g')
+	port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g')
 	if [ -n "$port" ]; then
 	    if (( ($port >= $XRD_PORTS_RANGE_MIN) && ($port <= $XRD_PORTS_RANGE_MAX) )); then
 		XRD_PORT=$port
