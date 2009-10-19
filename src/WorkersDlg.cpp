@@ -127,8 +127,8 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 void CWorkersDlg::update()
 {
     // Don't process if the page is hidden
-    if ( isHidden() )
-        return;
+   // if ( isHidden() )
+   //     return;
 
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
@@ -173,7 +173,7 @@ void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 void CWorkersDlg::showEvent( QShowEvent* )
 {
     update();
-    restartUpdTimer( m_WorkersUpdInterval );
+    restartUpdTimer( m_WorkersUpdInterval / 1000 );
 }
 
 void CWorkersDlg::hideEvent( QHideEvent* )
