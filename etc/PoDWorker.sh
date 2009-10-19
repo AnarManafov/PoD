@@ -55,11 +55,6 @@ xrd_detect()
 	echo "XRD is NOT running"
 	return 0
     fi
-
-    XRD_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min)
-    XRD_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max)
-    XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
-    XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
     
     var0=0
     RETRY_CNT=3
@@ -239,6 +234,13 @@ fi
 # creating an empty proof.conf, so that xproof will be happy
 touch $POD_PROOFCFG_FILE
 
+# user defaults for ports
+XRD_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min)
+XRD_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max)
+XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
+XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
+
+
 # we try for 3 times to detect xrd
 # it is needed in case when several PoD workers are started in the same time on one machine
 COUNT=0
@@ -255,15 +257,15 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   
   if [ -n "$XRD_PID" ]; then
     # use existing ports for xrd and xproof
-      POD_XRD_PORT_TOSET=XRD_PORT
-      POD_XPROOF_PORT_TOSET=XPROOF_PORT
+      POD_XRD_PORT_TOSET=$XRD_PORT
+      POD_XPROOF_PORT_TOSET=$XPROOF_PORT
   else
       POD_XRD_PORT_TOSET=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
       POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
   fi
   
-  echo "using XRD port:"$POD_XRD_PORT_TOSET
-  echo "using XPROOF port:"$POD_XPROOF_PORT_TOSET
+  echo "using XRD port: "$POD_XRD_PORT_TOSET
+  echo "using XPROOF port: "$POD_XPROOF_PORT_TOSET
   
 # updating XRD configuration file
   regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
