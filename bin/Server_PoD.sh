@@ -40,7 +40,7 @@ server_status()
     XRD_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}'`
     AGENT_PID=`ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}'`
     
-    if [ -z "$XPD_PID" -a  -z "$AGENT_PID" ]; then
+    if [ -z "$XRD_PID" -a  -z "$AGENT_PID" ]; then
 	echo "PoD server is NOT running"
 	return 1
     fi  
