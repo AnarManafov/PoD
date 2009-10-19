@@ -229,7 +229,7 @@ void CJobInfoItemModel::_setupJobsContainer()
 void CJobInfoItemModel::setUpdateInterval( int _newVal )
 {
     m_updateInterval = _newVal;
-    _newVal <= 0? m_jobInfo.stopUpdate(): m_jobinfo.update( m_updateInterval );
+    _newVal <= 0? m_jobinfo.stopUpdate(): m_jobinfo.update( m_updateInterval );
 }
 
 void CJobInfoItemModel::numberOfJobsChanged( int _count )
