@@ -1,8 +1,36 @@
-********************* Release 2.1.0 not yet released ************************
-- using a central user-defaults configuration
+********************* Release 2.1.1 2009-10-20 ************************
+- using a central user-defaults configuration ($POD_LOCATION/etc/PoD.cfg). 
+- a general optimization has been done. A virt. Memory footprint is reduced by a factor of 10. A significant increase of the speed.
+- added idle time-out watchers for servers and workers. Shutdown a node (a worker or a server) when idle for a defined amount of time.
+- server's script has been cleaned up and now also relays on PoD's user defaults.
+- jobs' wrapper script has been cleaned up.
+- introduced a new algorithm for automatic port mapping.
+
 Configuration update:
    - added <worker.set_my_rootsys>. Set to "yes" if you want to use a custom version of the ROOT on workers. PoD set ROOTSYS env.variable to a value defined by <worker.my_rootsys>.
    - added <worker.my_rootsys>. Set to a path to a custom ROOT version.
+
+Submodules:
+=== GAW v3.2.0
+=== pod-agent v2.1.1 (2009-10-20) with the following changes:
+   - project's has been renamed to pod-agent.
+   - use now PoD's user defaults ($POD_LOCATION/etc/PoD.cfg) for configuration options.
+   - a new proxy machinery based on a thread-pool pattern. This gives PoD a significant speed improvements in cases when PROOF does file validation and merging and when many workers are used.
+   - a number of threads in the pool and a read buffer size can be changed via PoD's user defaults configuration file. 
+   - when in the worker mode, use a server_info.cfg file, where a host name and a port number of the agent server are stored.
+   - added new program options: 
+      - "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
+      - "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
+   - support Mac OS X 10.5 and 10.6.
+   - a log level is now can be defined via PoD's user defaults configuration file.
+   - a log file location is now can be defined via Pod's user defaults configuration file.
+=== pod-console v1.1.1 (2009-10-20) with the following changes:
+   - Renamed to pod-console.
+   - Don't update server or workers page if the page is hidden.
+   - Optimized LSF plug-in status updated.
+   - A factor of 3 optimization of the server status update.
+   - minor bugs fixes.
+=== pod-user-defaults v1.0.1 (2009-10-20)
 
 ********************* Release 2.0.10 2009-07-21 ************************
 Using new PROOFAgent.
@@ -11,8 +39,7 @@ Using new PROOFAgent.
      Workers where sending data without checking that server could be temporary unavailable due to a full buffer of the socket.
 
 ********************* Release 2.0.9 2009-07-11 ************************
-- A patched version, tuned for ROOT 5.24. Released because PROOF changed the way it handles variables in xr
-d config file.
+- A patched version, tuned for ROOT 5.24. Released because PROOF changed the way it handles variables in xrd config. file.
 
 ********************* Release 2.0.8 2009-06-16 ************************
 - Switch to $POD_LOCATION instead of $GLITE_PROOF_LOCATION.
