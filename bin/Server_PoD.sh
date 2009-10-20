@@ -19,12 +19,12 @@
 #
 
 #######
-XRD_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_min`
-XRD_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_max`
-XPROOF_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_min`
-XPROOF_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max`
-PROOFAGENT_PORTS_RANGE_MIN=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_min`
-PROOFAGENT_PORTS_RANGE_MAX=`pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max`
+XRD_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_min)
+XRD_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_max)
+XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_min)
+XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max)
+PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_min)
+PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max)
 #######
 # a number of seconds we wait until xrd is started 
 XRD_START_TIMEOUT=3

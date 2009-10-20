@@ -18,6 +18,12 @@
 # ************************************************************************
 # F U N C T I O N S
 # ************************************************************************
+# *****   *****
+logMsg()
+{
+    echo "*** [$(date -R)]   $1"
+}
+# ************************************************************************
 # ***** Perform program exit housekeeping *****
 clean_up()
 {
@@ -32,7 +38,7 @@ clean_up()
 	# making an archive of proof logs
 	# it will be transfered to a user
 	tar -czvf proof_log.tgz $proof_dir
-	echo "$proof_dir exists and will be deleted..."
+	logMsg "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir
     fi
     
@@ -50,9 +56,9 @@ xrd_detect()
     XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
     
     if [ -n "$XRD_PID" ]; then
-	echo "XRD is running under PID: "$XRD_PID
+	logMsg "XRD is running under PID: "$XRD_PID
     else
-	echo "XRD is NOT running"
+	logMsg "XRD is NOT running"
 	return 0
     fi
     
@@ -62,7 +68,7 @@ xrd_detect()
     # it is needed in case when several PoD workers are started in the same time on one machine
     while [ "$var0" -lt "$RETRY_CNT" ]
       do
-      echo "detecting xrd ports. Try $var0"
+      logMsg "detecting xrd ports. Try $var0"
       # getting an array of XRD LISTEN ports
       # change a string separator
       O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | grep "xrootd")) IFS=$O;
@@ -80,8 +86,8 @@ xrd_detect()
 	fi
       done
        
-      echo "PoD has detected XRD port: "$XRD_PORT
-      echo "PoD has detected XPROOF port: "$XPROOF_PORT
+      logMsg "PoD has detected XRD port: "$XRD_PORT
+      logMsg "PoD has detected XPROOF port: "$XPROOF_PORT
       if [ -n "$XRD_PORT" ] && [ -n "$XPROOF_PORT" ]; then
 	  return 0
       else
@@ -120,7 +126,6 @@ get_freeport()
 
 # ************************************************************************
 
-
 # ************************************************************************
 # M A I N
 # ************************************************************************
@@ -128,11 +133,10 @@ get_freeport()
 # handle signals
 trap clean_up SIGHUP SIGINT SIGTERM 
 
+logMsg "+++ START +++"
 # current working dir
-WD=`pwd`
-echo "Current working directory: $WD"
-y=`eval ls -l`
-echo "$y"
+WD=$(pwd)
+logMsg "Current working directory: $WD"
 
 #Exporting PoD variables
 export POD_LOCATION=$WD
@@ -143,7 +147,7 @@ export POD_PROOFCFG_FILE
 # changing _G_WRK_DIR to a working directory in the following files:
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 # populating the tmp dir.
-_TMP_DIR=`mktemp -d /tmp/PoDWorker_XXXXXXXXXX`
+_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
@@ -178,7 +182,7 @@ case "$host_arch" in
 	;;
 esac
 
-echo "*** host's CPU/instruction set: " $host_arch
+logMsg "host's CPU/instruction set: " $host_arch
 
 case "$host_arch" in
     x86)
@@ -191,7 +195,7 @@ esac
 
 # ****************
 # ***** ROOT *****
-set_my_rootsys=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys`
+set_my_rootsys=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys)
 if [ "$set_my_rootsys" = "no" ]; then
     wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || clean_up 1
     tar -xzvf $ROOT_ARC || clean_up 1
@@ -200,7 +204,7 @@ if [ "$set_my_rootsys" = "no" ]; then
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 else
-    export ROOTSYS=`pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys`
+    export ROOTSYS=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys)
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
@@ -240,23 +244,22 @@ XRD_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --k
 XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
 
-
 # we try for 3 times to detect xrd
 # it is needed in case when several PoD workers are started in the same time on one machine
 COUNT=0
-MAX_COUNT=3
+MAX_COUNT=5
 while [ "$COUNT" -lt "$MAX_COUNT" ]
   do
-# detecting whether xrd is running and on whihc ports xrd and xproof are listning
+# detecting whether xrd is running and on which ports xrd and xproof are listening
   xrd_detect
   return_val=$?
   if [ "X$return_val" != "X0" ]; then
-      echo "problem to detect XRD/XPD ports. Exiting..."
+      logMsg "problem to detect XRD/XPD ports. Exiting..."
       clean_up 1
   fi
   
   if [ -n "$XRD_PID" ]; then
-    # use existing ports for xrd and xproof
+      # use existing ports for xrd and xproof
       POD_XRD_PORT_TOSET=$XRD_PORT
       POD_XPROOF_PORT_TOSET=$XPROOF_PORT
   else
@@ -264,56 +267,65 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
       POD_XPROOF_PORT_TOSET=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
   fi
   
-  echo "using XRD port: "$POD_XRD_PORT_TOSET
-  echo "using XPROOF port: "$POD_XPROOF_PORT_TOSET
+  logMsg "using XRD port: "$POD_XRD_PORT_TOSET
+  logMsg "using XPROOF port: "$POD_XPROOF_PORT_TOSET
   
-# updating XRD configuration file
+  # updating XRD configuration file
   regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
   regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
   sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
   mv $WD/xpd.cf.temp $WD/xpd.cf
   
-# starting xrootd
+  # starting xrootd
   if [ -n "$XRD_PID" ]; then
-      echo "using existing XRD instance..."
+      logMsg "using existing XRD instance..."
       break
   else
-      echo "Starting xrootd..."
+      logMsg "starting xrootd..."
       xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
-# detect that xrootd failed to start
-      sleep 10
-      XRD=`pgrep -U $UID xrootd`
-      XRD_RET_VAL=$?
-      if [ "X$XRD_RET_VAL" = "X0" ]; then
-	  break
-      else
-	  echo "problem to start xrootd! I will try once again..."
-	  COUNT=`expr $COUNT + 1`
+
+      # detect that xrootd failed to start
+      sleep 3
+   
+      XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
+      
+      if [ -z "$XRD_PID" ]; then
+	  logMsg "problem to start xrootd! I will try once again..."
+	  COUNT=$(expr $COUNT + 1)
 	  sleep 3
+	  continue
       fi
+
+      logMsg "found a running XRD instance with pid: "$XRD_PID
+
+      # run reconfigure, just in case if other job-script has started xrd
+      # it happens when scripts are started at the same time
+      continue
   fi
 done
 
 # detect that xrootd failed to start
-XRD=`pgrep -U $UID xrootd`
+XRD=$(pgrep -U $UID xrootd)
 XRD_RET_VAL=$?
 if [ "X$XRD_RET_VAL" = "X0" ]; then
-    echo "XROOTD successful."
+    logMsg "checking XROOTD process: running..."
 else
-    echo "problem to start xrootd. Exit code: $XRD_RET_VAL"
+    logMsg "checking XROOTD process: is NOT running"
     clean_up 1
 fi
 
-
+logMsg "starting pod-agent..."
 # start pod-agent
 pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
-    echo "pod-agent successful. Exit code: $RET_VAL"
+    logMsg "pod-agent finished successfully. Exit code: $RET_VAL"
 else
-    echo "cant start pod-agent. Exit code: $RET_VAL"
+    logMsg "cant start pod-agent. Exit code: $RET_VAL"
     clean_up 1
 fi
+
+logMsg "--- DONE ---"
 
 # Exit
 clean_up 0
