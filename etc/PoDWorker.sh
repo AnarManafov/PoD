@@ -186,10 +186,10 @@ logMsg "host's CPU/instruction set: " $host_arch
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="pod-agent-2_1_0b-x86-linux-gcc_4_1.tar.gz"
+	PROOFAGENT_ARC="pod-agent-2_1_1-x86-linux-gcc_4_1.tar.gz"
 	ROOT_ARC="root_v5.24.00.Linux-slc5-gcc3.4.tar.gz" ;;
     x86_64)
-        PROOFAGENT_ARC="pod-agent-2_1_0b-x86_64-linux-gcc_4_1.tar.gz"
+        PROOFAGENT_ARC="pod-agent-2_1_1-x86_64-linux-gcc_4_1.tar.gz"
         ROOT_ARC="root_v5.24.00.Linux-slc4_amd64-gcc3.4.tar.gz" ;;
 esac
 
@@ -316,7 +316,7 @@ fi
 
 logMsg "starting pod-agent..."
 # start pod-agent
-pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
+$PROOFAGENTSYS/pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
     logMsg "pod-agent finished successfully. Exit code: $RET_VAL"
