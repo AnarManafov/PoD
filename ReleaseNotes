@@ -1,13 +1,15 @@
-********************* Release 2.1.0 not yet released ************************
+********************* Release 2.1.1 2009-10-20 ************************
 - project's has been renamed to pod-agent.
-- new proxy machinery based on a thread pool pattern.
-- a number of threads in the pool and read buffer can be changed via PoD's user defaults configuration file. 
-- use a server_info.cfg file, where a host name and a port number of the agent server are stored.
-- new program options: 
+- use now PoD's user defaults ( $POD_LOCATION/etc/PoD.cfg) for configuration options.
+- a new proxy machinery based on a thread-pool pattern. This gives PoD a significant speed improvements in cases when PROOF does file validation and merging and when many workers are used.
+- a number of threads in the pool and a read buffer size can be changed via PoD's user defaults configuration file. 
+- when in the worker mode, use a server_info.cfg file, where a host name and a port number of the agent server are stored.
+- added new program options: 
     - "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
     - "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
 - support Mac OS X 10.5 and 10.6.
-- a log level now can be defined via PoD's user defaults configuration file.
+- a log level is now can be defined via PoD's user defaults configuration file.
+- a log file location is now can be defined via Pod's user defaults configuration file.
 
 ********************* Release 2.0.1 2009-07-21 ************************
 A patch release.
