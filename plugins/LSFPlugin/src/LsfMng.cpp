@@ -139,8 +139,11 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
     int more = 0;
     // get the job details
     job = lsb_readjobinfo( &more );
-    if ( job == NULL )
+    if ( NULL == job )
+    {
+    	lsb_closejobinfo();
         return JS_JOB_STAT_UNKWN;
+    }
 
     EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
 
@@ -225,7 +228,10 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
     // get the job details
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
+    {
+    	lsb_closejobinfo();
         return 0;
+    }
 
     int retNumberOfJobsInArray = 0;
     // check whether it is an array job
