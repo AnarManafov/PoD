@@ -16,9 +16,9 @@ PKG_NAME=PoD_Package
 
 
 # building documentation
-#pushd documentation/src/
-#gmake || exit 1
-#popd
+pushd documentation/src/
+gmake || exit 1
+popd
 
 # making pkg.
 mkdir -p $PKG_NAME || exit 1
