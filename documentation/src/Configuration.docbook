@@ -16,15 +16,15 @@ Configuration
     <sect1 id="PoD">
       <title>PoD - user defaults</title>
       <para>
-	Since PoD v2.1.1 a user defaults configuration file is support. This is a genral configuration of PoD.
+	Since PoD v2.1.1 a user defaults configuration file is support. This is a general configuration of PoD.
 	All modules read from that file. By default it is located in <filename  class="directory">$POD_LOCATION/etc/</filename>
-and is called <filename>PoD.cfg<filename>.
+and is called <filename>PoD.cfg</filename>.
       </para>
 	<para>
 	PoD comes with default values in PoD.cfg and should work out of the box.  
 	</para>
 	<para>
-	TODO: document all etries from the PoD.cfg
+	TODO: document all entries from the PoD.cfg
 	</para>
     </sect1>
 
