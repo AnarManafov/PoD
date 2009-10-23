@@ -14,9 +14,9 @@ Installation
       <para>Choose a directory where you want to install <application>PoD</application>,
       we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>PoD</application> tarball to this directory:
 <screen>
-<command>tar -C /tmp/test -xzvf <replaceable>PoDPackage.2.0.7.tgz</replaceable></command>
+<command>tar -C /tmp/test -xzvf <replaceable>PoD_Package.2.1.1.tar.gz</replaceable></command>
 </screen>
-		Tar will created a new directory <filename class="directory">/tmp/test/PoD</filename>,
+		Tar will created a new directory <filename class="directory">/tmp/test/PoD_Package</filename>,
 		where <application>PoD</application> package will be located.</para>
     </sect1>
     <sect1 id="step2">
@@ -24,10 +24,10 @@ Installation
       <para>
       Change to the PoD directory:
 <screen>
-<command>cd <replaceable>/tmp/test/PoDpackage</replaceable></command>
+<command>cd <replaceable>/tmp/test/PoD_Package</replaceable></command>
 </screen>
-      You may want to change some other setting. Here the description of the variables,
-      which could be used to adjust PoD installation:
+      You may want to change some setting in the <filename>install</filename> script.
+      Here we have a description of the variables, which could be used to adjust PoD installation:
       <table>
 		<title>PoD configuration variables</title>
   		<tgroup cols="2">
@@ -38,10 +38,6 @@ Installation
       	</row>
     		</thead>
     		<tbody>
-      		<row>
-        			<entry>INSTALL_PATH</entry>
-        			<entry>A full path to the PoD installation.</entry>
-      		</row>
       		<row>
         			<entry>GAW_LINK</entry>
         			<entry>An URL of glite-api-wrapper's source tarball</entry>        
@@ -55,28 +51,28 @@ Installation
         			<entry>Options, which should be given to the configure utility of glite-api-wrapper.</entry>        
       		</row>
       		<row>
-        			<entry>PROOFAgent_PKG</entry>
-        			<entry>A name of PROOFAgent package.</entry>        
+        			<entry>pod_agent_PKG</entry>
+        			<entry>A name of pod-agent package.</entry>        
       		</row>
       		<row>
-        			<entry>PROOFAgent_LINK</entry>
-        			<entry>An URL of PROOFAgent's source tarball</entry>        
+        			<entry>pod_agent_LINK</entry>
+        			<entry>An URL of pod-agent's source tarball</entry>        
       		</row>
       		<row>
-        			<entry>PROOFAgent_OPTIONS</entry>
-        			<entry>Options, which should be given to the configure utility of PROOFAgent.</entry>        
+        			<entry>pod_agent_OPTIONS</entry>
+        			<entry>Options, which should be given to the pod-agent build utility (cmake).</entry>        
       		</row>
       		<row>
-        			<entry>PAConsole_PKG</entry>
-        			<entry>A name of PAConsole package.</entry>        
+        			<entry>pod_console_PKG</entry>
+        			<entry>A name of pod_console package.</entry>        
       		</row>
       		<row>
-        			<entry>PAConsole_LINK</entry>
-        			<entry>An URL of PAConsole's source tarball</entry>        
+        			<entry>pod_console_LINK</entry>
+        			<entry>An URL of pod-conolse's source tarball</entry>        
       		</row>
       		<row>
-        			<entry>PAConsole_OPTIONS</entry>
-        			<entry>Options, which should be given to the PAConsole build utility (cmake).</entry>        
+        			<entry>pod_console_OPTIONS</entry>
+        			<entry>Options, which should be given to the pod-console build utility (cmake).</entry>        
       		</row>
       		<row>
         			<entry>GLITE_LOCATION</entry>
@@ -114,13 +110,14 @@ Installation
       Execute installation script, which will perform downloads of required modules,
       build them and configure <application>PoD</application> for the first run:
 <screen>
-<command>./install</command>
+<command>./install -b</command>
 </screen>
       </para>
       <important><para>
         The <command>./install</command> command must be issued from the root of the <application>PoD</application> directory.
-		</para></important>      
+		</para></important> 
     </sect1>
+
     <sect1 id="step4">
       <title>Step #4</title>
       <para>
@@ -128,7 +125,7 @@ Installation
 <screen>
 <command>source PoD_env.sh</command>
 </screen>
-      You need to source this script every time when you want to use <application>PoD</application>
+      You need to source this script every time in a new shell when you want to use <application>PoD</application>
       or source it from your bash profile.
       </para>
       <para>
