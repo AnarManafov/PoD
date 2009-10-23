@@ -14,7 +14,7 @@ Configuration
     Recommended only for advanced users.
     </para>
     <sect1 id="PoD">
-      <title>PoD - user defaults</title>
+      <title>PoD user defaults configuration</title>
       <para>
 	Since PoD v2.1.1 a user defaults configuration file is support. This is a general configuration of PoD.
 	All modules read from that file. By default it is located in <filename  class="directory">$POD_LOCATION/etc/</filename>
