@@ -24,16 +24,16 @@ How to run
     <sect1 id="Services">
       <title>Services</title>
       <para>
-      Start PAConsole, a GUI application, which automates and helps to manage most of the operations.
+      Start pod-console, a GUI application, which automates and helps to manage most of the operations.
 <screen>
-<command>PAConsole&amp;</command>
+<command>pod-console&amp;</command>
 </screen>
-        The <xref linkend="PAConsole_Server"/> shows a screen shot of PAConsole's Server page. Currently PoD
-        requires two services: xrootd and PROOFAgent (+ oldb, a part of xrootd, if you want to use pool workers.
+        The <xref linkend="pod_console_Server"/> shows a screen shot of pod-console's Server page. Currently PoD
+        requires two services: xrootd and pod-agent (+ oldb, a part of xrootd, if you want to use pool workers.
         Pool workers are not officially supported).
 
-        <para><figure float="0" id="PAConsole_Server">
-        <title>PAConsole: Server page</title>
+        <para><figure float="0" id="pod_console_Server">
+        <title>pod-console: Server page</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG"/>
@@ -50,7 +50,7 @@ How to run
         </para>
         
         <para>
-        The <xref linkend="PAConsole_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
+        The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
         been pressed and PoD services are up - PoD Server is up and running.
       </para>
     </sect1>
@@ -76,10 +76,10 @@ How to run
       <para>
        As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
        about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
-       PROOF Worker for the user. A list of accepted workers could be checked on Workers page of PAConsle
-       (see the <xref linkend="PAConsole_Workers"/>).        
-          <para><figure float="0" id="PAConsole_Workers">
-        <title>PAConsole: Workers</title>
+       PROOF Worker for the user. A list of accepted workers could be checked on Workers page of pod-console
+       (see the <xref linkend="pod_console_Workers"/>).        
+          <para><figure float="0" id="pod_console_Workers">
+        <title>pod-console: Workers</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG"/>
@@ -97,22 +97,22 @@ How to run
        <tip><para>
        PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
        need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
-       reconnection with its worker nodes automatically. Worker nodes will be on-line until the PROOFAgent service is on-line or
+       reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
        until s Grid and/or batch queue time is over.
        </para></tip>
        </sect1>
 
        
-    <sect1 id="PAConsole_preferences">
+    <sect1 id="pod_console_preferences">
       <title>Preferences</title>
       <para>
       	
-        Using a preferences page (see <xref linkend="PAConsole_Preferences"/>) users are able to change updated interval of
+        Using a preferences page (see <xref linkend="pod_console_Preferences"/>) users are able to change updated interval of
         the remote jobs monitoring and the available
         PROOF workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
         otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
-        <para><figure float="0" id="PAConsole_Preferences">
-        <title>PAConsole: Preferences</title>
+        <para><figure float="0" id="pod_console_Preferences">
+        <title>pod-console: Preferences</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Preferences.png" format="PNG"/>
@@ -124,7 +124,33 @@ How to run
         </figure></para>
       </para>  
     </sect1>
-             
+
+
+ <sect1 id="A_helper_header">
+      <title>A helper header</title>
+      <para>
+      Since version 2.1.1 PoD generates a helper header <filename>$POD_LOCATION/etc/pod-master.h</filename>.
+This is a C++ header file, which containes a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analisys, and use constants from the header in a PROOF connection string. Everytime when PoD automated port mappint choose a different port for xproof, the helper header will be updated.
+This will help always get a proper settings of a current master host and PROOF's port name.
+       </para>
+       <para>
+       For an example analysis, please see <xref linkend="How_to_test"/>.
+       </para>
+	<para>
+	The following is an exampel of the helper header:
+	<screen>
+#ifndef _POD_MASTER_H_
+#define _POD_MASTER_H_
+#define POD_LOCATION "/misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package"
+#define POD_MASTER_HOST "lxb333.gsi.de"
+#define POD_XPROOF_PORT "21001"
+#define POD_XROOTD_PORT "20000"
+#endif	
+	</screen>
+	</para>
+       </sect1>      
+
+
     <sect1 id="Analysis">
       <title>Analysis</title>
       <para>
@@ -134,8 +160,8 @@ How to run
        <para>
        For an example analysis, please see <xref linkend="How_to_test"/>.
        </para>
-       </sect1>      
-      
+       </sect1> 
+       
     <sect1 id="How_to_shut_down_PoD">
       <title>How to shut down PoD</title>
       <para>

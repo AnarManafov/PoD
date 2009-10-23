@@ -13,6 +13,21 @@ Configuration
     and to fine tune <application>PoD</application> one may want to configure some of these modules.
     Recommended only for advanced users.
     </para>
+    <sect1 id="PoD">
+      <title>PoD - user defaults</title>
+      <para>
+	Since PoD v2.1.1 a user defaults configuration file is support. This is a genral configuration of PoD.
+	All modules read from that file. By default it is located in <filename  class="directory">$POD_LOCATION/etc/</filename>
+and is called <filename>PoD.cfg<filename>.
+      </para>
+	<para>
+	PoD comes with default values in PoD.cfg and should work out of the box.  
+	</para>
+	<para>
+	TODO: document all etries from the PoD.cfg
+	</para>
+    </sect1>
+
     <sect1 id="GAW">
       <title>GAW</title>
       <para>
@@ -37,31 +52,6 @@ Configuration
       </tip>
         All other settings may be changed to adjust PoD according to personal needs.
         </para>
-    </sect1>
-    <sect1 id="PROOFAgent">
-      <title>PROOFAgent</title>
-      <para>
-      PROOFAgent is a kind of proxy and manager application for PoD. This application manages
-      communication with PoD workers, where PROOFAgent clients are working.
-      There is PROOFAgent's configuration file in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
-      directory, it's called <filename>proofagent.cfg.xml</filename>. This configuration file actually
-      holds both client and server configuration, so be careful while changing it.
-      The file is an XML file and it's XML Schema documentation and description of all configuration keys could
-      be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
-      </para>
-        <warning>
-      <para>
-      PROOFAgent works with instances. The default configuration file is holds two instances: server, client.
-      It is recommended for users to keep it that way. Only Advanced users may change this.
-      </para>
-      </warning>
-      <para>
-      The default configuration of PROOFAgent uses a dynamic ports mechanism of PoD. It looks dynamicly for needed ports
-      in a default range of 20000-25000 (well known as default Globus port range)
-      </para>
-      <para>
-      (TODO: provide configuration possibilities for advanced users.)
-      </para>   
     </sect1>
     <sect1 id="XROOTD">
       <title>XROOTD</title>
