@@ -1,4 +1,4 @@
-********************* Release 2.1.1 2009-10-20 ************************
+********************* Release 2.1.1 2009-10-24 ************************
 - using a central user-defaults configuration ($POD_LOCATION/etc/PoD.cfg). 
 - a general optimization has been done. A virt. Memory footprint is reduced by a factor of 10. A significant increase of the speed.
 - added idle time-out watchers for servers and workers. Shutdown a node (a worker or a server) when idle for a defined amount of time.
