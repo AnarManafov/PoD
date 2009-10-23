@@ -16,7 +16,7 @@ Introduction
     	data analysis on Grid and batch clusters.
     	</para>
     	<para>
-    	<application>PoD</application> provides a plug-in system, which helps to use it with different job submission machinaries.
+    	<application>PoD</application> provides a plug-in system, which helps to use it with different job submission machineries.
     	Current implementation of PoD ships a gLite plug-in (for gLite Grid) and LSF plug-in (for LSF batch system). 
     	The gLite plug-in uses <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/GAW">glite-api-wrapper library</ulink>
     	(<acronym>GAW</acronym>) to perform gLite job submission and other Grid-related procedures.

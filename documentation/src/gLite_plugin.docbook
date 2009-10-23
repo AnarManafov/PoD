@@ -22,11 +22,11 @@ How to run
       As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
       </para>
       <para>
-      Select the Grid page of the PAConsole by clicking on the left sided tool bar. The page looks something like
+      Select the Grid page of the pod-console by clicking on the left sided tool bar. The page looks something like
       it is shown on the <xref linkend="PAConsole_Grid0"/>.
  
         <para><figure float="0" id="PAConsole_Grid0">
-        <title>PAConsole: Grid page</title>
+        <title>pod-console: Grid page</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
@@ -37,15 +37,15 @@ How to run
         </mediaobject></screenshot>
         </figure></para>     
       To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
-      or a custom one). A WMProxy endpoint should be selected. If PAConsole shows no Endpoints, that would probably mean you
+      or a custom one). A WMProxy endpoint should be selected. If pod-console shows no Endpoints, that would probably mean you
       don't have any predefined endpoints on your gLite UI and POD will use the one which is defined in the GAW
       configuration file. If several endpoints found, than you can chose which one GAW should use to submit POD jobs.
-		PAConsole uses an automatic endpoint recognition system provided by GAW.      
+		pod-console uses an automatic endpoint recognition system provided by GAW.      
       At the last users may want to specify a number of workers they desire to use. POD uses a parametric job submission,
       which means that only one job will be send to WMS, but there it will be spread according to defined number of
       workers.
         <para><figure float="0" id="PAConsole_Grid1">
-        <title>PAConsole: Submitting 5 workers</title>
+        <title>pod-console: Submitting 5 workers</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
@@ -56,11 +56,11 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
         
-        A current status of the last submitted jobs is dynamically shown by PAConsole, which could be seen
+        A current status of the last submitted jobs is dynamically shown by pod-console, which could be seen
         on the <xref linkend="PAConsole_Grid1"/>.
         
         <para>
-        PAConsole is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>). Every newly submitted job will be added to monitoring
+        pod-console is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>). Every newly submitted job will be added to monitoring
         and kept there until removed via
         <menuchoice>
 		  <shortcut><keycombo><keysym>Ctrl-R</keysym></keycombo></shortcut>
@@ -72,7 +72,7 @@ How to run
         to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
         </para>
         <para><figure float="0" id="PAConsole_Grid3">
-        <title>PAConsole: Monitoring of several jobs</title>
+        <title>pod-console: Monitoring of several jobs</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
@@ -88,7 +88,7 @@ How to run
         get output sandbox of the selected job, get logging information (see <xref linkend="PAConsole_LogInfo"/>),
         remove a job from the monitoring or cancel it.
         <figure float="0" id="PAConsole_Grid2">
-        <title>PAConsole: Context menu</title>
+        <title>pod-console: Context menu</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
@@ -100,7 +100,7 @@ How to run
         </figure></para>
         
         <figure float="0" id="PAConsole_LogInfo">
-        <title>PAConsole: Logging Information</title>
+        <title>pod-console: Logging Information</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>

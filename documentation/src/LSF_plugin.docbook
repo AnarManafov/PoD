@@ -12,10 +12,10 @@ How to run
     <sect1 id="LSF_Workers">
       <title>LSF workers</title>
       <para>
-      The <xref linkend="PAConsole_LSF_plug-in"/> shows a screen shot of the LSF plug-in GUI page for PAConsole.
+      The <xref linkend="PAConsole_LSF_plug-in"/> shows a screen shot of the LSF plug-in GUI page for pod-console.
       </para>
       <para><figure float="0" id="PAConsole_LSF_plug-in">
-        <title>PAConsole: Server page</title>
+        <title>pod-console: Server page</title>
         <screenshot><mediaobject>
         <imageobject>
         <imagedata fileref="PAConsole_LSF_plugin_snapshot.png" format="PNG"/>
@@ -43,7 +43,7 @@ How to run
      	<filename>etc/PoDWorker.sh</filename> setups is also inherited by its children. 
       </para>
       <para>
-      There is no way to set your environment using <application>PAConsole</application>. This is ongoing development.
+      There is no way to set your environment using <application>pod-console</application>. This is ongoing development.
       Currently users need to add additional environment settings manually.
       </para>
       <para>

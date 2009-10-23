@@ -130,7 +130,7 @@ How to run
       <title>A helper header</title>
       <para>
       Since version 2.1.1 PoD generates a helper header <filename>$POD_LOCATION/etc/pod-master.h</filename>.
-This is a C++ header file, which containes a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analisys, and use constants from the header in a PROOF connection string. Everytime when PoD automated port mappint choose a different port for xproof, the helper header will be updated.
+This is a C++ header file, which contains a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analisys, and use constants from the header in a PROOF connection string. Every time when PoD automated port mapping choose a different port for xproof, the helper header will be updated.
 This will help always get a proper settings of a current master host and PROOF's port name.
        </para>
        <para>
