@@ -16,7 +16,7 @@
 
 <book id="POD" lang="en">
 <bookinfo>
-<title>PROOF on Demand - a POD project (v.2.1.0b)</title> 
+<title>PROOF on Demand - a POD project (v.2.1.1)</title> 
   <authorgroup>
     <author>
        <firstname>Anar</firstname>
@@ -26,7 +26,7 @@
          </affiliation>
     </author>
   </authorgroup>
-  <edition>PROOF on Demand v2.0.7</edition>
+  <edition>PROOF on Demand v2.1.1</edition>
   <copyright>
 	<year>2007</year>
 	<year>2008</year>

@@ -14,17 +14,20 @@ Requirements
         PoD works as a client/server application.
         We define user's workspace as a side, which is located on the local (for the user) space,
         on users laptop, for example. For simplification we will call it a user's workspace or
-        local workspace. There PoD server is running.
+        local workspace. There a PoD server is running.
         </para>
+	<para>
+	Officially PoD runs only on Linux.
+	</para>
         <para>
 	<itemizedlist>
 		<title>General workspace requirements: </title>
-		<listitem>Incomming connection on PROOFAgent port (configurable)</listitem>
-		<listitem>ROOT 5.22+ (xrootd enabled)</listitem>
+		<listitem>Incomming connection on pod-agent's port (configurable)</listitem>
+		<listitem>ROOT 5.24+ (xrootd enabled)</listitem>
 		<listitem>Qt 4.2+</listitem>
-		<listitem>BOOST 1.32</listitem>
-		<listitem>XERCES-C 2.7</listitem>		
-		<listitem>cmake 2.6.2</listitem>
+		<listitem>BOOST 1.32</listitem>		
+		<listitem>cmake 2.6</listitem>
+		<listitem>bash</listitem>
 	</itemizedlist>
         <itemizedlist>
                 <title>Additional requirements for gLite plug-in:</title>
@@ -38,7 +41,7 @@ Requirements
         </sect1>
        <sect1 id="Workers_workspace_requirements">
        <title>Workers' workspace requirements</title>
-       <para>
+       <para>	
        We define workers' workspace as a side which is located on the remote space,
        gLite Grid Worker Nodes or batch workers, for example.
         Clients are actually workers for us. For simplification we will call it a remote workspace.
@@ -46,7 +49,9 @@ Requirements
        	<para>
        	<itemizedlist>
        		<title>General workspace requirements: </title>
-                <listitem>Outgoing connection for GLOBUS ports (configurable)</listitem>
+                <listitem>Outgoing connection for a port in a range (configurable).
+		          This is needed by pod-agent worker to be able to connect to a server</listitem>
+		<listitem>bash</listitem>
 	</itemizedlist>
        	<itemizedlist>
         	<title>Additional requirements for gLite plug-in: </title>

@@ -26,18 +26,18 @@ Introduction
 			<title><application>PoD</application> consists of the following main components:</title>
   			<listitem>
     			<para>
-    			<guilabel>PROOFAgent</guilabel> &mdash; a lightweight, standalone C++ application.
-    			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on the
-    			remote worker nodes behind a firewall. Also PROOFAgent has a number of additional
+    			<guilabel>pod-agent</guilabel> &mdash; a lightweight, standalone C++ application.
+    			Acts as a multifunctional proxy client/server and helps to use proof/xrootd on remote
+			worker nodes behind a firewall. Also pod-agent has a number of additional
     			useful functionality which help to start, process, and control PROOF interactive analysis.
     			Its default configuration file is provided with the PoDs distribution.
     			</para>
   			</listitem>
   		  	<listitem>
     			<para>
-                <guilabel>PAConsole</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
-                to simplify the usage of PROOFAgent and PoD configuration files.
-                PAConsole implements a plug-in system, which helps to have different job managers and
+                <guilabel>pod-console</guilabel> &mdash; a standalone C++ application, provides a GUI and aims
+                to simplify the usage of PoD modules and PoD configuration files.
+                pod-console implements a plug-in system, which helps to have different job managers and
                 submit workers to a different Grid or batch systems.
                 Currently PoD provides gLite and LSF plug-ins.
     			</para>
@@ -73,16 +73,16 @@ Introduction
 		<para>
 		The following describes one of the main use case of PoD (see <xref linkend="fig_PoD"/>):
 		<orderedlist>
-  		<title>Set up PROOF on the Grid</title>
+  		<title>Set up a PROOF cluster on the Grid</title>
   			<listitem>
-    			<para>Using PAConsole a user configures and starts PROOFAgent (PA)
-    			server and XROOTD redirector.</para>
+    			<para>Using pod-console a user configures and starts pod-agent (PA)
+    			server and XROOTD redirector - all together it is a PoD server .</para>
   			</listitem>
   			<listitem>
     			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
 			</listitem>
 			<listitem>
-				<para>Using PAConsole the user submits PoD parametric job to the Grid.</para>
+				<para>Using pod-console the user submits PoD parametric job to the Grid.</para>
 			</listitem>
 			<listitem>
 				<para>When the job arrives to a remote worker node it configures the environment
@@ -98,7 +98,7 @@ Introduction
 			</listitem>
 			<listitem>
 				<para>When PA server detects good connections with its clients, this information is
-				immediately reflected by PAConsole.</para>
+				immediately reflected by pod-console.</para>
 			</listitem>
 			<listitem>
 				<para>When all workers are connected or when the user is satisfied with the number of
@@ -107,7 +107,7 @@ Introduction
 			<listitem>
 				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
 				PoD Grid jobs.</para>
-			</listitem>			
+			</listitem>
 			</orderedlist>
 		</para>
 		</sect1>
