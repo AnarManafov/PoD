@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file proof_demo1.C
+ * @file simple_test0.C
  * @brief Simple test of gLitePROOF #1
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
@@ -14,7 +14,7 @@
 *************************************************************************/
 #include "../etc/pod-master.h"
 
-run()
+simple_test0()
 {
   // Creating a TDset of files to analyze
   TDSet *set = new TDSet( "TTree","h42" );
@@ -29,5 +29,5 @@ run()
   proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)1000 );  
 
   // Processing our test analysis
-  set->Process( "test/myselector.C" );
+  set->Process( "./myselector.C" );
 }
