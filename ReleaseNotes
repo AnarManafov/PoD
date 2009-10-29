@@ -1,3 +1,5 @@
+********************* Release 1.1.2a not yet released ************************
+
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.
 - Don't update server or workers page if the page is hidden.
