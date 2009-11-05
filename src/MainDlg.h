@@ -51,6 +51,13 @@ public slots:
 
 private slots:
     void on_closeButton_clicked();
+    void idleTimeout();
+
+protected:
+    bool eventFilter( QObject *obj, QEvent *event );
+    void childEvent( QChildEvent *e );
+    void enumAllChildren(QObject* o);
+    void switchAllSensors( bool _on );
 
 private:
     void createIcons();
@@ -72,6 +79,7 @@ private:
     CPreferencesDlg m_preferences;
     int m_CurrentPage;
     PluginVec_t m_plugins;
+    QTimer *m_idleTimer;
 };
 
 BOOST_CLASS_VERSION( CMainDlg, 3 )

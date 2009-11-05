@@ -31,8 +31,15 @@
 using namespace std;
 using namespace MiscCommon;
 
+// this is very expensive call, we therefore using 10 sec. timeout
+const size_t g_UpdateInterval = 100;  // in seconds
+
 const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
 const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
+
+// idle timeout. In ms.
+// default 15 min.
+const int g_idleTimeout = 120000;//900000;
 
 template<class T>
 void _loadcfg( T &_s, string _FileName )
@@ -79,6 +86,10 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     QString title( PROJECT_NAME" - " PROJECT_VERSION_STRING );
     setWindowTitle( title );
 
+    // creating the idle timer
+    m_idleTimer = new QTimer( this );
+    connect( m_idleTimer, SIGNAL( timeout() ), this, SLOT( idleTimeout() ) );
+
     try
     {
         // Loading class from the config file
@@ -102,9 +113,6 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for ( ; iter != iter_end; ++iter )
     {
-        // Starting the update timer
-        ( *iter )->startUpdTimer( m_preferences.getJobStatusUpdInterval() );
-
         QWidget *w = ( *iter )->getWidget();
         if ( !w )
             continue;
@@ -119,8 +127,6 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         connect( this, SIGNAL( numberOfJobs( int ) ), &m_workers, SLOT( setNumberOfJobs( int ) ) );
     }
 
-    // Using preferences
-    m_workers.restartUpdTimer( m_preferences.getWorkersUpdInterval() );
     // Immediately update interval when a user changes settings
     connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), &m_workers, SLOT( restartUpdTimer( int ) ) );
 
@@ -129,6 +135,25 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
     createIcons();
     m_ui.contentsWidget->setCurrentRow( m_CurrentPage );
+
+    // catching mouse events on the parent and all its children
+    this->installEventFilter( this );
+    enumAllChildren( qApp );
+    foreach( QWidget* w, qApp->topLevelWidgets() )
+    {
+        enumAllChildren( w );
+    }
+
+    setMouseTracking( true );
+
+    switchAllSensors( true );
+}
+
+void CMainDlg::enumAllChildren( QObject* o )
+{
+    o->installEventFilter( this );
+    foreach( QObject* child, o->children() )
+    enumAllChildren( child );
 }
 
 CMainDlg::~CMainDlg()
@@ -268,4 +293,73 @@ void CMainDlg::on_closeButton_clicked()
     }
 
     close();
+}
+
+void CMainDlg::idleTimeout()
+{
+    // Now, stopping all sensors
+    switchAllSensors( false );
+    stringstream ss;
+    ss << "There were no user interactions for the last "
+    << g_idleTimeout / 60000 << " minutes.\n"
+    << "To avoid the system overloading the console has switched monitoring and all sensors off.\n"
+    << "To continue to monitor, please close this dialog.";
+    QMessageBox::information( this, PROJECT_NAME,
+                              tr( ss.str().c_str() ) );
+    // restarting all sensors here
+    switchAllSensors( true );
+}
+
+void CMainDlg::childEvent( QChildEvent *_event )
+{
+    if ( !_event->child()->isWidgetType() )
+        return;
+
+    if ( _event->type() == QEvent::ChildAdded )
+    {
+        // setting up the event filter for the new child
+        _event->child()->installEventFilter( this );
+        QWidget *w( dynamic_cast<QWidget*>( _event->child() ) );
+        w->setMouseTracking( true );
+    }
+    QWidget::childEvent( _event );
+}
+
+bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
+{
+    if ( event->type() == QEvent::MouseMove )
+    {
+        m_idleTimer->start( g_idleTimeout );
+    }
+
+    // standard event processing
+    return QObject::eventFilter( obj, event );
+}
+
+void CMainDlg::switchAllSensors( bool _on )
+{
+    if ( _on )
+    {
+        m_idleTimer->start( g_idleTimeout );
+        m_workers.restartUpdTimer( m_preferences.getWorkersUpdInterval() );
+        m_server.setUpdTimer( g_UpdateInterval );
+        PluginVec_t::const_iterator iter = m_plugins.begin();
+        PluginVec_t::const_iterator iter_end = m_plugins.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            ( *iter )->startUpdTimer( m_preferences.getJobStatusUpdInterval() );
+        }
+    }
+    else
+    {
+        m_idleTimer->stop();
+        m_workers.restartUpdTimer( 0 );
+        m_server.setUpdTimer( 0 );
+        PluginVec_t::const_iterator iter = m_plugins.begin();
+        PluginVec_t::const_iterator iter_end = m_plugins.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            ( *iter )->startUpdTimer( 0 );
+        }
+    }
 }

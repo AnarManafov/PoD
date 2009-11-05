@@ -30,8 +30,6 @@
 #include "ServerInfo.h"
 #include "version.h"
 
-// this is very expensive call, we therefore using 10 sec. timeout
-const size_t g_UpdateInterval = 10000;  // in milliseconds
 const size_t g_WaitTimeout = 15; // in sec.
 // default pid/log directory
 const char * const g_szPID_Dir = "$POD_LOCATION/";
@@ -42,7 +40,8 @@ using namespace MiscCommon;
 
 CServerDlg::CServerDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_PIDDir( g_szPID_Dir )
+        m_PIDDir( g_szPID_Dir ),
+        m_updInterval( 10 )// default is 10 secs.
 {
     m_ui.setupUi( this );
 
@@ -53,7 +52,7 @@ CServerDlg::CServerDlg( QWidget *_parent ):
     // Enabling timer which checks Server's socket availability
     m_Timer = new QTimer( this );
     connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
-    m_Timer->start( g_UpdateInterval );
+    setUpdTimer( m_updInterval );
 
     update_check_srv_socket( true );
 }
@@ -146,11 +145,24 @@ void CServerDlg::update_check_srv_socket( bool _force )
 
 void CServerDlg::showEvent( QShowEvent* )
 {
-	update_check_srv_socket(true);
-	m_Timer->start( g_UpdateInterval );
+    update_check_srv_socket( true );
+    setUpdTimer( m_updInterval );
 }
 
 void CServerDlg::hideEvent( QHideEvent* )
 {
-	m_Timer->stop();
+    setUpdTimer( 0 );
+}
+
+void CServerDlg::setUpdTimer( int _updInterval )
+{
+    if ( _updInterval <= 0 )
+    {
+        m_Timer->stop();
+        return;
+    }
+
+    // convert to milliseconds
+    m_updInterval = _updInterval;
+    m_Timer->start( m_updInterval * 1000 );
 }

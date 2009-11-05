@@ -127,8 +127,8 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 void CWorkersDlg::update()
 {
     // Don't process if the page is hidden
-   // if ( isHidden() )
-   //     return;
+    // if ( isHidden() )
+    //     return;
 
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
@@ -144,7 +144,7 @@ void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
     if ( !m_bMonitorWorkers )
         m_Timer->stop();
     else if ( m_WorkersUpdInterval > 0 )
-        m_Timer->start( m_WorkersUpdInterval );
+    	restartUpdTimer( m_WorkersUpdInterval );
 }
 
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
@@ -164,16 +164,22 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
 
 void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 {
-    m_WorkersUpdInterval = _WorkersUpdInterval * 1000;
-    if ( m_bMonitorWorkers > 0 )
-        m_Timer->start( m_WorkersUpdInterval );
+    if ( _WorkersUpdInterval <= 0 )
+    {
+        m_Timer->stop();
+        return;
+    }
+
+    // convert to milliseconds
+    m_WorkersUpdInterval = _WorkersUpdInterval;
+    m_Timer->start( m_WorkersUpdInterval * 1000 );
 }
 
 
 void CWorkersDlg::showEvent( QShowEvent* )
 {
     update();
-    restartUpdTimer( m_WorkersUpdInterval / 1000 );
+    restartUpdTimer( m_WorkersUpdInterval );
 }
 
 void CWorkersDlg::hideEvent( QHideEvent* )

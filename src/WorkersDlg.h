@@ -64,6 +64,7 @@ class CWorkersDlg: public QWidget
 
         // Setting a number of connected workers
         void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
+        // argument in seconds
         void restartUpdTimer( int _WorkersUpdInterval );
 
     protected:
@@ -93,7 +94,7 @@ class CWorkersDlg: public QWidget
         QTimer *m_Timer;
         std::string m_CfgFileName;
         bool m_bMonitorWorkers;
-        int m_WorkersUpdInterval;
+        int m_WorkersUpdInterval; // in seconds
 };
 
 BOOST_CLASS_VERSION( CWorkersDlg, 1 )

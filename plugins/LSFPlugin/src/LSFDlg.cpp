@@ -428,6 +428,11 @@ QIcon CLSFDlg::getIcon()
 }
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
+	if( _JobStatusUpdInterval <= 0)
+	{
+		m_treeModel->setUpdateInterval( 0 );
+		return;
+	}
     // start or restart the timer
     if ( _JobStatusUpdInterval > 0 )
     {
@@ -443,7 +448,7 @@ void CLSFDlg::showEvent( QShowEvent* )
 
 void CLSFDlg::hideEvent( QHideEvent* )
 {
-    m_treeModel->setUpdateInterval( 0 );
+	startUpdTimer( 0 );
 }
 
 int CLSFDlg::getJobsCount() const
