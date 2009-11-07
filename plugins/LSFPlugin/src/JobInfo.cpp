@@ -16,18 +16,18 @@
 #include <boost/bind.hpp>
 // LSF plug-in
 #include "JobInfo.h"
-
+//=============================================================================
 using namespace std;
-
-CJobInfo::CJobInfo(const CLsfMng &_lsf):
-  m_lsf(_lsf)
+//=============================================================================
+CJobInfo::CJobInfo( const CLsfMng &_lsf ):
+        m_lsf( _lsf )
 {
 }
-
+//=============================================================================
 CJobInfo::~CJobInfo()
 {
 }
-
+//=============================================================================
 void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container )
 {
     // TODO: better error handling in this function
@@ -35,16 +35,16 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
 
     CLSFJobSubmitter::jobslist_t::const_iterator iter = _Jobs.begin();
     CLSFJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
-    for (; iter != iter_end; ++iter)
+    for ( ; iter != iter_end; ++iter )
     {
-        SJobInfoPTR_t info(new SJobInfo());
+        SJobInfoPTR_t info( new SJobInfo() );
         info->m_id = *iter;
         std::ostringstream str;
         // TODO: LsfMng should have methods to return string representations of jobID
-        str << LSB_ARRAY_JOBID(*iter);
+        str << LSB_ARRAY_JOBID( *iter );
         info->m_strID = str.str();
-        info->m_status = m_lsf.jobStatus(*iter);
-        info->m_strStatus = m_lsf.jobStatusString(*iter);
+        info->m_status = m_lsf.jobStatus( *iter );
+        info->m_strStatus = m_lsf.jobStatusString( *iter );
         try
         {
             CLsfMng::IDContainer_t children;
@@ -64,9 +64,9 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
             // TODO: do it in getInfo method
             jobs_children_t::const_iterator iter = info->m_children.begin();
             jobs_children_t::const_iterator iter_end = info->m_children.end();
-            for (; iter != iter_end; ++iter)
+            for ( ; iter != iter_end; ++iter )
             {
-                _Container->insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter) );
+                _Container->insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
             }
         }
     }
@@ -74,21 +74,21 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
     // a result set
     getInfo( _Container );
 }
-
+//=============================================================================
 void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent )
 {
     std::ostringstream str;
-    str << LSB_ARRAY_JOBID(_JobID) << "[" << LSB_ARRAY_IDX(_JobID) << "]";
-    SJobInfoPTR_t info(new SJobInfo());
+    str << LSB_ARRAY_JOBID( _JobID ) << "[" << LSB_ARRAY_IDX( _JobID ) << "]";
+    SJobInfoPTR_t info( new SJobInfo() );
     info->m_id = _JobID;
     info->m_strID = str.str();
-    info->m_status = m_lsf.jobStatus(_JobID);
-    info->m_strStatus = m_lsf.jobStatusString(info->m_status);
+    info->m_status = m_lsf.jobStatus( _JobID );
+    info->m_strStatus = m_lsf.jobStatusString( info->m_status );
     info->m_parent = _parent.get();
 
-     _parent->addChild( info );
+    _parent->addChild( info );
 }
-
+//=============================================================================
 void CJobInfo::getInfo( JobsContainer_t *_Container ) const
 {
     if ( _Container )

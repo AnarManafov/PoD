@@ -14,15 +14,14 @@
 *************************************************************************/
 #ifndef GRIDDLG_H_
 #define GRIDDLG_H_
-
+//=============================================================================
 // Qt autogen. file
 #include "ui_wgGrid.h"
 // PAConsole
 #include "IJobManager.h"
 #include "JobSubmitter.h"
 #include "TreeItemContainer.h"
-
-
+//=============================================================================
 class CGridDlg: public QWidget, IJobManager
 {
         Q_OBJECT

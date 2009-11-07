@@ -40,8 +40,8 @@ using namespace MiscCommon;
 //=============================================================================
 CServerDlg::CServerDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_PIDDir( g_szPID_Dir ),
-        m_updInterval( 10 )// default is 10 secs.
+        m_updInterval( 10 ), // default is 10 secs.
+        m_PIDDir( g_szPID_Dir )
 {
     m_ui.setupUi( this );
 

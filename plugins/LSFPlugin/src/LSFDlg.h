@@ -14,16 +14,16 @@
 *************************************************************************/
 #ifndef LSFDLG_H_
 #define LSFDLG_H_
-
+//=============================================================================
 // LSF plug-in
 #include "LSFJobSubmitter.h"
 // Qt autogen. file
 #include "ui_wgLSF.h"
 // PAConsole
 #include "IJobManager.h"
-
+//=============================================================================
 class CJobInfoItemModel;
-
+//=============================================================================
 class CLSFDlg: public QWidget, IJobManager
 {
         Q_OBJECT
@@ -60,7 +60,6 @@ class CLSFDlg: public QWidget, IJobManager
         void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
         void setNumberOfJobs( int _count );
         void on_lsfQueueList_currentIndexChanged( int _index );
-
 
     private slots:
 //        void copyJobID() const;

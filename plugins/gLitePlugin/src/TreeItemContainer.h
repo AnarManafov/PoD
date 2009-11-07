@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef TREEITEMCONTAINER_H_
 #define TREEITEMCONTAINER_H_
-
+//=============================================================================
 class CTreeItemContainer
 {
         typedef std::pair<std::string, QTreeWidgetItem *> Item_t;

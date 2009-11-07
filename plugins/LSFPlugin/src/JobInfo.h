@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef JOBINFO_H_
 #define JOBINFO_H_
-
+//=============================================================================
 // BOOST
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
@@ -23,28 +23,27 @@
 #include <algorithm>
 // lsf plug-in
 #include "LSFJobSubmitter.h"
-
+// STD
 #include <iostream>
-
+//=============================================================================
 struct SJobInfo;
- 
+//=============================================================================
 typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
 //typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
 typedef std::map<std::string, SJobInfoPTR_t> JobsContainer_t;
 typedef std::vector<SJobInfoPTR_t> jobs_children_t;
-
-
+//=============================================================================
 struct SJobInfo
 {
     SJobInfo():
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
-       m_parent(NULL)
+            m_parent( NULL )
     {}
 
-    SJobInfo& operator=(const SJobInfo &_info)
+    SJobInfo& operator=( const SJobInfo &_info )
     {
-        if (this != &_info)
+        if ( this != &_info )
         {
             m_id = _info.m_id;
             m_strID = _info.m_strID;
@@ -71,17 +70,17 @@ struct SJobInfo
         m_children.push_back( _child );
         return m_children.size() - 1;
     }
-    int indexOf (const SJobInfo *_info) const
+    int indexOf( const SJobInfo *_info ) const
     {
-       jobs_children_t::const_iterator iter = m_children.begin();
-       jobs_children_t::const_iterator iter_end = m_children.end();
-       for(size_t i = 0; iter != iter_end; ++iter, ++i)
-	 {
-	   if( iter->get() == _info )
-	     return i;
-	 }
-       std::cerr << "indexOf returns bad index: child can't be found" << std::endl;
-       return -2;
+        jobs_children_t::const_iterator iter = m_children.begin();
+        jobs_children_t::const_iterator iter_end = m_children.end();
+        for ( size_t i = 0; iter != iter_end; ++iter, ++i )
+        {
+            if ( iter->get() == _info )
+                return i;
+        }
+        std::cerr << "indexOf returns bad index: child can't be found" << std::endl;
+        return -2;
     }
     int row() const
     {
@@ -100,7 +99,7 @@ struct SJobInfo
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
 };
-
+//=============================================================================
 /**
  *
  *  this comparison operator is required to use the container with generic algorithms
@@ -111,23 +110,23 @@ inline bool operator <( const JobsContainer_t::value_type &_v1,
 {
     return _v1.first < _v2.first;
 }
-
+//=============================================================================
 class CJobInfo
 {
-public:
-    CJobInfo(const CLsfMng &_lsf);
-    virtual ~CJobInfo();
+    public:
+        CJobInfo( const CLsfMng &_lsf );
+        virtual ~CJobInfo();
 
-public:
-    void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-    void getInfo( JobsContainer_t *_Container ) const;
+    public:
+        void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
+        void getInfo( JobsContainer_t *_Container ) const;
 
-private:
-    void addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent );
+    private:
+        void addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent );
 
-private:
-    JobsContainer_t m_Container;
-    const CLsfMng &m_lsf;
+    private:
+        JobsContainer_t m_Container;
+        const CLsfMng &m_lsf;
 };
 
 #endif /* JOBINFO_H_ */

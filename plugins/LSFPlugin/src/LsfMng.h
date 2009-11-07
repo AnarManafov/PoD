@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef LSFMNG_H_
 #define LSFMNG_H_
-
+//=============================================================================
 // LSF API
 #include <lsf/lsbatch.h>
 // STD
@@ -25,9 +25,9 @@
 #include <QMetaType>
 // MiscCommon
 #include "def.h"
-
+//=============================================================================
 typedef long long int lsf_jobid_t;
-
+//=============================================================================
 typedef struct _SLSFQueueInfo
 {
     _SLSFQueueInfo(): m_userJobLimit( 100 )
@@ -35,14 +35,15 @@ typedef struct _SLSFQueueInfo
 
     int m_userJobLimit;
 
-}SLSFQueueInfo_t;
+} SLSFQueueInfo_t;
+//=============================================================================
 // making Qt to know this data type
 // in order to use it in QVariant, for example
 Q_DECLARE_METATYPE( SLSFQueueInfo_t )
-
+//=============================================================================
 // key = <queue name>, value = SLSFQueueInfo_t
 typedef std::map<std::string, SLSFQueueInfo_t> LSFQueueInfoMap_t;
-
+//=============================================================================
 class CLsfMng
 {
     public:
@@ -54,7 +55,7 @@ class CLsfMng
             JP_SUB_IN_FILE,   //!< input file specified
             JP_SUB_OUT_FILE,  //!< output file specified
             JP_SUB_ERR_FILE   //!< error file specified
-        }EJobProperty_t;
+        } EJobProperty_t;
 
         // possible values for the status field
         typedef enum EJobStatus

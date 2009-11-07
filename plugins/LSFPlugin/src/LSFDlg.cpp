@@ -27,15 +27,15 @@
 #include "SysHelper.h"
 // PAConsole
 #include "ServerInfo.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
+//=============================================================================
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.lsf";
 // configuration file of the plug-in
 const LPCTSTR g_szLSFPluginCfgFileName = "$POD_LOCATION/etc/PAConsole_LSF.xml.cfg";
-
-
+//=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
 template<class T>
@@ -50,7 +50,7 @@ void _loadcfg( T &_s, string _FileName )
     boost::archive::xml_iarchive ia( f );
     ia >> BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
@@ -64,7 +64,7 @@ void _savecfg( const T &_s, string _FileName )
     boost::archive::xml_oarchive oa( f );
     oa << BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 CLSFDlg::CLSFDlg( QWidget *parent ) :
         QWidget( parent ),
         m_AllJobsCount( 0 ),
@@ -132,7 +132,7 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
              this, SLOT( showContextMenu( const QPoint & ) ) );
 
 }
-
+//=============================================================================
 CLSFDlg::~CLSFDlg()
 {
     try
@@ -146,7 +146,7 @@ CLSFDlg::~CLSFDlg()
 
     delete m_treeModel;
 }
-
+//=============================================================================
 void CLSFDlg::setAllDefault()
 {
     m_JobScript = g_szDefaultJobScript;
@@ -155,20 +155,20 @@ void CLSFDlg::setAllDefault()
     m_queue = "proof";
     UpdateAfterLoad();
 }
-
+//=============================================================================
 void CLSFDlg::UpdateAfterLoad()
 {
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
     m_ui.spinNumWorkers->setValue( m_WorkersCount );
 }
-
+//=============================================================================
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
 {
     QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
-
+//=============================================================================
 void CLSFDlg::on_btnSubmitClient_clicked()
 {
     // Checking queue up
@@ -216,7 +216,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
         m_ui.btnSubmitClient->setEnabled( true );
     }
 }
-
+//=============================================================================
 void CLSFDlg::on_btnBrowseJobScript_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
@@ -228,14 +228,14 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
         m_ui.edtJobScriptFileName->setText( filename );
     }
 }
-
+//=============================================================================
 void CLSFDlg::on_lsfQueueList_currentIndexChanged( int _index )
 {
     // max number of workers
     const QVariant data = m_ui.lsfQueueList->itemData( _index );
     m_ui.spinNumWorkers->setMaximum( data.value<SLSFQueueInfo_t>().m_userJobLimit );
 }
-
+//=============================================================================
 void CLSFDlg::createActions()
 {
 //    // COPY Job ID
@@ -259,12 +259,12 @@ void CLSFDlg::createActions()
 //    getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
 //    connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
     // Remove Job from monitoring
-    removeJobAct = new QAction( tr( "&Remove Job" ), this );
+    removeJobAct = new QAction( tr( "&Don't monitor this job" ), this );
     removeJobAct->setShortcut( tr( "Ctrl+R" ) );
     removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
 }
-
+//=============================================================================
 void CLSFDlg::showContextMenu( const QPoint &_point )
 {
     // We need to disable menu items when no jobID is selected
@@ -291,7 +291,7 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 
     menu.exec( m_ui.treeJobs->mapToGlobal( _point ) );
 }
-
+//=============================================================================
 //void CLSFDlg::copyJobID() const
 //{
 ////    // Copy selected JobID to clipboard
@@ -428,11 +428,11 @@ QIcon CLSFDlg::getIcon()
 }
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
-	if( _JobStatusUpdInterval <= 0)
-	{
-		m_treeModel->setUpdateInterval( 0 );
-		return;
-	}
+    if ( _JobStatusUpdInterval <= 0 )
+    {
+        m_treeModel->setUpdateInterval( 0 );
+        return;
+    }
     // start or restart the timer
     if ( _JobStatusUpdInterval > 0 )
     {
@@ -448,7 +448,7 @@ void CLSFDlg::showEvent( QShowEvent* )
 
 void CLSFDlg::hideEvent( QHideEvent* )
 {
-	startUpdTimer( 0 );
+    startUpdTimer( 0 );
 }
 
 int CLSFDlg::getJobsCount() const

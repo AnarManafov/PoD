@@ -12,7 +12,6 @@
 
         Copyright (c) 2008 GSI GridTeam. All rights reserved.
 *************************************************************************/
-
 // STD
 #include <sstream>
 // GAW
@@ -23,9 +22,9 @@
 #include <QMessageBox>
 // PAConsole
 #include "LogInfoDlg.h"
-
+//=============================================================================
 using namespace std;
-
+//=============================================================================
 CLogInfoDlg::CLogInfoDlg( QWidget *_parent, const string &_gLiteJobID ) :
         QDialog( _parent ),
         m_gLiteJobID( _gLiteJobID )
@@ -33,12 +32,12 @@ CLogInfoDlg::CLogInfoDlg( QWidget *_parent, const string &_gLiteJobID ) :
     m_ui.setupUi( this );
 
 }
-
+//=============================================================================
 CLogInfoDlg::~CLogInfoDlg()
 {
 
 }
-
+//=============================================================================
 int CLogInfoDlg::exec()
 {
     // New title of the dialog
@@ -61,7 +60,7 @@ int CLogInfoDlg::exec()
     m_ui.txtLogView->setPlainText( ss.str().c_str() );
     return QDialog::exec();
 }
-
+//=============================================================================
 void CLogInfoDlg::on_btnSave_clicked()
 {
     // Saving the logging info to a file

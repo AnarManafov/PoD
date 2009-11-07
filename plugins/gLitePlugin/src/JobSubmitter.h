@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef JOBSUBMITTER_H_
 #define JOBSUBMITTER_H_
-
+//=============================================================================
 // Qt
 #include <QThread>
 #include <QMutex>
@@ -28,7 +28,7 @@
 #include "gLiteHelper.h"
 // GAW
 #include "glite-api-wrapper/gLiteAPIWrapper.h"
-
+//=============================================================================
 class CJobSubmitter: public QThread
 {
         Q_OBJECT

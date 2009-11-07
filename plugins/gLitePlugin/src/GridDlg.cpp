@@ -27,19 +27,19 @@
 #include "ServerInfo.h"
 #include "LogInfoDlg.h"
 #include "GridDlg.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 using namespace MiscCommon::gLite;
 using namespace glite_api_wrapper;
-
+//=============================================================================
 // default JDL file
 const LPCTSTR g_szDefaultJDL = "$POD_LOCATION/etc/gLitePROOF.jdl";
 // configuration file of the plug-in
 const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/PAConsole_gLite.xml.cfg";
-
+//=============================================================================
 typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
-
+//=============================================================================
 string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path )
 {
     string str( "output of " );
@@ -48,7 +48,7 @@ string gaw_path_type_to_string( const gaw_path_type::value_type &_joboutput_path
     str += _joboutput_path.second;
     return str;
 }
-
+//=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
 template<class T>
@@ -63,7 +63,7 @@ void _loadcfg( T &_s, string _FileName )
     boost::archive::xml_iarchive ia( f );
     ia >> BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
@@ -77,7 +77,7 @@ void _savecfg( const T &_s, string _FileName )
     boost::archive::xml_oarchive oa( f );
     oa << BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 CGridDlg::CGridDlg( QWidget *parent ) :
         QWidget( parent ),
         m_JobSubmitter( this ),
@@ -111,7 +111,7 @@ CGridDlg::CGridDlg( QWidget *parent ) :
         setAllDefault();
     }
 }
-
+//=============================================================================
 CGridDlg::~CGridDlg()
 {
     try
@@ -123,7 +123,7 @@ CGridDlg::~CGridDlg()
     {
     }
 }
-
+//=============================================================================
 void CGridDlg::setAllDefault()
 {
     m_JDLFileName = g_szDefaultJDL;
@@ -149,13 +149,13 @@ void CGridDlg::UpdateAfterLoad()
     }
     m_ui.spinNumWorkers->setValue( num_jobs );
 }
-
+//=============================================================================
 void CGridDlg::recieveThreadMsg( const QString &_Msg )
 {
     QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
-
+//=============================================================================
 void CGridDlg::on_btnSubmitClient_clicked()
 {
     // Checking first that gLitePROOF server is running
@@ -201,24 +201,24 @@ void CGridDlg::on_btnSubmitClient_clicked()
         m_ui.btnSubmitClient->setEnabled( true );
     }
 }
-
+//=============================================================================
 void CGridDlg::updateJobsTree()
 {
     m_TreeItems.update( m_JobSubmitter.getActiveJobList(), m_ui.treeJobs );
 }
-
+//=============================================================================
 void CGridDlg::on_btnBrowseJDL_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
-                             tr( "JDL Files (*.jdl)" ) );
+                                                           tr( "JDL Files (*.jdl)" ) );
     if ( QFileInfo( filename ).exists() )
     {
         m_JDLFileName = filename.toAscii().data();
         m_ui.edtJDLFileName->setText( filename );
     }
 }
-
+//=============================================================================
 void CGridDlg::createActions()
 {
     // COPY Job ID
@@ -247,7 +247,7 @@ void CGridDlg::createActions()
     removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
 }
-
+//=============================================================================
 void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 {
     // Checking that *treeJobs* has been selected
@@ -278,7 +278,7 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 
     menu.exec( event->globalPos() );
 }
-
+//=============================================================================
 void CGridDlg::copyJobID() const
 {
     // Copy selected JobID to clipboard
@@ -288,7 +288,7 @@ void CGridDlg::copyJobID() const
     clipboard->setText( item->text( 0 ), QClipboard::Clipboard );
     clipboard->setText( item->text( 0 ), QClipboard::Selection );
 }
-
+//=============================================================================
 void CGridDlg::cancelJob()
 {
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
@@ -313,7 +313,7 @@ void CGridDlg::cancelJob()
         return;
     }
 }
-
+//=============================================================================
 void CGridDlg::getJobOutput()
 {
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
@@ -338,7 +338,7 @@ void CGridDlg::getJobOutput()
     try
     {
         CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
-                &joboutput_path, true );
+                                                                &joboutput_path, true );
     }
     catch ( const exception &_e )
     {
@@ -351,7 +351,7 @@ void CGridDlg::getJobOutput()
                ostream_iterator<string> ( ss, "\n____\n" ), gaw_path_type_to_string );
     QMessageBox::information( this, tr( "PROOFAgent Console" ), tr( ss.str().c_str() ) );
 }
-
+//=============================================================================
 void CGridDlg::getJobLoggingInfo()
 {
     // Job ID
@@ -364,7 +364,7 @@ void CGridDlg::getJobLoggingInfo()
     CLogInfoDlg dlg( this, jobid );
     dlg.exec();
 }
-
+//=============================================================================
 void CGridDlg::removeJob()
 {
     // Job ID
@@ -377,7 +377,7 @@ void CGridDlg::removeJob()
     m_JobSubmitter.RemoveJob( jobid );
     updateJobsTree();
 }
-
+//=============================================================================
 void CGridDlg::setProgress( int _Val )
 {
     if ( 100 == _Val )
@@ -388,7 +388,7 @@ void CGridDlg::setProgress( int _Val )
     }
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
-
+//=============================================================================
 // Retrieving a list of possible WMProxy endpoints
 void CGridDlg::UpdateEndpoints( bool _Msg )
 {
@@ -415,40 +415,44 @@ void CGridDlg::UpdateEndpoints( bool _Msg )
         m_ui.cmbEndpoint->addItem( tr( iter->c_str() ) );
     }
 }
-
+//=============================================================================
 void CGridDlg::on_edtJDLFileName_textChanged( const QString &/*_text*/ )
 {
     m_JDLFileName = m_ui.edtJDLFileName->text().toAscii().data();
     UpdateEndpoints( false );
 }
-
+//=============================================================================
 void CGridDlg::setNumberOfJobs( int _count )
 {
     m_JobsCount = _count;
     emit changeNumberOfJobs( _count );
 }
-
+//=============================================================================
 QString CGridDlg::getName() const
 {
     return QString( "gLite\nJob Manager" );
 }
+//=============================================================================
 QWidget* CGridDlg::getWidget()
 {
     return this;
 }
+//=============================================================================
 QIcon CGridDlg::getIcon()
 {
     return QIcon( ":/images/grid.png" );
 }
+//=============================================================================
 void CGridDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
     if ( _JobStatusUpdInterval > 0 )
         m_Timer->start( _JobStatusUpdInterval * 1000 );
 }
+//=============================================================================
 int CGridDlg::getJobsCount() const
 {
     return m_JobsCount;
 }
-
+//=============================================================================
 Q_EXPORT_PLUGIN2( gLiteJobManager, CGridDlg );

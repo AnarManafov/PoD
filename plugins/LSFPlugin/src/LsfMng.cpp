@@ -19,22 +19,22 @@
 #include "def.h"
 // LSF plug-in
 #include "LsfMng.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
-
+//=============================================================================
 const LPCTSTR g_szAppName = "PoD LSF plug-in";
-
+//=============================================================================
 CLsfMng::CLsfMng(): m_bInit( false )
 {
 
 }
-
+//=============================================================================
 CLsfMng::~CLsfMng()
 {
 
 }
-
+//=============================================================================
 void CLsfMng::init()
 {
     // initialize LSBLIB  and  get  the  configuration environment
@@ -46,12 +46,12 @@ void CLsfMng::init()
 
     m_bInit = true;
 }
-
+//=============================================================================
 void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
 {
     m_submitRequest[_type] = _val;
 }
-
+//=============================================================================
 lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
 {
     if ( !m_bInit )
@@ -122,7 +122,7 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     }
     return LSB_JOBID( jobId, 0 );
 }
-
+//=============================================================================
 CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
 {
     if ( !m_bInit )
@@ -141,7 +141,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
     job = lsb_readjobinfo( &more );
     if ( NULL == job )
     {
-    	lsb_closejobinfo();
+        lsb_closejobinfo();
         return JS_JOB_STAT_UNKWN;
     }
 
@@ -152,7 +152,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
 
     return status;
 }
-
+//=============================================================================
 std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
 {
     switch ( jobStatus( _jobID ) )
@@ -181,7 +181,7 @@ std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
             return "unknown";
     }
 }
-
+//=============================================================================
 std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
 {
     switch ( _jobStatus )
@@ -210,7 +210,7 @@ std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
             return "unknown";
     }
 }
-
+//=============================================================================
 int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 {
     if ( !m_bInit )
@@ -229,7 +229,7 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
     job = lsb_readjobinfo( &more );
     if ( job == NULL )
     {
-    	lsb_closejobinfo();
+        lsb_closejobinfo();
         return 0;
     }
 
@@ -245,7 +245,7 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 
     return retNumberOfJobsInArray;
 }
-
+//=============================================================================
 void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
 {
     if ( !_container )
@@ -260,7 +260,7 @@ void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
         _container->push_back( LSB_JOBID( _jobID, i ) );
     }
 }
-
+//=============================================================================
 void CLsfMng::getQueues( LSFQueueInfoMap_t *_retVal ) const
 {
     if ( !_retVal )

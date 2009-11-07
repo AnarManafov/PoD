@@ -14,55 +14,56 @@
 *************************************************************************/
 #ifndef JOBINFOITEMMODEL_H_
 #define JOBINFOITEMMODEL_H_
+//=============================================================================
 // LSF plug-in
 #include "JobsContainer.h"
 // Qt
 #include <QAbstractItemModel>
 #include <QStringList>
-
+//=============================================================================
 class CJobInfoItemModel: public QAbstractItemModel
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent = NULL );
-    virtual ~CJobInfoItemModel();
+    public:
+        CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent = NULL );
+        virtual ~CJobInfoItemModel();
 
-public:
-    /** The headings in the model.
-     *  The order here is the order that they are shown in.
-     *  If you change this, make sure you also change the
-     *  _setupHeader method
-     */
-    enum { TitleJobID, TitleJobStatus };
+    public:
+        /** The headings in the model.
+         *  The order here is the order that they are shown in.
+         *  If you change this, make sure you also change the
+         *  _setupHeader method
+         */
+        enum { TitleJobID, TitleJobStatus };
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex & parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex &_index, int _role ) const;
-    QVariant headerData( int _section, Qt::Orientation _orientation, int _role = Qt::DisplayRole ) const;
-    QModelIndex index( int _row, int _column, const QModelIndex & _parent = QModelIndex() ) const;
-    virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
-    QModelIndex parent( const QModelIndex &_index ) const;
-    void setUpdateInterval( int _newVal );
+        int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+        int columnCount( const QModelIndex & parent = QModelIndex() ) const;
+        QVariant data( const QModelIndex &_index, int _role ) const;
+        QVariant headerData( int _section, Qt::Orientation _orientation, int _role = Qt::DisplayRole ) const;
+        QModelIndex index( int _row, int _column, const QModelIndex & _parent = QModelIndex() ) const;
+        virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
+        QModelIndex parent( const QModelIndex &_index ) const;
+        void setUpdateInterval( int _newVal );
 
-private slots:
-    void jobChanged( SJobInfo *_info );
-    void beginInsertRow( const SJobInfoPTR_t &_info );
-    void beginRemoveRow( const SJobInfoPTR_t &_info );
-    void numberOfJobsChanged( int _count );
+    private slots:
+        void jobChanged( SJobInfo *_info );
+        void beginInsertRow( const SJobInfoPTR_t &_info );
+        void beginRemoveRow( const SJobInfoPTR_t &_info );
+        void numberOfJobsChanged( int _count );
 
-private:
-    void _setupJobsContainer();
-    void _setupHeader();
+    private:
+        void _setupJobsContainer();
+        void _setupHeader();
 
-private:
-    CJobsContainer m_jobinfo;
-    /**
-     * A translated list of column titles in the order we want to display them. Used in headerData().
-     * */
-    QStringList m_Titles;
-    int m_updateInterval;
-    SJobInfo *m_rootItem;
+    private:
+        CJobsContainer m_jobinfo;
+        /**
+         * A translated list of column titles in the order we want to display them. Used in headerData().
+         * */
+        QStringList m_Titles;
+        int m_updateInterval;
+        SJobInfo *m_rootItem;
 };
 
 #endif /* JOBINFOITEMMODEL_H_ */

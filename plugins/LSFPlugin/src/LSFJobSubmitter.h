@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef LSFJOBSUBMITTER_H_
 #define LSFJOBSUBMITTER_H_
-
+//=============================================================================
 // gLite plug-in
 #include "LsfMng.h"
 // STD
@@ -28,8 +28,7 @@
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/set.hpp>
-
-
+//=============================================================================
 class CLSFJobSubmitter: public QThread
 {
         Q_OBJECT
@@ -66,7 +65,7 @@ class CLSFJobSubmitter: public QThread
         const jobslist_t &getActiveJobList() const
         {
             // Retrieving a number of children of the parametric job
-    //        emit changeNumberOfJobs( getNumberOfJobs() );
+            //        emit changeNumberOfJobs( getNumberOfJobs() );
 
             return m_JobsList;
         }
@@ -102,7 +101,7 @@ class CLSFJobSubmitter: public QThread
 
         const CLsfMng &getLSF() const
         {
-        	return m_lsf;
+            return m_lsf;
         }
 
     signals:

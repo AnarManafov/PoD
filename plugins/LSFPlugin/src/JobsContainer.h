@@ -21,54 +21,54 @@
 // Qt
 #include <QObject>
 #include <QtCore>
-
+//=============================================================================
 extern QWaitCondition g_signalIsPosted;
 extern QMutex mutex;
-
+//=============================================================================
 class CJobsContainer: public QThread
 {
-    Q_OBJECT
+        Q_OBJECT
 
-public:
-    CJobsContainer(const CLSFJobSubmitter *_lsfsubmitter);
-    virtual ~CJobsContainer();
+    public:
+        CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter );
+        virtual ~CJobsContainer();
 
-signals:
-    /**
-     *  The data for a job has changed.
-     */
-    void jobChanged( SJobInfo *_info );
-    /**
-     *  This indicates we are about to add a job information in the model.
-     */
-    void addJob( const SJobInfoPTR_t &_info );
-    /**
-     *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
-     */
-    void removeJob( const SJobInfoPTR_t &_info );
+    signals:
+        /**
+         *  The data for a job has changed.
+         */
+        void jobChanged( SJobInfo *_info );
+        /**
+         *  This indicates we are about to add a job information in the model.
+         */
+        void addJob( const SJobInfoPTR_t &_info );
+        /**
+         *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
+         */
+        void removeJob( const SJobInfoPTR_t &_info );
 
-public:
-    void run();
-    void update( long _update_time_ms = 0 );
-    void stopUpdate();
-    void updateNumberOfJobs();
+    public:
+        void run();
+        void update( long _update_time_ms = 0 );
+        void stopUpdate();
+        void updateNumberOfJobs();
 
-private slots:
-    void _updateJobsStatus();
-    void _updateNumberOfJobs();
+    private slots:
+        void _updateJobsStatus();
+        void _updateNumberOfJobs();
 
-private:
-    void _addJobInfo( const JobsContainer_t::value_type &_node );
-    void _removeJobInfo( const JobsContainer_t::value_type &_node );
-    void _updateJobInfo( const JobsContainer_t::value_type &_node );
+    private:
+        void _addJobInfo( const JobsContainer_t::value_type &_node );
+        void _removeJobInfo( const JobsContainer_t::value_type &_node );
+        void _updateJobInfo( const JobsContainer_t::value_type &_node );
 
-private:
-    JobsContainer_t m_curinfo;
-    JobsContainer_t m_cur_ids;
-    const CLSFJobSubmitter *m_lsfsubmitter;
-    CJobInfo m_jobInfo;
-    bool m_updateNumberOfJobs;
-    unsigned long m_updateInterval;
+    private:
+        JobsContainer_t m_curinfo;
+        JobsContainer_t m_cur_ids;
+        const CLSFJobSubmitter *m_lsfsubmitter;
+        CJobInfo m_jobInfo;
+        bool m_updateNumberOfJobs;
+        unsigned long m_updateInterval;
 };
 
 #endif /* JOBSCONTAINER_H_ */
