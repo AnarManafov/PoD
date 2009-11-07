@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef PREFERENCESDLG_H_
 #define PREFERENCESDLG_H_
-
+//=============================================================================
 // Qt autogen. file
 #include "ui_wgPreferences.h"
 // BOOST
@@ -22,7 +22,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
-
+//=============================================================================
 class CPreferencesDlg: public QWidget
 {
     Q_OBJECT

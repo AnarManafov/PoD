@@ -17,10 +17,10 @@
 #include "def.h"
 // PAConsole
 #include "ServerInfo.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
-
+//=============================================================================
 // TODO: we need check processes and its user name, not only existence of the process
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
@@ -44,7 +44,7 @@ pid_t CServerInfo::_IsRunning( const string &_Srv ) const
     }
     return 0;
 }
-
+//=============================================================================
 bool CServerInfo::IsRunning( bool _check_all ) const
 {
     const pid_t pidXrootD = IsXROOTDRunning();
@@ -54,17 +54,17 @@ bool CServerInfo::IsRunning( bool _check_all ) const
     else
         return ( pidXrootD || pidPA );
 }
-
+//=============================================================================
 pid_t CServerInfo::IsXROOTDRunning() const
 {
     return _IsRunning( "xrootd" );
 }
-
+//=============================================================================
 pid_t CServerInfo::IsPROOFAgentRunning() const
 {
     return _IsRunning( "pod-agent" );
 }
-
+//=============================================================================
 string CServerInfo::GetXROOTDInfo() const
 {
     const pid_t pid = IsXROOTDRunning();
@@ -80,7 +80,7 @@ string CServerInfo::GetXROOTDInfo() const
 
     return ss.str();
 }
-
+//=============================================================================
 string CServerInfo::GetPAInfo() const
 {
     const pid_t pid = IsPROOFAgentRunning();
@@ -101,7 +101,7 @@ string CServerInfo::GetPAInfo() const
 
     return ss.str();
 }
-
+//=============================================================================
 void CServerInfo::GetPROOFAgentVersion( std::string *_Ver ) const
 {
 //    if ( !_Ver )

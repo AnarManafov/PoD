@@ -16,7 +16,7 @@
 #include <QApplication>
 // Our
 #include "MainDlg.h"
-
+//=============================================================================
 int main( int argc, char **argv )
 {
     Q_INIT_RESOURCE( paconsole );

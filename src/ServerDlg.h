@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef SERVERDLG_H_
 #define SERVERDLG_H_
-
+//=============================================================================
 // Qt autogen. file
 #include "ui_wgServer.h"
 // BOOST
@@ -24,9 +24,9 @@
 #include <boost/serialization/split_member.hpp>
 // MiscCommon
 #include "SysHelper.h"
-
+//=============================================================================
 class QTimer;
-
+//=============================================================================
 class CServerDlg: public QWidget
 {
         Q_OBJECT
@@ -44,7 +44,7 @@ class CServerDlg: public QWidget
 
         void CommandServer( EServerCommands _command );
         // value in seconds
-        void setUpdTimer( int _updInterval);
+        void setUpdTimer( int _updInterval );
 
     private slots:
         void on_btnStartServer_clicked();

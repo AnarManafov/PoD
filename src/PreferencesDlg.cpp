@@ -16,7 +16,7 @@
 #include <QObject>
 // PAConsole
 #include "PreferencesDlg.h"
-
+//=============================================================================
 CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
         QWidget( _parent ),
         m_JobStatusUpdInterval( 15 ),// in seconds
@@ -28,11 +28,11 @@ CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
     connect( m_ui.spinWorkersUpd, SIGNAL( valueChanged( int ) ), this, SLOT( _changedWorkersUpdInterval( int ) ) );
     UpdateAfterLoad();
 }
-
+//=============================================================================
 CPreferencesDlg::~CPreferencesDlg()
 {
 }
-
+//=============================================================================
 void CPreferencesDlg::UpdateAfterLoad()
 {
     m_ui.spinJobStatusUpd->setValue( m_JobStatusUpdInterval );

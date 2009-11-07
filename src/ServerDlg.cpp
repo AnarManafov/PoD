@@ -29,15 +29,15 @@
 #include "ServerDlg.h"
 #include "ServerInfo.h"
 #include "version.h"
-
+//=============================================================================
 const size_t g_WaitTimeout = 15; // in sec.
 // default pid/log directory
 const char * const g_szPID_Dir = "$POD_LOCATION/";
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon::INet;
 using namespace MiscCommon;
-
+//=============================================================================
 CServerDlg::CServerDlg( QWidget *_parent ):
         QWidget( _parent ),
         m_PIDDir( g_szPID_Dir ),
@@ -56,11 +56,11 @@ CServerDlg::CServerDlg( QWidget *_parent ):
 
     update_check_srv_socket( true );
 }
-
+//=============================================================================
 CServerDlg::~CServerDlg()
 {
 }
-
+//=============================================================================
 void CServerDlg::CommandServer( EServerCommands _command )
 {
     string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
@@ -90,23 +90,23 @@ void CServerDlg::CommandServer( EServerCommands _command )
 
     update_check_srv_socket();
 }
-
+//=============================================================================
 bool CServerDlg::IsRunning( bool _check_all )
 {
     CServerInfo si;
     return si.IsRunning( _check_all );
 }
-
+//=============================================================================
 void CServerDlg::on_btnStartServer_clicked()
 {
     CommandServer( srvSTART );
 }
-
+//=============================================================================
 void CServerDlg::on_btnStopServer_clicked()
 {
     CommandServer( srvSTOP );
 }
-
+//=============================================================================
 void CServerDlg::on_btnBrowsePIDDir_clicked()
 {
     const QString directory = QFileDialog::getExistingDirectory( this,
@@ -120,7 +120,7 @@ void CServerDlg::on_btnBrowsePIDDir_clicked()
         m_PIDDir = directory.toAscii().data();
     }
 }
-
+//=============================================================================
 void CServerDlg::update_check_srv_socket( bool _force )
 {
     // Don't process if the page is hidden
@@ -142,18 +142,18 @@ void CServerDlg::update_check_srv_socket( bool _force )
     }
     m_ui.edtServerInfo->setText( QString( output.c_str() ) );
 }
-
+//=============================================================================
 void CServerDlg::showEvent( QShowEvent* )
 {
     update_check_srv_socket( true );
     setUpdTimer( m_updInterval );
 }
-
+//=============================================================================
 void CServerDlg::hideEvent( QHideEvent* )
 {
     setUpdTimer( 0 );
 }
-
+//=============================================================================
 void CServerDlg::setUpdTimer( int _updInterval )
 {
     if ( _updInterval <= 0 )

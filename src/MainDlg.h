@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef CMAINDLG_H_
 #define CMAINDLG_H_
-
+//=============================================================================
 // Qt autogen. file
 #include "ui_maindlg.h"
 // BOOST
@@ -26,10 +26,9 @@
 #include "ServerDlg.h"
 #include "WorkersDlg.h"
 #include "PreferencesDlg.h"
-
-
+//=============================================================================
 class IJobManager;
-
+//=============================================================================
 class CMainDlg: public QDialog
 {
     Q_OBJECT

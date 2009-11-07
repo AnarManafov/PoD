@@ -30,14 +30,14 @@
 // PAConsole
 #include "WorkersDlg.h"
 #include "version.h"
-
+//=============================================================================
 const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 using namespace boost;
 using namespace boost::program_options;
-
+//=============================================================================
 void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 {
     smart_path( &_cfgFileName );
@@ -47,7 +47,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 
     *_retVal = user_defaults.getValueForKey( "server.proof_cfg_path" );
 }
-
+//=============================================================================
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
         QWidget( parent ),
         m_bMonitorWorkers( true ),
@@ -82,11 +82,11 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
 
     setActiveWorkers( 0 );
 }
-
+//=============================================================================
 CWorkersDlg::~CWorkersDlg()
 {
 }
-
+//=============================================================================
 int CWorkersDlg::getWorkersFromPROOFCfg()
 {
     // Read proof.conf and update Listbox
@@ -123,7 +123,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 
     return ( m_ui.lstClientsList->count() - 1 );
 }
-
+//=============================================================================
 void CWorkersDlg::update()
 {
     // Don't process if the page is hidden
@@ -132,7 +132,7 @@ void CWorkersDlg::update()
 
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
-
+//=============================================================================
 void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
 {
     m_bMonitorWorkers = ( _Stat == Qt::Checked );
@@ -144,9 +144,9 @@ void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
     if ( !m_bMonitorWorkers )
         m_Timer->stop();
     else if ( m_WorkersUpdInterval > 0 )
-    	restartUpdTimer( m_WorkersUpdInterval );
+        restartUpdTimer( m_WorkersUpdInterval );
 }
-
+//=============================================================================
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
 {
     static size_t nTotal = 0;
@@ -161,7 +161,7 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
     replace<tstring>( &strMsg, _T( "%2" ), ss.str() );
     m_ui.chkShowWorkers->setText( strMsg.c_str() );
 }
-
+//=============================================================================
 void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
 {
     if ( _WorkersUpdInterval <= 0 )
@@ -174,14 +174,13 @@ void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
     m_WorkersUpdInterval = _WorkersUpdInterval;
     m_Timer->start( m_WorkersUpdInterval * 1000 );
 }
-
-
+//=============================================================================
 void CWorkersDlg::showEvent( QShowEvent* )
 {
     update();
     restartUpdTimer( m_WorkersUpdInterval );
 }
-
+//=============================================================================
 void CWorkersDlg::hideEvent( QHideEvent* )
 {
     m_Timer->stop();

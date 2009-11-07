@@ -14,7 +14,7 @@
 *************************************************************************/
 #ifndef WORKERSDLG_H_
 #define WORKERSDLG_H_
-
+//=============================================================================
 // Qt autogen. file
 #include "ui_wgWorkers.h"
 // BOOST
@@ -25,9 +25,9 @@
 // MiscCommon
 #include "MiscUtils.h"
 #include "def.h"
-
+//=============================================================================
 class QTimer;
-
+//=============================================================================
 template <class _T>
 struct SFindComment
 {
@@ -40,7 +40,7 @@ struct SFindComment
 private:
     typename _T::value_type m_CmntSign;
 };
-
+//=============================================================================
 class CWorkersDlg: public QWidget
 {
         Q_OBJECT

@@ -27,10 +27,10 @@
 #include "ServerInfo.h"
 #include "MainDlg.h"
 #include "version.h"
-
+//=============================================================================
 using namespace std;
 using namespace MiscCommon;
-
+//=============================================================================
 // this is very expensive call, we therefore using 10 sec. timeout
 const size_t g_UpdateInterval = 100;  // in seconds
 
@@ -40,7 +40,7 @@ const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 // idle timeout. In ms.
 // default 15 min.
 const int g_idleTimeout = 120000;//900000;
-
+//=============================================================================
 template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
@@ -53,7 +53,7 @@ void _loadcfg( T &_s, string _FileName )
     boost::archive::xml_iarchive ia( f );
     ia >> BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
@@ -67,7 +67,7 @@ void _savecfg( const T &_s, string _FileName )
     boost::archive::xml_oarchive oa( f );
     oa << BOOST_SERIALIZATION_NVP( _s );
 }
-
+//=============================================================================
 CMainDlg::CMainDlg( QDialog *_Parent ):
         QDialog( _Parent ),
         m_CurrentPage( 0 )
@@ -148,14 +148,14 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
     switchAllSensors( true );
 }
-
+//=============================================================================
 void CMainDlg::enumAllChildren( QObject* o )
 {
     o->installEventFilter( this );
     foreach( QObject* child, o->children() )
     enumAllChildren( child );
 }
-
+//=============================================================================
 CMainDlg::~CMainDlg()
 {
     try
@@ -175,7 +175,7 @@ CMainDlg::~CMainDlg()
                               "Can't save configuration to\n" + QString( g_szCfgFileName ) );
     }
 }
-
+//=============================================================================
 void CMainDlg::createIcons()
 {
     QListWidgetItem *serverButton = new QListWidgetItem( m_ui.contentsWidget );
@@ -219,7 +219,7 @@ void CMainDlg::createIcons()
              SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
              this, SLOT( changePage( QListWidgetItem *, QListWidgetItem* ) ) );
 }
-
+//=============================================================================
 void CMainDlg::changePage( QListWidgetItem *_Current, QListWidgetItem *_Previous )
 {
     if ( !_Current )
@@ -228,7 +228,7 @@ void CMainDlg::changePage( QListWidgetItem *_Current, QListWidgetItem *_Previous
     m_ui.pagesWidget->setCurrentIndex( m_ui.contentsWidget->row( _Current ) );
     m_CurrentPage = m_ui.pagesWidget->currentIndex();
 }
-
+//=============================================================================
 void CMainDlg::updatePluginTimer( int _interval )
 {
     // TODO: fix the code using for_each algorithm
@@ -239,7 +239,7 @@ void CMainDlg::updatePluginTimer( int _interval )
         ( *iter )->startUpdTimer( _interval );
     }
 }
-
+//=============================================================================
 void CMainDlg::loadPlugins()
 {
     string pluginDir( g_szPluginDir );
@@ -258,7 +258,7 @@ void CMainDlg::loadPlugins()
         }
     }
 }
-
+//=============================================================================
 /// This function collects a number of jobs from all of the plug-ins
 /// It emits the numberOfJobs signal
 void CMainDlg::changeNumberOfJobs( int /*_count*/ )
@@ -274,7 +274,7 @@ void CMainDlg::changeNumberOfJobs( int /*_count*/ )
 
     emit numberOfJobs( count );
 }
-
+//=============================================================================
 void CMainDlg::on_closeButton_clicked()
 {
     CServerInfo si;
@@ -294,7 +294,7 @@ void CMainDlg::on_closeButton_clicked()
 
     close();
 }
-
+//=============================================================================
 void CMainDlg::idleTimeout()
 {
     // Now, stopping all sensors
@@ -309,7 +309,7 @@ void CMainDlg::idleTimeout()
     // restarting all sensors here
     switchAllSensors( true );
 }
-
+//=============================================================================
 void CMainDlg::childEvent( QChildEvent *_event )
 {
     if ( !_event->child()->isWidgetType() )
@@ -324,7 +324,7 @@ void CMainDlg::childEvent( QChildEvent *_event )
     }
     QWidget::childEvent( _event );
 }
-
+//=============================================================================
 bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
 {
     if ( event->type() == QEvent::MouseMove )
@@ -335,7 +335,7 @@ bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
     // standard event processing
     return QObject::eventFilter( obj, event );
 }
-
+//=============================================================================
 void CMainDlg::switchAllSensors( bool _on )
 {
     if ( _on )
