@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #/************************************************************************/
 #/**
-# * @file Server_Pod.sh
-# * @brief a script, which starts PoD's server side
+# * @file pod-server
+# * @brief a script, which manages PoD's server
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
@@ -15,7 +15,7 @@
 #*************************************************************************/
 #
 # Usage:
-#      Server_PoD.sh start|stop|status 
+#      pod-server start|stop|status
 #
 
 #######
@@ -201,7 +201,7 @@ status()
 # ***** MAIN  *****
 # checking the number of parameters
 if [ $# -ne 1 ]; then
-    echo "Usage: Server_PoD.sh start|stop|status"
+    echo "Usage: pod-server start|stop|status"
     exit 1
 fi
 
