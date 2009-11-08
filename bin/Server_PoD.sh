@@ -15,7 +15,7 @@
 #*************************************************************************/
 #
 # Usage:
-#      Server_PoD.sh <work_dir> start|stop|status 
+#      Server_PoD.sh start|stop|status 
 #
 
 #######
@@ -25,6 +25,7 @@ XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key se
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max)
 PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_min)
 PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max)
+WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
 #######
 # a number of seconds we wait until xrd is started 
 XRD_START_TIMEOUT=3
@@ -199,29 +200,29 @@ status()
 # ************************************************************************
 # ***** MAIN  *****
 # checking the number of parameters
-if [ $# -ne 2 ]; then
-    echo "Usage: ./Server_PoD.sh <working dir> start|stop|status"
+if [ $# -ne 1 ]; then
+    echo "Usage: Server_PoD.sh start|stop|status"
     exit 1
 fi
 
 # work_dir must be a valid dir
-if [ ! -e "$1" ]; then
-    echo "error: working director: \"$1\" doesn't exist!"
+if [ ! -e "$WORK_DIR" ]; then
+    echo "error: working director: \"$WORK_DIR\" doesn't exist!"
     exit 1
 fi
 
 # star|stop|status
-case "$2" in
+case "$1" in
     start)	
-	start $1
+	start $WORK_DIR
 	RETVAL=$?
 	;;
     stop)
-	stop $1
+	stop $WORK_DIR
 	RETVAL=$?
 	;;
     status)
-	status $1
+	status $WORK_DIR
 	;;
 esac
 
