@@ -68,20 +68,27 @@ namespace PROOFAgent
         smart_append( &m_signalPipeName, '/' );
         m_signalPipeName += ".signal_pipe";
         int ret_val = mkfifo( m_signalPipeName.c_str(), 0666 );
-
-        if (( ret_val == -1 ) && ( errno != EEXIST ) )
+        if (( -1 == ret_val ) && ( EEXIST != errno ) )
         {
             ostringstream ss;
             ss
             << "Can't create a named pipe: "
-            << m_signalPipeName
-            << ".";
-            system_error( ss.str() );
+            << m_signalPipeName;
+            throw system_error( ss.str() );
             graceful_quit = 1;
         }
 
         // Open the pipe for reading
         m_fdSignalPipe = open( m_signalPipeName.c_str(), O_RDWR | O_NONBLOCK );
+        if (( -1 == m_fdSignalPipe ) && ( EEXIST != errno ) )
+        {
+            ostringstream ss;
+            ss
+            << "Can't open a named pipe: "
+            << m_signalPipeName;
+            throw system_error( ss.str() );
+            graceful_quit = 1;
+        }
     }
 
 //=============================================================================
