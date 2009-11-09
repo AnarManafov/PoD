@@ -31,56 +31,55 @@ class IJobManager;
 //=============================================================================
 class CMainDlg: public QDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
-    friend class boost::serialization::access;
-    typedef std::vector<IJobManager*> PluginVec_t;
+        friend class boost::serialization::access;
+        typedef std::vector<IJobManager*> PluginVec_t;
 
-public:
-    CMainDlg( QDialog *_Parent = NULL );
-    virtual ~CMainDlg();
+    public:
+        CMainDlg( QDialog *_Parent = NULL );
+        virtual ~CMainDlg();
 
-signals:
-    void numberOfJobs( int );
+    signals:
+        void numberOfJobs( int );
 
-public slots:
-    void changePage( QListWidgetItem *current, QListWidgetItem *previous );
-    void updatePluginTimer( int _interval );
-    void changeNumberOfJobs( int _count );
+    public slots:
+        void changePage( QListWidgetItem *current, QListWidgetItem *previous );
+        void updatePluginTimer( int _interval );
+        void changeNumberOfJobs( int _count );
 
-private slots:
-    void on_closeButton_clicked();
-    void idleTimeout();
+    private slots:
+        void on_closeButton_clicked();
+        void idleTimeout();
 
-protected:
-    bool eventFilter( QObject *obj, QEvent *event );
-    void childEvent( QChildEvent *e );
-    void enumAllChildren(QObject* o);
-    void switchAllSensors( bool _on );
+    protected:
+        bool eventFilter( QObject *obj, QEvent *event );
+        void childEvent( QChildEvent *e );
+        void enumAllChildren( QObject* o );
+        void switchAllSensors( bool _on );
 
-private:
-    void createIcons();
-    void loadPlugins();
-    template<class Archive>
-    void serialize( Archive &_ar, const unsigned int /*_file_version*/ )
-    {
-        _ar
-        & BOOST_SERIALIZATION_NVP( m_CurrentPage )
-        & BOOST_SERIALIZATION_NVP( m_server )
-        & BOOST_SERIALIZATION_NVP( m_workers )
-        & BOOST_SERIALIZATION_NVP( m_preferences );
-    }
+    private:
+        void createIcons();
+        void loadPlugins();
+        template<class Archive>
+        void serialize( Archive &_ar, const unsigned int /*_file_version*/ )
+        {
+            _ar
+            & BOOST_SERIALIZATION_NVP( m_CurrentPage )
+            & BOOST_SERIALIZATION_NVP( m_workers )
+            & BOOST_SERIALIZATION_NVP( m_preferences );
+        }
 
-private:
-    Ui::MainDlg m_ui;
-    CWorkersDlg m_workers;
-    CServerDlg m_server;
-    CPreferencesDlg m_preferences;
-    int m_CurrentPage;
-    PluginVec_t m_plugins;
-    QTimer *m_idleTimer;
+    private:
+        Ui::MainDlg m_ui;
+        CWorkersDlg m_workers;
+        CServerDlg m_server;
+        CPreferencesDlg m_preferences;
+        int m_CurrentPage;
+        PluginVec_t m_plugins;
+        QTimer *m_idleTimer;
 };
 
-BOOST_CLASS_VERSION( CMainDlg, 3 )
+BOOST_CLASS_VERSION( CMainDlg, 4 )
 
 #endif /*CMAINDLG_H_*/

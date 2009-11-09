@@ -31,8 +31,6 @@
 #include "version.h"
 //=============================================================================
 const size_t g_WaitTimeout = 15; // in sec.
-// default pid/log directory
-const char * const g_szPID_Dir = "$POD_LOCATION/";
 //=============================================================================
 using namespace std;
 using namespace MiscCommon::INet;
@@ -40,14 +38,9 @@ using namespace MiscCommon;
 //=============================================================================
 CServerDlg::CServerDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_updInterval( 10 ), // default is 10 secs.
-        m_PIDDir( g_szPID_Dir )
+        m_updInterval( 10 ) // default is 10 secs.
 {
     m_ui.setupUi( this );
-
-    // pid/log directory
-    smart_path( &m_PIDDir );
-    m_ui.edtPIDDir->setText( m_PIDDir.c_str() );
 
     // Enabling timer which checks Server's socket availability
     m_Timer = new QTimer( this );
@@ -104,20 +97,6 @@ void CServerDlg::on_btnStartServer_clicked()
 void CServerDlg::on_btnStopServer_clicked()
 {
     CommandServer( srvSTOP );
-}
-//=============================================================================
-void CServerDlg::on_btnBrowsePIDDir_clicked()
-{
-    const QString directory = QFileDialog::getExistingDirectory( this,
-                                                                 tr( "Select pid directory of pod-agent" ),
-                                                                 m_ui.edtPIDDir->text(),
-                                                                 QFileDialog::DontResolveSymlinks
-                                                                 | QFileDialog::ShowDirsOnly );
-    if ( !directory.isEmpty() )
-    {
-        m_ui.edtPIDDir->setText( directory );
-        m_PIDDir = directory.toAscii().data();
-    }
 }
 //=============================================================================
 void CServerDlg::update_check_srv_socket( bool _force )
