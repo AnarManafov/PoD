@@ -63,10 +63,9 @@ CServerDlg::~CServerDlg()
 //=============================================================================
 void CServerDlg::CommandServer( EServerCommands _command )
 {
-    string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
+    string cmd( "$POD_LOCATION/bin/pod-server" );
     smart_path( &cmd );
     StringVector_t params;
-    params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
     switch ( _command )
     {
         case srvSTART:
@@ -127,10 +126,9 @@ void CServerDlg::update_check_srv_socket( bool _force )
     if ( !_force && isHidden() )
         return;
 
-    string cmd( "$POD_LOCATION/bin/Server_PoD.sh" );
+    string cmd( "$POD_LOCATION/bin/pod-server" );
     smart_path( &cmd );
     StringVector_t params;
-    params.push_back( string( m_ui.edtPIDDir->text().toAscii().data() ) );
     params.push_back( "status" );
     string output;
     try
