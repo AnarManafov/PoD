@@ -24,6 +24,7 @@
 #include "INet.h"
 #include "Process.h"
 #include "SysHelper.h"
+
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -61,17 +62,26 @@ namespace PROOFAgent
         // create a named pipe (our signal pipe)
         // it's use to interrupt "select" and give a chance to new sockets to be added
         // to the "select"
-        string path( g_SIGNAL_PIPE_PATH );
-        smart_path( &path );
-        int ret_val = mkfifo( path.c_str(), 0666 );
+        // using a fixed name ".signal_pipe" and server.work_dir as a path
+        m_signalPipeName = _common.m_workDir;
+        smart_path( &m_signalPipeName );
+        smart_append( &m_signalPipeName, '/' );
+        m_signalPipeName += ".signal_pipe";
+        int ret_val = mkfifo( m_signalPipeName.c_str(), 0666 );
 
         if (( ret_val == -1 ) && ( errno != EEXIST ) )
         {
+            ostringstream ss;
+            ss
+            << "Can't create a named pipe: "
+            << m_signalPipeName
+            << ".";
+            system_error( ss.str() );
             graceful_quit = 1;
         }
 
         // Open the pipe for reading
-        m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
+        m_fdSignalPipe = open( m_signalPipeName.c_str(), O_RDWR | O_NONBLOCK );
     }
 
 //=============================================================================
@@ -83,9 +93,7 @@ namespace PROOFAgent
         if ( !m_commonOptions.m_proofCFG.empty() )
             unlink( m_commonOptions.m_proofCFG.c_str() );
 
-        string path( g_SIGNAL_PIPE_PATH );
-        smart_path( &path );
-        unlink( path.c_str() );
+        unlink( m_signalPipeName.c_str() );
     }
 
 //=============================================================================

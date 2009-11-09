@@ -63,6 +63,7 @@ namespace PROOFAgent
             boost::thread *m_monitorThread;
             CIdleWatch m_idleWatch;
             int m_fdSignalPipe;
+            std::string m_signalPipeName;
     };
 
 }

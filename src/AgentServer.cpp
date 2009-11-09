@@ -36,7 +36,7 @@ namespace PROOFAgent
 //=============================================================================
     CAgentServer::CAgentServer( const SOptions_t &_data ):
             CAgentBase( _data.m_podOptions.m_server.m_common ),
-            m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, g_SIGNAL_PIPE_PATH )
+            m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, m_signalPipeName )
     {
         m_Data = _data.m_podOptions.m_server;
         m_serverInfoFile = _data.m_serverInfoFile;

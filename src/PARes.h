@@ -25,8 +25,6 @@ namespace PROOFAgent
     const MiscCommon::LPCTSTR g_szRESPONSE_OK = _T("PA_OK");
     const MiscCommon::LPCTSTR g_szSEND_USERNAME = _T("PA_CLT_USER:");
 
-    const MiscCommon::LPCTSTR g_SIGNAL_PIPE_PATH = _T("$POD_LOCATION/signal_pipe");
-
     const size_t g_nBUF_SIZE = 1024;
 
     typedef enum{ Unknown, Server, Client }EAgentMode_t;
