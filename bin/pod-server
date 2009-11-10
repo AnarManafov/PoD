@@ -25,7 +25,7 @@ XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key se
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max)
 PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_min)
 PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max)
-WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
+eval WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
 #######
 # a number of seconds we wait until xrd is started 
 XRD_START_TIMEOUT=3
