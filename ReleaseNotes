@@ -1,7 +1,7 @@
 ********************* Release 2.1.2 not yet released ************************
 - The automatic port mapping: increase a retry counts to 10 instead of 3. Sometime xrd could take longer to start which prevents PoD workers to properly detect all ports of it. As the result these workers will shutdown the job at a very early stages of initialization of PoD.
 - use user defaults' work_dir as a working dir value in the PoD server script.
-- Server_PoD.sh has been reneamed to pod-server.
+- Server_PoD.sh has been renamed to pod-server.
 
 ********************* Release 2.1.1 2009-10-24 ************************
 - using a central user-defaults configuration ($POD_LOCATION/etc/PoD.cfg). 
