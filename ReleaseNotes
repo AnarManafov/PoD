@@ -1,5 +1,7 @@
 ********************* Release 1.1.2a not yet released ************************
-- switch the whole monitoring and all sensors off if there is no interaction during the last 15 min (time is hardcoded)
+- switch the whole monitoring and all sensors off if there is no interaction during the last 15 min (time is hardcoded).
+- serialization file of the LSF plug-in has been renamed to "pod-console_LSF.xml.cfg".
+- removed PID dir controls from the server page.
 
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.
