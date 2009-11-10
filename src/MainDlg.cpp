@@ -39,7 +39,7 @@ const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 
 // idle timeout. In ms.
 // default 15 min.
-const int g_idleTimeout = 120000;//900000;
+const int g_idleTimeout = 60000;//900000;
 //=============================================================================
 template<class T>
 void _loadcfg( T &_s, string _FileName )
@@ -107,8 +107,12 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     loadPlugins();
 
     size_t index( 0 );
+    // SERVER page
     m_ui.pagesWidget->insertWidget( index, &m_server );
+    // setting a default update interval
+    m_server.m_updTimer->setInterval( g_UpdateInterval * 1000 );
 
+    // PLUG-INS page(s)
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for ( ; iter != iter_end; ++iter )
@@ -118,19 +122,24 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
             continue;
         m_ui.pagesWidget->insertWidget( ++index, w );
 
-        // Immediately update interval when a user changes settings
-        connect( &m_preferences, SIGNAL( changedJobStatusUpdInterval( int ) ), this, SLOT( updatePluginTimer( int ) ) );
-
         // jobs counters
         // We collecting signals from all plug-ins and the result is a sum of all jobs from all plug-ins
         connect( w, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( changeNumberOfJobs( int ) ) );
-        connect( this, SIGNAL( numberOfJobs( int ) ), &m_workers, SLOT( setNumberOfJobs( int ) ) );
     }
 
-    // Immediately update interval when a user changes settings
-    connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), &m_workers, SLOT( restartUpdTimer( int ) ) );
+    connect( this, SIGNAL( numberOfJobs( int ) ), &m_workers, SLOT( setNumberOfJobs( int ) ) );
 
+    // Immediately update interval when a user changes settings
+    connect( &m_preferences, SIGNAL( changedJobStatusUpdInterval( int ) ), this, SLOT( updatePluginTimer( int ) ) );
+
+    // WORKERS page
     m_ui.pagesWidget->insertWidget( ++index, &m_workers );
+    // Immediately update interval when a user changes settings
+    connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), this, SLOT( changeWorkersUpdTimer( int ) ) );
+    // setting up the updated time interval from the preferences
+    m_workers.m_updTimer->setInterval( m_preferences.getWorkersUpdInterval() * 1000 );
+
+    // PREFERENCES page
     m_ui.pagesWidget->insertWidget( ++index, &m_preferences );
 
     createIcons();
@@ -240,6 +249,11 @@ void CMainDlg::updatePluginTimer( int _interval )
     }
 }
 //=============================================================================
+void CMainDlg::changeWorkersUpdTimer( int _interval )
+{
+    m_workers.m_updTimer->setInterval( _interval * 1000 );
+}
+//=============================================================================
 void CMainDlg::loadPlugins()
 {
     string pluginDir( g_szPluginDir );
@@ -329,7 +343,8 @@ bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
 {
     if ( event->type() == QEvent::MouseMove )
     {
-        m_idleTimer->start( g_idleTimeout );
+        if ( m_idleTimer->isActive() )
+            m_idleTimer->start( g_idleTimeout );
     }
 
     // standard event processing
@@ -341,20 +356,25 @@ void CMainDlg::switchAllSensors( bool _on )
     if ( _on )
     {
         m_idleTimer->start( g_idleTimeout );
-        m_workers.restartUpdTimer( m_preferences.getWorkersUpdInterval() );
-        m_server.setUpdTimer( g_UpdateInterval );
+        if ( !m_workers.isHidden() )
+            m_workers.m_updTimer->start( m_preferences.getWorkersUpdInterval() * 1000 );
+        if ( !m_server.isHidden() )
+            m_server.m_updTimer->start( g_UpdateInterval * 1000 );
         PluginVec_t::const_iterator iter = m_plugins.begin();
         PluginVec_t::const_iterator iter_end = m_plugins.end();
         for ( ; iter != iter_end; ++iter )
         {
+            if (( *iter )->getWidget()->isHidden() )
+                continue;
+
             ( *iter )->startUpdTimer( m_preferences.getJobStatusUpdInterval() );
         }
     }
     else
     {
         m_idleTimer->stop();
-        m_workers.restartUpdTimer( 0 );
-        m_server.setUpdTimer( 0 );
+        m_workers.m_updTimer->stop();
+        m_server.m_updTimer->stop();
         PluginVec_t::const_iterator iter = m_plugins.begin();
         PluginVec_t::const_iterator iter_end = m_plugins.end();
         for ( ; iter != iter_end; ++iter )

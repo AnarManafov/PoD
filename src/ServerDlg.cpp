@@ -31,21 +31,21 @@
 #include "version.h"
 //=============================================================================
 const size_t g_WaitTimeout = 15; // in sec.
+const int g_defaultUpdTime = 10000; // in ms.
 //=============================================================================
 using namespace std;
 using namespace MiscCommon::INet;
 using namespace MiscCommon;
 //=============================================================================
 CServerDlg::CServerDlg( QWidget *_parent ):
-        QWidget( _parent ),
-        m_updInterval( 10 ) // default is 10 secs.
+        QWidget( _parent )
 {
     m_ui.setupUi( this );
 
     // Enabling timer which checks Server's socket availability
-    m_Timer = new QTimer( this );
-    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
-    setUpdTimer( m_updInterval );
+    m_updTimer = new QTimer( this );
+    connect( m_updTimer, SIGNAL( timeout() ), this, SLOT( update_check_srv_socket() ) );
+    m_updTimer->setInterval( g_defaultUpdTime );
 
     update_check_srv_socket( true );
 }
@@ -105,6 +105,9 @@ void CServerDlg::update_check_srv_socket( bool _force )
     if ( !_force && isHidden() )
         return;
 
+    // TODO: REMOVE THIS DEBUG
+    cout << "update SERVER" << endl;
+
     string cmd( "$POD_LOCATION/bin/pod-server" );
     smart_path( &cmd );
     StringVector_t params;
@@ -123,23 +126,10 @@ void CServerDlg::update_check_srv_socket( bool _force )
 void CServerDlg::showEvent( QShowEvent* )
 {
     update_check_srv_socket( true );
-    setUpdTimer( m_updInterval );
+    m_updTimer->start();
 }
 //=============================================================================
 void CServerDlg::hideEvent( QHideEvent* )
 {
-    setUpdTimer( 0 );
-}
-//=============================================================================
-void CServerDlg::setUpdTimer( int _updInterval )
-{
-    if ( _updInterval <= 0 )
-    {
-        m_Timer->stop();
-        return;
-    }
-
-    // convert to milliseconds
-    m_updInterval = _updInterval;
-    m_Timer->start( m_updInterval * 1000 );
+	m_updTimer->stop();
 }

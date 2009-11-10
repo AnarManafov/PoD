@@ -32,6 +32,7 @@
 #include "version.h"
 //=============================================================================
 const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
+const int g_defaultUpdTime = 10000; // in ms.
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -50,8 +51,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 //=============================================================================
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
         QWidget( parent ),
-        m_bMonitorWorkers( true ),
-        m_WorkersUpdInterval( 0 )
+        m_bMonitorWorkers( true )
 {
     m_ui.setupUi( this );
 
@@ -75,8 +75,9 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
                                tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
     }
 
-    m_Timer = new QTimer( this );
-    connect( m_Timer, SIGNAL( timeout() ), this, SLOT( update() ) );
+    m_updTimer = new QTimer( this );
+    connect( m_updTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
+    m_updTimer->setInterval( g_defaultUpdTime );
 
     on_chkShowWorkers_stateChanged( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
 
@@ -126,25 +127,23 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 //=============================================================================
 void CWorkersDlg::update()
 {
-    // Don't process if the page is hidden
-    // if ( isHidden() )
-    //     return;
-
+    // TODO: REMOVE THIS DEBUG
+    cout << "update WORKER" << endl;
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 //=============================================================================
 void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
 {
     m_bMonitorWorkers = ( _Stat == Qt::Checked );
-    if ( m_Timer->isActive() && m_bMonitorWorkers )
+    if ( m_updTimer->isActive() && m_bMonitorWorkers )
         return ; // TODO: need an assert here
 
     m_ui.lstClientsList->setEnabled( m_bMonitorWorkers );
 
     if ( !m_bMonitorWorkers )
-        m_Timer->stop();
-    else if ( m_WorkersUpdInterval > 0 )
-        restartUpdTimer( m_WorkersUpdInterval );
+        m_updTimer->stop();
+    else
+    	m_updTimer->start();
 }
 //=============================================================================
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
@@ -162,26 +161,13 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
     m_ui.chkShowWorkers->setText( strMsg.c_str() );
 }
 //=============================================================================
-void CWorkersDlg::restartUpdTimer( int _WorkersUpdInterval )
-{
-    if ( _WorkersUpdInterval <= 0 )
-    {
-        m_Timer->stop();
-        return;
-    }
-
-    // convert to milliseconds
-    m_WorkersUpdInterval = _WorkersUpdInterval;
-    m_Timer->start( m_WorkersUpdInterval * 1000 );
-}
-//=============================================================================
 void CWorkersDlg::showEvent( QShowEvent* )
 {
     update();
-    restartUpdTimer( m_WorkersUpdInterval );
+    m_updTimer->start();
 }
 //=============================================================================
 void CWorkersDlg::hideEvent( QHideEvent* )
 {
-    m_Timer->stop();
+    m_updTimer->stop();
 }

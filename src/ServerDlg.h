@@ -36,8 +36,9 @@ class CServerDlg: public QWidget
         enum EServerCommands { srvSTART, srvSTOP };
 
         void CommandServer( EServerCommands _command );
-        // value in seconds
-        void setUpdTimer( int _updInterval );
+
+    public:
+        QTimer *m_updTimer;
 
     private slots:
         void on_btnStartServer_clicked();
@@ -54,8 +55,6 @@ class CServerDlg: public QWidget
     private:
         Ui::wgServer m_ui;
         int m_SrvPort;
-        QTimer *m_Timer;
-        int m_updInterval; // in seconds
 };
 
 #endif /*SERVERDLG_H_*/

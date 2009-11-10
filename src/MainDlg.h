@@ -46,6 +46,7 @@ class CMainDlg: public QDialog
     public slots:
         void changePage( QListWidgetItem *current, QListWidgetItem *previous );
         void updatePluginTimer( int _interval );
+        void changeWorkersUpdTimer( int _interval );
         void changeNumberOfJobs( int _count );
 
     private slots:

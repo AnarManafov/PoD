@@ -71,6 +71,9 @@ void CJobsContainer::run()
         else
             _updateJobsStatus();
 
+        // TODO: REMOVE THIS DEBUG
+        cout << "update LSF" << endl;
+
         msleep( m_updateInterval );
     }
 }
