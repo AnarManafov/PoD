@@ -31,15 +31,15 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-// this is very expensive call, we therefore using 10 sec. timeout
-const size_t g_UpdateInterval = 100;  // in seconds
+// this is very expensive call, we therefore using 6 sec. timeout
+const size_t g_UpdateInterval = 6;  // in seconds
 
 const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
 const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 
 // idle timeout. In ms.
 // default 15 min.
-const int g_idleTimeout = 60000;//900000;
+const int g_idleTimeout = 900000;
 //=============================================================================
 template<class T>
 void _loadcfg( T &_s, string _FileName )
@@ -107,12 +107,12 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     loadPlugins();
 
     size_t index( 0 );
-    // SERVER page
+    // ------>>>>> SERVER page
     m_ui.pagesWidget->insertWidget( index, &m_server );
     // setting a default update interval
     m_server.m_updTimer->setInterval( g_UpdateInterval * 1000 );
 
-    // PLUG-INS page(s)
+    // ------>>>>> PLUG-INS page(s)
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for ( ; iter != iter_end; ++iter )
@@ -132,7 +132,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     // Immediately update interval when a user changes settings
     connect( &m_preferences, SIGNAL( changedJobStatusUpdInterval( int ) ), this, SLOT( updatePluginTimer( int ) ) );
 
-    // WORKERS page
+    // ------>>>>> WORKERS page
     m_ui.pagesWidget->insertWidget( ++index, &m_workers );
     // Immediately update interval when a user changes settings
     connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), this, SLOT( changeWorkersUpdTimer( int ) ) );
@@ -155,6 +155,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
     setMouseTracking( true );
 
+    switchAllSensors( false );
     switchAllSensors( true );
 }
 //=============================================================================

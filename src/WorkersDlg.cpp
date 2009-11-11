@@ -127,8 +127,6 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 //=============================================================================
 void CWorkersDlg::update()
 {
-    // TODO: REMOVE THIS DEBUG
-    cout << "update WORKER" << endl;
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 //=============================================================================
@@ -143,7 +141,7 @@ void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
     if ( !m_bMonitorWorkers )
         m_updTimer->stop();
     else
-    	m_updTimer->start();
+        m_updTimer->start();
 }
 //=============================================================================
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )

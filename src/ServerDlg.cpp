@@ -30,7 +30,7 @@
 #include "ServerInfo.h"
 #include "version.h"
 //=============================================================================
-const size_t g_WaitTimeout = 15; // in sec.
+const size_t g_WaitTimeout = 10; // in sec.
 const int g_defaultUpdTime = 10000; // in ms.
 //=============================================================================
 using namespace std;
@@ -105,9 +105,6 @@ void CServerDlg::update_check_srv_socket( bool _force )
     if ( !_force && isHidden() )
         return;
 
-    // TODO: REMOVE THIS DEBUG
-    cout << "update SERVER" << endl;
-
     string cmd( "$POD_LOCATION/bin/pod-server" );
     smart_path( &cmd );
     StringVector_t params;
@@ -131,5 +128,5 @@ void CServerDlg::showEvent( QShowEvent* )
 //=============================================================================
 void CServerDlg::hideEvent( QHideEvent* )
 {
-	m_updTimer->stop();
+    m_updTimer->stop();
 }
