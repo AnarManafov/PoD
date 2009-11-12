@@ -204,7 +204,8 @@ if [ "$set_my_rootsys" = "no" ]; then
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 else
-    export ROOTSYS=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys)
+    eval ROOTSYS_FROM_CFG=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys)
+    export ROOTSYS=$ROOTSYS_FROM_CFG
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
