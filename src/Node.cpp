@@ -75,7 +75,7 @@ namespace PROOFAgent
         }
 
         size_t m_bytesToSend( 0 );
-        // collect as much as possible data from the socket
+        // collect as much as possible data from the socket w/o blocking it
         while ( true )
         {
             try
