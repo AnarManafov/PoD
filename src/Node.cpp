@@ -74,20 +74,37 @@ namespace PROOFAgent
                 break;
         }
 
-        size_t m_bytesToSend = read_from_socket( *input, &( *buf ) );
-
-        // DISCONNECT has been detected
-        if ( m_bytesToSend <= 0 || !isValid() )
+        size_t m_bytesToSend( 0 );
+        // collect as much as possible data from the socket
+        while ( true )
         {
-            setInUse( false, _which );
-            return -1;
-        }
+            try
+            {
+                m_bytesToSend = read_from_socket( *input, &( *buf ) );
+            }
+            catch ( const system_error &e )
+            {
+                setInUse( false, _which );
+                // since the socket is non-blocking, we don't
+                // consider the following as errors
+                if ( e.getErrno() == EAGAIN || e.getErrno() == EWOULDBLOCK )
+                    break;
+                else
+                    throw;
+            }
+            // DISCONNECT has been detected
+            if ( m_bytesToSend <= 0 || !isValid() )
+            {
+                setInUse( false, _which );
+                return -1;
+            }
 
-        sendall( *output, &( *buf )[0], m_bytesToSend, 0 );
+            sendall( *output, &( *buf )[0], m_bytesToSend, 0 );
 
-        // TODO: uncomment when log level is implemented
-        //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
-        //   ReportPackage( *input, *output, tmp_buf );
+            // TODO: uncomment when log level is implemented
+            //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
+            //   ReportPackage( *input, *output, tmp_buf );
+        };
 
         setInUse( false, _which );
 
