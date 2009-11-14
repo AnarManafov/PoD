@@ -68,6 +68,7 @@ class CLSFDlg: public QWidget, IJobManager
 //        void getJobLoggingInfo();
         void removeJob();
         void showContextMenu( const QPoint &_point );
+        void expandTreeNode( const QModelIndex& );
 
     private:
         void createActions();
@@ -110,6 +111,7 @@ class CLSFDlg: public QWidget, IJobManager
         CJobInfoItemModel *m_treeModel;
         int m_updateInterval;
         std::string m_queue;
+        QModelIndex m_expandedNode;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )

@@ -128,8 +128,11 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     // a context menu of the table view
     m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint & ) ),
+    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
              this, SLOT( showContextMenu( const QPoint & ) ) );
+
+    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
+             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
 
 }
 //=============================================================================
@@ -290,6 +293,13 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 //    cancelJobAct->setEnabled( item );
 
     menu.exec( m_ui.treeJobs->mapToGlobal( _point ) );
+}
+//=============================================================================
+void CLSFDlg::expandTreeNode( const QModelIndex &_index )
+{
+	// expand only one node at time to reduce a number of requests to LSF daemon
+	m_ui.treeJobs->collapse(m_expandedNode);
+	m_expandedNode = _index;
 }
 //=============================================================================
 //void CLSFDlg::copyJobID() const

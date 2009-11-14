@@ -131,7 +131,6 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
     // detailed job info
     jobInfoEnt *job;
 
-    //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
         return JS_JOB_STAT_UNKWN;
 
