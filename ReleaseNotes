@@ -4,6 +4,7 @@ pod-console: removed PID dir controls from the server page.
 pod-console (LSF plug-in): serialization file of the LSF plug-in has been renamed to "pod-console_LSF.xml.cfg".
 pod-console (LSF plug-in): expand only one job parent at time to reduce a number of requests to LSF daemon.
 pod-console (LSF plug-in): update status only of visible jobs (all parent jobs and children of an expanded parent), this should reduce a number of requests to LSF daemon by a huge number.
+pod-console (LSF plug-in): immediately update jobs tree if a job was removes from the monitoring or added to it.
 
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.

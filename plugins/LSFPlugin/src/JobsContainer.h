@@ -69,6 +69,8 @@ class CJobsContainer: public QThread
         CJobInfo m_jobInfo;
         bool m_updateNumberOfJobs;
         unsigned long m_updateInterval;
+        QWaitCondition m_condition;
+        QMutex m_mutex;
 };
 
 #endif /* JOBSCONTAINER_H_ */

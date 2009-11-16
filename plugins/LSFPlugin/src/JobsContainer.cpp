@@ -19,9 +19,6 @@
 //=============================================================================
 using namespace std;
 //=============================================================================
-QWaitCondition g_signalIsPosted;
-QMutex mutex;
-//=============================================================================
 CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter ):
         m_lsfsubmitter( _lsfsubmitter ),
         m_jobInfo( _lsfsubmitter->getLSF() ),
@@ -71,13 +68,18 @@ void CJobsContainer::run()
         else
             _updateJobsStatus();
 
-        msleep( m_updateInterval );
+        m_mutex.lock();
+        m_condition.wait( &m_mutex, m_updateInterval );
+        m_mutex.unlock();
     }
 }
 //=============================================================================
 void CJobsContainer::updateNumberOfJobs()
 {
+    // TODO: for Qt 4.3 use Qt::BlockingQueuedConnection
+    // so-far we must support Qt 4.2, I therefore use this duty trick
     m_updateNumberOfJobs = true;
+    m_condition.wakeAll();
 }
 //=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
@@ -159,16 +161,10 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 //=============================================================================
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
 {
-    //   mutex.lock();
-
     m_cur_ids.erase( _node.first );
     m_curinfo.erase( _node.first );
 
     emit removeJob( _node.second );
-    // TODO: for Qt 4.3 use Qt::BlockingQueuedConnection
-    // so-far we must support Qt 4.2, I therefore use this duty trick
-    //g_signalIsPosted.wait(&mutex);
-    //mutex.unlock();
 }
 //=============================================================================
 void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
