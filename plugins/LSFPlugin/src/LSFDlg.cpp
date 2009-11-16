@@ -298,7 +298,9 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 void CLSFDlg::expandTreeNode( const QModelIndex &_index )
 {
 	// expand only one node at time to reduce a number of requests to LSF daemon
-	m_ui.treeJobs->collapse(m_expandedNode);
+	if( m_expandedNode.isValid() && m_expandedNode != _index )
+		m_ui.treeJobs->collapse(m_expandedNode);
+
 	m_expandedNode = _index;
 }
 //=============================================================================
