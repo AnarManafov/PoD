@@ -133,6 +133,8 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
              this, SLOT( expandTreeNode( const QModelIndex& ) ) );
+    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
+             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 
 }
 //=============================================================================
@@ -297,11 +299,23 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 //=============================================================================
 void CLSFDlg::expandTreeNode( const QModelIndex &_index )
 {
-	// expand only one node at time to reduce a number of requests to LSF daemon
-	if( m_expandedNode.isValid() && m_expandedNode != _index )
-		m_ui.treeJobs->collapse(m_expandedNode);
+    // expand only one node at time to reduce a number of requests to LSF daemon
+    if ( m_expandedNode.isValid() && m_expandedNode != _index )
+        m_ui.treeJobs->collapse( m_expandedNode );
 
-	m_expandedNode = _index;
+
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
+    if ( info )
+        info->m_expanded = true;
+
+    m_expandedNode = _index;
+}
+//=============================================================================
+void CLSFDlg::collapseTreeNode( const QModelIndex &_index )
+{
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
+    if ( info )
+        info->m_expanded = false;
 }
 //=============================================================================
 //void CLSFDlg::copyJobID() const

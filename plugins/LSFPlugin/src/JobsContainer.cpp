@@ -175,6 +175,17 @@ void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
 {
     // checking status of the given job
     SJobInfo *info = _node.second.get();
+    if ( !info )
+        return;
+
+    // a child node
+    // Don't check for its status, if its parent is collapsed
+    if ( NULL != info->m_parent && 0 != info->m_parent->m_id )
+    {
+        if ( !info->m_parent->m_expanded )
+            return;
+    }
+
     const CLsfMng::EJobStatus_t newStatus = m_lsfsubmitter->getLSF().jobStatus( info->m_id );
     if ( info->m_status == newStatus )
         return;

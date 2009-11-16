@@ -2,7 +2,8 @@
 pod-console: switch the whole monitoring and all sensors off if there is no interaction during the last 15 min (time is hardcoded).
 pod-console: removed PID dir controls from the server page.
 pod-console (LSF plug-in): serialization file of the LSF plug-in has been renamed to "pod-console_LSF.xml.cfg".
-pod-console (LSF plug-in): expand only one job item at time to reduce a number of requests to LSF daemon.
+pod-console (LSF plug-in): expand only one job parent at time to reduce a number of requests to LSF daemon.
+pod-console (LSF plug-in): update status only of visible jobs (all parent jobs and children of an expanded parent), this should reduce a number of requests to LSF daemon by a huge number.
 
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.

@@ -38,7 +38,8 @@ struct SJobInfo
     SJobInfo():
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
-            m_parent( NULL )
+            m_parent( NULL ),
+            m_expanded( false )
     {}
 
     SJobInfo& operator=( const SJobInfo &_info )
@@ -98,6 +99,7 @@ struct SJobInfo
     std::string m_strStatus;
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
+    bool m_expanded;
 };
 //=============================================================================
 /**
