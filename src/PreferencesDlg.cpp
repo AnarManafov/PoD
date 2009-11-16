@@ -19,13 +19,11 @@
 //=============================================================================
 CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_JobStatusUpdInterval( 15 ),// in seconds
-        m_WorkersUpdInterval( 5 )    // in seconds
+        m_JobStatusUpdInterval( 15 ) // in seconds
 {
     m_ui.setupUi( this );
 
     connect( m_ui.spinJobStatusUpd, SIGNAL( valueChanged( int ) ), this, SLOT( _changedJobStatusUpdInterval( int ) ) );
-    connect( m_ui.spinWorkersUpd, SIGNAL( valueChanged( int ) ), this, SLOT( _changedWorkersUpdInterval( int ) ) );
     UpdateAfterLoad();
 }
 //=============================================================================
@@ -36,5 +34,10 @@ CPreferencesDlg::~CPreferencesDlg()
 void CPreferencesDlg::UpdateAfterLoad()
 {
     m_ui.spinJobStatusUpd->setValue( m_JobStatusUpdInterval );
-    m_ui.spinWorkersUpd->setValue( m_WorkersUpdInterval );
+}
+//=============================================================================
+void CPreferencesDlg::_changedJobStatusUpdInterval( int _val )
+{
+    m_JobStatusUpdInterval = _val;
+    emit changedJobStatusUpdInterval( _val );
 }

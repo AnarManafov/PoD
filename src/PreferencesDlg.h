@@ -25,67 +25,50 @@
 //=============================================================================
 class CPreferencesDlg: public QWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
-    friend class boost::serialization::access;
+        friend class boost::serialization::access;
 
-public:
-    CPreferencesDlg( QWidget *_parent = NULL );
-    virtual ~CPreferencesDlg();
+    public:
+        CPreferencesDlg( QWidget *_parent = NULL );
+        virtual ~CPreferencesDlg();
 
-public:
-    int getJobStatusUpdInterval()
-    {
-        return m_JobStatusUpdInterval;
-    }
-    int getWorkersUpdInterval()
-    {
-        return m_WorkersUpdInterval;
-    }
+    public:
+        int getJobStatusUpdInterval()
+        {
+            return m_JobStatusUpdInterval;
+        }
 
-signals:
-    void changedJobStatusUpdInterval( int _val );
-    void changedWorkersUpdInterval( int _val );
+    signals:
+        void changedJobStatusUpdInterval( int _val );
 
-private slots:
-    void _changedJobStatusUpdInterval( int _val )
-    {
-        m_JobStatusUpdInterval = _val;
-        emit changedJobStatusUpdInterval( _val );
-    }
-    void _changedWorkersUpdInterval( int _val )
-    {
-        m_WorkersUpdInterval = _val;
-        emit changedWorkersUpdInterval( _val );
-    }
+    private slots:
+        void _changedJobStatusUpdInterval( int _val );
 
-private:
-    void UpdateAfterLoad();
+    private:
+        void UpdateAfterLoad();
 
-    // serialization
-    template<class Archive>
-    void save( Archive & _ar, const unsigned int /*_version*/ ) const
-    {
-        _ar
-        & BOOST_SERIALIZATION_NVP( m_JobStatusUpdInterval )
-        & BOOST_SERIALIZATION_NVP( m_WorkersUpdInterval );
-    }
-    template<class Archive>
-    void load( Archive & _ar, const unsigned int /*_version*/ )
-    {
-        _ar
-        & BOOST_SERIALIZATION_NVP( m_JobStatusUpdInterval )
-        & BOOST_SERIALIZATION_NVP( m_WorkersUpdInterval );
-        UpdateAfterLoad();
-    }
-    BOOST_SERIALIZATION_SPLIT_MEMBER()
+        // serialization
+        template<class Archive>
+        void save( Archive & _ar, const unsigned int /*_version*/ ) const
+        {
+            _ar
+            & BOOST_SERIALIZATION_NVP( m_JobStatusUpdInterval );
+        }
+        template<class Archive>
+        void load( Archive & _ar, const unsigned int /*_version*/ )
+        {
+            _ar
+            & BOOST_SERIALIZATION_NVP( m_JobStatusUpdInterval );
+            UpdateAfterLoad();
+        }
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
-private:
-    Ui::wgPreferences m_ui;
-    int m_JobStatusUpdInterval;
-    int m_WorkersUpdInterval;
+    private:
+        Ui::wgPreferences m_ui;
+        int m_JobStatusUpdInterval;
 };
 
-BOOST_CLASS_VERSION( CPreferencesDlg, 1 )
+BOOST_CLASS_VERSION( CPreferencesDlg, 2 )
 
 #endif /* PREFERENCESDLG_H_ */
