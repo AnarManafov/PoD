@@ -17,11 +17,6 @@
 //=============================================================================
 // Qt autogen. file
 #include "ui_wgWorkers.h"
-// BOOST
-#include <boost/serialization/version.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/nvp.hpp>
-#include <boost/serialization/split_member.hpp>
 // MiscCommon
 #include "MiscUtils.h"
 #include "def.h"
@@ -45,8 +40,6 @@ class CWorkersDlg: public QWidget
 {
         Q_OBJECT
 
-        friend class boost::serialization::access;
-
     public:
         CWorkersDlg( QWidget *parent = NULL );
         virtual ~CWorkersDlg();
@@ -57,8 +50,6 @@ class CWorkersDlg: public QWidget
     public slots:
         // Timer
         void update();
-        // Monitor List of Workers
-        void on_chkShowWorkers_stateChanged( int _Stat );
 
         void setNumberOfJobs( int _Val )
         {
@@ -75,27 +66,9 @@ class CWorkersDlg: public QWidget
     private:
         int getWorkersFromPROOFCfg();
 
-        template<class Archive>
-        void save( Archive & _ar, const unsigned int /*_version*/ ) const
-        {
-            _ar & BOOST_SERIALIZATION_NVP( m_bMonitorWorkers );
-        }
-        template<class Archive>
-        void load( Archive & _ar, const unsigned int /*_version*/ )
-        {
-            _ar & BOOST_SERIALIZATION_NVP( m_bMonitorWorkers );
-
-            on_chkShowWorkers_stateChanged( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
-            m_ui.chkShowWorkers->setCheckState( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
-        }
-        BOOST_SERIALIZATION_SPLIT_MEMBER()
-
     private:
         Ui::wgWorkers m_ui;
         std::string m_CfgFileName;
-        bool m_bMonitorWorkers;
 };
-
-BOOST_CLASS_VERSION( CWorkersDlg, 1 )
 
 #endif /*WORKERSDLG_H_*/

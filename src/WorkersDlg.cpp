@@ -50,8 +50,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 }
 //=============================================================================
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
-        QWidget( parent ),
-        m_bMonitorWorkers( true )
+        QWidget( parent )
 {
     m_ui.setupUi( this );
 
@@ -78,8 +77,6 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
     m_updTimer = new QTimer( this );
     connect( m_updTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
     m_updTimer->setInterval( g_defaultUpdTime );
-
-    on_chkShowWorkers_stateChanged( m_bMonitorWorkers ? Qt::Checked : Qt::Unchecked );
 
     setActiveWorkers( 0 );
 }
@@ -130,33 +127,19 @@ void CWorkersDlg::update()
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 //=============================================================================
-void CWorkersDlg::on_chkShowWorkers_stateChanged( int _Stat )
-{
-    m_bMonitorWorkers = ( _Stat == Qt::Checked );
-    if ( m_updTimer->isActive() && m_bMonitorWorkers )
-        return ; // TODO: need an assert here
-
-    m_ui.lstClientsList->setEnabled( m_bMonitorWorkers );
-
-    if ( !m_bMonitorWorkers )
-        m_updTimer->stop();
-    else
-        m_updTimer->start();
-}
-//=============================================================================
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
 {
     static size_t nTotal = 0;
     if ( _Val2 )
         nTotal = _Val2;
-    tstring strMsg( _T( "Monitor connections (available %1 out of %2 worker(s)):" ) );
+    tstring strMsg( _T( "Available PROOF workers: %1 out of %2" ) );
     tstringstream ss;
     ss << _Val1;
     replace<tstring>( &strMsg, _T( "%1" ), ss.str() );
     ss.str( "" );
     ss << nTotal;
     replace<tstring>( &strMsg, _T( "%2" ), ss.str() );
-    m_ui.chkShowWorkers->setText( strMsg.c_str() );
+    m_ui.lblJobsCount->setText( strMsg.c_str() );
 }
 //=============================================================================
 void CWorkersDlg::showEvent( QShowEvent* )

@@ -67,7 +67,6 @@ class CMainDlg: public QDialog
         {
             _ar
             & BOOST_SERIALIZATION_NVP( m_CurrentPage )
-            & BOOST_SERIALIZATION_NVP( m_workers )
             & BOOST_SERIALIZATION_NVP( m_preferences );
         }
 
