@@ -40,6 +40,9 @@ class CServerDlg: public QWidget
     public:
         QTimer *m_updTimer;
 
+    signals:
+		void serverStart();
+
     private slots:
         void on_btnStartServer_clicked();
         void on_btnStopServer_clicked();

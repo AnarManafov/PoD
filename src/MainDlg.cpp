@@ -134,10 +134,8 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
     // ------>>>>> WORKERS page
     m_ui.pagesWidget->insertWidget( ++index, &m_workers );
-    // Immediately update interval when a user changes settings
-    connect( &m_preferences, SIGNAL( changedWorkersUpdInterval( int ) ), this, SLOT( changeWorkersUpdTimer( int ) ) );
-    // setting up the updated time interval from the preferences
-    m_workers.m_updTimer->setInterval( m_preferences.getWorkersUpdInterval() * 1000 );
+    // subscribe for server updates
+    connect( &m_server, SIGNAL( serverStart() ), &m_workers, SLOT( restartWatcher() ) );
 
     // PREFERENCES page
     m_ui.pagesWidget->insertWidget( ++index, &m_preferences );
@@ -250,11 +248,6 @@ void CMainDlg::updatePluginTimer( int _interval )
     }
 }
 //=============================================================================
-void CMainDlg::changeWorkersUpdTimer( int _interval )
-{
-    m_workers.m_updTimer->setInterval( _interval * 1000 );
-}
-//=============================================================================
 void CMainDlg::loadPlugins()
 {
     string pluginDir( g_szPluginDir );
@@ -357,8 +350,6 @@ void CMainDlg::switchAllSensors( bool _on )
     if ( _on )
     {
         m_idleTimer->start( g_idleTimeout );
-        if ( !m_workers.isHidden() )
-            m_workers.m_updTimer->start( m_preferences.getWorkersUpdInterval() * 1000 );
         if ( !m_server.isHidden() )
             m_server.m_updTimer->start( g_UpdateInterval * 1000 );
         PluginVec_t::const_iterator iter = m_plugins.begin();
@@ -374,7 +365,6 @@ void CMainDlg::switchAllSensors( bool _on )
     else
     {
         m_idleTimer->stop();
-        m_workers.m_updTimer->stop();
         m_server.m_updTimer->stop();
         PluginVec_t::const_iterator iter = m_plugins.begin();
         PluginVec_t::const_iterator iter_end = m_plugins.end();

@@ -21,7 +21,7 @@
 #include "MiscUtils.h"
 #include "def.h"
 //=============================================================================
-class QTimer;
+class QFileSystemWatcher;
 //=============================================================================
 template <class _T>
 struct SFindComment
@@ -44,11 +44,7 @@ class CWorkersDlg: public QWidget
         CWorkersDlg( QWidget *parent = NULL );
         virtual ~CWorkersDlg();
 
-    public:
-        QTimer *m_updTimer;
-
     public slots:
-        // Timer
         void update();
 
         void setNumberOfJobs( int _Val )
@@ -58,10 +54,11 @@ class CWorkersDlg: public QWidget
 
         // Setting a number of connected workers
         void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
+        bool isWatching();
+        void restartWatcher();
 
     protected:
         void showEvent( QShowEvent* );
-        void hideEvent( QHideEvent* );
 
     private:
         int getWorkersFromPROOFCfg();
@@ -69,6 +66,7 @@ class CWorkersDlg: public QWidget
     private:
         Ui::wgWorkers m_ui;
         std::string m_CfgFileName;
+        QFileSystemWatcher *m_watcher;
 };
 
 #endif /*WORKERSDLG_H_*/

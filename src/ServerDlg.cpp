@@ -92,6 +92,7 @@ bool CServerDlg::IsRunning( bool _check_all )
 void CServerDlg::on_btnStartServer_clicked()
 {
     CommandServer( srvSTART );
+    emit serverStart();
 }
 //=============================================================================
 void CServerDlg::on_btnStopServer_clicked()

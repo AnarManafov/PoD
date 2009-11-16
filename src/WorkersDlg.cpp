@@ -16,7 +16,7 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QFile>
-#include <QTimer>
+#include <QFileSystemWatcher>
 // STD
 #include <fstream>
 // BOOST
@@ -32,7 +32,6 @@
 #include "version.h"
 //=============================================================================
 const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
-const int g_defaultUpdTime = 10000; // in ms.
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -74,11 +73,10 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
                                tr( "An Error occurred while retrieving a proof.conf location.\nPlease, check PoD configuration file." ) );
     }
 
-    m_updTimer = new QTimer( this );
-    connect( m_updTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
-    m_updTimer->setInterval( g_defaultUpdTime );
-
-    setActiveWorkers( 0 );
+    // start to watching for proof.conf file
+    m_watcher = new QFileSystemWatcher( this );
+    connect( m_watcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( update() ) );
+    restartWatcher();
 }
 //=============================================================================
 CWorkersDlg::~CWorkersDlg()
@@ -132,23 +130,45 @@ void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
     static size_t nTotal = 0;
     if ( _Val2 )
         nTotal = _Val2;
-    tstring strMsg( _T( "Available PROOF workers: %1 out of %2" ) );
-    tstringstream ss;
-    ss << _Val1;
-    replace<tstring>( &strMsg, _T( "%1" ), ss.str() );
-    ss.str( "" );
-    ss << nTotal;
-    replace<tstring>( &strMsg, _T( "%2" ), ss.str() );
+    tstring strMsg;
+    if ( isWatching() )
+    {
+        strMsg = _T( "Available PROOF workers: %1 out of %2" );
+        tstringstream ss;
+        ss << _Val1;
+        replace<tstring>( &strMsg, _T( "%1" ), ss.str() );
+        ss.str( "" );
+        ss << nTotal;
+        replace<tstring>( &strMsg, _T( "%2" ), ss.str() );
+    }
     m_ui.lblJobsCount->setText( strMsg.c_str() );
 }
 //=============================================================================
 void CWorkersDlg::showEvent( QShowEvent* )
 {
-    update();
-    m_updTimer->start();
+    restartWatcher();
 }
 //=============================================================================
-void CWorkersDlg::hideEvent( QHideEvent* )
+bool CWorkersDlg::isWatching()
 {
-    m_updTimer->stop();
+    if ( !m_watcher )
+        return false;
+
+    return ( !( m_watcher->files().isEmpty() ) );
+}
+//=============================================================================
+void CWorkersDlg::restartWatcher()
+{
+    if ( isWatching() )
+        return;
+    else
+        m_ui.lblJobsCount->setText( "" );
+
+    // restart watcher if the file is available
+    if ( !QFile::exists( m_CfgFileName.c_str() ) )
+        return;
+
+    // start to watching for proof.conf file
+    m_watcher->addPath( m_CfgFileName.c_str() );
+    update();
 }
