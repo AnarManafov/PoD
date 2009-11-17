@@ -68,6 +68,7 @@ class CMainDlg: public QDialog
             & BOOST_SERIALIZATION_NVP( m_CurrentPage )
             & BOOST_SERIALIZATION_NVP( m_preferences );
         }
+        int activeJobsFromPlugins();
 
     private:
         Ui::MainDlg m_ui;

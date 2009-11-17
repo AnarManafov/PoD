@@ -125,10 +125,10 @@ void CWorkersDlg::update()
     setActiveWorkers( getWorkersFromPROOFCfg() );
 }
 //=============================================================================
-void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2 )
+void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2, bool _onlyTheFirst )
 {
     static size_t nTotal = 0;
-    if ( _Val2 )
+    if ( !_onlyTheFirst )
         nTotal = _Val2;
     tstring strMsg;
     if ( isWatching() )

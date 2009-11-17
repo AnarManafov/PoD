@@ -49,11 +49,11 @@ class CWorkersDlg: public QWidget
 
         void setNumberOfJobs( int _Val )
         {
-            setActiveWorkers( getWorkersFromPROOFCfg(), _Val );
+            setActiveWorkers( getWorkersFromPROOFCfg(), _Val, false );
         }
 
         // Setting a number of connected workers
-        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0 );
+        void setActiveWorkers( size_t _Val1, size_t _Val2 = 0, bool _onlyTheFirst = true );
         bool isWatching();
         void restartWatcher();
 

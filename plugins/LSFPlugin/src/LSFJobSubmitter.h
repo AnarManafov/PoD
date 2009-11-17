@@ -178,6 +178,7 @@ class CLSFJobSubmitter: public QThread
             m_mutex.lock();
             _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
             m_mutex.unlock();
+            emit changeNumberOfJobs( getNumberOfJobs() );
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 

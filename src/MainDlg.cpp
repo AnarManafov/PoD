@@ -155,6 +155,9 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
     switchAllSensors( false );
     switchAllSensors( true );
+
+    // Collect a number of expected jobs, which are still registered in plug-ins
+    m_workers.setNumberOfJobs( activeJobsFromPlugins() );
 }
 //=============================================================================
 void CMainDlg::enumAllChildren( QObject* o )
@@ -267,9 +270,7 @@ void CMainDlg::loadPlugins()
     }
 }
 //=============================================================================
-/// This function collects a number of jobs from all of the plug-ins
-/// It emits the numberOfJobs signal
-void CMainDlg::changeNumberOfJobs( int /*_count*/ )
+int CMainDlg::activeJobsFromPlugins()
 {
     int count( 0 );
     // TODO: fix the code using accumulate algorithm
@@ -279,8 +280,14 @@ void CMainDlg::changeNumberOfJobs( int /*_count*/ )
     {
         count += ( *iter )->getJobsCount();
     }
-
-    emit numberOfJobs( count );
+    return count;
+}
+//=============================================================================
+/// This function collects a number of jobs from all of the plug-ins
+/// It emits the numberOfJobs signal
+void CMainDlg::changeNumberOfJobs( int /*_count*/ )
+{
+    emit numberOfJobs( activeJobsFromPlugins() );
 }
 //=============================================================================
 void CMainDlg::on_closeButton_clicked()
