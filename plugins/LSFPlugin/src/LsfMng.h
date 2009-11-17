@@ -71,6 +71,7 @@ class CLsfMng
             JS_JOB_STAT_PERROR = 0x100,   //!< post job process error
             JS_JOB_STAT_WAIT = 0x200,    //!< chunk job waiting its execution turn
             JS_JOB_STAT_UNKWN = 0x1000,   //!< unknown status
+            JS_JOB_STAT_COMPLETED = 0x2000 //!< a custom status from PoD. Means that the job was completed and there is no need to monitor it.
         } EJobStatus_t;
 
         typedef std::map<EJobProperty_t, std::string> propertyDict_t;

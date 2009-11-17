@@ -39,7 +39,8 @@ struct SJobInfo
             m_id( 0 ),
             m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
             m_parent( NULL ),
-            m_expanded( false )
+            m_expanded( false ),
+            m_monitor( true )
     {}
 
     SJobInfo& operator=( const SJobInfo &_info )
@@ -100,6 +101,7 @@ struct SJobInfo
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
     bool m_expanded;
+    bool m_monitor; //!< if false, we don't need to monitor this job
 };
 //=============================================================================
 /**

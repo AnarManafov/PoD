@@ -144,6 +144,9 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
         return JS_JOB_STAT_UNKWN;
     }
 
+    if ( 0 != job->endTime )
+        return JS_JOB_STAT_COMPLETED;
+
     EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
 
     //when finished to display the job info, close the connection to the mbatchd
@@ -176,6 +179,8 @@ std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
             return "job process error";
         case JS_JOB_STAT_WAIT:
             return "waiting";
+        case JS_JOB_STAT_COMPLETED:
+            return "completed";
         default:
             return "unknown";
     }
@@ -205,6 +210,8 @@ std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
             return "job process error";
         case JS_JOB_STAT_WAIT:
             return "waiting";
+        case JS_JOB_STAT_COMPLETED:
+            return "completed";
         default:
             return "unknown";
     }
