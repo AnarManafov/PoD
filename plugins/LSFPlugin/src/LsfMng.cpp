@@ -233,7 +233,10 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
+    {
+    	lsb_closejobinfo();
         return 0;
+    }
 
     // number of remaining jobs unread
     int more = 0;
