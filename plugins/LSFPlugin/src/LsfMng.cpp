@@ -132,7 +132,10 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
     jobInfoEnt *job;
 
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
+    {
+    	lsb_closejobinfo();
         return JS_JOB_STAT_UNKWN;
+    }
 
     // number of remaining jobs unread
     int more = 0;
@@ -145,7 +148,10 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
     }
 
     if ( 0 != job->endTime )
+    {
+        lsb_closejobinfo();
         return JS_JOB_STAT_COMPLETED;
+    }
 
     EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
 
