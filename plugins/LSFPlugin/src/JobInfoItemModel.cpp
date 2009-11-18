@@ -194,7 +194,6 @@ void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
 {
     // mutex.lock();
 
-
     size_t row = 0;
     if ( _info->m_parent == m_rootItem )
     { // it is a parent job
@@ -215,6 +214,8 @@ void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
     //  mutex.unlock();
 
     endRemoveRows();
+
+    emit doneUpdate();
 }
 //=============================================================================
 void CJobInfoItemModel::_setupJobsContainer()

@@ -46,6 +46,9 @@ class CJobInfoItemModel: public QAbstractItemModel
         QModelIndex parent( const QModelIndex &_index ) const;
         void setUpdateInterval( int _newVal );
 
+    signals:
+        void doneUpdate();
+
     private slots:
         void jobChanged( SJobInfo *_info );
         void beginInsertRow( const SJobInfoPTR_t &_info );

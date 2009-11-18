@@ -125,6 +125,9 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
     m_ui.treeJobs->setModel( m_treeModel );
 
+    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
+
+
     connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), m_treeModel, SLOT( numberOfJobsChanged( int ) ) );
 
     // a context menu of the table view
@@ -136,7 +139,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
              this, SLOT( expandTreeNode( const QModelIndex& ) ) );
     connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
              this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
-
 }
 //=============================================================================
 CLSFDlg::~CLSFDlg()
@@ -268,14 +270,14 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 
     const bool enable( clicked.isValid() );
 
-    QMenu menu( this );
+    QMenu menu( m_ui.treeJobs );
     menu.addAction( removeJobAct );
     removeJobAct->setEnabled( enable );
     menu.addSeparator();
     menu.addAction( killJobAct );
-    removeJobAct->setEnabled( enable );
+    killJobAct->setEnabled( enable );
 
-    menu.exec( m_ui.treeJobs->mapToGlobal( _point ) );
+    menu.exec( QCursor::pos() );//m_ui.treeJobs->mapToGlobal( _point ) );
 }
 //=============================================================================
 void CLSFDlg::expandTreeNode( const QModelIndex &_index )
@@ -348,9 +350,16 @@ void CLSFDlg::removeJob()
     if ( QMessageBox::Cancel == reply )
         return;
 
+    m_ui.treeJobs->setEnabled( false );
+
     // if the m_id == 0, then it means it is a rootItem - parent of
     // all parents
     m_JobSubmitter.removeJob(( NULL != info->m_parent && info->m_parent->m_id != 0 ) ? info->m_parent->m_id : info->m_id );
+}
+//=============================================================================
+void CLSFDlg::enableTree()
+{
+    m_ui.treeJobs->setEnabled( true );
 }
 //=============================================================================
 void CLSFDlg::setProgress( int _Val )

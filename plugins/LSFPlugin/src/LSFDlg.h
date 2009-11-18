@@ -68,6 +68,7 @@ class CLSFDlg: public QWidget, IJobManager
         void showContextMenu( const QPoint &_point );
         void expandTreeNode( const QModelIndex& );
         void collapseTreeNode( const QModelIndex& );
+        void enableTree();
 
     private:
         void createActions();

@@ -22,8 +22,8 @@
 #include <QObject>
 #include <QtCore>
 //=============================================================================
-extern QWaitCondition g_signalIsPosted;
-extern QMutex mutex;
+//extern QWaitCondition g_signalIsPosted;
+//extern QMutex mutex;
 //=============================================================================
 class CJobsContainer: public QThread
 {
