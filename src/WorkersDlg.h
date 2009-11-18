@@ -44,6 +44,8 @@ class CWorkersDlg: public QWidget
         CWorkersDlg( QWidget *parent = NULL );
         virtual ~CWorkersDlg();
 
+        void init( const std::string &_proofCFG );
+
     public slots:
         void update();
 

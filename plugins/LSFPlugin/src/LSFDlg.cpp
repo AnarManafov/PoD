@@ -210,6 +210,10 @@ void CLSFDlg::on_btnSubmitClient_clicked()
         m_JobSubmitter.setNumberOfWorkers( m_WorkersCount );
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
+
+        if ( !m_emailJobOutput )
+            m_JobSubmitter.setOutputFiles( m_logDir );
+
         // submit gLite jobs
         m_JobSubmitter.start();
         m_ui.btnSubmitClient->setEnabled( false );
@@ -412,6 +416,23 @@ void CLSFDlg::hideEvent( QHideEvent* )
 int CLSFDlg::getJobsCount() const
 {
     return m_AllJobsCount;
+}
+//=============================================================================
+void CLSFDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+{
+    try
+    {
+        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
+        stringstream ss;
+        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
+        ss >> m_emailJobOutput;
+    }
+    catch ( exception &e )
+    {
+        QMessageBox::critical( this,
+                               QString( PROJECT_NAME ),
+                               tr( e.what() ) );
+    }
 }
 //=============================================================================
 Q_EXPORT_PLUGIN2( LSFJobManager, CLSFDlg );

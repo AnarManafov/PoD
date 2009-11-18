@@ -31,6 +31,7 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
+const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
 // this is very expensive call, we therefore using 6 sec. timeout
 const size_t g_UpdateInterval = 6;  // in seconds
 
@@ -103,6 +104,26 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
              << ". PAConsole will use its default settings." << endl;
     }
 
+    string proofCfgFile;
+    PoD::CPoDUserDefaults user_defaults;
+    // Load PoD user defaults
+    try
+    {
+        string pathUD( g_szPoDcfg );
+        smart_path( &pathUD );
+        user_defaults.init( pathUD );
+
+        proofCfgFile = user_defaults.getValueForKey( "server.proof_cfg_path" );
+    }
+    catch ( exception &e )
+    {
+        QMessageBox::critical( this,
+                               QString( PROJECT_NAME ),
+                               tr( e.what() ) );
+        // TODO: implement a graceful quit
+        exit( 1 );
+    }
+
     // loading PAConsole plug-ins
     loadPlugins();
 
@@ -117,6 +138,9 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for ( ; iter != iter_end; ++iter )
     {
+        // setting user defaults for each plug-in
+        ( *iter )->setUserDefaults( user_defaults );
+
         QWidget *w = ( *iter )->getWidget();
         if ( !w )
             continue;
@@ -133,6 +157,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     connect( &m_preferences, SIGNAL( changedJobStatusUpdInterval( int ) ), this, SLOT( updatePluginTimer( int ) ) );
 
     // ------>>>>> WORKERS page
+    m_workers.init( proofCfgFile );
     m_ui.pagesWidget->insertWidget( ++index, &m_workers );
     // subscribe for server updates
     connect( &m_server, SIGNAL( serverStart() ), &m_workers, SLOT( restartWatcher() ) );

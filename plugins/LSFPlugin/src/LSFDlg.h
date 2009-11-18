@@ -42,6 +42,7 @@ class CLSFDlg: public QWidget, IJobManager
         QIcon getIcon();
         void startUpdTimer( int _JobStatusUpdInterval );
         int getJobsCount() const;
+        void setUserDefaults(const PoD::CPoDUserDefaults &_ud);
 
         void setAllDefault();
 
@@ -107,6 +108,8 @@ class CLSFDlg: public QWidget, IJobManager
         int m_updateInterval;
         std::string m_queue;
         QModelIndex m_expandedNode;
+        std::string m_logDir;
+        bool m_emailJobOutput;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )

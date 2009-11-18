@@ -31,8 +31,6 @@
 #include "WorkersDlg.h"
 #include "version.h"
 //=============================================================================
-const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
-//=============================================================================
 using namespace std;
 using namespace MiscCommon;
 using namespace boost;
@@ -52,19 +50,12 @@ CWorkersDlg::CWorkersDlg( QWidget *parent ):
         QWidget( parent )
 {
     m_ui.setupUi( this );
+}
+//=============================================================================
+void CWorkersDlg::init( const std::string &_proofCFG )
+{
+    m_CfgFileName = _proofCFG;
 
-    try
-    {
-        parsePROOFAgentCfgFile( g_szPoDcfg, &m_CfgFileName );
-    }
-    catch ( exception &e )
-    {
-        QMessageBox::critical( this,
-                               QString( PROJECT_NAME ),
-                               tr( e.what() ) );
-        // TODO: implement a graceful quit
-        exit( 1 );
-    }
     smart_path( &m_CfgFileName );
     if ( m_CfgFileName.empty() )
     {

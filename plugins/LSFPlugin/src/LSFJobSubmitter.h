@@ -28,6 +28,8 @@
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/set.hpp>
+// MiscCommon
+#include "SysHelper.h"
 //=============================================================================
 class CLSFJobSubmitter: public QThread
 {
@@ -89,6 +91,14 @@ class CLSFJobSubmitter: public QThread
         void setQueue( const std::string &_queue )
         {
             m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
+        }
+        void setOutputFiles( const std::string &_path )
+        {
+            std::string dir( _path );
+            MiscCommon::smart_path( &dir );
+            MiscCommon::smart_append( &dir, '/' );
+            m_lsf.addProperty( CLsfMng::JP_SUB_OUT_FILE, dir + "%J/std_%I.out" );
+            m_lsf.addProperty( CLsfMng::JP_SUB_ERR_FILE, dir + "%J/std_%I.err" );
         }
         void removeJob( lsf_jobid_t _jobID )
         {
