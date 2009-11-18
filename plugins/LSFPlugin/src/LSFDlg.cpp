@@ -171,7 +171,7 @@ void CLSFDlg::UpdateAfterLoad()
 //=============================================================================
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
 {
-    QMessageBox::critical( this, tr( "PROOFAgent Console" ), _Msg );
+    QMessageBox::critical( this, tr( "pod-console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
 //=============================================================================
@@ -187,7 +187,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
         const string msg( "PoD server is not running.\n"
                           "Do you want to submit this job anyway?" );
         const QMessageBox::StandardButton reply =
-            QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
+            QMessageBox::question( this, tr( "pod-console" ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No );
         if ( QMessageBox::Yes != reply )
             return;
@@ -322,9 +322,9 @@ void CLSFDlg::killJob()
     {
         m_JobSubmitter.killJob( info->m_id );
     }
-    catch ( ... )
+    catch ( const std::exception &_e )
     {
-        // TODO: error message
+        QMessageBox::critical( this, tr( "pod-console" ), _e.what() );
     }
 
 }

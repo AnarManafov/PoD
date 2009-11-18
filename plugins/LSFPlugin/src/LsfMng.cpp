@@ -110,15 +110,14 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     if ( jobId < 0 )
     {
         // if job submission fails, lsb_submit returns -1
-        switch ( lsberrno )
-        {
-                // and sets lsberrno to indicate the error
-            case LSBE_QUEUE_USE:
-            case LSBE_QUEUE_CLOSED:
-            default:
-                throw runtime_error( "job submission failed" ); // TODO: report a proper error here
-        }
-        return 0;
+        char *msg = lsb_sysmsg();
+        stringstream ss;
+        ss << "Job submission failed. LSF error: ";
+        if ( NULL != msg )
+            ss << msg;
+        else
+            ss << lsberrno;
+        throw runtime_error( ss.str() );
     }
     return LSB_JOBID( jobId, 0 );
 }
@@ -308,10 +307,15 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
     int res = lsb_signaljob( _jobID, SIGKILL );
     if ( res < 0 )
     {
+        char *msg = lsb_sysmsg();
         stringstream ss;
-        ss
-        << "Can't kill the job. LSF error: "
-        << lsberrno;
-        runtime_error( ss.str() );
+        ss << "Can't kill the job. LSF error: ";
+        if ( NULL != msg )
+            ss << msg;
+        else
+        {
+            ss << lsberrno;
+        }
+        throw runtime_error( ss.str() );
     }
 }
