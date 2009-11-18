@@ -25,8 +25,9 @@
 // MiscCommon
 #include "def.h"
 #include "SysHelper.h"
-// PAConsole
+// pod-console
 #include "ServerInfo.h"
+#include "version.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -243,31 +244,17 @@ void CLSFDlg::on_lsfQueueList_currentIndexChanged( int _index )
 //=============================================================================
 void CLSFDlg::createActions()
 {
-//    // COPY Job ID
-//    copyJobIDAct = new QAction( tr( "&Copy JobID" ), this );
-//    copyJobIDAct->setShortcut( tr( "Ctrl+C" ) );
-//    copyJobIDAct->setStatusTip( tr( "Copy selected jod id to the clipboard" ) );
-//    connect( copyJobIDAct, SIGNAL( triggered() ), this, SLOT( copyJobID() ) );
-//    // CANCEL Job
-//    cancelJobAct = new QAction( tr( "Canc&el Job" ), this );
-//    cancelJobAct->setShortcut( tr( "Ctrl+E" ) );
-//    cancelJobAct->setStatusTip( tr( "Cancel the selected jod" ) );
-//    connect( cancelJobAct, SIGNAL( triggered() ), this, SLOT( cancelJob() ) );
-//    // GET OUTPUT of the Job
-//    getJobOutputAct = new QAction( tr( "Get &output" ), this );
-//    getJobOutputAct->setShortcut( tr( "Ctrl+O" ) );
-//    getJobOutputAct->setStatusTip( tr( "Get output sandbox of the selected jod" ) );
-//    connect( getJobOutputAct, SIGNAL( triggered() ), this, SLOT( getJobOutput() ) );
-//    // Get Logging Info
-//    getJobLoggingInfoAct = new QAction( tr( "Get &logging info" ), this );
-//    getJobLoggingInfoAct->setShortcut( tr( "Ctrl+L" ) );
-//    getJobLoggingInfoAct->setStatusTip( tr( "Get logging info of the selected jod" ) );
-//    connect( getJobLoggingInfoAct, SIGNAL( triggered() ), this, SLOT( getJobLoggingInfo() ) );
     // Remove Job from monitoring
     removeJobAct = new QAction( tr( "&Don't monitor this job" ), this );
     removeJobAct->setShortcut( tr( "Ctrl+R" ) );
     removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
+    // Kill LSF job
+    killJobAct = new QAction( tr( "&Kill LSF job" ), this );
+    killJobAct->setShortcut( tr( "Ctrl+K" ) );
+    killJobAct->setStatusTip( tr( "Send a kill signal to the selected job" ) );
+
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
+    connect( killJobAct, SIGNAL( triggered() ), this, SLOT( killJob() ) );
 }
 //=============================================================================
 void CLSFDlg::showContextMenu( const QPoint &_point )
@@ -278,21 +265,11 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
     const bool enable( clicked.isValid() );
 
     QMenu menu( this );
-//   menu.addAction( copyJobIDAct );
-//   copyJobIDAct->setEnabled( item );
-
-//    menu.addAction( getJobOutputAct );
-//    getJobOutputAct->setEnabled( item );
-
-//    menu.addAction( getJobLoggingInfoAct );
-//    getJobLoggingInfoAct->setEnabled( item );
-
-    menu.addSeparator();
     menu.addAction( removeJobAct );
     removeJobAct->setEnabled( enable );
-//    menu.addSeparator();
-//    menu.addAction( cancelJobAct );
-//    cancelJobAct->setEnabled( item );
+    menu.addSeparator();
+    menu.addAction( killJobAct );
+    removeJobAct->setEnabled( enable );
 
     menu.exec( m_ui.treeJobs->mapToGlobal( _point ) );
 }
@@ -318,92 +295,36 @@ void CLSFDlg::collapseTreeNode( const QModelIndex &_index )
         info->m_expanded = false;
 }
 //=============================================================================
-//void CLSFDlg::copyJobID() const
-//{
-////    // Copy selected JobID to clipboard
-////    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-////    if ( !item )
-////        return;
-////    clipboard->setText( item->text( 0 ), QClipboard::Clipboard );
-////    clipboard->setText( item->text( 0 ), QClipboard::Selection );
-//}
-//
-//void CLSFDlg::cancelJob()
-//{
-////    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-////    if ( !item )
-////        return;
-////
-////    const string jobid( item->text( 0 ).toAscii().data() );
-////    const string msg( "Do you really want to cancel the job:\n" + jobid );
-////    const QMessageBox::StandardButton
-////    reply( QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
-////                                  QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
-////    if ( QMessageBox::Yes != reply )
-////        return;
-////
-////    try
-////    {
-////        CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
-////    }
-////    catch ( const exception &_e )
-////    {
-////        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
-////        return;
-////    }
-//}
-//
-//void CLSFDlg::getJobOutput()
-//{
-////    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-////    if ( !item )
-////        return;
-////
-////    bool ok;
-////    const QString
-////    path =
-////        QInputDialog::getText(
-////            this,
-////            tr( "PROOFAgent Console" ),
-////            tr(
-////                "Enter the path, where output files should be delivered to:" ),
-////            QLineEdit::Normal, QDir::home().absolutePath(), &ok );
-////    if ( !ok || path.isEmpty() )
-////        return;
-////
-////    const string jobid( item->text( 0 ).toAscii().data() );
-////
-////    gaw_path_type joboutput_path;
-////    try
-////    {
-////        CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
-////                                                                &joboutput_path, true );
-////    }
-////    catch ( const exception &_e )
-////    {
-////        QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
-////        return;
-////    }
-////
-////    ostringstream ss;
-////    transform( joboutput_path.begin(), joboutput_path.end(),
-////               ostream_iterator<string> ( ss, "\n____\n" ), gaw_path_type_to_string );
-////    QMessageBox::information( this, tr( "PROOFAgent Console" ), tr( ss.str().c_str() ) );
-//}
-//
-//void CLSFDlg::getJobLoggingInfo()
-//{
-////    // Job ID
-////    const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-////    if ( !item )
-////        return;
-////
-////    const string jobid( item->text( 0 ).toAscii().data() );
-////
-////    CLogInfoDlg dlg( this, jobid );
-////    dlg.exec();
-//}
+void CLSFDlg::killJob()
+{
+    // Job ID
+    QModelIndex item = m_ui.treeJobs->currentIndex();
+    if ( !item.isValid() )
+        return;
 
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
+    if ( !info )
+        return;
+
+    const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
+                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the LSF queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if ( QMessageBox::Cancel == reply )
+        return;
+
+    try
+    {
+        m_JobSubmitter.killJob( info->m_id );
+    }
+    catch ( ... )
+    {
+        // TODO: error message
+    }
+
+}
+//=============================================================================
 void CLSFDlg::removeJob()
 {
     // Job ID
@@ -415,11 +336,19 @@ void CLSFDlg::removeJob()
     if ( !info )
         return;
 
+    const string msg( "Are you sure you want to remove the selected job and all its children from the monitoring?\n"
+                      "Be advised, removing the job from the monitoring will not kill/remove it from the LSF queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if ( QMessageBox::Cancel == reply )
+        return;
+
     // if the m_id == 0, then it means it is a rootItem - parent of
     // all parents
     m_JobSubmitter.removeJob(( NULL != info->m_parent && info->m_parent->m_id != 0 ) ? info->m_parent->m_id : info->m_id );
 }
-
+//=============================================================================
 void CLSFDlg::setProgress( int _Val )
 {
     if ( 100 == _Val )
@@ -428,7 +357,7 @@ void CLSFDlg::setProgress( int _Val )
     }
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
-
+//=============================================================================
 void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
 {
     m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
@@ -439,19 +368,22 @@ void CLSFDlg::setNumberOfJobs( int _count )
     m_AllJobsCount = _count;
     emit changeNumberOfJobs( _count );
 }
-
+//=============================================================================
 QString CLSFDlg::getName() const
 {
     return QString( "LSF\nJob Manager" );
 }
+//=============================================================================
 QWidget* CLSFDlg::getWidget()
 {
     return this;
 }
+//=============================================================================
 QIcon CLSFDlg::getIcon()
 {
     return QIcon( ":/images/lsf.png" );
 }
+//=============================================================================
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     if ( _JobStatusUpdInterval <= 0 )
@@ -466,20 +398,20 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
         m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
     }
 }
-
+//=============================================================================
 void CLSFDlg::showEvent( QShowEvent* )
 {
     startUpdTimer( m_updateInterval );
 }
-
+//=============================================================================
 void CLSFDlg::hideEvent( QHideEvent* )
 {
     startUpdTimer( 0 );
 }
-
+//=============================================================================
 int CLSFDlg::getJobsCount() const
 {
     return m_AllJobsCount;
 }
-
+//=============================================================================
 Q_EXPORT_PLUGIN2( LSFJobManager, CLSFDlg );

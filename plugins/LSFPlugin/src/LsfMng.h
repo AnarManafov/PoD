@@ -93,6 +93,7 @@ class CLsfMng
         int getNumberOfChildren( lsf_jobid_t _jobID ) const;
         void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
         void getQueues( LSFQueueInfoMap_t *_retVal ) const;
+        void killJob( lsf_jobid_t _jobID ) const;
 
     private:
         propertyDict_t m_submitRequest;

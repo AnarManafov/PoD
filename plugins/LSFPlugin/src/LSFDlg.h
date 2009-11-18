@@ -62,10 +62,7 @@ class CLSFDlg: public QWidget, IJobManager
         void on_lsfQueueList_currentIndexChanged( int _index );
 
     private slots:
-//        void copyJobID() const;
-//        void cancelJob();
-//        void getJobOutput();
-//        void getJobLoggingInfo();
+		void killJob();
         void removeJob();
         void showContextMenu( const QPoint &_point );
         void expandTreeNode( const QModelIndex& );
@@ -99,11 +96,8 @@ class CLSFDlg: public QWidget, IJobManager
 
     private:
         Ui::wgGrid m_ui;
-        QAction *copyJobIDAct;
-        QAction *cancelJobAct;
-        QAction *getJobOutputAct;
-        QAction *getJobLoggingInfoAct;
         QAction *removeJobAct;
+        QAction *killJobAct;
         QClipboard *clipboard;
         std::string m_JobScript;
         int m_AllJobsCount;

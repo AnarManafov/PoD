@@ -9,6 +9,7 @@ pod-console (LSF plug-in): update status only of visible jobs (all parent jobs a
 pod-console (LSF plug-in): immediately update jobs tree if a job was removes from the monitoring or added to it.
 pod-console (LSF plug-in): fixed a SEGFAULT error condition, which could happen when closing pod-console.
 pod-console (LSF plug-in): now consle is able to detect that LSF jobs are completed and it doesn't monitor status of such jobs further. That makes LSF plug-in even more LSF and resource friendly.
+pod-console (LSF plug-in): now user can send a kill signal to a job or to an array of jobs, using jobs context menu. This will kill the job and remove it from the LSF queue.
 
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.

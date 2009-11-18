@@ -98,6 +98,10 @@ class CLSFJobSubmitter: public QThread
 
             emit changeNumberOfJobs( getNumberOfJobs() );
         }
+        void killJob( lsf_jobid_t _jobID )
+        {
+            m_lsf.killJob( _jobID );
+        }
 
         const CLsfMng &getLSF() const
         {

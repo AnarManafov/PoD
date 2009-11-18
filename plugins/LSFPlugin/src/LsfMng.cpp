@@ -133,7 +133,7 @@ CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
 
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
     {
-    	lsb_closejobinfo();
+        lsb_closejobinfo();
         return JS_JOB_STAT_UNKWN;
     }
 
@@ -234,7 +234,7 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
     {
-    	lsb_closejobinfo();
+        lsb_closejobinfo();
         return 0;
     }
 
@@ -300,5 +300,18 @@ void CLsfMng::getQueues( LSFQueueInfoMap_t *_retVal ) const
         SLSFQueueInfo_t info;
         info.m_userJobLimit = qInfo[i].userJobLimit;
         _retVal->insert( LSFQueueInfoMap_t::value_type( qInfo[i].queue, info ) );
+    }
+}
+//=============================================================================
+void CLsfMng::killJob( lsf_jobid_t _jobID ) const
+{
+    int res = lsb_signaljob( _jobID, SIGKILL );
+    if ( res < 0 )
+    {
+        stringstream ss;
+        ss
+        << "Can't kill the job. LSF error: "
+        << lsberrno;
+        runtime_error( ss.str() );
     }
 }
