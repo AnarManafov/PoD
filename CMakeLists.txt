@@ -144,13 +144,13 @@ endif (LSF_FOUND)
 #
 # Alien Plug-in
 #
-find_package( Alien REQUIRED )
-if (ALIEN_FOUND)
-    add_subdirectory ( plugins/AlienPlugin )
-    message (STATUS "Build Alien plug-in - YES")
-else (ALIEN_FOUND)
-    message (STATUS "Build Alien plug-in - NO")
-endif (ALIEN_FOUND)
+#find_package( Alien REQUIRED )
+#if (ALIEN_FOUND)
+#    add_subdirectory ( plugins/AlienPlugin )
+#    message (STATUS "Build Alien plug-in - YES")
+#else (ALIEN_FOUND)
+#    message (STATUS "Build Alien plug-in - NO")
+#endif (ALIEN_FOUND)
 
 
 #
