@@ -17,7 +17,7 @@ project( pod-user-defaults )
 
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION_PATCH "2")
 
 # Check if cmake has the required version
 # because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
