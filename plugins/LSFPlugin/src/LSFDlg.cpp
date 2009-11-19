@@ -251,13 +251,13 @@ void CLSFDlg::on_lsfQueueList_currentIndexChanged( int _index )
 void CLSFDlg::createActions()
 {
     // Remove Job from monitoring
-    removeJobAct = new QAction( tr( "&Don't monitor this job" ), this );
-    removeJobAct->setShortcut( tr( "Ctrl+R" ) );
-    removeJobAct->setStatusTip( tr( "Remove the selected job from monitoring" ) );
+    removeJobAct = new QAction( tr( "&Exclude" ), this );
+    removeJobAct->setShortcut( tr( "Ctrl+E" ) );
+    removeJobAct->setStatusTip( tr( "Remove the selected job from the monitoring" ) );
     // Kill LSF job
-    killJobAct = new QAction( tr( "&Kill LSF job" ), this );
+    killJobAct = new QAction( tr( "&Kill" ), this );
     killJobAct->setShortcut( tr( "Ctrl+K" ) );
-    killJobAct->setStatusTip( tr( "Send a kill signal to the selected job" ) );
+    killJobAct->setStatusTip( tr( "Send a kill signal to the selected LSF job" ) );
 
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
     connect( killJobAct, SIGNAL( triggered() ), this, SLOT( killJob() ) );
@@ -277,7 +277,7 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
     menu.addAction( killJobAct );
     killJobAct->setEnabled( enable );
 
-    menu.exec( QCursor::pos() );//m_ui.treeJobs->mapToGlobal( _point ) );
+    menu.exec( QCursor::pos() );
 }
 //=============================================================================
 void CLSFDlg::expandTreeNode( const QModelIndex &_index )

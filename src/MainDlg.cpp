@@ -291,6 +291,16 @@ void CMainDlg::loadPlugins()
             IJobManager *obj( qobject_cast<IJobManager *>( plugin ) );
             if ( obj )
                 m_plugins.push_back( obj );
+            else
+                QMessageBox::warning( this, PROJECT_NAME,
+                                      "Can't load the plug-in: " + pluginDirectory.absoluteFilePath( fileName ) + "\n" +
+                                      QString( "It doesn't implement the IJobManager interface." ) );
+        }
+        else
+        {
+            QMessageBox::warning( this, PROJECT_NAME,
+                                  "Can't load the plug-in: " + pluginDirectory.absoluteFilePath( fileName ) + "\n" +
+                                  loader.errorString() );
         }
     }
 }
