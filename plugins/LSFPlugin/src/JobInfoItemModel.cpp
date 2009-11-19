@@ -188,6 +188,8 @@ void CJobInfoItemModel::beginInsertRow( const SJobInfoPTR_t &_info )
 
     beginInsertRows( parentModelIndex, row, row );
     endInsertRows();
+
+    emit doneUpdate();
 }
 //=============================================================================
 void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )

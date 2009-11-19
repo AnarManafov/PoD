@@ -309,7 +309,7 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
     {
         char *msg = lsb_sysmsg();
         stringstream ss;
-        ss << "Can't kill the job. LSF error: ";
+        ss << "LSF message: ";
         if ( NULL != msg )
             ss << msg;
         else

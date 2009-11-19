@@ -173,7 +173,7 @@ void CLSFDlg::UpdateAfterLoad()
 //=============================================================================
 void CLSFDlg::recieveThreadMsg( const QString &_Msg )
 {
-    QMessageBox::critical( this, tr( "pod-console" ), _Msg );
+    QMessageBox::warning( this, tr( "pod-console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
 //=============================================================================
@@ -326,7 +326,7 @@ void CLSFDlg::killJob()
     }
     catch ( const std::exception &_e )
     {
-        QMessageBox::critical( this, tr( "pod-console" ), _e.what() );
+        QMessageBox::warning( this, tr( "pod-console" ), _e.what() );
     }
 
 }
@@ -360,6 +360,15 @@ void CLSFDlg::removeJob()
 void CLSFDlg::enableTree()
 {
     m_ui.treeJobs->setEnabled( true );
+
+    try
+    {
+        // Saving class to the config file
+        _savecfg( *this, g_szLSFPluginCfgFileName );
+    }
+    catch ( ... )
+    {
+    }
 }
 //=============================================================================
 void CLSFDlg::setProgress( int _Val )
