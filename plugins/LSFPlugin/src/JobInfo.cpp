@@ -30,6 +30,9 @@ CJobInfo::~CJobInfo()
 //=============================================================================
 void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container )
 {
+    // TODO: !!! the entire algorithm MUST be revised - since it is very inefficient !!!
+    // it regenerates every time the entire list of jobs from very beginning
+
     // TODO: better error handling in this function
     m_Container.clear();
 
