@@ -15,8 +15,10 @@
 // STD
 #include <stdexcept>
 #include <cstring>
+#include <iostream>
 // Misc
 #include "def.h"
+#include "SysHelper.h"
 // LSF plug-in
 #include "LsfMng.h"
 //=============================================================================
@@ -27,12 +29,10 @@ const LPCTSTR g_szAppName = "PoD LSF plug-in";
 //=============================================================================
 CLsfMng::CLsfMng(): m_bInit( false )
 {
-
 }
 //=============================================================================
 CLsfMng::~CLsfMng()
 {
-
 }
 //=============================================================================
 void CLsfMng::init()
@@ -44,7 +44,11 @@ void CLsfMng::init()
 
     m_submitRequest.clear();
 
+    get_cuser_name( &m_user );
+
     m_bInit = true;
+
+    cout << "init" << endl;
 }
 //=============================================================================
 void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
@@ -117,105 +121,45 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
             ss << msg;
         else
             ss << lsberrno;
+        ss << "\nPlease, try again.";
         throw runtime_error( ss.str() );
     }
-    return LSB_JOBID( jobId, 0 );
+    return jobId;//LSB_JOBID( jobId, 0 );
 }
 //=============================================================================
-CLsfMng::EJobStatus_t CLsfMng::jobStatus( lsf_jobid_t _jobID ) const
+string CLsfMng::jobStatusString( int _status )
 {
-    if ( !m_bInit )
-        return JS_JOB_STAT_UNKWN;
-
-    // detailed job info
-    jobInfoEnt *job;
-
-    if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB ) < 0 )
-        return JS_JOB_STAT_UNKWN;
-
-    // number of remaining jobs unread
-    int more = 0;
-    // get the job details
-    job = lsb_readjobinfo( &more );
-    if ( NULL == job )
+    switch ( _status )
     {
-        lsb_closejobinfo();
-        return JS_JOB_STAT_UNKWN;
-    }
+        case JOB_STAT_NULL:
+            return string( "null" );
+        case JOB_STAT_PEND:
+            return string( "pending" );
+        case JOB_STAT_PSUSP:
+            return string( "held" );
+        case JOB_STAT_RUN:
+            return string( "run" );
+        case JOB_STAT_RUN|JOB_STAT_WAIT:
+            return string( "waiting" );
+        case JOB_STAT_SSUSP:
+            return string( "suspended by LSF" );
+        case JOB_STAT_USUSP:
+            return string( "suspended by user" );
+        case JOB_STAT_EXIT:
+            //if ( jobInfo->reasons & EXIT_ZOMBIE )
+            //    return string( "ZOMBI" );
+            //else
+            return string( "exit" );
+        case JOB_STAT_DONE:
+        case JOB_STAT_DONE|JOB_STAT_PDONE:
+        case JOB_STAT_DONE|JOB_STAT_PERR:
+        case JOB_STAT_DONE|JOB_STAT_WAIT:
+            return string( "done" );
 
-    if ( 0 != job->endTime )
-    {
-        lsb_closejobinfo();
-        return JS_JOB_STAT_COMPLETED;
-    }
-
-    EJobStatus_t status = static_cast<EJobStatus_t>( job->status );
-
-    //when finished to display the job info, close the connection to the mbatchd
-    lsb_closejobinfo();
-
-    return status;
-}
-//=============================================================================
-std::string CLsfMng::jobStatusString( lsf_jobid_t _jobID ) const
-{
-    switch ( jobStatus( _jobID ) )
-    {
-        case JS_JOB_STAT_PEND:
-            return "pending";
-        case JS_JOB_STAT_PSUSP:
-            return "held";
-        case JS_JOB_STAT_RUN:
-            return "running";
-        case JS_JOB_STAT_SSUSP:
-            return "suspended by LSF";
-        case JS_JOB_STAT_USUSP:
-            return "suspended by user";
-        case JS_JOB_STAT_EXIT:
-            return "exited";
-        case JS_JOB_STAT_DONE:
-            return "completed";
-        case JS_JOB_STAT_PDONE:
-            return "done";
-        case JS_JOB_STAT_PERROR:
-            return "job process error";
-        case JS_JOB_STAT_WAIT:
-            return "waiting";
-        case JS_JOB_STAT_COMPLETED:
-            return "completed";
+        case JOB_STAT_UNKWN:
+            return string( "unknown" );
         default:
-            return "unknown";
-    }
-}
-//=============================================================================
-std::string CLsfMng::jobStatusString( CLsfMng::EJobStatus_t _jobStatus ) const
-{
-    switch ( _jobStatus )
-    {
-        case JS_JOB_STAT_PEND:
-            return "pending";
-        case JS_JOB_STAT_PSUSP:
-            return "held";
-        case JS_JOB_STAT_RUN:
-            return "running";
-        case JS_JOB_STAT_SSUSP:
-            return "suspended by LSF";
-        case JS_JOB_STAT_USUSP:
-            return "suspended by user";
-        case JS_JOB_STAT_EXIT:
-            return "exited";
-        case JS_JOB_STAT_DONE:
-            return "completed";
-        case JS_JOB_STAT_PDONE:
-            return "done";
-        case JS_JOB_STAT_PERROR:
-            return "job process error";
-        case JS_JOB_STAT_WAIT:
-            return "waiting";
-        case JS_JOB_STAT_COMPLETED:
-            return "completed";
-        default:
-            return "unknown";
+            return string( "can't get status" );
     }
 }
 //=============================================================================
@@ -226,6 +170,8 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
 
     // detailed job info
     jobInfoEnt *job;
+
+    cout << "getNumberOfChildren" << endl;
 
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
@@ -265,7 +211,7 @@ void CLsfMng::getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const
 
     for ( int i = 0; i < children_count; ++i )
     {
-        _container->push_back( LSB_JOBID( _jobID, i ) );
+        _container->push_back( LSB_JOBID( _jobID, i + 1 ) );
     }
 }
 //=============================================================================
@@ -312,4 +258,29 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
         }
         throw runtime_error( ss.str() );
     }
+}
+//=============================================================================
+void CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
+{
+    if ( !_container )
+        return;
+
+    cout << "getAllUnfinishedJobs" << endl;
+
+    // Retrieve all job ids of the current user, jobs which have not finished yet
+    if ( lsb_openjobinfo( 0, NULL, const_cast<char*>( m_user.c_str() ), NULL, NULL, CUR_JOB ) > 0 )
+    {
+        jobInfoEnt *job;
+        while (( job = lsb_readjobinfo( NULL ) ) != NULL )
+        {
+            _container->insert( IDContainerOrdered_t::value_type( job->jobId, job->status ) );
+
+            // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
+            // when TODO is implemented, we can remove the following...
+            // adding a parent of this jobs, so that we can track it in case when at least one of its children is running
+            // if we don't do that, than parent id will be never in the list and will never get a status updated
+            _container->insert( IDContainerOrdered_t::value_type( LSB_ARRAY_JOBID( job->jobId ), job->status ) );
+        }
+    }
+    lsb_closejobinfo();
 }

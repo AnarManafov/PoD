@@ -43,6 +43,7 @@ class CLSFJobSubmitter: public QThread
     public:
         CLSFJobSubmitter( QObject *parent ): QThread( parent )
         {
+        	qRegisterMetaType<lsf_jobid_t>( "lsf_jobid_t" );
             init();
         }
         ~CLSFJobSubmitter()
@@ -64,17 +65,13 @@ class CLSFJobSubmitter: public QThread
             }
             return true;
         }
-        const jobslist_t &getActiveJobList() const
+        const jobslist_t &getParentJobsList() const
         {
-            // Retrieving a number of children of the parametric job
-            //        emit changeNumberOfJobs( getNumberOfJobs() );
-
-            return m_JobsList;
+            return m_parentJobs;
         }
         void setAllDefault()
         {
-            emit changeNumberOfJobs( 0 );
-            m_JobsList.clear();
+        	m_parentJobs.clear();
         }
         void setJobScriptFilename( const std::string &_JobScriptFilename )
         {
@@ -103,16 +100,15 @@ class CLSFJobSubmitter: public QThread
         void removeJob( lsf_jobid_t _jobID )
         {
             m_mutex.lock();
-            m_JobsList.erase( _jobID );
+            m_parentJobs.erase( _jobID );
             m_mutex.unlock();
 
-            emit changeNumberOfJobs( getNumberOfJobs() );
+            emit removedJob( _jobID );
         }
         void killJob( lsf_jobid_t _jobID )
         {
             m_lsf.killJob( _jobID );
         }
-
         const CLsfMng &getLSF() const
         {
             return m_lsf;
@@ -120,7 +116,8 @@ class CLSFJobSubmitter: public QThread
 
     signals:
         void changeProgress( int _Val );
-        void changeNumberOfJobs( int _Val );
+        void newJob( lsf_jobid_t _jobID );
+        void removedJob( lsf_jobid_t _jobID );
         void sendThreadMsg( const QString &_Msg );
 
     protected:
@@ -138,11 +135,10 @@ class CLSFJobSubmitter: public QThread
                 emit changeProgress( 90 );
 
                 m_mutex.lock();
-                m_JobsList.insert( nLastJobID );
+                m_parentJobs.insert( nLastJobID );
                 m_mutex.unlock();
 
-                // Retrieving a number of children of the parametric job
-                emit changeNumberOfJobs( getNumberOfJobs() );
+                emit newJob( nLastJobID );
             }
             catch ( const std::exception &_e )
             {
@@ -154,50 +150,23 @@ class CLSFJobSubmitter: public QThread
             emit changeProgress( 100 );
         }
 
-        // this function is very "expensive",
-        // we therefore use it only via signal only when number of jobs may be changed.
-        // Users can't call it any time they want.
-        // considering on ly array jobs in this algorithm
-        int getNumberOfJobs() const
-        {
-            if ( m_JobsList.empty() )
-                return 0;
-
-            try
-            {
-                jobslist_t::const_iterator iter = m_JobsList.begin();
-                jobslist_t::const_iterator iter_end = m_JobsList.end();
-                // Retrieving a number of jobs in array jobs
-                size_t num( 0 );
-                for ( ; iter != iter_end; ++iter )
-                {
-                    num += m_lsf.getNumberOfChildren( *iter );
-                }
-                return ( num );
-            }
-            catch ( ... )
-                {}
-            return 0;
-        }
-
         // serialization
         template<class Archive>
         void save( Archive & _ar, const unsigned int /*_version*/ ) const
         {
-            _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
+            _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
         }
         template<class Archive>
         void load( Archive & _ar, const unsigned int _version )
         {
             m_mutex.lock();
-            _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
+            _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
             m_mutex.unlock();
-            emit changeNumberOfJobs( getNumberOfJobs() );
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
     private:
-        jobslist_t m_JobsList;
+        jobslist_t m_parentJobs;
         QMutex m_mutex;
         std::string m_JobScriptFilename;
         CLsfMng m_lsf;

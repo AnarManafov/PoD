@@ -42,7 +42,7 @@ class CLSFDlg: public QWidget, IJobManager
         QIcon getIcon();
         void startUpdTimer( int _JobStatusUpdInterval );
         int getJobsCount() const;
-        void setUserDefaults(const PoD::CPoDUserDefaults &_ud);
+        void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
 
         void setAllDefault();
 
@@ -59,11 +59,11 @@ class CLSFDlg: public QWidget, IJobManager
         void setProgress( int _Val );
         void on_btnBrowseJobScript_clicked();
         void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
-        void setNumberOfJobs( int _count );
+        void setNumberOfJobs( size_t _count );
         void on_lsfQueueList_currentIndexChanged( int _index );
 
     private slots:
-		void killJob();
+        void killJob();
         void removeJob();
         void showContextMenu( const QPoint &_point );
         void expandTreeNode( const QModelIndex& );

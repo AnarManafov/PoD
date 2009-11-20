@@ -48,12 +48,15 @@ class CJobInfoItemModel: public QAbstractItemModel
 
     signals:
         void doneUpdate();
+        void jobsCountUpdated( size_t _count );
 
     private slots:
         void jobChanged( SJobInfo *_info );
         void beginInsertRow( const SJobInfoPTR_t &_info );
         void beginRemoveRow( const SJobInfoPTR_t &_info );
-        void numberOfJobsChanged( int _count );
+        void addJob( lsf_jobid_t _jobID );
+        void removeJob( lsf_jobid_t _jobID );
+
 
     private:
         void _setupJobsContainer();

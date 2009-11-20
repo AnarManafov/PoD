@@ -22,9 +22,6 @@
 #include <QObject>
 #include <QtCore>
 //=============================================================================
-//extern QWaitCondition g_signalIsPosted;
-//extern QMutex mutex;
-//=============================================================================
 class CJobsContainer: public QThread
 {
         Q_OBJECT
@@ -52,6 +49,7 @@ class CJobsContainer: public QThread
         void update( long _update_time_ms = 0 );
         void stopUpdate();
         void updateNumberOfJobs();
+        size_t getCountOfActiveJobs();
 
     private slots:
         void _updateJobsStatus();
@@ -60,7 +58,7 @@ class CJobsContainer: public QThread
     private:
         void _addJobInfo( const JobsContainer_t::value_type &_node );
         void _removeJobInfo( const JobsContainer_t::value_type &_node );
-        void _updateJobInfo( const JobsContainer_t::value_type &_node );
+        size_t _markAllCompletedJobs( JobsContainer_t * _container );
 
     private:
         JobsContainer_t m_curinfo;

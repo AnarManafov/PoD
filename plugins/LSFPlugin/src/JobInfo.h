@@ -29,7 +29,6 @@
 struct SJobInfo;
 //=============================================================================
 typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
-//typedef std::map<lsf_jobid_t, SJobInfoPTR_t> JobsContainer_t;
 typedef std::map<std::string, SJobInfoPTR_t> JobsContainer_t;
 typedef std::vector<SJobInfoPTR_t> jobs_children_t;
 //=============================================================================
@@ -37,10 +36,10 @@ struct SJobInfo
 {
     SJobInfo():
             m_id( 0 ),
-            m_status( CLsfMng::JS_JOB_STAT_UNKWN ),
+            m_status( JOB_STAT_UNKWN ),
             m_parent( NULL ),
             m_expanded( false ),
-            m_monitor( true )
+            m_completed( false )
     {}
 
     SJobInfo& operator=( const SJobInfo &_info )
@@ -51,6 +50,8 @@ struct SJobInfo
             m_strID = _info.m_strID;
             m_status = _info.m_status;
             m_strStatus = _info.m_strStatus;
+            m_expanded = _info.m_expanded;
+            m_completed = _info.m_completed;
         }
         return *this;
     }
@@ -96,12 +97,12 @@ struct SJobInfo
 
     lsf_jobid_t m_id;
     std::string m_strID;
-    CLsfMng::EJobStatus_t m_status;
+    int m_status;
     std::string m_strStatus;
     jobs_children_t m_children;
     SJobInfo *m_parent; //!< parent of this job or NULL
     bool m_expanded;
-    bool m_monitor; //!< if false, we don't need to monitor this job
+    bool m_completed; //!< if false, we don't need to monitor this job
 };
 //=============================================================================
 /**

@@ -84,7 +84,11 @@ void CJobsContainer::updateNumberOfJobs()
 void CJobsContainer::_updateNumberOfJobs()
 {
     JobsContainer_t newinfo;
-    m_jobInfo.update( m_lsfsubmitter->getActiveJobList(), &newinfo );
+    m_jobInfo.update( m_lsfsubmitter->getParentJobsList(), &newinfo );
+
+
+    _markAllCompletedJobs( &newinfo );
+
 
     // adding all jobs for the first time
     if ( m_curinfo.empty() )
@@ -127,8 +131,8 @@ void CJobsContainer::_updateNumberOfJobs()
 //=============================================================================
 void CJobsContainer::_updateJobsStatus()
 {
-    for_each( m_curinfo.begin(), m_curinfo.end(),
-              boost::bind( &CJobsContainer::_updateJobInfo, this, _1 ) );
+    // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
+    _markAllCompletedJobs( &m_curinfo );
 }
 //=============================================================================
 void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
@@ -166,32 +170,58 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
     emit removeJob( _node.second );
 }
 //=============================================================================
-void CJobsContainer::_updateJobInfo( const JobsContainer_t::value_type &_node )
+size_t CJobsContainer::getCountOfActiveJobs()
 {
-    // checking status of the given job
-    SJobInfo *info = _node.second.get();
-    if ( !info )
-        return;
+    return m_curinfo.size();
+}
+//=============================================================================
+size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container )
+{
+    size_t run_jobs( 0 );
 
-    if ( !info->m_monitor )
-        return;
-
-    // a child node
-    // Don't check for its status, if its parent is collapsed
-    if ( NULL != info->m_parent && 0 != info->m_parent->m_id )
+    // if there all jobs a marked already as completed, we don't need to ask LSF
+    JobsContainer_t::const_iterator iter = _container->begin();
+    JobsContainer_t::const_iterator iter_end = _container->end();
+    bool need_request( false );
+    for ( ; iter != iter_end; ++iter )
     {
-        if ( !info->m_parent->m_expanded )
-            return;
+        if ( !iter->second->m_completed )
+            need_request = true;
     }
 
-    const CLsfMng::EJobStatus_t newStatus = m_lsfsubmitter->getLSF().jobStatus( info->m_id );
-    if ( CLsfMng::JS_JOB_STAT_COMPLETED == info->m_status )
-        info->m_monitor = false;
+    if ( !need_request )
+        return run_jobs;
 
-    if ( info->m_status == newStatus )
-        return;
+    // Getting a list of unfinished LSF jobs
+    CLsfMng::IDContainerOrdered_t unfinished;
+    m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
 
-    info->m_status = newStatus;
-    info->m_strStatus = m_lsfsubmitter->getLSF().jobStatusString( newStatus );
-    emit jobChanged( info );
+    iter = _container->begin();
+    iter_end = _container->end();
+    for ( ; iter != iter_end; ++iter )
+    {
+        if ( iter->second->m_completed )
+            continue;
+
+        CLsfMng::IDContainerOrdered_t::const_iterator iter_un = unfinished.find( iter->second->m_id );
+        if ( unfinished.end() == iter_un )
+        {
+            // set job to completed
+            iter->second->m_completed = true;
+            iter->second->m_status = JOB_STAT_UNKWN;
+            iter->second->m_strStatus = "completed";
+        }
+        else
+        {
+            if ( iter->second->m_status == iter_un->second )
+                continue;
+
+            iter->second->m_completed = false;
+            iter->second->m_status = iter_un->second;
+            iter->second->m_strStatus = CLsfMng::jobStatusString( iter_un->second );
+        }
+        emit jobChanged( iter->second.get() );
+    }
+
+    return run_jobs;
 }

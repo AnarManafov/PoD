@@ -34,20 +34,30 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
     // it regenerates every time the entire list of jobs from very beginning
 
     // TODO: better error handling in this function
+    JobsContainer_t copyContainer( m_Container );
     m_Container.clear();
 
     CLSFJobSubmitter::jobslist_t::const_iterator iter = _Jobs.begin();
     CLSFJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
     for ( ; iter != iter_end; ++iter )
     {
-        SJobInfoPTR_t info( new SJobInfo() );
-        info->m_id = *iter;
         std::ostringstream str;
         // TODO: LsfMng should have methods to return string representations of jobID
         str << LSB_ARRAY_JOBID( *iter );
+
+        // checking the old status
+        JobsContainer_t::iterator found = copyContainer.find( str.str() );
+        // don't need to update this job
+        if ( copyContainer.end() != found )
+        {
+            m_Container.insert( *found );
+            continue;
+        }
+
+        SJobInfoPTR_t info( new SJobInfo() );
+        info->m_id = *iter;
         info->m_strID = str.str();
-        info->m_status = m_lsf.jobStatus( *iter );
-        info->m_strStatus = m_lsf.jobStatusString( *iter );
+
         try
         {
             CLsfMng::IDContainer_t children;
@@ -85,8 +95,7 @@ void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent )
     SJobInfoPTR_t info( new SJobInfo() );
     info->m_id = _JobID;
     info->m_strID = str.str();
-    info->m_status = m_lsf.jobStatus( _JobID );
-    info->m_strStatus = m_lsf.jobStatusString( info->m_status );
+
     info->m_parent = _parent.get();
 
     _parent->addChild( info );

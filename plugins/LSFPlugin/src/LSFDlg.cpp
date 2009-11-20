@@ -76,7 +76,9 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
 
     connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
-    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), this, SLOT( setNumberOfJobs( int ) ) );
+
+//    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), this, SLOT( setNumberOfJobs( lsf_jobid_t ) ) );
+//    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), this, SLOT( setNumberOfJobs( lsf_jobid_t ) ) );
 
     createActions();
 
@@ -128,7 +130,9 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
 
 
-    connect( &m_JobSubmitter, SIGNAL( changeNumberOfJobs( int ) ), m_treeModel, SLOT( numberOfJobsChanged( int ) ) );
+    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
+    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
+    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
 
     // a context menu of the table view
     m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -385,7 +389,7 @@ void CLSFDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
     m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
 }
 
-void CLSFDlg::setNumberOfJobs( int _count )
+void CLSFDlg::setNumberOfJobs( size_t _count )
 {
     m_AllJobsCount = _count;
     emit changeNumberOfJobs( _count );
