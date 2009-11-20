@@ -190,7 +190,6 @@ void CJobInfoItemModel::beginInsertRow( const SJobInfoPTR_t &_info )
     endInsertRows();
 
     emit doneUpdate();
-    emit jobsCountUpdated( m_jobinfo.getCountOfActiveJobs() );
 }
 //=============================================================================
 void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
@@ -219,7 +218,6 @@ void CJobInfoItemModel::beginRemoveRow( const SJobInfoPTR_t &_info )
     endRemoveRows();
 
     emit doneUpdate();
-    emit jobsCountUpdated( m_jobinfo.getCountOfActiveJobs() );
 }
 //=============================================================================
 void CJobInfoItemModel::_setupJobsContainer()
@@ -227,8 +225,14 @@ void CJobInfoItemModel::_setupJobsContainer()
     connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo * ) ), this, SLOT( jobChanged( SJobInfo * ) ) );
     connect( &m_jobinfo, SIGNAL( addJob( const SJobInfoPTR_t& ) ), this, SLOT( beginInsertRow( const SJobInfoPTR_t& ) ) );
     connect( &m_jobinfo, SIGNAL( removeJob( const SJobInfoPTR_t& ) ), this, SLOT( beginRemoveRow( const SJobInfoPTR_t& ) ) );
+    connect( &m_jobinfo, SIGNAL( numberOfActiveJobsChanged( size_t ) ), this, SLOT( numberOfActiveJobsChanged( size_t ) ) );
 
     m_jobinfo.update( m_updateInterval );
+}
+//=============================================================================
+void CJobInfoItemModel::numberOfActiveJobsChanged( size_t _count )
+{
+    emit jobsCountUpdated( _count );
 }
 //=============================================================================
 void CJobInfoItemModel::setUpdateInterval( int _newVal )

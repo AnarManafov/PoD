@@ -43,13 +43,13 @@ class CJobsContainer: public QThread
          *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
          */
         void removeJob( const SJobInfoPTR_t &_info );
+        void numberOfActiveJobsChanged( size_t _count );
 
     public:
         void run();
         void update( long _update_time_ms = 0 );
         void stopUpdate();
         void updateNumberOfJobs();
-        size_t getCountOfActiveJobs();
 
     private slots:
         void _updateJobsStatus();
@@ -69,6 +69,7 @@ class CJobsContainer: public QThread
         unsigned long m_updateInterval;
         QWaitCondition m_condition;
         QMutex m_mutex;
+        size_t m_countOfActiveJobs;
 };
 
 #endif /* JOBSCONTAINER_H_ */

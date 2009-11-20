@@ -56,6 +56,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         void beginRemoveRow( const SJobInfoPTR_t &_info );
         void addJob( lsf_jobid_t _jobID );
         void removeJob( lsf_jobid_t _jobID );
+        void numberOfActiveJobsChanged( size_t _count );
 
 
     private:

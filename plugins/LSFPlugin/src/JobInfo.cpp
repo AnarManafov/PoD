@@ -51,6 +51,17 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
         if ( copyContainer.end() != found )
         {
             m_Container.insert( *found );
+            if ( _Container )
+            {
+                // adding child jobs to the output container
+                // TODO: do it in getInfo method
+                jobs_children_t::const_iterator chld = found->second->m_children.begin();
+                jobs_children_t::const_iterator chld_end = found->second->m_children.end();
+                for ( ; chld != chld_end; ++chld )
+                {
+                    _Container->insert( JobsContainer_t::value_type( chld->get()->m_strID, *chld ) );
+                }
+            }
             continue;
         }
 

@@ -260,12 +260,14 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
     }
 }
 //=============================================================================
-void CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
+size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
 {
+	size_t countJobs(0);
     if ( !_container )
-        return;
+        return countJobs;
 
     cout << "getAllUnfinishedJobs" << endl;
+
 
     // Retrieve all job ids of the current user, jobs which have not finished yet
     if ( lsb_openjobinfo( 0, NULL, const_cast<char*>( m_user.c_str() ), NULL, NULL, CUR_JOB ) > 0 )
@@ -273,14 +275,17 @@ void CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
         jobInfoEnt *job;
         while (( job = lsb_readjobinfo( NULL ) ) != NULL )
         {
+        	++countJobs;
             _container->insert( IDContainerOrdered_t::value_type( job->jobId, job->status ) );
 
             // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
             // when TODO is implemented, we can remove the following...
             // adding a parent of this jobs, so that we can track it in case when at least one of its children is running
             // if we don't do that, than parent id will be never in the list and will never get a status updated
+            // We also shouldn't count this jobs in the return value.
             _container->insert( IDContainerOrdered_t::value_type( LSB_ARRAY_JOBID( job->jobId ), job->status ) );
         }
     }
     lsb_closejobinfo();
+    return countJobs;
 }

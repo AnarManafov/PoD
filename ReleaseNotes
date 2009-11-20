@@ -12,6 +12,7 @@ pod-console (LSF plug-in): fixed a SEGFAULT error condition, which could happen 
 pod-console (LSF plug-in): now a user can send a kill signal to a job or to an array of jobs, using jobs context menu. This will kill the job and remove it from the LSF queue.
 pod-console (LSF plug-in): new user defaults option <lsf_plugin.email_job_output>. It specifies whether job's output is sent to the user by mail or should be written to files. Output files are saved in to PoD's log dir.
 pod-conosle (LSF plug-in): in jobs tree view, expand only one parent node at time.
+pod-console (LSF plug-in): don't count completed LSF jobs as expected PROOF worker. It helps the WORKERS page in GUI to show a number of expected workers properly. 
 
 ********************* Release 1.1.1 2009-10-20 ************************
 - Renamed to pod-console.
