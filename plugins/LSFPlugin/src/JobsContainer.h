@@ -38,11 +38,11 @@ class CJobsContainer: public QThread
         /**
          *  This indicates we are about to add a job information in the model.
          */
-        void addJob( const SJobInfoPTR_t &_info );
+        void addJob( SJobInfo *_info );
         /**
          *  This indicates we are about to remove a job in the model.  Emit the appropriate signals.
          */
-        void removeJob( const SJobInfoPTR_t &_info );
+        void removeJob( SJobInfo *_info );
         void numberOfActiveJobsChanged( size_t _count );
 
     public:
@@ -57,11 +57,10 @@ class CJobsContainer: public QThread
 
     private:
         void _addJobInfo( const JobsContainer_t::value_type &_node );
-        void _removeJobInfo( const JobsContainer_t::value_type &_node );
-        size_t _markAllCompletedJobs( JobsContainer_t * _container );
+        void _removeJobInfo( const JobsContainer_t::value_type &_node, bool _emitUpdate );
+        size_t _markAllCompletedJobs( JobsContainer_t * _container, bool _emitUpdate = true );
 
     private:
-        JobsContainer_t m_curinfo;
         JobsContainer_t m_cur_ids;
         const CLSFJobSubmitter *m_lsfsubmitter;
         CJobInfo m_jobInfo;

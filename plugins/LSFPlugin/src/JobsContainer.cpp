@@ -28,7 +28,8 @@ CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter ):
 {
     // we need to register SJobInfoPTR_t, so that Qt will be able to
     // marshal this type
-    qRegisterMetaType<SJobInfoPTR_t>( "SJobInfoPTR_t" );
+
+  //  qRegisterMetaType<SJobInfoPTR_t>( "SJobInfoPTR_t" );
     qRegisterMetaType<size_t>( "size_t" );
 }
 //=============================================================================
@@ -88,7 +89,7 @@ void CJobsContainer::_updateNumberOfJobs()
     JobsContainer_t newinfo;
     m_jobInfo.update( m_lsfsubmitter->getParentJobsList(), &newinfo );
 
-    size_t count = _markAllCompletedJobs( &newinfo );
+    size_t count = _markAllCompletedJobs( &newinfo, false );
 
     if ( count != m_countOfActiveJobs )
     {
@@ -98,7 +99,7 @@ void CJobsContainer::_updateNumberOfJobs()
 
 
     // adding all jobs for the first time
-    if ( m_curinfo.empty() )
+    if ( m_cur_ids.empty() )
     {
         for_each( newinfo.begin(), newinfo.end(),
                   boost::bind( &CJobsContainer::_addJobInfo, this, _1 ) );
@@ -117,14 +118,14 @@ void CJobsContainer::_updateNumberOfJobs()
     for ( ; iter != iter_end; ++iter )
     {
         if ( NULL != iter->second->m_parent && 0 != iter->second->m_parent->m_id )
-            _removeJobInfo( *iter );
+            _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
     for ( ; iter != iter_end; ++iter )
     {
         if ( NULL == iter->second->m_parent || 0 == iter->second->m_parent->m_id )
-            _removeJobInfo( *iter );
+            _removeJobInfo( *iter, true );
     }
 
     // Checking for newly added jobs
@@ -139,7 +140,7 @@ void CJobsContainer::_updateNumberOfJobs()
 void CJobsContainer::_updateJobsStatus()
 {
     // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
-    size_t count = _markAllCompletedJobs( &m_curinfo );
+    size_t count = _markAllCompletedJobs( &m_cur_ids );
     if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
@@ -149,25 +150,24 @@ void CJobsContainer::_updateJobsStatus()
 //=============================================================================
 void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 {
-    SJobInfoPTR_t info = _node.second;
+	SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
     if ( res.second )
     {
         emit addJob( info );
-        m_curinfo.insert( JobsContainer_t::value_type( info->m_strID, info ) );
     }
 }
 //=============================================================================
-void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node )
+void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, bool _emitUpdate )
 {
     m_cur_ids.erase( _node.first );
-    m_curinfo.erase( _node.first );
 
-    emit removeJob( _node.second );
+    if ( _emitUpdate )
+        emit removeJob( _node.second );
 }
 //=============================================================================
-size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container )
+size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool _emitUpdate )
 {
     size_t run_jobs( 0 );
 
@@ -188,6 +188,8 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container )
     CLsfMng::IDContainerOrdered_t unfinished;
     run_jobs = m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
 
+    run_jobs = unfinished.size();
+
     iter = _container->begin();
     iter_end = _container->end();
     for ( ; iter != iter_end; ++iter )
@@ -205,7 +207,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container )
         }
         else
         {
-        	cout << LSB_ARRAY_JOBID( iter->second->m_id ) << "[" << LSB_ARRAY_IDX( iter->second->m_id ) << "]: " << found->second << endl;
+            cout << LSB_ARRAY_JOBID( iter->second->m_id ) << "[" << LSB_ARRAY_IDX( iter->second->m_id ) << "]: " << found->second << endl;
             if ( iter->second->m_status == found->second )
                 continue;
 
@@ -213,7 +215,8 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container )
             iter->second->m_status = found->second;
             iter->second->m_strStatus = CLsfMng::jobStatusString( found->second );
         }
-        emit jobChanged( iter->second.get() );
+        if ( _emitUpdate )
+            emit jobChanged( iter->second );
     }
 
     return run_jobs;

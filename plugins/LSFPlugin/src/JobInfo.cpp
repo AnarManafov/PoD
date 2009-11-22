@@ -19,8 +19,7 @@
 //=============================================================================
 using namespace std;
 //=============================================================================
-CJobInfo::CJobInfo( const CLsfMng &_lsf ):
-        m_lsf( _lsf )
+CJobInfo::CJobInfo( const CLsfMng &_lsf ): m_lsf( _lsf )
 {
 }
 //=============================================================================
@@ -42,9 +41,7 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
     for ( ; iter != iter_end; ++iter )
     {
         std::ostringstream str;
-        // TODO: LsfMng should have methods to return string representations of jobID
         str << LSB_ARRAY_JOBID( *iter );
-
         // checking the old status
         JobsContainer_t::iterator found = copyContainer.find( str.str() );
         // don't need to update this job
@@ -55,22 +52,18 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
             {
                 // adding child jobs to the output container
                 // TODO: do it in getInfo method
-                jobs_children_t::const_iterator chld = found->second->m_children.begin();
-                jobs_children_t::const_iterator chld_end = found->second->m_children.end();
-                for ( ; chld != chld_end; ++chld )
-                {
-                    _Container->insert( JobsContainer_t::value_type( chld->get()->m_strID, *chld ) );
-                }
+                for ( int i = 0; i < found->second->m_children.size(); ++i )
+                    _Container->insert( JobsContainer_t::value_type( found->second->m_children[i]->m_strID, found->second->m_children[i] ) );
             }
             continue;
         }
 
-        SJobInfoPTR_t info( new SJobInfo() );
-        info->m_id = *iter;
-        info->m_strID = str.str();
+        // Creating new item
+        SJobInfo *info( new SJobInfo( *iter ) );
 
         try
         {
+            // getting a list of children
             CLsfMng::IDContainer_t children;
             m_lsf.getChildren( *iter, &children );
             std::for_each( children.begin(), children.end(),
@@ -81,40 +74,23 @@ void CJobInfo::update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_
         // adding parent job
         m_Container.insert( JobsContainer_t::value_type( info->m_strID, info ) );
 
-
         if ( _Container )
         {
             // adding child jobs to the output container
             // TODO: do it in getInfo method
-            jobs_children_t::const_iterator iter = info->m_children.begin();
-            jobs_children_t::const_iterator iter_end = info->m_children.end();
-            for ( ; iter != iter_end; ++iter )
-            {
-                _Container->insert( JobsContainer_t::value_type( iter->get()->m_strID, *iter ) );
-            }
+            for ( int i = 0; i < info->m_children.size(); ++i )
+                _Container->insert( JobsContainer_t::value_type( info->m_children[i]->m_strID, info->m_children[i] ) );
         }
     }
 
     // a result set
-    getInfo( _Container );
-}
-//=============================================================================
-void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent )
-{
-    std::ostringstream str;
-    str << LSB_ARRAY_JOBID( _JobID ) << "[" << LSB_ARRAY_IDX( _JobID ) << "]";
-    SJobInfoPTR_t info( new SJobInfo() );
-    info->m_id = _JobID;
-    info->m_strID = str.str();
-
-    info->m_parent = _parent.get();
-
-    _parent->addChild( info );
-}
-//=============================================================================
-void CJobInfo::getInfo( JobsContainer_t *_Container ) const
-{
     if ( _Container )
         copy( m_Container.begin(), m_Container.end(),
               inserter( *_Container, _Container->begin() ) );
+}
+//=============================================================================
+void CJobInfo::addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent ) const
+{
+    SJobInfo *info( new SJobInfo( _JobID, _parent ) );
+    _parent->addChild( info );
 }

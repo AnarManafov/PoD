@@ -28,36 +28,35 @@
 //=============================================================================
 struct SJobInfo;
 //=============================================================================
-typedef boost::shared_ptr<SJobInfo> SJobInfoPTR_t;
-typedef std::map<std::string, SJobInfoPTR_t> JobsContainer_t;
-typedef std::vector<SJobInfoPTR_t> jobs_children_t;
+typedef std::map<std::string, SJobInfo *> JobsContainer_t;
+typedef QList<SJobInfo *> jobs_children_t;
 //=============================================================================
 struct SJobInfo
 {
-    SJobInfo():
-            m_id( 0 ),
+    SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
+            m_id( _id ),
             m_status( JOB_STAT_UNKWN ),
-            m_parent( NULL ),
+            m_parent( _parent ),
             m_expanded( false ),
             m_completed( false )
-    {}
-
-    SJobInfo& operator=( const SJobInfo &_info )
     {
-        if ( this != &_info )
-        {
-            m_id = _info.m_id;
-            m_strID = _info.m_strID;
-            m_status = _info.m_status;
-            m_strStatus = _info.m_strStatus;
-            m_expanded = _info.m_expanded;
-            m_completed = _info.m_completed;
-        }
-        return *this;
-    }
+        std::ostringstream str;
+        if ( NULL != m_parent )
+            str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
+        else
+            str << LSB_ARRAY_JOBID( _id );
 
+        m_id = _id;
+        m_strID = str.str();
+
+        std::cout << "CREATE " << m_strID << std::endl;
+    }
     ~SJobInfo()
     {
+        // TODO: REMOVE DEBUG
+        std::cout << "DELETE " << m_strID << std::endl;
+        for ( int i = 0; i < m_children.size(); ++i )
+            delete m_children[i];
     }
     bool operator ==( const SJobInfo &_info )
     {
@@ -68,31 +67,10 @@ struct SJobInfo
 
         return true;
     }
-    int addChild( SJobInfoPTR_t _child )
+    int addChild( SJobInfo *_child )
     {
         m_children.push_back( _child );
         return m_children.size() - 1;
-    }
-    int indexOf( const SJobInfo *_info ) const
-    {
-        jobs_children_t::const_iterator iter = m_children.begin();
-        jobs_children_t::const_iterator iter_end = m_children.end();
-        for ( size_t i = 0; iter != iter_end; ++iter, ++i )
-        {
-            if ( iter->get() == _info )
-                return i;
-        }
-        std::cerr << "indexOf returns bad index: child can't be found" << std::endl;
-        return -2;
-    }
-    int row() const
-    {
-        if ( m_parent )
-        {
-            return m_parent->indexOf( this );
-        }
-
-        return -1;
     }
 
     lsf_jobid_t m_id;
@@ -124,10 +102,9 @@ class CJobInfo
 
     public:
         void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-        void getInfo( JobsContainer_t *_Container ) const;
 
     private:
-        void addChildItem( lsf_jobid_t _JobID, SJobInfoPTR_t _parent );
+        void addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent ) const;
 
     private:
         JobsContainer_t m_Container;
