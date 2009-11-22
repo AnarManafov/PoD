@@ -36,6 +36,16 @@ CJobInfoItemModel::~CJobInfoItemModel()
     delete m_rootItem;
 }
 //=============================================================================
+void CJobInfoItemModel::_setupJobsContainer()
+{
+    connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo* ) ), this, SLOT( jobChanged( SJobInfo* ) ) );
+    connect( &m_jobinfo, SIGNAL( addJob( SJobInfo* ) ), this, SLOT( beginInsertRow( SJobInfo* ) ) );
+    connect( &m_jobinfo, SIGNAL( removeJob( SJobInfo* ) ), this, SLOT( beginRemoveRow( SJobInfo* ) ) );
+    connect( &m_jobinfo, SIGNAL( numberOfActiveJobsChanged( size_t ) ), this, SLOT( numberOfActiveJobsChanged( size_t ) ) );
+
+    m_jobinfo.update( m_updateInterval );
+}
+//=============================================================================
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
     SJobInfo *parentItem = NULL;
@@ -181,34 +191,6 @@ void CJobInfoItemModel::jobChanged( SJobInfo * _info )
     emit dataChanged( startIndex, endIndex );
 }
 //=============================================================================
-void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
-{
-    if ( !_info )
-        return;
-
-    cout << "beginInsertRow: " << _info->m_strID << endl;
-
-    if ( !_info->m_parent )
-    {
-        _info->m_parent = m_rootItem;
-        m_rootItem->addChild( _info );
-        const int row( _info->m_parent->m_children.indexOf( _info ) );
-        //     cout << "row: " << row << endl;
-        beginInsertRows( QModelIndex(), row, row );
-    }
-    else
-    {
-        const int row_parent( m_rootItem->m_children.indexOf( _info->m_parent ) );
-        QModelIndex parentModelIndex = createIndex( row_parent, 0, _info->m_parent );
-        const int row( _info->m_parent->m_children.indexOf( _info ) );
-        //     cout << "row parent: " << row_parent << "; row: " << row << endl;
-        beginInsertRows( parentModelIndex, row, row );
-    }
-    endInsertRows();
-    cout << "endInsertRow: " << _info->m_strID << endl;
-    emit doneUpdate();
-}
-//=============================================================================
 QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) const
 {
     Q_ASSERT( _info );
@@ -227,31 +209,36 @@ QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) con
     return createIndex( row, column, _info );
 }
 //=============================================================================
+void CJobInfoItemModel::beginInsertRow( SJobInfo *_info )
+{
+    // This model only supports insertion of the entire job with all its children
+    if ( !_info || NULL != _info->m_parent )
+        return;
+
+    cout << "+++ beginInsertRow: " << _info->m_strID << endl;
+
+
+    // inserting a parent
+    _info->m_parent = m_rootItem;
+    const int row( _info->m_parent->m_children.count() );
+    beginInsertRows( QModelIndex(), row, row );
+    m_rootItem->addChild( _info );
+    endInsertRows();
+
+    // inserting children
+    beginInsertRows( getQModelIndex( _info->m_parent, 0 ), 0, _info->m_parent->m_children.count() );
+    endInsertRows();
+
+    emit doneUpdate();
+}
+//=============================================================================
 void CJobInfoItemModel::beginRemoveRow( SJobInfo *_info )
 {
-//   cout << "beginRemoveRow: " << _info->m_strID << endl;
-//
-////    const int row( _info->row() );
-//
-//    if ( _info->m_parent == m_rootItem )
-//    { // it is a parent job
-////     cout << "row: " << row << endl;
-//        emit beginRemoveRows( QModelIndex(), row, row );
-//        // removing the item from the root item children list
-//        m_rootItem->m_children.erase( remove( m_rootItem->m_children.begin(), m_rootItem->m_children.end(), _info ),
-//                                      m_rootItem->m_children.end() );
-//    }
-//    else
-//    { // its one of the children
-//        const int row_parent( _info->m_parent->row() );
-//        QModelIndex parentModelIndex = createIndex( row_parent, 0, _info->m_parent );
-//        //     cout << "row parent: " << row_parent << "; row: " << row << endl;
-//        emit beginRemoveRows( parentModelIndex, row, row );
-//    }
-
     // This model only supports removing of the entire job with all its children
     if ( !_info || _info->m_parent != m_rootItem )
         return;
+
+    cout << "--- beginRemoveRow: " << _info->m_strID << endl;
 
     // Removing first the children
     const int start_row( 0 );
@@ -264,20 +251,11 @@ void CJobInfoItemModel::beginRemoveRow( SJobInfo *_info )
     const int row = _info->m_parent->m_children.indexOf( _info );
     emit beginRemoveRows( getQModelIndex( _info->m_parent, 0 ), row, row );
     // removing the item from the root item children list
+    delete _info;
     _info->m_parent->m_children.removeAt( row );
     endRemoveRows();
 
     emit doneUpdate();
-}
-//=============================================================================
-void CJobInfoItemModel::_setupJobsContainer()
-{
-    connect( &m_jobinfo, SIGNAL( jobChanged( SJobInfo* ) ), this, SLOT( jobChanged( SJobInfo* ) ) );
-    connect( &m_jobinfo, SIGNAL( addJob( SJobInfo* ) ), this, SLOT( beginInsertRow( SJobInfo* ) ) );
-    connect( &m_jobinfo, SIGNAL( removeJob( SJobInfo* ) ), this, SLOT( beginRemoveRow( SJobInfo* ) ) );
-    connect( &m_jobinfo, SIGNAL( numberOfActiveJobsChanged( size_t ) ), this, SLOT( numberOfActiveJobsChanged( size_t ) ) );
-
-    m_jobinfo.update( m_updateInterval );
 }
 //=============================================================================
 void CJobInfoItemModel::numberOfActiveJobsChanged( size_t _count )

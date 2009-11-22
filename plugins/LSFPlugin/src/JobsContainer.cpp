@@ -28,8 +28,6 @@ CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter ):
 {
     // we need to register SJobInfoPTR_t, so that Qt will be able to
     // marshal this type
-
-  //  qRegisterMetaType<SJobInfoPTR_t>( "SJobInfoPTR_t" );
     qRegisterMetaType<size_t>( "size_t" );
 }
 //=============================================================================
@@ -150,10 +148,10 @@ void CJobsContainer::_updateJobsStatus()
 //=============================================================================
 void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 {
-	SJobInfo *info = _node.second;
+    SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-    if ( res.second )
+    if ( res.second && NULL == info->m_parent )
     {
         emit addJob( info );
     }
@@ -207,7 +205,6 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         }
         else
         {
-            cout << LSB_ARRAY_JOBID( iter->second->m_id ) << "[" << LSB_ARRAY_IDX( iter->second->m_id ) << "]: " << found->second << endl;
             if ( iter->second->m_status == found->second )
                 continue;
 
