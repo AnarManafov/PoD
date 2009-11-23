@@ -65,7 +65,12 @@ struct SJobInfo
         // TODO: REMOVE DEBUG
         std::cout << "DELETE " << m_strID << std::endl;
         for ( int i = 0; i < m_children.size(); ++i )
+        {
             delete m_children[i];
+            m_children[i] = NULL;
+
+        }
+
     }
     bool operator ==( const SJobInfo &_info )
     {

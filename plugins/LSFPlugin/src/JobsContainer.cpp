@@ -95,7 +95,6 @@ void CJobsContainer::_updateNumberOfJobs()
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
     }
 
-
     // adding all jobs for the first time
     if ( m_cur_ids.empty() )
     {
