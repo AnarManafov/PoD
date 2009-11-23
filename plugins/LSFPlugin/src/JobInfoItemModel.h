@@ -52,8 +52,8 @@ class CJobInfoItemModel: public QAbstractItemModel
 
     private slots:
         void jobChanged( SJobInfo *_info );
-        void beginInsertRow( SJobInfo *_info );
-        void beginRemoveRow( SJobInfo *_info );
+        void insertJobs( SJobInfo *_info );
+        void removeJobs( SJobInfo *_info );
         void addJob( lsf_jobid_t _jobID );
         void removeJob( lsf_jobid_t _jobID );
         void numberOfActiveJobsChanged( size_t _count );

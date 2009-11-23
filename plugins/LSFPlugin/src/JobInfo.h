@@ -33,6 +33,15 @@ typedef QList<SJobInfo *> jobs_children_t;
 //=============================================================================
 struct SJobInfo
 {
+    SJobInfo():
+            m_id( -1 ),
+            m_status( JOB_STAT_UNKWN ),
+            m_parent( NULL ),
+            m_expanded( false ),
+            m_completed( false )
+    {
+    	std::cout << "CREATE a default" << std::endl;
+    }
     SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
             m_id( _id ),
             m_status( JOB_STAT_UNKWN ),

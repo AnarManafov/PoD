@@ -49,7 +49,7 @@ class CJobsContainer: public QThread
         void run();
         void update( long _update_time_ms = 0 );
         void stopUpdate();
-        void updateNumberOfJobs();
+        void updateNumberOfJobs( bool _updated = false );
 
     private slots:
         void _updateJobsStatus();
