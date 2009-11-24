@@ -36,19 +36,23 @@ struct SJobInfo
     SJobInfo():
             m_id( -1 ),
             m_status( JOB_STAT_UNKWN ),
-            m_parent( NULL ),
             m_expanded( false ),
-            m_completed( false )
+            m_completed( false ),
+            m_parent( NULL )
     {
-    	std::cout << "CREATE a default" << std::endl;
+        std::cout << "CREATE a default" << std::endl;
     }
     SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
             m_id( _id ),
             m_status( JOB_STAT_UNKWN ),
-            m_parent( _parent ),
             m_expanded( false ),
-            m_completed( false )
+            m_completed( false ),
+            m_parent( _parent ),
+            m_superParent( 0 == _id )
     {
+        if ( m_superParent )
+            std::cout << "CREATE SUPER PARENT" << std::endl;
+
         std::ostringstream str;
         if ( NULL != m_parent )
             str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
@@ -59,18 +63,27 @@ struct SJobInfo
         m_strID = str.str();
 
         std::cout << "CREATE " << m_strID << std::endl;
+        std::cout << "set Parent: " << _parent << " for " << m_strID << std::endl;
     }
     ~SJobInfo()
     {
         // TODO: REMOVE DEBUG
         std::cout << "DELETE " << m_strID << std::endl;
-        for ( int i = 0; i < m_children.size(); ++i )
-        {
-            delete m_children[i];
-            m_children[i] = NULL;
-
-        }
-
+        while ( !m_children.isEmpty() )
+            delete m_children.takeFirst();
+    }
+    void setParent( SJobInfo *_parent )
+    {
+        m_parent = _parent;
+        std::cout << "set Parent: " << _parent << " for " << m_strID << std::endl;
+    }
+    SJobInfo *parent()
+    {
+        return m_parent;
+    }
+    bool isSuperParent()
+    {
+        return m_superParent;
     }
     bool operator ==( const SJobInfo &_info )
     {
@@ -86,15 +99,42 @@ struct SJobInfo
         m_children.push_back( _child );
         return m_children.size() - 1;
     }
+    void removeAllChildren()
+    {
+        while ( !m_children.isEmpty() )
+        {
+        	SJobInfo * p( m_children.takeFirst() );
+        	delete p;
+        	p = NULL;
+        }
+        m_children.clear();
+    }
+    void debug_print()
+    {
+        std::cout << "\nITEM " << this << "; with ID " << m_strID << '\n';
+        std::cout << "children: ";
+        for ( int i = 0; i < m_children.size(); ++i )
+        {
+            std::cout <<  m_children.at( i )->m_strID << "; " << m_children.at( i ) << ", ";
+        }
+        std::cout << std::endl;
+        for ( int i = 0; i < m_children.size(); ++i )
+        {
+            m_children.at( i )->debug_print();
+        }
+    }
 
     lsf_jobid_t m_id;
     std::string m_strID;
     int m_status;
     std::string m_strStatus;
-    jobs_children_t m_children;
-    SJobInfo *m_parent; //!< parent of this job or NULL
     bool m_expanded;
     bool m_completed; //!< if false, we don't need to monitor this job
+    jobs_children_t m_children;
+
+private:
+    SJobInfo *m_parent; //!< parent of this job or NULL
+    bool m_superParent;
 };
 //=============================================================================
 /**

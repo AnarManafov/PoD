@@ -114,14 +114,14 @@ void CJobsContainer::_updateNumberOfJobs()
     JobsContainer_t::const_iterator iter_end = tmp.end();
     for ( ; iter != iter_end; ++iter )
     {
-        if ( NULL != iter->second->m_parent && 0 != iter->second->m_parent->m_id )
+        if ( NULL != iter->second->parent() && 0 != iter->second->parent()->m_id )
             _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
     for ( ; iter != iter_end; ++iter )
     {
-        if ( NULL == iter->second->m_parent || 0 == iter->second->m_parent->m_id )
+        if ( NULL == iter->second->parent() || 0 == iter->second->parent()->m_id )
             _removeJobInfo( *iter, true );
     }
 
@@ -150,7 +150,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-    if ( res.second && NULL == info->m_parent )
+    if ( res.second && NULL == info->parent() )
     {
         emit addJob( info );
     }

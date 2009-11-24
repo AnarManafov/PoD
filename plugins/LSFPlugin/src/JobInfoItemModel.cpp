@@ -20,6 +20,8 @@
 #include "JobInfoItemModel.h"
 //=============================================================================
 using namespace std;
+
+const short g_columnCount = 2;
 //=============================================================================
 CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
         QAbstractItemModel( _parent ),
@@ -48,22 +50,24 @@ void CJobInfoItemModel::_setupJobsContainer()
 //=============================================================================
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
-    SJobInfo *parentItem = NULL;
-
-    if (_parent.column() > 0)
+    if ( _parent.column() > 0 )
         return 0;
+
+    SJobInfo *parentItem = NULL;
 
     if ( !_parent.isValid() )
         parentItem = m_rootItem;
     else
         parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
-    return parentItem->m_children.size();
+    return parentItem->m_children.count();
 }
 //=============================================================================
-int CJobInfoItemModel::columnCount( const QModelIndex & parent ) const
+int CJobInfoItemModel::columnCount( const QModelIndex & _parent ) const
 {
-    return m_Titles.count();
+    if ( _parent.column() > 0 )
+        return 0;
+    return g_columnCount;
 }
 //=============================================================================
 QVariant CJobInfoItemModel::data( const QModelIndex &_index, int _role ) const
@@ -72,7 +76,7 @@ QVariant CJobInfoItemModel::data( const QModelIndex &_index, int _role ) const
 
     if ( !_index.isValid() )
         return QVariant();
-    if ( _index.column() >= m_Titles.count() )
+    if ( _index.column() >= g_columnCount )
         return QVariant();
 
     SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
@@ -103,7 +107,7 @@ QVariant CJobInfoItemModel::headerData( int _section, Qt::Orientation _orientati
         return QVariant();
     if ( _orientation != Qt::Horizontal )
         return QVariant();
-    if ( _section < 0 || _section >= m_Titles.count() )
+    if ( _section < 0 || _section >= g_columnCount )
         return QVariant();
 
     return m_Titles[_section];
@@ -119,49 +123,57 @@ Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
 //=============================================================================
 QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) const
 {
-    Q_ASSERT( _info );
+    Q_CHECK_PTR( _info );
 
-    if ( !_info || _info == m_rootItem || 0 == _info->m_id || NULL == _info->m_parent )
+    if ( _info->isSuperParent() ) // this is our fake item - which is a super parent for all jobs
         return QModelIndex();
 
-    const int row( _info->m_parent->m_children.indexOf( _info ) );
+    const int row( _info->parent()->m_children.indexOf( _info ) );
     Q_ASSERT( row != -1 );
+    if ( -1 == row )
+    {
+        cout << "WARNING: can't find item: ";
+        return QModelIndex();
+    }
 
     return createIndex( row, column, _info );
 }
 //=============================================================================
 QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex & _parent ) const
 {
-    if ( _column < 0 || _column >= m_Titles.count() )
+    if ( _column < 0 || _column >= g_columnCount || _row < 0 || _parent.column() > 0 )
         return QModelIndex();
 
-    SJobInfo *parentItem = NULL;
+    cout << "index " << _row << ":" << _column << endl;
 
+    SJobInfo *parentItem = NULL;
+    // it is a root item, the one who dosn't have parent
     if ( !_parent.isValid() )
         parentItem = m_rootItem;
     else
         parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
-    SJobInfo *childItem = parentItem->m_children.value( _row );
-    if ( !childItem || childItem->m_id <= 0 )
-    {
-        cout << "bad index for " << _row << ":" << _column
-             << " size of children in parent: " << parentItem->m_children.count() << " parent: " << parentItem->m_strID << endl;
-        return QModelIndex();
-    }
+    Q_CHECK_PTR( parentItem );
 
-    return createIndex( _row, _column, childItem );
+    if ( !parentItem || _row >= parentItem->m_children.count() )
+        return QModelIndex();
+
+    return createIndex( _row, _column, parentItem->m_children[_row] );
 }
 //=============================================================================
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
+    cout << "parent " << _index.row() << ":" << _index.column() << endl;
     if ( !_index.isValid() )
         return QModelIndex();
 
     SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
-    Q_ASSERT( childItem );
+    Q_CHECK_PTR( childItem );
+    if ( !childItem )
+        return QModelIndex();
 
-    return getQModelIndex( childItem->m_parent, 0 );
+
+    return getQModelIndex( childItem->parent(), 0 );
 }
 //=============================================================================
 void CJobInfoItemModel::_setupHeader()
@@ -182,24 +194,26 @@ void CJobInfoItemModel::jobChanged( SJobInfo * _info )
         return;
 
     emit dataChanged( getQModelIndex( _info, 0 ),
-                      getQModelIndex( _info, m_Titles.count() - 1 ) );
+                      getQModelIndex( _info, g_columnCount - 1 ) );
 }
 //=============================================================================
 void CJobInfoItemModel::insertJobs( SJobInfo *_info )
 {
     // This model only supports insertion of the entire job with all its children
-    if ( !_info || NULL != _info->m_parent )
+    if ( !_info || NULL != _info->parent() )
         return;
 
     // inserting a parent
-    _info->m_parent = m_rootItem;
-    m_rootItem->addChild( _info );
-    const int row( _info->m_parent->m_children.count() - 1 );
+    const int row( m_rootItem->m_children.count() );
     beginInsertRows( getQModelIndex( m_rootItem, 0 ), row, row );
+    _info->setParent( m_rootItem );
+    m_rootItem->addChild( _info );
     endInsertRows();
 
     // inserting children
-    beginInsertRows( getQModelIndex( _info, 0 ), 0, _info->m_children.count() - 1 );
+    const int start_row( 0 );
+    const int end_row( _info->m_children.count() - 1 );
+    beginInsertRows( getQModelIndex( _info, 0 ), start_row, end_row );
     endInsertRows();
 
     emit doneUpdate();
@@ -207,8 +221,13 @@ void CJobInfoItemModel::insertJobs( SJobInfo *_info )
 //=============================================================================
 void CJobInfoItemModel::removeJobs( SJobInfo *_info )
 {
+//    // TODO: REMOVE DEBUG
+//    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+//    m_rootItem->debug_print();
+//    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+
     // This model only supports removing of the entire job with all its children
-    if ( !_info || _info->m_parent != m_rootItem )
+    if ( !_info || _info->parent() != m_rootItem )
         return;
 
     // Removing first the children
@@ -216,16 +235,25 @@ void CJobInfoItemModel::removeJobs( SJobInfo *_info )
     const int end_row( _info->m_children.count() - 1 );
 
     emit beginRemoveRows( getQModelIndex( _info, 0 ), start_row, end_row );
+    _info->removeAllChildren();
     endRemoveRows();
 
     // Removing the parent itself
-    const int row = _info->m_parent->m_children.indexOf( _info );
-    emit beginRemoveRows( getQModelIndex( _info->m_parent, 0 ), row, row );
+    const int row = _info->parent()->m_children.indexOf( _info );
+    if ( row < 0 )
+        cerr << "Error: Can't remove " << _info->m_strID << endl;
+
+    emit beginRemoveRows( getQModelIndex( _info->parent(), 0 ), row, row );
     // removing the item from the root item children list
-    _info->m_parent->m_children.removeAt( row );
+    _info->parent()->m_children.removeAt( row );
     delete _info;
     _info = NULL;
     endRemoveRows();
+
+//    // TODO: REMOVE DEBUG
+//    cout << "------------------------------------------------------" << endl;
+//    m_rootItem->debug_print();
+//    cout << "------------------------------------------------------" << endl;
 
     emit doneUpdate();
 }

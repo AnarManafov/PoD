@@ -358,7 +358,7 @@ void CLSFDlg::removeJob()
 
     // if the m_id == 0, then it means it is a rootItem - parent of
     // all parents
-    m_JobSubmitter.removeJob(( NULL != info->m_parent && info->m_parent->m_id != 0 ) ? info->m_parent->m_id : info->m_id );
+    m_JobSubmitter.removeJob(( NULL != info->parent() && info->parent()->m_id != 0 ) ? info->parent()->m_id : info->m_id );
 }
 //=============================================================================
 void CLSFDlg::enableTree()
