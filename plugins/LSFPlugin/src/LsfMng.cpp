@@ -47,8 +47,6 @@ void CLsfMng::init()
     get_cuser_name( &m_user );
 
     m_bInit = true;
-
-    cout << "init" << endl;
 }
 //=============================================================================
 void CLsfMng::addProperty( EJobProperty_t _type, const string &_val )
@@ -171,8 +169,6 @@ int CLsfMng::getNumberOfChildren( lsf_jobid_t _jobID ) const
     // detailed job info
     jobInfoEnt *job;
 
-    cout << "getNumberOfChildren" << endl;
-
     //gets the total number of pending job. Exits if failure */
     if ( lsb_openjobinfo( _jobID, NULL, NULL, NULL, NULL, ALL_JOB | JGRP_ARRAY_INFO ) < 0 )
         return 0;
@@ -265,9 +261,6 @@ size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
 	size_t countJobs(0);
     if ( !_container )
         return countJobs;
-
-    cout << "getAllUnfinishedJobs" << endl;
-
 
     // Retrieve all job ids of the current user, jobs which have not finished yet
     if ( lsb_openjobinfo( 0, NULL, const_cast<char*>( m_user.c_str() ), NULL, NULL, CUR_JOB ) > 0 )
