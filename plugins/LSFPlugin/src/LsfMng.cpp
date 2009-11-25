@@ -107,22 +107,39 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
 
     submitReply reply; // results of job submission
     // submit the job with specifications
-    int jobId = lsb_submit( &request, &reply );
 
-    if ( jobId < 0 )
+    // FIXME:
+    // some time lsb_submit fails with the following message:
+    // "System call failed: No child processes"
+    // while we ddidn't find n origin of the problem,
+    // we therefore repeat job submission 5 times if it fails. Before processing a next try
+    // procedure waits for a defined amount of time.
+    short repeat_try( 0 );
+    while ( true )
     {
-        // if job submission fails, lsb_submit returns -1
-        char *msg = lsb_sysmsg();
-        stringstream ss;
-        ss << "Job submission failed. LSF error: ";
-        if ( NULL != msg )
-            ss << msg;
-        else
-            ss << lsberrno;
-        ss << "\nPlease, try again.";
-        throw runtime_error( ss.str() );
+        const int jobId = lsb_submit( &request, &reply );
+
+        if ( jobId > 0 )
+            return jobId;//LSB_JOBID( jobId, 0 );
+
+        ++repeat_try;
+
+        if ( repeat_try >= 5 )
+            break;
+
+        sleep( 1 );
     }
-    return jobId;//LSB_JOBID( jobId, 0 );
+
+    // if job submission fails, lsb_submit returns -1
+    char *msg = lsb_sysmsg();
+    stringstream ss;
+    ss << "Job submission failed. LSF error: ";
+    if ( NULL != msg )
+        ss << msg;
+    else
+        ss << lsberrno;
+    ss << "\nPlease, try again.";
+    throw runtime_error( ss.str() );
 }
 //=============================================================================
 string CLsfMng::jobStatusString( int _status )
@@ -258,7 +275,7 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
 //=============================================================================
 size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
 {
-	size_t countJobs(0);
+    size_t countJobs( 0 );
     if ( !_container )
         return countJobs;
 
@@ -268,7 +285,7 @@ size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
         jobInfoEnt *job;
         while (( job = lsb_readjobinfo( NULL ) ) != NULL )
         {
-        	++countJobs;
+            ++countJobs;
             _container->insert( IDContainerOrdered_t::value_type( job->jobId, job->status ) );
 
             // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
