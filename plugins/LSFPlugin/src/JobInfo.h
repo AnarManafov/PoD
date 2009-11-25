@@ -34,7 +34,7 @@ typedef QList<SJobInfo *> jobs_children_t;
 struct SJobInfo
 {
     SJobInfo():
-            m_id( -1 ),
+            m_id( 0 ),
             m_status( JOB_STAT_UNKWN ),
             m_expanded( false ),
             m_completed( false ),
@@ -47,7 +47,6 @@ struct SJobInfo
             m_expanded( false ),
             m_completed( false ),
             m_parent( _parent ),
-            m_superParent( 0 == _id )
     {
         std::ostringstream str;
         if ( NULL != m_parent )
@@ -60,22 +59,15 @@ struct SJobInfo
     }
     ~SJobInfo()
     {
-        // TODO: REMOVE DEBUG
-        std::cout << "DELETE " << m_strID << std::endl;
         removeAllChildren();
     }
     void setParent( SJobInfo *_parent )
     {
         m_parent = _parent;
-        std::cout << "set Parent: " << _parent << " for " << m_strID << std::endl;
     }
     SJobInfo *parent()
     {
         return m_parent;
-    }
-    bool isSuperParent()
-    {
-        return m_superParent;
     }
     bool operator ==( const SJobInfo &_info )
     {
@@ -111,7 +103,6 @@ struct SJobInfo
 
 private:
     SJobInfo *m_parent; //!< parent of this job or NULL
-    bool m_superParent;
 };
 //=============================================================================
 /**
