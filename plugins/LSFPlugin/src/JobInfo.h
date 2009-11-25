@@ -40,7 +40,6 @@ struct SJobInfo
             m_completed( false ),
             m_parent( NULL )
     {
-        std::cout << "CREATE a default" << std::endl;
     }
     SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
             m_id( _id ),
@@ -50,9 +49,6 @@ struct SJobInfo
             m_parent( _parent ),
             m_superParent( 0 == _id )
     {
-        if ( m_superParent )
-            std::cout << "CREATE SUPER PARENT" << std::endl;
-
         std::ostringstream str;
         if ( NULL != m_parent )
             str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
@@ -61,16 +57,12 @@ struct SJobInfo
 
         m_id = _id;
         m_strID = str.str();
-
-        std::cout << "CREATE " << m_strID << std::endl;
-        std::cout << "set Parent: " << _parent << " for " << m_strID << std::endl;
     }
     ~SJobInfo()
     {
         // TODO: REMOVE DEBUG
         std::cout << "DELETE " << m_strID << std::endl;
         removeAllChildren();
-        m_parent = NULL;
     }
     void setParent( SJobInfo *_parent )
     {
@@ -104,25 +96,9 @@ struct SJobInfo
         while ( !m_children.isEmpty() )
         {
         	SJobInfo * p( m_children.takeFirst() );
-        	p->setParent(NULL);
         	delete p;
-        	p = NULL;
         }
         m_children.clear();
-    }
-    void debug_print()
-    {
-        std::cout << "\nITEM " << this << "; with ID " << m_strID << '\n';
-        std::cout << "children: ";
-        for ( int i = 0; i < m_children.size(); ++i )
-        {
-            std::cout <<  m_children.at( i )->m_strID << "; " << m_children.at( i ) << ", ";
-        }
-        std::cout << std::endl;
-        for ( int i = 0; i < m_children.size(); ++i )
-        {
-            m_children.at( i )->debug_print();
-        }
     }
 
     lsf_jobid_t m_id;

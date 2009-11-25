@@ -144,8 +144,6 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
     if ( _column < 0 || _column >= g_columnCount || _row < 0 || _parent.column() > 0 )
         return QModelIndex();
 
-    cout << "index " << _row << ":" << _column << endl;
-
     SJobInfo *parentItem = NULL;
     // it is a root item, the one who dosn't have parent
     if ( !_parent.isValid() )
@@ -163,7 +161,6 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
 //=============================================================================
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
-    cout << "parent " << _index.row() << ":" << _index.column() << endl;
     if ( !_index.isValid() )
         return QModelIndex();
 
@@ -171,7 +168,6 @@ QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
     Q_CHECK_PTR( childItem );
     if ( !childItem )
         return QModelIndex();
-
 
     return getQModelIndex( childItem->parent(), 0 );
 }
@@ -221,11 +217,6 @@ void CJobInfoItemModel::insertJobs( SJobInfo *_info )
 //=============================================================================
 void CJobInfoItemModel::removeJobs( SJobInfo *_info )
 {
-//    // TODO: REMOVE DEBUG
-//    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-//    m_rootItem->debug_print();
-//    cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-
     // This model only supports removing of the entire job with all its children
     if ( !_info || _info->parent() != m_rootItem )
         return;
@@ -249,11 +240,6 @@ void CJobInfoItemModel::removeJobs( SJobInfo *_info )
     delete _info;
     _info = NULL;
     endRemoveRows();
-
-//    // TODO: REMOVE DEBUG
-//    cout << "------------------------------------------------------" << endl;
-//    m_rootItem->debug_print();
-//    cout << "------------------------------------------------------" << endl;
 
     emit doneUpdate();
 }
