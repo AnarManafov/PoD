@@ -23,7 +23,7 @@ using namespace std;
 
 const short g_columnCount = 2;
 //=============================================================================
-CJobInfoItemModel::CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
+CJobInfoItemModel::CJobInfoItemModel( CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
         QAbstractItemModel( _parent ),
         m_jobinfo( _lsfsubmitter ),
         m_updateInterval( _updateInterval ),
@@ -263,4 +263,9 @@ void CJobInfoItemModel::addJob( lsf_jobid_t _jobID )
 void CJobInfoItemModel::removeJob( lsf_jobid_t _jobID )
 {
     m_jobinfo.updateNumberOfJobs();
+}
+//=============================================================================
+void CJobInfoItemModel::removeAllCompletedJobs()
+{
+    m_jobinfo.removeAllCompletedJobs();
 }

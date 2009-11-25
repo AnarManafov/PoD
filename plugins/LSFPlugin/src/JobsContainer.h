@@ -27,7 +27,7 @@ class CJobsContainer: public QThread
         Q_OBJECT
 
     public:
-        CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter );
+        CJobsContainer( CLSFJobSubmitter *_lsfsubmitter );
         virtual ~CJobsContainer();
 
     signals:
@@ -50,6 +50,7 @@ class CJobsContainer: public QThread
         void update( long _update_time_ms = 0 );
         void stopUpdate();
         void updateNumberOfJobs();
+        void removeAllCompletedJobs();
 
     private slots:
         void _updateJobsStatus();
@@ -62,9 +63,10 @@ class CJobsContainer: public QThread
 
     private:
         JobsContainer_t m_cur_ids;
-        const CLSFJobSubmitter *m_lsfsubmitter;
+        CLSFJobSubmitter *m_lsfsubmitter;
         CJobInfo m_jobInfo;
         bool m_updateNumberOfJobs;
+        bool m_removeAllCompletedJobs;
         unsigned long m_updateInterval;
         QWaitCondition m_condition;
         QMutex m_mutex;

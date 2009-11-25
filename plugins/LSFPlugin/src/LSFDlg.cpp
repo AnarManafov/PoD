@@ -254,16 +254,21 @@ void CLSFDlg::on_lsfQueueList_currentIndexChanged( int _index )
 //=============================================================================
 void CLSFDlg::createActions()
 {
-    // Remove Job from monitoring
+    // Remove Job from the monitoring
     removeJobAct = new QAction( tr( "&Exclude" ), this );
     removeJobAct->setShortcut( tr( "Ctrl+E" ) );
     removeJobAct->setStatusTip( tr( "Remove the selected job from the monitoring" ) );
+    // Remove all completed jobs from the monitoring
+    removeAllCompletedJobsAct = new QAction( tr( "Re&move all completed" ), this );
+    removeAllCompletedJobsAct->setShortcut( tr( "Ctrl+M" ) );
+    removeAllCompletedJobsAct->setStatusTip( tr( "Remove all completed jobs from the monitoring" ) );
     // Kill LSF job
     killJobAct = new QAction( tr( "&Kill" ), this );
     killJobAct->setShortcut( tr( "Ctrl+K" ) );
     killJobAct->setStatusTip( tr( "Send a kill signal to the selected LSF job" ) );
 
     connect( removeJobAct, SIGNAL( triggered() ), this, SLOT( removeJob() ) );
+    connect( removeAllCompletedJobsAct, SIGNAL( triggered() ), this, SLOT( removeAllCompletedJobs() ) );
     connect( killJobAct, SIGNAL( triggered() ), this, SLOT( killJob() ) );
 }
 //=============================================================================
@@ -277,6 +282,7 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
     QMenu menu( m_ui.treeJobs );
     menu.addAction( removeJobAct );
     removeJobAct->setEnabled( enable );
+    menu.addAction( removeAllCompletedJobsAct );
     menu.addSeparator();
     menu.addAction( killJobAct );
     killJobAct->setEnabled( enable );
@@ -346,7 +352,7 @@ void CLSFDlg::removeJob()
     if ( !info )
         return;
 
-    const string msg( "Are you sure you want to remove the selected job and all its children from the monitoring?\n"
+    const string msg( "Are you sure you want to remove the selected job from the monitoring?\n"
                       "Be advised, removing the job from the monitoring will not kill/remove it from the LSF queue." );
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
@@ -354,17 +360,29 @@ void CLSFDlg::removeJob()
     if ( QMessageBox::Cancel == reply )
         return;
 
-    m_ui.treeJobs->setEnabled( false );
-
     // if the m_id == 0, then it means it is a rootItem - parent of
     // all parents
     m_JobSubmitter.removeJob(( NULL != info->parent() && info->parent()->m_id != 0 ) ? info->parent()->m_id : info->m_id );
 }
 //=============================================================================
+void CLSFDlg::removeAllCompletedJobs()
+{
+    const string msg( "Are you sure you want to remove all completed jobs from the monitoring?\n"
+                      "Be advised, removing a job from the monitoring will not kill/remove it from the LSF queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if ( QMessageBox::Cancel == reply )
+        return;
+
+    if ( m_treeModel )
+    {
+        m_treeModel->removeAllCompletedJobs();
+    }
+}
+//=============================================================================
 void CLSFDlg::enableTree()
 {
-    m_ui.treeJobs->setEnabled( true );
-
     try
     {
         // Saving class to the config file

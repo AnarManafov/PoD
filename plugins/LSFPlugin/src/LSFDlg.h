@@ -65,6 +65,7 @@ class CLSFDlg: public QWidget, IJobManager
     private slots:
         void killJob();
         void removeJob();
+        void removeAllCompletedJobs();
         void showContextMenu( const QPoint &_point );
         void expandTreeNode( const QModelIndex& );
         void collapseTreeNode( const QModelIndex& );
@@ -99,6 +100,7 @@ class CLSFDlg: public QWidget, IJobManager
     private:
         Ui::wgGrid m_ui;
         QAction *removeJobAct;
+        QAction *removeAllCompletedJobsAct;
         QAction *killJobAct;
         QClipboard *clipboard;
         std::string m_JobScript;

@@ -111,7 +111,7 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     // FIXME:
     // some time lsb_submit fails with the following message:
     // "System call failed: No child processes"
-    // while we ddidn't find n origin of the problem,
+    // while we didn't find an origin of the problem,
     // we therefore repeat job submission 5 times if it fails. Before processing a next try
     // procedure waits for a defined amount of time.
     short repeat_try( 0 );

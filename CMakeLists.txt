@@ -63,6 +63,7 @@ set( UI_RESOURCE
         ./res/paconsole.qrc
 )
 
+set(QT_MIN_VERSION "4.4.2")
 find_package( Qt4 REQUIRED )
 #include_directories ( ${QT_INCLUDES} )
 #The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script

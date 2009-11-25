@@ -19,10 +19,11 @@
 //=============================================================================
 using namespace std;
 //=============================================================================
-CJobsContainer::CJobsContainer( const CLSFJobSubmitter *_lsfsubmitter ):
+CJobsContainer::CJobsContainer( CLSFJobSubmitter *_lsfsubmitter ):
         m_lsfsubmitter( _lsfsubmitter ),
         m_jobInfo( _lsfsubmitter->getLSF() ),
         m_updateNumberOfJobs( true ),
+        m_removeAllCompletedJobs( false ),
         m_updateInterval( 0 ),
         m_countOfActiveJobs( 0 )
 {
@@ -82,8 +83,41 @@ void CJobsContainer::updateNumberOfJobs()
     m_condition.wakeAll();
 }
 //=============================================================================
+void CJobsContainer::removeAllCompletedJobs()
+{
+    m_updateNumberOfJobs = true;
+    m_removeAllCompletedJobs = true;
+    m_condition.wakeAll();
+}
+//=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
 {
+    if ( m_removeAllCompletedJobs )
+    {
+        m_removeAllCompletedJobs = false;
+
+        // Delete children first
+        JobsContainer_t::const_iterator iter = m_cur_ids.begin();
+        JobsContainer_t::const_iterator iter_end = m_cur_ids.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            if ( NULL != iter->second->parent() && 0 != iter->second->parent()->m_id && iter->second->m_completed )
+                _removeJobInfo( *iter, false );
+        }
+        // Delete parents
+        iter = m_cur_ids.begin();
+        for ( ; iter != iter_end; ++iter )
+        {
+            if ( NULL == iter->second->parent() || 0 == iter->second->parent()->m_id && iter->second->m_completed )
+            {
+                m_lsfsubmitter->removeJob( iter->second->m_id, false );
+                _removeJobInfo( *iter, true );
+            }
+
+        }
+        return;
+    }
+
     JobsContainer_t newinfo;
     m_jobInfo.update( m_lsfsubmitter->getParentJobsList(), &newinfo );
 

@@ -87,8 +87,8 @@ struct SJobInfo
     {
         while ( !m_children.isEmpty() )
         {
-        	SJobInfo * p( m_children.takeFirst() );
-        	delete p;
+            SJobInfo * p( m_children.takeFirst() );
+            delete p;
         }
         m_children.clear();
     }

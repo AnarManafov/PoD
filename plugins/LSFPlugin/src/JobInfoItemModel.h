@@ -26,7 +26,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         Q_OBJECT
 
     public:
-        CJobInfoItemModel( const CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent = NULL );
+        CJobInfoItemModel( CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent = NULL );
         virtual ~CJobInfoItemModel();
 
     public:
@@ -45,6 +45,7 @@ class CJobInfoItemModel: public QAbstractItemModel
         virtual Qt::ItemFlags flags( const QModelIndex & _index ) const;
         QModelIndex parent( const QModelIndex &_index ) const;
         void setUpdateInterval( int _newVal );
+        void removeAllCompletedJobs();
 
     signals:
         void doneUpdate();

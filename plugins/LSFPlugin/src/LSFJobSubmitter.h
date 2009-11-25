@@ -43,7 +43,7 @@ class CLSFJobSubmitter: public QThread
     public:
         CLSFJobSubmitter( QObject *parent ): QThread( parent )
         {
-        	qRegisterMetaType<lsf_jobid_t>( "lsf_jobid_t" );
+            qRegisterMetaType<lsf_jobid_t>( "lsf_jobid_t" );
             init();
         }
         ~CLSFJobSubmitter()
@@ -71,7 +71,7 @@ class CLSFJobSubmitter: public QThread
         }
         void setAllDefault()
         {
-        	m_parentJobs.clear();
+            m_parentJobs.clear();
         }
         void setJobScriptFilename( const std::string &_JobScriptFilename )
         {
@@ -97,13 +97,14 @@ class CLSFJobSubmitter: public QThread
             m_lsf.addProperty( CLsfMng::JP_SUB_OUT_FILE, dir + "%J/std_%I.out" );
             m_lsf.addProperty( CLsfMng::JP_SUB_ERR_FILE, dir + "%J/std_%I.err" );
         }
-        void removeJob( lsf_jobid_t _jobID )
+        void removeJob( lsf_jobid_t _jobID, bool _emitSignal = true )
         {
             m_mutex.lock();
             m_parentJobs.erase( _jobID );
             m_mutex.unlock();
 
-            emit removedJob( _jobID );
+            if ( _emitSignal )
+                emit removedJob( _jobID );
         }
         void killJob( lsf_jobid_t _jobID )
         {
