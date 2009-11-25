@@ -46,7 +46,7 @@ struct SJobInfo
             m_status( JOB_STAT_UNKWN ),
             m_expanded( false ),
             m_completed( false ),
-            m_parent( _parent ),
+            m_parent( _parent )
     {
         std::ostringstream str;
         if ( NULL != m_parent )
