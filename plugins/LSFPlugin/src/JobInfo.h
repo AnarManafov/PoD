@@ -69,8 +69,8 @@ struct SJobInfo
     {
         // TODO: REMOVE DEBUG
         std::cout << "DELETE " << m_strID << std::endl;
-        while ( !m_children.isEmpty() )
-            delete m_children.takeFirst();
+        removeAllChildren();
+        m_parent = NULL;
     }
     void setParent( SJobInfo *_parent )
     {
@@ -104,6 +104,7 @@ struct SJobInfo
         while ( !m_children.isEmpty() )
         {
         	SJobInfo * p( m_children.takeFirst() );
+        	p->setParent(NULL);
         	delete p;
         	p = NULL;
         }
