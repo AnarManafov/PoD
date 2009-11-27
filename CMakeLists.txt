@@ -14,10 +14,10 @@
 #*************************************************************************
 project( pod-console )
 
-set(VERSION "1.1.2a")
+set(VERSION "1.1.2b")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "2a")
+set(CPACK_PACKAGE_VERSION_PATCH "2b")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
@@ -29,6 +29,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 # configure files
 # 
 configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
+configure_file( ${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_SOURCE_DIR}/Doxyfile @ONLY )
 
 #
 # Options

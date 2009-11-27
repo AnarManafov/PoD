@@ -1,4 +1,4 @@
-********************* Release 1.1.2a not yet released ************************
+********************* Release 1.2.0 not yet released ************************
 pod-console: switch the whole monitoring and all sensors off if there is no interaction during the last 15 min (time is hard coded).
 pod-console: removed PID dir controls from the server page.
 pod-console: an improved algorithm of updating available PROOF workers (WORKERS page). Is not timer based anymore. Now very efficient and system resource friendly.
