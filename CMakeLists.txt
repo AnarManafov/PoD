@@ -14,7 +14,7 @@
 #*************************************************************************
 project( pod-user-defaults )
 
-
+set(VERSION "1.0.2")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
 set(CPACK_PACKAGE_VERSION_PATCH "2")
@@ -31,6 +31,10 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 #
 #option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 
+#
+# configure files
+# 
+configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
 
 set( SOURCE_FILES
     ./src/

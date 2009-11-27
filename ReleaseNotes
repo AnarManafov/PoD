@@ -1,5 +1,16 @@
 # Release Notes for pod-user-defaults
 
+## v.1.0.2 (2009-11-27)
+pod-user-defaults: updated user defaults configuration file - v0.2
+pod-user-defaults: if shared home is used, users can define $ROOTSYS as a ROOT version for workers.
+                   Workers will use that version of ROOT, which is defined on UI machine. (see worker.my_rootsys in PoD.cfg)
+pod-user-defaults: new option <lsf_plugin.email_job_output> default is "no".
+                   The parameter specifies whether job's output is sent to the user by mail.
+                   If no is set, output will be delivered the log directory in std_[INDEX].err and std_[INDEX].out files
+pod-user-defaults: new option <lsf_plugin.upload_job_log> default is "no".
+                   The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                   Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.
+
 ## v.1.0.1 (2009-10-20)
  -   The very first release.
 

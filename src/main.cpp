@@ -21,6 +21,8 @@
 // MiscCommon
 #include "PoDUserDefaultsOptions.h"
 #include "BOOSTHelper.h"
+//
+#include "version.h"
 
 using namespace PoD;
 using namespace std;
@@ -29,8 +31,9 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 
 void printVersion()
 {
-    // TODO: make VERSION to be taken from the build
-    cout << "TODO: print version information" << endl;
+    cout
+    << PROJECT_NAME << " v." << PROJECT_VERSION_STRING << "\n"
+    << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
 // Command line parser
