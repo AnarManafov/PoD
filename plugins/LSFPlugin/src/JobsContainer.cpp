@@ -94,19 +94,24 @@ void CJobsContainer::_updateNumberOfJobs()
     {
         m_removeAllCompletedJobs = false;
 
+        JobsContainer_t c( m_cur_ids );
+
         // Delete children first
-        JobsContainer_t::const_iterator iter = m_cur_ids.begin();
-        JobsContainer_t::const_iterator iter_end = m_cur_ids.end();
+        JobsContainer_t::const_iterator iter = c.begin();
+        JobsContainer_t::const_iterator iter_end = c.end();
         for ( ; iter != iter_end; ++iter )
         {
-            if ( NULL != iter->second->parent() && 0 != iter->second->parent()->m_id && iter->second->m_completed )
+            // TODO: the way we detect parents must be moved to a separated method
+            // in order to avoid of duplication
+            if ( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
                 _removeJobInfo( *iter, false );
         }
         // Delete parents
-        iter = m_cur_ids.begin();
+        iter = c.begin();
+        iter_end = c.end();
         for ( ; iter != iter_end; ++iter )
         {
-            if ( NULL == iter->second->parent() || 0 == iter->second->parent()->m_id && iter->second->m_completed )
+            if ( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
             {
                 m_lsfsubmitter->removeJob( iter->second->m_id, false );
                 _removeJobInfo( *iter, true );
@@ -146,14 +151,15 @@ void CJobsContainer::_updateNumberOfJobs()
     JobsContainer_t::const_iterator iter_end = tmp.end();
     for ( ; iter != iter_end; ++iter )
     {
-        if ( NULL != iter->second->parent() && 0 != iter->second->parent()->m_id )
+        if ( iter->first.find( '[' ) != string::npos )
             _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
+    iter_end = tmp.end();
     for ( ; iter != iter_end; ++iter )
     {
-        if ( NULL == iter->second->parent() || 0 == iter->second->parent()->m_id )
+        if ( iter->first.find( '[' ) == string::npos )
             _removeJobInfo( *iter, true );
     }
 
