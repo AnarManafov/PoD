@@ -2,9 +2,6 @@
 utilities: The automatic port mapping: increase a retry counts to 10 instead of 3. Sometime xrd could take longer to start which prevents PoD workers to properly detect all ports of it. As the result these workers will shutdown the job at a very early stages of initialization of PoD.
 utilities: use user defaults' work_dir as a working dir value in the PoD server script.
 utilities: Server_PoD.sh has been renamed to pod-server.
-configuration: updated user defaults configuration file - v0.2
-configuration: if shared home is used, users can define $ROOTSYS as a ROOT version for workers. Workers will use that version of ROOT, which is defined on UI machine.
-configuration: new user defaults option <lsf_plugin.email_job_output>.
 
 ********************* Release 2.1.1 2009-10-24 ************************
 - using a central user-defaults configuration ($POD_LOCATION/etc/PoD.cfg). 
