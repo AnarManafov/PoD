@@ -272,11 +272,10 @@ void CLsfMng::killJob( lsf_jobid_t _jobID ) const
     }
 }
 //=============================================================================
-size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
+void CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
 {
-    size_t countJobs( 0 );
     if ( !_container )
-        return countJobs;
+        return;
 
     // Retrieve all job ids of the current user, jobs which have not finished yet
     if ( lsb_openjobinfo( 0, NULL, const_cast<char*>( m_user.c_str() ), NULL, NULL, CUR_JOB ) > 0 )
@@ -284,7 +283,6 @@ size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
         jobInfoEnt *job;
         while (( job = lsb_readjobinfo( NULL ) ) != NULL )
         {
-            ++countJobs;
             _container->insert( IDContainerOrdered_t::value_type( job->jobId, job->status ) );
 
             // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
@@ -296,5 +294,4 @@ size_t CLsfMng::getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const
         }
     }
     lsb_closejobinfo();
-    return countJobs;
 }

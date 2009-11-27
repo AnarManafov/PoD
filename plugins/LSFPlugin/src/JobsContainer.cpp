@@ -221,7 +221,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 
     // Getting a list of unfinished LSF jobs
     CLsfMng::IDContainerOrdered_t unfinished;
-    run_jobs = m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
+    m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
 
     iter = _container->begin();
     iter_end = _container->end();
@@ -240,6 +240,10 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         }
         else
         {
+        	// calculate a number of expected PoD workers
+            if ( iter->first.find( '[' ) != string::npos )
+                ++run_jobs;
+
             if ( iter->second->m_status == found->second )
                 continue;
 

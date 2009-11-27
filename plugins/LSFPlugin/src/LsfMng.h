@@ -77,7 +77,7 @@ class CLsfMng
         void getChildren( lsf_jobid_t _jobID, IDContainer_t *_container ) const;
         void getQueues( LSFQueueInfoMap_t *_retVal ) const;
         void killJob( lsf_jobid_t _jobID ) const;
-        size_t getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const;
+        void getAllUnfinishedJobs( IDContainerOrdered_t *_container ) const;
 
     private:
         propertyDict_t m_submitRequest;
