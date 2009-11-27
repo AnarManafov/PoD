@@ -15,16 +15,10 @@
 #ifndef JOBINFO_H_
 #define JOBINFO_H_
 //=============================================================================
-// BOOST
-#include <boost/shared_ptr.hpp>
-#include <boost/bind.hpp>
-#include <boost/checked_delete.hpp>
 // STD
 #include <algorithm>
 // lsf plug-in
 #include "LSFJobSubmitter.h"
-// STD
-#include <iostream>
 //=============================================================================
 struct SJobInfo;
 //=============================================================================

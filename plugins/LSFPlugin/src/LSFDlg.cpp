@@ -77,9 +77,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
     connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
 
-//    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), this, SLOT( setNumberOfJobs( lsf_jobid_t ) ) );
-//    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), this, SLOT( setNumberOfJobs( lsf_jobid_t ) ) );
-
     createActions();
 
     clipboard = QApplication::clipboard();
@@ -443,6 +440,17 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
     }
 }
 //=============================================================================
+void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
+{
+    if ( _hideMode )
+    {
+        // in hideMode we updated, but not very intensive (normal updated time +15 sec.).
+        // this is needed for the GUI, to get a number of active jobs even when
+        // plug-in is hidden
+        m_treeModel->setUpdateInterval(( m_updateInterval + 15 ) * 1000 );
+    }
+}
+//=============================================================================
 void CLSFDlg::showEvent( QShowEvent* )
 {
     startUpdTimer( m_updateInterval );
@@ -450,7 +458,7 @@ void CLSFDlg::showEvent( QShowEvent* )
 //=============================================================================
 void CLSFDlg::hideEvent( QHideEvent* )
 {
-    startUpdTimer( 0 );
+    startUpdTimer( 0, true );
 }
 //=============================================================================
 int CLSFDlg::getJobsCount() const

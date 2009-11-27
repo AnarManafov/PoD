@@ -27,7 +27,6 @@ CJobsContainer::CJobsContainer( CLSFJobSubmitter *_lsfsubmitter ):
         m_updateInterval( 0 ),
         m_countOfActiveJobs( 0 )
 {
-    // we need to register SJobInfoPTR_t, so that Qt will be able to
     // marshal this type
     qRegisterMetaType<size_t>( "size_t" );
 }
@@ -77,8 +76,7 @@ void CJobsContainer::run()
 //=============================================================================
 void CJobsContainer::updateNumberOfJobs()
 {
-    // TODO: for Qt 4.3 use Qt::BlockingQueuedConnection
-    // so-far we must support Qt 4.2, I therefore use this duty trick
+    // TODO: instead of this duty trick try to use Qt::BlockingQueuedConnection
     m_updateNumberOfJobs = true;
     m_condition.wakeAll();
 }
@@ -218,8 +216,6 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     // Getting a list of unfinished LSF jobs
     CLsfMng::IDContainerOrdered_t unfinished;
     run_jobs = m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
-
-    run_jobs = unfinished.size();
 
     iter = _container->begin();
     iter_end = _container->end();

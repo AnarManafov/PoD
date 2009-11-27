@@ -16,8 +16,6 @@
 #define JOBSCONTAINER_H_
 // LSF plug-in
 #include "JobInfo.h"
-// STD
-#include <iterator>
 // Qt
 #include <QObject>
 #include <QtCore>

@@ -41,6 +41,7 @@ class CLSFDlg: public QWidget, IJobManager
         QWidget *getWidget();
         QIcon getIcon();
         void startUpdTimer( int _JobStatusUpdInterval );
+        void startUpdTimer( int _JobStatusUpdInterval, bool _hideMode );
         int getJobsCount() const;
         void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
 

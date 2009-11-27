@@ -19,7 +19,7 @@
 //=============================================================================
 CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
         QWidget( _parent ),
-        m_JobStatusUpdInterval( 15 ) // in seconds
+        m_JobStatusUpdInterval( 10 ) // in seconds
 {
     m_ui.setupUi( this );
 

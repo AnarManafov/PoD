@@ -15,7 +15,6 @@
 // STD
 #include <stdexcept>
 #include <cstring>
-#include <iostream>
 // Misc
 #include "def.h"
 #include "SysHelper.h"

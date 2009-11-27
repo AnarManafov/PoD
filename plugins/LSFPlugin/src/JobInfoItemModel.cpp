@@ -12,10 +12,6 @@
 
         Copyright (c) 2009 Anar Manafov. All rights reserved.
 *************************************************************************/
-// STD
-#include <sstream>
-// BOOST
-#include <boost/bind.hpp>
 // vnetstat
 #include "JobInfoItemModel.h"
 //=============================================================================
