@@ -30,6 +30,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 # configure files
 # 
 configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
+configure_file( ${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_SOURCE_DIR}/Doxyfile @ONLY )
 
 #
 # Options
