@@ -1,23 +1,13 @@
 <!-- 
 Download 
 -->
-  <chapter id="download">
-    <title>Download</title>
-    	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
-   	</chapterinfo>    
-    <para>
-    		PoD could be downloaded from the following locations:
-			<itemizedlist>
-  				<listitem><para><ulink url="http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD/">Stable Releases</ulink></para></listitem>
-  				<listitem><para><ulink url="http://www-linux.gsi.de/%7Emanafov/D-Grid/Release/Nightly/">Nightly Releases</ulink></para></listitem>  			
-			</itemizedlist>
-    </para>
-    <para>
-	It is enough to just download a PoD_Package.X.X.X.tar.gz.
-	The rest PoD will download and install by itself during the installation. 
-    </para>
-  </chapter>
-  
+<chapter id="download">
+<title>Download</title>
+<chapterinfo>
+   <publisher><publishername>$LastChangedBy$</publishername></publisher>
+</chapterinfo>
+<para>
+   Please, use PoD's <ulink url="http://pod.gsi.de/PoD/Download.html">Download</ulink> page to
+      get the latest version.
+</para>
+</chapter>

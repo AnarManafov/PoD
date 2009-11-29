@@ -4,9 +4,6 @@ Installation
   <chapter id="Installation">
     <title>Installation</title>
      	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
     
     <sect1 id="step1">
@@ -14,7 +11,7 @@ Installation
       <para>Choose a directory where you want to install <application>PoD</application>,
       we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>PoD</application> tarball to this directory:
 <screen>
-<command>tar -C /tmp/test -xzvf <replaceable>PoD_Package.2.1.1.tar.gz</replaceable></command>
+<command>tar -C /tmp/test -xzvf <replaceable>PoD_Package.2.1.2.tar.gz</replaceable></command>
 </screen>
 		Tar will created a new directory <filename class="directory">/tmp/test/PoD_Package</filename>,
 		where <application>PoD</application> package will be located.</para>
@@ -107,14 +104,20 @@ Installation
     <sect1 id="step3">
       <title>Step #3</title>
       <para>
-      Execute installation script, which will perform downloads of required modules,
+            Now you have two choices. Either build PoD from source or just reconfigure it.
+            To build from source, execute installation script, which will perform downloads of required modules,
       build them and configure <application>PoD</application> for the first run:
 <screen>
 <command>./install -b</command>
 </screen>
+or
+<screen>
+<command>./install -c</command>
+</screen>
+if you downloaded a precompiled binary of PoD and want just reconfigure it to use in a new location.
       </para>
       <important><para>
-        The <command>./install</command> command must be issued from the root of the <application>PoD</application> directory.
+        The <command>./install</command> command must be issued from the root folder of the <application>PoD</application> directory.
 		</para></important> 
     </sect1>
 

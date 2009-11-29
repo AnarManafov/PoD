@@ -4,9 +4,6 @@ How to run
   <chapter id="LSF_plugin">
     <title>LSF plug-in</title>
         <chapterinfo>
-            <releaseinfo>$Revision$</releaseinfo>
-               <pubdate>$Date$</pubdate>
-              <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
            
     <sect1 id="LSF_Workers">

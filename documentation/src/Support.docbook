@@ -3,29 +3,10 @@ Support
 -->
   <chapter id="Support">
     	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>  
     <title>Support</title>
     <para>
-    	<itemizedlist>
-  			<listitem>
-  				<para>
-  				Your requests can be send to: Anar Manafov <email>A.Manafov@gsi.de</email> or to GSI GridTeam <email>grid-admin@gsi.de</email>.
-  				</para>
-  			</listitem>
-  			<listitem>
-  				<para>
-  				Use <ulink url="https://subversion.gsi.de/trac/dgrid/wiki/gLitePROOF">POD Trac</ulink> to find out details and post tickets related to the project.
-  				You also can find there an SVN repository of the project, build system reports, and project's documentation.
-  				</para>
-  			</listitem>
-  				<listitem>
-  				<para>
-  				Meet <ulink url="http://proof-on-demand.blogspot.com/">POD Blog</ulink>.
-  				</para>
-  			</listitem>  			
-		</itemizedlist>
+    The PoD <ulink url="http://pod.gsi.de/PoD/Support.html">Support</ulink> home page is your portal to
+    help and support for the product. 
     </para>
   </chapter>

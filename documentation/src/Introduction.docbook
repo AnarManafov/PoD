@@ -4,9 +4,6 @@ Introduction
 	<chapter id="Introduction">
 		<title>Introduction</title>
 		<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
    	<sect1 id="PROOF-on-Demand">
       <title>PROOF on Demand</title>

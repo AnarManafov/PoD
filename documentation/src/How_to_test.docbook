@@ -4,9 +4,6 @@ Test
 	<chapter id="How_to_test">
    <title>How to test</title>
    	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
    	<sect1 id="simple_test">
    	<title>Simple test</title>    

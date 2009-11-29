@@ -4,9 +4,6 @@ How to run
   <chapter id="How_to_run">
     <title>How to run</title>
         <chapterinfo>
-            <releaseinfo>$Revision$</releaseinfo>
-               <pubdate>$Date$</pubdate>
-              <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
            
     <sect1 id="Environment">

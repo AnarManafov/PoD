@@ -1,64 +1,60 @@
 <!--
 Requirements
 -->
-  <chapter id="Requirements">
-    <title>Requirements</title>
-      <chapterinfo>
-            <releaseinfo>$Revision$</releaseinfo>
-               <pubdate>$Date$</pubdate>
-              <publisher><publishername>$LastChangedBy$</publishername></publisher>
-       </chapterinfo>
-       <sect1 id="User_workspace_requirements">
-       <title>User's workspace requirements</title>
-        <para>
-        PoD works as a client/server application.
-        We define user's workspace as a side, which is located on the local (for the user) space,
-        on users laptop, for example. For simplification we will call it a user's workspace or
-        local workspace. There a PoD server is running.
-        </para>
+<chapter id="Requirements">
+<title>Requirements</title>
+<chapterinfo>
+</chapterinfo>
+   <sect1 id="User_workspace_requirements">
+   <title>User's workspace requirements</title>
+   <para>
+      PoD works as a client/server application.
+      We define user's workspace as a side, which is located on the local (for the user) space,
+      on users laptop, for example. For simplification we will call it a user's workspace or
+      local workspace. There a PoD server is running.
+   </para>
 	<para>
-	Officially PoD runs only on Linux.
+	   Officially PoD runs only on Linux.
 	</para>
-        <para>
+   <para>
 	<itemizedlist>
 		<title>General workspace requirements: </title>
 		<listitem>Incomming connection on pod-agent's port (configurable)</listitem>
 		<listitem>ROOT 5.24+ (xrootd enabled)</listitem>
-		<listitem>Qt 4.2+</listitem>
+		<listitem>Qt 4.4.2+</listitem>
 		<listitem>BOOST 1.32</listitem>		
 		<listitem>cmake 2.6</listitem>
-		<listitem>bash</listitem>
 	</itemizedlist>
-        <itemizedlist>
-                <title>Additional requirements for gLite plug-in:</title>
-                <listitem>gLite UI 3.1</listitem>
-        </itemizedlist>
-        <itemizedlist>
-                <title>Additional requirements for LSF plug-in:</title>
-                        <listitem>LSF 6.x API (headers and libraries)</listitem>
-        </itemizedlist>
-        </para>
-        </sect1>
-       <sect1 id="Workers_workspace_requirements">
-       <title>Workers' workspace requirements</title>
-       <para>	
-       We define workers' workspace as a side which is located on the remote space,
-       gLite Grid Worker Nodes or batch workers, for example.
-        Clients are actually workers for us. For simplification we will call it a remote workspace.
-       	</para>       
-       	<para>
-       	<itemizedlist>
-       		<title>General workspace requirements: </title>
-                <listitem>Outgoing connection for a port in a range (configurable).
+   <itemizedlist>
+      <title>Additional requirements for gLite plug-in:</title>
+      <listitem>gLite UI 3.1</listitem>
+   </itemizedlist>
+   <itemizedlist>
+      <title>Additional requirements for LSF plug-in:</title>
+      <listitem>LSF 6.x API (headers and libraries)</listitem>
+   </itemizedlist>
+   </para>
+   </sect1>
+   
+   <sect1 id="Workers_workspace_requirements">
+   <title>Workers' workspace requirements</title>
+   <para>
+      We define workers' workspace as a side which is located on the remote space,
+      gLite Grid Worker Nodes or batch workers, for example.
+      Clients are actually workers for us. For simplification we will call it a remote workspace.
+   </para>       
+   <para>
+   <itemizedlist>
+      <title>General workspace requirements: </title>
+      <listitem>Outgoing connection for a port in a range (configurable).
 		          This is needed by pod-agent worker to be able to connect to a server</listitem>
-		<listitem>bash</listitem>
 	</itemizedlist>
-       	<itemizedlist>
-        	<title>Additional requirements for gLite plug-in: </title>
-                <listitem>gLite WMS (WMProxy endpoint)</listitem>
+   <itemizedlist>
+      <title>Additional requirements for gLite plug-in: </title>
+      <listitem>gLite WMS (WMProxy endpoint)</listitem>
 		<listitem>gLite WNs (at least v3.0)</listitem>
 	</itemizedlist>
-        </para>
-        </sect1>   
+   </para>
+   </sect1>   
   </chapter>
  

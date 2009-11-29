@@ -4,9 +4,6 @@ Configuration
     <chapter id="Configuration">
         <title>Configuration</title>
         <chapterinfo>
-            <releaseinfo>$Revision$</releaseinfo>
-               <pubdate>$Date$</pubdate>
-              <publisher><publishername>$LastChangedBy$</publishername></publisher>
        </chapterinfo>
     <para>
     As it was mentioned above <application>PoD</application> consists of several modules

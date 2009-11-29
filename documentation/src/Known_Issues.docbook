@@ -4,9 +4,6 @@ Known Issues
   <chapter id="Known_Issues">
     <title>Known Issues</title>
     	<chapterinfo>
-    		<releaseinfo>$Revision$</releaseinfo>
-  	 		<pubdate>$Date$</pubdate>
-  			<publisher><publishername>$LastChangedBy$</publishername></publisher>
    	</chapterinfo>
    	
 		<sect1 id="tmp_on_worker_nodes">
