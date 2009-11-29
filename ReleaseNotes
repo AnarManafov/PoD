@@ -7,7 +7,7 @@ pod-console: fixed a case when after restart the console could forget a number o
 pod-console (LSF plug-in): moved to Qt 4.4.2, because of the bug in Qt 4.2.1 (see. http://lists.trolltech.com/qt-interest/2007-02/thread00018-0.html,
                            "Resetting a sub-tree of a QAbstractItemModel").
 pod-console (LSF plug-in): *** revised implementation of the LSF plug-in engine. That made the LSF plug-in very much LSF and resource friendly. ***
-pod-console (LSF plug-in): a number of requests to LSF daemon (a very expensive operations) and cases when requests should be send has beed reduced by
+pod-console (LSF plug-in): a number of requests to LSF daemon (a very expensive operations) and cases when requests should be send have been reduced by
                            a huge factor and the algorithm now is much faster and smarter.
 pod-console (LSF plug-in): update status only for unfinished LSF jobs. 
 pod-console (LSF plug-in): the serialization file of the LSF plug-in has been renamed to "pod-console_LSF.xml.cfg".
