@@ -117,7 +117,7 @@ or
 if you downloaded a precompiled binary of PoD and want just reconfigure it to use in a new location.
       </para>
       <important><para>
-        The <command>./install</command> command must be issued from the root folder of the <application>PoD</application> directory.
+        The <command>./install</command> command must be issued from the root of the <application>PoD</application> directory.
 		</para></important> 
     </sect1>
 
