@@ -1,7 +1,45 @@
-********************* Release 2.1.2 not yet released ************************
-utilities: The automatic port mapping: increase a retry counts to 10 instead of 3. Sometime xrd could take longer to start which prevents PoD workers to properly detect all ports of it. As the result these workers will shutdown the job at a very early stages of initialization of PoD.
+********************* Release 2.1.2 2009-11-30 ************************
+utilities: The automatic port mapping: increase a retry counts to 10 instead of 3.
+           Sometime xrd could take longer to start which prevents PoD workers to properly detect all ports of it.
+           As the result these workers will shutdown the job at a very early stages of initialization of PoD.
 utilities: use user defaults' work_dir as a working dir value in the PoD server script.
 utilities: Server_PoD.sh has been renamed to pod-server.
+pod-agent: create admin files by the server/worker.work_dir path. For example, AFS doesn't support named pipes,
+           users therefore can install PoD on AFS but specify different work_dir where PoD is able to create pipes and other admin files.
+pod-agent: minor improvements of packet-forwarding algorithms.
+pod-console: switch the whole monitoring and all sensors off if there is no user interaction during the last 15 min (time is hard coded).
+pod-console: GUI modifications. Removed PID dir controls from the server page.
+pod-console: introduced an improved algorithm of updating available PROOF workers (WORKERS page).
+             Is not timer based anymore, but rather watches file modifications system events. Now very efficient and system resource friendly.
+pod-console: fixed a case when after restart the console could forget a number of expected PROOF workers.
+pod-console (LSF plug-in): moved to Qt 4.4.2, because of the bug in Qt 4.2.1 (see. http://lists.trolltech.com/qt-interest/2007-02/thread00018-0.html,
+                           "Resetting a sub-tree of a QAbstractItemModel").
+pod-console (LSF plug-in): *** revised implementation of the LSF plug-in engine. That made the LSF plug-in very much LSF and resource friendly. ***
+pod-console (LSF plug-in): a number of requests to LSF daemon (a very expensive operations) and cases when requests should be send have been reduced by
+                           a huge factor and the algorithm now is much faster and smarter.
+pod-console (LSF plug-in): update status only for unfinished LSF jobs.
+pod-console (LSF plug-in): the serialization file of the LSF plug-in has been renamed to "pod-console_LSF.xml.cfg".
+pod-console (LSF plug-in): improved the update speed of the jobs tree (GUI) if a job was removes from the monitoring or added to it.
+                           Now this part of GUI is more responsive and fast.
+pod-console (LSF plug-in): fixed a SEGFAULT error condition, which could happen when closing pod-console or removing jobs from the monitoring.
+pod-console (LSF plug-in): now users can send a kill signal to a LSF job or to an job in the array, using jobs context menu.
+                           This will kill the job and remove it from the LSF queue.
+pod-console (LSF plug-in): now user can exclude all completed jobs at once from the monitoring, using jobs context menu.
+pod-console (LSF plug-in): new user defaults option <lsf_plugin.email_job_output>.
+                           It specifies whether job's output is sent to the user by mail or should be
+                           written to files. Output files are saved in to PoD's log dir.
+pod-conosle (LSF plug-in): in the jobs tree view (GUI), expand only one parent node at time.
+pod-console (LSF plug-in): don't count completed LSF jobs as expected PROOF worker.
+                           It helps the WORKERS page in GUI to show a number of expected workers properly.
+pod-user-defaults: updated user defaults configuration file - v0.2
+pod-user-defaults: if shared home is used, users can define $ROOTSYS as a ROOT version for workers.
+                   Workers will use that version of ROOT, which is defined on UI machine. (see worker.my_rootsys in PoD.cfg)
+pod-user-defaults: new option <lsf_plugin.email_job_output> default is "no".
+                   The parameter specifies whether job's output is sent to the user by mail.
+                   If no is set, output will be delivered the log directory in std_[INDEX].err and std_[INDEX].out files
+pod-user-defaults: new option <lsf_plugin.upload_job_log> default is "no".
+                   The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                   Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.
 
 ********************* Release 2.1.1 2009-10-24 ************************
 - using a central user-defaults configuration ($POD_LOCATION/etc/PoD.cfg). 
