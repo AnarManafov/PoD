@@ -1,3 +1,5 @@
+********************* Release 2.1.3 not yet released ************************
+
 ********************* Release 2.1.2 2009-11-28 ************************
 pod-agent: create admin files by the server/worker.work_dir path. For example, AFS doesn't support named pipes,
            users therefore can install PoD on AFS but specify different work_dir where PoD is able to create pipes and other admin files.
