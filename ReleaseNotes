@@ -1,3 +1,6 @@
+********************* Release 1.2.1 not yet released ************************
+
+
 ********************* Release 1.2.0 2009-11-28 ************************
 pod-console: switch the whole monitoring and all sensors off if there is no user interaction during the last 15 min (time is hard coded).
 pod-console: GUI modifications. Removed PID dir controls from the server page.
