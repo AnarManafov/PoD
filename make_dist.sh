@@ -10,7 +10,7 @@
 ##
 ##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
-VERSION=2.1.2
+VERSION=2.1.3a
 
 PKG_NAME=PoD_Package
 
