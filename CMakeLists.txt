@@ -47,6 +47,7 @@ set( SOURCE_FILES
     ./src/ThreadPool.cpp
     ./src/PROOFAgent.cpp
     ./src/Node.cpp
+    ./src/Protocol.cpp
 )
 
 

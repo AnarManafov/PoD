@@ -21,6 +21,8 @@
 #include "ErrorCode.h"
 #include "INet.h"
 #include "SysHelper.h"
+// pod-agent
+#include "Protocol.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
