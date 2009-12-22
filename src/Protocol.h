@@ -52,26 +52,22 @@ namespace PROOFAgent
             CProtocol();
             virtual ~CProtocol();
 
-            typedef enum EProtocolCMD
+            typedef enum EStatus
             {
-                DISCONNECT = -3,
-                AGAIN = -2,
-                UNKNOWN = -1,
-                NULL_VAL = 0,
-                OK = 1,
-                ERR = 2,
-                VER = 3,
-                HOST_INFO = 4
-            } EProtocolCMD_t;
+                stDISCONNECT = -3,
+                stAGAIN = -2,
+                stUNKNOWN = -1,
+                stOK = 0
+            } EStatus_t;
 
-            EProtocolCMD_t read( int _socket );
-            //void write();
-            void getDataAndRefresh( MiscCommon::BYTEVector_t *_buf );
+            EStatus_t read( int _socket );
+            void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
+            void getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data );
 
         public:
-            // The following 4 functions convert values between host and network byte order
-            // Whenever data should be send to a remote peer the _normalizeWrite must be used
-            // Whenever data are going to be read from the _normalizeRead must be used to check that Endianness is correct
+            // The following 4 functions convert values between host and network byte order.
+            // Whenever data should be send to a remote peer the _normalizeWrite must be used.
+            // Whenever data are going to be read from the _normalizeRead must be used to check that Endianness is correct.
             static uint16_t _normalizeRead16( uint16_t _value )
             {
                 return ntohs( _value );
@@ -95,7 +91,6 @@ namespace PROOFAgent
             MiscCommon::BYTEVector_t m_headerData;
 
             SMessageHeader m_msgHeader;
-            EProtocolCMD_t m_curCMD;
             MiscCommon::BYTEVector_t m_curDATA;
     };
 

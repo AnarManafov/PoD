@@ -16,19 +16,20 @@
 #include <sys/socket.h>
 // MiscCommon
 #include "ErrorCode.h"
+#include "INet.h"
 // pod-agent
 #include "Protocol.h"
 //=============================================================================
 using namespace PROOFAgent;
 using namespace MiscCommon;
+using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
 //=============================================================================
 CProtocol::CProtocol():
         m_ver( 2 ), // protocol version
         m_readAlready( 0 ),
-        m_headerData( HEADER_SIZE ),
-        m_curCMD( NULL_VAL )
+        m_headerData( HEADER_SIZE )
 {
 }
 //=============================================================================
@@ -36,39 +37,44 @@ CProtocol::~CProtocol()
 {
 }
 //=============================================================================
-void CProtocol::getDataAndRefresh( MiscCommon::BYTEVector_t *_buf )
+void CProtocol::getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data )
 {
+	_cmd = m_msgHeader.m_cmd;
+
     m_headerData.clear();
     m_readAlready = 0;
 
     m_msgHeader.clear();
 
-    if ( _buf )
-        _buf->swap( m_curDATA );
+    if ( _data )
+        _data->swap( m_curDATA );
     m_curDATA.clear();
 }
 //=============================================================================
-CProtocol::EProtocolCMD_t CProtocol::read( int _socket )
+CProtocol::EStatus_t CProtocol::read( int _socket )
 {
-    // get header
+    // always assume we use a non-blocking sockets
+
+    // get header first
     if ( !m_msgHeader.isValid() )
     {
         while ( HEADER_SIZE != m_readAlready )
         {
             // need to read more to complete the header
-            const ssize_t bytes_read = ::recv( _socket, &m_headerData[m_readAlready], HEADER_SIZE - m_readAlready, 0 );
+            const ssize_t bytes_read = ::recv( _socket, &m_headerData[m_readAlready],
+                                               HEADER_SIZE - m_readAlready, 0 );
             if ( 0 == bytes_read )
-                return DISCONNECT;
+                return stDISCONNECT;
 
             if ( bytes_read < 0 )
             {
                 if ( ECONNRESET == errno || ENOTCONN == errno )
-                    return DISCONNECT;
+                    return stDISCONNECT;
 
                 if ( EAGAIN == errno || EWOULDBLOCK == errno )
-                    return AGAIN;
+                    return stAGAIN;
 
-                throw system_error( "" );
+                throw system_error( "Error occurred while reading message's header." );
             }
 
             m_readAlready += bytes_read;
@@ -94,29 +100,35 @@ CProtocol::EProtocolCMD_t CProtocol::read( int _socket )
     while ( m_msgHeader.m_len != m_readAlready )
     {
         // need to read more to complete the header
-        const ssize_t bytes_read = ::recv( _socket, &m_curDATA[m_readAlready], m_msgHeader.m_len - m_readAlready, 0 );
+        const ssize_t bytes_read = ::recv( _socket, &m_curDATA[m_readAlready],
+                                           m_msgHeader.m_len - m_readAlready, 0 );
         if ( 0 == bytes_read )
-            return DISCONNECT;
+            return stDISCONNECT;
 
         if ( bytes_read < 0 )
         {
             if ( ECONNRESET == errno || ENOTCONN == errno )
-                return DISCONNECT;
+                return stDISCONNECT;
 
             if ( EAGAIN == errno || EWOULDBLOCK == errno )
-                return AGAIN;
+                return stAGAIN;
 
-            throw system_error( "" );
+            throw system_error( "Error occurred while reading message's data" );
         }
 
         m_readAlready += bytes_read;
     }
-
-    switch ( m_msgHeader.m_cmd )
-    {
-        case 4:
-            return HOST_INFO;
-        default:
-            return UNKNOWN;
-    }
+    return stOK;
 }
+//=============================================================================
+void CProtocol::write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data )
+{
+    SMessageHeader header;
+    strncpy( header.m_sign, "<POD_CMD>", sizeof( header.m_sign ) );
+    header.m_cmd = _normalizeWrite16( _cmd );
+    header.m_len = _normalizeWrite32( _data.size() );
+
+    sendall( _socket, reinterpret_cast<unsigned char *>( &header ), sizeof( SMessageHeader ), 0 );
+    sendall( _socket, &_data[0], _data.size(), 0 );
+}
+//=============================================================================

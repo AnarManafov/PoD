@@ -48,6 +48,7 @@ set( SOURCE_FILES
     ./src/PROOFAgent.cpp
     ./src/Node.cpp
     ./src/Protocol.cpp
+    ./src/ProtocolCommands.cpp
 )
 
 
