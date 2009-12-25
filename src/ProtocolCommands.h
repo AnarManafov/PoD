@@ -34,12 +34,15 @@ namespace PROOFAgent
 //=============================================================================
     enum ECmdType
     {
-        // protocol v2
+        // > > > > > protocol v2 < < < < <
         cmdUNKNOWN = -1,
+
         cmdVERSION = 0,
         cmdGET_VERSION = 1,
+
         cmdHOST_INFO = 2,
         cmdGET_HOST_INFO = 3,
+
         cmdUSE_PROXYPROOF = 4,
         cmdUSE_DIRECTPROOF = 5
     };

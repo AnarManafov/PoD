@@ -15,6 +15,11 @@
 #ifndef PROTOCOL_H_
 #define PROTOCOL_H_
 //=============================================================================
+// STD
+#include <cstring>
+// API
+#include <arpa/inet.h>
+// MiscCommon
 #include "def.h"
 //=============================================================================
 namespace PROOFAgent
