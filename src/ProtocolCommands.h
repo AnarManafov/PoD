@@ -15,8 +15,6 @@
 #ifndef PROTOCOLCOMMANDS_H_
 #define PROTOCOLCOMMANDS_H_
 //=============================================================================
-// API
-#include <limits.h>
 // STD
 #include <stdint.h>
 // MiscCommon
@@ -25,7 +23,9 @@
 #include "Protocol.h"
 //=============================================================================
 const uint16_t g_protocolVersion = 2;
-const size_t g_maxUsernameLength = 32;
+//const size_t g_maxUsernameLen = 32;
+// _POSIX_HOST_NAME_MAX
+//const size_t g_maxHostNameLen = 255;
 //=============================================================================
 // Protocol versions
 // v2
@@ -55,14 +55,16 @@ namespace PROOFAgent
         void convertFromData( const MiscCommon::BYTEVector_t &_data )
         {
             _Owner *p = reinterpret_cast<_Owner*>( this );
-            memcpy( p, &_data[0], sizeof( _Owner ) );
+            p->_convertFromData( _data );
             p->normalizeToLocal();
         }
-        void convertToData( const MiscCommon::BYTEVector_t *_data )
+        void convertToData( MiscCommon::BYTEVector_t *_data )
         {
             _Owner *p = reinterpret_cast<_Owner*>( this );
+            _data->resize( p->size() );
+
             p->normalizeToRemote();
-            memcpy( &_data[0], &p, sizeof( _Owner ) );
+            p->_convertToData( _data );
             p->normalizeToLocal();
         }
     };
@@ -80,7 +82,18 @@ namespace PROOFAgent
         {
             m_version = CProtocol::_normalizeWrite16( m_version );
         }
-
+        size_t size()
+        {
+            return sizeof( m_version );
+        }
+        void _convertFromData( const MiscCommon::BYTEVector_t &_data )
+        {
+            memcpy( &m_version, &_data[0], _data.size() );
+        }
+        void _convertToData( MiscCommon::BYTEVector_t *_data )
+        {
+            memcpy( &( *_data )[0], &m_version, _data->size() );
+        }
         uint16_t m_version;
     };
 //=============================================================================
@@ -88,6 +101,13 @@ namespace PROOFAgent
     {
         SHostInfoCmd(): m_proofPort( 0 )
         {
+        }
+        size_t size()
+        {
+            size_t size( m_username.size() );
+            size += m_host.size();
+            size += sizeof( m_proofPort );
+            return size;
         }
         void normalizeToLocal()
         {
@@ -97,9 +117,35 @@ namespace PROOFAgent
         {
             m_proofPort = CProtocol::_normalizeWrite16( m_proofPort );
         }
+        void _convertFromData( const MiscCommon::BYTEVector_t &_data )
+        {
+            MiscCommon::BYTEVector_t::const_iterator iter = _data.begin();
+            MiscCommon::BYTEVector_t::const_iterator iter_end = _data.end();
+            do
+            {
+                m_username += char( *iter );
+            }
+            while ( *iter != '\0' );
 
-        char m_username[g_maxUsernameLength];
-        char m_host[_POSIX_HOST_NAME_MAX];
+            do
+            {
+                m_host += char( *iter );
+            }
+            while ( *iter != '\0' );
+
+            memcpy( &m_proofPort, &( *iter ), _data.size() );
+        }
+        void _convertToData( MiscCommon::BYTEVector_t *_data )
+        {
+            size_t idx( 0 );
+            memcpy( &_data[idx], m_username.c_str(), m_username.size() + 1 );
+            idx += m_username.size() + 1;
+            memcpy( &_data[idx], m_host.c_str(), m_host.size() + 1 );
+            idx += m_host.size() + 1;
+            memcpy( &_data[idx], &m_proofPort, sizeof( m_proofPort ) );
+        }
+        std::string m_username;
+        std::string m_host;
         uint16_t m_proofPort;
     };
 //=============================================================================

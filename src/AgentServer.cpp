@@ -23,6 +23,7 @@
 #include "SysHelper.h"
 // pod-agent
 #include "Protocol.h"
+#include "ProtocolCommands.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -286,63 +287,68 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::createClientNode( MiscCommon::INet::smart_socket &_sock )
     {
-        // checking protocol version
-        string sReceive;
-        inet::receive_string( _sock, &sReceive, g_nBUF_SIZE );
-        DebugLog( erOK, "Server received: " + sReceive );
+    	SHostInfoCmd test;
+    	BYTEVector_t data;
+    	test.convertToData( &data );
+    	test.convertFromData( data );
 
-        // TODO: Implement protocol version check
-        string sOK( g_szRESPONSE_OK );
-        DebugLog( erOK, "Server sends: " + sOK );
-        inet::send_string( _sock, sOK );
-
-        // TODO: Receiving user name -- now we always assume that this is a user name -- WE NEED to implement a simple protocol!!!
-        string sUsrName;
-        receive_string( _sock, &sUsrName, g_nBUF_SIZE );
-        DebugLog( erOK, "Server received: " + sUsrName );
-
-        DebugLog( erOK, "Server sends: " + sOK );
-        send_string( _sock, sOK );
-
-        string strSocketInfo;
-        inet::socket2string( _sock, &strSocketInfo );
-        string strSocketPeerInfo;
-        inet::peer2string( _sock, &strSocketPeerInfo );
-        stringstream ss;
-        ss
-        << "Accepting connection on : " << strSocketInfo
-        << " for peer: " << strSocketPeerInfo;
-        InfoLog( erOK, ss.str() );
-
-        const int port = inet::get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
-        if ( 0 == port )
-            throw runtime_error( "Can't find any free port from the given range." );
-
-        // Add a worker to PROOF cfg
-        string strRealWrkHost;
-        inet::peer2string( _sock, &strRealWrkHost );
-
-        // Update proof.cfg with active workers
-        string strPROOFCfgString( createPROOFCfgEntryString( sUsrName, port, strRealWrkHost ) );
-
-        // Now when we got a connection from our worker, we need to create a local server (for that worker)
-        // which actually will emulate a local worker node for a proof server
-        // Listening for PROOF master connections
-        // Whenever he tries to connect to its clients we will catch it and redirect it
-        inet::CSocketServer localPROOFclient;
-        localPROOFclient.Bind( port );
-        localPROOFclient.Listen( 1 );
-        localPROOFclient.GetSocket().set_nonblock();
-
-        // Then we add this node to a nodes container
-        node_type node(
-            new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(),
-                       strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
-        node->disable();
-        // add new worker's sockets to the main "select"
-        m_socksToSelect.push_back( node );
-        // Update proof.cfg according to a current number of active workers
-        updatePROOFCfg();
+//        // checking protocol version
+//        string sReceive;
+//        inet::receive_string( _sock, &sReceive, g_nBUF_SIZE );
+//        DebugLog( erOK, "Server received: " + sReceive );
+//
+//        // TODO: Implement protocol version check
+//        string sOK( g_szRESPONSE_OK );
+//        DebugLog( erOK, "Server sends: " + sOK );
+//        inet::send_string( _sock, sOK );
+//
+//        // TODO: Receiving user name -- now we always assume that this is a user name -- WE NEED to implement a simple protocol!!!
+//        string sUsrName;
+//        receive_string( _sock, &sUsrName, g_nBUF_SIZE );
+//        DebugLog( erOK, "Server received: " + sUsrName );
+//
+//        DebugLog( erOK, "Server sends: " + sOK );
+//        send_string( _sock, sOK );
+//
+//        string strSocketInfo;
+//        inet::socket2string( _sock, &strSocketInfo );
+//        string strSocketPeerInfo;
+//        inet::peer2string( _sock, &strSocketPeerInfo );
+//        stringstream ss;
+//        ss
+//        << "Accepting connection on : " << strSocketInfo
+//        << " for peer: " << strSocketPeerInfo;
+//        InfoLog( erOK, ss.str() );
+//
+//        const int port = inet::get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
+//        if ( 0 == port )
+//            throw runtime_error( "Can't find any free port from the given range." );
+//
+//        // Add a worker to PROOF cfg
+//        string strRealWrkHost;
+//        inet::peer2string( _sock, &strRealWrkHost );
+//
+//        // Update proof.cfg with active workers
+//        string strPROOFCfgString( createPROOFCfgEntryString( sUsrName, port, strRealWrkHost ) );
+//
+//        // Now when we got a connection from our worker, we need to create a local server (for that worker)
+//        // which actually will emulate a local worker node for a proof server
+//        // Listening for PROOF master connections
+//        // Whenever he tries to connect to its clients we will catch it and redirect it
+//        inet::CSocketServer localPROOFclient;
+//        localPROOFclient.Bind( port );
+//        localPROOFclient.Listen( 1 );
+//        localPROOFclient.GetSocket().set_nonblock();
+//
+//        // Then we add this node to a nodes container
+//        node_type node(
+//            new CNode( _sock.detach(), localPROOFclient.GetSocket().detach(),
+//                       strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
+//        node->disable();
+//        // add new worker's sockets to the main "select"
+//        m_socksToSelect.push_back( node );
+//        // Update proof.cfg according to a current number of active workers
+//        updatePROOFCfg();
     }
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()
