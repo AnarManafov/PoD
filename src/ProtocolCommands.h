@@ -15,6 +15,8 @@
 #ifndef PROTOCOLCOMMANDS_H_
 #define PROTOCOLCOMMANDS_H_
 //=============================================================================
+// API
+#include <limits.h>
 // STD
 #include <stdint.h>
 // MiscCommon
