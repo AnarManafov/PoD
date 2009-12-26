@@ -20,6 +20,9 @@ endif ( NOT $ENV{POD_LOCATION} STREQUAL "" )
 set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #set(CMAKE_VERBOSE_MAKEFILE TRUE CACHE BOOL "This is useful for debugging only." FORCE)
 
+# build unit tests
+set( BUILD_TESTS ON CACHE BOOL "Build pod-agent unit tests" FORCE )
+
 # This is needed if you want to use gLite plug-in and have several version of BOOST installed
 #set( Boost_USE_MULTITHREADED OFF CACHE BOOL "BOOST" FORCE )
 #set( Boost_USE_STATIC_LIBS ON CACHE BOOL "boost lit type" FORCE)

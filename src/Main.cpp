@@ -24,7 +24,6 @@
 using namespace std;
 using namespace MiscCommon;
 using namespace PROOFAgent;
-using namespace boost;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 

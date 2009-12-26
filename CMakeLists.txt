@@ -35,7 +35,7 @@ configure_file( ${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_SOURCE_DIR}/Doxyfile @ON
 #
 # Options
 #
-#option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
+option(BUILD_TESTS "Build pod-agent unit tests" OFF)
 
 
 set( SOURCE_FILES
@@ -85,6 +85,22 @@ target_link_libraries (
 )
 
 install(TARGETS pod-agent DESTINATION bin)
+
+
+#
+## Unit tests
+#
+if (BUILD_TESTS)
+    # Build pod-agent unit tests
+    # we need to link to boost unit-test-framework lib statically
+    # since boost 1.34 it doesn't export main in the shared library
+    set( Boost_USE_STATIC_LIBS ON CACHE BOOL "boost lit type" FORCE)
+    find_package( Boost REQUIRED COMPONENTS unit_test_framework)
+    add_subdirectory ( tests )
+    message (STATUS "Build pod-agent unit tests - YES")
+else (BUILD_GLITE_PLUGIN)
+    message (STATUS "Build pod-agent unit tests - NO")
+endif (BUILD_TESTS)
 
 
 #
