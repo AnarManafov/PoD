@@ -78,13 +78,17 @@ namespace PROOFAgent
         }
         void _convertFromData( const MiscCommon::BYTEVector_t &_data );
         void _convertToData( MiscCommon::BYTEVector_t *_data );
-        bool operator== ( const SVersionCmd &val )
+        bool operator== ( const SVersionCmd &val ) const
         {
             return ( m_version == val.m_version );
         }
 
         uint16_t m_version;
     };
+    inline std::ostream &operator<< (std::ostream &_stream, const SVersionCmd &val)
+    {
+    	return _stream << val.m_version;
+    }
 //=============================================================================
     struct SHostInfoCmd: public SBasicCmd<SHostInfoCmd>
     {
@@ -102,7 +106,7 @@ namespace PROOFAgent
         void normalizeToRemote();
         void _convertFromData( const MiscCommon::BYTEVector_t &_data );
         void _convertToData( MiscCommon::BYTEVector_t *_data );
-        bool operator== ( const SHostInfoCmd &val )
+        bool operator== ( const SHostInfoCmd &val ) const
         {
             return ( m_username == val.m_username &&
                      m_host == val.m_host &&
@@ -113,6 +117,10 @@ namespace PROOFAgent
         std::string m_host;
         uint16_t m_proofPort;
     };
+    inline std::ostream &operator<< (std::ostream &_stream, const SHostInfoCmd &val)
+    {
+    	return _stream << val.m_username << ":" << val.m_host << ":" << val.m_proofPort;
+    }
 //=============================================================================
 
 }

@@ -29,7 +29,6 @@ BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
 BOOST_AUTO_TEST_CASE(test_SVersionCmd)
 {
-	BOOST_MESSAGE("....");
     SVersionCmd a;
     a.m_version = 34;
     MiscCommon::BYTEVector_t data;
@@ -38,7 +37,7 @@ BOOST_AUTO_TEST_CASE(test_SVersionCmd)
     SVersionCmd b;
     b.convertFromData( data );
 
-    BOOST_CHECK( a == b );
+    BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
 BOOST_AUTO_TEST_CASE(test_SVersionCmd_BadData)
@@ -67,7 +66,7 @@ BOOST_AUTO_TEST_CASE(test_SHostInfoCmd)
     SHostInfoCmd b;
     b.convertFromData( data );
 
-    BOOST_CHECK( a == b );
+    BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
 BOOST_AUTO_TEST_CASE(test_SHostInfoCmd_BadData)
