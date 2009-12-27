@@ -42,6 +42,7 @@ using namespace PROOFAgent;
 //
 //    return test;
 //}
+BOOST_AUTO_TEST_SUITE( pp );
 //=============================================================================
 BOOST_AUTO_TEST_CASE(test_SVersionCmd)
 {
@@ -101,3 +102,4 @@ BOOST_AUTO_TEST_CASE(test_SHostInfoCmd_BadData)
     SHostInfoCmd b;
     BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
 }
+BOOST_AUTO_TEST_SUITE_END();
