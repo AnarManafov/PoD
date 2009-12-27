@@ -1,4 +1,6 @@
 ********************* Release 2.1.3 not yet released ************************
+pod-agent: added unit tests
+pod-agent: minimally required version of Boost is 1.33.1 now.
 
 ********************* Release 2.1.2 2009-11-28 ************************
 pod-agent: create admin files by the server/worker.work_dir path. For example, AFS doesn't support named pipes,
