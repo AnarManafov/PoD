@@ -56,7 +56,7 @@ set( SOURCE_FILES
 # search for Boost
 #
 
-find_package( Boost REQUIRED COMPONENTS thread program_options)
+find_package( Boost 1.33.1 REQUIRED thread program_options)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
@@ -91,9 +91,8 @@ install(TARGETS pod-agent DESTINATION bin)
 ## Unit tests
 #
 if (BUILD_TESTS)
-    find_package( Boost REQUIRED COMPONENTS unit_test_framework)
-    add_subdirectory ( tests )
     message (STATUS "Build pod-agent unit tests - YES")
+    add_subdirectory ( tests ) 
 else (BUILD_GLITE_PLUGIN)
     message (STATUS "Build pod-agent unit tests - NO")
 endif (BUILD_TESTS)

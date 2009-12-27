@@ -22,6 +22,8 @@ project( pod-aget-tests )
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
+find_package( Boost 1.33.1 REQUIRED unit_test_framework)
+
 add_executable(pod-agent_test_ProtocolCommands Test_ProtocolCommands.cpp  ${CMAKE_SOURCE_DIR}/src/ProtocolCommands.cpp)
 
 target_link_libraries (

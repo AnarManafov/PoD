@@ -14,35 +14,18 @@
 *************************************************************************/
 // BOOST: tests
 // Defines test_main function to link with actual unit test code.
+#define BOOST_TEST_DYN_LINK
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
-//#include <boost/test/unit_test.hpp>
 #include <boost/test/auto_unit_test.hpp>
 using boost::unit_test::test_suite;
-//using namespace boost::unit_test;
 // pod-agent
 #include "ProtocolCommands.h"
 //=============================================================================
 using namespace std;
 using namespace PROOFAgent;
-////=============================================================================
-//void test_SVersionCmd();
-//void test_SVersionCmd_BadData();
-//void test_SHostInfoCmd();
-//void test_SHostInfoCmd_BadData();
-////=============================================================================
-//test_suite* init_unit_test_suite( int, char* [] )
-//{
-//    test_suite * test = BOOST_TEST_SUITE( "Unit tests of ProtocolCommands (pod-agent)" );
-//
-//    test->add( BOOST_TEST_CASE( &test_SVersionCmd ), 0 );
-//    test->add( BOOST_TEST_CASE( &test_SVersionCmd_BadData ), 0 );
-//    test->add( BOOST_TEST_CASE( &test_SHostInfoCmd ), 0 );
-//    test->add( BOOST_TEST_CASE( &test_SHostInfoCmd_BadData ), 0 );
-//
-//    return test;
-//}
-BOOST_AUTO_TEST_SUITE( pp );
+
+BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
 BOOST_AUTO_TEST_CASE(test_SVersionCmd)
 {
