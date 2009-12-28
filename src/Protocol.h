@@ -66,12 +66,13 @@ namespace PROOFAgent
                 stDISCONNECT = -3,
                 stAGAIN = -2,
                 stUNKNOWN = -1,
-                stOK = 0
+                stOK = 0,
+                stERR = 1
             } EStatus_t;
 
             EStatus_t read( int _socket );
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
-            void getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data );
+            SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data );
 
         public:
             // The following 4 functions convert values between host and network byte order.

@@ -86,18 +86,10 @@ CProtocol::~CProtocol()
 {
 }
 //=============================================================================
-void CProtocol::getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data )
+SMessageHeader CProtocol::getMsg( BYTEVector_t *_data )
 {
-//    _cmd = m_msgHeader.m_cmd;
-//
-//    m_headerData.clear();
-//    m_readAlready = 0;
-//
-//    m_msgHeader.clear();
-//
-//    if ( _data )
-//        _data->swap( m_curDATA );
-//    m_curDATA.clear();
+    copy( m_curDATA.begin(), m_curDATA.end(), back_inserter( *_data ) );
+    return m_msgHeader;
 }
 //=============================================================================
 CProtocol::EStatus_t CProtocol::read( int _socket )
@@ -130,16 +122,15 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             m_curDATA.clear();
             m_msgHeader = parseMsg( &m_curDATA, m_buffer );
             if ( !m_msgHeader.isValid() )
-            {
-                return stOK;
-            }
+                continue;
 
-            return stOK;
-
+            m_buffer.clear();
+            break;
         }
         catch ( ... )
         {
-            continue;
+            m_buffer.clear();
+            throw;
         }
 
     }
