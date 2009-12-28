@@ -33,3 +33,19 @@ target_link_libraries (
 
 install(TARGETS pod-agent_test_ProtocolCommands DESTINATION tests)
 
+set( SRC_PROTOCOL
+    Test_Protocol.cpp
+    ${CMAKE_SOURCE_DIR}/src/Protocol.cpp
+    ${CMAKE_SOURCE_DIR}/src/ProtocolCommands.cpp
+)
+
+add_executable(pod-agent_test_Protocol ${SRC_PROTOCOL})
+
+target_link_libraries (
+    pod-agent_test_Protocol 
+    ${Boost_LIBRARIES}
+)
+
+install(TARGETS pod-agent_test_Protocol DESTINATION tests)
+
+

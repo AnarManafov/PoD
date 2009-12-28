@@ -51,6 +51,10 @@ namespace PROOFAgent
         }
     };
 //=============================================================================
+    MiscCommon::BYTEVector_t createMsg( uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
+//=============================================================================
+    SMessageHeader parseMsg( MiscCommon::BYTEVector_t *_data, const MiscCommon::BYTEVector_t &_msg );
+//=============================================================================
     class CProtocol
     {
         public:

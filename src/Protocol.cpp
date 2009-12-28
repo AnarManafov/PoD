@@ -26,6 +26,22 @@ using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
 //=============================================================================
+//=============================================================================
+//=============================================================================
+BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
+{
+    BYTEVector_t ret_val;
+    return ret_val;
+
+}
+//=============================================================================
+SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
+{
+	return SMessageHeader();
+}
+//=============================================================================
+//=============================================================================
+//=============================================================================
 CProtocol::CProtocol():
         m_ver( 2 ), // protocol version
         m_readAlready( 0 ),
@@ -39,7 +55,7 @@ CProtocol::~CProtocol()
 //=============================================================================
 void CProtocol::getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data )
 {
-	_cmd = m_msgHeader.m_cmd;
+    _cmd = m_msgHeader.m_cmd;
 
     m_headerData.clear();
     m_readAlready = 0;
