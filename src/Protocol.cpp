@@ -12,14 +12,14 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+#include "Protocol.h"
 // API
 #include <sys/socket.h>
 // MiscCommon
 #include "ErrorCode.h"
 #include "INet.h"
-// pod-agent
-#include "Protocol.h"
 //=============================================================================
+using namespace std;
 using namespace PROOFAgent;
 using namespace MiscCommon;
 using namespace MiscCommon::INet;
@@ -30,14 +30,34 @@ const size_t HEADER_SIZE = sizeof( SMessageHeader );
 //=============================================================================
 BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 {
-    BYTEVector_t ret_val;
+    SMessageHeader header;
+    strncpy( header.m_sign, "<POD_CMD>", sizeof( header.m_sign ) );
+    header.m_cmd = CProtocol::_normalizeWrite16( _cmd );
+    header.m_len = CProtocol::_normalizeWrite32( _data.size() );
+
+    BYTEVector_t ret_val( sizeof( SMessageHeader ) );
+    memcpy( &ret_val[0], reinterpret_cast<unsigned char *>( &header ), sizeof( SMessageHeader ) );
+    copy( _data.begin(), _data.end(), back_inserter( ret_val ) );
+
     return ret_val;
 
 }
 //=============================================================================
 SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
 {
-	return SMessageHeader();
+    SMessageHeader header;
+    if ( _msg.size() <= HEADER_SIZE )
+        throw runtime_error( "bad protocol message" );
+
+    memcpy( &header, &_msg[0], HEADER_SIZE );
+    header.m_cmd = CProtocol::_normalizeRead16( header.m_cmd );
+    header.m_len = CProtocol::_normalizeRead32( header.m_len );
+
+    copy( _msg.begin() + HEADER_SIZE, _msg.end(), back_inserter( *_data ) );
+    if ( _data->size() != header.m_len )
+        throw runtime_error( "bad protocol message" );
+
+    return header;
 }
 //=============================================================================
 //=============================================================================
@@ -137,14 +157,9 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
     return stOK;
 }
 //=============================================================================
-void CProtocol::write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data )
+void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data )
 {
-    SMessageHeader header;
-    strncpy( header.m_sign, "<POD_CMD>", sizeof( header.m_sign ) );
-    header.m_cmd = _normalizeWrite16( _cmd );
-    header.m_len = _normalizeWrite32( _data.size() );
-
-    sendall( _socket, reinterpret_cast<unsigned char *>( &header ), sizeof( SMessageHeader ), 0 );
-    sendall( _socket, &_data[0], _data.size(), 0 );
+    BYTEVector_t msg( createMsg( _cmd, _data ) );
+    sendall( _socket, &msg[0], msg.size(), 0 );
 }
 //=============================================================================

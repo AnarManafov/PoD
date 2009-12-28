@@ -48,4 +48,13 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION )
     b.convertFromData( data_return );
     BOOST_CHECK_EQUAL( a, b );
 }
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize )
+{
+    BYTEVector_t data_return;
+    BYTEVector_t msg;
+
+    BOOST_CHECK_THROW( parseMsg( &data_return, msg ), runtime_error );
+
+}
 BOOST_AUTO_TEST_SUITE_END();

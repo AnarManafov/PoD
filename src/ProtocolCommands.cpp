@@ -13,6 +13,9 @@
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "ProtocolCommands.h"
+// STD
+#include <stdint.h>
+#include <stdexcept>
 //=============================================================================
 using namespace PROOFAgent;
 

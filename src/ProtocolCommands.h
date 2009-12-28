@@ -15,9 +15,6 @@
 #ifndef PROTOCOLCOMMANDS_H_
 #define PROTOCOLCOMMANDS_H_
 //=============================================================================
-// STD
-#include <stdint.h>
-#include <stdexcept>
 // MiscCommon
 #include "def.h"
 // pod-agetn
