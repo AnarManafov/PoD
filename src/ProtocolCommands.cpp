@@ -16,18 +16,21 @@
 // STD
 #include <stdint.h>
 #include <stdexcept>
+// MiscCommon
+#include "INet.h"
 //=============================================================================
 using namespace PROOFAgent;
+namespace inet = MiscCommon::INet;
 
 //=============================================================================
 void SVersionCmd::normalizeToLocal()
 {
-    m_version = CProtocol::_normalizeRead16( m_version );
+    m_version = inet::_normalizeRead16( m_version );
 }
 //=============================================================================
 void SVersionCmd::normalizeToRemote()
 {
-    m_version = CProtocol::_normalizeWrite16( m_version );
+    m_version = inet::_normalizeWrite16( m_version );
 }
 //=============================================================================
 void SVersionCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
@@ -49,12 +52,12 @@ void SVersionCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
 //=============================================================================
 void SHostInfoCmd::normalizeToLocal()
 {
-    m_proofPort = CProtocol::_normalizeRead16( m_proofPort );
+    m_proofPort = inet::_normalizeRead16( m_proofPort );
 }
 //=============================================================================
 void SHostInfoCmd::normalizeToRemote()
 {
-    m_proofPort = CProtocol::_normalizeWrite16( m_proofPort );
+    m_proofPort = inet::_normalizeWrite16( m_proofPort );
 }
 //=============================================================================
 void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )

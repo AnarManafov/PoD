@@ -33,8 +33,8 @@ BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 {
     SMessageHeader header;
     strncpy( header.m_sign, "<POD_CMD>", sizeof( header.m_sign ) );
-    header.m_cmd = CProtocol::_normalizeWrite16( _cmd );
-    header.m_len = CProtocol::_normalizeWrite32( _data.size() );
+    header.m_cmd = _normalizeWrite16( _cmd );
+    header.m_len = _normalizeWrite32( _data.size() );
 
     BYTEVector_t ret_val( sizeof( SMessageHeader ) );
     memcpy( &ret_val[0], reinterpret_cast<unsigned char *>( &header ), sizeof( SMessageHeader ) );
@@ -58,8 +58,8 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
     if ( !header.isValid() )
         throw runtime_error( "the protocol message is bad or corrupted." );
 
-    header.m_cmd = CProtocol::_normalizeRead16( header.m_cmd );
-    header.m_len = CProtocol::_normalizeRead32( header.m_len );
+    header.m_cmd = _normalizeRead16( header.m_cmd );
+    header.m_len = _normalizeRead32( header.m_len );
 
     if ( 0 == header.m_len )
         return header;
