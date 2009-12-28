@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION )
     BYTEVector_t data;
     a.convertToData( &data );
 
-    BYTEVector_t msg( createMsg( static_cast<uint16_t>(cmdVERSION), data ) );
+    BYTEVector_t msg( createMsg( static_cast<uint16_t>( cmdVERSION ), data ) );
 
     BYTEVector_t data_return;
     SMessageHeader header( parseMsg( &data_return, msg ) );
@@ -55,6 +55,28 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize )
     BYTEVector_t msg;
 
     BOOST_CHECK_THROW( parseMsg( &data_return, msg ), runtime_error );
+}
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdHOST_INFO )
+{
+    SHostInfoCmd a;
+    a.m_username = "testuser";
+    a.m_host = "test.host.de";
+    a.m_proofPort = 129;
 
+    BYTEVector_t data;
+    a.convertToData( &data );
+
+    BYTEVector_t msg( createMsg( static_cast<uint16_t>( cmdHOST_INFO ), data ) );
+
+    BYTEVector_t data_return;
+    SMessageHeader header( parseMsg( &data_return, msg ) );
+    BOOST_CHECK( header.isValid() );
+    BOOST_CHECK_EQUAL( header.m_cmd, cmdHOST_INFO );
+    BOOST_CHECK_EQUAL( header.m_len, a.size() );
+
+    SHostInfoCmd b;
+    b.convertFromData( data_return );
+    BOOST_CHECK_EQUAL( a, b );
 }
 BOOST_AUTO_TEST_SUITE_END();

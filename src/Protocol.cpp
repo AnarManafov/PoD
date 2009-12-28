@@ -53,6 +53,9 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
     header.m_cmd = CProtocol::_normalizeRead16( header.m_cmd );
     header.m_len = CProtocol::_normalizeRead32( header.m_len );
 
+    if ( 0 == header.m_len )
+        return header;
+
     copy( _msg.begin() + HEADER_SIZE, _msg.end(), back_inserter( *_data ) );
     if ( _data->size() != header.m_len )
         throw runtime_error( "bad protocol message" );
