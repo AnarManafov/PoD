@@ -25,6 +25,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
+const size_t MAX_MSG_SIZE = 1024;
 //=============================================================================
 //=============================================================================
 //=============================================================================
@@ -43,13 +44,20 @@ BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 
 }
 //=============================================================================
+// return:
+// 1. an exception - if the message bad/corrupted
+// 2. an invalid SMessageHeader - if the message is incomplete
+// 3. a valid SMessageHeader - if the message is OK
 SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
 {
     SMessageHeader header;
     if ( _msg.size() <= HEADER_SIZE )
-        throw runtime_error( "bad protocol message" );
+        return SMessageHeader();
 
     memcpy( &header, &_msg[0], HEADER_SIZE );
+    if ( !header.isValid() )
+        throw runtime_error( "the protocol message is bad or corrupted." );
+
     header.m_cmd = CProtocol::_normalizeRead16( header.m_cmd );
     header.m_len = CProtocol::_normalizeRead32( header.m_len );
 
@@ -57,18 +65,20 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
         return header;
 
     copy( _msg.begin() + HEADER_SIZE, _msg.end(), back_inserter( *_data ) );
-    if ( _data->size() != header.m_len )
-        throw runtime_error( "bad protocol message" );
+    if ( _data->size() < header.m_len )
+        return SMessageHeader();
 
-    return header;
+    if ( _data->size() == header.m_len )
+        return header;
+
+    throw runtime_error( "the protocol message is bad or corrupted." );
 }
 //=============================================================================
 //=============================================================================
 //=============================================================================
 CProtocol::CProtocol():
         m_ver( 2 ), // protocol version
-        m_readAlready( 0 ),
-        m_headerData( HEADER_SIZE )
+        m_buffer( MAX_MSG_SIZE )
 {
 }
 //=============================================================================
@@ -78,69 +88,28 @@ CProtocol::~CProtocol()
 //=============================================================================
 void CProtocol::getDataAndRefresh( uint16_t &_cmd, MiscCommon::BYTEVector_t *_data )
 {
-    _cmd = m_msgHeader.m_cmd;
-
-    m_headerData.clear();
-    m_readAlready = 0;
-
-    m_msgHeader.clear();
-
-    if ( _data )
-        _data->swap( m_curDATA );
-    m_curDATA.clear();
+//    _cmd = m_msgHeader.m_cmd;
+//
+//    m_headerData.clear();
+//    m_readAlready = 0;
+//
+//    m_msgHeader.clear();
+//
+//    if ( _data )
+//        _data->swap( m_curDATA );
+//    m_curDATA.clear();
 }
 //=============================================================================
 CProtocol::EStatus_t CProtocol::read( int _socket )
 {
     // always assume we use a non-blocking sockets
 
-    // get header first
-    if ( !m_msgHeader.isValid() )
-    {
-        while ( HEADER_SIZE != m_readAlready )
-        {
-            // need to read more to complete the header
-            const ssize_t bytes_read = ::recv( _socket, &m_headerData[m_readAlready],
-                                               HEADER_SIZE - m_readAlready, 0 );
-            if ( 0 == bytes_read )
-                return stDISCONNECT;
-
-            if ( bytes_read < 0 )
-            {
-                if ( ECONNRESET == errno || ENOTCONN == errno )
-                    return stDISCONNECT;
-
-                if ( EAGAIN == errno || EWOULDBLOCK == errno )
-                    return stAGAIN;
-
-                throw system_error( "Error occurred while reading message's header." );
-            }
-
-            m_readAlready += bytes_read;
-        }
-
-        // HEADER has been read
-        // check header
-        memcpy( &m_msgHeader, &m_headerData[0], HEADER_SIZE );
-
-        m_headerData.clear();
-        m_readAlready = 0;
-
-        if ( !m_msgHeader.isValid() )
-            system_error( "bad message header" );
-
-        m_msgHeader.m_cmd = _normalizeRead16( m_msgHeader.m_cmd );
-        m_msgHeader.m_len = _normalizeRead32( m_msgHeader.m_len );
-        m_curDATA.clear();
-        m_curDATA.resize( m_msgHeader.m_len );
-    }
-
-    // get data block
-    while ( m_msgHeader.m_len != m_readAlready )
+    size_t sum_read( m_buffer.size() );
+    while ( MAX_MSG_SIZE != sum_read )
     {
         // need to read more to complete the header
-        const ssize_t bytes_read = ::recv( _socket, &m_curDATA[m_readAlready],
-                                           m_msgHeader.m_len - m_readAlready, 0 );
+        const ssize_t bytes_read = ::recv( _socket, &m_buffer[sum_read],
+                                           MAX_MSG_SIZE - sum_read, 0 );
         if ( 0 == bytes_read )
             return stDISCONNECT;
 
@@ -152,11 +121,29 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             if ( EAGAIN == errno || EWOULDBLOCK == errno )
                 return stAGAIN;
 
-            throw system_error( "Error occurred while reading message's data" );
+            throw system_error( "Error occurred while reading a protocol message." );
         }
 
-        m_readAlready += bytes_read;
+        sum_read += bytes_read;
+        try
+        {
+            m_curDATA.clear();
+            m_msgHeader = parseMsg( &m_curDATA, m_buffer );
+            if ( !m_msgHeader.isValid() )
+            {
+                return stOK;
+            }
+
+            return stOK;
+
+        }
+        catch ( ... )
+        {
+            continue;
+        }
+
     }
+
     return stOK;
 }
 //=============================================================================

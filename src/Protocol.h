@@ -96,8 +96,7 @@ namespace PROOFAgent
 
         private:
             uint16_t m_ver;
-            size_t m_readAlready;
-            MiscCommon::BYTEVector_t m_headerData;
+            MiscCommon::BYTEVector_t m_buffer;
 
             SMessageHeader m_msgHeader;
             MiscCommon::BYTEVector_t m_curDATA;

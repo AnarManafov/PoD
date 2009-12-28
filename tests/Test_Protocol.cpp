@@ -49,10 +49,19 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION )
     BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize )
+BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize0 )
 {
     BYTEVector_t data_return;
     BYTEVector_t msg;
+
+    SMessageHeader header( parseMsg( &data_return, msg ) );
+    BOOST_CHECK( !header.isValid() );
+}
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize1 )
+{
+    BYTEVector_t data_return;
+    BYTEVector_t msg(50);
 
     BOOST_CHECK_THROW( parseMsg( &data_return, msg ), runtime_error );
 }
