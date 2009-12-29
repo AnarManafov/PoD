@@ -34,16 +34,18 @@ namespace PROOFAgent
         // > > > > > protocol v2 < < < < <
         cmdUNKNOWN = -1,
 
-        cmdVERSION = 0,
-        cmdGET_VERSION = cmdVERSION + 1,
-        cmdVERSION_OK = cmdVERSION + 2,
-        cmdVERSION_BAD = cmdVERSION + 3,
+        cmdVERSION = 10,
+        cmdVERSION_BAD = cmdVERSION + 1,
 
         cmdHOST_INFO = 30,
         cmdGET_HOST_INFO = cmdHOST_INFO + 1,
 
-        cmdUSE_PROXYPROOF = 4,
-        cmdUSE_DIRECTPROOF = 5
+        cmdUSE_PROXYPROOF = 50,
+        cmdUSE_DIRECTPROOF = 60,
+
+        // cmdSHUTDOWN = 70, // NOT Implemented
+
+        // cmdRESTART = 80 // NOT Implemented
     };
 //=============================================================================
     template<class _Owner>
