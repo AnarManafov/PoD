@@ -73,7 +73,9 @@ void CAgentClient::run()
             v.convertToData( &data );
             protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdVERSION ), data );
 
+			InfoLog("waiting for server commands");
             CProtocol::EStatus_t ret = protocol.read( client.GetSocket() );
+            InfoLog("got a server command");
             switch ( ret )
             {
                 case CProtocol::stDISCONNECT:
