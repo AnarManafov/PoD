@@ -98,7 +98,7 @@ void CAgentClient::run()
                                     h.m_username = "me";
                                     h.m_host = "my.host.de";
                                     h.m_proofPort = 256;
-                                    h.convertToData( data );
+                                    h.convertToData( &data );
                                     protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdHOST_INFO ), data );
                                     break;
                                 }
