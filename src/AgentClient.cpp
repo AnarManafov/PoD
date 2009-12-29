@@ -77,18 +77,21 @@ void CAgentClient::run()
             switch ( ret )
             {
                 case CProtocol::stDISCONNECT:
-                	InfoLog("stDISCONNECT");
+                    InfoLog( "stDISCONNECT" );
                     break;
                 case CProtocol::stAGAIN:
-                	InfoLog("stAGAIN");
+                    InfoLog( "stAGAIN" );
                     break;
                 case CProtocol::stUNKNOWN:
-                	InfoLog("stUNKNOWN");
+                    InfoLog( "stUNKNOWN" );
                     break;
                 case CProtocol::stOK:
                     {
                         BYTEVector_t data;
                         SMessageHeader header = protocol.getMsg( &data );
+                        stringstream ss;
+                        ss << "CMD: " <<  header.m_cmd << endl;
+                        InfoLog( ss.str() );
                         switch ( static_cast<ECmdType>( header.m_cmd ) )
                         {
                             case cmdVERSION_BAD:
@@ -97,7 +100,7 @@ void CAgentClient::run()
                                 break;
                             case cmdGET_HOST_INFO:
                                 {
-                                	InfoLog("The server requests host information.");
+                                    InfoLog( "The server requests host information." );
                                     SHostInfoCmd h;
                                     h.m_username = "me";
                                     h.m_host = "my.host.de";
@@ -110,7 +113,7 @@ void CAgentClient::run()
                         break;
                     }
                 case CProtocol::stERR:
-                	InfoLog("stERR");
+                    InfoLog( "stERR" );
                     break;
             }
 
