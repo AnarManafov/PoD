@@ -51,7 +51,7 @@ BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
 {
     SMessageHeader header;
-    if ( _msg.size() <= HEADER_SIZE )
+    if ( _msg.size() < HEADER_SIZE )
         return SMessageHeader();
 
     memcpy( &header, &_msg[0], HEADER_SIZE );
@@ -96,11 +96,9 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
     BYTEVector_t tmp_buf( MAX_MSG_SIZE );
     while ( true )
     {
-    	cout << "DEBUG: enter the loop " << endl;
         // need to read more to complete the header
         const ssize_t bytes_read = ::recv( _socket, &tmp_buf[0],
                                            MAX_MSG_SIZE, 0 );
-        cout << "DEBUG: #1 " << endl;
         if ( 0 == bytes_read )
             return stDISCONNECT;
 
