@@ -314,8 +314,10 @@ namespace PROOFAgent
                                     InfoLog( ss.str() );
 
                                     // request client's host information
+                                    InfoLog("request host info");
                                     BYTEVector_t data;
                                     protocol.write( _sock, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
+                                    InfoLog("the request has been sent");
                                     break;
                                 }
                             case cmdHOST_INFO:
