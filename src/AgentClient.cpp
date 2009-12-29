@@ -77,10 +77,13 @@ void CAgentClient::run()
             switch ( ret )
             {
                 case CProtocol::stDISCONNECT:
+                	InfoLog("stDISCONNECT");
                     break;
                 case CProtocol::stAGAIN:
+                	InfoLog("stAGAIN");
                     break;
                 case CProtocol::stUNKNOWN:
+                	InfoLog("stUNKNOWN");
                     break;
                 case CProtocol::stOK:
                     {
@@ -107,6 +110,7 @@ void CAgentClient::run()
                         break;
                     }
                 case CProtocol::stERR:
+                	InfoLog("stERR");
                     break;
             }
 
