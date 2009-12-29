@@ -121,11 +121,14 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             if ( !m_msgHeader.isValid() )
                 continue;
 
-            m_buffer.clear();
+            // delete the message from the buffer
+            m_buffer.erase( m_buffer.begin(),
+                            m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
             break;
         }
         catch ( ... )
         {
+            // TODO: Clear only until there is another <POD_CMD> found
             m_buffer.clear();
             throw;
         }
