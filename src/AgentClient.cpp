@@ -94,6 +94,7 @@ void CAgentClient::run()
                                 break;
                             case cmdGET_HOST_INFO:
                                 {
+                                	InfoLog("The server requests host information.");
                                     SHostInfoCmd h;
                                     h.m_username = "me";
                                     h.m_host = "my.host.de";
