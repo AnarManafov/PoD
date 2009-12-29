@@ -73,9 +73,13 @@ namespace PROOFAgent
             EStatus_t read( int _socket );
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data );
+            uint16_t getVersion()
+            {
+            	return m_ver;
+            }
 
         private:
-            uint16_t m_ver;
+            const uint16_t m_ver;
             MiscCommon::BYTEVector_t m_buffer;
 
             SMessageHeader m_msgHeader;

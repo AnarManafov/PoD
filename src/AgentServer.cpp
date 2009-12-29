@@ -287,10 +287,38 @@ namespace PROOFAgent
 //=============================================================================
     void CAgentServer::createClientNode( MiscCommon::INet::smart_socket &_sock )
     {
-    	SHostInfoCmd test;
-    	BYTEVector_t data;
-    	test.convertToData( &data );
-    	test.convertFromData( data );
+        CProtocol protocol;
+        while ( true )
+        {
+            CProtocol::EStatus_t ret = protocol.read( _sock );
+            switch ( ret )
+            {
+                case CProtocol::stDISCONNECT:
+                    break;
+                case CProtocol::stAGAIN:
+                    break;
+                case CProtocol::stUNKNOWN:
+                    break;
+                case CProtocol::stOK:
+                    {
+                        BYTEVector_t data;
+                        SMessageHeader header = protocol.getMsg( &data );
+                        switch ( static_cast<ECmdType>( header.m_cmd ) )
+                        {
+                            case cmdVERSION:
+                                SVersionCmd v;
+                                v.convertFromData( data );
+                                stringstream ss;
+                                ss << "Server received client's protocol version: " << v.m_version;
+                                InfoLog( ss.str() );
+                                break;
+                        }
+                        break;
+                    }
+                case CProtocol::stERR:
+                    break;
+            }
+        }
 
 //        // checking protocol version
 //        string sReceive;

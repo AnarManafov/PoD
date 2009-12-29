@@ -94,8 +94,6 @@ SMessageHeader CProtocol::getMsg( BYTEVector_t *_data )
 //=============================================================================
 CProtocol::EStatus_t CProtocol::read( int _socket )
 {
-    // always assume we use a non-blocking sockets
-
     size_t sum_read( m_buffer.size() );
     while ( MAX_MSG_SIZE != sum_read )
     {

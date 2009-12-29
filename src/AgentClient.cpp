@@ -15,9 +15,11 @@
 #include "AgentClient.h"
 // STD
 #include <csignal>
-// PROOFAgent
+// pod-agent
 #include "Node.h"
 #include "PARes.h"
+#include "Protocol.h"
+#include "ProtocolCommands.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -64,25 +66,32 @@ void CAgentClient::run()
             client.Connect( m_agentServerListenPort, m_agentServerHost );
             InfoLog( "connected!" );
 
-            // sending protocol version to the server
-            string sProtocol( g_szPROTOCOL_VERSION );
-            DebugLog( erOK, "Sending protocol version: " + sProtocol );
-            send_string( client.GetSocket(), sProtocol );
+            CProtocol protocol;
+            SVersionCmd v;
+            v.m_version = protocol.getVersion();
+            BYTEVector_t data;
+            v.convertToData( &data );
+            protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdVERSION ), data );
 
-            //TODO: Checking response
-            string sResponse;
-            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-            DebugLog( erOK, "Client received: " + sResponse );
-
-            // Sending User name
-            string sUser;
-            get_cuser_name( &sUser );
-            DebugLog( erOK, "Sending user name: " + sUser );
-            send_string( client.GetSocket(), sUser );
-
-            //TODO: Checking response
-            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-            DebugLog( erOK, "Client received: " + sResponse );
+//            // sending protocol version to the server
+//            string sProtocol( g_szPROTOCOL_VERSION );
+//            DebugLog( erOK, "Sending protocol version: " + sProtocol );
+//            send_string( client.GetSocket(), sProtocol );
+//
+//            //TODO: Checking response
+//            string sResponse;
+//            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+//            DebugLog( erOK, "Client received: " + sResponse );
+//
+//            // Sending User name
+//            string sUser;
+//            get_cuser_name( &sUser );
+//            DebugLog( erOK, "Sending user name: " + sUser );
+//            send_string( client.GetSocket(), sUser );
+//
+//            //TODO: Checking response
+//            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
+//            DebugLog( erOK, "Client received: " + sResponse );
 
             InfoLog( "Entering into the main \"select\" loop..." );
 
