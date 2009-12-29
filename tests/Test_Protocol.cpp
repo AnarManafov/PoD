@@ -12,6 +12,8 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
+// STD
+#include <stdexcept>
 // BOOST: tests
 // Defines test_main function to link with actual unit test code.
 #define BOOST_TEST_DYN_LINK
