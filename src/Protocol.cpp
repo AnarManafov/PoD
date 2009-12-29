@@ -25,7 +25,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
-const size_t MAX_MSG_SIZE = 1024;
+const size_t MAX_MSG_SIZE = 256;
 //=============================================================================
 //=============================================================================
 //=============================================================================
@@ -77,8 +77,7 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
 //=============================================================================
 //=============================================================================
 CProtocol::CProtocol():
-        m_ver( 2 ), // protocol version
-        m_buffer( MAX_MSG_SIZE )
+        m_ver( 2 ) // protocol version
 {
 }
 //=============================================================================
@@ -94,12 +93,12 @@ SMessageHeader CProtocol::getMsg( BYTEVector_t *_data )
 //=============================================================================
 CProtocol::EStatus_t CProtocol::read( int _socket )
 {
-    size_t sum_read( m_buffer.size() );
-    while ( MAX_MSG_SIZE != sum_read )
+    BYTEVector_t tmp_buf( MAX_MSG_SIZE );
+    while ( true )
     {
         // need to read more to complete the header
-        const ssize_t bytes_read = ::recv( _socket, &m_buffer[sum_read],
-                                           MAX_MSG_SIZE - sum_read, 0 );
+        const ssize_t bytes_read = ::recv( _socket, &tmp_buf[0],
+                                           MAX_MSG_SIZE, 0 );
         if ( 0 == bytes_read )
             return stDISCONNECT;
 
@@ -114,7 +113,7 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             throw system_error( "Error occurred while reading a protocol message." );
         }
 
-        sum_read += bytes_read;
+        copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read, back_inserter( m_buffer ) );
         try
         {
             m_curDATA.clear();
