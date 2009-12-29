@@ -306,12 +306,27 @@ namespace PROOFAgent
                         switch ( static_cast<ECmdType>( header.m_cmd ) )
                         {
                             case cmdVERSION:
-                                SVersionCmd v;
-                                v.convertFromData( data );
-                                stringstream ss;
-                                ss << "Server received client's protocol version: " << v.m_version;
-                                InfoLog( ss.str() );
-                                break;
+                                {
+                                    SVersionCmd v;
+                                    v.convertFromData( data );
+                                    stringstream ss;
+                                    ss << "Server received client's protocol version: " << v.m_version;
+                                    InfoLog( ss.str() );
+
+                                    // request client's host information
+                                    BYTEVector_t data;
+                                    protocol.write( _sock, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
+                                    break;
+                                }
+                            case cmdHOST_INFO:
+                                {
+                                    SHostInfoCmd h;
+                                    h.convertFromData( data );
+                                    stringstream ss;
+                                    ss << "Server received client's host info: " << h;
+                                    InfoLog( ss.str() );
+                                    break;
+                                }
                         }
                         break;
                     }

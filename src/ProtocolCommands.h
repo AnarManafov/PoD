@@ -35,10 +35,12 @@ namespace PROOFAgent
         cmdUNKNOWN = -1,
 
         cmdVERSION = 0,
-        cmdGET_VERSION = 1,
+        cmdGET_VERSION = cmdVERSION + 1,
+        cmdVERSION_OK = cmdVERSION + 2,
+        cmdVERSION_BAD = cmdVERSION + 3,
 
-        cmdHOST_INFO = 2,
-        cmdGET_HOST_INFO = 3,
+        cmdHOST_INFO = 30,
+        cmdGET_HOST_INFO = cmdHOST_INFO + 1,
 
         cmdUSE_PROXYPROOF = 4,
         cmdUSE_DIRECTPROOF = 5
@@ -82,9 +84,9 @@ namespace PROOFAgent
 
         uint16_t m_version;
     };
-    inline std::ostream &operator<< (std::ostream &_stream, const SVersionCmd &val)
+    inline std::ostream &operator<< ( std::ostream &_stream, const SVersionCmd &val )
     {
-    	return _stream << val.m_version;
+        return _stream << val.m_version;
     }
 //=============================================================================
     struct SHostInfoCmd: public SBasicCmd<SHostInfoCmd>
@@ -114,9 +116,9 @@ namespace PROOFAgent
         std::string m_host;
         uint16_t m_proofPort;
     };
-    inline std::ostream &operator<< (std::ostream &_stream, const SHostInfoCmd &val)
+    inline std::ostream &operator<< ( std::ostream &_stream, const SHostInfoCmd &val )
     {
-    	return _stream << val.m_username << ":" << val.m_host << ":" << val.m_proofPort;
+        return _stream << val.m_username << ":" << val.m_host << ":" << val.m_proofPort;
     }
 //=============================================================================
 

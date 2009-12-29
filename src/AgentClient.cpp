@@ -73,6 +73,43 @@ void CAgentClient::run()
             v.convertToData( &data );
             protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdVERSION ), data );
 
+            CProtocol::EStatus_t ret = protocol.read( client.GetSocket() );
+            switch ( ret )
+            {
+                case CProtocol::stDISCONNECT:
+                    break;
+                case CProtocol::stAGAIN:
+                    break;
+                case CProtocol::stUNKNOWN:
+                    break;
+                case CProtocol::stOK:
+                    {
+                        BYTEVector_t data;
+                        SMessageHeader header = protocol.getMsg( &data );
+                        switch ( static_cast<ECmdType>( header.m_cmd ) )
+                        {
+                            case cmdVERSION_BAD:
+                                break;
+                            case cmdVERSION_OK:
+                                break;
+                            case cmdGET_HOST_INFO:
+                                {
+                                    SHostInfoCmd h;
+                                    h.m_username = "me";
+                                    h.m_host = "my.host.de";
+                                    h.m_proofPort = 256;
+                                    h.convertToData( data );
+                                    protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdHOST_INFO ), data );
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case CProtocol::stERR:
+                    break;
+            }
+
+
 //            // sending protocol version to the server
 //            string sProtocol( g_szPROTOCOL_VERSION );
 //            DebugLog( erOK, "Sending protocol version: " + sProtocol );
