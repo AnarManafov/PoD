@@ -98,8 +98,6 @@ void CAgentClient::run()
                         {
                             case cmdVERSION_BAD:
                                 break;
-                            case cmdVERSION_OK:
-                                break;
                             case cmdGET_HOST_INFO:
                                 {
                                     InfoLog( "The server requests host information." );

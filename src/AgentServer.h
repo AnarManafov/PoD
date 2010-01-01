@@ -16,15 +16,25 @@
 #define AGENTSERVER_H_
 // MiscCommon
 #include "LogImp.h"
-// PROOFAgent
+// pod-agent
 #include "Node.h"
 #include "ThreadPool.h"
 #include "AgentBase.h"
+#include "Protocol.h"
 //=============================================================================
 
 namespace PROOFAgent
 {
 
+    struct SWorkerInfo
+    {
+        CProtocol m_protocol;
+        std::string m_host;
+        std::string m_user;
+        uint16_t m_proofPort;
+    };
+
+    typedef std::map<int, SWorkerInfo> workersMap_t;
 //=============================================================================
     /**
      *
@@ -86,6 +96,7 @@ namespace PROOFAgent
             std::string createPROOFCfgEntryString( const std::string &_UsrName,
                                                    unsigned short _Port, const std::string &_RealWrkHost );
             void updatePROOFCfg();
+            void processAdminConnection( workersMap_t::value_type &_wrk );
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
@@ -94,6 +105,7 @@ namespace PROOFAgent
             CThreadPool m_threadPool;
             std::string m_serverInfoFile;
             std::string m_masterEntryInPROOFCfg;
+            workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
     };
 
 }

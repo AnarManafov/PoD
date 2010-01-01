@@ -22,7 +22,6 @@
 #include "INet.h"
 #include "SysHelper.h"
 // pod-agent
-#include "Protocol.h"
 #include "ProtocolCommands.h"
 //=============================================================================
 using namespace std;
@@ -133,6 +132,20 @@ namespace PROOFAgent
 
         // Max value from of FDs. Used by the "select"
         int fd_max(( f_serverSocket > m_fdSignalPipe ) ? f_serverSocket : m_fdSignalPipe );
+
+        // adding all sockets which are on the admin channel
+        workersMap_t::const_iterator wrk_iter = m_adminConnections.begin();
+        workersMap_t::const_iterator wrk_iter_end = m_adminConnections.end();
+        for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+        {
+            if ( 0 >= wrk_iter->first )
+                continue;
+
+            int fd = wrk_iter->first;
+            FD_SET( fd, _readset );
+            fd_max = fd > fd_max ? fd : fd_max;
+        }
+
 
         // Now set all FDs of all of the nodes
         // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
@@ -264,8 +277,11 @@ namespace PROOFAgent
             // update the idle timer
             m_idleWatch.touch();
 
-            inet::smart_socket socket( _server.Accept() );
-            createClientNode( socket );
+            // accepting a new connection on the admin channel
+            inet::smart_socket wrk( _server.Accept() );
+            //createClientNode( socket );
+            wrk.set_nonblock();
+            m_adminConnections.insert( workersMap_t::value_type( wrk.detach(), SWorkerInfo() ) );
         }
 
         // we got a signal for update
@@ -285,57 +301,58 @@ namespace PROOFAgent
     }
 
 //=============================================================================
+    void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
+    {
+        CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
+        switch ( ret )
+        {
+            case CProtocol::stDISCONNECT:
+                break;
+            case CProtocol::stAGAIN:
+                break;
+            case CProtocol::stUNKNOWN:
+                break;
+            case CProtocol::stOK:
+                {
+                    BYTEVector_t data;
+                    SMessageHeader header = _wrk.second.m_protocol.getMsg( &data );
+                    switch ( static_cast<ECmdType>( header.m_cmd ) )
+                    {
+                        case cmdVERSION:
+                            {
+                                SVersionCmd v;
+                                v.convertFromData( data );
+                                stringstream ss;
+                                ss << "Server received client's protocol version: " << v.m_version;
+                                InfoLog( ss.str() );
+
+                                // request client's host information
+                                InfoLog( "request host info" );
+                                BYTEVector_t data;
+                                _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
+                                InfoLog( "the request has been sent" );
+                                break;
+                            }
+                        case cmdHOST_INFO:
+                            {
+                                SHostInfoCmd h;
+                                h.convertFromData( data );
+                                stringstream ss;
+                                ss << "Server received client's host info: " << h;
+                                InfoLog( ss.str() );
+                                break;
+                            }
+                    }
+                    break;
+                }
+            case CProtocol::stERR:
+                break;
+        }
+    }
+
+//=============================================================================
     void CAgentServer::createClientNode( MiscCommon::INet::smart_socket &_sock )
     {
-        CProtocol protocol;
-        while ( true )
-        {
-            CProtocol::EStatus_t ret = protocol.read( _sock );
-            switch ( ret )
-            {
-                case CProtocol::stDISCONNECT:
-                    break;
-                case CProtocol::stAGAIN:
-                    break;
-                case CProtocol::stUNKNOWN:
-                    break;
-                case CProtocol::stOK:
-                    {
-                        BYTEVector_t data;
-                        SMessageHeader header = protocol.getMsg( &data );
-                        switch ( static_cast<ECmdType>( header.m_cmd ) )
-                        {
-                            case cmdVERSION:
-                                {
-                                    SVersionCmd v;
-                                    v.convertFromData( data );
-                                    stringstream ss;
-                                    ss << "Server received client's protocol version: " << v.m_version;
-                                    InfoLog( ss.str() );
-
-                                    // request client's host information
-                                    InfoLog("request host info");
-                                    BYTEVector_t data;
-                                    protocol.write( _sock, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
-                                    InfoLog("the request has been sent");
-                                    break;
-                                }
-                            case cmdHOST_INFO:
-                                {
-                                    SHostInfoCmd h;
-                                    h.convertFromData( data );
-                                    stringstream ss;
-                                    ss << "Server received client's host info: " << h;
-                                    InfoLog( ss.str() );
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case CProtocol::stERR:
-                    break;
-            }
-        }
 
 //        // checking protocol version
 //        string sReceive;
