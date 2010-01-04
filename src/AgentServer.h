@@ -21,6 +21,7 @@
 #include "ThreadPool.h"
 #include "AgentBase.h"
 #include "Protocol.h"
+#include "ProtocolCommands.h"
 //=============================================================================
 
 namespace PROOFAgent
@@ -100,6 +101,8 @@ namespace PROOFAgent
                                                    bool usePF );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
+            void processHostInfoMessage( workersMap_t::value_type &_wrk,
+                                         const SHostInfoCmd &h );
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
