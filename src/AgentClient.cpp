@@ -41,7 +41,67 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
 CAgentClient::~CAgentClient()
 {
 }
+//=============================================================================
+void CAgentClient::adminChannel( int _serverSock )
+{
+    CProtocol protocol;
+    SVersionCmd v;
+    v.m_version = protocol.getVersion();
+    BYTEVector_t data;
+    v.convertToData( &data );
+    protocol.write( _serverSocqk, static_cast<uint16_t>( cmdVERSION ), data );
 
+    while ( true )
+    {
+        InfoLog( "waiting for server commands" );
+        CProtocol::EStatus_t ret = protocol.read( _serverSock );
+        switch ( ret )
+        {
+            case CProtocol::stDISCONNECT:
+                throw runtime_error( "a disconnect has been detected on the adminChannel" );
+            case CProtocol::stAGAIN:
+                break;
+            case CProtocol::stUNKNOWN:
+                throw runtime_error( "an unknown error has been detected on the adminChannel" );
+            case CProtocol::stOK:
+                {
+                    BYTEVector_t data;
+                    SMessageHeader header = protocol.getMsg( &data );
+                    stringstream ss;
+                    ss << "CMD: " <<  header.m_cmd << endl;
+                    InfoLog( ss.str() );
+                    switch ( static_cast<ECmdType>( header.m_cmd ) )
+                    {
+                            //case cmdVERSION_BAD:
+                            //    break;
+                        case cmdGET_HOST_INFO:
+                            {
+                                InfoLog( "The server requests host information." );
+                                SHostInfoCmd h;
+                                get_cuser_name( &h.m_username );
+                                get_hostname( &h.m_host );
+                                h.m_proofPort = m_proofPort;
+                                h.convertToData( &data );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data );
+                                break;
+                            }
+                        case   cmdUSE_PROXYPROOF:
+                            // going out of the admin channel and start the packet forwarding
+                            return;
+                        case cmdUSE_DIRECTPROOF:
+                            // TODO: we keep admin channel open and start the monitoring (proof status) thread
+                            break;
+                        default:
+                            WarningLog( 0, "Unexpected message in the admin channel" );
+                            break;
+                    }
+                    break;
+                }
+            case CProtocol::stERR:
+                throw runtime_error( "error has occurred in the adminChannel" );
+        }
+    }
+}
 //=============================================================================
 void CAgentClient::run()
 {
@@ -66,80 +126,19 @@ void CAgentClient::run()
             client.Connect( m_agentServerListenPort, m_agentServerHost );
             InfoLog( "connected!" );
 
-            CProtocol protocol;
-            SVersionCmd v;
-            v.m_version = protocol.getVersion();
-            BYTEVector_t data;
-            v.convertToData( &data );
-            protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdVERSION ), data );
-
-            InfoLog( "waiting for server commands" );
-            CProtocol::EStatus_t ret = protocol.read( client.GetSocket() );
-            InfoLog( "got a server command" );
-            switch ( ret )
+            try
             {
-                case CProtocol::stDISCONNECT:
-                    InfoLog( "stDISCONNECT" );
-                    break;
-                case CProtocol::stAGAIN:
-                    InfoLog( "stAGAIN" );
-                    break;
-                case CProtocol::stUNKNOWN:
-                    InfoLog( "stUNKNOWN" );
-                    break;
-                case CProtocol::stOK:
-                    {
-                        BYTEVector_t data;
-                        SMessageHeader header = protocol.getMsg( &data );
-                        stringstream ss;
-                        ss << "CMD: " <<  header.m_cmd << endl;
-                        InfoLog( ss.str() );
-                        switch ( static_cast<ECmdType>( header.m_cmd ) )
-                        {
-                            case cmdVERSION_BAD:
-                                break;
-                            case cmdGET_HOST_INFO:
-                                {
-                                    InfoLog( "The server requests host information." );
-                                    SHostInfoCmd h;
-                                    get_cuser_name( &h.m_username );
-                                    get_hostname( &h.m_host );
-                                    h.m_proofPort = m_proofPort;
-                                    h.convertToData( &data );
-                                    protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdHOST_INFO ), data );
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-                case CProtocol::stERR:
-                    InfoLog( "stERR" );
-                    break;
+                // Starting a server communication
+                adminChannel( client.GetSocket() );
+            }
+            catch ( exception & e )
+            {
+                WarningLog( erError, e.what() );
+                continue;
             }
 
 
-//            // sending protocol version to the server
-//            string sProtocol( g_szPROTOCOL_VERSION );
-//            DebugLog( erOK, "Sending protocol version: " + sProtocol );
-//            send_string( client.GetSocket(), sProtocol );
-//
-//            //TODO: Checking response
-//            string sResponse;
-//            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-//            DebugLog( erOK, "Client received: " + sResponse );
-//
-//            // Sending User name
-//            string sUser;
-//            get_cuser_name( &sUser );
-//            DebugLog( erOK, "Sending user name: " + sUser );
-//            send_string( client.GetSocket(), sUser );
-//
-//            //TODO: Checking response
-//            receive_string( client.GetSocket(), &sResponse, g_nBUF_SIZE );
-//            DebugLog( erOK, "Client received: " + sResponse );
-
             InfoLog( "Entering into the main \"select\" loop..." );
-
             try
             {
                 client.GetSocket().set_nonblock();

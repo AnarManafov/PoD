@@ -35,7 +35,7 @@ namespace PROOFAgent
         cmdUNKNOWN = -1,
 
         cmdVERSION = 10,
-        cmdVERSION_BAD = cmdVERSION + 1,
+        //   cmdVERSION_BAD = cmdVERSION + 1, // NOT Implemented yet
 
         cmdHOST_INFO = 30,
         cmdGET_HOST_INFO = cmdHOST_INFO + 1,
@@ -43,9 +43,9 @@ namespace PROOFAgent
         cmdUSE_PROXYPROOF = 50,
         cmdUSE_DIRECTPROOF = 60,
 
-        // cmdSHUTDOWN = 70, // NOT Implemented
+        // cmdSHUTDOWN = 70, // NOT Implemented yet
 
-        // cmdRESTART = 80 // NOT Implemented
+        // cmdRESTART = 80 // NOT Implemented yet
     };
 //=============================================================================
     template<class _Owner>

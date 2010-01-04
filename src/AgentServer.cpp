@@ -338,12 +338,10 @@ namespace PROOFAgent
                                 InfoLog( ss.str() );
 
                                 // request client's host information
-                                InfoLog( "request host info" );
                                 BYTEVector_t data;
                                 _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
-                                InfoLog( "the request has been sent" );
-                                break;
                             }
+                            break;
                         case cmdHOST_INFO:
                             {
                                 SHostInfoCmd h;
@@ -355,10 +353,40 @@ namespace PROOFAgent
                                 _wrk.second.m_user = h.m_username;
                                 _wrk.second.m_proofPort = h.m_proofPort;
 
-                                // TODO: only for thest
-                                createClientNode( _wrk );
-                                break;
+                                // check whether a direct connection to a xproof worker possible
+                                try
+                                {
+
+                                    inet::CSocketClient c;
+                                    c.Connect( _wrk.second.m_proofPort, _wrk.second.m_host );
+                                    // using a direct connection to xproof
+                                    BYTEVector_t data;
+                                    _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECTPROOF ), data );
+
+                                    // Update proof.cfg with active workers
+                                    string strPROOFCfgString(
+                                        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort, _wrk.second.m_host ) );
+
+                                    ss.clear();
+                                    ss
+                                    << "Using a directo connection to xproof for for: "
+                                    << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort;
+                                    InfoLog( erOK, ss.str() );
+                                }
+                                catch ( ... )
+                                {
+                                    // use packet forwarder
+                                    BYTEVector_t data;
+                                    _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdUSE_PROXYPROOF ), data );
+
+                                    createClientNode( _wrk );
+                                }
                             }
+                            break;
+                        default:
+                            WarningLog( 0, "Unexpected message in the admin channel" );
+                            break;
+
                     }
                     break;
                 }
@@ -373,7 +401,7 @@ namespace PROOFAgent
         stringstream ss;
         ss
         << "Accepting connection for: "
-        << _wrk.second.m_user << "@"<< _wrk.second.m_host;
+        << _wrk.second.m_user << "@" << _wrk.second.m_host;
         InfoLog( erOK, ss.str() );
 
         const int port = inet::get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
@@ -406,6 +434,7 @@ namespace PROOFAgent
         // Update proof.cfg according to a current number of active workers
         updatePROOFCfg();
     }
+
 //=============================================================================
     void CAgentServer::deleteServerInfoFile()
     {
