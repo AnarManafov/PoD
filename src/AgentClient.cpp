@@ -49,7 +49,7 @@ void CAgentClient::adminChannel( int _serverSock )
     v.m_version = protocol.getVersion();
     BYTEVector_t data;
     v.convertToData( &data );
-    protocol.write( _serverSocqk, static_cast<uint16_t>( cmdVERSION ), data );
+    protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), data );
 
     while ( true )
     {
