@@ -346,9 +346,11 @@ namespace PROOFAgent
                             {
                                 SHostInfoCmd h;
                                 h.convertFromData( data );
-                                stringstream ss;
-                                ss << "Server received client's host info: " << h;
-                                InfoLog( ss.str() );
+                                { // using this scope for stringstream only
+                                    stringstream ss;
+                                    ss << "Server received client's host info: " << h;
+                                    InfoLog( ss.str() );
+                                }
                                 _wrk.second.m_host = h.m_host;
                                 _wrk.second.m_user = h.m_username;
                                 _wrk.second.m_proofPort = h.m_proofPort;
@@ -364,14 +366,18 @@ namespace PROOFAgent
                                     _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECTPROOF ), data );
 
                                     // Update proof.cfg with active workers
-                                    string strPROOFCfgString(
-                                        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort, _wrk.second.m_host ) );
+                                    _wrk.second.m_proofCfgEntry =
+                                        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort, _wrk.second.m_host );
+                                    // Update proof.cfg according to a current number of active workers
+                                    updatePROOFCfg();
 
-                                    ss.clear();
-                                    ss
-                                    << "Using a directo connection to xproof for for: "
-                                    << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort;
-                                    InfoLog( erOK, ss.str() );
+                                    {  // using this scope for stringstream only
+                                        stringstream ss;
+                                        ss
+                                        << "Using a direct connection to xproof for: "
+                                        << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort;
+                                        InfoLog( erOK, ss.str() );
+                                    }
                                 }
                                 catch ( ... )
                                 {
@@ -494,6 +500,20 @@ namespace PROOFAgent
         for ( ; iter != iter_end; ++iter )
         {
             f << ( *iter )->getPROOFCfgEntry() << endl;
+        }
+
+        // a directly connected workers
+        workersMap_t::iterator wrk_iter = m_adminConnections.begin();
+        workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
+        for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+        {
+            if ( 0 >= wrk_iter->first )
+                continue;
+
+            if ( wrk_iter->second.m_proofCfgEntry.empty() )
+                continue;
+
+            f << wrk_iter->second.m_proofCfgEntry << endl;
         }
     }
 }

@@ -32,6 +32,7 @@ namespace PROOFAgent
         std::string m_host;
         std::string m_user;
         uint16_t m_proofPort;
+        std::string m_proofCfgEntry;
     };
 
     typedef std::map<int, SWorkerInfo> workersMap_t;
