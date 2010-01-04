@@ -291,7 +291,6 @@ namespace PROOFAgent
 
             // accepting a new connection on the admin channel
             inet::smart_socket wrk( _server.Accept() );
-            //createClientNode( socket );
             wrk.set_nonblock();
             m_adminConnections.insert( workersMap_t::value_type( wrk.detach(), SWorkerInfo() ) );
         }

@@ -73,9 +73,9 @@ void CAgentClient::run()
             v.convertToData( &data );
             protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdVERSION ), data );
 
-			InfoLog("waiting for server commands");
+            InfoLog( "waiting for server commands" );
             CProtocol::EStatus_t ret = protocol.read( client.GetSocket() );
-            InfoLog("got a server command");
+            InfoLog( "got a server command" );
             switch ( ret )
             {
                 case CProtocol::stDISCONNECT:
@@ -102,9 +102,9 @@ void CAgentClient::run()
                                 {
                                     InfoLog( "The server requests host information." );
                                     SHostInfoCmd h;
-                                    h.m_username = "me";
-                                    h.m_host = "my.host.de";
-                                    h.m_proofPort = 256;
+                                    get_cuser_name( &h.m_username );
+                                    get_hostname( &h.m_host );
+                                    h.m_proofPort = m_proofPort;
                                     h.convertToData( &data );
                                     protocol.write( client.GetSocket(), static_cast<uint16_t>( cmdHOST_INFO ), data );
                                     break;
