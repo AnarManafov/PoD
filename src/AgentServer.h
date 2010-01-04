@@ -95,7 +95,9 @@ namespace PROOFAgent
               *
               */
             std::string createPROOFCfgEntryString( const std::string &_UsrName,
-                                                   unsigned short _Port, const std::string &_RealWrkHost );
+                                                   unsigned short _Port,
+                                                   const std::string &_RealWrkHost,
+                                                   bool usePF );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
 

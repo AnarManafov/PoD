@@ -367,7 +367,7 @@ namespace PROOFAgent
 
                                     // Update proof.cfg with active workers
                                     _wrk.second.m_proofCfgEntry =
-                                        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort, _wrk.second.m_host );
+                                        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort, _wrk.second.m_host, false );
                                     // Update proof.cfg according to a current number of active workers
                                     updatePROOFCfg();
 
@@ -419,7 +419,7 @@ namespace PROOFAgent
         inet::peer2string( _wrk.first, &strRealWrkHost );
 
         // Update proof.cfg with active workers
-        string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user, port, strRealWrkHost ) );
+        string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user, port, strRealWrkHost, true ) );
 
         // Now when we got a connection from our worker, we need to create a local server (for that worker)
         // which actually will emulate a local worker node for a proof server
@@ -473,13 +473,23 @@ namespace PROOFAgent
 
 //=============================================================================
     string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
-                                                    unsigned short _Port, const string &_RealWrkHost )
+                                                    unsigned short _Port,
+                                                    const string &_RealWrkHost,
+                                                    bool usePF )
     {
         stringstream ss;
-        ss
-        << "#worker " << _UsrName << "@" << _RealWrkHost << " (redirect through localhost:" << _Port << ")\n"
-        << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
-
+        if ( usePF )
+        {
+            ss
+            << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n"
+            << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
+        }
+        else
+        {
+            ss
+            << "#worker " << _UsrName << "@" << _RealWrkHost << " (direct connection)\n"
+            << "worker " << _UsrName << "@"<< _RealWrkHost <<" port="  << _Port << " perf=100" << endl;
+        }
         return ss.str();
     }
 
