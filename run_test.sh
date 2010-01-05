@@ -20,6 +20,12 @@ echo ">>> Processing tests of Protocole"
 ./pod-agent_test_Protocol || clean_up
 echo
 echo ">>> Processing tests of ProofStatusFile"
+# prepare dummy files
+ADMIN_PATH=$1/.xproofd.22222/activesessions
+mkdir -p $ADMIN_PATH
+echo 0 >> $ADMIN_PATH/manafov.default.1234.status
+echo 1 >> $ADMIN_PATH/manafov.default.1234.status
+echo 3 >> $ADMIN_PATH/manafov.default.1234.status
 ./pod-agent_test_ProofStatusFile || clean_up
 popd
 

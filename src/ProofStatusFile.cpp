@@ -57,8 +57,8 @@ CProofStatusFile::~CProofStatusFile()
 /// This function reads xpd.cfg and extracts adminpath paths for servers and workers.
 /// Paths are parsed from a special comment block in PoD's xpd.cfg
 /// A path is excluded if it doens't exist at the moment when the search is done.
-bool CProofStatusFile::getAdminPath( const string &_xpdCFGFileName,
-                                     EAdminPathType _type )
+bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
+                                      EAdminPathType _type )
 {
     if ( !fs::exists( fs::path( _xpdCFGFileName ) ) )
         return false;
@@ -87,35 +87,33 @@ bool CProofStatusFile::getAdminPath( const string &_xpdCFGFileName,
     fs::path admin_path( p );
 
     if ( fs::exists( admin_path ) )
-    	m_adminPath.swap( admin_path );
+        m_adminPath.swap( admin_path );
 
     return true;
 }
 //=============================================================================
-
-//=============================================================================
-
-//=============================================================================
-CTest_CProofStatusFile::CTest_CProofStatusFile()
+void CProofStatusFile::enumStatusFiles(uint16_t _xpdPort)
 {
-    try
-    {
-        // create an admin path for tests
-        fs::create_directories( fs::path( g_adminPath ) );
-    }
-    catch ( ... )
-    {
-    }
-}
-//=============================================================================
-bool CTest_CProofStatusFile::getAdminPath( const string &_xpdCFGFileName,
-                                           fs::path *_ret,
-                                           EAdminPathType _type )
-{
-    CProofStatusFile s;
-    bool result = s.getAdminPath( _xpdCFGFileName, _type );
-    if(_ret)
-    	*_ret = s.m_adminPath;
+    if ( m_adminPath.empty() )
+        throw runtime_error( "Can't enumerate proof status files. No admin path is specified." );
 
-    return result;
+    stringstream ss;
+    ss << m_adminPath.root_directory() << "/" << ".xproofd."<< _xpdPort << "/activesessions";
+    fs::path fullpath(ss.str());
+
+    if ( !fs::exists(fullpath) )
+        throw runtime_error( "Can't enumerate proof status files. Admin path doesn't exists." );
+
+    fs::directory_iterator end_itr; // default construction yields past-the-end
+    for ( fs::directory_iterator itr( fullpath ); itr != end_itr; ++itr )
+    {
+        if ( fs::is_directory( *itr ) )
+        {
+            continue;
+        }
+        else if ( fs::extension( itr->leaf() ) == ".status" )
+        {
+            m_files.push_back( *itr );
+        }
+    }
 }

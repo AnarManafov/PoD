@@ -28,38 +28,38 @@ enum EAdminPathType
 };
 const char *const mark[] =
 {
-        "# server.adminpath",
-        "# worker.adminpath"
+    "# server.adminpath",
+    "# worker.adminpath"
 };
-
+//=============================================================================
+typedef std::vector<boost::filesystem::path> PathVector_t;
 //=============================================================================
 namespace PROOFAgent
 {
-    class CProofStatusFile;
-    class CTest_CProofStatusFile
-    {
-        public:
-            CTest_CProofStatusFile();
 
-            bool getAdminPath( const std::string &_xpdCFGFileName,
-                               boost::filesystem::path *_ret,
-                               EAdminPathType _type );
-    };
-//=============================================================================
     class CProofStatusFile
     {
-            friend class CTest_CProofStatusFile;
-
         public:
             CProofStatusFile();
             virtual ~CProofStatusFile();
 
-        private:
-            bool getAdminPath( const std::string &_xpdCFGFileName,
-                               EAdminPathType _type );
+        public:
+            bool readAdminPath( const std::string &_xpdCFGFileName,
+                                EAdminPathType _type );
+            void enumStatusFiles( uint16_t _xpdPort );
+            boost::filesystem::path getAdminPath()
+            {
+                return m_adminPath;
+            }
+            PathVector_t getFiles()
+            {
+                return m_files;
+            }
+
 
         private:
             boost::filesystem::path m_adminPath;
+            PathVector_t m_files;
     };
 
 }

@@ -49,15 +49,27 @@ BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_getAdminPath )
 {
-    CTest_CProofStatusFile s;
+    CProofStatusFile s;
 
-    fs::path adminPaths;
-    BOOST_CHECK( s.getAdminPath( "./xpd.cf", &adminPaths, adminp_server ) );
-    BOOST_CHECK( !adminPaths.empty() );
+    BOOST_REQUIRE( s.readAdminPath( "./xpd.cf", adminp_server ) );
+    fs::path adminPaths( s.getAdminPath() );
+    BOOST_REQUIRE( !adminPaths.empty() );
     PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS );
 
-    BOOST_CHECK( s.getAdminPath( "./xpd.cf", &adminPaths, adminp_worker ) );
-    BOOST_CHECK( !adminPaths.empty() );
+    BOOST_REQUIRE( s.readAdminPath( "./xpd.cf", adminp_worker ) );
+    adminPaths = s.getAdminPath();
+    BOOST_REQUIRE( !adminPaths.empty() );
     PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS"/" );
+}
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
+{
+    CProofStatusFile s;
+
+    s.readAdminPath( "./xpd.cf", adminp_server );
+    BOOST_REQUIRE_NO_THROW( s.enumStatusFiles(20001) );
+    PathVector_t files( s.getFiles() );
+    BOOST_CHECK( !files.empty() );
+
 }
 BOOST_AUTO_TEST_SUITE_END();
