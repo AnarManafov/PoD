@@ -31,6 +31,14 @@ extern sig_atomic_t graceful_quit;
 // a monitoring thread timeout (in seconds)
 const size_t g_monitorTimeout = 10;
 //=============================================================================
+struct is_bad_wrk
+{
+	bool operator()(const wrkValue_t &_val)
+		{
+			return (0 >= _val.first);
+		}
+};
+//=============================================================================
 CAgentServer::CAgentServer( const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_server.m_common ),
         m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, m_signalPipeName )
@@ -124,14 +132,18 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     // Max value from of FDs. Used by the "select"
     int fd_max(( f_serverSocket > m_fdSignalPipe ) ? f_serverSocket : m_fdSignalPipe );
 
+    bool need_update( false );
+    workersMap_t::size_type s( m_adminConnections.size() );
+    // remove bad admin connections
+    m_adminConnections.remove_if( is_bad_wrk() );
+    if( s != m_adminConnections.size() )
+    	need_update = true;
+
     // adding all sockets which are on the admin channel
     workersMap_t::const_iterator wrk_iter = m_adminConnections.begin();
     workersMap_t::const_iterator wrk_iter_end = m_adminConnections.end();
     for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
     {
-        if ( 0 >= wrk_iter->first )
-            continue;
-
         int fd = wrk_iter->first;
         FD_SET( fd, _readset );
         fd_max = fd > fd_max ? fd : fd_max;
@@ -139,7 +151,6 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
 
     // Now set all FDs of all of the nodes
     // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
-    bool need_update( false );
     Sockets_type::iterator iter = m_socksToSelect.begin();
     Sockets_type::iterator iter_end = m_socksToSelect.end();
     for ( ; iter != iter_end; ++iter )
@@ -285,7 +296,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         // accepting a new connection on the admin channel
         inet::smart_socket wrk( _server.Accept() );
         wrk.set_nonblock();
-        m_adminConnections.insert( workersMap_t::value_type( wrk.detach(), SWorkerInfo() ) );
+        m_adminConnections.push_back( workersMap_t::value_type( wrk.detach(), SWorkerInfo() ) );
     }
 
     // we got a signal for update
@@ -306,6 +317,8 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
     switch ( ret )
     {
         case CProtocol::stDISCONNECT:
+        	close( _wrk.first );
+        	 _wrk.first = -1;
             break;
         case CProtocol::stAGAIN:
             break;

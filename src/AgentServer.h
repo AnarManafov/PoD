@@ -36,7 +36,8 @@ namespace PROOFAgent
         std::string m_proofCfgEntry;
     };
 
-    typedef std::map<int, SWorkerInfo> workersMap_t;
+    typedef std::pair<int, SWorkerInfo> wrkValue_t;
+    typedef std::list<wrkValue_t> workersMap_t;
 //=============================================================================
     /**
      *
