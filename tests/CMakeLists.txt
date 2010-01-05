@@ -51,6 +51,11 @@ target_link_libraries (
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)
 
 #=============================================================================
+#
+# configure files
+# 
+configure_file( ${CMAKE_SOURCE_DIR}/tests/xpd.cf.in ${CMAKE_SOURCE_DIR}/tests/xpd.cf @ONLY )
+
 set( SRC_PROTOCOL
     Test_ProofStatusFile.cpp
     ${CMAKE_SOURCE_DIR}/src/ProofStatusFile.cpp

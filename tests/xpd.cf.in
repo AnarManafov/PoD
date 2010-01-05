@@ -27,8 +27,8 @@ xrootd.fslib libXrdOfs.so
 #
 # !!! DON'T REMOVE THE FOLLOWING COMMENTS
 #
-# server.adminpath _G_SERVER_TMP_DIR
-# worker.adminpath _G_WORKER_TMP_DIR
+# server.adminpath @CMAKE_INSTALL_PREFIX@/tests
+# worker.adminpath @CMAKE_INSTALL_PREFIX@/tests/
 #
 if named PoDServer
  xrd.adminpath ./ group

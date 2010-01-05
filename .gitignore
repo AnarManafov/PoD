@@ -1,4 +1,5 @@
 build/
 Doxyfile
 src/version.h
+tests/xpd.cf
 .DS_Store

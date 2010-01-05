@@ -21,6 +21,7 @@
 #define BOOST_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
 // pod-agent
+#include "version.h"
 #include "ProofStatusFile.h"
 // MiscCommon
 #include "SysHelper.h"
@@ -53,10 +54,10 @@ BOOST_AUTO_TEST_CASE( test_getAdminPath )
     fs::path adminPaths;
     BOOST_CHECK( s.getAdminPath( "./xpd.cf", &adminPaths, adminp_server ) );
     BOOST_CHECK( !adminPaths.empty() );
-    PATH_CHECK( adminPaths, "./" );
+    PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS );
 
     BOOST_CHECK( s.getAdminPath( "./xpd.cf", &adminPaths, adminp_worker ) );
     BOOST_CHECK( !adminPaths.empty() );
-    PATH_CHECK( adminPaths, "./" );
+    PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS"/" );
 }
 BOOST_AUTO_TEST_SUITE_END();
