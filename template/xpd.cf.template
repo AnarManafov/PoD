@@ -25,10 +25,10 @@ xrootd.fslib libXrdOfs.so
 ## comment if you want to help the WN pools
 #
 if named PoDServer
- xrd.adminpath _G_SERVER_TMP_DIR group
+ xrd.adminpath _G_SERVER_TMP_DIR
  xrootd.export _G_XRD_EXPORT_DIR
 else
- xrd.adminpath _G_WORKER_TMP_DIR group
+ xrd.adminpath _G_WORKER_TMP_DIR
  xrootd.export _G_WRK_DIR/
 fi
 #
