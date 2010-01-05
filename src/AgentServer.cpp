@@ -33,10 +33,10 @@ const size_t g_monitorTimeout = 10;
 //=============================================================================
 struct is_bad_wrk
 {
-	bool operator()(const wrkValue_t &_val)
-		{
-			return (0 >= _val.first);
-		}
+    bool operator()( const wrkValue_t &_val )
+    {
+        return ( 0 >= _val.first );
+    }
 };
 //=============================================================================
 CAgentServer::CAgentServer( const SOptions_t &_data ):
@@ -136,8 +136,8 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     workersMap_t::size_type s( m_adminConnections.size() );
     // remove bad admin connections
     m_adminConnections.remove_if( is_bad_wrk() );
-    if( s != m_adminConnections.size() )
-    	need_update = true;
+    if ( s != m_adminConnections.size() )
+        need_update = true;
 
     // adding all sockets which are on the admin channel
     workersMap_t::const_iterator wrk_iter = m_adminConnections.begin();
@@ -317,8 +317,13 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
     switch ( ret )
     {
         case CProtocol::stDISCONNECT:
-        	close( _wrk.first );
-        	 _wrk.first = -1;
+            {
+                stringstream ss;
+                ss << "the worker has just dropped the connection: " << _wrk.second.m_user << "@" << _wrk.second.m_host;
+                InfoLog( ss.str() );
+                close( _wrk.first );
+                _wrk.first = -1;
+            }
             break;
         case CProtocol::stAGAIN:
             break;
