@@ -68,7 +68,7 @@ void CAgentClient::adminChannel( int _serverSock )
                     BYTEVector_t data;
                     SMessageHeader header = protocol.getMsg( &data );
                     stringstream ss;
-                    ss << "CMD: " <<  header.m_cmd << endl;
+                    ss << "CMD: " <<  header.m_cmd;
                     InfoLog( ss.str() );
                     switch ( static_cast<ECmdType>( header.m_cmd ) )
                     {

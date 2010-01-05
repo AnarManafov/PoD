@@ -39,7 +39,6 @@ option(BUILD_TESTS "Build pod-agent unit tests" OFF)
 
 
 set( SOURCE_FILES
-    ./src/
     ./src/Main.cpp
     ./src/AgentBase.cpp
     ./src/AgentServer.cpp
@@ -49,14 +48,14 @@ set( SOURCE_FILES
     ./src/Node.cpp
     ./src/Protocol.cpp
     ./src/ProtocolCommands.cpp
+    ./src/ProofStatusFile.cpp
 )
 
 
 #
 # search for Boost
 #
-
-find_package( Boost 1.33.1 REQUIRED thread program_options)
+find_package( Boost 1.33.1 REQUIRED thread program_options system filesystem)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
@@ -85,7 +84,7 @@ target_link_libraries (
 )
 
 install(TARGETS pod-agent DESTINATION bin)
-
+install(PROGRAMS run_test.sh DESTINATION bin)
 
 #
 ## Unit tests

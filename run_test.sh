@@ -7,3 +7,8 @@ $1/pod-agent_test_ProtocolCommands || exit 1
 echo
 echo ">>> Processing tests of Protocole"
 $1/pod-agent_test_Protocol || exit 1
+echo
+echo ">>> Processing tests of ProofStatusFile"
+$1/pod-agent_test_ProofStatusFile || exit 1
+
+

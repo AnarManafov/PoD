@@ -24,6 +24,7 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 find_package( Boost 1.33.1 REQUIRED unit_test_framework)
 
+#=============================================================================
 add_executable(pod-agent_test_ProtocolCommands Test_ProtocolCommands.cpp  ${CMAKE_SOURCE_DIR}/src/ProtocolCommands.cpp)
 
 target_link_libraries (
@@ -33,6 +34,7 @@ target_link_libraries (
 
 install(TARGETS pod-agent_test_ProtocolCommands DESTINATION tests)
 
+#=============================================================================
 set( SRC_PROTOCOL
     Test_Protocol.cpp
     ${CMAKE_SOURCE_DIR}/src/Protocol.cpp
@@ -48,4 +50,19 @@ target_link_libraries (
 
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)
 
+#=============================================================================
+set( SRC_PROTOCOL
+    Test_ProofStatusFile.cpp
+    ${CMAKE_SOURCE_DIR}/src/ProofStatusFile.cpp
+)
+
+add_executable(pod-agent_test_ProofStatusFile ${SRC_PROTOCOL})
+
+target_link_libraries (
+    pod-agent_test_ProofStatusFile 
+    ${Boost_LIBRARIES}
+)
+
+install(TARGETS pod-agent_test_Protocol DESTINATION tests)
+install(FILES xpd.cf DESTINATION tests)
 

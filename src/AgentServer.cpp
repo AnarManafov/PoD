@@ -10,7 +10,7 @@
                             2009-10-02
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "AgentServer.h"
 // API
@@ -319,7 +319,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
         case CProtocol::stDISCONNECT:
             {
                 stringstream ss;
-                ss << "the worker has just dropped the connection: " << _wrk.second.m_user << "@" << _wrk.second.m_host;
+                ss << "Worker [" << _wrk.second.m_user << "@" << _wrk.second.m_host << "] has just dropped the connection";
                 InfoLog( ss.str() );
                 close( _wrk.first );
                 _wrk.first = -1;
