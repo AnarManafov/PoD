@@ -24,6 +24,11 @@ xrootd.fslib libXrdOfs.so
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 ## comment if you want to help the WN pools
 #
+# !!! DON'T REMOVE THE FOLLOWING COMMENTS
+#
+# server.adminpath _G_SERVER_TMP_DIR
+# worker.adminpath _G_WORKER_TMP_DIR
+#
 if named PoDServer
  xrd.adminpath _G_SERVER_TMP_DIR
  xrootd.export _G_XRD_EXPORT_DIR
