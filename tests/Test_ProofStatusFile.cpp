@@ -62,14 +62,17 @@ BOOST_AUTO_TEST_CASE( test_getAdminPath )
     PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS"/" );
 }
 //=============================================================================
+//#include <iterator>
 BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
 {
     CProofStatusFile s;
 
     s.readAdminPath( "./xpd.cf", adminp_server );
-    BOOST_REQUIRE_NO_THROW( s.enumStatusFiles(20001) );
+    s.enumStatusFiles(22222);
     PathVector_t files( s.getFiles() );
     BOOST_CHECK( !files.empty() );
 
+    copy(files.begin(), files.end(),
+    		ostream_iterator<fs::path>(cout, "\n"));
 }
 BOOST_AUTO_TEST_SUITE_END();

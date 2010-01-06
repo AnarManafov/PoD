@@ -92,17 +92,23 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     return true;
 }
 //=============================================================================
-void CProofStatusFile::enumStatusFiles(uint16_t _xpdPort)
+void CProofStatusFile::enumStatusFiles( uint16_t _xpdPort )
 {
     if ( m_adminPath.empty() )
         throw runtime_error( "Can't enumerate proof status files. No admin path is specified." );
 
     stringstream ss;
-    ss << m_adminPath.root_directory() << "/" << ".xproofd."<< _xpdPort << "/activesessions";
-    fs::path fullpath(ss.str());
+    ss << m_adminPath.string() << "/" << ".xproofd." << _xpdPort << "/activesessions";
+    fs::path fullpath( ss.str() );
 
-    if ( !fs::exists(fullpath) )
-        throw runtime_error( "Can't enumerate proof status files. Admin path doesn't exists." );
+    if ( !fs::exists( fullpath ) )
+    {
+        stringstream ss;
+        ss << "Can't enumerate proof status files. Admin path ["
+        << fullpath.string()
+        << "] doesn't exists.";
+        throw runtime_error( ss.str() );
+    }
 
     fs::directory_iterator end_itr; // default construction yields past-the-end
     for ( fs::directory_iterator itr( fullpath ); itr != end_itr; ++itr )
