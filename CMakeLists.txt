@@ -21,7 +21,7 @@ set(CPACK_PACKAGE_VERSION_PATCH "3a")
 
 # Check if cmake has the required version
 # because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
@@ -56,13 +56,12 @@ set( SOURCE_FILES
 # search for Boost
 #
 find_package(Boost 1.33.1)
-set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}")
+set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
 if(local_boost_version VERSION_GREATER "1.33.1")
     FIND_PACKAGE(Boost 1.33.1 REQUIRED thread program_options filesystem system)
 else(local_boost_version VERSION_GREATER "1.33.1")
     FIND_PACKAGE(Boost 1.33.1 REQUIRED thread program_options filesystem)
 endif(local_boost_version VERSION_GREATER "1.33.1")
-
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
