@@ -47,46 +47,50 @@ BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
 
 //=============================================================================
-BOOST_AUTO_TEST_CASE( test_getAdminPath )
+BOOST_AUTO_TEST_CASE( test_getAdminPath_server )
 {
     CProofStatusFile s;
 
     BOOST_REQUIRE( s.readAdminPath( "./xpd.cf", adminp_server ) );
-    fs::path adminPaths( s.getAdminPath() );
-    BOOST_REQUIRE( !adminPaths.empty() );
-    PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS );
-
-    BOOST_REQUIRE( s.readAdminPath( "./xpd.cf", adminp_worker ) );
-    adminPaths = s.getAdminPath();
-    BOOST_REQUIRE( !adminPaths.empty() );
-    PATH_CHECK( adminPaths, INSTALL_PREFIX_TESTS"/" );
+    fs::path adminPath( s.getAdminPath() );
+    BOOST_REQUIRE( !adminPath.empty() );
+    BOOST_REQUIRE_EQUAL( adminPath.string(), INSTALL_PREFIX_TESTS );
 }
 //=============================================================================
-//#include <iterator>
+BOOST_AUTO_TEST_CASE( test_getAdminPath_worker )
+{
+    CProofStatusFile s;
+
+    BOOST_REQUIRE( s.readAdminPath( "./xpd.cf", adminp_worker ) );
+    fs::path adminPath( s.getAdminPath() );
+    BOOST_REQUIRE( !adminPath.empty() );
+    BOOST_REQUIRE_EQUAL( adminPath.string(), INSTALL_PREFIX_TESTS );
+}
+//=============================================================================
 BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
 {
     CProofStatusFile s;
 
     s.readAdminPath( "./xpd.cf", adminp_server );
-    s.enumStatusFiles(22222);
+    s.enumStatusFiles( 22222 );
     PathVector_t files( s.getFiles() );
     BOOST_CHECK( !files.empty() );
 
     cout << "found files: " << endl;
     // TODO: use the following when switched to boost 1.34
     //copy(files.begin(), files.end(),
-    //		ostream_iterator<fs::path>(cout, "\n"));
+    //      ostream_iterator<fs::path>(cout, "\n"));
     PathVector_t::const_iterator iter = files.begin();
     PathVector_t::const_iterator iter_end = files.end();
-    for(;iter != iter_end; ++iter)
-    	cout << iter->string() << "\n";
+    for ( ; iter != iter_end; ++iter )
+        cout << iter->string() << "\n";
 
 
     // checking the status
     ProofStatusContainer_t status( s.getStatus() );
     BOOST_CHECK( !status.empty() );
     cout << "found status: " << endl;
-       copy(status.begin(), status.end(),
-       		ostream_iterator<EProofStatus>(cout, "\n"));
+    copy( status.begin(), status.end(),
+          ostream_iterator<EProofStatus>( cout, "\n" ) );
 }
 BOOST_AUTO_TEST_SUITE_END();

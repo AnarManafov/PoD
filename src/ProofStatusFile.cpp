@@ -49,6 +49,8 @@ private:
 //=============================================================================
 CProofStatusFile::CProofStatusFile()
 {
+	// TODO remove that when switched to boost 1.34+
+	boost::filesystem::path::default_name_check(boost::filesystem::native);
 }
 //=============================================================================
 CProofStatusFile::~CProofStatusFile()
