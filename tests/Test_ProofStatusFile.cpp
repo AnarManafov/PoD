@@ -73,8 +73,14 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
     BOOST_CHECK( !files.empty() );
 
     cout << "found files: " << endl;
-    copy(files.begin(), files.end(),
-    		ostream_iterator<fs::path>(cout, "\n"));
+    // TODO: use the following when switched to boost 1.34
+    //copy(files.begin(), files.end(),
+    //		ostream_iterator<fs::path>(cout, "\n"));
+    PathVector_t::const_iterator iter = files.begin();
+    PathVector_t::const_iterator iter_end = files.end();
+    for(;iter != iter_end; ++iter)
+    	cout << iter->string() << "\n";
+
 
     // checking the status
     ProofStatusContainer_t status( s.getStatus() );

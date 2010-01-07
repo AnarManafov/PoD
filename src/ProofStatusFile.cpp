@@ -15,6 +15,7 @@
 #include "ProofStatusFile.h"
 // STD
 #include <fstream>
+#include <stdexcept>
 // BOOST
 //#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -87,7 +88,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     fs::path admin_path( p );
 
     if ( fs::exists( admin_path ) )
-        m_adminPath.swap( admin_path );
+        swap( m_adminPath, admin_path );
 
     return true;
 }
