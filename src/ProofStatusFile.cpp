@@ -49,8 +49,6 @@ private:
 //=============================================================================
 CProofStatusFile::CProofStatusFile()
 {
-	// TODO remove that when switched to boost 1.34+
-	boost::filesystem::path::default_name_check(boost::filesystem::native);
 }
 //=============================================================================
 CProofStatusFile::~CProofStatusFile()
@@ -63,7 +61,8 @@ CProofStatusFile::~CProofStatusFile()
 bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
-    if ( !fs::exists( fs::path( _xpdCFGFileName ) ) )
+	//TODO: keeping fs::native is important for boost version earlier 1.34
+    if ( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
         return false;
 
     // Read the content of the xpd.cf
@@ -87,7 +86,8 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     string p( *iter );
     trim<string>( &p, ' ' );
 
-    fs::path admin_path( p );
+    //TODO: keeping fs::native is important for boost version earlier 1.34
+    fs::path admin_path( p, fs::native );
 
     if ( fs::exists( admin_path ) )
         swap( m_adminPath, admin_path );
@@ -102,7 +102,8 @@ void CProofStatusFile::enumStatusFiles( uint16_t _xpdPort )
 
     stringstream ss;
     ss << m_adminPath.string() << "/" << ".xproofd." << _xpdPort << "/activesessions";
-    fs::path fullpath( ss.str() );
+    //TODO: keeping fs::native is important for boost version earlier 1.34
+    fs::path fullpath( ss.str(), fs::native );
 
     if ( !fs::exists( fullpath ) )
     {
