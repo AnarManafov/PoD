@@ -72,7 +72,15 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
     PathVector_t files( s.getFiles() );
     BOOST_CHECK( !files.empty() );
 
+    cout << "found files: " << endl;
     copy(files.begin(), files.end(),
     		ostream_iterator<fs::path>(cout, "\n"));
+
+    // checking the status
+    ProofStatusContainer_t status( s.getStatus() );
+    BOOST_CHECK( !status.empty() );
+    cout << "found status: " << endl;
+       copy(status.begin(), status.end(),
+       		ostream_iterator<EProofStatus>(cout, "\n"));
 }
 BOOST_AUTO_TEST_SUITE_END();

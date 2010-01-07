@@ -120,6 +120,21 @@ void CProofStatusFile::enumStatusFiles( uint16_t _xpdPort )
         else if ( fs::extension( itr->leaf() ) == ".status" )
         {
             m_files.push_back( *itr );
+
+            // read a proof status from the file
+            ifstream f( itr->string().c_str() );
+            if ( !f.is_open() )
+            {
+                // TODO: Think, whether we need to throw here
+                stringstream ss;
+                ss << "Can't open proof status file ["
+                << itr->string().c_str()
+                << "].";
+                throw runtime_error( ss.str() );
+            }
+            int status( 0 );
+            f >> status;
+            m_status.push_back( static_cast<EProofStatus>( status ) );
         }
     }
 }
