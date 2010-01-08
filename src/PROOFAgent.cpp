@@ -49,11 +49,11 @@ void CPROOFAgent::Start() throw( exception )
 void CPROOFAgent::initLogEngine()
 {
     // Initializing log engine
-    // log file name: proofagent.<instance_name>.log
+    // log file name: pod-agent.<instance_name>.log
     std::stringstream logfile_name;
     logfile_name
     << m_Data.m_logFileDir
-    << "proofagent."
+    << "pod-agent."
     << (( Server == m_Mode ) ? "server" : "client" )
     << ".log";
 

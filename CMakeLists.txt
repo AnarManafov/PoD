@@ -14,13 +14,13 @@
 #*************************************************************************
 project( pod-agent )
 
-set(VERSION "2.1.3a")
+set(VERSION "2.1.3b")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "3a")
+set(CPACK_PACKAGE_VERSION_PATCH "3b")
 
 # Check if cmake has the required version
-# because of many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4
+# because of many bugs in FindBOOST of older versions of cmake we recommend cmake 2.6.4
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # Where to lookup modules
