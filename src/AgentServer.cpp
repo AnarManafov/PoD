@@ -253,10 +253,11 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             if ( !( *iter )->isActive() )
             {
                 InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
-                BYTEVector_t b;
-                b.resize(1000);
-                const ssize_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
-                throw system_error("DEBUG");
+                // TODO: Remove THAT!!!! used for debug once
+//                BYTEVector_t b;
+//                b.resize(1000);
+//                const ssize_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
+//                throw system_error("DEBUG");
             }
 
             // update the idle timer
@@ -470,7 +471,7 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     // Now when we got a connection from our worker, we need to create a local server (for that worker)
     // which actually will emulate a local worker node for a proof server
     // Listening for PROOF master connections
-    // Whenever he tries to connect to its clients we will catch it and redirect it
+    // Whenever he tries to connect to its clients we will catch that and redirect it
     inet::CSocketServer localPROOFclient;
     localPROOFclient.Bind( port );
     localPROOFclient.Listen( 1 );
