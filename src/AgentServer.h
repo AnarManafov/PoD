@@ -23,17 +23,21 @@
 #include "Protocol.h"
 #include "ProtocolCommands.h"
 //=============================================================================
-
 namespace PROOFAgent
 {
-
     struct SWorkerInfo
     {
+        SWorkerInfo():
+                m_proofPort( 0 ),
+                m_removeMe( false )
+        {
+        }
         CProtocol m_protocol;
         std::string m_host;
         std::string m_user;
         uint16_t m_proofPort;
         std::string m_proofCfgEntry;
+        bool m_removeMe;
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;

@@ -35,7 +35,7 @@ struct is_bad_wrk
 {
     bool operator()( const wrkValue_t &_val )
     {
-        return ( 0 >= _val.first );
+        return ( 0 >= _val.first || _val.second.m_removeMe );
     }
 };
 //=============================================================================
@@ -93,10 +93,10 @@ void CAgentServer::run()
         inet::CSocketServer server;
         server.Bind( m_agentServerListenPort );
         server.Listen( 200 ); // TODO: Move this number of queued clients to config
-        server.GetSocket().set_nonblock(); // Nonblocking server socket
+        server.setNonBlock(); // Nonblocking server socket
 
         // Add main server's socket to the list of sockets to select
-        f_serverSocket = server.GetSocket().get();
+        f_serverSocket = server.getSocket();
 
         InfoLog( "Entering into the main \"select\" loop..." );
         while ( true )
@@ -251,7 +251,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             // we try to read from it in anyway. Further procedures will mark
             // it as a bad one.
             if ( !( *iter )->isActive() )
-                InfoLog( "An inactive remote worker is in ready-to-read state. It could mean that it has just dropped the connection." );
+                InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
 
             // update the idle timer
             m_idleWatch.touch();
@@ -378,7 +378,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 //=============================================================================
 void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
 {
-    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PROXYPROOF ) );
+    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PACKETFORWARDING_PROOF ) );
     createClientNode( _wrk );
 }
 //=============================================================================
@@ -401,7 +401,7 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
     try
     {
         inet::CSocketClient c;
-        c.Connect( _wrk.second.m_proofPort, h.m_host );
+        c.connect( _wrk.second.m_proofPort, h.m_host );
     }
     catch ( ... ) // we got a problem to connect to a worker
     {
@@ -423,7 +423,7 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
     }
 
     // using a direct connection to xproof
-    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECTPROOF ) );
+    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECT_PROOF ) );
 
     // Update proof.cfg with active workers
     _wrk.second.m_proofCfgEntry =
@@ -440,6 +440,10 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
 //=============================================================================
 void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
 {
+	// marking this worker to be removed from the admin channel
+	// TODO: in the future versions, workers will use admin channel all the time in all modes
+	_wrk.second.m_removeMe = true;
+
     stringstream ss;
     ss
     << "Accepting connection for: "
@@ -464,11 +468,11 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     inet::CSocketServer localPROOFclient;
     localPROOFclient.Bind( port );
     localPROOFclient.Listen( 1 );
-    localPROOFclient.GetSocket().set_nonblock();
+    localPROOFclient.setNonBlock();
 
     // Then we add this node to a nodes container
     node_type node(
-        new CNode( _wrk.first, localPROOFclient.GetSocket().detach(),
+        new CNode( _wrk.first, localPROOFclient.detach(),
                    strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
     node->disable();
     // add new worker's sockets to the main "select"

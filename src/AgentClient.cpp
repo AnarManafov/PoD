@@ -83,11 +83,13 @@ void CAgentClient::processAdminConnection( int _serverSock )
                                 protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data );
                                 break;
                             }
-                        case   cmdUSE_PROXYPROOF:
+                        case   cmdUSE_PACKETFORWARDING_PROOF:
                             // going out of the admin channel and start the packet forwarding
+                        	InfoLog("Server requested to use a packet forwarding for PROOF packages.");
                             return;
-                        case cmdUSE_DIRECTPROOF:
+                        case cmdUSE_DIRECT_PROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
+                        	InfoLog("Server requested to use a direct connection for PROOF packages.");
                             break;
                         case cmdSHUTDOWN:
                             InfoLog( "Shutting down, by the server's request..." );
@@ -122,13 +124,13 @@ void CAgentClient::run()
             InfoLog( "looking for PROOFAgent server to connect..." );
             // a connection to a Agent's server
             inet::CSocketClient client;
-            client.Connect( m_agentServerListenPort, m_agentServerHost );
+            client.connect( m_agentServerListenPort, m_agentServerHost );
             InfoLog( "Connection to the server established. Entering to admin channel." );
 
             try
             {
                 // Starting a server communication
-            	processAdminConnection( client.GetSocket() );
+            	processAdminConnection( client.getSocket() );
             }
             catch ( exception & e )
             {
@@ -140,15 +142,14 @@ void CAgentClient::run()
             InfoLog( "Entering into the main \"select\" loop..." );
             try
             {
-                client.GetSocket().set_nonblock();
-
+                client.setNonBlock();
                 // waiting until Agent server sends something
                 // that would mean that a user initializes a PROOF session
-                waitForServerToConnect( client.GetSocket().get() );
+                waitForServerToConnect( client.getSocket() );
 
                 // now we need to connect to a local PROOF worker
                 MiscCommon::INet::Socket_t proof_socket = connectToLocalPROOF( m_proofPort );
-                CNode node( client.GetSocket().detach(), proof_socket,
+                CNode node( client.detach(), proof_socket,
                             "", m_Data.m_common.m_agentNodeReadBuffer );
 
                 // now we are ready to proxy all packages
@@ -249,12 +250,12 @@ MiscCommon::INet::Socket_t CAgentClient::connectToLocalPROOF( unsigned int _proo
 
     // Connecting to the local client (a proof slave)
     inet::CSocketClient proof_client;
-    proof_client.Connect( _proofPort, "127.0.0.1" );
+    proof_client.connect( _proofPort, "127.0.0.1" );
     InfoLog( "connected to the local proof service" );
 
-    proof_client.GetSocket().set_nonblock();
+    proof_client.setNonBlock();
 
-    return proof_client.GetSocket().detach();
+    return proof_client.detach();
 }
 
 //=============================================================================

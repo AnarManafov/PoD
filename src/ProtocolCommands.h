@@ -40,16 +40,16 @@ namespace PROOFAgent
         cmdHOST_INFO = 30,
         cmdGET_HOST_INFO = cmdHOST_INFO + 1,
 
-        cmdUSE_PROXYPROOF = 50,
-        cmdUSE_DIRECTPROOF = 60,
+        cmdUSE_PACKETFORWARDING_PROOF = 50,
+        cmdUSE_DIRECT_PROOF = cmdUSE_PACKETFORWARDING_PROOF+1,
 
-        cmdSHUTDOWN = 70,
+        cmdSHUTDOWN = 60,
         // cmdRESTART = cmdSHUTDOWN + 1 // NOT Implemented yet
         // cmdIDLE_SHUTDOWN = cmdSHUTDOWN + 2, // NOT Implemented yet
 
 
 
-        // cmdKillPROOFSERV = 100 // NOT Implemented yet
+        // cmdKillPROOFSERV =  // NOT Implemented yet
     };
 //=============================================================================
     template<class _Owner>
