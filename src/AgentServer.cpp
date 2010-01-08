@@ -21,7 +21,6 @@
 #include "ErrorCode.h"
 #include "INet.h"
 #include "SysHelper.h"
-#include "HexView.h"
 //=============================================================================
 using namespace std;
 using namespace PROOFAgent;
@@ -256,19 +255,8 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
                 InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
                 BYTEVector_t b;
                 b.resize(1000);
-                InfoLog( "DEBUG1" );
                 const ssize_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
-                stringstream ss1;
-                ss1 << "DEBUG Buffer:"<< bytesToSend;
-                InfoLog(ss1.str());
-                if( 0 == bytesToSend )
-                	InfoLog( "DEBUG2" );
-                BYTEVector_t tmp_buf( b.begin(), b.begin() + bytesToSend );
-                InfoLog( "DEBUG3" );
-                ss1 << BYTEVectorHexView_t( tmp_buf )
-                            << "\n";
-                InfoLog( "DEBUG4" );
-                        InfoLog( ss1.str() );
+                throw system_error("DEBUG");
             }
 
             // update the idle timer
