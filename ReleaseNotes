@@ -1,5 +1,13 @@
 # Release Notes for pod-user-defaults
 
+## v.1.0.3 (not yet released)
+pod-user-defaults: updated user defaults configuration file - v0.3
+pod-user-defaults: new option <server.packet_forwarding> default is "auto".
+                   if workers are behind a firewall than PoD will use its packet forwarding (PF) algorithms
+                   to maintain the PROOF traffic between server and workers.
+                   By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
+                   will decide on the fly whether to use PF for each worker individually based on the possibility to directly connect to worker.
+
 ## v.1.0.2 (2009-11-27)
 pod-user-defaults: updated user defaults configuration file - v0.2
 pod-user-defaults: if shared home is used, users can define $ROOTSYS as a ROOT version for workers.
