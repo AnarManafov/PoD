@@ -209,31 +209,6 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     if ( 0 == retval )
         return;
 
-    workersMap_t::iterator wrk_iter = m_adminConnections.begin();
-    workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
-    for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
-    {
-        if ( wrk_iter->first <= 0 )
-            continue;
-
-        if ( 0 == FD_ISSET( wrk_iter->first, &readset ) )
-            continue;
-
-        // update the idle timer
-        m_idleWatch.touch();
-
-        try
-        {
-            // Starting a server communication
-            processAdminConnection( *wrk_iter );
-        }
-        catch ( exception & e )
-        {
-            WarningLog( 0, e.what() );
-            continue;
-        }
-    }
-
     Sockets_type::iterator iter = m_socksToSelect.begin();
     Sockets_type::iterator iter_end = m_socksToSelect.end();
     for ( ; iter != iter_end; ++iter )
@@ -253,11 +228,6 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             if ( !( *iter )->isActive() )
             {
                 InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
-                // TODO: Remove THAT!!!! used for debug once
-//                BYTEVector_t b;
-//                b.resize(1000);
-//                const ssize_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
-//                throw system_error("DEBUG");
             }
 
             // update the idle timer
@@ -303,6 +273,34 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         }
     }
 
+    // Admin connection should be checked after m_socksToSelect (packet forwarded PF connections),
+    // because some of the admin connections could became a PF connection see createClientNode()
+    // In this case the socket will be detected twice as a read-ready-socket.
+    workersMap_t::iterator wrk_iter = m_adminConnections.begin();
+    workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
+    for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+    {
+        if ( wrk_iter->first <= 0 )
+            continue;
+
+        if ( 0 == FD_ISSET( wrk_iter->first, &readset ) )
+            continue;
+
+        // update the idle timer
+        m_idleWatch.touch();
+
+        try
+        {
+            // Starting a server communication
+            processAdminConnection( *wrk_iter );
+        }
+        catch ( exception & e )
+        {
+            WarningLog( 0, e.what() );
+            continue;
+        }
+    }
+
     // check whether agent's client tries to connect..
     if ( FD_ISSET( f_serverSocket, &readset ) )
     {
@@ -329,7 +327,6 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 //=============================================================================
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 {
-	InfoLog("There is something to read on the admin channel");
     CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
     switch ( ret )
     {
@@ -387,12 +384,12 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
 {
     _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PACKETFORWARDING_PROOF ) );
-    stringstream ss;
-    ss
-    << "Using a packet forwarding connection to xproof for: "
-    << _wrk.second.m_user << "@" << _wrk.second.m_host;
-    InfoLog( ss.str() );
-    // createClientNode( _wrk );
+//    stringstream ss;
+//    ss
+//    << "Using a packet forwarding connection to xproof for: "
+//    << _wrk.second.m_user << "@" << _wrk.second.m_host;
+//    InfoLog( ss.str() );
+    createClientNode( _wrk );
 }
 //=============================================================================
 void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
@@ -459,7 +456,7 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
 
     stringstream ss;
     ss
-    << "Accepting connection for: "
+    << "Using a packet forwarding for the worker: "
     << _wrk.second.m_user << "@" << _wrk.second.m_host;
     InfoLog( erOK, ss.str() );
 
