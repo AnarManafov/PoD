@@ -86,8 +86,7 @@ void CAgentClient::processAdminConnection( int _serverSock )
                         case   cmdUSE_PACKETFORWARDING_PROOF:
                             // going out of the admin channel and start the packet forwarding
                         	InfoLog("Server requested to use a packet forwarding for PROOF packages.");
-                            // return;
-                        	break;
+                            return;
                         case cmdUSE_DIRECT_PROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
                         	InfoLog("Server requested to use a direct connection for PROOF packages.");

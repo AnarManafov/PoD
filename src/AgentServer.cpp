@@ -273,6 +273,10 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         {
             // check whether a proof server tries to connect to proof workers
 
+        	 if ( !( *iter )->isActive() )
+        	            {
+        	                InfoLog( "DEBUG: An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
+        	            }
             // update the idle timer
             m_idleWatch.touch();
 
