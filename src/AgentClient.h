@@ -60,7 +60,7 @@ namespace PROOFAgent
             MiscCommon::INet::Socket_t connectToLocalPROOF( unsigned int _proofPort );
             void mainSelect( CNode *_node );
             void createPROOFCfg();
-            void adminChannel( int _serverSock );
+            void processAdminConnection( int _serverSock );
 
         private:
             PoD::SWorkerOptions_t m_Data;

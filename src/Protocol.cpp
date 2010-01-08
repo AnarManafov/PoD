@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "Protocol.h"
 // API
@@ -142,5 +142,11 @@ void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data )
 {
     BYTEVector_t msg( createMsg( _cmd, _data ) );
     sendall( _socket, &msg[0], msg.size(), 0 );
+}
+//=============================================================================
+void CProtocol::writeSimpleCmd( int _socket, uint16_t _cmd )
+{
+    BYTEVector_t data;
+    write( _socket, _cmd, data );
 }
 //=============================================================================

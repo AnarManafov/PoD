@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROTOCOL_H_
 #define PROTOCOL_H_
@@ -63,19 +63,18 @@ namespace PROOFAgent
 
             typedef enum EStatus
             {
-                stDISCONNECT = -3,
-                stAGAIN = -2,
-                stUNKNOWN = -1,
                 stOK = 0,
-                stERR = 1
+                stDISCONNECT = 1,
+                stAGAIN = 2
             } EStatus_t;
 
             EStatus_t read( int _socket );
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
+            void writeSimpleCmd( int _socket, uint16_t _cmd );
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data );
             uint16_t getVersion()
             {
-            	return m_ver;
+                return m_ver;
             }
 
         private:

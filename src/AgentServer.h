@@ -104,6 +104,7 @@ namespace PROOFAgent
             void processAdminConnection( workersMap_t::value_type &_wrk );
             void processHostInfoMessage( workersMap_t::value_type &_wrk,
                                          const SHostInfoCmd &h );
+            void usePacketForwarding( workersMap_t::value_type &_wrk );
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;

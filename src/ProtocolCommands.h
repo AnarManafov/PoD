@@ -43,11 +43,13 @@ namespace PROOFAgent
         cmdUSE_PROXYPROOF = 50,
         cmdUSE_DIRECTPROOF = 60,
 
-        //cmdIDLE_SHUTDOWN = 70, // NOT Implemented yet
+        cmdSHUTDOWN = 70,
+        // cmdRESTART = cmdSHUTDOWN + 1 // NOT Implemented yet
+        // cmdIDLE_SHUTDOWN = cmdSHUTDOWN + 2, // NOT Implemented yet
 
-        // cmdRESTART = 80 // NOT Implemented yet
 
-        // cmdKillPROOFSERV = 90 // NOT Implemented yet
+
+        // cmdKillPROOFSERV = 100 // NOT Implemented yet
     };
 //=============================================================================
     template<class _Owner>

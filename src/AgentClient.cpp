@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "AgentClient.h"
 // STD
@@ -42,7 +42,7 @@ CAgentClient::~CAgentClient()
 {
 }
 //=============================================================================
-void CAgentClient::adminChannel( int _serverSock )
+void CAgentClient::processAdminConnection( int _serverSock )
 {
     CProtocol protocol;
     SVersionCmd v;
@@ -61,8 +61,6 @@ void CAgentClient::adminChannel( int _serverSock )
                 throw runtime_error( "a disconnect has been detected on the adminChannel" );
             case CProtocol::stAGAIN:
                 break;
-            case CProtocol::stUNKNOWN:
-                throw runtime_error( "an unknown error has been detected on the adminChannel" );
             case CProtocol::stOK:
                 {
                     BYTEVector_t data;
@@ -91,14 +89,16 @@ void CAgentClient::adminChannel( int _serverSock )
                         case cmdUSE_DIRECTPROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
                             break;
+                        case cmdSHUTDOWN:
+                            InfoLog( "Shutting down, by the server's request..." );
+                            graceful_quit = true;
+                            throw runtime_error( "stop admin channel." );
                         default:
                             WarningLog( 0, "Unexpected message in the admin channel" );
                             break;
                     }
                     break;
                 }
-            case CProtocol::stERR:
-                throw runtime_error( "error has occurred in the adminChannel" );
         }
     }
 }
@@ -121,19 +121,18 @@ void CAgentClient::run()
 
             InfoLog( "looking for PROOFAgent server to connect..." );
             // a connection to a Agent's server
-            // TODO: implement this using nonblock sockets
             inet::CSocketClient client;
             client.Connect( m_agentServerListenPort, m_agentServerHost );
-            InfoLog( "connected!" );
+            InfoLog( "Connection to the server established. Entering to admin channel." );
 
             try
             {
                 // Starting a server communication
-                adminChannel( client.GetSocket() );
+            	processAdminConnection( client.GetSocket() );
             }
             catch ( exception & e )
             {
-                WarningLog( erError, e.what() );
+                WarningLog( 0, e.what() );
                 continue;
             }
 

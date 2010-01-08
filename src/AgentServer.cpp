@@ -222,7 +222,16 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         // update the idle timer
         m_idleWatch.touch();
 
-        processAdminConnection( *wrk_iter );
+        try
+        {
+            // Starting a server communication
+            processAdminConnection( *wrk_iter );
+        }
+        catch ( exception & e )
+        {
+            WarningLog( 0, e.what() );
+            continue;
+        }
     }
 
     Sockets_type::iterator iter = m_socksToSelect.begin();
@@ -327,8 +336,6 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
             break;
         case CProtocol::stAGAIN:
             break;
-        case CProtocol::stUNKNOWN:
-            break;
         case CProtocol::stOK:
             {
                 BYTEVector_t data;
@@ -344,8 +351,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                             InfoLog( ss.str() );
 
                             // request client's host information
-                            BYTEVector_t data;
-                            _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ), data );
+                            _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
                         }
                         break;
                     case cmdHOST_INFO:
@@ -367,9 +373,13 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                 }
                 break;
             }
-        case CProtocol::stERR:
-            break;
     }
+}
+//=============================================================================
+void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
+{
+    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PROXYPROOF ) );
+    createClientNode( _wrk );
 }
 //=============================================================================
 void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
@@ -379,36 +389,53 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
     _wrk.second.m_user = h.m_username;
     _wrk.second.m_proofPort = h.m_proofPort;
 
+    if ( m_Data.m_packetForwarding == "yes" )
+    {
+        // use packet forwarder
+        usePacketForwarding( _wrk );
+        return;
+    }
+
+    // in case when m_Data.m_packetForwarding is "no" or "auto"
     // check whether a direct connection to a xproof worker possible
     try
     {
-
         inet::CSocketClient c;
         c.Connect( _wrk.second.m_proofPort, h.m_host );
-        // using a direct connection to xproof
-        BYTEVector_t data;
-        _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECTPROOF ), data );
-
-        // Update proof.cfg with active workers
-        _wrk.second.m_proofCfgEntry =
-            createPROOFCfgEntryString( h.m_username, h.m_proofPort, h.m_host, false );
-        // Update proof.cfg according to a current number of active workers
-        updatePROOFCfg();
-
-        stringstream ss;
-        ss
-        << "Using a direct connection to xproof for: "
-        << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort;
-        InfoLog( erOK, ss.str() );
     }
-    catch ( ... )
+    catch ( ... ) // we got a problem to connect to a worker
     {
-        // use packet forwarder
-        BYTEVector_t data;
-        _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdUSE_PROXYPROOF ), data );
+        if ( m_Data.m_packetForwarding == "no" )
+        {
+            stringstream ss;
+            ss
+            << "Shutting the worker down: "
+            << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort
+            << ". User requested a direct PROOF connection, which is not possible for this host.";
+            InfoLog( ss.str() );
+            _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdSHUTDOWN ) );
+            return;
+        }
 
-        createClientNode( _wrk );
+        // use packet forwarder
+        usePacketForwarding( _wrk );
+        return;
     }
+
+    // using a direct connection to xproof
+    _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECTPROOF ) );
+
+    // Update proof.cfg with active workers
+    _wrk.second.m_proofCfgEntry =
+        createPROOFCfgEntryString( h.m_username, h.m_proofPort, h.m_host, false );
+    // Update proof.cfg according to a current number of active workers
+    updatePROOFCfg();
+
+    stringstream ss;
+    ss
+    << "Using a direct connection to xproof for: "
+    << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort;
+    InfoLog( ss.str() );
 }
 //=============================================================================
 void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
