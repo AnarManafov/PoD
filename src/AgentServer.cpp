@@ -257,7 +257,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
                 BYTEVector_t b;
                 b.resize(1000);
                 InfoLog( "DEBUG1" );
-                const size_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
+                const ssize_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &b[0], b.capacity(), 0 );
                 stringstream ss1;
                 ss1 << "DEBUG Buffer:"<< bytesToSend;
                 InfoLog(ss1.str());
