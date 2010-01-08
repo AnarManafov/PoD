@@ -254,15 +254,18 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             if ( !( *iter )->isActive() )
             {
                 InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
-                BYTEVector_t b(1000);
+                BYTEVector_t b;
+                b.resize(1000);
+                InfoLog( "DEBUG1" );
                 const size_t bytesToSend = ::recv(  ( *iter )->getSocket( CNode::nodeSocketFirst ), &( b )[ 0 ], b.capacity(), 0 );
                 if( 0 == bytesToSend )
-                	InfoLog( "DEBUG" );
+                	InfoLog( "DEBUG2" );
                 BYTEVector_t tmp_buf( b.begin(), b.begin() + bytesToSend );
+                InfoLog( "DEBUG3" );
                 stringstream ss1;
                 ss1 << BYTEVectorHexView_t( tmp_buf )
                             << "\n";
-
+                InfoLog( "DEBUG4" );
                         InfoLog( ss1.str() );
             }
 
