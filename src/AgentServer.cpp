@@ -213,7 +213,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
     for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
     {
-        if ( 0 >= wrk_iter->first )
+        if ( wrk_iter->first <= 0 )
             continue;
 
         if ( 0 == FD_ISSET( wrk_iter->first, &readset ) )
@@ -273,10 +273,6 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         {
             // check whether a proof server tries to connect to proof workers
 
-        	 if ( !( *iter )->isActive() )
-        	            {
-        	                InfoLog( "DEBUG: An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
-        	            }
             // update the idle timer
             m_idleWatch.touch();
 
@@ -333,6 +329,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 //=============================================================================
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 {
+	InfoLog("There is something to read on the admin channel");
     CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
     switch ( ret )
     {
@@ -390,7 +387,12 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
 {
     _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PACKETFORWARDING_PROOF ) );
-    createClientNode( _wrk );
+    stringstream ss;
+    ss
+    << "Using a packet forwarding connection to xproof for: "
+    << _wrk.second.m_user << "@" << _wrk.second.m_host;
+    InfoLog( ss.str() );
+    // createClientNode( _wrk );
 }
 //=============================================================================
 void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
@@ -451,9 +453,9 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
 //=============================================================================
 void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
 {
-	// marking this worker to be removed from the admin channel
-	// TODO: in the future versions, workers will use admin channel all the time in all modes
-	_wrk.second.m_removeMe = true;
+    // marking this worker to be removed from the admin channel
+    // TODO: in the future versions, workers will use admin channel all the time in all modes
+    _wrk.second.m_removeMe = true;
 
     stringstream ss;
     ss
