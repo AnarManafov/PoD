@@ -102,8 +102,8 @@ namespace PROOFAgent
             sendall( *output, &( *buf )[0], m_bytesToSend, 0 );
 
             // TODO: uncomment when log level is implemented
-            //  BYTEVector_t tmp_buf( m_buf.begin(), m_buf.begin() + m_bytesToSend );
-            //   ReportPackage( *input, *output, tmp_buf );
+              BYTEVector_t tmp_buf( buf->begin(), buf->begin() + m_bytesToSend );
+               ReportPackage( *input, *output, tmp_buf );
         };
 
         setInUse( false, _which );
