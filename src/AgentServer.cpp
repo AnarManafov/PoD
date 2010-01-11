@@ -401,6 +401,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 // set an id to the worker
                                 ++m_workerMaxID;
                                 id.m_id = m_workerMaxID;
+                                data.clear();
                                 id.convertToData( &data );
                                 _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdSET_ID ), data );
                             }
