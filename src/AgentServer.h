@@ -34,6 +34,15 @@ namespace PROOFAgent
                 m_id( 0 )
         {
         }
+        std::string string() const
+        {
+            std::stringstream ss;
+            ss
+            << m_user << "@" << m_host << ":" << m_proofPort
+            << "[id:" << m_id << "]";
+
+            return ss.str();
+        }
         CProtocol m_protocol;
         std::string m_host;
         std::string m_user;
@@ -110,8 +119,7 @@ namespace PROOFAgent
                                                    bool usePF );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
-            void processHostInfoMessage( workersMap_t::value_type &_wrk,
-                                         const SHostInfoCmd &h );
+            void setupPROOFWorker( workersMap_t::value_type &_wrk );
             void usePacketForwarding( workersMap_t::value_type &_wrk );
             void sendServerRequest( workersMap_t::value_type &_wrk );
 
