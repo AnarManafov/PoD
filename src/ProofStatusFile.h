@@ -73,15 +73,15 @@ namespace PROOFAgent
             bool readAdminPath( const std::string &_xpdCFGFileName,
                                 EAdminPathType _type );
             void enumStatusFiles( uint16_t _xpdPort );
-            boost::filesystem::path getAdminPath()
+            boost::filesystem::path getAdminPath() const
             {
                 return m_adminPath;
             }
-            PathVector_t getFiles()
+            PathVector_t getFiles() const
             {
                 return m_files;
             }
-            ProofStatusContainer_t getStatus()
+            ProofStatusContainer_t getStatus() const
             {
             	return m_status;
             }
