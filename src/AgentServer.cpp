@@ -41,7 +41,8 @@ struct is_bad_wrk
 //=============================================================================
 CAgentServer::CAgentServer( const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_server.m_common ),
-        m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, m_signalPipeName )
+        m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, m_signalPipeName ),
+        m_workerMaxID( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
@@ -325,8 +326,32 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 
 }
 //=============================================================================
+void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
+{
+    if ( m_requests.empty() )
+        return;
+
+    switch ( m_requests.front() )
+    {
+        case cmdGET_ID:
+            // request client's id
+            _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_ID ) );
+            break;
+        case cmdGET_HOST_INFO:
+            // request client's host information
+            _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
+            break;
+        default:
+            WarningLog( 0, "unexpected command has been found in the server requests queue." );
+            break;
+    }
+    m_requests.pop();
+}
+//=============================================================================
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 {
+    sendServerRequest( _wrk );
+
     CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
     switch ( ret )
     {
@@ -351,12 +376,37 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                         {
                             SVersionCmd v;
                             v.convertFromData( data );
-                            stringstream ss;
-                            ss << "Server received client's protocol version: " << v.m_version;
-                            InfoLog( ss.str() );
-
+                            // so far we require all versions to be the same
+                            if ( v.m_version != _wrk.second.m_protocol.getVersion() )
+                            {
+                                stringstream ss;
+                                ss
+                                << "Shutting the worker down: "
+                                << _wrk.second.m_user << "@" << _wrk.second.m_host << ":" << _wrk.second.m_proofPort
+                                << ". It has incompatible protocol version.";
+                                InfoLog( ss.str() );
+                                _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdSHUTDOWN ) );
+                                _wrk.second.m_removeMe = true;
+                            }
+                            // request client's id
+                            m_requests.push( cmdGET_ID );
                             // request client's host information
-                            _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
+                            m_requests.push( cmdGET_HOST_INFO );
+                        }
+                        break;
+                    case cmdID:
+                        {
+                            SIdCmd id;
+                            id.convertFromData( data );
+                            if ( 0 == id.m_id )
+                            {
+                                // set an id to the worker
+                                ++m_workerMaxID;
+                                id.m_id = m_workerMaxID;
+                                id.convertToData( &data );
+                                _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdSET_ID ), data );
+                            }
+                            _wrk.second.m_id = id.m_id;
                         }
                         break;
                     case cmdHOST_INFO:
@@ -424,6 +474,7 @@ void CAgentServer::processHostInfoMessage( workersMap_t::value_type &_wrk,
             << ". User requested a direct PROOF connection, which is not possible for this host.";
             InfoLog( ss.str() );
             _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdSHUTDOWN ) );
+            _wrk.second.m_removeMe = true;
             return;
         }
 

@@ -48,7 +48,8 @@ namespace PROOFAgent
         // cmdIDLE_SHUTDOWN = cmdSHUTDOWN + 2, // NOT Implemented yet
 
         cmdGET_ID = 70,
-        cmdSET_ID = cmdGET_ID + 1
+        cmdID = cmdGET_ID + 1,
+        cmdSET_ID = cmdGET_ID + 2
 
         // cmdKillPROOFSERV =  // NOT Implemented yet
     };
@@ -130,7 +131,7 @@ namespace PROOFAgent
 //=============================================================================
     struct SIdCmd: public SBasicCmd<SIdCmd>
     {
-    	SIdCmd(): m_id(0)
+        SIdCmd(): m_id( 0 )
         {
         }
         void normalizeToLocal();

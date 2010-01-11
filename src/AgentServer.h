@@ -29,7 +29,8 @@ namespace PROOFAgent
     {
         SWorkerInfo():
                 m_proofPort( 0 ),
-                m_removeMe( false )
+                m_removeMe( false ),
+                m_id( 0 )
         {
         }
         CProtocol m_protocol;
@@ -38,10 +39,12 @@ namespace PROOFAgent
         uint16_t m_proofPort;
         std::string m_proofCfgEntry;
         bool m_removeMe;
+        uint32_t m_id;
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;
     typedef std::list<wrkValue_t> workersMap_t;
+    typedef std::queue<ECmdType> requests_t;
 //=============================================================================
     /**
      *
@@ -109,6 +112,7 @@ namespace PROOFAgent
             void processHostInfoMessage( workersMap_t::value_type &_wrk,
                                          const SHostInfoCmd &h );
             void usePacketForwarding( workersMap_t::value_type &_wrk );
+            void sendServerRequest( workersMap_t::value_type &_wrk );
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
@@ -118,6 +122,8 @@ namespace PROOFAgent
             std::string m_serverInfoFile;
             std::string m_masterEntryInPROOFCfg;
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
+            uint32_t m_workerMaxID;
+            requests_t m_requests;
     };
 
 }

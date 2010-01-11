@@ -30,7 +30,8 @@ const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
 //=============================================================================
 CAgentClient::CAgentClient( const SOptions_t &_data ):
-        CAgentBase( _data.m_podOptions.m_worker.m_common )
+        CAgentBase( _data.m_podOptions.m_worker.m_common ),
+        m_id( 0 )
 {
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
@@ -81,15 +82,34 @@ void CAgentClient::processAdminConnection( int _serverSock )
                                 h.m_proofPort = m_proofPort;
                                 h.convertToData( &data );
                                 protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data );
-                                break;
                             }
-                        case   cmdUSE_PACKETFORWARDING_PROOF:
+                            break;
+                        case cmdGET_ID:
+                            {
+                                SIdCmd id;
+                                id.m_id = m_id;
+                                BYTEVector_t data;
+                                id.convertToData( &data );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdID ), data );
+                            }
+                            break;
+                        case cmdSET_ID:
+                            {
+                                SIdCmd id;
+                                id.convertFromData( data );
+                                m_id = id.m_id;
+                                stringstream ss;
+                                ss << "Server has assigned ID = " << m_id << " to this worker.";
+                                InfoLog( ss.str() );
+                            }
+                            break;
+                        case cmdUSE_PACKETFORWARDING_PROOF:
                             // going out of the admin channel and start the packet forwarding
-                        	InfoLog("Server requested to use a packet forwarding for PROOF packages.");
+                            InfoLog( "Server requested to use a packet forwarding for PROOF packages." );
                             return;
                         case cmdUSE_DIRECT_PROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
-                        	InfoLog("Server requested to use a direct connection for PROOF packages.");
+                            InfoLog( "Server requested to use a direct connection for PROOF packages." );
                             break;
                         case cmdSHUTDOWN:
                             InfoLog( "Shutting down, by the server's request..." );
@@ -130,7 +150,7 @@ void CAgentClient::run()
             try
             {
                 // Starting a server communication
-            	processAdminConnection( client.getSocket() );
+                processAdminConnection( client.getSocket() );
             }
             catch ( exception & e )
             {

@@ -66,6 +66,7 @@ namespace PROOFAgent
             PoD::SWorkerOptions_t m_Data;
             std::string m_serverInfoFile;
             unsigned int m_proofPort;
+            uint32_t m_id;
     };
 
 }

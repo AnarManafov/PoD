@@ -72,7 +72,7 @@ namespace PROOFAgent
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data );
             void writeSimpleCmd( int _socket, uint16_t _cmd );
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data );
-            uint16_t getVersion()
+            uint16_t getVersion() const
             {
                 return m_ver;
             }
