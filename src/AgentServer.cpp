@@ -566,7 +566,7 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     updatePROOFCfg();
 }
 //=============================================================================
-void CAgentServer::deleteServerInfoFile()
+void CAgentServer::deleteServerInfoFile() const
 {
     // TODO: check error code
     unlink( m_serverInfoFile.c_str() );

@@ -42,7 +42,7 @@ void SVersionCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     m_version += ( _data[1] << 8 );
 }
 //=============================================================================
-void SVersionCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
+void SVersionCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
 {
     _data->push_back( m_version & 0xFF );
     _data->push_back( m_version >> 8 );
@@ -96,7 +96,7 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     m_proofPort += ( _data[idx] << 8 );
 }
 //=============================================================================
-void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
+void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
 {
     std::copy( m_username.begin(), m_username.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
@@ -130,7 +130,7 @@ void SIdCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     m_id += ( _data[3] << 24 );
 }
 //=============================================================================
-void SIdCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
+void SIdCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
 {
     _data->push_back( m_id & 0xFF );
     _data->push_back(( m_id >> 8 )&0xFF );

@@ -88,7 +88,7 @@ namespace PROOFAgent
             }
 
         private:
-            void deleteServerInfoFile();
+            void deleteServerInfoFile() const;
             void createClientNode( workersMap_t::value_type &_wrk );
             int prepareFDSet( fd_set *_readset );
             void mainSelect( const MiscCommon::INet::CSocketServer &_server );

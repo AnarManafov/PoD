@@ -85,7 +85,7 @@ CProtocol::~CProtocol()
 {
 }
 //=============================================================================
-SMessageHeader CProtocol::getMsg( BYTEVector_t *_data )
+SMessageHeader CProtocol::getMsg( BYTEVector_t *_data ) const
 {
     copy( m_curDATA.begin(), m_curDATA.end(), back_inserter( *_data ) );
     return m_msgHeader;
@@ -138,13 +138,13 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
     return stOK;
 }
 //=============================================================================
-void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data )
+void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data ) const
 {
     BYTEVector_t msg( createMsg( _cmd, _data ) );
     sendall( _socket, &msg[0], msg.size(), 0 );
 }
 //=============================================================================
-void CProtocol::writeSimpleCmd( int _socket, uint16_t _cmd )
+void CProtocol::writeSimpleCmd( int _socket, uint16_t _cmd ) const
 {
     BYTEVector_t data;
     write( _socket, _cmd, data );

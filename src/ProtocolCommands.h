@@ -79,12 +79,12 @@ namespace PROOFAgent
         }
         void normalizeToLocal();
         void normalizeToRemote();
-        size_t size()
+        size_t size() const
         {
             return sizeof( m_version );
         }
         void _convertFromData( const MiscCommon::BYTEVector_t &_data );
-        void _convertToData( MiscCommon::BYTEVector_t *_data );
+        void _convertToData( MiscCommon::BYTEVector_t *_data ) const;
         bool operator== ( const SVersionCmd &val ) const
         {
             return ( m_version == val.m_version );
@@ -102,7 +102,7 @@ namespace PROOFAgent
         SHostInfoCmd(): m_proofPort( 0 )
         {
         }
-        size_t size()
+        size_t size() const
         {
             size_t size( m_username.size() + 1 );
             size += m_host.size() + 1;
@@ -112,7 +112,7 @@ namespace PROOFAgent
         void normalizeToLocal();
         void normalizeToRemote();
         void _convertFromData( const MiscCommon::BYTEVector_t &_data );
-        void _convertToData( MiscCommon::BYTEVector_t *_data );
+        void _convertToData( MiscCommon::BYTEVector_t *_data ) const;
         bool operator== ( const SHostInfoCmd &val ) const
         {
             return ( m_username == val.m_username &&
@@ -136,12 +136,12 @@ namespace PROOFAgent
         }
         void normalizeToLocal();
         void normalizeToRemote();
-        size_t size()
+        size_t size() const
         {
             return sizeof( m_id );
         }
         void _convertFromData( const MiscCommon::BYTEVector_t &_data );
-        void _convertToData( MiscCommon::BYTEVector_t *_data );
+        void _convertToData( MiscCommon::BYTEVector_t *_data ) const;
         bool operator== ( const SIdCmd &_val ) const
         {
             return ( m_id == _val.m_id );
