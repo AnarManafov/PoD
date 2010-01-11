@@ -328,10 +328,10 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 //=============================================================================
 void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
 {
-    if ( m_requests.empty() )
+    if ( _wrk.second.m_requests.empty() )
         return;
 
-    switch ( m_requests.front() )
+    switch ( _wrk.second.m_requests.front() )
     {
         case cmdGET_ID:
             // request client's id
@@ -345,7 +345,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
             WarningLog( 0, "unexpected command has been found in the server requests queue." );
             break;
     }
-    m_requests.pop();
+    _wrk.second.m_requests.pop();
 }
 //=============================================================================
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
@@ -389,9 +389,9 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 _wrk.second.m_removeMe = true;
                             }
                             // request client's id
-                            m_requests.push( cmdGET_ID );
+                            _wrk.second.m_requests.push( cmdGET_ID );
                             // request client's host information
-                            m_requests.push( cmdGET_HOST_INFO );
+                            _wrk.second.m_requests.push( cmdGET_HOST_INFO );
                         }
                         break;
                     case cmdID:

@@ -25,6 +25,7 @@
 //=============================================================================
 namespace PROOFAgent
 {
+    typedef std::queue<ECmdType> requests_t;
     struct SWorkerInfo
     {
         SWorkerInfo():
@@ -40,11 +41,11 @@ namespace PROOFAgent
         std::string m_proofCfgEntry;
         bool m_removeMe;
         uint32_t m_id;
+        requests_t m_requests;
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;
     typedef std::list<wrkValue_t> workersMap_t;
-    typedef std::queue<ECmdType> requests_t;
 //=============================================================================
     /**
      *
@@ -123,7 +124,6 @@ namespace PROOFAgent
             std::string m_masterEntryInPROOFCfg;
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
-            requests_t m_requests;
     };
 
 }
