@@ -350,8 +350,6 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
 //=============================================================================
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 {
-    sendServerRequest( _wrk );
-
     CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
     switch ( ret )
     {
@@ -429,6 +427,9 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                 break;
             }
     }
+
+    // send a queued request
+    sendServerRequest( _wrk );
 }
 //=============================================================================
 void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
