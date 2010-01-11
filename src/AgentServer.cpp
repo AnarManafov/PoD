@@ -405,7 +405,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 SVersionCmd v;
                                 v.convertFromData( data );
                                 // so far we require all versions to be the same
-                                if ( v.m_version != _wrk.second.m_protocol.getVersion() )
+                                if ( v.m_version != CProtocol::version() )
                                 {
                                     stringstream ss;
                                     ss

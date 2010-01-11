@@ -47,7 +47,7 @@ void CAgentClient::processAdminConnection( int _serverSock )
 {
     CProtocol protocol;
     SVersionCmd v;
-    v.m_version = protocol.getVersion();
+    v.m_version = CProtocol::version();
     BYTEVector_t data;
     v.convertToData( &data );
     protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), data );

@@ -39,7 +39,7 @@ namespace PROOFAgent
         uint16_t m_cmd;
         uint32_t m_len;
 
-        bool isValid()
+        bool isValid() const
         {
             return( strcmp( m_sign, "<POD_CMD>" ) == 0 );
         }
@@ -72,13 +72,13 @@ namespace PROOFAgent
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data ) const;
             void writeSimpleCmd( int _socket, uint16_t _cmd ) const;
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data ) const;
-            uint16_t getVersion() const
+            static uint16_t version()
             {
                 return m_ver;
             }
 
         private:
-            const uint16_t m_ver;
+            static uint16_t m_ver;
             MiscCommon::BYTEVector_t m_buffer;
 
             SMessageHeader m_msgHeader;
