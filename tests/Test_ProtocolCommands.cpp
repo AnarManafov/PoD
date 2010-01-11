@@ -86,4 +86,31 @@ BOOST_AUTO_TEST_CASE(test_SHostInfoCmd_BadData)
     SHostInfoCmd b;
     BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
 }
+//=============================================================================
+BOOST_AUTO_TEST_CASE(test_SIdCmd)
+{
+    SIdCmd a;
+    a.m_id = 236734;
+    MiscCommon::BYTEVector_t data;
+    a.convertToData( &data );
+
+    SIdCmd b;
+    b.convertFromData( data );
+
+    BOOST_CHECK_EQUAL( a, b );
+}
+//=============================================================================
+BOOST_AUTO_TEST_CASE(test_SIdCmd_BadData)
+{
+	SIdCmd a;
+    a.m_id = 34;
+    MiscCommon::BYTEVector_t data;
+    a.convertToData( &data );
+
+    // making data array shorter
+    data.resize( data.size() - 2 );
+
+    SIdCmd b;
+    BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
+}
 BOOST_AUTO_TEST_SUITE_END();

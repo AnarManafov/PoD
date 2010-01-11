@@ -106,3 +106,34 @@ void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
     _data->push_back( m_proofPort & 0xFF );
     _data->push_back( m_proofPort >> 8 );
 }
+//=============================================================================
+//=============================================================================
+//=============================================================================
+void SIdCmd::normalizeToLocal()
+{
+    m_id = inet::_normalizeRead32( m_id );
+}
+//=============================================================================
+void SIdCmd::normalizeToRemote()
+{
+    m_id = inet::_normalizeWrite32( m_id );
+}
+//=============================================================================
+void SIdCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
+{
+    if ( _data.size() < size() )
+        throw std::runtime_error( "Protocol message data is too short" );
+
+    m_id = _data[0];
+    m_id += ( _data[1] << 8 );
+    m_id += ( _data[2] << 16 );
+    m_id += ( _data[3] << 24 );
+}
+//=============================================================================
+void SIdCmd::_convertToData( MiscCommon::BYTEVector_t *_data )
+{
+    _data->push_back( m_id & 0xFF );
+    _data->push_back(( m_id >> 8 )&0xFF );
+    _data->push_back(( m_id >> 16 )&0xFF );
+    _data->push_back(( m_id >> 24 )&0xFF );
+}
