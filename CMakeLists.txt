@@ -14,10 +14,10 @@
 #*************************************************************************
 project( pod-agent )
 
-set(VERSION "2.1.3b")
+set(VERSION "2.1.3c")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "3b")
+set(CPACK_PACKAGE_VERSION_PATCH "3c")
 
 # Check if cmake has the required version
 # because of many bugs in FindBOOST of older versions of cmake we recommend cmake 2.6.4
