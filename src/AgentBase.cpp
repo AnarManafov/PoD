@@ -3,15 +3,15 @@
  * @file AgentBase.cpp
  * @brief Packet Forwarder's implementation
  * @author Anar Manafov A.Manafov@gsi.de
- *//*
+ */ /*
 
- version number:     $LastChangedRevision$
- created by:         Anar Manafov
- 2009-10-02
- last changed by:    $LastChangedBy$ $LastChangedDate$
+        version number:     $LastChangedRevision$
+        created by:         Anar Manafov
+                            2009-10-02
+        last changed by:    $LastChangedBy$ $LastChangedDate$
 
- Copyright (c) 2009 GSI GridTeam. All rights reserved.
- *************************************************************************/
+        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+*************************************************************************/
 #include "AgentBase.h"
 // API
 #include <sys/types.h>

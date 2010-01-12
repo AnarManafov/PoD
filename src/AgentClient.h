@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef AGENTIMPL_H
 #define AGENTIMPL_H
