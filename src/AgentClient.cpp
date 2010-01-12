@@ -28,14 +28,25 @@ namespace inet = MiscCommon::INet;
 //=============================================================================
 const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
+const char *const g_xpdCFG = "./xpd.cf";
 //=============================================================================
 CAgentClient::CAgentClient( const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_worker.m_common ),
-        m_id( 0 )
+        m_id( 0 ),
+        m_isDirect( false )
 {
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
     m_proofPort = _data.m_proofPort;
+
+    string xpd( g_xpdCFG );
+    smart_path( &xpd );
+    if ( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
+    {
+        string msg( "Can't find xrootd config: " );
+        msg += xpd;
+        WarningLog( 0, msg );
+    }
 }
 
 //=============================================================================
@@ -109,6 +120,7 @@ void CAgentClient::processAdminConnection( int _serverSock )
                             return;
                         case cmdUSE_DIRECT_PROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
+                            m_isDirect = true;
                             InfoLog( "Server requested to use a direct connection for PROOF packages." );
                             break;
                         case cmdSHUTDOWN:
@@ -200,6 +212,26 @@ void CAgentClient::monitor()
             graceful_quit = 1;
         }
 
+        // check status files of the proof
+        // do that when at least one connection is direct
+        // To simplify the things, we assume that number of admin connection is
+        // equal to a number of direct PROOF connections.
+        if ( m_isDirect )
+        {
+            // the current strategy:
+            // if at least one status file has an active status,
+            // we consider that the whole machine is not idle.
+            // The whole machine - I mean all workers/servers assigned to that admin path (xrootd)
+            m_proofStatus.enumStatusFiles();
+            ProofStatusContainer_t status( m_proofStatus.getStatus() );
+            ProofStatusContainer_t::const_iterator iter = status.begin();
+            ProofStatusContainer_t::const_iterator iter_end = status.end();
+            for ( ; iter != iter_end; ++iter )
+            {
+                if ( proofstatus_idle != *iter )
+                    m_idleWatch.touch();
+            }
+        }
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
         {

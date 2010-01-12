@@ -19,7 +19,7 @@
 #include "INet.h"
 // PROOFAgent
 #include "AgentBase.h"
-
+#include "ProofStatusFile.h"
 //=============================================================================
 namespace PROOFAgent
 {
@@ -67,6 +67,8 @@ namespace PROOFAgent
             std::string m_serverInfoFile;
             unsigned int m_proofPort;
             uint32_t m_id;
+            CProofStatusFile m_proofStatus;
+            bool m_isDirect;
     };
 
 }
