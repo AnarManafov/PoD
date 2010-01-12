@@ -53,6 +53,8 @@ namespace PROOFAgent
 
         protected:
             virtual void run() = 0;
+            // a monitoring thread
+            // used as a cron process for pod
             virtual void monitor() = 0;
             virtual void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg ) = 0;
             void readServerInfoFile( const std::string &_filename );
