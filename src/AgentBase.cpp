@@ -187,14 +187,25 @@ namespace PROOFAgent
         // if at least one status file has an active status,
         // we consider that the whole machine is not idle.
         // The whole machine - I mean all workers/servers assigned to that admin path (xrootd)
-        m_proofStatus.enumStatusFiles();
-        ProofStatusContainer_t status( m_proofStatus.getStatus() );
-        ProofStatusContainer_t::const_iterator iter = status.begin();
-        ProofStatusContainer_t::const_iterator iter_end = status.end();
-        for ( ; iter != iter_end; ++iter )
+        try
         {
-            if ( proofstatus_idle != *iter )
-                m_idleWatch.touch();
+            m_proofStatus.enumStatusFiles();
+            ProofStatusContainer_t status( m_proofStatus.getStatus() );
+            ProofStatusContainer_t::const_iterator iter = status.begin();
+            ProofStatusContainer_t::const_iterator iter_end = status.end();
+            for ( ; iter != iter_end; ++iter )
+            {
+                if ( proofstatus_idle != *iter )
+                    m_idleWatch.touch();
+            }
+        }
+        catch ( const exception &_e )
+        {
+            // protect from mass logging
+            static uint16_t repeat( 0 );
+            ++repeat;
+            if ( repeat < 5 )
+                log( LOG_SEVERITY_INFO, _e.what() );
         }
     }
 }
