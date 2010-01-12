@@ -80,7 +80,7 @@ void CAgentServer::monitor()
         // equal to a number of direct PROOF connections.
         if ( !m_adminConnections.empty() )
         {
-        	updateProofIdle();
+            updateIdle();
         }
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )

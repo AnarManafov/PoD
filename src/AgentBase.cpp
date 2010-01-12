@@ -181,7 +181,7 @@ namespace PROOFAgent
         return true;
     }
 //=============================================================================
-    bool CAgentBase::updateProofIdle()
+    void CAgentBase::updateIdle()
     {
         // the current strategy:
         // if at least one status file has an active status,

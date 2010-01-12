@@ -216,7 +216,7 @@ void CAgentClient::monitor()
         // do that when at least one connection is direct
         if ( m_isDirect )
         {
-        	updateProofIdle();
+            updateIdle();
         }
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
