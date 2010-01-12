@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles )
     CProofStatusFile s;
 
     s.readAdminPath( "./xpd.cf", adminp_server );
-    s.enumStatusFiles( 22222 );
+    s.enumStatusFiles();
     PathVector_t files( s.getFiles() );
     BOOST_CHECK( !files.empty() );
 

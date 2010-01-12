@@ -33,7 +33,7 @@ void PrintVersion()
     // TODO: make VERSION to be taken from the build
     cout
     << PROJECT_NAME << " v." << PROJECT_VERSION_STRING << "\n"
-    << "protocol version: " << g_szPROTOCOL_VERSION << "\n"
+    << "protocol version: " << CProtocol::version() << "\n"
     << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 

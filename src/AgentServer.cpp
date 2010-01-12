@@ -30,6 +30,7 @@ namespace inet = MiscCommon::INet;
 extern sig_atomic_t graceful_quit;
 // a monitoring thread timeout (in seconds)
 const size_t g_monitorTimeout = 10;
+const char *const g_xpdCFG = "$POD_LOCATION/etc/xpd.cf";
 //=============================================================================
 struct is_bad_wrk
 {
@@ -46,6 +47,15 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
+
+    string xpd( g_xpdCFG );
+    smart_path( &xpd );
+    if ( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
+    {
+        string msg( "Can't find xrootd config: " );
+        msg += xpd;
+        WarningLog( 0, msg );
+    }
 }
 //=============================================================================
 CAgentServer::~CAgentServer()
@@ -63,6 +73,9 @@ void CAgentServer::monitor()
             FaultLog( erError, "Can't connect to PROOF/XRD service." );
             graceful_quit = 1;
         }
+
+        // check status files of the proof
+//        m_proofStatus.enumStatusFiles( 22222 );
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
         {

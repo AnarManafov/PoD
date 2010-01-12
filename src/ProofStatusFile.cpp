@@ -17,7 +17,6 @@
 #include <fstream>
 #include <stdexcept>
 // BOOST
-//#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/exception.hpp>
 // MiscCommon
@@ -29,10 +28,6 @@ namespace fs = boost::filesystem;
 using namespace PROOFAgent;
 using namespace std;
 using namespace MiscCommon;
-//=============================================================================
-const char * const g_adminPath = "./.xproofd.22222/activesessions/";
-//=============================================================================
-
 //=============================================================================
 template <class _T>
 struct SFind
@@ -47,7 +42,7 @@ private:
     _T m_sign;
 };
 //=============================================================================
-CProofStatusFile::CProofStatusFile()
+CProofStatusFile::CProofStatusFile(): m_xpdPort( 0 )
 {
 }
 //=============================================================================
@@ -61,7 +56,7 @@ CProofStatusFile::~CProofStatusFile()
 bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
-	//TODO: keeping fs::native is important for boost version earlier 1.34
+    //TODO: keeping fs::native is important for boost version earlier 1.34
     if ( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
         return false;
 
@@ -76,7 +71,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
           back_inserter( vec ) );
 
     // Reading only comment blocks of proof.conf
-    string m( mark[static_cast<int>( _type )] );
+    const string m( mark[static_cast<int>( _type )] );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
                                              SFind<string>( m ) );
     if ( iter == vec.end() )
@@ -92,16 +87,38 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     if ( fs::exists( admin_path ) )
         swap( m_adminPath, admin_path );
 
+
+    // find a xpd port
+    const string xpd_str( "xrd.protocol xproofd:" );
+    iter = find_if( vec.begin(), vec.end(), SFind<string>( xpd_str ) );
+    if ( iter == vec.end() )
+        return false;
+
+    iter->erase( iter->find( xpd_str ), xpd_str.size() );
+    string port( *iter );
+    trim<string>( &port, ' ' );
+    stringstream ss;
+    string::const_iterator itrs = port.begin();
+    string::const_iterator itrs_end = port.end();
+    for ( ; itrs != itrs_end; ++itrs )
+    {
+        if ( !isdigit( *itrs ) )
+            break;
+
+        ss << *itrs;
+    }
+    ss >> m_xpdPort;
+
     return true;
 }
 //=============================================================================
-void CProofStatusFile::enumStatusFiles( uint16_t _xpdPort )
+void CProofStatusFile::enumStatusFiles()
 {
     if ( m_adminPath.empty() )
         throw runtime_error( "Can't enumerate proof status files. No admin path is specified." );
 
     stringstream ss;
-    ss << m_adminPath.string() << "/" << ".xproofd." << _xpdPort << "/activesessions";
+    ss << m_adminPath.string() << "/" << ".xproofd." << m_xpdPort << "/activesessions";
     //TODO: keeping fs::native is important for boost version earlier 1.34
     fs::path fullpath( ss.str(), fs::native );
 
