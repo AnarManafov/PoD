@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 // BOOST
+#include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
 // STD
 #include <csignal>
@@ -94,7 +95,6 @@ namespace PROOFAgent
 //=============================================================================
     CAgentBase::~CAgentBase()
     {
-        delete m_monitorThread;
         close( m_fdSignalPipe );
         // deleting proof configuration file
         if ( !m_commonOptions.m_proofCFG.empty() )
@@ -130,18 +130,16 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    MiscCommon::ERRORCODE CAgentBase::Start()
+    void CAgentBase::Start()
     {
         m_idleWatch.touch();
 
         // start a monitoring job
         log( LOG_SEVERITY_INFO, "starting a monitor" );
-        m_monitorThread = new boost::thread( boost::bind( &CAgentBase::monitor, this ) );
+        boost::thread monitorThread( boost::bind( &CAgentBase::monitor, this ) );
 
-        // start the main job
+        // start the main job and main select loops for servers/workers
         run();
-
-        return erOK;
     }
 
 //=============================================================================
