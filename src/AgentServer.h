@@ -22,7 +22,6 @@
 #include "AgentBase.h"
 #include "Protocol.h"
 #include "ProtocolCommands.h"
-#include "ProofStatusFile.h"
 //=============================================================================
 namespace PROOFAgent
 {
@@ -133,7 +132,6 @@ namespace PROOFAgent
             std::string m_masterEntryInPROOFCfg;
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
-            CProofStatusFile m_proofStatus;
     };
 
 }

@@ -214,23 +214,9 @@ void CAgentClient::monitor()
 
         // check status files of the proof
         // do that when at least one connection is direct
-        // To simplify the things, we assume that number of admin connection is
-        // equal to a number of direct PROOF connections.
         if ( m_isDirect )
         {
-            // the current strategy:
-            // if at least one status file has an active status,
-            // we consider that the whole machine is not idle.
-            // The whole machine - I mean all workers/servers assigned to that admin path (xrootd)
-            m_proofStatus.enumStatusFiles();
-            ProofStatusContainer_t status( m_proofStatus.getStatus() );
-            ProofStatusContainer_t::const_iterator iter = status.begin();
-            ProofStatusContainer_t::const_iterator iter_end = status.end();
-            for ( ; iter != iter_end; ++iter )
-            {
-                if ( proofstatus_idle != *iter )
-                    m_idleWatch.touch();
-            }
+        	updateProofIdle();
         }
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )

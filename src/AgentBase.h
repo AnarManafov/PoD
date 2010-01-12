@@ -22,6 +22,7 @@
 // PROOFAgent
 #include "Options.h"
 #include "IdleWatch.h"
+#include "ProofStatusFile.h"
 
 namespace PROOFAgent
 {
@@ -55,6 +56,7 @@ namespace PROOFAgent
             virtual void monitor() = 0;
             virtual void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg ) = 0;
             void readServerInfoFile( const std::string &_filename );
+            bool updateProofIdle();
 
         protected:
             const PoD::SCommonOptions_t &m_commonOptions;
@@ -64,6 +66,7 @@ namespace PROOFAgent
             CIdleWatch m_idleWatch;
             int m_fdSignalPipe;
             std::string m_signalPipeName;
+            CProofStatusFile m_proofStatus;
     };
 
 }
