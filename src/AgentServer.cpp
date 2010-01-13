@@ -628,7 +628,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
     else
     {
         ss
-        << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct)\n"
+        << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
         << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100" << endl;
     }
     return ss.str();

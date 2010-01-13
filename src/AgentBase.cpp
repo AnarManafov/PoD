@@ -199,11 +199,7 @@ namespace PROOFAgent
         }
         catch ( const exception &_e )
         {
-            // protect from mass logging
-            static uint16_t repeat( 0 );
-            ++repeat;
-            if ( repeat < 5 )
-                log( LOG_SEVERITY_INFO, _e.what() );
+        	log( LOG_SEVERITY_INFO, _e.what() );
         }
     }
 }

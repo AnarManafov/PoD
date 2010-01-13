@@ -81,6 +81,12 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     string p( *iter );
     trim<string>( &p, ' ' );
 
+    // NOTE: "PoDServer" - is added to the admin path by xrootd.
+    // we therefore also have to use it
+    // This is only valid for PoD servers
+    if ( adminp_server == _type )
+        p += "/PoDServer";
+
     //TODO: keeping fs::native is important for boost version earlier 1.34
     fs::path admin_path( p, fs::native );
 
