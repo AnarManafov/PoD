@@ -57,7 +57,7 @@ upload_job_log=$($POD_LOCATION/bin/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --
 if [ "$upload_job_log" = "yes" ]; then
    cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
    cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$LSB_JOBINDEX.log
-   cp $WRK_DIR/proofagent.client.log $LOG_DIR/proofagent.client_$LSB_JOBINDEX.log 
+   cp $WRK_DIR/pod-agent.client.log $LOG_DIR/pod-agent.client_$LSB_JOBINDEX.log 
 fi
 
 if [[ -d $WRK_DIR ]]; then
