@@ -196,17 +196,17 @@ namespace PROOFAgent
                 if ( proofstatus_idle != *iter )
                 {
                     m_idleWatch.touch();
-                    log( LOG_SEVERITY_WARNING, "STATUS: TOUCH!" );
+                    log( LOG_SEVERITY_DEBUG, "updateIdle: touch" );
                 }
                 else
                 {
-                	log( LOG_SEVERITY_WARNING, "STATUS: IDLE" );
+                    log( LOG_SEVERITY_DEBUG, "updateIdle: idle" );
                 }
             }
         }
         catch ( const exception &_e )
         {
-        	log( LOG_SEVERITY_WARNING, _e.what() );
+            log( LOG_SEVERITY_WARNING, _e.what() );
         }
     }
 }
