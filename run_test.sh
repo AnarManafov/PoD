@@ -21,8 +21,12 @@ echo ">>> Processing tests of Protocole"
 echo
 echo ">>> Processing tests of ProofStatusFile"
 # prepare dummy files
+# TODO: implement a function for the following
+ADMIN_PATH_SRV="PoDServer/.xproofd.22222/activesessions"
 ADMIN_PATH=".xproofd.22222/activesessions"
+mkdir -p $ADMIN_PATH_SRV
 mkdir -p $ADMIN_PATH
+echo "2" > $ADMIN_PATH_SRV/manafov.default.1234.status
 echo "0" > $ADMIN_PATH/manafov.default.1234.status
 echo "1" > $ADMIN_PATH/manafov.default.5678.status
 echo "3" > $ADMIN_PATH/manafov.default.9.status
