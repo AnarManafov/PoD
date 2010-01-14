@@ -28,7 +28,7 @@ namespace inet = MiscCommon::INet;
 //=============================================================================
 const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
-const char *const g_xpdCFG = "./xpd.cf";
+const char *const g_xpdCFG = "$POD_LOCATION/xpd.cf";
 //=============================================================================
 CAgentClient::CAgentClient( const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_worker.m_common ),
@@ -212,11 +212,16 @@ void CAgentClient::monitor()
             graceful_quit = 1;
         }
 
+        static uint16_t count = 0;
+        ++count;
         // check status files of the proof
         // do that when at least one connection is direct
-        if ( m_isDirect )
+        // NOTE: Call this check every third time or something, in order
+        // to avoid resource overloading.
+        if ( m_isDirect && 3 == count )
         {
             updateIdle();
+            count = 0;
         }
 
         if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )

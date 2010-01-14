@@ -194,12 +194,19 @@ namespace PROOFAgent
             for ( ; iter != iter_end; ++iter )
             {
                 if ( proofstatus_idle != *iter )
+                {
                     m_idleWatch.touch();
+                    log( LOG_SEVERITY_WARNING, "STATUS: TOUCH!" );
+                }
+                else
+                {
+                	log( LOG_SEVERITY_WARNING, "STATUS: IDLE" );
+                }
             }
         }
         catch ( const exception &_e )
         {
-        	log( LOG_SEVERITY_INFO, _e.what() );
+        	log( LOG_SEVERITY_WARNING, _e.what() );
         }
     }
 }
