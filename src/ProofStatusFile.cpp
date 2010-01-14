@@ -120,6 +120,10 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
 //=============================================================================
 void CProofStatusFile::enumStatusFiles()
 {
+	// Cleaning
+	m_files.clear();
+	m_status.clear();
+
     if ( m_adminPath.empty() )
         throw runtime_error( "Can't enumerate proof status files. No admin path is specified." );
 
