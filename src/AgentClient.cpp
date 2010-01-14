@@ -41,7 +41,7 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
 
     string xpd( g_xpdCFG );
     smart_path( &xpd );
-    if ( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
+    if ( !m_proofStatus.readAdminPath( xpd, adminp_worker ) )
     {
         string msg( "Can't find xrootd config: " );
         msg += xpd;
@@ -213,7 +213,8 @@ void CAgentClient::monitor()
         }
 
         static uint16_t count = 0;
-        ++count;
+        if ( count < 3 )
+            ++count;
         // check status files of the proof
         // do that when at least one connection is direct
         // NOTE: Call this check every third time or something, in order

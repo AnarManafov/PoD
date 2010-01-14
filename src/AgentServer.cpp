@@ -75,7 +75,8 @@ void CAgentServer::monitor()
         }
 
         static uint16_t count = 0;
-        ++count;
+        if ( count < 3 )
+            ++count;
         // check status files of the proof
         // do that when at least one connection is direct
         // To simplify the things, we assume that number of admin connection is

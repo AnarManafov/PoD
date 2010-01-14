@@ -3,7 +3,7 @@ pod-agent: implemented a new internal protocol. It's used for Client/Server admi
 pod-agent: now it is possible to use a direct connection between a PROOF server and PROOF workers.
            Whether to use packet forwarding (for cases when PROOF workers are behind a firewall) or not
            is configurable (PoD user defaults). Agent can also automatically decided what to use - direct or forwarded connection.
-           To use this feature you need ROOT 5.24.04 or higher.
+           To use this feature you need ROOT 5.25.04 or higher.
 pod-agent: added unit tests
 pod-agent: minimally required version of Boost is 1.33.1 now.
 pod-agent: the log file name now is "pod-agent.<instance_name>.log".
