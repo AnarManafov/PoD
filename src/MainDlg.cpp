@@ -39,8 +39,8 @@ const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
 const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
 
 // idle timeout. In ms.
-// default 15 min.
-const int g_idleTimeout = 900000;
+// default 30 min.
+const int g_idleTimeout = 2*900000;
 //=============================================================================
 template<class T>
 void _loadcfg( T &_s, string _FileName )
