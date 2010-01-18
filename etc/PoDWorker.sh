@@ -193,7 +193,7 @@ case "$host_arch" in
         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
-RELEASE_REPO="http://pod.gsi.de/releases/add"
+RELEASE_REPO="http://pod.gsi.de/releases/add/"
 # ****************
 # ***** ROOT *****
 set_my_rootsys=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys)
