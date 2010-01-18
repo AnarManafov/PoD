@@ -10,14 +10,14 @@
 #                           2008-10-07
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2008-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( pod-console )
 
-set(VERSION "1.2.1a")
+set(VERSION "1.2.1")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "2")
-set(CPACK_PACKAGE_VERSION_PATCH "1a")
+set(CPACK_PACKAGE_VERSION_PATCH "1")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
