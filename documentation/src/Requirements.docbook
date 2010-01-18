@@ -20,10 +20,10 @@ Requirements
 	<itemizedlist>
 		<title>General workspace requirements: </title>
 		<listitem>Incomming connection on pod-agent's port (configurable)</listitem>
-		<listitem>ROOT 5.24+ (xrootd enabled)</listitem>
-		<listitem>Qt 4.4.2+</listitem>
-		<listitem>BOOST 1.32</listitem>		
-		<listitem>cmake 2.6</listitem>
+		<listitem>ROOT 5.25.04 or higher (xrootd enabled)</listitem>
+		<listitem>Qt 4.4.2 or higher</listitem>
+		<listitem>BOOST 1.33.1 or higher </listitem>		
+		<listitem>cmake 2.6.2 or higher</listitem>
 	</itemizedlist>
    <itemizedlist>
       <title>Additional requirements for gLite plug-in:</title>

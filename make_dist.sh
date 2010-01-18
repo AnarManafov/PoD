@@ -10,7 +10,7 @@
 ##
 ##         Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
-VERSION=2.1.3b
+VERSION=2.1.3
 
 PKG_NAME=PoD_Package
 
@@ -31,6 +31,7 @@ cp --target-directory=$PKG_NAME -rv \
     "test" \
     install \
     ReleaseNotes \
+    LICENSE \
     || exit 1
 
 if [[ -d $PKG_NAME  ]] ; then

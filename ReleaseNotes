@@ -1,5 +1,20 @@
-********************* Release 2.1.3 not yet released ************************
-
+********************* Release 2.1.3 2010-01-18 ************************
+pod-agent: implemented a new internal communication protocol. It's used for Client/Server admin. communications.
+pod-agent: now it is possible to use a direct connection between a PROOF server and PROOF workers.
+           Agent can automatically decided whether to use packet forwarding (for cases when PROOF workers are behind a firewall) or not.
+           It is also a configurable option in the PoD user defaults. To use this feature you need to have ROOT 5.25.04 or higher.
+pod-agent: minimally required version of ROOT is 5.25.04. Otherwise agent will not be able to detect idle when a native PROOF connection is used.
+pod-agent: minimally required version of Boost is 1.33.1 now.
+pod-agent: added unit tests.
+pod-agent: the log file name now is "pod-agent.<instance_name>.log".
+pod-console: lock-on-idle time is 30 minutes now (instead of 15 min.).
+pod-user-defaults: updated user defaults configuration file - v0.3
+pod-user-defaults: new option <server.packet_forwarding> default is "auto".
+                   if workers are behind a firewall than PoD will use its packet forwarding (PF) algorithms
+                   to maintain the PROOF traffic between server and workers.
+                   By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
+                   will decide on the fly whether to use PF for each worker individually based on the possibility
+                   to directly connect to worker.
 
 ********************* Release 2.1.2 2009-11-30 ************************
 utilities: The automatic port mapping: increase a retry counts to 10 instead of 3.
