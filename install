@@ -30,21 +30,22 @@ INSTALL_PATH=`pwd`
 
 XRD_EXPORT_DIR=$INSTALL_PATH/test
 
+RELEASE_REPO="http://pod.gsi.de/releases/pod/2.1.3/"
 # pod-user-defaults app
 pod_user_defaults_PKG=pod-user-defaults-1.0.3-Source
-pod_user_defaults_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
+pod_user_defaults_LINK=$RELEASE_REPO
 pod_user_defaults_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # pod-agent app
 pod_agent_PKG=pod-agent-2.1.3-Source
-pod_agent_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
+pod_agent_LINK=$RELEASE_REPO
 pod_agent_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # pod-console app
 pod_console_PKG=pod-console-1.2.1-Source
-pod_console_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
+pod_console_LINK=$RELEASE_REPO
 pod_console_OPTIONS="-DCMAKE_INSTALL_PREFIX=$INSTALL_PATH"
 # gLite API wrapper (needed to PoD gLite plug-in)
 GAW_PKG=glite-api-wrapper-3.2.0
-GAW_LINK=http://www-linux.gsi.de/~manafov/D-Grid/Release/Stable/PoD
+GAW_LINK=$RELEASE_REPO
 GAW_OPTIONS="--prefix=$INSTALL_PATH --enable-tests=no"
 
 # only for gLite plug-in

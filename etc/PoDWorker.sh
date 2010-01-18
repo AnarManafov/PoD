@@ -11,7 +11,7 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
 #
@@ -186,18 +186,19 @@ logMsg "host's CPU/instruction set: " $host_arch
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="pod-agent-2_1_2-x86-linux-gcc_4_1.tar.gz"
-	ROOT_ARC="root_v5.24.00.Linux-slc5-gcc3.4.tar.gz" ;;
+	      PROOFAGENT_ARC="pod-agent-2_1_3-x86-linux-gcc_4_1.tar.gz"
+	      ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
     x86_64)
-        PROOFAGENT_ARC="pod-agent-2_1_2-x86_64-linux-gcc_4_1.tar.gz"
-        ROOT_ARC="root_v5.24.00.Linux-slc4_amd64-gcc3.4.tar.gz" ;;
+        PROOFAGENT_ARC="pod-agent-2_1_3-x86_64-linux-gcc_4_1.tar.gz"
+        ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
+RELEASE_REPO="http://pod.gsi.de/releases/add"
 # ****************
 # ***** ROOT *****
 set_my_rootsys=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys)
 if [ "$set_my_rootsys" = "no" ]; then
-    wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$ROOT_ARC || clean_up 1
+    wget --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
     tar -xzvf $ROOT_ARC || clean_up 1
 
     export ROOTSYS="/$WD/root"
@@ -224,7 +225,7 @@ fi
 
 # **********************
 # ***** getting pod-agent from the repository site *****
-wget --tries=2 http://www-linux.gsi.de/~manafov/D-Grid/Release/Binaries/$PROOFAGENT_ARC  || clean_up 1
+wget --tries=2 $RELEASE_REPO$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
 export PROOFAGENTSYS="/$WD/pod-agent"
