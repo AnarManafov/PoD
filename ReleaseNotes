@@ -1,11 +1,11 @@
-********************* Release 2.1.3 not yet released ************************
-pod-agent: implemented a new internal protocol. It's used for Client/Server admin. communications.
+********************* Release 2.1.3 2010-01-18 ************************
+pod-agent: implemented a new internal communication protocol. It's used for Client/Server admin. communications.
 pod-agent: now it is possible to use a direct connection between a PROOF server and PROOF workers.
-           Whether to use packet forwarding (for cases when PROOF workers are behind a firewall) or not
-           is configurable (PoD user defaults). Agent can also automatically decided what to use - direct or forwarded connection.
-           To use this feature you need ROOT 5.25.04 or higher.
-pod-agent: added unit tests
+           Agent can automatically decided whether to use packet forwarding (for cases when PROOF workers are behind a firewall) or not.
+           It is also a configurable option in the PoD user defaults. To use this feature you need to have ROOT 5.25.04 or higher.
+pod-agent: minimally required version of ROOT is 5.25.04. Otherwise agent will not be able to detect idle when a native PROOF connection is used.
 pod-agent: minimally required version of Boost is 1.33.1 now.
+pod-agent: added unit tests.
 pod-agent: the log file name now is "pod-agent.<instance_name>.log".
 
 ********************* Release 2.1.2 2009-11-28 ************************

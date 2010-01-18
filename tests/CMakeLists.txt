@@ -10,7 +10,7 @@
 #                           2009-12-25
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2009 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( pod-aget-tests )
 

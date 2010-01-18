@@ -10,17 +10,16 @@
 #                           2008-10-07
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2008-2009 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2008-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( pod-agent )
 
-set(VERSION "2.1.3c")
+set(VERSION "2.1.3")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "3c")
+set(CPACK_PACKAGE_VERSION_PATCH "3")
 
 # Check if cmake has the required version
-# because of many bugs in FindBOOST of older versions of cmake we recommend cmake 2.6.4
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # Where to lookup modules
