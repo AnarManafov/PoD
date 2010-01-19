@@ -134,7 +134,7 @@ This will help always get a proper settings of a current master host and PROOF's
        For an example analysis, please see <xref linkend="How_to_test"/>.
        </para>
 	<para>
-	The following is an exampel of the helper header:
+	The following is an example of the helper header:
 	<screen>
 #ifndef _POD_MASTER_H_
 #define _POD_MASTER_H_

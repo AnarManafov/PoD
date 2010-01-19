@@ -8,18 +8,29 @@ Test
    	<sect1 id="simple_test">
    	<title>Simple test</title>    
    		<para>
-    		To test your <application>PoD</application> installation you can use a simple test provided with the distributive
-    		(see the test directory in your <application>PoD</application> installation folder). The test performs a simple ROOT analysis.
-    		</para>
+    		The simplest way to test your dynamic PROOF cluster is just to run some simple analysis on it or
+        use <ulink url="http://root.cern.ch/drupal/content/tutorials#runproof">PROOF's tutorial</ulink>.
+        If you use PROOF's tutorial, you have to start from the second step - from the runProof.C macro, since PoD will 
+        setup a PROOF cluster for you and you therefore don't need to execute the getProof.C macro.
+        </para>
     		<para>
-   			Now if you want to perform this test. Use the <xref linkend="How_to_run"/> to setup a PROOF cluster. As soon as you get
-			required number of workers you can execute the following commands:
+   			Now if you want to perform this test. Use the <xref linkend="How_to_run"/> to setup a PROOF cluster.
+        As soon as you get required number of workers you can execute the following commands:
 <screen>
-<prompt>$ </prompt><command>cd $POD_LOCATION/test</command>
-<prompt>$ </prompt><command>root simple_test0.C</command>
+<prompt>$ </prompt><command>cd $ROOTSYS/tutorials/proof</command>
+<prompt>$ </prompt><command>root</command>
+<prompt>root[] </prompt><command>runProof.C+</command>
+<prompt>root[] </prompt><command>runProof("simple", "master.domain")</command>
 </screen>
-			This macro will connect to the PROOF (PoD's workers) workers and perform a test analysis.
-   		</para>
+        <para>
+        The second argument to runProof function is an URL of your cluster.
+        Usually it looks something like "proof://HostWhereYouStartedPoDServer:XPD_PORT".
+        So, the "HostWhereYouStartedPoDServer" is the host name of the machine where you started a PoD server if it is the same machine,
+        where you run your analysis, than use localhost. The XPD port number you can find in pod-console's server page or by running
+        "pod-server status" command.
+        You can also use the PoD helper header to avoid always manually enter this URL, please see <xref linkend=""A_helper_header"/>, .
+        </para>
+		   	</para>
 		</sect1>
 	</chapter>
   

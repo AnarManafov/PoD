@@ -28,7 +28,6 @@ cp --target-directory=$PKG_NAME -rv \
     documentation \
     etc \
     template \
-    "test" \
     install \
     ReleaseNotes \
     LICENSE \
@@ -41,7 +40,6 @@ if [[ -d $PKG_NAME  ]] ; then
 	rm -rf $PKG_NAME/documentation/src/.svn
 	rm -rf $PKG_NAME/etc/.svn
 	rm -rf $PKG_NAME/template/.svn
-	rm -rf $PKG_NAME/test/.svn
 fi
 
 THE_NAME=$PKG_NAME.$VERSION
