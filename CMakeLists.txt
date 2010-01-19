@@ -64,6 +64,16 @@ SET(POD_ETC_FILES
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
     )
 
+
+include_directories( app/MiscCommon )
+
+add_subdirectory ( app/pod-agent )
+add_subdirectory ( app/pod-console )
+add_subdirectory ( app/pod-user-defaults ) 
+
+
+
+
 #
 # configure files
 # 
@@ -82,6 +92,8 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION ${CMAKE_INSTALL_PREF
 
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES ${POD_ETC_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
+
+
  
 #
 # Package

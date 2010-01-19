@@ -1,0 +1,12 @@
+[submodule "app/pod-agent"]
+	path = app/pod-agent
+	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-agent
+[submodule "app/pod-console"]
+	path = app/pod-console
+	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-console
+[submodule "app/pod-user-defaults"]
+	path = app/pod-user-defaults
+	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-user-defaults
+[submodule "app/MiscCommon"]
+	path = app/MiscCommon
+	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/MiscCommon
