@@ -28,7 +28,7 @@ Test
         So, the "HostWhereYouStartedPoDServer" is the host name of the machine where you started a PoD server if it is the same machine,
         where you run your analysis, than use localhost. The XPD port number you can find in pod-console's server page or by running
         "pod-server status" command.
-        You can also use the PoD helper header to avoid always manually enter this URL, please see <xref linkend=""A_helper_header"/>, .
+        You can also use the PoD helper header to avoid always manually enter this URL, please see <xref linkend="A_helper_header"/>, .
         </para>
 		   	</para>
 		</sect1>
