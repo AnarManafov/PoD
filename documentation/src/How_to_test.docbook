@@ -21,6 +21,7 @@ Test
 <prompt>$ </prompt><command>root</command>
 <prompt>root[] </prompt><command>runProof.C+</command>
 <prompt>root[] </prompt><command>runProof("simple", "master.domain")</command>
+<prompt>root[] </prompt><command>runProof("event(nevt=1000000)", "master.domain")</command>
 </screen>
         <para>
         The second argument to runProof function is an URL of your cluster.
