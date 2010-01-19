@@ -26,12 +26,12 @@ xrootd.fslib libXrdOfs.so
 #
 # !!! DON'T REMOVE/CHANGE THE FOLLOWING COMMENTS
 # * * * * * * * * * *
-# server.adminpath _G_SERVER_TMP_DIR
+# server.adminpath @CMAKE_POD_TMP_DIR@
 # worker.adminpath _G_WORKER_TMP_DIR
 # * * * * * * * * * *
 if named PoDServer
- xrd.adminpath _G_SERVER_TMP_DIR
- xrootd.export _G_XRD_EXPORT_DIR
+ xrd.adminpath @CMAKE_POD_TMP_DIR@
+ xrootd.export @CMAKE_INSTALL_PREFIX@
 else
  xrd.adminpath _G_WORKER_TMP_DIR
  xrootd.export _G_WRK_DIR/
@@ -44,7 +44,7 @@ xrd.trace all debug
 ## setting a PROOF temp dir.
 #
 if named PoDServer
- set PROOFTMP=_G_SERVER_TMP_DIR
+ set PROOFTMP=@CMAKE_POD_TMP_DIR@
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
 fi

@@ -12,7 +12,7 @@
 ##*************************************************************************/
 
 # PoD Variables
-export POD_LOCATION=_G_WRK_DIR
+export POD_LOCATION=@CMAKE_INSTALL_PREFIX@
 export PATH=$POD_LOCATION/bin:$PATH
 # TODO: the following must be revised
 # GSI specific
