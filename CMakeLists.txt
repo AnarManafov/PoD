@@ -19,18 +19,6 @@ set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "4a")
 
-#
-# We don't allow in-source builds.
-#
-IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-  MESSAGE(
-    FATAL_ERROR
-    "\nCMake generation for PoD is not allowed within the source directory!\n"
-    "Make a build directory, and run cmake from there. e.g.\n\n"
-    "\tmkdir build; cd build;  cmake -C ../BuildSetup.cmake ..\n"
-    )
-ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-
 
 #
 # Check if cmake has the required version
