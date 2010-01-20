@@ -7,6 +7,3 @@
 [submodule "app/pod-user-defaults"]
 	path = app/pod-user-defaults
 	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-user-defaults
-[submodule "app/MiscCommon"]
-	path = app/MiscCommon
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/MiscCommon
