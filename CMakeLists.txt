@@ -14,22 +14,22 @@
 #*************************************************************************
 project( pod-console )
 
-set(VERSION "1.2.1")
+set(VERSION "1.2.2a")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "2")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
+set(CPACK_PACKAGE_VERSION_PATCH "2a")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 # Where to lookup modules
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 #
 # configure files
 # 
-configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
-configure_file( ${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_SOURCE_DIR}/Doxyfile @ONLY )
+configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
+configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
 
 #
 # Options
@@ -99,7 +99,7 @@ endif(BUILD_DOCUMENTATION)
 #
 ## pod-console executable
 #
-include_directories( ${CMAKE_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
