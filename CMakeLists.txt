@@ -23,13 +23,13 @@ set(CPACK_PACKAGE_VERSION_PATCH "4a")
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # Where to lookup modules
-set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
+set (CMAKE_MODULE_PATH "${pod-agent_SOURCE_DIR}")
 
 #
 # configure files
 # 
-configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
-configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+configure_file( ${pod-agent_SOURCE_DIR}/src/version.h.in ${pod-agent_BINARY_DIR}/src/version.h @ONLY )
+configure_file( ${pod-agent_SOURCE_DIR}/Doxyfile.in ${pod-agent_BINARY_DIR}/Doxyfile @ONLY )
 
 #
 # Options
@@ -77,7 +77,7 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 #
 ## PROOFAgent executable
 #
-include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${pod-agent_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -111,5 +111,5 @@ endif (BUILD_TESTS)
 SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 set(CPACK_SOURCE_IGNORE_FILES
-"/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
+"/\\\\.;~$;/_;^${pod-agent_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
 include(CPack)
