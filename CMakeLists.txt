@@ -14,16 +14,16 @@
 #*************************************************************************
 project( pod-user-defaults )
 
-set(VERSION "1.0.3")
+set(VERSION "1.0.4a")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "3")
+set(CPACK_PACKAGE_VERSION_PATCH "4a")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 # Where to lookup modules
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 #
 # Options
@@ -33,7 +33,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 #
 # configure files
 # 
-configure_file( ${CMAKE_SOURCE_DIR}/src/version.h.in ${CMAKE_SOURCE_DIR}/src/version.h @ONLY )
+configure_file( ${{PROJECT_SOURCE_DIR}/src/version.h.in ${{PROJECT_BINARY_DIR}/src/version.h @ONLY )
 
 set( SOURCE_FILES
     ./src/
@@ -62,7 +62,7 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 #
 ## pod-user-defaults executable
 #
-include_directories( ${CMAKE_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${{PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 

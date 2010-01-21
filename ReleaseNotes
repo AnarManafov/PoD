@@ -1,5 +1,8 @@
 # Release Notes for pod-user-defaults
 
+## v.1.0.4 (not yet released)
+pod-user-defaults: adapt the project to be build also as a sub-project in PoD.
+
 ## v.1.0.3 (2010-01-18)
 pod-user-defaults: updated user defaults configuration file - v0.3
 pod-user-defaults: new option <server.packet_forwarding> default is "auto".
