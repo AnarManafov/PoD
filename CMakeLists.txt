@@ -33,7 +33,7 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 #
 # configure files
 # 
-configure_file( ${{PROJECT_SOURCE_DIR}/src/version.h.in ${{PROJECT_BINARY_DIR}/src/version.h @ONLY )
+configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 
 set( SOURCE_FILES
     ./src/
@@ -62,7 +62,7 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 #
 ## pod-user-defaults executable
 #
-include_directories( ${{PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
