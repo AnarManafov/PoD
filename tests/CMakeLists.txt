@@ -69,5 +69,5 @@ target_link_libraries (
 )
 
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)
-install(FILES xpd.cf DESTINATION tests)
+install(FILES ${PROJECT_BINARY_DIR}/xpd.cf DESTINATION tests)
 
