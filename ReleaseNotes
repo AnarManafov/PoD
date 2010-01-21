@@ -1,4 +1,5 @@
 ********************* Release 1.2.2 not yet released ************************
+pod-console: adapt the project to be build also as a sub-project in PoD.
 
 ********************* Release 1.2.1 2010-01-18 ************************
 pod-console: lock-on-idle time is 30 minutes now (instead of 15 min.).
