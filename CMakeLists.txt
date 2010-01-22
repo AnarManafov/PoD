@@ -78,10 +78,6 @@ QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
 # search for Boost
 #
 
-# we set this manually if we want to use gLite plug-in,
-# wich is linked with gLite version of BOOST :(
-set(BOOST_ROOT "$ENV{BOOST_LOCATION}")
-
 find_package( Boost REQUIRED COMPONENTS serialization program_options)
 
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
