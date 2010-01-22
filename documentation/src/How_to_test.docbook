@@ -19,7 +19,7 @@ Test
 <screen>
 <prompt>$ </prompt><command>cd $ROOTSYS/tutorials/proof</command>
 <prompt>$ </prompt><command>root</command>
-<prompt>root[] </prompt><command>runProof.C+</command>
+<prompt>root[] </prompt><command>.L runProof.C+</command>
 <prompt>root[] </prompt><command>runProof("simple", "master.domain")</command>
 <prompt>root[] </prompt><command>runProof("event(nevt=1000000)", "master.domain")</command>
 </screen>
