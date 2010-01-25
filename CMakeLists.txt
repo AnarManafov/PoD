@@ -87,15 +87,21 @@ if (GSI_BUILD)
     message (STATUS "Add GSI specific settings - YES")
     set(CMAKE_ADDITIONAL_LIB_PATH "export LD_LIBRARY_PATH=/LSF/lsf/lib:/misc/manafov/Qt/4.4.2_etch32/lib:$GLITE_PROOF_LOCATION/lib:$LD_LIBRARY_PATH" )
     
-# TODO: automate the installation of gsi spec. libs und bins via git submodule 
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-agent DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-console DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+# TODO: automate the installation of gsi spec. libs und bins via git submodule
+    set(GSI_ADD_BIN
+        ${CMAKE_SOURCE_DIR}/bin/pod-agent
+        ${CMAKE_SOURCE_DIR}/bin/pod-console
+        ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults 
+    )
+    set(GSI_ADD_LIB
+        ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0
+        ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0
+        ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
+        ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1
+        ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 
+    )
+    install(PROGRAMS ${GSI_ADD_BIN} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    install(FILES ${GSI_ADD_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 endif (GSI_BUILD)
 
 #
@@ -110,7 +116,7 @@ configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_en
 #
 # Install
 #
-install(FILES ${POD_ADD_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/LICENSE)
+install(FILES ${POD_ADD_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION ${CMAKE_INSTALL_PREFIX})
 # special files, these needs to be executables
