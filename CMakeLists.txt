@@ -100,8 +100,8 @@ if (GSI_BUILD)
         ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1
         ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 
     )
-    install(PROGRAMS ${GSI_ADD_BIN} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-    install(FILES ${GSI_ADD_LIB} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    install(PROGRAMS ${GSI_ADD_BIN} DESTINATION bin)
+    install(FILES ${GSI_ADD_LIB} DESTINATION lib)
 endif (GSI_BUILD)
 
 #
@@ -116,15 +116,15 @@ configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_en
 #
 # Install
 #
-install(FILES ${POD_ADD_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
-install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES ${POD_ADD_FILES} DESTINATION .)
+install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION etc)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
 
-install(PROGRAMS ${POD_BIN_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install(FILES ${POD_ETC_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
+install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
+install(FILES ${POD_ETC_FILES} DESTINATION etc)
 
 #
 # Package
@@ -133,6 +133,7 @@ install(FILES ${POD_ETC_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/etc)
 # excluding svn files and Eclipse project files
 SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
 "/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
 include(CPack)
