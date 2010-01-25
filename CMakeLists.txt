@@ -14,15 +14,22 @@
 #*************************************************************************
 project( pod-agent )
 
+#
+# Version
+#
 set(VERSION "2.1.4a")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "4a")
 
+#
 # Check if cmake has the required version
+#
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
+#
 # Where to lookup modules
+#
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
 #
@@ -50,7 +57,6 @@ set( SOURCE_FILES
     ./src/ProofStatusFile.cpp
 )
 
-
 #
 # search for Boost
 #
@@ -65,7 +71,6 @@ endif(local_boost_version VERSION_GREATER "1.33.1")
 message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
 message(STATUS "  libs: ${Boost_LIBRARIES}")
-
 
 #
 # Documentation
@@ -97,7 +102,7 @@ install(PROGRAMS run_test.sh DESTINATION bin)
 if (BUILD_TESTS)
     message (STATUS "Build pod-agent unit tests - YES")
     add_subdirectory ( tests ) 
-else (BUILD_GLITE_PLUGIN)
+else (BUILD_TESTS)
     message (STATUS "Build pod-agent unit tests - NO")
 endif (BUILD_TESTS)
 
