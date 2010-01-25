@@ -15,9 +15,7 @@
 export POD_LOCATION=@CMAKE_INSTALL_PREFIX@
 export PATH=$POD_LOCATION/bin:$PATH
 export LD_LIBRARY_PATH=$POD_LOCATION/lib:$LD_LIBRARY_PATH
-# GSI specific
 @CMAKE_ADDITIONAL_LIB_PATH@
-
 
 eval POD_PROOFCFG_FILE=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
 export POD_PROOFCFG_FILE
