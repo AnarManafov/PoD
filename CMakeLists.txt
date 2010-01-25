@@ -88,14 +88,14 @@ if (GSI_BUILD)
     set(CMAKE_ADDITIONAL_LIB_PATH "export LD_LIBRARY_PATH=/LSF/lsf/lib:/misc/manafov/Qt/4.4.2_etch32/lib:$GLITE_PROOF_LOCATION/lib:$LD_LIBRARY_PATH" )
     
 # TODO: automate the installation of gsi spec. libs und bins via git submodule 
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-agent ${CMAKE_INSTALL_PREFIX}/bin)
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-console ${CMAKE_INSTALL_PREFIX}/bin)
-    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults ${CMAKE_INSTALL_PREFIX}/bin)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0  ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0  ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1  ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1  ${CMAKE_INSTALL_PREFIX}/lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1  ${CMAKE_INSTALL_PREFIX}/lib)
+    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-agent DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-console DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    install(PROGRAMS ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+    install(FILES ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    install(FILES ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+    install(FILES ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 endif (GSI_BUILD)
 
 #
