@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-info.in
+# * @brief a script, which manages PoD's information
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-01-26
+#
+#        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+#*************************************************************************/
+#
+# Usage: pod-info [-s] [-n] [-v] [-c] [-h]
+# -s : print PoD server status
+# -n : print a  number of currently available PROOF workers
+# -v : print version information
+# -c : print a PROOF connection string, which can be used in TProof::Open
+
+#######
+eval WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
+POD_VERSION=@VERSIONS@
+#######
+
+usage() {
+
+    cat <<EOF
+PoD information utility.
+   Copyright (C) 2010 GSI, Scientific Computing group.
+
+Usage: pod-info [OPTION]
+    -s    Show PoD server status.
+    -n    Report a number of currently available PROOF workers.
+    -v    Print version information.
+    -c    Show a PROOF connection string, which can be used in TProof::Open.
+    -h    Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+
+
+# ************************************************************************
+# ***** MAIN  *****
+# checking the number of parameters
+if [ $# -ne 1 ]; then
+    usage
+    exit 1
+fi
+
+# work_dir must be a valid dir
+if [ ! -e "$WORK_DIR" ]; then
+    echo "error: working director: \"$WORK_DIR\" doesn't exist!"
+    exit 1
+fi
+
+while getopts ":snvc" opt; do
+  case $opt in
+  s)
+    $WRK_DIR/pod-server status
+    ;;
+  n)
+    ;;
+  v)
+    echo "PoD v$POD_VERSION"
+    ;;
+  c)
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+
+
+exit 0
