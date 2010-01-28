@@ -103,7 +103,7 @@ if (GSI_BUILD)
     )
     install(PROGRAMS ${GSI_ADD_BIN} DESTINATION bin)
     install(FILES ${GSI_ADD_LIB} DESTINATION lib)
-    install(${CMAKE_SOURCE_DIR}/plugins/libPAConsole_lsf.so DESTINATION plugins )
+    install(FILES ${CMAKE_SOURCE_DIR}/plugins/libPAConsole_lsf.so DESTINATION plugins )
 endif (GSI_BUILD)
 
 #

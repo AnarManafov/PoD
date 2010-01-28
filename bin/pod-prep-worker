@@ -29,29 +29,34 @@ fi
 
 
 # check that all needed components are available
-COMPONENTS=( "$POD_LOCATION/etc/xpd.cf" 
-             "$POD_LOCATION/etc/PoD.cf"
+COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf" 
+             "$POD_LOCATION/etc/PoD.cfg"
              "$POD_LOCATION/etc/server_info.cfg"
              "$POD_LOCATION/etc/PoDWorker.sh" )
+
+COMPONENTS_BIN=( "$POD_LOCATION/bin/pod-user-defaults-lite" )
+
+COMPONENTS=(  "${COMPONENTS_ETC[@]}"  "${COMPONENTS_BIN[@]}" )
 
 for i in "${COMPONENTS[@]}"
 do
   if [ -f $i ]; then
-    continue
+    tar -C $(dirname $i) -cvzf $(basename $i)
   else
     echo "Error: missing component: $i" >&2
+    rm -rf $ARC_NAME
     exit 1
   fi
 done
 
 # making the archive
-tar -czvf  "${COMPONENTS[@]}" $ARC_NAME
-RET_VAL=$?
-if [ "X$RET_VAL" = "X0" ]; then
-    echo "finished successfully."
-else
-    echo "failed. Exit code: $RET_VAL" >&2
-    exit 1
-fi
+#tar -czvf $ARC_NAME "${COMPONENTS[@]}"
+#RET_VAL=$?
+#if [ "X$RET_VAL" = "X0" ]; then
+#    echo "finished successfully."
+#else
+#    echo "failed. Exit code: $RET_VAL" >&2
+#    exit 1
+#fi
 
 exit 0
