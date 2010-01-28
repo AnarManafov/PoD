@@ -138,6 +138,9 @@ logMsg "+++ START +++"
 WD=$(pwd)
 logMsg "Current working directory: $WD"
 
+# extract PoD worker package
+tar -xzvf pod-worker.tar.gz
+
 #Exporting PoD variables
 export POD_LOCATION=$WD
 eval POD_PROOFCFG_FILE=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_cfg_path)

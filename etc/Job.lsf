@@ -32,9 +32,7 @@ cd $WRK_DIR || return 1
 ## input files.
 ## we don't use BSUB-f since it doesn't support env. variables in paths
 #
-cp $POD_LOCATION/etc/xpd.cf $WRK_DIR/xpd.cf
-cp $POD_LOCATION/etc/PoD.cfg $WRK_DIR/PoD.cfg
-cp $POD_LOCATION/etc/server_info.cfg $WRK_DIR/server_info.cfg
+cp $POD_LOCATION/etc/pod-worker.tar.gz $WRK_DIR/pod-worker.tar.gz
 cp $POD_LOCATION/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 ## log dir

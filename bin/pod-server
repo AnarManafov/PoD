@@ -169,7 +169,11 @@ start()
     # Start Proofagent
     ####
     $POD_LOCATION/bin/pod-agent -d -m server -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --start
-    
+
+    # Prepare the worker package
+    ####
+    $POD_LOCATION/bin/pod-prep-worker
+
     return 0
 }
 # ************************************************************************
