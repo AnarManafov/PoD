@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit-lsf
+# * @brief a script, which can be used to manually submit PoD jobs using LSF
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-01-28
+#
+#        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+#*************************************************************************/
+#
+# Usage: pod-info [-q] [-n X] [-h]
+# -q    : Submit the jobs to specified queue.
+# -n X  : Desired number or PROOF workers.
+# -h    : Show summary of options.
+
+
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which can be used to manually submit PoD jobs using LSF.
+   Copyright (C) 2010 GSI, Scientific Computing group.
+
+Usage: pod-info [OPTION]
+     -q name     Submit the jobs to specified queue.
+     -n X        Desired number or PROOF workers.
+     -h          Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+# checking the number of parameters
+if [ $# -ne 4 ]; then
+    usage
+    exit 1
+fi
+
+QUEUE="proof"
+NUM_WRK=10
+while getopts ":q:n:h" opt; do
+  case $opt in
+  q)
+     QUEUE="$OPTARG"
+     ;;
+  n)
+    NUM_WRK=$OPTARG
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+
+echo "request $NUM_WRK workers and submit to $QUEUE"
+
+
+exit 0

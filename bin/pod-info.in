@@ -44,16 +44,27 @@ Report bugs to http://pod.gsi.de
 EOF
 }
 #=============================================================================
+# ***** CHECK PROOF_CFG
+#=============================================================================
+check_proof_cfg() {
+  if [ ! -r $PROOF_CFG ]; then
+    echo "Error: can't open: $PROOF_CFG" >&2
+    exit 1
+  fi
+}
+#=============================================================================
 # ***** NUMBER OF PROOF WORKERS
 #=============================================================================
 number_workers() {
-echo "$(cat $PROOF_CFG | grep -v "#" | grep worker | wc -l)"
+  check_proof_cfg
+  echo "$(cat $PROOF_CFG | grep -v "#" | grep worker | wc -l)"
 }
 #=============================================================================
 # ***** LIST OF PROOF WORKERS
 #=============================================================================
 list_workers() {
-echo "$(cat $PROOF_CFG | grep -v "#" | grep worker )"
+  check_proof_cfg
+  echo "$(cat $PROOF_CFG | grep -v "#" | grep worker )"
 }
 #=============================================================================
 # ***** PROOF CONNECTION STRING

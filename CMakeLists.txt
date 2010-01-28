@@ -61,6 +61,7 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-server
     ${CMAKE_SOURCE_DIR}/bin/pod-prep-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults-lite
+    ${CMAKE_SOURCE_DIR}/bin/pod-submit-lsf
     )
 
 #
