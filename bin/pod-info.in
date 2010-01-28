@@ -12,15 +12,16 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************/
 #
-# Usage: pod-info [-s] [-n] [-v] [-c] [-h]
+# Usage: pod-info [-s] [-n] [-l] [-v] [-c] [-h] 
 # -s : print PoD server status
 # -n : print a  number of currently available PROOF workers
+# -l : list all avaliable PROOF workers
 # -v : print version information
 # -c : print a PROOF connection string, which can be used in TProof::Open
 
 #######
-eval WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
-POD_VERSION=@VERSIONS@
+eval PROOF_CFG=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
+POD_VERSION=@VERSION@
 #######
 
 #=============================================================================
@@ -34,6 +35,7 @@ PoD information utility.
 Usage: pod-info [OPTION]
     -s    Show PoD server status.
     -n    Report a number of currently available PROOF workers.
+    -l    List all avaliable PROOF workers.
     -v    Print version information.
     -c    Show a PROOF connection string, which can be used in TProof::Open.
     -h    Show summary of options.
@@ -45,13 +47,19 @@ EOF
 # ***** NUMBER OF PROOF WORKERS
 #=============================================================================
 number_workers() {
-
+echo "$(cat $PROOF_CFG | grep -v "#" | grep worker | wc -l)"
+}
+#=============================================================================
+# ***** LIST OF PROOF WORKERS
+#=============================================================================
+list_workers() {
+echo "$(cat $PROOF_CFG | grep -v "#" | grep worker )"
 }
 #=============================================================================
 # ***** PROOF CONNECTION STRING
 #=============================================================================
 proof_connection_string() {
-
+echo "$($POD_LOCATION/bin/pod-server status | grep 'connection string' | egrep -o '([a-zA-Z.0-9]*:[0-9]*$)')"
 }
 #=============================================================================
 # ***** MAIN  *****
@@ -62,19 +70,16 @@ if [ $# -ne 1 ]; then
     exit 1
 fi
 
-# work_dir must be a valid dir
-if [ ! -e "$WORK_DIR" ]; then
-    echo "error: working director: \"$WORK_DIR\" doesn't exist!"
-    exit 1
-fi
-
-while getopts ":snvc" opt; do
+while getopts ":snlvch" opt; do
   case $opt in
   s)
-    $WRK_DIR/pod-server status
+    $POD_LOCATION/bin/pod-server status
     ;;
   n)
     number_workers
+    ;;
+  l)
+    list_workers
     ;;
   v)
     echo "PoD v$POD_VERSION"
