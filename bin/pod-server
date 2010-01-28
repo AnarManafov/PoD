@@ -77,7 +77,11 @@ server_status()
     else
 	echo "WARNING: PoD agent is NOT running."
     fi
-    
+
+    if [ -n  "$XRD_PID" ]; then
+	echo "PROOF connection string: "$SERVER_HOST_NAME:$XPROOF_PORT
+    fi    
+
     return 0
 }
 
