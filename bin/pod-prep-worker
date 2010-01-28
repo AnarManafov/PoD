@@ -14,8 +14,8 @@
 #
 # Usage: pod-prep-worker 
 
-ARC_NAME="$POD_LOCATION/etc/pod-worker.tgz"
-
+ARC_NAME="$POD_LOCATION/etc/pod-worker.tar"
+ARC_NAME_GZ=$ARC_NAME".gz"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
@@ -26,7 +26,9 @@ echo "preparing PoD worker package..."
 if [ -f $ARC_NAME ]; then
   rm -rf $ARC_NAME
 fi
-
+if [ -f $ARC_NAME_GZ ]; then
+  rm -rf $ARC_NAME_GZ
+fi
 
 # check that all needed components are available
 COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf" 
@@ -36,12 +38,23 @@ COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf"
 
 COMPONENTS_BIN=( "$POD_LOCATION/bin/pod-user-defaults-lite" )
 
+
 COMPONENTS=(  "${COMPONENTS_ETC[@]}"  "${COMPONENTS_BIN[@]}" )
+
+# create an empty archive first
+tar cvf $ARC_NAME --files-from=/dev/null 
 
 for i in "${COMPONENTS[@]}"
 do
   if [ -f $i ]; then
-    tar -C $(dirname $i) -cvzf $(basename $i)
+    tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
+    RET_VAL=$?
+    if [ "X$RET_VAL" = "X0" ]; then
+	continue
+    else
+	echo "failed. Exit code: $RET_VAL" >&2
+	exit 1
+    fi
   else
     echo "Error: missing component: $i" >&2
     rm -rf $ARC_NAME
@@ -49,14 +62,7 @@ do
   fi
 done
 
-# making the archive
-#tar -czvf $ARC_NAME "${COMPONENTS[@]}"
-#RET_VAL=$?
-#if [ "X$RET_VAL" = "X0" ]; then
-#    echo "finished successfully."
-#else
-#    echo "failed. Exit code: $RET_VAL" >&2
-#    exit 1
-#fi
+gzip -9 $ARC_NAME
+echo "finished successfully: "$ARC_NAME_GZ
 
 exit 0
