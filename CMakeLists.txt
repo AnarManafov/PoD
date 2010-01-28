@@ -112,7 +112,7 @@ execute_process(COMMAND mktemp -d /tmp/PoD_XXXXXXXXXX
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 configure_file( ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in ${CMAKE_BINARY_DIR}/etc/xpd.cf @ONLY )
 configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_env.sh @ONLY )
-configure_file( ${CMAKE_SOURCE_DIR}/etc/pod-info.in ${CMAKE_BINARY_DIR}/pod-info @ONLY )
+configure_file( ${CMAKE_SOURCE_DIR}/bin/pod-info.in ${CMAKE_BINARY_DIR}/pod-info @ONLY )
 #
 # Install
 #
