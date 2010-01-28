@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-prep-worker
+# * @brief a script, which prepares a worker package - all elements of PoD which need to be uploaded to a worker
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-01-28
+#
+#        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+#*************************************************************************/
+#
+# Usage: pod-prep-worker 
+
+ARC_NAME="$POD_LOCATION/etc/pod-worker.tgz"
+
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+
+echo "preparing PoD worker package..."
+
+# first delete a previous archive if available
+if [ -f $ARC_NAME ]; then
+  rm -rf $ARC_NAME
+fi
+
+
+# check that all needed components are available
+COMPONENTS=( "$POD_LOCATION/etc/xpd.cf" 
+             "$POD_LOCATION/etc/PoD.cf"
+             "$POD_LOCATION/etc/server_info.cfg"
+             "$POD_LOCATION/etc/PoDWorker.sh" )
+
+for i in "${COMPONENTS[@]}"
+do
+  if [ -f $i ]; then
+    continue
+  else
+    echo "Error: missing component: $i" >&2
+    exit 1
+  fi
+done
+
+# making the archive
+tar -czvf  "${COMPONENTS[@]}" $ARC_NAME
+RET_VAL=$?
+if [ "X$RET_VAL" = "X0" ]; then
+    echo "finished successfully."
+else
+    echo "failed. Exit code: $RET_VAL" >&2
+    exit 1
+fi
+
+exit 0
