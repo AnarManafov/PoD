@@ -15,7 +15,7 @@
 # Usage: pod-info [-s] [-n] [-l] [-v] [-c] [-h] 
 # -s : print PoD server status
 # -n : print a  number of currently available PROOF workers
-# -l : list all avaliable PROOF workers
+# -l : list all available PROOF workers
 # -v : print version information
 # -c : print a PROOF connection string, which can be used in TProof::Open
 
@@ -35,7 +35,7 @@ PoD information utility.
 Usage: pod-info [OPTION]
     -s    Show PoD server status.
     -n    Report a number of currently available PROOF workers.
-    -l    List all avaliable PROOF workers.
+    -l    List all available PROOF workers.
     -v    Print version information.
     -c    Show a PROOF connection string, which can be used in TProof::Open.
     -h    Show summary of options.
