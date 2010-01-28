@@ -27,7 +27,6 @@ POD_VERSION=@VERSIONS@
 # ***** USAGE *****
 #=============================================================================
 usage() {
-
     cat <<EOF
 PoD information utility.
    Copyright (C) 2010 GSI, Scientific Computing group.
