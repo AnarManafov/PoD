@@ -65,8 +65,13 @@ while getopts ":q:n:h" opt; do
   esac
 done
 
+JOB_NAME="$BASHPID[1-$NUM_WRK]"
+EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
+LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
+  
+echo  $EMAIL_JOB_OUTPUT
 
-echo "request $NUM_WRK workers and submit to $QUEUE"
+bjobs -q $QUEUE -J $JOB_NAME
 
 
 exit 0
