@@ -40,7 +40,7 @@ cp $POD_LOCATION/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 ## since the script will overwrite $POD_LOCATION to worker's local value but we want to use server's value here
 ## in case if logfile_dir contains $POD_LOCATION
 #
-eval LOG_DIR=$($POD_LOCATION/bin/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --section server --key logfile_dir)/$LSB_JOBID
+eval LOG_DIR=$($POD_LOCATION/bin/pod-user-defaults-lite -c $POD_LOCATION/etc/PoD.cfg --section server --key logfile_dir)/$LSB_JOBID
 mkdir -p $LOG_DIR
 #
 ## Here you can specify your own version of ROOT
