@@ -9,6 +9,7 @@
 <!ENTITY How_to_run SYSTEM "How_to_run.docbook">
 <!ENTITY gLite_plugin SYSTEM "gLite_plugin.docbook">
 <!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
+<!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
 <!ENTITY Support SYSTEM "Support.docbook">
@@ -78,17 +79,22 @@ How to run
   &How_to_run;
  
 <!-- 
-How to run 
+gLite plug-in
 -->
   &gLite_plugin;
 
 <!-- 
-How to run 
+LSF plug-in
 -->
   &LSF_plugin;
-  
+
 <!-- 
-Test 
+Command-line interface
+-->
+  &Cmd_line_interface;
+
+<!-- 
+How to test
 -->
   &How_to_test;
   

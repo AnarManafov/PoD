@@ -11,7 +11,8 @@ SRC=\
 	LSF_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
-	Support.docbook
+	Support.docbook\
+  Cmd_line_interface.docbook
 
 
 DOCBOOK=POD.docbook

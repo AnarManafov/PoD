@@ -1,0 +1,119 @@
+<!-- 
+Command-line interface 
+-->
+<chapter id="Cmd_line_interface">
+  <title>Command-line interface</title>
+  <chapterinfo>
+  </chapterinfo>
+
+  <sect1 id="pod_server">
+  <title>pod-server</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      <cmdsynopsis>
+      <!--
+        pod-server start|stop|status
+      -->
+      <command>pod-server</command>
+      <group choice="req">
+        <arg>start</arg>
+        <arg>stop</arg>
+        <arg>status</arg>
+      </group> 
+    </cmdsynopsis>
+      
+    </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+
+  <sect1 id="pod_info">
+  <title>pod-info</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+
+  <sect1 id="pod_user_defaults">
+  <title>pod-user-defaults</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+
+  <sect1 id="pod_user_defaults_lite">
+  <title>pod-user-defaults-lite</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+  
+  <sect1 id="pod_prep_worker">
+  <title>pod-prep-worker</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+
+  <sect1 id="pod_submit_lsf">
+  <title>pod-submit-lsf</title>    
+    <para>
+    <sect2 id="SYNOPSIS">
+    <title>SYNOPSIS</title>
+      <para>
+      </para>
+    </sect2>
+    <sect2 id="DESCRIPTION">
+    <title>DESCRIPTION</title>
+      <para>
+      </para>
+    </sect2>
+    </para>
+  </sect1>
+  
+
+</chapter>
+
