@@ -6,114 +6,407 @@ Command-line interface
   <chapterinfo>
   </chapterinfo>
 
-  <sect1 id="pod_server">
-  <title>pod-server</title>    
-    <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      <cmdsynopsis>
-      <!--
-        pod-server start|stop|status
-      -->
-      <command>pod-server</command>
-      <group choice="req">
-        <arg>start</arg>
-        <arg>stop</arg>
-        <arg>status</arg>
-      </group> 
-    </cmdsynopsis>
-      
-    </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
-    </para>
-  </sect1>
 
-  <sect1 id="pod_info">
-  <title>pod-info</title>    
-    <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
-    </para>
-  </sect1>
+  <!-- ......................................................................... -->
+  <!-- pod-server -->
+  <!-- ......................................................................... -->
 
-  <sect1 id="pod_user_defaults">
-  <title>pod-user-defaults</title>    
+  <refentry>
+  <refentryinfo>
+	  <title>pod-server</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-server vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-server</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-server</refname>
+	  <refpurpose>Manage PoD server</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-server</command>
+	 	    <group choice="req">
+	        <arg>start</arg>
+	        <arg>stop</arg>
+          <arg>status</arg>
+	      </group>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
     <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
+    Using this command users can start/stop PoD server. PoD server currently includes two daemons, namely xrood and pod-agent.
+    When the <option>status</option> argument is used, <command>pod-server</command> will show which processes are running, under which process IDs and
+    the list of currently used TCP ports sorted by processes. For user convenience the <command>pod-server</command> with
+    the <option>status</option> option prints also a PROOF connection string (master_host:xproofd_port), which can be used in PROOF analysis scripts
+    when calling <literal>TProof::Open</literal>.
     </para>
-  </sect1>
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>start</option></term>
+	    <listitem>
+	      <para>Start PoD server.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>stop</option></term>
+	    <listitem>
+	      <para>Stop PoD server.</para>
+	    </listitem>
+	  </varlistentry>
+	  <varlistentry>
+	    <term><option>status</option></term>
+	    <listitem>
+	      <para>Request the status of PoD server. It will show which processes are running, under which PIDs and which TCP ports are used.</para>
+	    </listitem>
+	  </varlistentry>
+  </variablelist>
+  </refsect1>
+  </refentry>
 
-  <sect1 id="pod_user_defaults_lite">
-  <title>pod-user-defaults-lite</title>    
+ <!-- ......................................................................... -->
+ <!-- pod-info -->
+
+ <!-- Usage: pod-info [-s] [-n] [-l] [-v] [-c] [-h] 
+  -s : print PoD server status
+  -n : print a  number of currently available PROOF workers
+  -l : list all available PROOF workers
+  -v : print version information
+  -c : print a PROOF connection string, which can be used in TProof::Open
+ -->
+ <!-- ......................................................................... -->
+
+   <refentry>
+  <refentryinfo>
+	  <title>pod-info</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-info vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-info</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-info</refname>
+	  <refpurpose>Show information about PoD and PROOF workers.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-info</command>
+	 	    <group choice="opt">
+	        <arg>-s</arg>
+	        <arg>-n</arg>
+          <arg>-l</arg>
+ 	        <arg>-v</arg>
+	        <arg>-c</arg>
+          <arg>-h</arg>
+	      </group>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
     <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
+    One can use <command>pod-info</command> to retrieve different kinds of information about and from PoD.
+    For example <command>pod-info</command> could help to find out whether PoD server running or not, how many PROOF workers already online and
+    which workers is available. Please see the Options section to find out all kinds of information <command>pod-info</command> can retrieve and show.
     </para>
-  </sect1>
+    <para>
+     The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+    </para>
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>-s</option></term>
+	    <listitem>
+	      <para>Show PoD server status.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-n</option></term>
+	    <listitem>
+	      <para>Report a number of currently available PROOF workers.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-l</option></term>
+	    <listitem>
+	      <para>List all available PROOF workers.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-v</option></term>
+	    <listitem>
+	      <para>Print version information.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-c</option></term>
+	    <listitem>
+	      <para>Show a PROOF connection string, which can be used in TProof::Open.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-h</option></term>
+	    <listitem>
+	      <para>Show summary of options.</para>
+	    </listitem>
+	  </varlistentry>   
+  </variablelist>
+  </refsect1>
+  </refentry>
+
+ <!-- ......................................................................... -->
+ <!-- pod-user-defaults -->
+ <!--
+    "help,h",     produce help message
+    "version,v"   version information
+    "config,c",   PoD user-defaults configuration file
+    "key",        get a value for the given key
   
-  <sect1 id="pod_prep_worker">
-  <title>pod-prep-worker</title>    
-    <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
-    </para>
-  </sect1>
+ -->
+ <!-- ......................................................................... -->
 
-  <sect1 id="pod_submit_lsf">
-  <title>pod-submit-lsf</title>    
+  <refentry>
+  <refentryinfo>
+	  <title>pod-user-defaults</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-user-defaults vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-user-defaults</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-user-defaults</refname>
+	  <refpurpose>Retrieves values from PoD user defaults configuration file.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-user-defaults</command>
+	        <arg><option>-s, --help</option></arg>
+	        <arg><option>-v, --version</option></arg>
+          <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
+ 	        <arg><option>--key=<replaceable>name</replaceable></option></arg>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
     <para>
-    <sect2 id="SYNOPSIS">
-    <title>SYNOPSIS</title>
-      <para>
-      </para>
-    </sect2>
-    <sect2 id="DESCRIPTION">
-    <title>DESCRIPTION</title>
-      <para>
-      </para>
-    </sect2>
+    The <command>pod-user-defaults</command> command can be used to retrieve values from the PoD user defaults configuration file for any given keys.
+    The PoD user defaults configuration "<filename>PoD.cfg</filename>" is a general PoD settings file, where user can tune PoD for a specific environment.
+    The file usually can be found in <filename class="directory"><envar>$POD_LOCATION</envar>/etc</filename>.
     </para>
-  </sect1>
-  
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>-h, --help</option></term>
+	    <listitem>
+	      <para>Show summary of options.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-v, --version</option></term>
+	    <listitem>
+	      <para>Version information.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></term>
+	    <listitem>
+	      <para>PoD user-defaults configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>--key=<replaceable>name</replaceable></option></term>
+	    <listitem>
+	      <para>The <command>pod-user-defaults</command> retrieves a value for the given key. A key must be specified with a its section name
+        (separated by a dot), for example to find out a working directory on the PoD server, request the value for the following key: "server.wrk_dir".
+        </para>
+	    </listitem>
+	  </varlistentry>
+  </variablelist>
+  </refsect1>
+  </refentry>
+
+ <!-- ......................................................................... -->  
+ <!-- pod-user-defaults-lite -->
+ <!-- ......................................................................... -->
+
+  <refentry>
+  <refentryinfo>
+	  <title>pod-user-defaults-lite</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-user-defaults-lite vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-user-defaults-lite</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-user-defaults-lite</refname>
+	  <refpurpose>Retrieves values from PoD user defaults configuration file.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-user-defaults-lite</command>
+	        <arg><option>-s, --help</option></arg>
+	        <arg><option>-v, --version</option></arg>
+          <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
+          <arg><option>-s <replaceable>name</replaceable>, --section=<replaceable>name</replaceable></option></arg>
+ 	        <arg><option>-k <replaceable>name</replaceable>, --key=<replaceable>name</replaceable></option></arg>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
+    <para>
+    The <command>pod-user-defaults-lite</command> does the same job as <command>pod-user-defaults</command>. The main difference between these two
+    commands is that <command>pod-user-defaults-lite</command> is a python script and not a pre-compiled C++ program as
+    <command>pod-user-defaults</command> is. The <command>pod-user-defaults-lite</command> command is usually used on the PoD workers.
+    </para>
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>-h, --help</option></term>
+	    <listitem>
+	      <para>Show summary of options.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-v, --version</option></term>
+	    <listitem>
+	      <para>Version information.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></term>
+	    <listitem>
+	      <para>PoD user-defaults configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-s <replaceable>name</replaceable>, --section=<replaceable>name</replaceable></option></term>
+	    <listitem>
+	      <para>A name of the section of the configuration file, the section which contains the required key.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-k <replaceable>name</replaceable>, --key=<replaceable>name</replaceable></option></term>
+	    <listitem>
+	      <para>The <command>pod-user-defaults-lite</command> retrieves a value for the given key.</para>
+	    </listitem>
+	  </varlistentry>
+  </variablelist>
+  </refsect1>
+  </refentry>
+
+ <!-- ......................................................................... -->
+ <!-- pod-prep-worker -->
+ <!-- ......................................................................... -->
+
+   <refentry>
+  <refentryinfo>
+	  <title>pod-prep-worker</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-prep-worker vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-prep-worker</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-prep-worker</refname>
+	  <refpurpose>Prepares a worker package - all elements of PoD which need to be uploaded to a worker node.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-prep-worker</command>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
+    <para>
+    The <command>pod-prep-worker</command> command creates a tar-zipped archive of all files which are required on PoD worker. The command prepares a
+    PoD worker package. This package and the <command>PoDWorker.sh</command> job script are all what is required to start a PoD worker.
+    </para>
+    <para>
+    The <command>pod-prep-worker</command> command must be issued on the PoD server machine and only when PoD server is up an running.
+    Otherwise the package will be not created.
+    </para>
+  </refsect1>
+  </refentry>
+
+ <!-- ......................................................................... -->
+ <!-- pod-submit-lsf -->
+ <!-- ......................................................................... -->
+
+  <refentry>
+  <refentryinfo>
+	  <title>pod-submit-lsf</title>
+	  <date>2010-01-31</date>
+	  <productname>pod-submit-lsf vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-submit-lsf</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-submit-lsf</refname>
+	  <refpurpose>Submit PoD jobs using LSF.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-submit-lsf</command>
+	        <arg><option>-h</option></arg>
+	        <arg><option>-q <replaceable>queue</replaceable></option></arg>
+          <arg><option>-n <replaceable>X</replaceable></option></arg>
+ 	    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
+    <para>
+    Use this command to manually submit PoD workers to LSF resource management system.
+    </para>
+    <para>
+     The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+    </para>
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>-h</option></term>
+	    <listitem>
+	      <para>Show summary of options and exit.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-q <replaceable>queue</replaceable></option></term>
+	    <listitem>
+	      <para>Submit the jobs to specified <option>queue</option>.</para>
+	    </listitem>
+	  </varlistentry>
+    <varlistentry>
+	    <term><option>-n <replaceable>X</replaceable></option></term>
+	    <listitem>
+	      <para>Specify a desired number or PROOF workers, where the <option>X</option> option defines the number of workers.</para>
+	    </listitem>
+	  </varlistentry>
+  </variablelist>
+  </refsect1>
+  </refentry>
+
 
 </chapter>
 

@@ -89,14 +89,14 @@ LSF plug-in
   &LSF_plugin;
 
 <!-- 
-Command-line interface
--->
-  &Cmd_line_interface;
-
-<!-- 
 How to test
 -->
   &How_to_test;
+
+<!-- 
+Command-line interface
+-->
+  &Cmd_line_interface;
   
 <!-- 
 Known Issues 
