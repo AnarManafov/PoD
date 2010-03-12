@@ -1,8 +1,9 @@
 ********************* Release 2.1.4 not yet released ************************
 pod: A new build system and installation procedure have been introduced.
+pod: Added a PBS plug-in, which opens a possibility to submit PoD jobs to PBS resource management system.
 utilities: Added a "pod-info" command. This is a part of PoD command line interface now. Please see PoD documentation for more details.
 utilities: Added a "pod-prep-worker" command. This is a part of PoD command line interface now. Please see PoD documentation for more details. 
-utilities: Added a "pod-submit-lsf" command. This is a part of PoD command line interface now. Please see PoD documentation for more details. 
+utilities: Added a "pod-submit" command. This is a part of PoD command line interface now. Please see PoD documentation for more details. 
 
 ********************* Release 2.1.3 2010-01-18 ************************
 pod-agent: implemented a new internal communication protocol. It's used for Client/Server admin. communications.
