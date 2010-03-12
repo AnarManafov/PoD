@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #/************************************************************************/
 #/**
-# * @file pod-submit-lsf
-# * @brief a script, which can be used to manually submit PoD jobs using LSF
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
 #
@@ -12,10 +12,11 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************/
 #
-# Usage: pod-info [-q] [-n X] [-h]
-# -q    : Submit the jobs to specified queue.
-# -n X  : Desired number or PROOF workers.
-# -h    : Show summary of options.
+# Usage: pod-submit [-r [lsf:pbs]] [-q] [-n X] [-h]
+# -r rms : Name of the resource management system (supported: lsf, pbs).
+# -q     : Submit the jobs to specified queue.
+# -n X   : Desired number or PROOF workers.
+# -h     : Show summary of options.
 
 
 #=============================================================================
@@ -27,7 +28,8 @@ PoD command line utility, which can be used to manually submit PoD jobs using LS
    Copyright (C) 2010 GSI, Scientific Computing group.
 
 Usage: pod-info [OPTION]
-     -q name     Submit the jobs to specified queue.
+     -r rms      Name of the resource management system (supported: lsf, pbs).
+     -q name     Submit the jobs to specified queue (for rms=[lsf:pbs]).
      -n X        Desired number or PROOF workers.
      -h          Show summary of options.
 
@@ -39,20 +41,24 @@ EOF
 # ***** MAIN  *****
 #=============================================================================
 # checking the number of parameters
-if [ $# -ne 4 ]; then
+if [ $# -ne 6 ]; then
     usage
     exit 1
 fi
 
+RMS="lsf"
 QUEUE="proof"
 NUM_WRK=10
-while getopts ":q:n:h" opt; do
+while getopts ":q:n:hr:" opt; do
   case $opt in
   q)
      QUEUE="$OPTARG"
      ;;
   n)
     NUM_WRK=$OPTARG
+    ;;
+  r) 
+    RMS=$OPTARG
     ;;
   h) 
     usage
@@ -65,16 +71,30 @@ while getopts ":q:n:h" opt; do
   esac
 done
 
-JOB_NAME="$BASHPID[1-$NUM_WRK]"
+# check supported RMS
+if [ "$RMS" != "lsf" -a "$RMS" != "pbs" ]; then
+  echo "Error: \"$RMS\" is not supported by this command."
+  echo ""
+  usage
+  exit 1
+fi
+
+
 EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
 LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
 
-OUTPUT=""
-if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
-    OUTPUT=" -o $LOG_DIR/%J/std_%I.out -e $LOG_DIR/%J/std_%I.err"
+
+if [ "$RMS" = "lsf" ]; then
+  # LSF 
+  JOB_NAME="$BASHPID[1-$NUM_WRK]"
+  OUTPUT=""
+  if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
+      OUTPUT=" -o $LOG_DIR/%J/std_%I.out -e $LOG_DIR/%J/std_%I.err"
+  fi
+  bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
+elif  [ "$RMS" = "pbs" ]; then
+  # PBS
+  qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ $POD_LOCATION/etc/Job.pbs
 fi
-
-bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
-
 
 exit 0
