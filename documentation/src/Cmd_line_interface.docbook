@@ -348,38 +348,40 @@ Command-line interface
   </refentry>
 
  <!-- ......................................................................... -->
- <!-- pod-submit-lsf -->
+ <!-- pod-submit -->
  <!-- ......................................................................... -->
 
   <refentry>
   <refentryinfo>
-	  <title>pod-submit-lsf</title>
+	  <title>pod-submit</title>
 	  <date>2010-01-31</date>
-	  <productname>pod-submit-lsf vXXX</productname>
+	  <productname>pod-submit vXXX</productname>
   </refentryinfo>
   <refmeta>
-	  <refentrytitle>pod-submit-lsf</refentrytitle>
+	  <refentrytitle>pod-submit</refentrytitle>
 	  <manvolnum>1</manvolnum>
   </refmeta>
   <refnamediv>
-	  <refname>pod-submit-lsf</refname>
-	  <refpurpose>Submit PoD jobs using LSF.</refpurpose>
+	  <refname>pod-submit</refname>
+	  <refpurpose>Submit PoD jobs using a defined resource management system.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
 	  <cmdsynopsis>
-	    <command>pod-submit-lsf</command>
+	    <command>pod-submit</command>
 	        <arg><option>-h</option></arg>
-	        <arg><option>-q <replaceable>queue</replaceable></option></arg>
+	        <arg><option>-r <replaceable>lsf|pbs</replaceable></option></arg>
+          <arg><option>-q <replaceable>queue</replaceable></option></arg>
           <arg><option>-n <replaceable>X</replaceable></option></arg>
  	    </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
 	<title>Description</title>
     <para>
-    Use this command to manually submit PoD workers to LSF resource management system.
+    Use this command to manually submit PoD workers to a defined resource management system.
+    Currently only lsf and pbs are supported.
     </para>
     <para>
-     The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+     The <command>pod-submit</command> utility exits 0 on success, and >0 if an error occurs.    
     </para>
   </refsect1>
   <refsect1>
@@ -391,6 +393,12 @@ Command-line interface
 	      <para>Show summary of options and exit.</para>
 	    </listitem>
 	  </varlistentry>
+    <varlistentry>
+      <term><option>-r <replaceable>lsf|pbs</replaceable></option></term>
+      <listitem>
+      <para>A name of the resource management system to use (supported: lsf, pbs).</para>
+      </listitem>
+    </varlistentry>
     <varlistentry>
 	    <term><option>-q <replaceable>queue</replaceable></option></term>
 	    <listitem>
