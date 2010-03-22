@@ -29,6 +29,11 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
 
 #
+# Build TESTS
+#
+set( BUILD_TESTS ON CACHE BOOL "Build pod-console unit tests" FORCE )
+
+#
 # Plug-ins
 #
 

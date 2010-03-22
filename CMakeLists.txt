@@ -36,6 +36,7 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 #
 option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 option(BUILD_GLITE_PLUGIN "Build gLite plug-in" OFF)
+option(BUILD_TESTS "Build pod-console unit tests" OFF)
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h
@@ -138,6 +139,21 @@ if (LSF_FOUND)
 else (LSF_FOUND)
     message (STATUS "Build LSF plug-in - NO")    
 endif (LSF_FOUND)   
+
+#
+# PBS Plug-in
+#
+find_package( PBS REQUIRED )
+if (PBS_FOUND)
+    add_subdirectory ( plugins/PBSPlugin )
+    message (STATUS "Build PBS plug-in - YES")
+    if (BUILD_TESTS)
+       add_subdirectory ( plugins/PBSPlugin/tests )
+       message (STATUS "Build tests of pbs plug-in")
+    endif (BUILD_TESTS)
+else (PBS_FOUND)
+    message (STATUS "Build PBS plug-in - NO")    
+endif (PBS_FOUND)
 
 #
 # Alien Plug-in
