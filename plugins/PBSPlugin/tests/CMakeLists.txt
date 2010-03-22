@@ -27,11 +27,12 @@ find_package( Boost 1.33.1 REQUIRED unit_test_framework)
 #=============================================================================
 add_executable(pod-console_test_pbs_submit test_submit.cpp  ${pod-console-pbs_SOURCE_DIR}/src/PbsMng.cpp)
 
-include_directories( ${pod-console-pbs_SOURCE_DIR}/src )
+include_directories( ${pod-console-pbs_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} )
 
 target_link_libraries (
     pod-console_test_pbs_submit
     ${Boost_LIBRARIES}
+    ${PBS_LIBRARIES}
 )
 
 install(TARGETS pod-console_test_pbs_submit DESTINATION tests)

@@ -54,6 +54,7 @@ QT4_ADD_RESOURCES( RCS_SRCS_pbs  ${UI_SRSC_lsf} )
 add_library(pod-console-pbs SHARED ${SOURCE_FILES_pbs} ${MOC_SRCS_pbs} ${RCS_SRCS_pbs} ${UI_HDRS_pbs})
 
 set(CMAKE_CXX_FLAGS " -Wall")
+
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PBS_INCLUDE_DIR} src )
 
 

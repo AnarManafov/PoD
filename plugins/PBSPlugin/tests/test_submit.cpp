@@ -34,8 +34,8 @@ BOOST_AUTO_TEST_SUITE( test_submit );
 BOOST_AUTO_TEST_CASE( test_submit_0 )
 {
     CPbsMng mng;
-    
-    CPbsMng::jobID_t id = mng.jobSubmit("");
-    BOOST_REQUIRE( mng.isValid(id) );
+
+    CPbsMng::jobID_t id = mng.jobSubmit( "" );
+    BOOST_REQUIRE( mng.isValid( id ) );
 }
 BOOST_AUTO_TEST_SUITE_END();

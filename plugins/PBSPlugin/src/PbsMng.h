@@ -20,12 +20,12 @@
 
 class CPbsMng
 {
-public:
-    typedef std::string jobID_t;
-    
-public:
-    bool isValid( const jobID_t &_id );
-    jobID_t jobSubmit( const std::string &_cmd );
+    public:
+        typedef std::string jobID_t;
+
+    public:
+        bool isValid( const jobID_t &_id );
+        jobID_t jobSubmit( const std::string &_cmd );
 };
 
 #endif /* PBSMNG_H_ */
