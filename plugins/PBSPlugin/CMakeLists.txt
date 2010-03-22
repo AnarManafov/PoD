@@ -33,6 +33,7 @@ set( MOC_HDRS_pbs
 set( SOURCE_FILES_pbs
 #    ./src/LSFDlg.cpp
     ./src/PbsMng.cpp
+    ./src/set_attr.c
 #    ./src/JobInfo.cpp
 #    ./src/JobInfoItemModel.cpp
 #    ./src/JobsContainer.cpp

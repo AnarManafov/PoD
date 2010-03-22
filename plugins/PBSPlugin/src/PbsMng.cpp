@@ -19,10 +19,15 @@ extern "C"
 {
 #include "pbs_error.h"
 #include "pbs_ifl.h"
+    void set_attr(
+                  struct attrl **attrib,        /* I */
+                  const char * const attrib_name,   /* I */
+                  const char * const attrib_value);
 }
 // STD
 #include <sstream>
 #include <stdexcept>
+
 
 using namespace std;
 //=============================================================================
@@ -69,8 +74,11 @@ CPbsMng::jobID_t CPbsMng::jobSubmit( const std::string &_cmd )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
 
-    attrl attrib;
-
+    // TODO: don't forget to call free
+    attrl *attrib = NULL;
+    
+    // TODO: a test call
+    set_attr( &attrib, ATTR_j, "oe" );
     // queue a job request
     char script[] = "SCRIPT.PBS";
     // the destination (4th parameter) will be provided via attributes - ATTR_queue

@@ -25,12 +25,13 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 find_package( Boost 1.33.1 REQUIRED unit_test_framework)
 
 #=============================================================================
-add_executable(pod-console_test_pbs_submit test_submit.cpp  ${pod-console-pbs_SOURCE_DIR}/src/PbsMng.cpp)
+add_executable(pod-console_test_pbs_submit test_submit.cpp )
 
 include_directories( ${pod-console-pbs_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} )
 
 target_link_libraries (
     pod-console_test_pbs_submit
+    pod-console-pbs
     ${Boost_LIBRARIES}
     ${PBS_LIBRARIES}
 )
