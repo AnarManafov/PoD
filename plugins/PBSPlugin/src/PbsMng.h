@@ -17,6 +17,7 @@
 // STD
 #include <string>
 
+struct attrl;
 
 class CPbsMng
 {
@@ -24,8 +25,16 @@ class CPbsMng
         typedef std::string jobID_t;
 
     public:
-        bool isValid( const jobID_t &_id );
-        jobID_t jobSubmit( const std::string &_cmd );
+        bool isValid( const jobID_t &_id ) const;
+        jobID_t jobSubmit( const std::string &_script, const std::string &_queue,
+                           size_t _nJobs,
+                          const std::string &_outputPath ) const;
+
+    private:
+        void cleanAttr( attrl **attrib ) const;
+        void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
+                                size_t _nJobs,
+                               const std::string &_outputPath ) const;
 };
 
 #endif /* PBSMNG_H_ */

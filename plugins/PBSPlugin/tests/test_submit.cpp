@@ -29,13 +29,13 @@ using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_submit );
 //=============================================================================
-
+const string g_pbsScript="./test.pbs";
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_submit_0 )
 {
     CPbsMng mng;
 
-    CPbsMng::jobID_t id = mng.jobSubmit( "" );
+    CPbsMng::jobID_t id = mng.jobSubmit( g_pbsScript, "batch", 2, "./" );
     BOOST_REQUIRE( mng.isValid( id ) );
 }
 BOOST_AUTO_TEST_SUITE_END();

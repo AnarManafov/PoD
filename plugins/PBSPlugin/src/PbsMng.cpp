@@ -20,9 +20,9 @@ extern "C"
 #include "pbs_error.h"
 #include "pbs_ifl.h"
     void set_attr(
-                  struct attrl **attrib,        /* I */
-                  const char * const attrib_name,   /* I */
-                  const char * const attrib_value);
+        struct attrl **attrib,        /* I */
+        const char * const attrib_name,   /* I */
+        const char * const attrib_value );
 }
 // STD
 #include <sstream>
@@ -59,12 +59,14 @@ class pbs_error: public std::exception
         int m_errno;
 };
 //=============================================================================
-bool CPbsMng::isValid( const CPbsMng::jobID_t &_id )
+bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
 {
     return !_id.empty();
 }
 //=============================================================================
-CPbsMng::jobID_t CPbsMng::jobSubmit( const std::string &_cmd )
+CPbsMng::jobID_t CPbsMng::jobSubmit( const string &_script, const string &_queue,
+                                     size_t _nJobs,
+                                     const string &_outputPath ) const
 {
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
@@ -76,14 +78,17 @@ CPbsMng::jobID_t CPbsMng::jobSubmit( const std::string &_cmd )
 
     // TODO: don't forget to call free
     attrl *attrib = NULL;
-    
-    // TODO: a test call
-    set_attr( &attrib, ATTR_j, "oe" );
-    // queue a job request
-    char script[] = "SCRIPT.PBS";
-    // the destination (4th parameter) will be provided via attributes - ATTR_queue
+
+    // Set default attributes for PoD
+    setDefaultPoDAttr( &attrib, _queue, _nJobs, _outputPath );
+
+    // The destination (4th parameter) will be provided via attributes - ATTR_queue
+    // HACK: I hate to use const_cast, but
+    // for some unknown reason API developers wants char* and not const char * const
     char *jobid = pbs_submit( connect, reinterpret_cast<attropl*>( &attrib ),
-                              script, NULL, NULL );
+                              const_cast<char*>( _script.c_str() ), NULL, NULL );
+    cleanAttr( &attrib );
+
     if ( NULL == jobid )
     {
         // get error message and disconnect
@@ -106,4 +111,36 @@ CPbsMng::jobID_t CPbsMng::jobSubmit( const std::string &_cmd )
     jobID_t ret( jobid );
     free( jobid );
     return ret;
+}
+//=============================================================================
+void CPbsMng::cleanAttr( attrl **attrib ) const
+{
+    attrl *next = *attrib;
+    while ( next != NULL )
+    {
+        attrl *del = next;
+        next = del->next;
+        
+        free( del->name );
+        free( del->resource );
+        free( del->value );
+        free( del );
+    }
+}
+//=============================================================================
+void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
+                                 size_t _nJobs, const string &_outputPath ) const
+{
+    // job's name
+    set_attr( attrib, ATTR_N, "PoD" );
+    // join error/stdoutput
+    set_attr( attrib, ATTR_j, "oe" );
+    // queue (destination)
+    set_attr( attrib, ATTR_q, _queue.c_str() );
+    // an array job
+    stringstream ss;
+    ss << "1-" << _nJobs;
+    set_attr( attrib, ATTR_t, ss.str().c_str() );
+    // output path
+    set_attr( attrib, ATTR_o, _outputPath.c_str() );
 }
