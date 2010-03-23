@@ -27,7 +27,7 @@ extern "C"
 // STD
 #include <sstream>
 #include <stdexcept>
-
+#include <cstdlib>
 
 using namespace std;
 //=============================================================================
