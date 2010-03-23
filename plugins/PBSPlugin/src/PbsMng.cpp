@@ -82,10 +82,10 @@ CPbsMng::jobID_t CPbsMng::jobSubmit( const string &_script, const string &_queue
     // Set default attributes for PoD
     setDefaultPoDAttr( &attrib, _queue, _nJobs, _outputPath );
 
-    // The destination (4th parameter) will be provided via attributes - ATTR_queue
+    // The destination (4th parameter) will be provided via attributes - ATTR_
     // HACK: I hate to use const_cast, but
     // for some unknown reason API developers wants char* and not const char * const
-    char *jobid = pbs_submit( connect, reinterpret_cast<attropl*>( &attrib ),
+    char *jobid = pbs_submit( connect, reinterpret_cast<attropl*>( attrib ),
                               const_cast<char*>( _script.c_str() ), NULL, NULL );
     cleanAttr( &attrib );
 
@@ -120,11 +120,15 @@ void CPbsMng::cleanAttr( attrl **attrib ) const
     {
         attrl *del = next;
         next = del->next;
-        
+
         free( del->name );
+        del->name = NULL;
         free( del->resource );
+        del->resource = NULL;
         free( del->value );
+        del->value = NULL;
         free( del );
+        del = NULL;
     }
 }
 //=============================================================================
@@ -135,8 +139,8 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     set_attr( attrib, ATTR_N, "PoD" );
     // join error/stdoutput
     set_attr( attrib, ATTR_j, "oe" );
-    // queue (destination)
-    set_attr( attrib, ATTR_q, _queue.c_str() );
+    // queue (desti nation)
+    set_attr( attrib, ATTR_queue, _queue.c_str() );
     // an array job
     stringstream ss;
     ss << "1-" << _nJobs;

@@ -29,7 +29,7 @@ using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_submit );
 //=============================================================================
-const string g_pbsScript="./test.pbs";
+const string g_pbsScript = "./test.pbs";
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_submit_0 )
 {
