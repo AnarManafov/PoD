@@ -29,13 +29,19 @@ using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_submit );
 //=============================================================================
-const string g_pbsScript = "./test.pbs";
-//=============================================================================
 BOOST_AUTO_TEST_CASE( test_submit_0 )
 {
+    char tmpname[] = "/tmp/pbs_script.XXXXXX";
+    int tmpfd(0);
+    BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
+    FILE *file;
+    BOOST_REQUIRE(( file = fdopen( tmpfd, "w" ) ) != NULL );
+    fprintf( file, "#! /usr/bin/env bash" );
+    fprintf( file, "echo \"Test\"" );
+
     CPbsMng mng;
 
-    CPbsMng::jobID_t id = mng.jobSubmit( g_pbsScript, "batch", 2, "./" );
-    BOOST_REQUIRE( mng.isValid( id ) );
-}
-BOOST_AUTO_TEST_SUITE_END();
+    CPbsMng::jobID_t id = mng.jobSubmit( tmpname, "batch", 2, "./" );
+                          BOOST_REQUIRE( mng.isValid( id ) );
+                      }
+                      BOOST_AUTO_TEST_SUITE_END();
