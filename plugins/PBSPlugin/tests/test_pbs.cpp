@@ -14,6 +14,7 @@
 *************************************************************************/
 // STD
 #include <stdexcept>
+#include <iostream>
 // BOOST: tests
 // Defines test_main function to link with actual unit test code.
 #define BOOST_TEST_DYN_LINK
@@ -31,6 +32,7 @@ BOOST_AUTO_TEST_SUITE( test_pbs );
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_pbs_0 )
 {
+    // create a test script
     char tmpname[] = "/tmp/pbs_script.XXXXXX";
     int tmpfd( 0 );
     BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
@@ -41,9 +43,12 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
 
     CPbsMng mng;
 
+    // check that submit works
     CPbsMng::jobID_t id = mng.jobSubmit( tmpname, "batch", 2, "./" );
     BOOST_REQUIRE( mng.isValid( id ) );
-
+    cout << "Job ID: " << id << endl;
+    
+    // remove the test script
     unlink( tmpname );
 }
 BOOST_AUTO_TEST_SUITE_END();
