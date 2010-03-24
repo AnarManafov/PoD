@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file test_submit.cpp
+ * @file test_pbs.cpp
  * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
@@ -27,9 +27,9 @@
 using namespace std;
 using boost::unit_test::test_suite;
 
-BOOST_AUTO_TEST_SUITE( test_submit );
+BOOST_AUTO_TEST_SUITE( test_pbs );
 //=============================================================================
-BOOST_AUTO_TEST_CASE( test_submit_0 )
+BOOST_AUTO_TEST_CASE( test_pbs_0 )
 {
     char tmpname[] = "/tmp/pbs_script.XXXXXX";
     int tmpfd( 0 );
