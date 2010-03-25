@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     BOOST_REQUIRE( !ids.empty() );
 
     cout << "Fake parent ID: " << ids[0] << endl;
-    CPbsMng::jobArray_t::const_iterator iter = ids.begin();
+    CPbsMng::jobArray_t::const_iterator iter = ids.begin() + 1;
     CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
     for ( ; iter != iter_end; ++iter )
     {
