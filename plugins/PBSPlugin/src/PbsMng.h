@@ -28,13 +28,14 @@ class CPbsMng
         bool isValid( const jobID_t &_id ) const;
         jobID_t jobSubmit( const std::string &_script, const std::string &_queue,
                            size_t _nJobs,
-                          const std::string &_outputPath ) const;
+                           const std::string &_outputPath ) const;
+        void jobStatus( const jobID_t &_id );
 
     private:
         void cleanAttr( attrl **attrib ) const;
         void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
                                 size_t _nJobs,
-                               const std::string &_outputPath ) const;
+                                const std::string &_outputPath ) const;
 };
 
 #endif /* PBSMNG_H_ */

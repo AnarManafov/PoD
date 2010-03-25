@@ -28,6 +28,7 @@ extern "C"
 #include <sstream>
 #include <stdexcept>
 #include <cstdlib>
+#include <iostream>
 
 using namespace std;
 //=============================================================================
@@ -147,4 +148,34 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
     set_attr( attrib, ATTR_o, _outputPath.c_str() );
+}
+
+//=============================================================================
+void CPbsMng::jobStatus( const jobID_t &_id )
+{
+    if ( _id.empty() )
+        return;
+
+    // Connect to the pbs server
+    // We use NULL as a PBS server string, a connection will be
+    // opened to the default server.
+    int connect = pbs_connect( NULL );
+    if ( connect < 0 )
+        throw pbs_error( "Error occurred while connecting to pbs server." );
+
+    batch_status *p_status = NULL;
+
+    p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
+                            NULL, const_cast<char*>(EXECQUEONLY) );
+    if ( NULL == p_status )
+        throw pbs_error( "Error getting job's status." );
+
+    cout << "Job's status information." << endl;
+    batch_status *p = NULL;
+    for ( p = p_status; p != NULL; p = p->next )
+    {
+        cout << "Job ID: " << p->name << endl;
+    }
+
+    pbs_statfree( p_status );
 }

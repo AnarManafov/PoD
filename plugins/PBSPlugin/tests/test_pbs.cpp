@@ -47,7 +47,10 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     CPbsMng::jobID_t id = mng.jobSubmit( tmpname, "batch", 2, "./" );
     BOOST_REQUIRE( mng.isValid( id ) );
     cout << "Job ID: " << id << endl;
-    
+
+    // get job's status
+    mng.jobStatus( id );
+
     // remove the test script
     unlink( tmpname );
 }
