@@ -28,6 +28,7 @@ extern "C"
 #include <sstream>
 #include <stdexcept>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 // job's array start index
@@ -224,7 +225,8 @@ void CPbsMng::jobStatus( const jobID_t &_id )
             {
                 cout << "TOTAL: " << a->value << endl;
             }
-
+            
+            a = a->next;
         }
     }
 
