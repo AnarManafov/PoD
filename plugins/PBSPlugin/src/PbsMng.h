@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 #include <map>
+// MiscCommon
+#include "def.h"
 
 struct attrl;
 
@@ -56,6 +58,7 @@ class CPbsMng
         std::string jobStatus( const jobID_t &_id ) const;
         void jobStatusAllJobs( jobInfoContainer_t *_container,
                                const jobArray_t &_ids ) const;
+        void getQueues( MiscCommon::StringVector_t *_container ) const;
 
     private:
         void cleanAttr( attrl **attrib ) const;

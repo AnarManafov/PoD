@@ -15,6 +15,9 @@
 // STD
 #include <stdexcept>
 #include <iostream>
+#include <iterator>
+// MiscCommon
+#include "def.h"
 // BOOST: tests
 // Defines test_main function to link with actual unit test code.
 #define BOOST_TEST_DYN_LINK
@@ -50,8 +53,8 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     BOOST_REQUIRE( !ids.empty() );
 
     // we need to sleep a bit. Otherwise we could be too fast asking for status, than PBS registers a job
-    sleep(2);
-    
+    sleep( 2 );
+
     cout << "Fake parent ID: " << ids[0] << endl;
     CPbsMng::jobArray_t::const_iterator iter = ids.begin() + 1;
     CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
@@ -64,29 +67,44 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
         cout << "Status: " << status << endl;
         BOOST_REQUIRE( status.size() == 1 );
     }
-    
+
     // TODO: delete the script, even in case of an error
     // remove the test script
     //unlink( tmpname );
 }
-
+//=============================================================================
 BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
 {
     cout << "Check status of all jobs" << endl;
     CPbsMng mng;
-    
+
     CPbsMng::jobInfoContainer_t info;
     CPbsMng::jobArray_t idx;
     mng.jobStatusAllJobs( &info, idx );
-    
+
     BOOST_REQUIRE( !info.empty() );
-    
+
     CPbsMng::jobInfoContainer_t::const_iterator iter = info.begin();
     CPbsMng::jobInfoContainer_t::const_iterator iter_end = info.end();
-    for(; iter != iter_end ; ++iter)
+    for ( ; iter != iter_end ; ++iter )
     {
         cout << iter->first << " has status " << iter->second.m_status << endl;
     }
+}
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_pbs_allqueues )
+{
+    cout << "Getting a list of available queues" << endl;
+    CPbsMng mng;
+
+    MiscCommon::StringVector_t queues;
+    mng.getQueues( &queues );
+
+    BOOST_REQUIRE( !queues.empty() );
+
+    copy( queues.begin(), queues.end(),
+          ostream_iterator<string>( cout, "\n" ) );
+
 }
 
 BOOST_AUTO_TEST_SUITE_END();

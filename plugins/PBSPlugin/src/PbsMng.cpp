@@ -279,3 +279,40 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container,
     // close the connection with the server
     pbs_disconnect( connect );
 }
+//=============================================================================
+void CPbsMng::getQueues( MiscCommon::StringVector_t *_container ) const
+{
+    if ( !_container )
+        return;
+
+    _container->clear();
+
+    // Connect to the pbs server
+    // We use NULL as a PBS server string, a connection will be
+    // opened to the default server.
+    int connect = pbs_connect( NULL );
+    if ( connect < 0 )
+        throw pbs_error( "Error occurred while connecting to pbs server." );
+
+    batch_status *p_status = NULL;
+
+    // request information of all queues
+    p_status = pbs_statque( connect, NULL, NULL, NULL );
+    if ( NULL == p_status )
+    {
+        // close the connection with the server
+        pbs_disconnect( connect );
+        throw pbs_error( "Error getting queues status." );
+    }
+
+    batch_status *p( NULL );
+    for ( p = p_status; p != NULL; p = p->next )
+    {
+        _container->push_back( p->name );
+    }
+
+    pbs_statfree( p_status );
+
+    // close the connection with the server
+    pbs_disconnect( connect );
+}
