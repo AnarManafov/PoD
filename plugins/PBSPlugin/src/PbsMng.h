@@ -16,6 +16,7 @@
 #define PBSMNG_H_
 // STD
 #include <string>
+#include <vector>
 
 struct attrl;
 
@@ -23,12 +24,13 @@ class CPbsMng
 {
     public:
         typedef std::string jobID_t;
+        typedef std::vector<jobID_t> jobArray_t;
 
     public:
         bool isValid( const jobID_t &_id ) const;
-        jobID_t jobSubmit( const std::string &_script, const std::string &_queue,
-                           size_t _nJobs,
-                           const std::string &_outputPath ) const;
+        jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
+                              size_t _nJobs,
+                              const std::string &_outputPath ) const;
         void jobStatus( const jobID_t &_id );
 
     private:
@@ -36,6 +38,7 @@ class CPbsMng
         void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
                                 size_t _nJobs,
                                 const std::string &_outputPath ) const;
+        jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx ) const;
 };
 
 #endif /* PBSMNG_H_ */

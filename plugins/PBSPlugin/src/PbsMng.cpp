@@ -30,6 +30,9 @@ extern "C"
 #include <cstdlib>
 #include <iostream>
 
+// job's array start index
+size_t g_jobArrayStartIdx = 0;
+
 using namespace std;
 //=============================================================================
 class pbs_error: public std::exception
@@ -65,9 +68,27 @@ bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
     return !_id.empty();
 }
 //=============================================================================
-CPbsMng::jobID_t CPbsMng::jobSubmit( const string &_script, const string &_queue,
-                                     size_t _nJobs,
-                                     const string &_outputPath ) const
+CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
+                                             size_t _idx ) const
+{
+    // pbs' job id has a format XXX.SERVER
+    // to get an array ID we need to add "-index", to get:
+    // XXX-INDEX.SERVER
+    jobID_t::size_type pos = _parent.find( '.' );
+    if ( jobID_t::npos == pos )
+        return _parent;
+
+    stringstream ss;
+    ss << "-" << _idx;
+
+    string ret( _parent );
+    ret.insert( pos, ss.str() );
+    return ret;
+}
+//=============================================================================
+CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_queue,
+                                        size_t _nJobs,
+                                        const string &_outputPath ) const
 {
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
@@ -109,8 +130,18 @@ CPbsMng::jobID_t CPbsMng::jobSubmit( const string &_script, const string &_queue
     pbs_disconnect( connect );
 
     // return job id
-    jobID_t ret( jobid );
+    // return an array of jobs id.
+    // the first element is the "parent" job id - a fake parent
+    // all the rest is array jobs ids
+    jobArray_t ret;
+    ret.push_back( jobid );
+    for ( size_t i = g_jobArrayStartIdx; i < _nJobs; ++i )
+    {
+        jobID_t id = generateArrayJobID( jobid, i );
+        ret.push_back( id );
+    }
     free( jobid );
+
     return ret;
 }
 //=============================================================================
@@ -144,7 +175,7 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     set_attr( attrib, ATTR_queue, _queue.c_str() );
     // an array job
     stringstream ss;
-    ss << "1-" << _nJobs;
+    ss << g_jobArrayStartIdx << "-" << ( g_jobArrayStartIdx + _nJobs - 1 );
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
     set_attr( attrib, ATTR_o, _outputPath.c_str() );
@@ -166,9 +197,13 @@ void CPbsMng::jobStatus( const jobID_t &_id )
     batch_status *p_status = NULL;
 
     p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
-                            NULL, const_cast<char*>(EXECQUEONLY) );
+                            NULL, const_cast<char*>( EXECQUEONLY ) );
     if ( NULL == p_status )
+    {
+        // close the connection with the server
+        pbs_disconnect( connect );
         throw pbs_error( "Error getting job's status." );
+    }
 
     cout << "Job's status information." << endl;
     batch_status *p = NULL;
@@ -178,4 +213,7 @@ void CPbsMng::jobStatus( const jobID_t &_id )
     }
 
     pbs_statfree( p_status );
+
+    // close the connection with the server
+    pbs_disconnect( connect );
 }

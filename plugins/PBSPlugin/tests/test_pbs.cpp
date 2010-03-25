@@ -30,6 +30,8 @@ using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_pbs );
 //=============================================================================
+size_t g_jobsCount = 2;
+//=============================================================================
 BOOST_AUTO_TEST_CASE( test_pbs_0 )
 {
     // create a test script
@@ -44,12 +46,19 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     CPbsMng mng;
 
     // check that submit works
-    CPbsMng::jobID_t id = mng.jobSubmit( tmpname, "batch", 2, "./" );
-    BOOST_REQUIRE( mng.isValid( id ) );
-    cout << "Job ID: " << id << endl;
+    CPbsMng::jobArray_t ids = mng.jobSubmit( tmpname, "batch", g_jobsCount, "./" );
+    BOOST_REQUIRE( !ids.empty() );
 
-    // get job's status
-    mng.jobStatus( id );
+    cout << "Fake parent ID: " << ids[0] << endl;
+    CPbsMng::jobArray_t::const_iterator iter = ids.begin();
+    CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
+    for ( ; iter != iter_end; ++iter )
+    {
+        cout << "Array jobs IDs: " << *iter << endl;
+
+        // get job's status
+        mng.jobStatus( *iter );
+    }
 
     // remove the test script
     unlink( tmpname );
