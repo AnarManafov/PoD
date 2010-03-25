@@ -49,12 +49,15 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     CPbsMng::jobArray_t ids = mng.jobSubmit( tmpname, "batch", g_jobsCount, "./" );
     BOOST_REQUIRE( !ids.empty() );
 
+    // we need to sleep a bit. Otherwise we could be too fast asking for status, than PBS registers a job
+    sleep(2);
+    
     cout << "Fake parent ID: " << ids[0] << endl;
     CPbsMng::jobArray_t::const_iterator iter = ids.begin() + 1;
     CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
     for ( ; iter != iter_end; ++iter )
     {
-        cout << "Array jobs IDs: " << *iter << endl;
+        cout << "Array jobs ID: " << *iter << endl;
 
         // get job's status
         mng.jobStatus( *iter );

@@ -69,7 +69,7 @@ bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
 }
 //=============================================================================
 CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
-                                             size_t _idx ) const
+                                              size_t _idx ) const
 {
     // pbs' job id has a format XXX.SERVER
     // to get an array ID we need to add "-index", to get:
@@ -206,10 +206,26 @@ void CPbsMng::jobStatus( const jobID_t &_id )
     }
 
     cout << "Job's status information." << endl;
-    batch_status *p = NULL;
+    batch_status *p( NULL );
     for ( p = p_status; p != NULL; p = p->next )
     {
         cout << "Job ID: " << p->name << endl;
+        attrl *a( p->attribs );
+        while ( a != NULL )
+        {
+            if ( NULL == a->name )
+                break;
+
+            if ( !strcmp( a->name, ATTR_state ) )
+            {
+                cout << "STAT: " << a->value << endl;
+            }
+            else if ( !strcmp( a->name, ATTR_total ) )
+            {
+                cout << "TOTAL: " << a->value << endl;
+            }
+
+        }
     }
 
     pbs_statfree( p_status );
