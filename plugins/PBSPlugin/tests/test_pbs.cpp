@@ -72,6 +72,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
 
 BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
 {
+    cout << "Check status of all jobs" << endl;
     CPbsMng mng;
     
     CPbsMng::jobInfoContainer_t info;
