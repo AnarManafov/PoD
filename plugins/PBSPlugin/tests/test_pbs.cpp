@@ -60,10 +60,32 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
         cout << "Array jobs ID: " << *iter << endl;
 
         // get job's status
-        mng.jobStatus( *iter );
+        string status = mng.jobStatus( *iter );
+        cout << "Status: " << status << endl;
+        BOOST_REQUIRE( status.size() == 1 );
     }
-
+    
+    // TODO: delete the script, even in case of an error
     // remove the test script
-    unlink( tmpname );
+    //unlink( tmpname );
 }
+
+BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
+{
+    CPbsMng mng;
+    
+    CPbsMng::jobInfoContainer_t info;
+    CPbsMng::jobArray_t idx;
+    mng.jobStatusAllJobs( &info, idx );
+    
+    BOOST_REQUIRE( !info.empty() );
+    
+    CPbsMng::jobInfoContainer_t::const_iterator iter = info.begin();
+    CPbsMng::jobInfoContainer_t::const_iterator iter_end = info.end();
+    for(; iter != iter_end ; ++iter)
+    {
+        cout << iter->first << " has status " << iter->second.m_status << endl;
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END();

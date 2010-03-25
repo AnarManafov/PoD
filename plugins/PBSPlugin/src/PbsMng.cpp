@@ -29,7 +29,6 @@ extern "C"
 #include <stdexcept>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 
 // job's array start index
 size_t g_jobArrayStartIdx = 0;
@@ -181,12 +180,12 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // output path
     set_attr( attrib, ATTR_o, _outputPath.c_str() );
 }
-
 //=============================================================================
-void CPbsMng::jobStatus( const jobID_t &_id )
+string CPbsMng::jobStatus( const jobID_t &_id ) const
 {
+    string retval;
     if ( _id.empty() )
-        return;
+        return retval;
 
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
@@ -206,11 +205,57 @@ void CPbsMng::jobStatus( const jobID_t &_id )
         throw pbs_error( "Error getting job's status." );
     }
 
-    cout << "Job's status information." << endl;
+    attrl *a( p_status->attribs );
+    while ( a != NULL )
+    {
+        if ( NULL == a->name )
+            break;
+
+        if ( !strcmp( a->name, ATTR_state ) )
+        {
+            retval = a->value;
+            break;
+        }
+
+        a = a->next;
+    }
+
+    pbs_statfree( p_status );
+
+    // close the connection with the server
+    pbs_disconnect( connect );
+    return retval;
+}
+//=============================================================================
+void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container,
+                                const CPbsMng::jobArray_t &_ids ) const
+{
+    if ( !_container )
+        return;
+
+    // Connect to the pbs server
+    // We use NULL as a PBS server string, a connection will be
+    // opened to the default server.
+    int connect = pbs_connect( NULL );
+    if ( connect < 0 )
+        throw pbs_error( "Error occurred while connecting to pbs server." );
+
+    batch_status *p_status = NULL;
+
+    // request information of all jobs
+    p_status = pbs_statjob( connect, NULL, NULL, NULL );
+    if ( NULL == p_status )
+    {
+        // close the connection with the server
+        pbs_disconnect( connect );
+        throw pbs_error( "Error getting job's status." );
+    }
+
     batch_status *p( NULL );
     for ( p = p_status; p != NULL; p = p->next )
     {
-        cout << "Job ID: " << p->name << endl;
+        string id = p->name;
+
         attrl *a( p->attribs );
         while ( a != NULL )
         {
@@ -219,13 +264,12 @@ void CPbsMng::jobStatus( const jobID_t &_id )
 
             if ( !strcmp( a->name, ATTR_state ) )
             {
-                cout << "STAT: " << a->value << endl;
+                SJobInfo info;
+                info.m_status = a->value;
+
+                _container->insert( jobInfoContainer_t::value_type( id, info ) );
             }
-            else if ( !strcmp( a->name, ATTR_total ) )
-            {
-                cout << "TOTAL: " << a->value << endl;
-            }
-            
+
             a = a->next;
         }
     }
