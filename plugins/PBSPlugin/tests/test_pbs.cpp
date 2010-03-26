@@ -88,7 +88,8 @@ BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
     CPbsMng::jobInfoContainer_t::const_iterator iter_end = info.end();
     for ( ; iter != iter_end ; ++iter )
     {
-        cout << iter->first << " has status " << CPbsMng::jobStatusToString( iter->second.m_status[0] ) << endl;
+        cout << iter->first << " has status \""
+        << CPbsMng::jobStatusToString( iter->second.m_status[0] ) << "\"" << endl;
     }
 }
 //=============================================================================
