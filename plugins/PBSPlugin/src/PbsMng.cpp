@@ -317,7 +317,7 @@ void CPbsMng::getQueues( MiscCommon::StringVector_t *_container ) const
     pbs_disconnect( connect );
 }
 //=============================================================================
-std::string CPbsMng::jobStatusToString( const char &_status ) const
+std::string CPbsMng::jobStatusToString( const char &_status )
 {
     switch ( _status )
     {

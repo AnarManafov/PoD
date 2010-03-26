@@ -43,7 +43,7 @@ class CPbsMng
         std::string jobStatus( const jobID_t &_id ) const;
         void jobStatusAllJobs( jobInfoContainer_t *_container,
                                const jobArray_t &_ids ) const;
-        std::string jobStatusToString( const char &_status ) const;
+        static std::string jobStatusToString( const char &_status );
         void getQueues( MiscCommon::StringVector_t *_container ) const;
 
     private:
