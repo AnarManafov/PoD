@@ -316,3 +316,26 @@ void CPbsMng::getQueues( MiscCommon::StringVector_t *_container ) const
     // close the connection with the server
     pbs_disconnect( connect );
 }
+//=============================================================================
+std::string CPbsMng::jobStatusToString( const char &_status ) const
+{
+    switch ( _status )
+    {
+        case 'T':
+            return "transit";
+        case 'Q':
+            return "queued";
+        case 'H':
+            return "held";
+        case 'W':
+            return "waiting";
+        case 'R':
+            return "running";
+        case 'E':
+            return "exiting";
+        case 'C':
+            return "complete";
+        default:
+            return "unknown";
+    }
+}

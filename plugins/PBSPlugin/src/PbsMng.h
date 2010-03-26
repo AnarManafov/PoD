@@ -23,21 +23,6 @@
 
 struct attrl;
 
-// 'T'
-//#define JOB_STATE_TRANSIT 0
-// 'Q'
-//#define JOB_STATE_QUEUED 1
-// 'H'
-//#define JOB_STATE_HELD  2
-// 'W'
-//#define JOB_STATE_WAITING 3
-// 'R'
-//#define JOB_STATE_RUNNING 4
-// 'E'
-//#define JOB_STATE_EXITING 5
-// 'C'
-//#define JOB_STATE_COMPLETE 6
-
 struct SJobInfo
 {
     std::string m_status;
@@ -58,6 +43,7 @@ class CPbsMng
         std::string jobStatus( const jobID_t &_id ) const;
         void jobStatusAllJobs( jobInfoContainer_t *_container,
                                const jobArray_t &_ids ) const;
+        std::string jobStatusToString( const char &_status ) const;
         void getQueues( MiscCommon::StringVector_t *_container ) const;
 
     private:
