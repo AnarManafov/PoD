@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2008 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( PAConsole_lsf )
+project( pod-console-lsf )
 
 
 #set(CPACK_PACKAGE_VERSION_MAJOR "0")
@@ -51,16 +51,16 @@ QT4_WRAP_UI( UI_HDRS_lsf ${UI_FILES_lsf} )
 QT4_ADD_RESOURCES( RCS_SRCS_lsf  ${UI_SRSC_lsf} )
 
 
-add_library(PAConsole_lsf SHARED ${SOURCE_FILES_lsf} ${MOC_SRCS_lsf} ${RCS_SRCS_lsf} ${UI_HDRS_lsf})
+add_library(pod-console-lsf SHARED ${SOURCE_FILES_lsf} ${MOC_SRCS_lsf} ${RCS_SRCS_lsf} ${UI_HDRS_lsf})
 
 set(CMAKE_CXX_FLAGS " -Wall")
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${LSF_INCLUDE_DIR} src )
 
 
 target_link_libraries (
-    PAConsole_lsf
+    pod-console-lsf
     ${LSF_LIBRARIES}
 )
 
-install(TARGETS PAConsole_lsf DESTINATION plugins)
+install(TARGETS pod-console-lsf DESTINATION plugins)
 

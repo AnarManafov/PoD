@@ -24,19 +24,21 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 
 set( MOC_HDRS_pbs
-#    ./src/LSFDlg.h
-#    ./src/LSFJobSubmitter.h
-#    ./src/JobInfoItemModel.h
-#    ./src/JobsContainer.h
+    ./src/PbsMng.h
+    ./src/PbsDlg.h
+    ./src/JobInfo.h
+    ./src/PbsJobSubmitter.h
+    ./src/JobInfoItemModel.h
+    ./src/JobsContainer.h
 )
 
 set( SOURCE_FILES_pbs
-#    ./src/LSFDlg.cpp
+    ./src/PbsDlg.cpp
     ./src/PbsMng.cpp
     ./src/set_attr.c
-#    ./src/JobInfo.cpp
-#    ./src/JobInfoItemModel.cpp
-#    ./src/JobsContainer.cpp
+    ./src/JobInfo.cpp
+    ./src/JobInfoItemModel.cpp
+    ./src/JobsContainer.cpp
 )
 
 set( UI_FILES_pbs
@@ -47,12 +49,12 @@ set( UI_SRSC_pbs
     ./res/paconsole_pbs.qrc
 )
 
-QT4_WRAP_CPP( MOC_SRCS_pbs ${MOC_HDRS_lsf} OPTIONS -f )
-QT4_WRAP_UI( UI_HDRS_pbs ${UI_FILES_lsf} )
-QT4_ADD_RESOURCES( RCS_SRCS_pbs  ${UI_SRSC_lsf} )
+QT4_WRAP_CPP( MOC_SRCS_pbs ${MOC_HDRS_pbs} OPTIONS -f )
+QT4_WRAP_UI( UI_HDRS_pbs ${UI_FILES_pbs} )
+QT4_ADD_RESOURCES( RCS_SRCS_pbs  ${UI_SRSC_pbs} )
 
 
-add_library(pod-console-pbs SHARED ${SOURCE_FILES_pbs} ${MOC_SRCS_pbs} ${RCS_SRCS_pbs} ${UI_HDRS_pbs})
+add_library(pod-console-pbs SHARED ${SOURCE_FILES_pbs} ${MOC_SRCS_pbs} ${MOC_HDRS_pbs} ${RCS_SRCS_pbs} ${UI_HDRS_pbs})
 
 set(CMAKE_CXX_FLAGS " -Wall")
 
@@ -62,6 +64,8 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PBS_INCLUDE_DIR} src )
 target_link_libraries (
     pod-console-pbs
     ${PBS_LIBRARIES}
+    ${QT_LIBRARIES}
+    ${Boost_LIBRARIES}
 )
 
 install(TARGETS pod-console-pbs DESTINATION plugins)

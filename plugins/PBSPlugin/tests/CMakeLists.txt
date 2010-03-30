@@ -32,8 +32,7 @@ include_directories( ${pod-console-pbs_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} )
 target_link_libraries (
     pod-console_pbs_test
     pod-console-pbs
-    ${Boost_LIBRARIES}
-    ${PBS_LIBRARIES}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
 )
 
 install(TARGETS pod-console_pbs_test DESTINATION tests)

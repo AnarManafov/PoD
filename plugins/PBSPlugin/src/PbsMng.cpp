@@ -34,6 +34,7 @@ extern "C"
 size_t g_jobArrayStartIdx = 0;
 
 using namespace std;
+using namespace pbs_plug;
 //=============================================================================
 class pbs_error: public std::exception
 {
@@ -264,7 +265,7 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container,
 
             if ( !strcmp( a->name, ATTR_state ) )
             {
-                SJobInfo info;
+                _SJobInfo info;
                 info.m_status = a->value;
 
                 _container->insert( jobInfoContainer_t::value_type( id, info ) );

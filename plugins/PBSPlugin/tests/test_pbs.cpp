@@ -29,6 +29,7 @@
 #include "PbsMng.h"
 //=============================================================================
 using namespace std;
+using namespace pbs_plug;
 using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_pbs );
