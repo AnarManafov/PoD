@@ -101,6 +101,7 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 //        setAllDefault();
 //    }
 
+    // Set the queues list
     try
     {
         CPbsMng::queueInfoContainer_t queues;
@@ -169,11 +170,11 @@ CPbsDlg::~CPbsDlg()
 //=============================================================================
 void CPbsDlg::setAllDefault()
 {
-//    m_JobScript = g_szDefaultJobScript;
-//    m_WorkersCount = 1;
+    m_JobScript = g_szDefaultJobScript;
+    m_WorkersCount = 1;
 //    m_JobSubmitter.setAllDefault();
-//    m_queue = "proof";
-//    UpdateAfterLoad();
+    m_queue = "proof";
+    UpdateAfterLoad();
 }
 //=============================================================================
 void CPbsDlg::UpdateAfterLoad()
@@ -245,7 +246,7 @@ void CPbsDlg::on_btnBrowseJobScript_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
-                                                           tr( "LSF script (*.lsf)" ) );
+                                                           tr( "PBS script (*.pbs)" ) );
     if ( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
@@ -255,9 +256,9 @@ void CPbsDlg::on_btnBrowseJobScript_clicked()
 //=============================================================================
 void CPbsDlg::on_lsfQueueList_currentIndexChanged( int _index )
 {
-//    // max number of workers
-//    const QVariant data = m_ui.lsfQueueList->itemData( _index );
-//    m_ui.spinNumWorkers->setMaximum( data.value<SLSFQueueInfo_t>().m_userJobLimit );
+    // max number of workers
+    const QVariant data = m_ui.lsfQueueList->itemData( _index );
+    m_ui.spinNumWorkers->setMaximum( data.value<SQueueInfo>().m_maxJobs );
 }
 //=============================================================================
 void CPbsDlg::createActions()
