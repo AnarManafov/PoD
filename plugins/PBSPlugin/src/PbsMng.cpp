@@ -36,6 +36,16 @@ size_t g_jobArrayStartIdx = 0;
 using namespace std;
 using namespace pbs_plug;
 //=============================================================================
+ostream &SQueueInfo::print( ostream &_stream ) const
+{
+    _stream
+    << "queue name: " << m_name
+    << "; max jobs: " << m_maxJobs
+    << "\n";
+
+    return _stream;
+}
+//=============================================================================
 class pbs_error: public std::exception
 {
     public:
@@ -321,7 +331,7 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
             // job number limit
             if ( !strcmp( a->name, ATTR_maxrun ) )
             {
-                istringstream ss(a->value);
+                istringstream ss( a->value );
                 ss >> info.m_maxJobs;
                 break;
             }

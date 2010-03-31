@@ -15,6 +15,7 @@
 #ifndef PBSMNG_H_
 #define PBSMNG_H_
 // STD
+#include <iosfwd>
 #include <string>
 #include <vector>
 #include <map>
@@ -30,15 +31,17 @@ namespace pbs_plug
 
     struct SQueueInfo
     {
+        std::ostream& print( std::ostream &_stream ) const;
+
         // the queue name
         std::string m_name;
         // the maximum number of jobs that may be run in  the
         // queue concurrently
         size_t m_maxJobs;
     };
-    inline std::ostream & operator<<( std::ostream &_stream, const SQueueInfo &_info )
+    inline std::ostream &operator<<( std::ostream &_stream, const SQueueInfo &_info )
     {
-        return _stream;
+        return _info.print( _stream );
     }
 
     class CPbsMng
