@@ -116,7 +116,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="lsfQueueList">
+           <widget class="QComboBox" name="queuesList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>

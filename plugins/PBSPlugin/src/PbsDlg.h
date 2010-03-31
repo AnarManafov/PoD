@@ -63,7 +63,7 @@ namespace pbs_plug
             void on_btnBrowseJobScript_clicked();
             void on_edtJobScriptFileName_textChanged( const QString & /*_text*/ );
             void setNumberOfJobs( size_t _count );
-            void on_lsfQueueList_currentIndexChanged( int _index );
+            void on_queuesList_currentIndexChanged( int _index );
 
         private slots:
             void killJob();

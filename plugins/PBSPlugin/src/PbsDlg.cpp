@@ -40,7 +40,7 @@ Q_DECLARE_METATYPE( pbs_plug::SQueueInfo )
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.pbs";
 // configuration file of the plug-in
-const LPCTSTR g_szPBSPluginCfgFileName = "$POD_LOCATION/etc/pod-console_PBS.xml.cfg";
+const LPCTSTR g_szPbsPluginCfgFileName = "$POD_LOCATION/etc/pod-console_PBS.xml.cfg";
 //=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
@@ -86,20 +86,20 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 //
 //    clipboard = QApplication::clipboard();
 //
-//    // Set completion for the edit box of JDL file name
-//    QCompleter *completer = new QCompleter( this );
-//    completer->setModel( new QDirModel( completer ) );
-//    m_ui.edtJobScriptFileName->setCompleter( completer );
-//
-//    try
-//    {
-//        // Loading class from the config file
-//        _loadcfg( *this, g_szLSFPluginCfgFileName );
-//    }
-//    catch ( ... )
-//    {
-//        setAllDefault();
-//    }
+    // Set completion for the edit box of JDL file name
+    QCompleter *completer = new QCompleter( this );
+    completer->setModel( new QDirModel( completer ) );
+    m_ui.edtJobScriptFileName->setCompleter( completer );
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, g_szPbsPluginCfgFileName );
+    }
+    catch ( ... )
+    {
+        setAllDefault();
+    }
 
     // Set the queues list
     try
@@ -110,18 +110,18 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
         CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
         for ( ; iter != iter_end; ++iter )
         {
-            m_ui.lsfQueueList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
+            m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
             // selecting default
             if ( m_queue.empty() )
             {
                 // if there is no default queue set, then select any queue with the "proof" word in the name
                 if ( string::npos != iter->m_name.find( "proof" ) )
-                    m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
             }
             else
             {
                 if ( iter->m_name == m_queue )
-                    m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
             }
         }
     }
@@ -193,7 +193,7 @@ void CPbsDlg::recieveThreadMsg( const QString &_Msg )
 void CPbsDlg::on_btnSubmitClient_clicked()
 {
 //   // Checking queue up
-//    m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
+//    m_queue = m_ui.queueList->currentText().toAscii().data();
 //    m_JobSubmitter.setQueue( m_queue );
 //    // Checking first that gLitePROOF server is running
 //    CServerInfo si;
@@ -254,10 +254,10 @@ void CPbsDlg::on_btnBrowseJobScript_clicked()
     }
 }
 //=============================================================================
-void CPbsDlg::on_lsfQueueList_currentIndexChanged( int _index )
+void CPbsDlg::on_queuesList_currentIndexChanged( int _index )
 {
     // max number of workers
-    const QVariant data = m_ui.lsfQueueList->itemData( _index );
+    const QVariant data = m_ui.queuesList->itemData( _index );
     m_ui.spinNumWorkers->setMaximum( data.value<SQueueInfo>().m_maxJobs );
 }
 //=============================================================================
@@ -394,7 +394,7 @@ void CPbsDlg::enableTree()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szPBSPluginCfgFileName );
+        _savecfg( *this, g_szPbsPluginCfgFileName );
     }
     catch ( ... )
     {
@@ -479,19 +479,19 @@ int CPbsDlg::getJobsCount() const
 //=============================================================================
 void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
-    try
-    {
-        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
-        stringstream ss;
-        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
-        ss >> m_emailJobOutput;
-    }
-    catch ( exception &e )
-    {
-        QMessageBox::critical( this,
-                               QString( PROJECT_NAME ),
-                               tr( e.what() ) );
-    }
+//    try
+//    {
+//        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
+//        stringstream ss;
+//        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
+//        ss >> m_emailJobOutput;
+//    }
+//    catch ( exception &e )
+//    {
+//        QMessageBox::critical( this,
+//                               QString( PROJECT_NAME ),
+//                               tr( e.what() ) );
+//    }
 }
 //=============================================================================
 Q_EXPORT_PLUGIN2( PBSJobManager, CPbsDlg );
