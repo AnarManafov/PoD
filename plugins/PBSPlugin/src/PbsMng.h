@@ -18,8 +18,6 @@
 #include <string>
 #include <vector>
 #include <map>
-// MiscCommon
-#include "def.h"
 
 struct attrl;
 
@@ -30,12 +28,26 @@ namespace pbs_plug
         std::string m_status;
     };
 
+    struct SQueueInfo
+    {
+        // the queue name
+        std::string m_name;
+        // the maximum number of jobs that may be run in  the
+        // queue concurrently
+        size_t m_maxJobs;
+    };
+    inline std::ostream & operator<<( std::ostream &_stream, const SQueueInfo &_info )
+    {
+        return _stream;
+    }
+
     class CPbsMng
     {
         public:
             typedef std::string jobID_t;
             typedef std::vector<jobID_t> jobArray_t;
             typedef std::map<jobID_t, _SJobInfo> jobInfoContainer_t;
+            typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
             bool isValid( const jobID_t &_id ) const;
@@ -46,7 +58,7 @@ namespace pbs_plug
             void jobStatusAllJobs( jobInfoContainer_t *_container,
                                    const jobArray_t &_ids ) const;
             static std::string jobStatusToString( const char &_status );
-            void getQueues( MiscCommon::StringVector_t *_container ) const;
+            void getQueues( queueInfoContainer_t *_container ) const;
 
         private:
             void cleanAttr( attrl **attrib ) const;

@@ -35,38 +35,25 @@ namespace pbs_plug
 //=============================================================================
     class CPbsJobSubmitter: public QThread
     {
-//        Q_OBJECT
-//
-//        friend class boost::serialization::access;
-//
-//    public:
-//        typedef std::set<lsf_jobid_t> jobslist_t;
-//
-//    public:
-//        CLSFJobSubmitter( QObject *parent ): QThread( parent )
-//        {
-//            qRegisterMetaType<lsf_jobid_t>( "lsf_jobid_t" );
-//            init();
-//        }
-//        ~CLSFJobSubmitter()
-//        {
-//            if ( isRunning() )
-//                terminate();
-//        }
-//
-//    public:
-//        bool init()
-//        {
-//            try
-//            {
-//                m_lsf.init();
-//            }
-//            catch ( const std::exception &e )
-//            {
-//                return false;
-//            }
-//            return true;
-//        }
+            Q_OBJECT
+
+            friend class boost::serialization::access;
+
+        public:
+            // <parent job id, num of children>
+            typedef std::map<CPbsMng::jobID_t, size_t> jobslist_t;
+
+        public:
+            CPbsJobSubmitter( QObject *parent ): QThread( parent )
+            {
+            }
+            ~CPbsJobSubmitter()
+            {
+                if ( isRunning() )
+                    terminate();
+            }
+
+        public:
 //        const jobslist_t &getParentJobsList() const
 //        {
 //            return m_parentJobs;
@@ -75,22 +62,18 @@ namespace pbs_plug
 //        {
 //            m_parentJobs.clear();
 //        }
-//        void setJobScriptFilename( const std::string &_JobScriptFilename )
-//        {
-//            m_JobScriptFilename = _JobScriptFilename;
-//        }
-//        void setNumberOfWorkers( int _WrkN )
-//        {
-//            // setting job array
-//            std::ostringstream jobname;
-//            jobname << getpid() << "[1-" << _WrkN << "]";
-//
-//            m_lsf.addProperty( CLsfMng::JP_SUB_JOB_NAME, jobname.str() );
-//        }
-//        void setQueue( const std::string &_queue )
-//        {
-//            m_lsf.addProperty( CLsfMng::JP_SUB_QUEUE, _queue );
-//        }
+            void setJobScriptFilename( const std::string &_JobScriptFilename )
+            {
+                m_JobScriptFilename = _JobScriptFilename;
+            }
+            void setNumberOfWorkers( size_t _WrkN )
+            {
+                m_numberOfWrk = _WrkN;
+            }
+            void setQueue( const std::string &_queue )
+            {
+                m_queue = _queue;
+            }
 //        void setOutputFiles( const std::string &_path )
 //        {
 //            std::string dir( _path );
@@ -112,10 +95,10 @@ namespace pbs_plug
 //        {
 //            m_lsf.killJob( _jobID );
 //        }
-//        const CLsfMng &getLSF() const
-//        {
-//            return m_lsf;
-//        }
+            const CPbsMng &getPBS() const
+            {
+                return m_pbs;
+            }
 //
 //    signals:
 //        void changeProgress( int _Val );
@@ -152,27 +135,29 @@ namespace pbs_plug
 //
 //            emit changeProgress( 100 );
 //        }
-//
-//        // serialization
-//        template<class Archive>
-//        void save( Archive & _ar, const unsigned int /*_version*/ ) const
-//        {
-//            _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
-//        }
-//        template<class Archive>
-//        void load( Archive & _ar, const unsigned int _version )
-//        {
-//            m_mutex.lock();
-//            _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
-//            m_mutex.unlock();
-//        }
-//        BOOST_SERIALIZATION_SPLIT_MEMBER()
-//
-//    private:
-//        jobslist_t m_parentJobs;
-//        QMutex m_mutex;
-//        std::string m_JobScriptFilename;
-//        CLsfMng m_lsf;
+
+            // serialization
+            template<class Archive>
+            void save( Archive & _ar, const unsigned int /*_version*/ ) const
+            {
+                _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
+            }
+            template<class Archive>
+            void load( Archive & _ar, const unsigned int _version )
+            {
+                m_mutex.lock();
+                _ar & BOOST_SERIALIZATION_NVP( m_parentJobs );
+                m_mutex.unlock();
+            }
+            BOOST_SERIALIZATION_SPLIT_MEMBER()
+
+        private:
+            jobslist_t m_parentJobs;
+            QMutex m_mutex;
+            std::string m_JobScriptFilename;
+            size_t m_numberOfWrk;
+            std::string m_queue;
+            CPbsMng m_pbs;
     };
 
 }

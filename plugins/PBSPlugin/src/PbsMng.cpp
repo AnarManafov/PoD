@@ -281,7 +281,7 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container,
     pbs_disconnect( connect );
 }
 //=============================================================================
-void CPbsMng::getQueues( MiscCommon::StringVector_t *_container ) const
+void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
 {
     if ( !_container )
         return;
@@ -309,7 +309,27 @@ void CPbsMng::getQueues( MiscCommon::StringVector_t *_container ) const
     batch_status *p( NULL );
     for ( p = p_status; p != NULL; p = p->next )
     {
-        _container->push_back( p->name );
+        SQueueInfo info;
+        info.m_name = p->name;
+
+        attrl *a( p->attribs );
+        while ( a != NULL )
+        {
+            if ( NULL == a->name )
+                break;
+
+            // job number limit
+            if ( !strcmp( a->name, ATTR_maxrun ) )
+            {
+                istringstream ss(a->value);
+                ss >> info.m_maxJobs;
+                break;
+            }
+
+            a = a->next;
+        }
+
+        _container->push_back( info );
     }
 
     pbs_statfree( p_status );

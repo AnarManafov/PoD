@@ -70,7 +70,7 @@ void _savecfg( const T &_s, string _FileName )
 CPbsDlg::CPbsDlg( QWidget *parent ) :
         QWidget( parent ),
         m_AllJobsCount( 0 ),
-     //   m_JobSubmitter( this ),
+        m_JobSubmitter( this ),
         m_updateInterval( 10000 ) // default value: 10 sec.
 {
     m_ui.setupUi( this );

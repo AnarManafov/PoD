@@ -99,14 +99,13 @@ BOOST_AUTO_TEST_CASE( test_pbs_allqueues )
     cout << "Getting a list of available queues" << endl;
     CPbsMng mng;
 
-    MiscCommon::StringVector_t queues;
+    CPbsMng::queueInfoContainer_t queues;
     mng.getQueues( &queues );
 
     BOOST_REQUIRE( !queues.empty() );
 
     copy( queues.begin(), queues.end(),
-          ostream_iterator<string>( cout, "\n" ) );
-
+          ostream_iterator<SQueueInfo>( cout, "\n" ) );
 }
 
 BOOST_AUTO_TEST_SUITE_END();

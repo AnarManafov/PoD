@@ -109,7 +109,7 @@ namespace pbs_plug
             std::string m_JobScript;
             int m_AllJobsCount;
             int m_WorkersCount;
-//        CLSFJobSubmitter m_JobSubmitter;
+            CPbsJobSubmitter m_JobSubmitter;
 //        CJobInfoItemModel *m_treeModel;
             int m_updateInterval;
             std::string m_queue;
