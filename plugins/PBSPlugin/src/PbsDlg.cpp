@@ -33,6 +33,10 @@ using namespace std;
 using namespace MiscCommon;
 using namespace pbs_plug;
 //=============================================================================
+// making Qt to know this data type
+// in order to use it in QVariant, for example
+Q_DECLARE_METATYPE( pbs_plug::SQueueInfo )
+//=============================================================================
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.pbs";
 // configuration file of the plug-in
@@ -96,31 +100,37 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 //    {
 //        setAllDefault();
 //    }
-//
-//    LSFQueueInfoMap_t queues;
-//    m_JobSubmitter.getLSF().getQueues( &queues );
-//    // TODO: handle errors here.
-//    LSFQueueInfoMap_t::iterator iter = queues.begin();
-//    LSFQueueInfoMap_t::iterator iter_end = queues.end();
-//    for ( ; iter != iter_end; ++iter )
-//    {
-//        m_ui.lsfQueueList->addItem( iter->first.c_str(), QVariant::fromValue( iter->second ) );
-//        // selecting default
-//        if ( m_queue.empty() )
-//        {
-//            // if there is no default queue set, then select any queue with the "proof" word in the name
-//            if ( string::npos != iter->first.find( "proof" ) )
-//                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
-//        }
-//        else
-//        {
-//            if ( iter->first == m_queue )
-//                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
-//        }
-//    }
-//
-//    // default queue name
-//    m_JobSubmitter.setQueue( m_queue );
+
+    try
+    {
+        CPbsMng::queueInfoContainer_t queues;
+        m_JobSubmitter.getPBS().getQueues( &queues );
+        CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
+        CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
+        for ( ; iter != iter_end; ++iter )
+        {
+            m_ui.lsfQueueList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
+            // selecting default
+            if ( m_queue.empty() )
+            {
+                // if there is no default queue set, then select any queue with the "proof" word in the name
+                if ( string::npos != iter->m_name.find( "proof" ) )
+                    m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+            else
+            {
+                if ( iter->m_name == m_queue )
+                    m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+        }
+    }
+    catch ( const exception &_e )
+    {
+        // TODO: handle it
+    }
+
+    // default queue name
+    m_JobSubmitter.setQueue( m_queue );
 //
 //    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
 //    m_ui.treeJobs->setModel( m_treeModel );
@@ -181,7 +191,7 @@ void CPbsDlg::recieveThreadMsg( const QString &_Msg )
 //=============================================================================
 void CPbsDlg::on_btnSubmitClient_clicked()
 {
- //   // Checking queue up
+//   // Checking queue up
 //    m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
 //    m_JobSubmitter.setQueue( m_queue );
 //    // Checking first that gLitePROOF server is running
