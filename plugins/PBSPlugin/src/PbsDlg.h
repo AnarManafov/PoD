@@ -110,7 +110,7 @@ namespace pbs_plug
             int m_AllJobsCount;
             int m_WorkersCount;
             CPbsJobSubmitter m_JobSubmitter;
-//        CJobInfoItemModel *m_treeModel;
+            CJobInfoItemModel *m_treeModel;
             int m_updateInterval;
             std::string m_queue;
             QModelIndex m_expandedNode;

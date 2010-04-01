@@ -106,9 +106,9 @@ namespace pbs_plug
 //        void removedJob( lsf_jobid_t _jobID );
 //        void sendThreadMsg( const QString &_Msg );
 //
-//    protected:
-//        void run()
-//        {
+    protected:
+        void run()
+        {
 //            emit changeProgress( 0 );
 //
 //            // Submit a Grid Job
@@ -134,7 +134,7 @@ namespace pbs_plug
 //            }
 //
 //            emit changeProgress( 100 );
-//        }
+        }
 
             // serialization
             template<class Archive>

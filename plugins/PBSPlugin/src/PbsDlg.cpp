@@ -79,13 +79,13 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 {
     m_ui.setupUi( this );
 
-//    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
-//    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
-//
-//    createActions();
-//
-//    clipboard = QApplication::clipboard();
-//
+    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
+
+    createActions();
+
+    clipboard = QApplication::clipboard();
+
     // Set completion for the edit box of JDL file name
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
@@ -132,18 +132,18 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 
     // default queue name
     m_JobSubmitter.setQueue( m_queue );
-//
-//    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
-//    m_ui.treeJobs->setModel( m_treeModel );
-//
-//    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
-//
-//
-//    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
-//    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
-//    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
-//
-//    // a context menu of the table view
+
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
+    m_ui.treeJobs->setModel( m_treeModel );
+
+    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
+
+
+    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
+    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
+    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
+
+    // a context menu of the table view
 //    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
 //    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
 //             this, SLOT( showContextMenu( const QPoint & ) ) );
@@ -156,16 +156,16 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 //=============================================================================
 CPbsDlg::~CPbsDlg()
 {
-//    try
-//    {
-//        // Saving class to the config file
-//        _savecfg( *this, g_szLSFPluginCfgFileName );
-//    }
-//    catch ( ... )
-//    {
-//    }
-//
-//    delete m_treeModel;
+    try
+    {
+        // Saving class to the config file
+        _savecfg( *this, g_szPbsPluginCfgFileName );
+    }
+    catch ( ... )
+    {
+    }
+
+    delete m_treeModel;
 }
 //=============================================================================
 void CPbsDlg::setAllDefault()
