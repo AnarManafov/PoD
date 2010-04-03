@@ -77,6 +77,10 @@ namespace pbs_plug
             }
             void setOutputPath( const std::string &_path )
             {
+                std::string dir( _path );
+                MiscCommon::smart_path( &dir );
+                MiscCommon::smart_append( &dir, '/' );
+                
                 m_outputPath = _path;
             }
 //        void removeJob( lsf_jobid_t _jobID, bool _emitSignal = true )
