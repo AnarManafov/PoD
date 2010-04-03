@@ -23,14 +23,17 @@ project( pod-console-pbs )
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 
+set( HDRS_pbs
+     ./src/PbsMng.h
+      ./src/JobInfo.h
+      ./src/JobsContainer.h
+    )
+
 set( MOC_HDRS_pbs
-    ./src/PbsMng.h
     ./src/PbsDlg.h
-    ./src/JobInfo.h
     ./src/PbsJobSubmitter.h
     ./src/JobInfoItemModel.h
-    ./src/JobsContainer.h
-)
+   )
 
 set( SOURCE_FILES_pbs
     ./src/PbsDlg.cpp
@@ -39,6 +42,7 @@ set( SOURCE_FILES_pbs
     ./src/JobInfo.cpp
     ./src/JobInfoItemModel.cpp
     ./src/JobsContainer.cpp
+    ${pod-console_SOURCE_DIR}/src/ServerInfo.cpp 
 )
 
 set( UI_FILES_pbs
@@ -49,12 +53,26 @@ set( UI_SRSC_pbs
     ./res/paconsole_pbs.qrc
 )
 
+
 QT4_WRAP_CPP( MOC_SRCS_pbs ${MOC_HDRS_pbs} OPTIONS -f )
 QT4_WRAP_UI( UI_HDRS_pbs ${UI_FILES_pbs} )
 QT4_ADD_RESOURCES( RCS_SRCS_pbs  ${UI_SRSC_pbs} )
 
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+  add_library(pod-console-pbs SHARED
+              ${SOURCE_FILES_pbs}
+              ${HDRS_pbs}
+              ${MOC_SRCS_pbs}
+              ${MOC_HDRS_pbs}
+              ${RCS_SRCS_pbs}
+              ${UI_HDRS_pbs})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+  add_library(pod-console-pbs SHARED
+              ${SOURCE_FILES_pbs}
+              ${MOC_SRCS_pbs}
+              ${RCS_SRCS_pbs})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
-add_library(pod-console-pbs SHARED ${SOURCE_FILES_pbs} ${MOC_SRCS_pbs} ${MOC_HDRS_pbs} ${RCS_SRCS_pbs} ${UI_HDRS_pbs})
 
 set(CMAKE_CXX_FLAGS " -Wall")
 

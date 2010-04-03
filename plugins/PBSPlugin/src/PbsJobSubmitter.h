@@ -19,6 +19,7 @@
 #include "PbsMng.h"
 // STD
 #include <sstream>
+#include <stdexcept>
 // Qt
 #include <QThread>
 #include <QMutex>
@@ -54,14 +55,14 @@ namespace pbs_plug
             }
 
         public:
-//        const jobslist_t &getParentJobsList() const
-//        {
-//            return m_parentJobs;
-//        }
-//        void setAllDefault()
-//        {
-//            m_parentJobs.clear();
-//        }
+            const jobslist_t &getParentJobsList() const
+            {
+                return m_parentJobs;
+            }
+            void setAllDefault()
+            {
+                m_parentJobs.clear();
+            }
             void setJobScriptFilename( const std::string &_JobScriptFilename )
             {
                 m_JobScriptFilename = _JobScriptFilename;
@@ -74,14 +75,10 @@ namespace pbs_plug
             {
                 m_queue = _queue;
             }
-//        void setOutputFiles( const std::string &_path )
-//        {
-//            std::string dir( _path );
-//            MiscCommon::smart_path( &dir );
-//            MiscCommon::smart_append( &dir, '/' );
-//            m_lsf.addProperty( CLsfMng::JP_SUB_OUT_FILE, dir + "%J/std_%I.out" );
-//            m_lsf.addProperty( CLsfMng::JP_SUB_ERR_FILE, dir + "%J/std_%I.err" );
-//        }
+            void setOutputPath( const std::string &_path )
+            {
+                m_outputPath = _path;
+            }
 //        void removeJob( lsf_jobid_t _jobID, bool _emitSignal = true )
 //        {
 //            m_mutex.lock();
@@ -99,42 +96,51 @@ namespace pbs_plug
             {
                 return m_pbs;
             }
-//
-//    signals:
-//        void changeProgress( int _Val );
-//        void newJob( lsf_jobid_t _jobID );
-//        void removedJob( lsf_jobid_t _jobID );
-//        void sendThreadMsg( const QString &_Msg );
-//
-    protected:
-        void run()
-        {
-//            emit changeProgress( 0 );
-//
-//            // Submit a Grid Job
-//            try
-//            {
-//                emit changeProgress( 30 );
-//
-//                lsf_jobid_t nLastJobID = m_lsf.jobSubmit( m_JobScriptFilename );
-//
-//                emit changeProgress( 90 );
-//
-//                m_mutex.lock();
-//                m_parentJobs.insert( nLastJobID );
-//                m_mutex.unlock();
-//
-//                emit newJob( nLastJobID );
-//            }
-//            catch ( const std::exception &_e )
-//            {
-//                emit sendThreadMsg( tr( _e.what() ) );
-//                emit changeProgress( 0 );
-//                return;
-//            }
-//
-//            emit changeProgress( 100 );
-        }
+
+        signals:
+            void changeProgress( int _Val );
+            void newJob( CPbsMng::jobID_t _jobID );
+            void removedJob( CPbsMng::jobID_t _jobID );
+            void sendThreadMsg( const QString &_Msg );
+
+        protected:
+            void run()
+            {
+                emit changeProgress( 0 );
+
+                // Submit a Grid Job
+                try
+                {
+                    emit changeProgress( 30 );
+
+                     CPbsMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
+                                                                   m_queue,
+                                                                   m_numberOfWrk,
+                                                                   m_outputPath );
+                    
+                    // get the parent index
+                    if( jobs.empty() )
+                        throw std::runtime_error( "Bad jobs' parent index" );
+                    
+                    CPbsMng::jobID_t nLastJobID = jobs[0];
+                    
+                    emit changeProgress( 90 );
+
+                    m_mutex.lock();
+                    m_parentJobs.insert( jobslist_t::value_type( nLastJobID, m_numberOfWrk ) );
+                    m_mutex.unlock();
+
+                    emit newJob( nLastJobID );
+                }
+                catch ( const std::exception &_e )
+                {
+                    emit sendThreadMsg( tr( _e.what() ) );
+                    emit changeProgress( 0 );
+                    return;
+                }
+
+                emit changeProgress( 100 );
+            }
 
             // serialization
             template<class Archive>
@@ -157,6 +163,7 @@ namespace pbs_plug
             std::string m_JobScriptFilename;
             size_t m_numberOfWrk;
             std::string m_queue;
+            std::string m_outputPath;
             CPbsMng m_pbs;
     };
 

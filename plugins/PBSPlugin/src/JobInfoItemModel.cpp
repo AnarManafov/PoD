@@ -20,7 +20,9 @@ using namespace pbs_plug;
 
 const short g_columnCount = 2;
 //=============================================================================
-CJobInfoItemModel::CJobInfoItemModel( CPbsJobSubmitter *_submitter, int _updateInterval, QObject * _parent ):
+CJobInfoItemModel::CJobInfoItemModel( CPbsJobSubmitter *_submitter, 
+                                     int _updateInterval,
+                                     QObject * _parent ):
         QAbstractItemModel( _parent ),
 //        m_jobinfo( _submitter ),
         m_updateInterval( _updateInterval )

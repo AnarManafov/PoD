@@ -89,18 +89,22 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 #
 # Documentation
 #
-if(BUILD_DOCUMENTATION)
-    add_subdirectory(documentation)
-endif(BUILD_DOCUMENTATION)
+#if(BUILD_DOCUMENTATION)
+#    add_subdirectory(documentation)
+#endif(BUILD_DOCUMENTATION)
 									
 #
 ## pod-console executable
 #
 include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${MOC_HDRS} ${RCS_SRCS} ${UI_HDRS})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${MOC_HDRS} ${RCS_SRCS} ${UI_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-console

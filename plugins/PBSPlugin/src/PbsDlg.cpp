@@ -172,7 +172,7 @@ void CPbsDlg::setAllDefault()
 {
     m_JobScript = g_szDefaultJobScript;
     m_WorkersCount = 1;
-//    m_JobSubmitter.setAllDefault();
+    m_JobSubmitter.setAllDefault();
     m_queue = "proof";
     UpdateAfterLoad();
 }
@@ -192,54 +192,54 @@ void CPbsDlg::recieveThreadMsg( const QString &_Msg )
 //=============================================================================
 void CPbsDlg::on_btnSubmitClient_clicked()
 {
-//   // Checking queue up
-//    m_queue = m_ui.queueList->currentText().toAscii().data();
-//    m_JobSubmitter.setQueue( m_queue );
-//    // Checking first that gLitePROOF server is running
-//    CServerInfo si;
-//    if ( !si.IsRunning( true ) )
-//    {
-//        const string msg( "PoD server is not running.\n"
-//                          "Do you want to submit this job anyway?" );
-//        const QMessageBox::StandardButton reply =
-//            QMessageBox::question( this, tr( "pod-console" ), tr( msg.c_str() ),
-//                                   QMessageBox::Yes | QMessageBox::No );
-//        if ( QMessageBox::Yes != reply )
-//            return;
-//    }
-//
-//    if ( !m_JobSubmitter.isRunning() )
-//    {
-//        if ( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
-//        {
-//            QMessageBox::critical( this,
-//                                   tr( "PROOFAgent Console" ),
-//                                   tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
-//                                       m_ui.edtJobScriptFileName->text() ) );
-//            return;
-//        }
-//
-//        m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
-//
-//        m_WorkersCount = m_ui.spinNumWorkers->value();
-//        m_JobSubmitter.setNumberOfWorkers( m_WorkersCount );
-//
-//        m_JobSubmitter.setJobScriptFilename( m_JobScript );
-//
-//        if ( !m_emailJobOutput )
-//            m_JobSubmitter.setOutputFiles( m_logDir );
-//
-//        // submit gLite jobs
-//        m_JobSubmitter.start();
-//        m_ui.btnSubmitClient->setEnabled( false );
-//    }
-//    else
-//    {
-//        // Job submitter's thread
-//        m_JobSubmitter.terminate();
-//        setProgress( 0 );
-//        m_ui.btnSubmitClient->setEnabled( true );
-//    }
+   // Checking queue up
+    m_queue = m_ui.queuesList->currentText().toAscii().data();
+    m_JobSubmitter.setQueue( m_queue );
+    // Checking first that PoD server is running
+    CServerInfo si;
+    if ( !si.IsRunning( true ) )
+    {
+        const string msg( "PoD server is not running.\n"
+                          "Do you want to submit this job anyway?" );
+        const QMessageBox::StandardButton reply =
+            QMessageBox::question( this, tr( "pod-console" ), tr( msg.c_str() ),
+                                   QMessageBox::Yes | QMessageBox::No );
+        if ( QMessageBox::Yes != reply )
+            return;
+    }
+
+    if ( !m_JobSubmitter.isRunning() )
+    {
+        if ( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
+        {
+            QMessageBox::critical( this,
+                                   tr( "PROOFAgent Console" ),
+                                   tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
+                                       m_ui.edtJobScriptFileName->text() ) );
+            return;
+        }
+
+        m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
+
+        m_WorkersCount = m_ui.spinNumWorkers->value();
+        m_JobSubmitter.setNumberOfWorkers( m_WorkersCount );
+
+        m_JobSubmitter.setJobScriptFilename( m_JobScript );
+
+        if ( !m_emailJobOutput )
+            m_JobSubmitter.setOutputPath( m_logDir );
+
+        // submit gLite jobs
+        m_JobSubmitter.start();
+        m_ui.btnSubmitClient->setEnabled( false );
+    }
+    else
+    {
+        // Job submitter's thread
+        m_JobSubmitter.terminate();
+        setProgress( 0 );
+        m_ui.btnSubmitClient->setEnabled( true );
+    }
 }
 //=============================================================================
 void CPbsDlg::on_btnBrowseJobScript_clicked()

@@ -1,8 +1,5 @@
 build/
-Debug
 Doxyfile
 src/version.h
 .DS_Store
 *.swp
-moc_*.cxx
-ui_*.h
