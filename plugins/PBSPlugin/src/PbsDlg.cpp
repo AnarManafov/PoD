@@ -226,7 +226,7 @@ void CPbsDlg::on_btnSubmitClient_clicked()
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
 
-        if ( !m_emailJobOutput )
+//        if ( !m_emailJobOutput )
             m_JobSubmitter.setOutputPath( m_logDir );
 
         // submit gLite jobs
