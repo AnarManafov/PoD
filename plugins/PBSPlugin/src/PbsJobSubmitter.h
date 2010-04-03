@@ -77,9 +77,18 @@ namespace pbs_plug
             }
             void setOutputPath( const std::string &_path )
             {
+                // PBS needs a fullpath including a host name
+                // Currently we assume that our UI is the machine where
+                // pod-console has been started
+                
                 std::string dir( _path );
                 MiscCommon::smart_path( &dir );
                 MiscCommon::smart_append( &dir, '/' );
+                
+                std::string hostname;
+                MiscCommon::get_hostname( &hostname );
+                
+                dir = hostname + ":" + dir;
                 
                 m_outputPath = dir;
             }
