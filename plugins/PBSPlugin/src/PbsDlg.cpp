@@ -192,7 +192,7 @@ void CPbsDlg::recieveThreadMsg( const QString &_Msg )
 //=============================================================================
 void CPbsDlg::on_btnSubmitClient_clicked()
 {
-   // Checking queue up
+    // Checking queue up
     m_queue = m_ui.queuesList->currentText().toAscii().data();
     m_JobSubmitter.setQueue( m_queue );
     // Checking first that PoD server is running
@@ -479,19 +479,19 @@ int CPbsDlg::getJobsCount() const
 //=============================================================================
 void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
-//    try
-//    {
-//        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
+    try
+    {
+        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
 //        stringstream ss;
 //        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
 //        ss >> m_emailJobOutput;
-//    }
-//    catch ( exception &e )
-//    {
-//        QMessageBox::critical( this,
-//                               QString( PROJECT_NAME ),
-//                               tr( e.what() ) );
-//    }
+    }
+    catch ( exception &e )
+    {
+        QMessageBox::critical( this,
+                               QString( PROJECT_NAME ),
+                               tr( e.what() ) );
+    }
 }
 //=============================================================================
 Q_EXPORT_PLUGIN2( PBSJobManager, CPbsDlg );
