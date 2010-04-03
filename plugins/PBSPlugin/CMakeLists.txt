@@ -70,8 +70,7 @@ else (CMAKE_GENERATOR STREQUAL "Xcode")
   add_library(pod-console-pbs SHARED
               ${SOURCE_FILES_pbs}
               ${MOC_SRCS_pbs}
-              ${RCS_SRCS_pbs}
-              ${UI_HDRS_pbs})
+              ${RCS_SRCS_pbs})
 endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 

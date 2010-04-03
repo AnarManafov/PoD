@@ -103,7 +103,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 if (CMAKE_GENERATOR STREQUAL "Xcode")
     add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${MOC_HDRS} ${RCS_SRCS} ${UI_HDRS})
 else (CMAKE_GENERATOR STREQUAL "Xcode")
-    add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS} ${UI_HDRS})
+    add_executable(pod-console ${SOURCE_FILES} ${MOC_SRCS} ${RCS_SRCS})
 endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
