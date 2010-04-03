@@ -81,7 +81,7 @@ namespace pbs_plug
                 MiscCommon::smart_path( &dir );
                 MiscCommon::smart_append( &dir, '/' );
                 
-                m_outputPath = _path;
+                m_outputPath = dir;
             }
 //        void removeJob( lsf_jobid_t _jobID, bool _emitSignal = true )
 //        {
