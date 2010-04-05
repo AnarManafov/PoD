@@ -48,7 +48,7 @@ template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if ( _FileName.empty() || !is_file_exists( _FileName ) )
+    if( _FileName.empty() || !is_file_exists( _FileName ) )
         throw exception();
 
     ifstream f( _FileName.c_str() );
@@ -61,7 +61,7 @@ template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if ( _FileName.empty() )
+    if( _FileName.empty() )
         throw exception();
 
     // make an archive
@@ -72,15 +72,17 @@ void _savecfg( const T &_s, string _FileName )
 }
 //=============================================================================
 CPbsDlg::CPbsDlg( QWidget *parent ) :
-        QWidget( parent ),
-        m_AllJobsCount( 0 ),
-        m_JobSubmitter( this ),
-        m_updateInterval( 10000 ) // default value: 10 sec.
+    QWidget( parent ),
+    m_AllJobsCount( 0 ),
+    m_JobSubmitter( this ),
+    m_updateInterval( 10000 ) // default value: 10 sec.
 {
     m_ui.setupUi( this );
 
-    connect( &m_JobSubmitter, SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
-    connect( &m_JobSubmitter, SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( changeProgress( int ) ), this, SLOT( setProgress( int ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( sendThreadMsg( const QString& ) ), this, SLOT( recieveThreadMsg( const QString& ) ) );
 
     createActions();
 
@@ -96,7 +98,7 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
         // Loading class from the config file
         _loadcfg( *this, g_szPbsPluginCfgFileName );
     }
-    catch ( ... )
+    catch( ... )
     {
         setAllDefault();
     }
@@ -108,24 +110,24 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
         m_JobSubmitter.getPBS().getQueues( &queues );
         CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
         CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
-        for ( ; iter != iter_end; ++iter )
+        for( ; iter != iter_end; ++iter )
         {
             m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
             // selecting default
-            if ( m_queue.empty() )
+            if( m_queue.empty() )
             {
                 // if there is no default queue set, then select any queue with the "proof" word in the name
-                if ( string::npos != iter->m_name.find( "proof" ) )
+                if( string::npos != iter->m_name.find( "proof" ) )
                     m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
             }
             else
             {
-                if ( iter->m_name == m_queue )
+                if( iter->m_name == m_queue )
                     m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
             }
         }
     }
-    catch ( const exception &_e )
+    catch( const exception &_e )
     {
         // TODO: handle it
     }
@@ -161,7 +163,7 @@ CPbsDlg::~CPbsDlg()
         // Saving class to the config file
         _savecfg( *this, g_szPbsPluginCfgFileName );
     }
-    catch ( ... )
+    catch( ... )
     {
     }
 
@@ -197,20 +199,20 @@ void CPbsDlg::on_btnSubmitClient_clicked()
     m_JobSubmitter.setQueue( m_queue );
     // Checking first that PoD server is running
     CServerInfo si;
-    if ( !si.IsRunning( true ) )
+    if( !si.IsRunning( true ) )
     {
         const string msg( "PoD server is not running.\n"
                           "Do you want to submit this job anyway?" );
         const QMessageBox::StandardButton reply =
             QMessageBox::question( this, tr( "pod-console" ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No );
-        if ( QMessageBox::Yes != reply )
+        if( QMessageBox::Yes != reply )
             return;
     }
 
-    if ( !m_JobSubmitter.isRunning() )
+    if( !m_JobSubmitter.isRunning() )
     {
-        if ( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
+        if( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
         {
             QMessageBox::critical( this,
                                    tr( "PROOFAgent Console" ),
@@ -247,7 +249,7 @@ void CPbsDlg::on_btnBrowseJobScript_clicked()
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
                                                            tr( "PBS script (*.pbs)" ) );
-    if ( QFileInfo( filename ).exists() )
+    if( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
         m_ui.edtJobScriptFileName->setText( filename );
@@ -396,14 +398,14 @@ void CPbsDlg::enableTree()
         // Saving class to the config file
         _savecfg( *this, g_szPbsPluginCfgFileName );
     }
-    catch ( ... )
+    catch( ... )
     {
     }
 }
 //=============================================================================
 void CPbsDlg::setProgress( int _Val )
 {
-    if ( 100 == _Val )
+    if( 100 == _Val )
     {
         m_ui.btnSubmitClient->setEnabled( true );
     }
@@ -438,13 +440,13 @@ QIcon CPbsDlg::getIcon()
 //=============================================================================
 void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
-    if ( _JobStatusUpdInterval <= 0 )
+    if( _JobStatusUpdInterval <= 0 )
     {
         m_treeModel->setUpdateInterval( 0 );
         return;
     }
     // start or restart the timer
-    if ( _JobStatusUpdInterval > 0 )
+    if( _JobStatusUpdInterval > 0 )
     {
         m_updateInterval = _JobStatusUpdInterval;
         m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
@@ -453,7 +455,7 @@ void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval )
 //=============================================================================
 void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
 {
-    if ( _hideMode )
+    if( _hideMode )
     {
         // in hideMode we updated, but not very intensive (normal updated time +15 sec.).
         // this is needed for the GUI, to get a number of active jobs even when
@@ -486,7 +488,7 @@ void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 //        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
 //        ss >> m_emailJobOutput;
     }
-    catch ( exception &e )
+    catch( exception &e )
     {
         QMessageBox::critical( this,
                                QString( PROJECT_NAME ),

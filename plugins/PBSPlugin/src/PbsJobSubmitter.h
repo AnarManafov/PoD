@@ -23,6 +23,7 @@
 // Qt
 #include <QThread>
 #include <QMutex>
+#include <QMetaType>
 // BOOST
 #include <boost/serialization/version.hpp>
 #include <boost/serialization/access.hpp>
@@ -48,6 +49,7 @@ namespace pbs_plug
         public:
             CPbsJobSubmitter( QObject *parent ): QThread( parent )
             {
+                qRegisterMetaType<CPbsMng::jobID_t>( "CPbsMng::jobID_t" );
             }
             ~CPbsJobSubmitter()
             {
