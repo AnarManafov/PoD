@@ -92,5 +92,5 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
 void CJobInfo::addChildItem( const CPbsMng::jobID_t &_JobID, SJobInfo *_parent ) const
 {
     SJobInfo *info( new SJobInfo( _JobID, _parent ) );
-_parent->addChild( info );
+    _parent->addChild( info );
 }

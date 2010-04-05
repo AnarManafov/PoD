@@ -258,6 +258,3 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 //
     return run_jobs;
 }
-
-
-

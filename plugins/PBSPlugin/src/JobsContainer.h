@@ -76,5 +76,3 @@ namespace pbs_plug
 }
 
 #endif /* PBSJOBSCONTAINER_H_ */
-
-

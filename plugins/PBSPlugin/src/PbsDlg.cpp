@@ -139,8 +139,8 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
 
 
-    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
-    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
+    connect( &m_JobSubmitter, SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
+    connect( &m_JobSubmitter, SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
     connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
 
     // a context menu of the table view

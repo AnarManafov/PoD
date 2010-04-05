@@ -113,8 +113,8 @@ namespace pbs_plug
 
         signals:
             void changeProgress( int _Val );
-            void newJob( CPbsMng::jobID_t _jobID );
-            void removedJob( CPbsMng::jobID_t _jobID );
+            void newJob( const CPbsMng::jobID_t &_jobID );
+            void removedJob( const CPbsMng::jobID_t &_jobID );
             void sendThreadMsg( const QString &_Msg );
 
         protected:
@@ -186,4 +186,3 @@ namespace pbs_plug
 BOOST_CLASS_VERSION( pbs_plug::CPbsJobSubmitter, 1 )
 
 #endif /*PBSJOBSUBMITTER_H_*/
-
