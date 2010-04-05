@@ -26,7 +26,7 @@ CJobInfoItemModel::CJobInfoItemModel( CPbsJobSubmitter *_submitter,
     QAbstractItemModel( _parent ),
     m_jobinfo( _submitter ),
     m_updateInterval( _updateInterval ),
-    m_rootItem( new SJobInfo( 0 ) )
+    m_rootItem( new SJobInfo( "" ) )
 {
     _setupHeader();
     _setupJobsContainer();
@@ -268,4 +268,3 @@ void CJobInfoItemModel::removeAllCompletedJobs()
 {
     m_jobinfo.removeAllCompletedJobs();
 }
-
