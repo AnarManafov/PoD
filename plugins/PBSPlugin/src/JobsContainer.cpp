@@ -248,7 +248,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             continue;
 
         CPbsMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
-        if( all_available_jobs.end() != found )
+        if( all_available_jobs.end() == found )
         {
             // set job to completed
             iter->second->m_completed = true;

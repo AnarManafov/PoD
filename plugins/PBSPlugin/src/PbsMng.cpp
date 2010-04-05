@@ -216,7 +216,7 @@ string CPbsMng::jobStatus( const jobID_t &_id ) const
 
     p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
                             NULL, const_cast<char*>( EXECQUEONLY ) );
-    if( NULL == p_status )
+    if( NULL == p_status && 0 != pbs_errno)
     {
         // close the connection with the server
         pbs_disconnect( connect );
@@ -261,7 +261,7 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
 
     // request information of all jobs
     p_status = pbs_statjob( connect, NULL, NULL, NULL );
-    if( NULL == p_status )
+    if( NULL == p_status && 0 != pbs_errno )
     {
         // close the connection with the server
         pbs_disconnect( connect );
