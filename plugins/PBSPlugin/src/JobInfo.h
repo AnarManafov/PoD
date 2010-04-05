@@ -29,76 +29,67 @@ namespace pbs_plug
 //=============================================================================
     struct SJobInfo
     {
-//    SJobInfo():
-//            m_id( 0 ),
-//            m_status( JOB_STAT_UNKWN ),
-//            m_expanded( false ),
-//            m_completed( false ),
-//            m_parent( NULL )
-//    {
-//    }
-//    SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
-//            m_id( _id ),
-//            m_status( JOB_STAT_UNKWN ),
-//            m_expanded( false ),
-//            m_completed( false ),
-//            m_parent( _parent )
-//    {
-//        std::ostringstream str;
-//        if ( NULL != m_parent )
-//            str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
-//        else
-//            str << LSB_ARRAY_JOBID( _id );
-//
-//        m_id = _id;
-//        m_strID = str.str();
-//    }
-//    ~SJobInfo()
-//    {
-//        removeAllChildren();
-//    }
-//    void setParent( SJobInfo *_parent )
-//    {
-//        m_parent = _parent;
-//    }
-//    SJobInfo *parent()
-//    {
-//        return m_parent;
-//    }
-//    bool operator ==( const SJobInfo &_info )
-//    {
-//        if ( m_strID != _info.m_strID )
-//            return false;
-//        if ( m_status != _info.m_status )
-//            return false;
-//
-//        return true;
-//    }
-//    int addChild( SJobInfo *_child )
-//    {
-//        m_children.push_back( _child );
-//        return m_children.size() - 1;
-//    }
-//    void removeAllChildren()
-//    {
-//        while ( !m_children.isEmpty() )
-//        {
-//            SJobInfo * p( m_children.takeFirst() );
-//            delete p;
-//        }
-//        m_children.clear();
-//    }
-//
-//    lsf_jobid_t m_id;
-//    std::string m_strID;
-//    int m_status;
-//    std::string m_strStatus;
-//    bool m_expanded;
-//    bool m_completed; //!< if false, we don't need to monitor this job
-//    jobs_children_t m_children;
-//
-//private:
-//    SJobInfo *m_parent; //!< parent of this job or NULL
+            SJobInfo():
+                m_expanded( false ),
+                m_completed( false ),
+                m_parent( NULL )
+            {
+            }
+            SJobInfo( const CPbsMng::jobID_t &_id, SJobInfo *_parent = NULL ):
+                m_id( _id ),
+                m_expanded( false ),
+                m_completed( false ),
+                m_parent( _parent )
+            {
+                m_id = _id;
+                m_strID = _id;
+            }
+            ~SJobInfo()
+            {
+                removeAllChildren();
+            }
+            void setParent( SJobInfo *_parent )
+            {
+                m_parent = _parent;
+            }
+            SJobInfo *parent()
+            {
+                return m_parent;
+            }
+            bool operator ==( const SJobInfo &_info )
+            {
+                if( m_id != _info.m_id )
+                    return false;
+                if( m_status != _info.m_status )
+                    return false;
+
+                return true;
+            }
+            int addChild( SJobInfo *_child )
+            {
+                m_children.push_back( _child );
+                return m_children.size() - 1;
+            }
+            void removeAllChildren()
+            {
+                while( !m_children.isEmpty() )
+                {
+                    SJobInfo * p( m_children.takeFirst() );
+                    delete p;
+                }
+                m_children.clear();
+            }
+
+            CPbsMng::jobID_t m_id;
+            std::string m_strID;
+            std::string m_status;
+            std::string m_strStatus;
+            bool m_expanded;
+            bool m_completed; //!< if false, we don't need to monitor this job
+            jobs_children_t m_children;
+
+        private:
+            SJobInfo *m_parent; //!< parent of this job or NULL
     };
 //=============================================================================
     /**
@@ -106,27 +97,35 @@ namespace pbs_plug
      *  this comparison operator is required to use the container with generic algorithms
      *
      */
-//inline bool operator <( const JobsContainer_t::value_type &_v1,
-//                        const JobsContainer_t::value_type &_v2 )
-//{
-//    return _v1.first < _v2.first;
-//}
-////=============================================================================
-//class CJobInfo
-//{
-//    public:
-//        CJobInfo( const CLsfMng &_lsf );
-//        virtual ~CJobInfo();
-//
-//    public:
-//        void update( const CLSFJobSubmitter::jobslist_t &_Jobs, JobsContainer_t *_Container = NULL );
-//
-//    private:
-//        void addChildItem( lsf_jobid_t _JobID, SJobInfo *_parent ) const;
-//
-//    private:
-//        JobsContainer_t m_Container;
-//        const CLsfMng &m_lsf;
-//};
+    inline bool operator <( const JobsContainer_t::value_type &_v1,
+                            const JobsContainer_t::value_type &_v2 )
+    {
+        return _v1.first < _v2.first;
+    }
+//=============================================================================
+    class CJobInfo
+    {
+        public:
+            CJobInfo( const CPbsMng &_pbs );
+            virtual ~CJobInfo();
+
+        public:
+            void update( const CPbsJobSubmitter::jobslist_t &_Jobs,
+                         JobsContainer_t *_Container = NULL );
+
+        private:
+            void addChildItem( const CPbsMng::jobID_t &_JobID, SJobInfo *_parent ) const;
+
+        private:
+            JobsContainer_t m_Container;
+            const CPbsMng &m_pbs;
+    };
 }
 #endif /* PBS_JOBINFO_H_ */
+
+
+
+
+
+
+

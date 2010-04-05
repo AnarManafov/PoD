@@ -28,7 +28,8 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_member.hpp>
-#include <boost/serialization/set.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+#include <boost/serialization/map.hpp>
 // MiscCommon
 #include "SysHelper.h"
 namespace pbs_plug
@@ -50,7 +51,7 @@ namespace pbs_plug
             }
             ~CPbsJobSubmitter()
             {
-                if ( isRunning() )
+                if( isRunning() )
                     terminate();
             }
 
@@ -80,27 +81,27 @@ namespace pbs_plug
                 // PBS needs a fullpath including a host name
                 // Currently we assume that our UI is the machine where
                 // pod-console has been started
-                
+
                 std::string dir( _path );
                 MiscCommon::smart_path( &dir );
                 MiscCommon::smart_append( &dir, '/' );
-                
+
                 std::string hostname;
                 MiscCommon::get_hostname( &hostname );
-                
+
                 dir = hostname + ":" + dir;
-                
+
                 m_outputPath = dir;
             }
-//        void removeJob( lsf_jobid_t _jobID, bool _emitSignal = true )
-//        {
-//            m_mutex.lock();
-//            m_parentJobs.erase( _jobID );
-//            m_mutex.unlock();
-//
-//            if ( _emitSignal )
-//                emit removedJob( _jobID );
-//        }
+            void removeJob( CPbsMng::jobID_t _jobID, bool _emitSignal = true )
+            {
+                m_mutex.lock();
+                m_parentJobs.erase( _jobID );
+                m_mutex.unlock();
+
+                if( _emitSignal )
+                    emit removedJob( _jobID );
+            }
 //        void killJob( lsf_jobid_t _jobID )
 //        {
 //            m_lsf.killJob( _jobID );
@@ -126,17 +127,17 @@ namespace pbs_plug
                 {
                     emit changeProgress( 30 );
 
-                     CPbsMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
-                                                                   m_queue,
-                                                                   m_numberOfWrk,
-                                                                   m_outputPath );
-                    
+                    CPbsMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
+                                                                m_queue,
+                                                                m_numberOfWrk,
+                                                                m_outputPath );
+
                     // get the parent index
                     if( jobs.empty() )
                         throw std::runtime_error( "Bad jobs' parent index" );
-                    
+
                     CPbsMng::jobID_t nLastJobID = jobs[0];
-                    
+
                     emit changeProgress( 90 );
 
                     m_mutex.lock();
@@ -145,7 +146,7 @@ namespace pbs_plug
 
                     emit newJob( nLastJobID );
                 }
-                catch ( const std::exception &_e )
+                catch( const std::exception &_e )
                 {
                     emit sendThreadMsg( tr( _e.what() ) );
                     emit changeProgress( 0 );
@@ -185,3 +186,4 @@ namespace pbs_plug
 BOOST_CLASS_VERSION( pbs_plug::CPbsJobSubmitter, 1 )
 
 #endif /*PBSJOBSUBMITTER_H_*/
+

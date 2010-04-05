@@ -147,11 +147,11 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 //    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
 //    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
 //             this, SLOT( showContextMenu( const QPoint & ) ) );
-//
-//    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
-//             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
-//    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
-//             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
+
+    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
+             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
+    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
+             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
 CPbsDlg::~CPbsDlg()
@@ -227,7 +227,7 @@ void CPbsDlg::on_btnSubmitClient_clicked()
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
 
 //        if ( !m_emailJobOutput )
-            m_JobSubmitter.setOutputPath( m_logDir );
+        m_JobSubmitter.setOutputPath( m_logDir );
 
         // submit gLite jobs
         m_JobSubmitter.start();
@@ -438,28 +438,28 @@ QIcon CPbsDlg::getIcon()
 //=============================================================================
 void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
-//    if ( _JobStatusUpdInterval <= 0 )
-//    {
-//        m_treeModel->setUpdateInterval( 0 );
-//        return;
-//    }
-//    // start or restart the timer
-//    if ( _JobStatusUpdInterval > 0 )
-//    {
-//        m_updateInterval = _JobStatusUpdInterval;
-//        m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
-//    }
+    if ( _JobStatusUpdInterval <= 0 )
+    {
+        m_treeModel->setUpdateInterval( 0 );
+        return;
+    }
+    // start or restart the timer
+    if ( _JobStatusUpdInterval > 0 )
+    {
+        m_updateInterval = _JobStatusUpdInterval;
+        m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
+    }
 }
 //=============================================================================
 void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
 {
-//    if ( _hideMode )
-//    {
-//        // in hideMode we updated, but not very intensive (normal updated time +15 sec.).
-//        // this is needed for the GUI, to get a number of active jobs even when
-//        // plug-in is hidden
-//        m_treeModel->setUpdateInterval(( m_updateInterval + 15 ) * 1000 );
-//    }
+    if ( _hideMode )
+    {
+        // in hideMode we updated, but not very intensive (normal updated time +15 sec.).
+        // this is needed for the GUI, to get a number of active jobs even when
+        // plug-in is hidden
+        m_treeModel->setUpdateInterval(( m_updateInterval + 15 ) * 1000 );
+    }
 }
 //=============================================================================
 void CPbsDlg::showEvent( QShowEvent* )

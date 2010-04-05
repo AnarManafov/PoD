@@ -33,6 +33,7 @@ set( MOC_HDRS_pbs
     ./src/PbsDlg.h
     ./src/PbsJobSubmitter.h
     ./src/JobInfoItemModel.h
+    ./src/JobsContainer.h
    )
 
 set( SOURCE_FILES_pbs
@@ -40,8 +41,8 @@ set( SOURCE_FILES_pbs
     ./src/PbsMng.cpp
     ./src/set_attr.c
     ./src/JobInfo.cpp
-    ./src/JobInfoItemModel.cpp
     ./src/JobsContainer.cpp
+    ./src/JobInfoItemModel.cpp
     ${pod-console_SOURCE_DIR}/src/ServerInfo.cpp 
 )
 
@@ -54,24 +55,25 @@ set( UI_SRSC_pbs
 )
 
 
-QT4_WRAP_CPP( MOC_SRCS_pbs ${MOC_HDRS_pbs} OPTIONS -f )
-QT4_WRAP_UI( UI_HDRS_pbs ${UI_FILES_pbs} )
-QT4_ADD_RESOURCES( RCS_SRCS_pbs  ${UI_SRSC_pbs} )
+QT4_WRAP_CPP( GENERATED_MOC_SRCS_pbs ${MOC_HDRS_pbs} OPTIONS -f )
+QT4_WRAP_UI( GENERATED_UI_HDRS_pbs ${UI_FILES_pbs} )
+QT4_ADD_RESOURCES( GENERATED_RCS_SRCS_pbs  ${UI_SRSC_pbs} )
 
 if (CMAKE_GENERATOR STREQUAL "Xcode")
   add_library(pod-console-pbs SHARED
               ${SOURCE_FILES_pbs}
               ${HDRS_pbs}
-              ${MOC_SRCS_pbs}
               ${MOC_HDRS_pbs}
-              ${RCS_SRCS_pbs}
-              ${UI_HDRS_pbs})
+              ${UI_FILES_pbs}
+              ${GENERATED_MOC_SRCS_pbs}
+              ${GENERATED_RCS_SRCS_pbs}
+              ${GENERATED_UI_HDRS_pbs})
 else (CMAKE_GENERATOR STREQUAL "Xcode")
   add_library(pod-console-pbs SHARED
               ${SOURCE_FILES_pbs}
-              ${MOC_SRCS_pbs}
-              ${RCS_SRCS_pbs}
-              ${UI_HDRS_pbs})
+              ${GENERATED_MOC_SRCS_pbs}
+              ${GENERATED_RCS_SRCS_pbs}
+              ${GENERATED_UI_HDRS_pbs})
 endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 

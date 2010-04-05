@@ -30,9 +30,6 @@ extern "C"
 #include <cstdlib>
 #include <cstring>
 
-// job's array start index
-size_t g_jobArrayStartIdx = 0;
-
 using namespace std;
 using namespace pbs_plug;
 //=============================================================================
@@ -80,7 +77,7 @@ bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
 }
 //=============================================================================
 CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
-                                              size_t _idx ) const
+                                              size_t _idx )
 {
     // pbs' job id has a format XXX.SERVER
     // to get an array ID we need to add "-index", to get:
@@ -146,7 +143,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     // all the rest is array jobs ids
     jobArray_t ret;
     ret.push_back( jobid );
-    for ( size_t i = g_jobArrayStartIdx; i < _nJobs; ++i )
+    for ( size_t i = jobArrayStartIdx(); i < _nJobs; ++i )
     {
         jobID_t id = generateArrayJobID( jobid, i );
         ret.push_back( id );
@@ -186,7 +183,7 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     set_attr( attrib, ATTR_queue, _queue.c_str() );
     // an array job
     stringstream ss;
-    ss << g_jobArrayStartIdx << "-" << ( g_jobArrayStartIdx + _nJobs - 1 );
+    ss << jobArrayStartIdx() << "-" << ( jobArrayStartIdx() + _nJobs - 1 );
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
     set_attr( attrib, ATTR_o, _outputPath.c_str() );

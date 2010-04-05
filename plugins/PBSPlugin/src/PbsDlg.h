@@ -82,21 +82,21 @@ namespace pbs_plug
             template<class Archive>
             void save( Archive & _ar, const unsigned int /*_version*/ ) const
             {
-//            _ar
-//            & BOOST_SERIALIZATION_NVP( m_JobScript )
-//            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
-//            & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
-//            & BOOST_SERIALIZATION_NVP( m_queue );
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_JobScript )
+                & BOOST_SERIALIZATION_NVP( m_WorkersCount )
+                & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
+                & BOOST_SERIALIZATION_NVP( m_queue );
             }
             template<class Archive>
             void load( Archive & _ar, const unsigned int /*_version*/ )
             {
-//            _ar
-//            & BOOST_SERIALIZATION_NVP( m_JobScript )
-//            & BOOST_SERIALIZATION_NVP( m_WorkersCount )
-//            & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
-//            & BOOST_SERIALIZATION_NVP( m_queue );
-//            UpdateAfterLoad();
+                _ar
+                & BOOST_SERIALIZATION_NVP( m_JobScript )
+                & BOOST_SERIALIZATION_NVP( m_WorkersCount )
+                & BOOST_SERIALIZATION_NVP( m_JobSubmitter )
+                & BOOST_SERIALIZATION_NVP( m_queue );
+                UpdateAfterLoad();
             }
             BOOST_SERIALIZATION_SPLIT_MEMBER()
 
@@ -117,7 +117,7 @@ namespace pbs_plug
             std::string m_logDir;
             bool m_emailJobOutput;
     };
-    
+
 };
 
 BOOST_CLASS_VERSION( pbs_plug::CPbsDlg, 1 )

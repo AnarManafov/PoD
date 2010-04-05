@@ -62,15 +62,22 @@ namespace pbs_plug
                                    const jobArray_t &_ids ) const;
             static std::string jobStatusToString( const char &_status );
             void getQueues( queueInfoContainer_t *_container ) const;
+            static size_t jobArrayStartIdx()
+            {
+                // job's array start index
+                return 0;
+            }
+            static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
 
         private:
             void cleanAttr( attrl **attrib ) const;
             void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
                                     size_t _nJobs,
                                     const std::string &_outputPath ) const;
-            jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx ) const;
     };
 
 };
 
 #endif /* PBSMNG_H_ */
+
+
