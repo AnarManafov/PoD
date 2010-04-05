@@ -58,8 +58,7 @@ namespace pbs_plug
                                   size_t _nJobs,
                                   const std::string &_outputPath ) const;
             std::string jobStatus( const jobID_t &_id ) const;
-            void jobStatusAllJobs( jobInfoContainer_t *_container,
-                                   const jobArray_t &_ids ) const;
+            void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
             static std::string jobStatusToString( const char &_status );
             void getQueues( queueInfoContainer_t *_container ) const;
             static size_t jobArrayStartIdx()
@@ -79,5 +78,3 @@ namespace pbs_plug
 };
 
 #endif /* PBSMNG_H_ */
-
-

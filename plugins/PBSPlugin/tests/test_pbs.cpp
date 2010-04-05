@@ -80,8 +80,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
     CPbsMng mng;
 
     CPbsMng::jobInfoContainer_t info;
-    CPbsMng::jobArray_t idx;
-    mng.jobStatusAllJobs( &info, idx );
+    mng.jobStatusAllJobs( &info );
 
     BOOST_REQUIRE( !info.empty() );
 

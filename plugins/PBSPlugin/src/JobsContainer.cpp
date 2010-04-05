@@ -207,54 +207,68 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 {
     size_t run_jobs( 0 );
 
-//    // if there all jobs a marked already as completed, we don't need to ask LSF
-//    JobsContainer_t::const_iterator iter = _container->begin();
-//    JobsContainer_t::const_iterator iter_end = _container->end();
-//    bool need_request( false );
-//    for( ; iter != iter_end; ++iter )
-//    {
-//        if( !iter->second->m_completed )
-//            need_request = true;
-//    }
-//
-//    if( !need_request )
-//        return run_jobs;
-//
-//    // Getting a list of unfinished LSF jobs
-//    CLsfMng::IDContainerOrdered_t unfinished;
-//    m_lsfsubmitter->getLSF().getAllUnfinishedJobs( &unfinished );
-//
-//    iter = _container->begin();
-//    iter_end = _container->end();
-//    for( ; iter != iter_end; ++iter )
-//    {
-//        if( iter->second->m_completed )
-//            continue;
-//
-//        CLsfMng::IDContainerOrdered_t::const_iterator found = unfinished.find( iter->second->m_id );
-//        if( unfinished.end() == found )
-//        {
-//            // set job to completed
-//            iter->second->m_completed = true;
-//            iter->second->m_status = JOB_STAT_UNKWN;
-//            iter->second->m_strStatus = "completed";
-//        }
-//        else
-//        {
-//            // calculate a number of expected PoD workers
-//            if( iter->first.find( '[' ) != string::npos )
-//                ++run_jobs;
-//
-//            if( iter->second->m_status == found->second )
-//                continue;
-//
-//            iter->second->m_completed = false;
-//            iter->second->m_status = found->second;
-//            iter->second->m_strStatus = CLsfMng::jobStatusString( found->second );
-//        }
-//        if( _emitUpdate )
-//            emit jobChanged( iter->second );
-//    }
-//
+    // if all jobs are marked already as completed, we don't need to ask PBS
+    JobsContainer_t::const_iterator iter = _container->begin();
+    JobsContainer_t::const_iterator iter_end = _container->end();
+    bool need_request( false );
+    for( ; iter != iter_end; ++iter )
+    {
+        if( !iter->second->m_completed )
+            need_request = true;
+    }
+
+    if( !need_request )
+        return run_jobs;
+
+    // Getting a status for all available jobs
+
+    // FIXME: Be advised, if job's status is asked too fast (immediately after submission),
+    // than it could be the case that a PBS server is too slow to register the job
+    // and it will not return its status.
+    // We need to have a counter before marking a job as completed
+    CPbsMng::jobInfoContainer_t all_available_jobs;
+    try
+    {
+        m_submitter->getPBS().jobStatusAllJobs( &all_available_jobs );
+    }
+    catch( const exception &_e )
+    {
+        // TODO: show message
+    }
+
+    iter = _container->begin();
+    iter_end = _container->end();
+    for( ; iter != iter_end; ++iter )
+    {
+        if( iter->second->m_completed )
+            continue;
+
+        CPbsMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
+        if( all_available_jobs.end() != found )
+        {
+            // set job to completed
+            iter->second->m_completed = true;
+            iter->second->m_status = "unknown";
+            iter->second->m_strStatus = "completed";
+        }
+        else
+        {
+            // calculate a number of expected PoD workers.
+            // We exclude "parent" job ids
+            if( iter->first.find( '-' ) != string::npos )
+                ++run_jobs;
+
+            if( iter->second->m_status == found->second.m_status )
+                continue;
+
+            iter->second->m_completed = false;
+            iter->second->m_status = found->second.m_status;
+            if( !found->second.m_status.empty() )
+                iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status[0] );
+        }
+        if( _emitUpdate )
+            emit jobChanged( iter->second );
+    }
+
     return run_jobs;
 }

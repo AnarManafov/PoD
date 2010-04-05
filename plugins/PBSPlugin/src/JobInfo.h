@@ -122,10 +122,3 @@ namespace pbs_plug
     };
 }
 #endif /* PBS_JOBINFO_H_ */
-
-
-
-
-
-
-

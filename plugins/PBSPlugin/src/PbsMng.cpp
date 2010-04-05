@@ -235,8 +235,7 @@ string CPbsMng::jobStatus( const jobID_t &_id ) const
     return retval;
 }
 //=============================================================================
-void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container,
-                                const CPbsMng::jobArray_t &_ids ) const
+void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
 {
     if ( !_container )
         return;
