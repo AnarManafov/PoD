@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
     for ( ; iter != iter_end ; ++iter )
     {
         cout << iter->first << " has status \""
-        << CPbsMng::jobStatusToString( iter->second.m_status[0] ) << "\"" << endl;
+        << CPbsMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;
     }
 }
 //=============================================================================

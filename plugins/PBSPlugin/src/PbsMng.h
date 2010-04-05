@@ -24,7 +24,7 @@ struct attrl;
 
 namespace pbs_plug
 {
-    struct _SJobInfo
+    struct SNativeJobInfo
     {
         std::string m_status;
     };
@@ -49,7 +49,7 @@ namespace pbs_plug
         public:
             typedef std::string jobID_t;
             typedef std::vector<jobID_t> jobArray_t;
-            typedef std::map<jobID_t, _SJobInfo> jobInfoContainer_t;
+            typedef std::map<jobID_t, SNativeJobInfo> jobInfoContainer_t;
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
@@ -59,7 +59,7 @@ namespace pbs_plug
                                   const std::string &_outputPath ) const;
             std::string jobStatus( const jobID_t &_id ) const;
             void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
-            static std::string jobStatusToString( const char &_status );
+            static std::string jobStatusToString( const std::string &_status );
             void getQueues( queueInfoContainer_t *_container ) const;
             static size_t jobArrayStartIdx()
             {
@@ -67,6 +67,7 @@ namespace pbs_plug
                 return 0;
             }
             static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
+            static bool isParentID( const jobID_t &_parent );
 
         private:
             void cleanAttr( attrl **attrib ) const;

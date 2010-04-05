@@ -24,7 +24,7 @@ namespace pbs_plug
 //=============================================================================
     struct SJobInfo;
 //=============================================================================
-    typedef std::map<std::string, SJobInfo *> JobsContainer_t;
+    typedef std::map<CPbsMng::jobID_t, SJobInfo *> JobsContainer_t;
     typedef QList<SJobInfo *> jobs_children_t;
 //=============================================================================
     struct SJobInfo

@@ -36,9 +36,9 @@ using namespace pbs_plug;
 ostream &SQueueInfo::print( ostream &_stream ) const
 {
     _stream
-    << "queue name: " << m_name
-    << "; max jobs: " << m_maxJobs
-    << "\n";
+            << "queue name: " << m_name
+            << "; max jobs: " << m_maxJobs
+            << "\n";
 
     return _stream;
 }
@@ -50,7 +50,7 @@ class pbs_error: public std::exception
         {
             m_errno = pbs_errno;
             std::stringstream ss;
-            if ( !_ErrorPrefix.empty() )
+            if( !_ErrorPrefix.empty() )
                 ss << _ErrorPrefix << " ";
             ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
             m_Msg = ss.str();
@@ -76,6 +76,16 @@ bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
     return !_id.empty();
 }
 //=============================================================================
+bool CPbsMng::isParentID( const jobID_t &_parent )
+{
+    jobID_t::size_type pos = _parent.find( '.' );
+    if( jobID_t::npos == pos )
+        return false; // Bad id?
+    
+    string str( _parent, pos );
+    return ( str.find('-') == string::npos);
+}
+//=============================================================================
 CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
                                               size_t _idx )
 {
@@ -83,7 +93,7 @@ CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
     // to get an array ID we need to add "-index", to get:
     // XXX-INDEX.SERVER
     jobID_t::size_type pos = _parent.find( '.' );
-    if ( jobID_t::npos == pos )
+    if( jobID_t::npos == pos )
         return _parent;
 
     stringstream ss;
@@ -102,7 +112,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     // We use NULL as a PBS server string, a connection will be
     // opened to the default server.
     int connect = pbs_connect( NULL );
-    if ( connect < 0 )
+    if( connect < 0 )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
 
@@ -119,13 +129,13 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
                               const_cast<char*>( _script.c_str() ), NULL, NULL );
     cleanAttr( &attrib );
 
-    if ( NULL == jobid )
+    if( NULL == jobid )
     {
         // get error message and disconnect
         char* errmsg = pbs_geterrmsg( connect );
         pbs_disconnect( connect );
 
-        if ( errmsg != NULL )
+        if( errmsg != NULL )
         {
             string msg( "Error submitting job." );
             msg += errmsg;
@@ -143,7 +153,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     // all the rest is array jobs ids
     jobArray_t ret;
     ret.push_back( jobid );
-    for ( size_t i = jobArrayStartIdx(); i < _nJobs; ++i )
+    for( size_t i = jobArrayStartIdx(); i < _nJobs; ++i )
     {
         jobID_t id = generateArrayJobID( jobid, i );
         ret.push_back( id );
@@ -156,7 +166,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
 void CPbsMng::cleanAttr( attrl **attrib ) const
 {
     attrl *next = *attrib;
-    while ( next != NULL )
+    while( next != NULL )
     {
         attrl *del = next;
         next = del->next;
@@ -192,21 +202,21 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
 string CPbsMng::jobStatus( const jobID_t &_id ) const
 {
     string retval;
-    if ( _id.empty() )
+    if( _id.empty() )
         return retval;
 
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
     // opened to the default server.
     int connect = pbs_connect( NULL );
-    if ( connect < 0 )
+    if( connect < 0 )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
     batch_status *p_status = NULL;
 
     p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
                             NULL, const_cast<char*>( EXECQUEONLY ) );
-    if ( NULL == p_status )
+    if( NULL == p_status )
     {
         // close the connection with the server
         pbs_disconnect( connect );
@@ -214,12 +224,12 @@ string CPbsMng::jobStatus( const jobID_t &_id ) const
     }
 
     attrl *a( p_status->attribs );
-    while ( a != NULL )
+    while( a != NULL )
     {
-        if ( NULL == a->name )
+        if( NULL == a->name )
             break;
 
-        if ( !strcmp( a->name, ATTR_state ) )
+        if( !strcmp( a->name, ATTR_state ) )
         {
             retval = a->value;
             break;
@@ -237,21 +247,21 @@ string CPbsMng::jobStatus( const jobID_t &_id ) const
 //=============================================================================
 void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
 {
-    if ( !_container )
+    if( !_container )
         return;
 
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
     // opened to the default server.
     int connect = pbs_connect( NULL );
-    if ( connect < 0 )
+    if( connect < 0 )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
     batch_status *p_status = NULL;
 
     // request information of all jobs
     p_status = pbs_statjob( connect, NULL, NULL, NULL );
-    if ( NULL == p_status )
+    if( NULL == p_status )
     {
         // close the connection with the server
         pbs_disconnect( connect );
@@ -259,19 +269,19 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
     }
 
     batch_status *p( NULL );
-    for ( p = p_status; p != NULL; p = p->next )
+    for( p = p_status; p != NULL; p = p->next )
     {
         string id = p->name;
 
         attrl *a( p->attribs );
-        while ( a != NULL )
+        while( a != NULL )
         {
-            if ( NULL == a->name )
+            if( NULL == a->name )
                 break;
 
-            if ( !strcmp( a->name, ATTR_state ) )
+            if( !strcmp( a->name, ATTR_state ) )
             {
-                _SJobInfo info;
+                SNativeJobInfo info;
                 info.m_status = a->value;
 
                 _container->insert( jobInfoContainer_t::value_type( id, info ) );
@@ -289,7 +299,7 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
 //=============================================================================
 void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
 {
-    if ( !_container )
+    if( !_container )
         return;
 
     _container->clear();
@@ -298,14 +308,14 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
     // We use NULL as a PBS server string, a connection will be
     // opened to the default server.
     int connect = pbs_connect( NULL );
-    if ( connect < 0 )
+    if( connect < 0 )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
     batch_status *p_status = NULL;
 
     // request information of all queues
     p_status = pbs_statque( connect, NULL, NULL, NULL );
-    if ( NULL == p_status )
+    if( NULL == p_status )
     {
         // close the connection with the server
         pbs_disconnect( connect );
@@ -313,19 +323,19 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
     }
 
     batch_status *p( NULL );
-    for ( p = p_status; p != NULL; p = p->next )
+    for( p = p_status; p != NULL; p = p->next )
     {
         SQueueInfo info;
         info.m_name = p->name;
 
         attrl *a( p->attribs );
-        while ( a != NULL )
+        while( a != NULL )
         {
-            if ( NULL == a->name )
+            if( NULL == a->name )
                 break;
 
             // job number limit
-            if ( !strcmp( a->name, ATTR_maxrun ) )
+            if( !strcmp( a->name, ATTR_maxrun ) )
             {
                 istringstream ss( a->value );
                 ss >> info.m_maxJobs;
@@ -344,9 +354,14 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
     pbs_disconnect( connect );
 }
 //=============================================================================
-std::string CPbsMng::jobStatusToString( const char &_status )
+std::string CPbsMng::jobStatusToString( const std::string &_status )
 {
-    switch ( _status )
+    if( _status.empty() )
+        return "unknown";
+
+    // PBS's status job is just a char so far.
+    // we use string as a parameter in case we decide to change the algorithms
+    switch( _status[0] )
     {
         case 'T':
             return "transit";

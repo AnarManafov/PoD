@@ -240,6 +240,10 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     iter_end = _container->end();
     for( ; iter != iter_end; ++iter )
     {
+        // Bad ID or a root item
+        if( iter->first.empty() )
+            continue;
+        
         if( iter->second->m_completed )
             continue;
 
@@ -255,7 +259,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         {
             // calculate a number of expected PoD workers.
             // We exclude "parent" job ids
-            if( iter->first.find( '-' ) != string::npos )
+            if( !CPbsMng::isParentID( iter->first ) )
                 ++run_jobs;
 
             if( iter->second->m_status == found->second.m_status )
@@ -263,8 +267,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 
             iter->second->m_completed = false;
             iter->second->m_status = found->second.m_status;
-            if( !found->second.m_status.empty() )
-                iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status[0] );
+            iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status );
         }
         if( _emitUpdate )
             emit jobChanged( iter->second );
