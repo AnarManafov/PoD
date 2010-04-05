@@ -124,7 +124,7 @@ QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) con
 {
     Q_CHECK_PTR( _info );
 
-    if( !_info->m_id.empty() )  // this is our fake item - which is a super parent for all jobs
+    if( _info->m_id.empty() )  // this is our fake item - which is a super parent for all jobs
         return QModelIndex();
 
     const int row( _info->parent()->m_children.indexOf( _info ) );
