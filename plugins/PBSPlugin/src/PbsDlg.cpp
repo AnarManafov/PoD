@@ -141,14 +141,17 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
 
 
-    connect( &m_JobSubmitter, SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
-    connect( &m_JobSubmitter, SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
-    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
+    connect( m_treeModel,
+             SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
 
     // a context menu of the table view
-//    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
-//    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-//             this, SLOT( showContextMenu( const QPoint & ) ) );
+    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+             this, SLOT( showContextMenu( const QPoint & ) ) );
 
     connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
              this, SLOT( expandTreeNode( const QModelIndex& ) ) );
