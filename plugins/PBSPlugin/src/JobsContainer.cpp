@@ -289,7 +289,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             if( iter->second->m_status == found->second.m_status )
                 continue;
 
-            iter->second->m_completed = false;
+            iter->second->m_completed = CPbsMng::isJobComplete( found->second.m_status );
             iter->second->m_status = found->second.m_status;
             iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status );
         }

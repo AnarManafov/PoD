@@ -386,3 +386,11 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
             return "unknown";
     }
 }
+//=============================================================================
+bool CPbsMng::isJobComplete( const std::string &_status )
+{
+    if( _status.empty() )
+        return false;
+    
+    return ('C' == _status[0]);
+}

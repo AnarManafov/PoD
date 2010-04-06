@@ -68,6 +68,7 @@ namespace pbs_plug
             }
             static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
             static bool isParentID( const jobID_t &_parent );
+        static bool isJobComplete( const std::string &_status );
 
         private:
             void cleanAttr( attrl **attrib ) const;
