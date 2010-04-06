@@ -19,6 +19,10 @@
 #include <algorithm>
 // pbs plug-in
 #include "PbsJobSubmitter.h"
+
+// TODO: release a general impelemention of JobInfo, Submitter and ItemModel
+// for all plug-ins (which needs Tree View for jobs).
+
 namespace pbs_plug
 {
 //=============================================================================
@@ -32,6 +36,7 @@ namespace pbs_plug
             SJobInfo():
                 m_expanded( false ),
                 m_completed( false ),
+                m_tryCount( 0 ),
                 m_parent( NULL )
             {
             }
@@ -39,6 +44,7 @@ namespace pbs_plug
                 m_id( _id ),
                 m_expanded( false ),
                 m_completed( false ),
+                m_tryCount( 0 ),
                 m_parent( _parent )
             {
                 m_id = _id;
@@ -87,6 +93,8 @@ namespace pbs_plug
             bool m_expanded;
             bool m_completed; //!< if false, we don't need to monitor this job
             jobs_children_t m_children;
+            // how many times a job must be checked before getting a complete status
+            size_t m_tryCount;
 
         private:
             SJobInfo *m_parent; //!< parent of this job or NULL

@@ -29,6 +29,8 @@ extern "C"
 #include <stdexcept>
 #include <cstdlib>
 #include <cstring>
+// Qt
+#include <QtGlobal>
 
 using namespace std;
 using namespace pbs_plug;
@@ -81,9 +83,9 @@ bool CPbsMng::isParentID( const jobID_t &_parent )
     jobID_t::size_type pos = _parent.find( '.' );
     if( jobID_t::npos == pos )
         return false; // Bad id?
-    
+
     string str( _parent, pos );
-    return ( str.find('-') == string::npos);
+    return ( str.find( '-' ) == string::npos );
 }
 //=============================================================================
 CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
@@ -122,6 +124,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     // Set default attributes for PoD
     setDefaultPoDAttr( &attrib, _queue, _nJobs, _outputPath );
 
+    qDebug( "pbs call: job submit" );
     // The destination (4th parameter) will be provided via attributes - ATTR_
     // HACK: I hate to use const_cast, but
     // for some unknown reason API developers wants char* and not const char * const
@@ -214,9 +217,10 @@ string CPbsMng::jobStatus( const jobID_t &_id ) const
 
     batch_status *p_status = NULL;
 
+    qDebug( "pbs call: job status" );
     p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
                             NULL, const_cast<char*>( EXECQUEONLY ) );
-    if( NULL == p_status && 0 != pbs_errno)
+    if( NULL == p_status && 0 != pbs_errno )
     {
         // close the connection with the server
         pbs_disconnect( connect );
@@ -259,6 +263,7 @@ void CPbsMng::jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
 
     batch_status *p_status = NULL;
 
+    qDebug( "pbs call: job status" );
     // request information of all jobs
     p_status = pbs_statjob( connect, NULL, NULL, NULL );
     if( NULL == p_status && 0 != pbs_errno )

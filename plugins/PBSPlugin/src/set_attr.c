@@ -95,77 +95,75 @@
 
 void set_attr(
 
-  struct attrl **attrib,        /* I */
-  const char * const attrib_name,   /* I */
-  const char * const attrib_value)  /* I */
+    struct attrl **attrib,        /* I */
+    const char * const attrib_name,   /* I */
+    const char * const attrib_value ) /* I */
 
-  {
+{
 
-  struct attrl *attr, *ap;
+    struct attrl *attr, *ap;
 
-  attr = (struct attrl *)malloc(sizeof(struct attrl));
+    attr = ( struct attrl * )malloc( sizeof( struct attrl ) );
 
-  if (attr == NULL)
+    if( attr == NULL )
     {
-    fprintf(stderr, "Out of memory\n");
+        fprintf( stderr, "Out of memory\n" );
 
-    exit(2);
+        exit( 2 );
     }
 
-  if (attrib_name == NULL)
+    if( attrib_name == NULL )
     {
-    attr->name = NULL;
+        attr->name = NULL;
     }
-  else
+    else
     {
-    attr->name = (char *)malloc(strlen(attrib_name) + 1);
+        attr->name = ( char * )malloc( strlen( attrib_name ) + 1 );
 
-    if (attr->name == NULL)
-      {
-      fprintf(stderr, "out of memory\n");
-      exit(2);
-      }
+        if( attr->name == NULL )
+        {
+            fprintf( stderr, "out of memory\n" );
+            exit( 2 );
+        }
 
-    strcpy(attr->name, attrib_name);
-    }
-
-  attr->resource = NULL;
-
-  if (attrib_value == NULL)
-    {
-    attr->value = NULL;
-    }
-  else
-    {
-    attr->value = (char *)malloc(strlen(attrib_value) + 1);
-
-    if (attr->value == NULL)
-      {
-      fprintf(stderr, "out of memory\n");
-
-      exit(2);
-      }
-
-    strcpy(attr->value, attrib_value);
+        strcpy( attr->name, attrib_name );
     }
 
-  attr->next = NULL;
+    attr->resource = NULL;
 
-  if (*attrib == NULL)
+    if( attrib_value == NULL )
     {
-    *attrib = attr;
+        attr->value = NULL;
     }
-  else
+    else
     {
-    ap = *attrib;
+        attr->value = ( char * )malloc( strlen( attrib_value ) + 1 );
 
-    while (ap->next != NULL)
-      ap = ap->next;
+        if( attr->value == NULL )
+        {
+            fprintf( stderr, "out of memory\n" );
 
-    ap->next = attr;
+            exit( 2 );
+        }
+
+        strcpy( attr->value, attrib_value );
     }
 
-  return;
-  }  /* END set_attr() */
+    attr->next = NULL;
 
+    if( *attrib == NULL )
+    {
+        *attrib = attr;
+    }
+    else
+    {
+        ap = *attrib;
 
+        while( ap->next != NULL )
+            ap = ap->next;
+
+        ap->next = attr;
+    }
+
+    return;
+}  /* END set_attr() */

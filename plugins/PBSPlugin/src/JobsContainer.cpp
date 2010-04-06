@@ -17,6 +17,8 @@
 // LSF plug-in
 #include "JobsContainer.h"
 //=============================================================================
+const size_t g_maxRetryCount = 5;
+//=============================================================================
 using namespace std;
 using namespace pbs_plug;
 //=============================================================================
@@ -243,17 +245,34 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         // Bad ID or a root item
         if( iter->first.empty() )
             continue;
-        
+
         if( iter->second->m_completed )
             continue;
 
         CPbsMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
         if( all_available_jobs.end() == found )
         {
-            // set job to completed
-            iter->second->m_completed = true;
-            iter->second->m_status = "unknown";
-            iter->second->m_strStatus = "completed";
+            // if the parent, we don't write any status so-far,
+            // in PBS plug-in, a parent job is just a fake and can't have a
+            // status.
+            // FIXME: implement a status lagorthm for parent jobs (some summary of
+            // status of children)
+            if( CPbsMng::isParentID( iter->first ) )
+            {
+                iter->second->m_completed = true;
+                iter->second->m_status = "completed";
+                iter->second->m_strStatus = "(expand to see the status)";
+                continue;
+            }
+
+            ++iter->second->m_tryCount;
+            if( iter->second->m_tryCount >= g_maxRetryCount )
+            {
+                // set job to completed
+                iter->second->m_completed = true;
+                iter->second->m_status = "completed";
+                iter->second->m_strStatus = "completed";
+            }
         }
         else
         {
