@@ -89,6 +89,7 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 # Add macros
 #
 if( CMAKE_BUILD_TYPE STREQUAL "Release" )
+  add_definitions(-DQT_NO_DEBUG_OUTPUT)
   add_definitions(-DQT_NO_DEBUG)
   add_definitions(-DNDEBUG)
 endif()

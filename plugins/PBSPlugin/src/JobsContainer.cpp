@@ -17,7 +17,7 @@
 // LSF plug-in
 #include "JobsContainer.h"
 //=============================================================================
-const size_t g_maxRetryCount = 2;
+const size_t g_maxRetryCount = 1;
 //=============================================================================
 using namespace std;
 using namespace pbs_plug;
