@@ -356,26 +356,26 @@ void CPbsDlg::killJob()
 //=============================================================================
 void CPbsDlg::removeJob()
 {
-//    // Job ID
-//    QModelIndex item = m_ui.treeJobs->currentIndex();
-//    if ( !item.isValid() )
-//        return;
-//
-//    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
-//    if ( !info )
-//        return;
-//
-//    const string msg( "Are you sure you want to remove the selected job from the monitoring?\n"
-//                      "Be advised, removing the job from the monitoring will not kill/remove it from the LSF queue." );
-//    const QMessageBox::StandardButton reply =
-//        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
-//                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-//    if ( QMessageBox::Cancel == reply )
-//        return;
-//
-//    // if the m_id == 0, then it means it is a rootItem - parent of
-//    // all parents
-//    m_JobSubmitter.removeJob(( NULL != info->parent() && info->parent()->m_id != 0 ) ? info->parent()->m_id : info->m_id );
+    // Job ID
+    QModelIndex item = m_ui.treeJobs->currentIndex();
+    if( !item.isValid() )
+        return;
+
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
+    if( !info )
+        return;
+
+    const string msg( "Are you sure you want to remove the selected job from the monitoring?\n"
+                      "Be advised, removing the job from the monitoring will not kill/remove it from the PBS queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if( QMessageBox::Cancel == reply )
+        return;
+
+    // if the m_id.empty(), then it means it is a rootItem - parent of
+    // all parents
+    m_JobSubmitter.removeJob(( NULL != info->parent() && !info->parent()->m_id.empty() ) ? info->parent()->m_id : info->m_id );
 }
 //=============================================================================
 void CPbsDlg::removeAllCompletedJobs()
