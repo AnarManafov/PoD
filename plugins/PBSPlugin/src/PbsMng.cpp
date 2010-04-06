@@ -359,6 +359,27 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
     pbs_disconnect( connect );
 }
 //=============================================================================
+void CPbsMng::killJob( const jobID_t &_id ) const
+{
+    // Connect to the pbs server
+    // We use NULL as a PBS server string, a connection will be
+    // opened to the default server.
+    int connect = pbs_connect( NULL );
+    if( connect < 0 )
+        throw pbs_error( "Error occurred while connecting to pbs server." );
+
+    qDebug( "pbs call: job kill" );
+    if( 0 != ( pbs_deljob( connect, const_cast<char*>( _id.c_str() ), NULL ) ) )
+    {
+        // close the connection with the server
+        pbs_disconnect( connect );
+        throw pbs_error( "Error killing the job." );
+    }
+
+    // close the connection with the server
+    pbs_disconnect( connect );
+}
+//=============================================================================
 std::string CPbsMng::jobStatusToString( const std::string &_status )
 {
     if( _status.empty() )

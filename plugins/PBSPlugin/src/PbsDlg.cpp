@@ -327,31 +327,33 @@ void CPbsDlg::collapseTreeNode( const QModelIndex &_index )
 //=============================================================================
 void CPbsDlg::killJob()
 {
-//    // Job ID
-//    QModelIndex item = m_ui.treeJobs->currentIndex();
-//    if ( !item.isValid() )
-//        return;
-//
-//    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
-//    if ( !info )
-//        return;
-//
-//    const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
-//                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the LSF queue." );
-//    const QMessageBox::StandardButton reply =
-//        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
-//                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-//    if ( QMessageBox::Cancel == reply )
-//        return;
-//
-//    try
-//    {
-//        m_JobSubmitter.killJob( info->m_id );
-//    }
-//    catch ( const std::exception &_e )
-//    {
-//        QMessageBox::warning( this, tr( "pod-console" ), _e.what() );
-//    }
+    // TODO: if clicked on parent, than send kill to all its children
+
+    // Job ID
+    QModelIndex item = m_ui.treeJobs->currentIndex();
+    if( !item.isValid() )
+        return;
+
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
+    if( !info )
+        return;
+
+    const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
+                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the PBS queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if( QMessageBox::Cancel == reply )
+        return;
+
+    try
+    {
+        m_JobSubmitter.killJob( info->m_id );
+    }
+    catch( const std::exception &_e )
+    {
+        QMessageBox::warning( this, tr( "pod-console" ), _e.what() );
+    }
 }
 //=============================================================================
 void CPbsDlg::removeJob()

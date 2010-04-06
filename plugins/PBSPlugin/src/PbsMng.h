@@ -61,6 +61,7 @@ namespace pbs_plug
             void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
             static std::string jobStatusToString( const std::string &_status );
             void getQueues( queueInfoContainer_t *_container ) const;
+            void killJob( const jobID_t &_id ) const;
             static size_t jobArrayStartIdx()
             {
                 // job's array start index

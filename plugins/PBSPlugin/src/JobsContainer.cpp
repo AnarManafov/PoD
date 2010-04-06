@@ -266,7 +266,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             }
 
             ++iter->second->m_tryCount;
-            if( iter->second->m_tryCount >= g_maxRetryCount )
+            if( iter->second->m_tryCount > g_maxRetryCount )
             {
                 // set job to completed
                 iter->second->m_completed = true;

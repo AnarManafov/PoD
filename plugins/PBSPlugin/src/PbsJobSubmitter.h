@@ -95,7 +95,7 @@ namespace pbs_plug
 
                 m_outputPath = dir;
             }
-            void removeJob( CPbsMng::jobID_t _jobID, bool _emitSignal = true )
+            void removeJob( const CPbsMng::jobID_t &_jobID, bool _emitSignal = true )
             {
                 m_mutex.lock();
                 m_parentJobs.erase( _jobID );
@@ -104,10 +104,10 @@ namespace pbs_plug
                 if( _emitSignal )
                     emit removedJob( _jobID );
             }
-//        void killJob( lsf_jobid_t _jobID )
-//        {
-//            m_lsf.killJob( _jobID );
-//        }
+            void killJob( const CPbsMng::jobID_t &_jobID )
+            {
+                m_pbs.killJob( _jobID );
+            }
             const CPbsMng &getPBS() const
             {
                 return m_pbs;
