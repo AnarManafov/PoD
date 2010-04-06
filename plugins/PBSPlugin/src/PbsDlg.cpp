@@ -380,18 +380,16 @@ void CPbsDlg::removeJob()
 //=============================================================================
 void CPbsDlg::removeAllCompletedJobs()
 {
-//    const string msg( "Are you sure you want to remove all completed jobs from the monitoring?\n"
-//                      "Be advised, removing a job from the monitoring will not kill/remove it from the LSF queue." );
-//    const QMessageBox::StandardButton reply =
-//        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
-//                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-//    if ( QMessageBox::Cancel == reply )
-//        return;
-//
-//    if ( m_treeModel )
-//    {
-//        m_treeModel->removeAllCompletedJobs();
-//    }
+    const string msg( "Are you sure you want to remove all completed jobs from the monitoring?\n"
+                      "Be advised, removing a job from the monitoring will not kill/remove it from the PBS queue." );
+    const QMessageBox::StandardButton reply =
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
+                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+    if( QMessageBox::Cancel == reply )
+        return;
+
+    if( m_treeModel )
+        m_treeModel->removeAllCompletedJobs();
 }
 //=============================================================================
 void CPbsDlg::enableTree()
