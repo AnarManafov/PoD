@@ -391,6 +391,6 @@ bool CPbsMng::isJobComplete( const std::string &_status )
 {
     if( _status.empty() )
         return false;
-    
-    return ('C' == _status[0]);
+
+    return ( 'C' == _status[0] );
 }
