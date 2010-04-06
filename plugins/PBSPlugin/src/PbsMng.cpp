@@ -84,7 +84,7 @@ bool CPbsMng::isParentID( const jobID_t &_parent )
     if( jobID_t::npos == pos )
         return false; // Bad id?
 
-    string str( _parent, pos );
+    string str( _parent, 0, pos );
     return ( str.find( '-' ) == string::npos );
 }
 //=============================================================================

@@ -17,7 +17,7 @@
 // LSF plug-in
 #include "JobsContainer.h"
 //=============================================================================
-const size_t g_maxRetryCount = 5;
+const size_t g_maxRetryCount = 4;
 //=============================================================================
 using namespace std;
 using namespace pbs_plug;
@@ -273,6 +273,11 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
                 iter->second->m_status = "completed";
                 iter->second->m_strStatus = "completed";
             }
+            else
+            {
+                iter->second->m_strStatus = "not known yet...";
+            }
+
         }
         else
         {
