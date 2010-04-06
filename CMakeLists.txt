@@ -85,6 +85,13 @@ message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
 message(STATUS "  libs: ${Boost_LIBRARIES}")
 
+#
+# Add macros
+#
+if( CMAKE_BUILD_TYPE STREQUAL "Release" )
+  add_definitions(-DQT_NO_DEBUG)
+  add_definitions(-DNDEBUG)
+endif()
 
 #
 # Documentation
