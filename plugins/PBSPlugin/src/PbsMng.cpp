@@ -14,6 +14,8 @@
 *************************************************************************/
 // PBS plug-in
 #include "PbsMng.h"
+// API
+#include <sys/stat.h>
 // PBS API
 extern "C"
 {
@@ -130,6 +132,7 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     // for some unknown reason API developers wants char* and not const char * const
     char *jobid = pbs_submit( connect, reinterpret_cast<attropl*>( attrib ),
                               const_cast<char*>( _script.c_str() ), NULL, NULL );
+
     cleanAttr( &attrib );
 
     if( NULL == jobid )
@@ -149,6 +152,9 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
 
     // close the connection with the server
     pbs_disconnect( connect );
+
+    // creating a log dir for the job
+    createJobsLogDir( jobid, _outputPath );
 
     // return job id
     // return an array of jobs id.
@@ -423,4 +429,14 @@ bool CPbsMng::isJobComplete( const std::string &_status )
         return false;
 
     return ( 'C' == _status[0] );
+}
+//=============================================================================
+void CPbsMng::createJobsLogDir( const jobID_t &_parent,
+                                const string _logDir ) const
+{
+    string path( _logDir + _parent );
+    // create a dir with read/write/search permissions for owner and group,
+    // and with read/search permissions for others
+    // TODO:Check for errors
+    mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 }
