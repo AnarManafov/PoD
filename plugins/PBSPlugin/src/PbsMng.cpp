@@ -200,6 +200,15 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
     set_attr( attrib, ATTR_o, _outputPath.c_str() );
+    // set additional environment variables
+    // set POD_UI_LOCATION on the worker nodes
+    char *env = getenv( "POD_LOCATION" );
+    if( env != NULL )
+    {
+        string ui_loc( "POD_UI_LOCATION=" );
+        ui_loc += env;
+        set_attr( attrib, ATTR_v, ui_loc.c_str() );
+    }
 }
 //=============================================================================
 string CPbsMng::jobStatus( const jobID_t &_id ) const
