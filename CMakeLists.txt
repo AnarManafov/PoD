@@ -124,6 +124,7 @@ install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION etc)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/pod-info DESTINATION bin)
 # special files, these needs to be executables
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
 
