@@ -17,8 +17,6 @@
 //=============================================================================
 // gLite plug-in
 #include "PbsMng.h"
-// API
-#include <sys/stat.h>
 // STD
 #include <sstream>
 #include <stdexcept>
@@ -34,7 +32,8 @@
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/serialization/map.hpp>
 // MiscCommon
-#include "SysHelper.h"
+#include "PoDUserDefaultsOptions.h"
+
 namespace pbs_plug
 {
 //=============================================================================
@@ -60,6 +59,10 @@ namespace pbs_plug
             }
 
         public:
+            void setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+            {
+                m_pbs.setUserDefaults( _ud );
+            }
             const jobslist_t &getParentJobsList() const
             {
                 return m_parentJobs;
@@ -79,25 +82,6 @@ namespace pbs_plug
             void setQueue( const std::string &_queue )
             {
                 m_queue = _queue;
-            }
-            void setOutputPath( const std::string &_path )
-            {
-                // PBS needs a fullpath including a host name
-                // Currently we assume that our UI is the machine where
-                // pod-console has been started
-
-                std::string dir( _path );
-                MiscCommon::smart_path( &dir );
-                MiscCommon::smart_append( &dir, '/' );
-
-                std::string hostname;
-                MiscCommon::get_hostname( &hostname );
-
-                m_outputPathWithoutServer = dir;
-
-                dir = hostname + ":" + dir;
-
-                m_outputPath = dir;
             }
             void removeJob( const CPbsMng::jobID_t &_jobID, bool _emitSignal = true )
             {
@@ -135,17 +119,13 @@ namespace pbs_plug
 
                     CPbsMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
                                                                 m_queue,
-                                                                m_numberOfWrk,
-                                                                m_outputPath );
+                                                                m_numberOfWrk );
 
                     // get the parent index
                     if( jobs.empty() )
                         throw std::runtime_error( "Bad jobs' parent index" );
 
                     CPbsMng::jobID_t lastJobID = jobs[0];
-
-                    // creating a log dir for the job
-                    createJobsLogDir( lastJobID );
 
                     emit changeProgress( 90 );
 
@@ -163,15 +143,6 @@ namespace pbs_plug
                 }
 
                 emit changeProgress( 100 );
-            }
-            //=============================================================================
-            void createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
-            {
-                std::string path( m_outputPathWithoutServer + _parent );
-                // create a dir with read/write/search permissions for owner and group,
-                // and with read/search permissions for others
-                // TODO:Check for errors
-                mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
             }
             //=============================================================================
             // serialization
@@ -195,8 +166,6 @@ namespace pbs_plug
             std::string m_JobScriptFilename;
             size_t m_numberOfWrk;
             std::string m_queue;
-            std::string m_outputPath;
-            std::string m_outputPathWithoutServer;
             CPbsMng m_pbs;
     };
 

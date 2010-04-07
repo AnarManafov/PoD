@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     CPbsMng mng;
 
     // check that submit works
-    CPbsMng::jobArray_t ids = mng.jobSubmit( tmpname, "batch", g_jobsCount, "./" );
+    CPbsMng::jobArray_t ids = mng.jobSubmit( tmpname, "batch", g_jobsCount );
     BOOST_REQUIRE( !ids.empty() );
 
     // we need to sleep a bit. Otherwise we could be too fast asking for status, than PBS registers a job

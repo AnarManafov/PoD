@@ -14,6 +14,8 @@
 *************************************************************************/
 // PBS plug-in
 #include "PbsMng.h"
+// API
+#include <sys/stat.h>
 // PBS API
 extern "C"
 {
@@ -31,9 +33,12 @@ extern "C"
 #include <cstring>
 // Qt
 #include <QtGlobal>
+// MiscCommon
+#include "SysHelper.h"
 
 using namespace std;
 using namespace pbs_plug;
+using namespace MiscCommon;
 //=============================================================================
 ostream &SQueueInfo::print( ostream &_stream ) const
 {
@@ -73,7 +78,20 @@ class pbs_error: public std::exception
         int m_errno;
 };
 //=============================================================================
-bool CPbsMng::isValid( const CPbsMng::jobID_t &_id ) const
+void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+{
+    try
+    {
+        m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
+        smart_path( &m_server_logDir );
+        smart_append( &m_server_logDir, '/' );
+    }
+    catch( exception &e )
+    {
+    }
+}
+//=============================================================================
+bool CPbsMng::isValid( const CPbsMng::jobID_t &_id )
 {
     return !_id.empty();
 }
@@ -107,8 +125,7 @@ CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
 }
 //=============================================================================
 CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_queue,
-                                        size_t _nJobs,
-                                        const string &_outputPath ) const
+                                        size_t _nJobs ) const
 {
     // Connect to the pbs server
     // We use NULL as a PBS server string, a connection will be
@@ -117,12 +134,11 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
     if( connect < 0 )
         throw pbs_error( "Error occurred while connecting to pbs server." );
 
-
     // TODO: don't forget to call free
     attrl *attrib = NULL;
 
     // Set default attributes for PoD
-    setDefaultPoDAttr( &attrib, _queue, _nJobs, _outputPath );
+    setDefaultPoDAttr( &attrib, _queue, _nJobs );
 
     qDebug( "pbs call: job submit" );
     // The destination (4th parameter) will be provided via attributes - ATTR_
@@ -150,6 +166,9 @@ CPbsMng::jobArray_t CPbsMng::jobSubmit( const string &_script, const string &_qu
 
     // close the connection with the server
     pbs_disconnect( connect );
+
+    // creating a log dir for the job
+    createJobsLogDir( jobid );
 
     // return job id
     // return an array of jobs id.
@@ -187,8 +206,17 @@ void CPbsMng::cleanAttr( attrl **attrib ) const
 }
 //=============================================================================
 void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
-                                 size_t _nJobs, const string &_outputPath ) const
+                                 size_t _nJobs ) const
 {
+    // TODO: check plug-in setting for "pbs shared home", before adding a host to output path
+    // PBS needs a fullpath including an UI host name
+    // Currently we assume that our UI is the machine where
+    // pod-console has been started
+    std::string output( m_server_logDir );
+    std::string hostname;
+    MiscCommon::get_hostname( &hostname );
+    output = hostname + ":" + output;
+
     // job's name
     set_attr( attrib, ATTR_N, "PoD" );
     // join error/stdoutput
@@ -200,7 +228,7 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     ss << jobArrayStartIdx() << "-" << ( jobArrayStartIdx() + _nJobs - 1 );
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
-    set_attr( attrib, ATTR_o, _outputPath.c_str() );
+    set_attr( attrib, ATTR_o, output.c_str() );
     // set additional environment variables
     // set POD_UI_LOCATION on the worker nodes
     char *env = getenv( "POD_LOCATION" );
@@ -424,4 +452,13 @@ bool CPbsMng::isJobComplete( const std::string &_status )
         return false;
 
     return ( 'C' == _status[0] );
+}
+//=============================================================================
+void CPbsMng::createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
+{
+    std::string path( m_server_logDir + _parent );
+    // create a dir with read/write/search permissions for owner and group,
+    // and with read/search permissions for others
+    // TODO:Check for errors
+    mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 }

@@ -19,6 +19,8 @@
 #include <string>
 #include <vector>
 #include <map>
+// MiscCommon
+#include "PoDUserDefaultsOptions.h"
 
 struct attrl;
 
@@ -53,10 +55,9 @@ namespace pbs_plug
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
-            bool isValid( const jobID_t &_id ) const;
+            void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
-                                  size_t _nJobs,
-                                  const std::string &_outputPath ) const;
+                                  size_t _nJobs ) const;
             std::string jobStatus( const jobID_t &_id ) const;
             void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
             static std::string jobStatusToString( const std::string &_status );
@@ -67,14 +68,19 @@ namespace pbs_plug
                 // job's array start index
                 return 0;
             }
+
+            static bool isValid( const jobID_t &_id );
             static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
             static bool isParentID( const jobID_t &_parent );
             static bool isJobComplete( const std::string &_status );
         private:
             void cleanAttr( attrl **attrib ) const;
             void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
-                                    size_t _nJobs,
-                                    const std::string &_outputPath ) const;
+                                    size_t _nJobs ) const;
+            void createJobsLogDir( const CPbsMng::jobID_t &_parent ) const;
+
+        private:
+            std::string m_server_logDir;
     };
 
 };

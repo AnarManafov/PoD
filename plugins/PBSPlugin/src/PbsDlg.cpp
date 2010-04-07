@@ -231,9 +231,6 @@ void CPbsDlg::on_btnSubmitClient_clicked()
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
 
-//        if ( !m_emailJobOutput )
-        m_JobSubmitter.setOutputPath( m_logDir );
-
         // submit gLite jobs
         m_JobSubmitter.start();
         m_ui.btnSubmitClient->setEnabled( false );
@@ -484,19 +481,7 @@ int CPbsDlg::getJobsCount() const
 //=============================================================================
 void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
-    try
-    {
-        m_logDir = _ud.getValueForKey( "server.logfile_dir" );
-//        stringstream ss;
-//        ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
-//        ss >> m_emailJobOutput;
-    }
-    catch( exception &e )
-    {
-        QMessageBox::critical( this,
-                               QString( PROJECT_NAME ),
-                               tr( e.what() ) );
-    }
+    m_JobSubmitter.setUserDefaults( _ud );
 }
 //=============================================================================
 Q_EXPORT_PLUGIN2( PBSJobManager, CPbsDlg );
