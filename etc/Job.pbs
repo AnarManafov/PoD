@@ -52,7 +52,7 @@ stagein()
 stageout()
 {
  eval upload_job_log=$($WRK_DIR/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --section lsf_plugin --key upload_job_log)
- eval LOG_DIR=$($WRK_DIR/pod-user-defaults-lite -c $WRK_DIR/etc/PoD.cfg --section server --key logfile_dir)/$PBS_JOBID
+ eval LOG_DIR=$($WRK_DIR/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --section server --key logfile_dir)/$PBS_JOBID
 
  if [ "$upload_job_log" = "yes" ]; then
 
