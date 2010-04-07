@@ -75,7 +75,6 @@ namespace pbs_plug
             void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
                                     size_t _nJobs,
                                     const std::string &_outputPath ) const;
-            void createJobsLogDir( const jobID_t &_parent, const std::string _logDir ) const;
     };
 
 };

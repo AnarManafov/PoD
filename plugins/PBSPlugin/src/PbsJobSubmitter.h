@@ -17,6 +17,8 @@
 //=============================================================================
 // gLite plug-in
 #include "PbsMng.h"
+// API
+#include <sys/stat.h>
 // STD
 #include <sstream>
 #include <stdexcept>
@@ -91,6 +93,8 @@ namespace pbs_plug
                 std::string hostname;
                 MiscCommon::get_hostname( &hostname );
 
+                m_outputPathWithoutServer = dir;
+
                 dir = hostname + ":" + dir;
 
                 m_outputPath = dir;
@@ -138,15 +142,18 @@ namespace pbs_plug
                     if( jobs.empty() )
                         throw std::runtime_error( "Bad jobs' parent index" );
 
-                    CPbsMng::jobID_t nLastJobID = jobs[0];
+                    CPbsMng::jobID_t lastJobID = jobs[0];
+
+                    // creating a log dir for the job
+                    createJobsLogDir( lastJobID );
 
                     emit changeProgress( 90 );
 
                     m_mutex.lock();
-                    m_parentJobs.insert( jobslist_t::value_type( nLastJobID, m_numberOfWrk ) );
+                    m_parentJobs.insert( jobslist_t::value_type( lastJobID, m_numberOfWrk ) );
                     m_mutex.unlock();
 
-                    emit newJob( nLastJobID );
+                    emit newJob( lastJobID );
                 }
                 catch( const std::exception &_e )
                 {
@@ -157,7 +164,16 @@ namespace pbs_plug
 
                 emit changeProgress( 100 );
             }
-
+            //=============================================================================
+            void createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
+            {
+                std::string path( m_outputPathWithoutServer + _parent );
+                // create a dir with read/write/search permissions for owner and group,
+                // and with read/search permissions for others
+                // TODO:Check for errors
+                mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+            }
+            //=============================================================================
             // serialization
             template<class Archive>
             void save( Archive & _ar, const unsigned int /*_version*/ ) const
@@ -180,6 +196,7 @@ namespace pbs_plug
             size_t m_numberOfWrk;
             std::string m_queue;
             std::string m_outputPath;
+            std::string m_outputPathWithoutServer;
             CPbsMng m_pbs;
     };
 
