@@ -20,7 +20,7 @@ SHARED_HOME=0
 ######################################################
 SCP=/usr/bin/scp
 UI_HOST=${PBS_O_HOST}
-UI_WRK_DIR=$POD_LOCATION
+UI_WRK_DIR=$POD_UI_LOCATION
 
 ###############################################################
 #
