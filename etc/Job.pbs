@@ -79,7 +79,7 @@ fi
 # create a working folder
 #
 ###############################################################
-WRK_DR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
+WRK_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
 echo "working directory: " $WRK_DIR
 cd $WRK_DIR || return 1
 ###############################################################
