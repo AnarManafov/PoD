@@ -138,12 +138,15 @@ logMsg "+++ START +++"
 WD=$(pwd)
 logMsg "Current working directory: $WD"
 
+user_defaults="$WD/pod-user-defaults-lite"
+
+
 # extract PoD worker package
 tar -xzvf pod-worker.tar.gz
 
 #Exporting PoD variables
 export POD_LOCATION=$WD
-eval POD_PROOFCFG_FILE=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key proof_cfg_path)
+eval POD_PROOFCFG_FILE=$($user_defaults -c $WD/PoD.cfg --section worker --key proof_cfg_path)
 export POD_PROOFCFG_FILE
 
 # Using eval to force variable substitution
@@ -199,7 +202,7 @@ esac
 RELEASE_REPO="http://pod.gsi.de/releases/add/"
 # ****************
 # ***** ROOT *****
-set_my_rootsys=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key set_my_rootsys)
+set_my_rootsys=$($user_defaults -c $WD/PoD.cfg --section worker --key set_my_rootsys)
 if [ "$set_my_rootsys" = "no" ]; then
     wget --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
     tar -xzvf $ROOT_ARC || clean_up 1
@@ -208,22 +211,11 @@ if [ "$set_my_rootsys" = "no" ]; then
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 else
-    eval ROOTSYS_FROM_CFG=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key my_rootsys)
+    eval ROOTSYS_FROM_CFG=$($user_defaults -c $WD/PoD.cfg --section worker --key my_rootsys)
     export ROOTSYS=$ROOTSYS_FROM_CFG
     export PATH=$ROOTSYS/bin:$PATH
     export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
-
-
-
-# ************************************************************************
-# H E R E    U S E R S   C A N   D E C L A  R E   A   C U S T O M   E N V I R O N M E N T
-# ************************************************************************
-
-
-# ************************************************************************
-
-
 
 
 # **********************
@@ -244,10 +236,10 @@ fi
 touch $POD_PROOFCFG_FILE
 
 # user defaults for ports
-XRD_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_min)
-XRD_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xrd_ports_range_max)
-XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
-XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults-lite -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
+XRD_PORTS_RANGE_MIN=$($user_defaults -c $WD/PoD.cfg --section worker --key xrd_ports_range_min)
+XRD_PORTS_RANGE_MAX=$($user_defaults -c $WD/PoD.cfg --section worker --key xrd_ports_range_max)
+XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $WD/PoD.cfg --section worker --key xproof_ports_range_min)
+XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $WD/PoD.cfg --section worker --key xproof_ports_range_max)
 
 # we try for 3 times to detect xrd
 # it is needed in case when several PoD workers are started in the same time on one machine
