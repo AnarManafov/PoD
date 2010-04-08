@@ -30,16 +30,15 @@ const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
 const char *const g_xpdCFG = "$POD_LOCATION/xpd.cf";
 //=============================================================================
-CAgentClient::CAgentClient( const SOptions_t &_data ):
+CAgentClient::CAgentClient(const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_worker.m_common ),
         m_id( 0 ),
-        m_isDirect( false )
-{
+        m_isDirect( false ){
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
     m_proofPort = _data.m_proofPort;
 
-    string xpd( g_xpdCFG );
+    string xpd( g_xpdCFG);
     smart_path( &xpd );
     if ( !m_proofStatus.readAdminPath( xpd, adminp_worker ) )
     {

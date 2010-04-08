@@ -34,8 +34,7 @@ namespace po = boost::program_options;
 //=============================================================================
 sig_atomic_t graceful_quit = 0;
 //=============================================================================
-namespace PROOFAgent
-{
+namespace PROOFAgent {
 //=============================================================================
     void signal_handler( int _SignalNumber )
     {
