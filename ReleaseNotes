@@ -2,6 +2,7 @@
 
 ## v.1.0.4 (not yet released)
 pod-user-defaults: adapt the project to be build also as a sub-project in PoD.
+pod-user-defaults: new options for PBS plug-in
 
 ## v.1.0.3 (2010-01-18)
 pod-user-defaults: updated user defaults configuration file - v0.3
