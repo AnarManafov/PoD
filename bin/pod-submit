@@ -94,7 +94,7 @@ if [ "$RMS" = "lsf" ]; then
   bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
 elif  [ "$RMS" = "pbs" ]; then
   # PBS
-  qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ $POD_LOCATION/etc/Job.pbs
+  qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
 fi
 
 exit 0

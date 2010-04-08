@@ -20,7 +20,9 @@ SHARED_HOME=0
 ######################################################
 SCP=/usr/bin/scp
 UI_HOST=${PBS_O_HOST}
+# $POD_UI_LOCATION and $POD_UI_LOG_LOCATION are set by the PBS plug-in
 UI_WRK_DIR=$POD_UI_LOCATION
+UI_LOG_DIR=$POD_UI_LOG_LOCATION/$PBS_JOBID
 
 ###############################################################
 #
@@ -51,8 +53,11 @@ stagein()
 ###############################################################
 stageout()
 {
+ echo "Staging the log files out..."
+
  eval upload_job_log=$($WRK_DIR/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --section lsf_plugin --key upload_job_log)
- eval LOG_DIR=$($WRK_DIR/pod-user-defaults-lite -c $WRK_DIR/PoD.cfg --section server --key logfile_dir)/$PBS_JOBID
+
+ echo "log dir: "$UI_LOG_DIR
 
  if [ "$upload_job_log" = "yes" ]; then
 
@@ -63,9 +68,9 @@ stageout()
     echo "Writing files in node's directory  ${WRK_DIR}"
 
     if [ $SHARED_HOME -eq 0 ]; then
-       $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$LOG_DIR/proof_log_$FILE_EXT.tgz
-       $SCP $WRK_DIR/xpd.log $UI_HOST:$LOG_DIR/xpd_$FILE_EXT.log
-       $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$LOG_DIR/pod-agent.client_$FILE_EXT.log
+       $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$UI_LOG_DIR/proof_log_$FILE_EXT.tgz
+       $SCP $WRK_DIR/xpd.log $UI_HOST:$UI_LOG_DIR/xpd_$FILE_EXT.log
+       $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$UI_LOG_DIR/pod-agent.client_$FILE_EXT.log
     else
        cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$FILE_EXT.tgz
        cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$FILE_EXT.log
