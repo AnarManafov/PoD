@@ -82,7 +82,7 @@ message(STATUS "  libs: ${Boost_LIBRARIES}")
 #
 ## PROOFAgent executable
 #
-include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${PROJECT_BINARY_DIR}/src src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
