@@ -107,7 +107,7 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     try
     {
         CPbsMng::queueInfoContainer_t queues;
-        m_JobSubmitter.getPBS().getQueues( &queues );
+        m_JobSubmitter.getQueues( &queues );
         CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
         CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
         for( ; iter != iter_end; ++iter )

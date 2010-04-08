@@ -114,7 +114,7 @@ namespace pbs_plug
     class CJobInfo
     {
         public:
-            CJobInfo( const CPbsMng &_pbs );
+            CJobInfo();
             virtual ~CJobInfo();
 
         public:
@@ -126,7 +126,6 @@ namespace pbs_plug
 
         private:
             JobsContainer_t m_Container;
-            const CPbsMng &m_pbs;
     };
 }
 #endif /* PBS_JOBINFO_H_ */

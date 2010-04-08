@@ -20,7 +20,7 @@
 using namespace std;
 using namespace pbs_plug;
 //=============================================================================
-CJobInfo::CJobInfo( const CPbsMng &_pbs ): m_pbs( _pbs )
+CJobInfo::CJobInfo( )
 {
 }
 //=============================================================================

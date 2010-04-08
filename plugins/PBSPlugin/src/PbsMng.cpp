@@ -230,14 +230,21 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // output path
     set_attr( attrib, ATTR_o, output.c_str() );
     // set additional environment variables
+    string env;
     // set POD_UI_LOCATION on the worker nodes
-    char *env = getenv( "POD_LOCATION" );
-    if( env != NULL )
+    char *loc = getenv( "POD_LOCATION" );
+    if( loc != NULL )
     {
-        string ui_loc( "POD_UI_LOCATION=" );
-        ui_loc += env;
-        set_attr( attrib, ATTR_v, ui_loc.c_str() );
+        env += "POD_UI_LOCATION=";
+        env += loc;
+        env += '\0';
     }
+    // set POD_UI_LOG_LOCATION variable on the worker nodes
+    env += "POD_UI_LOG_LOCATION=";
+    env += m_server_logDir;
+    env += '\0';
+
+    set_attr( attrib, ATTR_v, env.c_str() );
 }
 //=============================================================================
 string CPbsMng::jobStatus( const jobID_t &_id ) const

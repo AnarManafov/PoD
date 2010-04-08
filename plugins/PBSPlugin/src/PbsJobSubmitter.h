@@ -96,9 +96,13 @@ namespace pbs_plug
             {
                 m_pbs.killJob( _jobID );
             }
-            const CPbsMng &getPBS() const
+            void getQueues( CPbsMng::queueInfoContainer_t *_container ) const
             {
-                return m_pbs;
+                m_pbs.getQueues( _container );
+            }
+            void jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
+            {
+                m_pbs.jobStatusAllJobs( _container );
             }
 
         signals:

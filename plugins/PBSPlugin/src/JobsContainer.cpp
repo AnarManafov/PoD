@@ -24,7 +24,6 @@ using namespace pbs_plug;
 //=============================================================================
 CJobsContainer::CJobsContainer( CPbsJobSubmitter *_submitter ):
     m_submitter( _submitter ),
-    m_jobInfo( _submitter->getPBS() ),
     m_updateNumberOfJobs( true ),
     m_removeAllCompletedJobs( false ),
     m_updateInterval( 0 ),
@@ -231,7 +230,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     CPbsMng::jobInfoContainer_t all_available_jobs;
     try
     {
-        m_submitter->getPBS().jobStatusAllJobs( &all_available_jobs );
+        m_submitter->jobStatusAllJobs( &all_available_jobs );
     }
     catch( const exception &_e )
     {
