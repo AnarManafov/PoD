@@ -1,3 +1,6 @@
 [submodule "Include"]
 	path = Include
 	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/MiscCommon
+[submodule "plugins/gLitePlugin/glite-api-wrapper"]
+	path = plugins/gLitePlugin/glite-api-wrapper
+	url = ssh://anar@depc218.gsi.de/home/anar/GitRepository/PROOFonDemand/glite-api-wrapper

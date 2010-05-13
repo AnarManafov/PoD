@@ -350,10 +350,10 @@ void CMainDlg::idleTimeout()
     // Now, stopping all sensors
     switchAllSensors( false );
     stringstream ss;
-    ss << "There were no user interactions for the last "
+    ss << "You have been inactive for "
     << g_idleTimeout / 60000 << " minutes.\n"
-    << "To avoid the system overloading the console has switched monitoring and all sensors off.\n"
-    << "To continue to monitor, please close this dialog.";
+    << "The console has switched monitoring and all sensors off.\n"
+    << "Close this dialog to continue to monitor.";
     QMessageBox::information( this, PROJECT_NAME,
                               tr( ss.str().c_str() ) );
     // restarting all sensors here

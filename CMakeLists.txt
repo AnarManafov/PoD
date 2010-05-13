@@ -23,7 +23,8 @@ set(CPACK_PACKAGE_VERSION_PATCH "2a")
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 # Where to lookup modules
-set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
+set (CMAKE_MODULE_PATH
+    "${PROJECT_SOURCE_DIR};${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
 
 #
 # configure files
@@ -35,7 +36,6 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 # Options
 #
 option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
-option(BUILD_GLITE_PLUGIN "Build gLite plug-in" OFF)
 option(BUILD_TESTS "Build pod-console unit tests" OFF)
 
 set( MOC_HDRS
@@ -123,18 +123,8 @@ target_link_libraries (
 #
 # gLite plug-in
 #
-if (BUILD_GLITE_PLUGIN)
-    message(STATUS "Looking for GAW")
-    if ( "$ENV{GAW_LOCATION}" STREQUAL "" )
-        message(STATUS "Looking for GAW - not found.")
-        set(BUILD_GLITE_PLUGIN OFF)
-    else( "$ENV{GAW_LOCATION}" STREQUAL "" )
-        message(STATUS "Looking for GAW - found")
-    endif( "$ENV{GAW_LOCATION}" STREQUAL "" )
-endif (BUILD_GLITE_PLUGIN)
-
-if (BUILD_GLITE_PLUGIN)
-    # Build gLite plug-in
+find_package( gLite )
+IF (HAVE_gLite)
     add_subdirectory ( plugins/gLitePlugin )
     message (STATUS "Build gLite plug-in - YES")
 else (BUILD_GLITE_PLUGIN)
@@ -144,7 +134,7 @@ endif (BUILD_GLITE_PLUGIN)
 #
 # LSF Plug-in
 #
-find_package( LSF REQUIRED )
+find_package( LSF )
 if (LSF_FOUND)
     add_subdirectory ( plugins/LSFPlugin )
     message (STATUS "Build LSF plug-in - YES")
@@ -155,7 +145,7 @@ endif (LSF_FOUND)
 #
 # PBS Plug-in
 #
-find_package( PBS REQUIRED )
+find_package( PBS )
 if (PBS_FOUND)
     add_subdirectory ( plugins/PBSPlugin )
     message (STATUS "Build PBS plug-in - YES")
