@@ -10,21 +10,15 @@
 #                           2008-10-07
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2008 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2008-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( PAConsole_glite )
-
-
-#set(CPACK_PACKAGE_VERSION_MAJOR "0")
-#set(CPACK_PACKAGE_VERSION_MINOR "0")
-#set(CPACK_PACKAGE_VERSION_PATCH "1")
+project( pod-console-glite )
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
-
-link_directories("$ENV{GAW_LOCATION}/lib")
-
+# build glite-api-wrapper first
+add_subdirectory ( glite-api-wrapper )
 
 set( MOC_HDRS_glite
     ./src/GridDlg.h
@@ -51,29 +45,14 @@ QT4_WRAP_UI( UI_HDRS_glite ${UI_FILES_glite} )
 QT4_ADD_RESOURCES( RCS_SRCS_glite  ${UI_SRSC_glite} )
 
 
-add_library(PAConsole_glite SHARED ${SOURCE_FILES_glite} ${MOC_SRCS_glite} ${RCS_SRCS_glite} ${UI_HDRS_glite})
-
-set(CMAKE_CXX_FLAGS "$ENV{GAW_CPPFLAGS} -Wall")										
+add_library(pod-console-glite SHARED ${SOURCE_FILES_glite} ${MOC_SRCS_glite} ${RCS_SRCS_glite} ${UI_HDRS_glite})
+									
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} src )
 
-
 target_link_libraries (
-    PAConsole_glite 
+    pod-console-glite 
     glite-api-wrapper
 )
 
-install(TARGETS PAConsole_glite DESTINATION plugins)
+install(TARGETS pod-console-glite DESTINATION plugins)
 
-#
-# Package
-#
-
-# excluding build directory
-# excluding svn files and Eclipse project files
-#set(CPACK_SOURCE_IGNORE_FILES "${CMAKE_BINARY_DIR}/*"
-#                              ".svn"
-#                              ".project"
-#                              ".cproject"
-#                              ".settings")
-#message("CPACK_SOURCE_IGNORE_FILES = ${CPACK_SOURCE_IGNORE_FILES}")
-#include(CPack)

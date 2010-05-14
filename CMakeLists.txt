@@ -26,6 +26,12 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 set (CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR};${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
 
+# Install directory
+if ( NOT $ENV{POD_LOCATION} STREQUAL "" )
+  set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH
+      "Install path prefix, prepended onto install directories." FORCE)
+endif ( NOT $ENV{POD_LOCATION} STREQUAL "" )
+
 #
 # configure files
 # 
@@ -37,6 +43,9 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 #
 option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
 option(BUILD_TESTS "Build pod-console unit tests" OFF)
+option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
+option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
+option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h
@@ -123,39 +132,45 @@ target_link_libraries (
 #
 # gLite plug-in
 #
-find_package( gLite )
-IF (HAVE_gLite)
-    add_subdirectory ( plugins/gLitePlugin )
-    message (STATUS "Build gLite plug-in - YES")
-else (BUILD_GLITE_PLUGIN)
-    message (STATUS "Build gLite plug-in - NO")
+if( BUILD_GLITE_PLUGIN )
+  find_package( gLite )
+  IF (HAVE_gLite)
+     add_subdirectory ( plugins/gLitePlugin )
+     message (STATUS "Build gLite plug-in - YES")
+  else (HAVE_gLite)
+     message (STATUS "Build gLite plug-in - NO")
+  endif (HAVE_gLite)
 endif (BUILD_GLITE_PLUGIN)
 
 #
-# LSF Plug-in
+# LSF plug-in
 #
-find_package( LSF )
-if (LSF_FOUND)
-    add_subdirectory ( plugins/LSFPlugin )
-    message (STATUS "Build LSF plug-in - YES")
-else (LSF_FOUND)
-    message (STATUS "Build LSF plug-in - NO")    
-endif (LSF_FOUND)   
+if( BUILD_LSF_PLUGIN )
+  find_package( LSF )
+  if (LSF_FOUND)
+     add_subdirectory ( plugins/LSFPlugin )
+     message (STATUS "Build LSF plug-in - YES")
+  else (LSF_FOUND)
+     message (STATUS "Build LSF plug-in - NO")    
+  endif (LSF_FOUND)
+endif (BUILD_LSF_PLUGIN)
 
 #
-# PBS Plug-in
+# PBS plug-in
 #
-find_package( PBS )
-if (PBS_FOUND)
-    add_subdirectory ( plugins/PBSPlugin )
-    message (STATUS "Build PBS plug-in - YES")
-    if (BUILD_TESTS)
-       add_subdirectory ( plugins/PBSPlugin/tests )
-       message (STATUS "Build tests of pbs plug-in")
-    endif (BUILD_TESTS)
-else (PBS_FOUND)
-    message (STATUS "Build PBS plug-in - NO")    
-endif (PBS_FOUND)
+if( BUILD_PBS_PLUGIN )
+  find_package( PBS )
+  if (PBS_FOUND)
+     add_subdirectory ( plugins/PBSPlugin )
+     message (STATUS "Build PBS plug-in - YES")
+     if (BUILD_TESTS)
+        add_subdirectory ( plugins/PBSPlugin/tests )
+        message (STATUS "Build tests of pbs plug-in")
+     endif (BUILD_TESTS)
+  else (PBS_FOUND)
+     message (STATUS "Build PBS plug-in - NO")    
+  endif (PBS_FOUND)
+endif( BUILD_PBS_PLUGIN )
 
 #
 # Alien Plug-in
