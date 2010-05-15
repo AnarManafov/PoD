@@ -47,7 +47,8 @@ QT4_ADD_RESOURCES( RCS_SRCS_glite  ${UI_SRSC_glite} )
 
 add_library(pod-console-glite SHARED ${SOURCE_FILES_glite} ${MOC_SRCS_glite} ${RCS_SRCS_glite} ${UI_HDRS_glite})
 									
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} src glite-api-wrapper/src )
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} src glite-api-wrapper/src ${GAW_REQUIRED_INCLUDES})
+add_definitions(-DWANT_CLASSAD_NAMESPACE)
 
 target_link_libraries (
     pod-console-glite 

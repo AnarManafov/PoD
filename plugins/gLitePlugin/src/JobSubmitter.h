@@ -27,7 +27,7 @@
 // MiscCommon
 #include "gLiteHelper.h"
 // GAW
-#include "glite-api-wrapper/gLiteAPIWrapper.h"
+#include "gLiteAPIWrapper.h"
 //=============================================================================
 class CJobSubmitter: public QThread
 {
