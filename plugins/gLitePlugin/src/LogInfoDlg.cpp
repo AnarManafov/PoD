@@ -15,7 +15,7 @@
 // STD
 #include <sstream>
 // GAW
-#include "glite-api-wrapper/gLiteAPIWrapper.h"
+#include "gLiteAPIWrapper.h"
 // Qt
 #include <QFileDialog>
 #include <QTextStream>

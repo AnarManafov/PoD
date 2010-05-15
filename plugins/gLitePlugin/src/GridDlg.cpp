@@ -18,7 +18,7 @@
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 // GAW
-#include "glite-api-wrapper/WMPEndpoint.h"
+#include "WMPEndpoint.h"
 // MiscCommon
 #include "JDLHelper.h"
 #include "SysHelper.h"
@@ -36,7 +36,7 @@ using namespace glite_api_wrapper;
 // default JDL file
 const LPCTSTR g_szDefaultJDL = "$POD_LOCATION/etc/gLitePROOF.jdl";
 // configuration file of the plug-in
-const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/PAConsole_gLite.xml.cfg";
+const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console-gLite.xml.cfg";
 //=============================================================================
 typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
 //=============================================================================
