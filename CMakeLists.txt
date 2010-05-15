@@ -27,10 +27,13 @@ set(CPACK_PACKAGE_VERSION_PATCH "4a")
 #
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
-# Install directory
-if ( NOT $ENV{POD_LOCATION} STREQUAL "" )
-set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
-endif ( NOT $ENV{POD_LOCATION} STREQUAL "" )
+if( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
+  # Install directory
+  if ( DEFINED ENV{POD_LOCATION} )
+     set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH
+          "Install path prefix, prepended onto install directories." FORCE)
+  endif ( DEFINED ENV{POD_LOCATION} )
+endif( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
 
 #
 # Where to lookup modules
