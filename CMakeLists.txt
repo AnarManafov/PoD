@@ -73,9 +73,6 @@ SET(POD_ETC_FILES
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
     )
 
-
-include_directories( app/MiscCommon )
-
 if( NOT GSI_BUILD )
   add_subdirectory ( app/pod-agent )
   add_subdirectory ( app/pod-console )
