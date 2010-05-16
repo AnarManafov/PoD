@@ -24,7 +24,7 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH
-    "${PROJECT_SOURCE_DIR};${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
+    "${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
 
 if( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
   # Install directory
