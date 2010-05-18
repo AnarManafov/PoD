@@ -27,6 +27,7 @@ IF (UNIX)
 
     FIND_PATH(PBS_INCLUDE_DIR pbs_ifl.h
       ${PBS_PREFIX}/include
+      $ENV{PBS_PREFIX}/include
       /usr/local/include
       /usr/include
     )
@@ -34,6 +35,7 @@ IF (UNIX)
     FIND_LIBRARY(PBS_TORQUE_LIB
       NAMES torque
       PATHS ${PBS_PREFIX}/lib
+            $ENV{PBS_PREFIX}/lib
             /usr/local/lib
             /usr/lib
     )
@@ -41,6 +43,7 @@ IF (UNIX)
     FIND_LIBRARY(PBS_PBS_LIB
       NAMES pbs
       PATHS ${PBS_PREFIX}/lib
+            $ENV{PBS_PREFIX}/lib
             /usr/local/lib
             /usr/lib
     )
