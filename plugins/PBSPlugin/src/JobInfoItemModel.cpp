@@ -12,7 +12,9 @@
 
         Copyright (c) 2010 Anar Manafov. All rights reserved.
 *************************************************************************/
-// vnetstat
+// STD
+#include <iostream>
+// 
 #include "JobInfoItemModel.h"
 //=============================================================================
 using namespace std;
