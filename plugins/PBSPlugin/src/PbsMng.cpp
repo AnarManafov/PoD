@@ -399,12 +399,17 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
         {
             if( NULL == a->name )
                 break;
-
+           
             // job number limit
             if( !strcmp( a->name, ATTR_maxrun ) )
             {
                 istringstream ss( a->value );
                 ss >> info.m_maxJobs;
+                // I think, that 0 means unset,
+                // therefore I set it to maximum in this case
+                if( 0 == info.m_maxJobs )
+                  info.m_maxJobs = 1000; // TODO: remove a magic number
+
                 break;
             }
 
