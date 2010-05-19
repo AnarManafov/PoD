@@ -81,8 +81,7 @@ fi
 
 
 EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
-LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
-
+eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
 
 if [ "$RMS" = "lsf" ]; then
   # LSF 
@@ -94,7 +93,12 @@ if [ "$RMS" = "lsf" ]; then
   bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
 elif  [ "$RMS" = "pbs" ]; then
   # PBS
-  qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
+  PBS_SHARED_HOME=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key pbs_plugin.shared_home)
+  if [ $PBS_SHARED_HOME -eq 0 ]; then
+    qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
+  else
+    qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
+  fi
 fi
 
 exit 0
