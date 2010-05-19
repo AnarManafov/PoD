@@ -435,7 +435,7 @@ void CMainDlg::setEnvironment( char **envp )
     for( ; iter != iter_end; ++iter )
     {
         // set the environment
-        ( *iter )->setEnvironment( m_envp );
+        ( *iter )->setEnvironment( ss.str() );
     }
 }
 
