@@ -442,26 +442,29 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
     // we use string as a parameter in case we decide to change the algorithms
     switch( _status[0] )
     {
-        case 'T':
+        case 'T': // Job is in transition (being moved to a new location)
             return "transit";
-        case 'Q':
+        case 'Q': // Job is queued, eligible to run or be routed
             return "queued";
-        case 'H':
+        case 'H': // Job is held
             return "held";
-        case 'W':
+        case 'W': // Job is waiting for its requested execution time to be reached,
+                  // or the job’s specified stagein request has failed for some reason
             return "waiting";
-        case 'R':
+        case 'R': // Job is running
             return "running";
-        case 'E':
+        case 'E': // Job is exiting after having run
             return "exiting";
         case 'C':
             return "complete";
-        case 'B':
+        case 'B': // Job arrays only: job array has started
             return "started";
-        case 'S':
+        case 'S': // Job is suspended by server
             return "suspended";
-        case 'U':
-            return "suspended by keyboard activity"
+        case 'U': // Job is suspended due to workstation becoming busy
+            return "suspended by keyboard activity";
+        case 'X': // Subjobs only; subjob is finished (expired.)
+              return "finished";
         default:
             return "unknown";
     }
