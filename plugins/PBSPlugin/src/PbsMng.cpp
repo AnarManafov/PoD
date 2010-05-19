@@ -256,7 +256,7 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // if the home is shared
     if( m_pbs_sharedHome )
     {
-      env += ', ';
+      env += ',';
       env += m_envp;
     }
     
