@@ -95,10 +95,20 @@ elif  [ "$RMS" = "pbs" ]; then
   # PBS
   PBS_SHARED_HOME=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key pbs_plugin.shared_home)
   if [ $PBS_SHARED_HOME -eq 0 ]; then
-    qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
+    jobid=$(qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs)
   else
-    qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs
+    jobid=$(qsub -N pod -q $QUEUE -t 1-$NUM_WRK -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs)
   fi
+# we need to create a logs output dir
+  stat=$?
+  if test $stat -eq 0; then
+    echo "Job ID: $jobid"
+    PARENT_PBS_JOBID=$(echo $jobid | egrep -o '^[[:digit:]]*')
+    mkdir -p  $LOG_DIR/$PARENT_PBS_JOBID
+  else
+    echo "Error submitting job. $jobid"
+  fi
+  
 fi
 
 exit 0

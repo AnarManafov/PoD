@@ -20,8 +20,17 @@ UI_HOST=${PBS_O_HOST}
 # $POD_UI_LOCATION and $POD_UI_LOG_LOCATION are set by the PBS plug-in
 UI_WRK_DIR=$POD_UI_LOCATION
 # PARENT_PBS_JOBID is just a PBS_JOBID without an "-ARRAY_INDEX" part
-PARENT_PBS_JOBID=$(echo $PBS_JOBID | sed 's/-[0-9]*//g')
+# We consider, that the first digits up to the first non-digit character is a parent index.
+PARENT_PBS_JOBID=$(echo $PBS_JOBID | egrep -o '^[[:digit:]]*')
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$PARENT_PBS_JOBID
+
+# Subjob index in job array:
+# in PBS we have $PBS_ARRAYID
+# in PBS Pro we have $PBS_ARRAY_INDEX
+ARRAYID=$PBS_ARRAYID
+if [ -z  $ARRAYID ]; then
+ ARRAYID=$PBS_ARRAY_INDEX
+fi
 
 ###############################################################
 #
@@ -58,18 +67,14 @@ stageout()
     echo "Staging the log files out..."
     echo "log dir: "$UI_LOG_DIR
 
-    echo ""
-    echo "Transferring files from the compute node to the server"
-    echo "Writing files in node's directory  ${WRK_DIR}"
-
     if [ "$POD_PBS_SHARED_HOME" = "no" ]; then
-       $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$UI_LOG_DIR/proof_log.$PBS_ARRAYID.tgz
-       $SCP $WRK_DIR/xpd.log $UI_HOST:$UI_LOG_DIR/xpd.$PBS_ARRAYID.log
-       $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$UI_LOG_DIR/pod-agent.client.$PBS_ARRAYID.log
+       $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$UI_LOG_DIR/proof_log.$ARRAYID.tgz
+       $SCP $WRK_DIR/xpd.log $UI_HOST:$UI_LOG_DIR/xpd.$ARRAYID.log
+       $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$UI_LOG_DIR/pod-agent.client.$ARRAYID.log
     else
-       cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log.$PBS_ARRAYID.tgz
-       cp $WRK_DIR/xpd.log $LOG_DIR/xpd.$PBS_ARRAYID.log
-       cp $WRK_DIR/pod-agent.client.log $LOG_DIR/pod-agent.client.$PBS_ARRAYID.log 
+       cp $WRK_DIR/proof_log.tgz $UI_LOG_DIR/proof_log.$ARRAYID.tgz
+       cp $WRK_DIR/xpd.log $UI_LOG_DIR/xpd.$ARRAYID.log
+       cp $WRK_DIR/pod-agent.client.log $UI_LOG_DIR/pod-agent.client.$ARRAYID.log 
     fi
 fi
 }
