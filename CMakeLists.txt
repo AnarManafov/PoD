@@ -17,10 +17,10 @@ project( PoD )
 #
 # Version
 #
-set(VERSION "2.1.4b")
+set(VERSION "2.1.4c")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "4b")
+set(CPACK_PACKAGE_VERSION_PATCH "4c")
 
 #
 # Check if cmake has the required version
