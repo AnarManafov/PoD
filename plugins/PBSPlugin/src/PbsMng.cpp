@@ -251,6 +251,14 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // set POD_PBS_SHARED_HOME variable on the worker nodes
     env += "POD_PBS_SHARED_HOME=";
     env += m_pbs_sharedHome? "yes": "no";
+
+    // export all env. variables of the process to jobs
+    // if the home is shared
+    if( m_pbs_sharedHome )
+    {
+      env += ', ';
+      env += m_envp;
+    }
     
     set_attr( attrib, ATTR_v, env.c_str() );
 }
@@ -486,3 +494,9 @@ void CPbsMng::createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
     // TODO:Check for errors
     mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 }
+//=============================================================================
+void CPbsMng::setEnvironment( const std::string &_envp )
+{
+  m_envp = _envp;
+}
+

@@ -484,4 +484,20 @@ void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
     m_JobSubmitter.setUserDefaults( _ud );
 }
 //=============================================================================
+void CPbsDlg::setEnvironment(char **envp)
+{
+   // Setting a comma-separated list
+   char** env;
+   stringstream ss;
+   for (env = envp; *env != 0; env++)
+   {
+      if( !ss.str().empty() )
+        ss << ',';
+      ss << *env;    
+   }
+
+   m_JobSubmitter.setEnvironment( ss.str() );
+}
+
+//=============================================================================
 Q_EXPORT_PLUGIN2( PBSJobManager, CPbsDlg );

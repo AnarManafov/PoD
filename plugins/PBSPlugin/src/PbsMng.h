@@ -73,6 +73,8 @@ namespace pbs_plug
             static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
             static bool isParentID( const jobID_t &_parent );
             static bool isJobComplete( const std::string &_status );
+            void setEnvironment( const std::string &_envp );
+
         private:
             void cleanAttr( attrl **attrib ) const;
             void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
@@ -82,6 +84,7 @@ namespace pbs_plug
         private:
             std::string m_server_logDir;
             bool m_pbs_sharedHome;
+            std::string m_envp;
     };
 
 };

@@ -17,12 +17,13 @@
 // Our
 #include "MainDlg.h"
 //=============================================================================
-int main( int argc, char **argv )
+int main( int argc, char **argv, char** envp )
 {
     Q_INIT_RESOURCE( paconsole );
 
     QApplication app( argc, argv );
     CMainDlg dlg;
+    dlg.setEnvironment( envp );
     dlg.show();
     return app.exec();
 }

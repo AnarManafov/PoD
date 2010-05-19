@@ -104,6 +104,10 @@ namespace pbs_plug
             {
                 m_pbs.jobStatusAllJobs( _container );
             }
+            void setEnvironment( const std::string &_envp )
+            {
+              m_pbs.setEnvironment( _envp );
+            }
 
         signals:
             void changeProgress( int _Val );

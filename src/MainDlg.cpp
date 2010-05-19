@@ -140,6 +140,8 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     {
         // setting user defaults for each plug-in
         ( *iter )->setUserDefaults( user_defaults );
+        // set the environment
+        ( *iter )->setEnvironment( m_envp );
 
         QWidget *w = ( *iter )->getWidget();
         if ( !w )
