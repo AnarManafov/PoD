@@ -456,6 +456,12 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
             return "exiting";
         case 'C':
             return "complete";
+        case 'B':
+            return "started";
+        case 'S':
+            return "suspended";
+        case 'U':
+            return "suspended by keyboard activity"
         default:
             return "unknown";
     }
