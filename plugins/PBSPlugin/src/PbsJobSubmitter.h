@@ -106,7 +106,7 @@ namespace pbs_plug
             }
             void setEnvironment( const std::string &_envp )
             {
-              m_pbs.setEnvironment( _envp );
+                m_pbs.setEnvironment( _envp );
             }
 
         signals:

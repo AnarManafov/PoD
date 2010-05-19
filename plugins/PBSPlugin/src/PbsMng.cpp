@@ -85,7 +85,7 @@ void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
-        
+
         stringstream ss;
         ss << _ud.getValueForKey( "pbs_plugin.shared_home" );
         ss >> m_pbs_sharedHome;
@@ -247,19 +247,19 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     env += "POD_UI_LOG_LOCATION=";
     env += m_server_logDir;
     env += ',';
-    
+
     // set POD_PBS_SHARED_HOME variable on the worker nodes
     env += "POD_PBS_SHARED_HOME=";
-    env += m_pbs_sharedHome? "yes": "no";
+    env += m_pbs_sharedHome ? "yes" : "no";
 
     // export all env. variables of the process to jobs
     // if the home is shared
     if( m_pbs_sharedHome )
     {
-      env += ',';
-      env += m_envp;
+        env += ',';
+        env += m_envp;
     }
-    
+
     set_attr( attrib, ATTR_v, env.c_str() );
 }
 //=============================================================================
@@ -399,7 +399,7 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
         {
             if( NULL == a->name )
                 break;
-           
+
             // job number limit
             if( !strcmp( a->name, ATTR_maxrun ) )
             {
@@ -408,7 +408,7 @@ void CPbsMng::getQueues( queueInfoContainer_t *_container ) const
                 // I think, that 0 means unset,
                 // therefore I set it to maximum in this case
                 if( 0 == info.m_maxJobs )
-                  info.m_maxJobs = 1000; // TODO: remove a magic number
+                    info.m_maxJobs = N_MAX_JOBS;
 
                 break;
             }
@@ -462,7 +462,7 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
         case 'H': // Job is held
             return "held";
         case 'W': // Job is waiting for its requested execution time to be reached,
-                  // or the job’s specified stagein request has failed for some reason
+            // or the job’s specified stagein request has failed for some reason
             return "waiting";
         case 'R': // Job is running
             return "running";
@@ -477,7 +477,7 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
         case 'U': // Job is suspended due to workstation becoming busy
             return "suspended by keyboard activity";
         case 'X': // Subjobs only; subjob is finished (expired.)
-              return "finished";
+            return "finished";
         default:
             return "unknown";
     }
@@ -502,6 +502,6 @@ void CPbsMng::createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
 //=============================================================================
 void CPbsMng::setEnvironment( const std::string &_envp )
 {
-  m_envp = _envp;
+    m_envp = _envp;
 }
 

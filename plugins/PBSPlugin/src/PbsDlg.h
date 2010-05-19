@@ -46,7 +46,7 @@ namespace pbs_plug
             void startUpdTimer( int _JobStatusUpdInterval, bool _hideMode );
             int getJobsCount() const;
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
-            void setEnvironment(char **envp);
+            void setEnvironment( const std::string &_envp );
 
             void setAllDefault();
 

@@ -26,6 +26,8 @@ struct attrl;
 
 namespace pbs_plug
 {
+    const int N_MAX_JOBS = 999;
+
     struct SNativeJobInfo
     {
         std::string m_status;
@@ -33,6 +35,8 @@ namespace pbs_plug
 
     struct SQueueInfo
     {
+        SQueueInfo(): m_maxJobs( N_MAX_JOBS )
+        {}
         std::ostream& print( std::ostream &_stream ) const;
 
         // the queue name

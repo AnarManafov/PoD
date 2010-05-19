@@ -40,10 +40,7 @@ class CMainDlg: public QDialog
         CMainDlg( QDialog *_Parent = NULL );
         virtual ~CMainDlg();
 
-        void setEnvironment(char **envp )
-        {
-          m_envp = envp;
-        }
+        void setEnvironment( char **envp );
 
     signals:
         void numberOfJobs( int );
@@ -83,7 +80,6 @@ class CMainDlg: public QDialog
         int m_CurrentPage;
         PluginVec_t m_plugins;
         QTimer *m_idleTimer;
-        char **m_envp;
 };
 
 BOOST_CLASS_VERSION( CMainDlg, 4 )

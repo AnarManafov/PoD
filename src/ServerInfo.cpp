@@ -25,21 +25,21 @@ using namespace MiscCommon;
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
     vectorPid_t pids = getprocbyname( _Srv );
-    if ( pids.empty() )
+    if( pids.empty() )
         return 0;
 
     vectorPid_t::const_iterator iter = pids.begin();
     vectorPid_t::const_iterator iter_end = pids.end();
 
     // checking that the process is running under current's user id
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
         CProcStatus p;
         p.Open( *iter );
         istringstream ss( p.GetValue( "Uid" ) );
         uid_t realUid( 0 );
         ss >> realUid;
-        if ( getuid() == realUid )
+        if( getuid() == realUid )
             return *iter;
     }
     return 0;
@@ -49,7 +49,7 @@ bool CServerInfo::IsRunning( bool _check_all ) const
 {
     const pid_t pidXrootD = IsXROOTDRunning();
     const pid_t pidPA = IsPROOFAgentRunning();
-    if ( _check_all )
+    if( _check_all )
         return ( pidXrootD && pidPA );
     else
         return ( pidXrootD || pidPA );
@@ -70,13 +70,13 @@ string CServerInfo::GetXROOTDInfo() const
     const pid_t pid = IsXROOTDRunning();
 
     stringstream spid;
-    if ( pid )
+    if( pid )
         spid << " <" << pid << ">";
 
     stringstream ss;
     ss
-    << "xrootd" << spid.str() << ": is "
-    << ( pid ? "running" : "NOT RUNNING" );
+            << "xrootd" << spid.str() << ": is "
+            << ( pid ? "running" : "NOT RUNNING" );
 
     return ss.str();
 }
@@ -86,17 +86,17 @@ string CServerInfo::GetPAInfo() const
     const pid_t pid = IsPROOFAgentRunning();
 
     stringstream spid;
-    if ( pid )
+    if( pid )
         spid << " <" << pid << ">";
 
     stringstream ss;
     ss
-    << "pod-agent" << spid.str() << ": is "
-    << ( pid ? "running" : "NOT RUNNING" );
+            << "pod-agent" << spid.str() << ": is "
+            << ( pid ? "running" : "NOT RUNNING" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
-    if ( !ver.empty() )
+    if( !ver.empty() )
         ss << "\n" << "pod-agent version:\n" << ver;
 
     return ss.str();

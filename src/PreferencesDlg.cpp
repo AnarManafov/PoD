@@ -18,8 +18,8 @@
 #include "PreferencesDlg.h"
 //=============================================================================
 CPreferencesDlg::CPreferencesDlg( QWidget *_parent ):
-        QWidget( _parent ),
-        m_JobStatusUpdInterval( 10 ) // in seconds
+    QWidget( _parent ),
+    m_JobStatusUpdInterval( 10 ) // in seconds
 {
     m_ui.setupUi( this );
 
