@@ -10,7 +10,7 @@
                             2007-05-23
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007 GSI GridTeam. All rights reserved.
+        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
 // Qt
 #include <QApplication>

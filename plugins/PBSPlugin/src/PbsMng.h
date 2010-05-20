@@ -78,12 +78,13 @@ namespace pbs_plug
             static bool isParentID( const jobID_t &_parent );
             static bool isJobComplete( const std::string &_status );
             void setEnvironment( const std::string &_envp );
+            std::string getCleanParentID( const jobID_t &_id ) const;
 
         private:
             void cleanAttr( attrl **attrib ) const;
             void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
                                     size_t _nJobs ) const;
-            void createJobsLogDir( const CPbsMng::jobID_t &_parent ) const;
+            void createJobsLogDir( const jobID_t &_parent ) const;
 
         private:
             std::string m_server_logDir;

@@ -429,7 +429,7 @@ void CMainDlg::setEnvironment( char **envp )
         ss << *env;
     }
 
-    // ------>>>>> PLUG-INS
+    // enumerate plug-ins
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for( ; iter != iter_end; ++iter )

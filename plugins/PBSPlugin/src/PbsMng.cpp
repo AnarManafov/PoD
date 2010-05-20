@@ -50,13 +50,13 @@ ostream &SQueueInfo::print( ostream &_stream ) const
     return _stream;
 }
 //=============================================================================
-class pbs_error: public std::exception
+class pbs_error: public exception
 {
     public:
-        explicit pbs_error( const std::string &_ErrorPrefix )
+        explicit pbs_error( const string &_ErrorPrefix )
         {
             m_errno = pbs_errno;
-            std::stringstream ss;
+            stringstream ss;
             if( !_ErrorPrefix.empty() )
                 ss << _ErrorPrefix << " ";
             ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
@@ -74,7 +74,7 @@ class pbs_error: public std::exception
         }
 
     private:
-        std::string m_Msg;
+        string m_Msg;
         int m_errno;
 };
 //=============================================================================
@@ -95,14 +95,26 @@ void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
     }
 }
 //=============================================================================
-bool CPbsMng::isValid( const CPbsMng::jobID_t &_id )
+bool CPbsMng::isValid( const jobID_t &_id )
 {
     return !_id.empty();
 }
 //=============================================================================
+string CPbsMng::getCleanParentID( const jobID_t &_id ) const
+{
+    // JobID in OpenPBS: PARENTID.server.fqdn PARENTID-ARRAYINDEX.server.fqdn
+    // JobID in PBSPro: PARENTID[].server.fqdn PARENTID[ARRAYINDEX].server.fqdn
+    // Clean ParentID is the PARENTID parent of these ids.
+    jobID_t::size_type pos = _id.find_first_of( ".[" );
+    if( jobID_t::npos == pos )
+        return _id;
+
+    return _id.substr( 0, pos );
+}
+//=============================================================================
 bool CPbsMng::isParentID( const jobID_t &_parent )
 {
-    jobID_t::size_type pos = _parent.find( '.' );
+    jobID_t::size_type pos = _parent.find_first_of( ".[" );
     if( jobID_t::npos == pos )
         return false; // Bad id?
 
@@ -113,10 +125,9 @@ bool CPbsMng::isParentID( const jobID_t &_parent )
 CPbsMng::jobID_t CPbsMng::generateArrayJobID( const jobID_t &_parent,
                                               size_t _idx )
 {
-    // pbs' job id has a format XXX.SERVER
-    // to get an array ID we need to add "-index", to get:
-    // XXX-INDEX.SERVER
-    jobID_t::size_type pos = _parent.find( '.' );
+    // to get an array ID we need to add "-index" to a parentID, to get:
+    // SERVERID-INDEX.SERVER
+    jobID_t::size_type pos = _parent.find_first_of( ".[" );
     if( jobID_t::npos == pos )
         return _parent;
 
@@ -216,8 +227,8 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // PBS needs a fullpath including an UI host name
     // Currently we assume that our UI is the machine where
     // pod-console has been started
-    std::string output( m_server_logDir );
-    std::string hostname;
+    string output( m_server_logDir );
+    string hostname;
     MiscCommon::get_hostname( &hostname );
     output = hostname + ":" + output;
 
@@ -446,7 +457,7 @@ void CPbsMng::killJob( const jobID_t &_id ) const
     pbs_disconnect( connect );
 }
 //=============================================================================
-std::string CPbsMng::jobStatusToString( const std::string &_status )
+string CPbsMng::jobStatusToString( const string &_status )
 {
     if( _status.empty() )
         return "unknown";
@@ -483,7 +494,7 @@ std::string CPbsMng::jobStatusToString( const std::string &_status )
     }
 }
 //=============================================================================
-bool CPbsMng::isJobComplete( const std::string &_status )
+bool CPbsMng::isJobComplete( const string &_status )
 {
     if( _status.empty() )
         return false;
@@ -493,15 +504,14 @@ bool CPbsMng::isJobComplete( const std::string &_status )
 //=============================================================================
 void CPbsMng::createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
 {
-    std::string path( m_server_logDir + _parent );
+    string path( m_server_logDir + getCleanParentID( _parent ) );
     // create a dir with read/write/search permissions for owner and group,
     // and with read/search permissions for others
     // TODO:Check for errors
     mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 }
 //=============================================================================
-void CPbsMng::setEnvironment( const std::string &_envp )
+void CPbsMng::setEnvironment( const string &_envp )
 {
     m_envp = _envp;
 }
-
