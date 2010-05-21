@@ -89,12 +89,13 @@ QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
 #
 # search for Boost
 #
-
+message( STATUS "Looking for BOOST" )
 find_package( Boost REQUIRED COMPONENTS serialization program_options)
-
-message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
-message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
-message(STATUS "  libs: ${Boost_LIBRARIES}")
+if(Boost_FOUND)
+  message( STATUS "Looking for BOOST - YES" )
+else(Boost_FOUND)
+  message( FATAL_ERROR "Looking for BOOST - NO" )
+endif(Boost_FOUND)
 
 #
 # Add macros
@@ -135,12 +136,15 @@ target_link_libraries (
 # gLite plug-in
 #
 if( BUILD_GLITE_PLUGIN )
+  message (STATUS "Looking for gLite API")
   find_package( gLite )
   IF (HAVE_gLite)
+     message (STATUS "Looking for gLite API - YES")
+     message (STATUS "Build gLite plug-in")
      add_subdirectory ( plugins/gLitePlugin )
      message (STATUS "Build gLite plug-in - YES")
   else (HAVE_gLite)
-     message (STATUS "Build gLite plug-in - NO")
+      message (STATUS "Looking for gLite API - NO")
   endif (HAVE_gLite)
 endif (BUILD_GLITE_PLUGIN)
 
@@ -149,11 +153,14 @@ endif (BUILD_GLITE_PLUGIN)
 #
 if( BUILD_LSF_PLUGIN )
   find_package( LSF )
+  message (STATUS "Looking for LSF API")
   if (LSF_FOUND)
+     message (STATUS "Looking for LSF API - YES")
+     message (STATUS "Build LSF plug-in - YES")
      add_subdirectory ( plugins/LSFPlugin )
      message (STATUS "Build LSF plug-in - YES")
   else (LSF_FOUND)
-     message (STATUS "Build LSF plug-in - NO")    
+     message (STATUS "Looking for LSF API - NO")
   endif (LSF_FOUND)
 endif (BUILD_LSF_PLUGIN)
 
@@ -161,8 +168,11 @@ endif (BUILD_LSF_PLUGIN)
 # PBS plug-in
 #
 if( BUILD_PBS_PLUGIN )
+  message (STATUS "Looking for PBS API")
   find_package( PBS )
   if (PBS_FOUND)
+     message (STATUS "Looking for PBS API - YES")
+     message (STATUS "Build PBS plug-in")
      add_subdirectory ( plugins/PBSPlugin )
      message (STATUS "Build PBS plug-in - YES")
      if (BUILD_TESTS)
@@ -170,7 +180,7 @@ if( BUILD_PBS_PLUGIN )
         message (STATUS "Build tests of pbs plug-in")
      endif (BUILD_TESTS)
   else (PBS_FOUND)
-     message (STATUS "Build PBS plug-in - NO")    
+     message (STATUS "Looking for PBS API - NO") 
   endif (PBS_FOUND)
 endif( BUILD_PBS_PLUGIN )
 

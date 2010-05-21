@@ -18,6 +18,7 @@ project( pod-console-glite )
 cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # build glite-api-wrapper first
+message( STATUS " ***** Configuring glite-api-wrapper *****" )
 add_subdirectory ( glite-api-wrapper )
 
 set( MOC_HDRS_glite
