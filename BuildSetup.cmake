@@ -19,3 +19,12 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #
 #set( GSI_BUILD ON CACHE BOOL "Build a GSI specific version" FORCE )
 
+# gLite plug-in
+#set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
+
+# LSF plug-in
+#set( BUILD_LSF_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
+#set( LSF_PREFIX "/home/anar/LSF" CACHE STRING "LSF prefix" FORCE)
+
+# PBS plug-in
+#set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
