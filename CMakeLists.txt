@@ -52,13 +52,13 @@ set( SOURCE_FILES
 #
 # search for Boost
 #
-
+message( STATUS "Looking for BOOST" )
 find_package( Boost REQUIRED COMPONENTS program_options)
-
-message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
-message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
-message(STATUS "  libs: ${Boost_LIBRARIES}")
-
+if(Boost_FOUND)
+  message( STATUS "Looking for BOOST - YES" )
+else(Boost_FOUND)
+  message( FATAL_ERROR "Looking for BOOST - NO" )
+endif(Boost_FOUND)
 
 #
 # Documentation
