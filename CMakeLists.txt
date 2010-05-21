@@ -38,7 +38,7 @@ option(GSI_BUILD "Build a GSI version" OFF)
 if (DEFINED ENV{POD_LOCATION})
    set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 else (DEFINED ENV{POD_LOCATION})
-   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE) 
+   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif (DEFINED ENV{POD_LOCATION})
 
 # This is needed to properly install PoD modules
@@ -77,8 +77,11 @@ SET(POD_ETC_FILES
     )
 
 if( NOT GSI_BUILD )
+  message( STATUS " ***** Building pod-agent *****" )
   add_subdirectory ( app/pod-agent )
+  message( STATUS " ***** Building pod-console *****" )
   add_subdirectory ( app/pod-console )
+  message( STATUS " ***** Building pod-user-defaults *****" )
   add_subdirectory ( app/pod-user-defaults ) 
 endif( NOT GSI_BUILD )
 
