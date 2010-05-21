@@ -77,11 +77,11 @@ SET(POD_ETC_FILES
     )
 
 if( NOT GSI_BUILD )
-  message( STATUS " ***** Building pod-agent *****" )
+  message( STATUS " ***** Configuring pod-agent *****" )
   add_subdirectory ( app/pod-agent )
-  message( STATUS " ***** Building pod-console *****" )
+  message( STATUS " ***** Configuring pod-console *****" )
   add_subdirectory ( app/pod-console )
-  message( STATUS " ***** Building pod-user-defaults *****" )
+  message( STATUS " ***** Configuring pod-user-defaults *****" )
   add_subdirectory ( app/pod-user-defaults ) 
 endif( NOT GSI_BUILD )
 
