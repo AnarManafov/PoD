@@ -6,24 +6,23 @@ Installation
      	<chapterinfo>
    	</chapterinfo>
     
-    <sect1 id="step1">
-      <title>Step #1</title>
-      <para>Choose a directory where you want to install <application>PoD</application>,
-      we take <filename class="directory">/tmp/test</filename> as an example. Unpack <application>PoD</application> tarball to this directory:
+    <sect1 id="step1"><title>Step #1: Unpack the source</title>
+      <para>Unpack <application>PoD</application> tarball:
 <screen>
-<command>tar -C /tmp/test -xzvf <replaceable>PoD_Package.2.1.2.tar.gz</replaceable></command>
+<command>tar -xzvf <replaceable>PoD-X.Y.Z-Source.tar.gz</replaceable></command>
 </screen>
-		Tar will created a new directory <filename class="directory">/tmp/test/PoD_Package</filename>,
-		where <application>PoD</application> package will be located.</para>
+		Tar will created a new directory <filename class="directory">./PoD-X.Y.Z-Source</filename>,
+		where <replaceable>X.Y.Z</replaceable> represent a version of <application>PoD</application>.</para>
     </sect1>
-    <sect1 id="step2">
-      <title>Step #2</title>
+
+
+    <sect1 id="step2"><title>Step #2: Configure the source</title>
       <para>
-      Change to the PoD directory:
+      Change to the PoD source directory:
 <screen>
-<command>cd <replaceable>/tmp/test/PoD_Package</replaceable></command>
+<command>cd <replaceable>./PoD-X.Y.Z-Source</replaceable></command>
 </screen>
-      You may want to change some setting in the <filename>install</filename> script.
+      You may want to change some setting in the <filename>BuildSetup.cmake</filename>.
       Here we have a description of the variables, which could be used to adjust PoD installation:
       <table>
 		<title>PoD configuration variables</title>
@@ -36,95 +35,62 @@ Installation
     		</thead>
     		<tbody>
       		<row>
-        			<entry>GAW_LINK</entry>
-        			<entry>An URL of glite-api-wrapper's source tarball</entry>        
+        			<entry>CMAKE_BUILD_TYPE</entry>
+        			<entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default RelWithDebInfo)</entry>
       		</row>
       		<row>
-        			<entry>GAW_PKG</entry>
-        			<entry>A name of glite-api-wrapper package (<filename>glite-api-wrapper-3.1.0.1783</filename> for example).</entry>        
+        			<entry>GSI_BUILD</entry>
+        			<entry>Use it only when building GSI specific installation. Possible options are: ON/OFF (default OFF)</entry>        
       		</row>
       		<row>
-        			<entry>GAW_OPTIONS</entry>
-        			<entry>Options, which should be given to the configure utility of glite-api-wrapper.</entry>        
+        			<entry>BUILD_GLITE_PLUGIN</entry>
+        			<entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>        
       		</row>
       		<row>
-        			<entry>pod_agent_PKG</entry>
-        			<entry>A name of pod-agent package.</entry>        
+        			<entry>BUILD_LSF_PLUGIN</entry>
+        			<entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>        
       		</row>
       		<row>
-        			<entry>pod_agent_LINK</entry>
-        			<entry>An URL of pod-agent's source tarball</entry>        
+        			<entry>BUILD_PBS_PLUGIN</entry>
+        			<entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>        
       		</row>
-      		<row>
-        			<entry>pod_agent_OPTIONS</entry>
-        			<entry>Options, which should be given to the pod-agent build utility (cmake).</entry>        
-      		</row>
-      		<row>
-        			<entry>pod_console_PKG</entry>
-        			<entry>A name of pod_console package.</entry>        
-      		</row>
-      		<row>
-        			<entry>pod_console_LINK</entry>
-        			<entry>An URL of pod-conolse's source tarball</entry>        
-      		</row>
-      		<row>
-        			<entry>pod_console_OPTIONS</entry>
-        			<entry>Options, which should be given to the pod-console build utility (cmake).</entry>        
-      		</row>
-      		<row>
-        			<entry>GLITE_LOCATION</entry>
-        			<entry>A gLite UI location path.</entry>
-      		</row>
-      		<row>
-        			<entry>XERCESC_LOCATION</entry>
-        			<entry>A full path to the Xerces-C library installation directory. [<filename>$GLITE_LOCATION/../external/opt/xerces-c</filename>]</entry>
-      		</row>
-      		<row>
-        			<entry>CLASSADS_LOCATION</entry>
-        			<entry>A full path to the ClassAds library installation directory. [<filename>$GLITE_LOCATION/../classads</filename>]</entry>
-      		</row>
-      		<row>
-        			<entry>BOOST_LOCATION</entry>
-        			<entry>A full path to the BOOST libraries installation directory. [<filename>$GLITE_LOCATION/../external/usr/</filename>]</entry>        
-      		</row>
-      		<row>
-        			<entry>GRIDSITE_INSTALL_PATH</entry>
-        			<entry>A full path to the GridSite library installation directory. [<filename>$GLITE_LOCATION/../external/usr/</filename>]</entry>        
-      		</row>
-    		</tbody>
+     		</tbody>
    	</tgroup>
 		</table>
-		<note><para>
-        If variables such as GLITE_LOCATION, XERCESC_LOCATION, CLASSADS_LOCATION,
-        BOOST_LOCATION, GRIDSITE_INSTALL_PATH are not defined, then PoD modules will try to find according libraries
-        during configuration.
-		</para></note>
-      </para>
-    </sect1>
-    <sect1 id="step3">
-      <title>Step #3</title>
-      <para>
-            Now you have two choices. Either build PoD from source or just reconfigure it.
-            To build from source, execute installation script, which will perform downloads of required modules,
-      build them and configure <application>PoD</application> for the first run:
+    </para>
+    <para>
+    Now, prepare a build directory for an out-of-source build:
 <screen>
-<command>./install -b</command>
+<command>mkdir build</command>
+<command>cd build</command>
 </screen>
-or
+   and configure the source:
 <screen>
-<command>./install -c</command>
+<command>cmake -C ../BuildSetup.cmake ..</command>
 </screen>
-if you downloaded a precompiled binary of PoD and want just reconfigure it to use in a new location.
-      </para>
-      <important><para>
-        The <command>./install</command> command must be issued from the root of the <application>PoD</application> directory.
-		</para></important> 
+    </para>
     </sect1>
 
-    <sect1 id="step4">
-      <title>Step #4</title>
+
+    <sect1 id="step3"><title>Step #3: Build and install</title>
+    <para>
+      Issue the following commands to build and install PoD:
+<screen>
+<command>make</command>
+<command>make install</command>
+</screen>
+      <note><para>
+       	Please note, that <application>PoD</application> will install in <envar>HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
+        <application>PoD</application>.
+        The user may change it however by setting the <envar>POD_LOCATION</envar> environment variable before processing the configuration of
+        the source. In this case <application>PoD</application> will install to a directory path specified by <envar>POD_LOCATION</envar>.
+      	</para></note>
+        </para>
+    </sect1>
+
+    <sect1 id="step4"><title>Step #4: PoD Environment</title>
       <para>
-      In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
+      In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script. Change to your newly installed PoD directory and issue:
 <screen>
 <command>source PoD_env.sh</command>
 </screen>
