@@ -30,6 +30,9 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 #
 # Options
 #
+# A GSI specific installation option. This type of installation
+# will be removed as soon as GSI will upgrade to modern version of Linux ;) or will 
+# get all required software installed GSI wide.
 option(GSI_BUILD "Build a GSI version" OFF)
 
 #
@@ -92,7 +95,6 @@ if (GSI_BUILD)
     message (STATUS "Add GSI specific settings - YES")
     set(CMAKE_ADDITIONAL_LIB_PATH "export LD_LIBRARY_PATH=/LSF/lsf/lib:/misc/manafov/Qt/4.4.2_etch32/lib:$GLITE_PROOF_LOCATION/lib:$LD_LIBRARY_PATH" )
     
-# TODO: automate the installation of gsi spec. libs und bins via git submodule
     set(GSI_ADD_BIN
         ${CMAKE_SOURCE_DIR}/bin/pod-agent
         ${CMAKE_SOURCE_DIR}/bin/pod-console
@@ -173,5 +175,7 @@ endif(GSI_BUILD)
 include(CPack)
 
 if (GSI_BUILD)
-  message("PoD is ready to be installed. Please execute \"make install\"")
+  message(" *********************************************************")
+  message("This is a GSI specific PoD version and it is ready to be installed. Please execute \"make install\"")
+  message(" *********************************************************")
 endif(GSI_BUILD)
