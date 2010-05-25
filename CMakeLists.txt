@@ -143,9 +143,9 @@ SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
-"PoD_env.sh"
-"bin/pod-info"
-"bin/xpd.cf"
+"PoD_env.sh$"
+"bin/pod-info$"
+"etc/xpd.cf$"
 "documentation/Diagrams"
 "Logo"
 "/\\\\."
