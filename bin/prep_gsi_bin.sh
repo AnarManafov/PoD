@@ -1,5 +1,10 @@
 #! /usr/bin/env bash
 
+# This script helps to build a GSI specific version of PoD.
+#
+# Provide a path to a source tree of PoD as a parameter to the script.
+ 
+
 POD_SRC=$(readlink -f $1)
 
 # build PoD
