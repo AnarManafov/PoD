@@ -1,6 +1,6 @@
 ! /usr/bin/env bash
 
-POD_SRC=$1
+POD_SRC=$(readlink -f $1)
 
 # build PoD
 mkdir $POD_SRC/build
