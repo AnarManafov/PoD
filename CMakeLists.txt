@@ -144,6 +144,7 @@ set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
     "prep_gsi_bin.sh"
+    "inst_tmp"
     "PoD_env.sh$"
     "bin/pod-info$"
     "etc/xpd.cf$"
@@ -170,3 +171,7 @@ if (GSI_BUILD)
 endif(GSI_BUILD)
 
 include(CPack)
+
+if (GSI_BUILD)
+  message("PoD is ready to be installed. Please execute \"make install\"")
+endif(GSI_BUILD)
