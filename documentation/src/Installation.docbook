@@ -59,13 +59,10 @@ Installation
 		</table>
     </para>
     <para>
-    Now, prepare a build directory for an out-of-source build:
+    Now, prepare a build directory for an out-of-source build and configure the source:
 <screen>
 <command>mkdir build</command>
 <command>cd build</command>
-</screen>
-   and configure the source:
-<screen>
 <command>cmake -C ../BuildSetup.cmake ..</command>
 </screen>
     </para>
