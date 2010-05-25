@@ -143,5 +143,24 @@ SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
-"/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
+"PoD_env.sh"
+"bin/pod-info"
+"bin/xpd.cf"
+"documentation/Diagrams"
+"Logo"
+"/\\\\."
+"~$;/_"
+"^${PROJECT_SOURCE_DIR}/build"
+"CMakeFiles/"
+"CMakeCache"
+"gz$"
+"Makefile\\\\."
+".project"
+".cproject"
+".settings"
+"cmake_install"
+"CPack"
+"\\\\.svn/"
+"Makefile$")
+
 include(CPack)
