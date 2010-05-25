@@ -9,6 +9,7 @@
 <!ENTITY How_to_run SYSTEM "How_to_run.docbook">
 <!ENTITY gLite_plugin SYSTEM "gLite_plugin.docbook">
 <!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
+<!ENTITY PBS_plugin SYSTEM "PBS_plugin.docbook">
 <!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
@@ -87,6 +88,11 @@ gLite plug-in
 LSF plug-in
 -->
   &LSF_plugin;
+
+<!-- 
+PBS plug-in
+-->
+  &PBS_plugin;
 
 <!-- 
 How to test

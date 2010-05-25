@@ -9,6 +9,7 @@ SRC=\
 	How_to_run.docbook\
 	gLite_plugin.docbook\
 	LSF_plugin.docbook\
+  PBS_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
@@ -35,6 +36,7 @@ IMGS= \
 	PAConsole_Grid3.png\
 	PAConsole_LSF_plugin_snapshot.png\
 	PAConsole_Workers_LSF_snapshot.png\
+  PAConsole_PBS_plugin_snapshot.png\
 	PAConsole_Preferences.png\
 	PAConsole_LogInfo.png
 
