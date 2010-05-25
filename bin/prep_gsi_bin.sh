@@ -6,6 +6,7 @@
  
 
 POD_SRC=$(readlink -f $1)
+LIBS_PATH= /misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 
 # build PoD
 mkdir $POD_SRC/build
@@ -31,7 +32,7 @@ cp -v $POD_INST/plugins/* $POD_SRC/plugins/ || exit 1
 
 # Copy external libs
 mkdir -p $POD_SRC/lib || exit 1
-cp -v /misc/manafov/PoD/forGSI/libs32b_fo_64bit/* $POD_SRC/lib/ || exit 1
+cp -v $LIBS_PATH/* $POD_SRC/lib/ || exit 1
 
 echo "set( GSI_BUILD ON CACHE BOOL \"Build a GSI specific version\" FORCE )" >> $POD_SRC/BuildSetup.cmake || exit 1
 
