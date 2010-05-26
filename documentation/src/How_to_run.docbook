@@ -11,7 +11,6 @@ How to run
       <para>
       In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
 <screen>
-<command>cd /tmp/test/PoDpackage</command>
 <command>source PoD_env.sh</command>
 </screen>
 		Also don't forget, before starting PoD the ROOT should be in the PATH as well.

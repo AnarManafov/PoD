@@ -7,11 +7,12 @@ Introduction
    	</chapterinfo>
    	<sect1 id="PROOF-on-Demand"><title>PROOF on Demand</title>
       <para>
-      <emphasis role="bold">PROOF on Demand (PoD)</emphasis> is a set of utilities (<xref linkend="fig_PoD"/>) developed at <ulink url="http://www.gsi.de">GSI</ulink>, which allows starting a
-      <ulink url="http://root.cern.ch/drupal/category/package-context/proof">PROOF</ulink> cluster at user request,
-      on any resource management system. Installation is simple and doesn't require administrator privileges, and all the
-      processes run in user space. PoD gives users, who don't have a centrally-administrated static PROOF cluster at their
-      institute, the possibility to enjoy the full power of interactive analysis with PROOF.
+       <emphasis role="bold">PROOF on Demand (PoD)</emphasis> is a tool-set  (see <xref linkend="fig_PoD"/>)
+       developed at <ulink url="http://www.gsi.de">GSI</ulink>, which sets up a 
+       <ulink url="http://root.cern.ch/drupal/category/package-context/proof">PROOF</ulink> cluster on any resource management system.
+      PoD is a user oriented product with an easy to use GUI and a command-line interface. It is fully automated.
+      No administrative privileges or special knowledge is required to use it. PoD gives users, who don't have a centrally-administrated
+      static PROOF cluster at their institutions, the possibility to enjoy the full power of interactive analysis with PROOF.
       </para>
       <para>
         PoD is a specially designed solution to provide a PROOF cluster on the fly.
@@ -77,51 +78,7 @@ Private PoD instances can’t disturb each other.
 PoD supports different job managers via a plug-in system. It is a very easy to extend system.
 PoD currently supports gLite, LSF and PBS.</para>
 </listitem>
-
-
 </itemizedlist>
 </sect1>
-
-    <sect1 id="use_case"><title>Use case</title>
-		<para>
-		The following describes one of the main use case of PoD:
-		<orderedlist>
-  		<title>Set up a PROOF cluster on the Grid</title>
-  			<listitem>
-    			<para>Using pod-console a user configures and starts pod-agent (PA)
-    			server and XROOTD redirector - all together it is a PoD server .</para>
-  			</listitem>
-  			<listitem>
-    			<para>PA connects to XROOTD's proof port and waits for PA clients.</para>
-			</listitem>
-			<listitem>
-				<para>Using pod-console the user submits PoD parametric job to the Grid.</para>
-			</listitem>
-			<listitem>
-				<para>When the job arrives to a remote worker node it configures the environment
-				and starts all needed services including XROOTD worker and PA client.</para>
-			</listitem>
-			<listitem>
-				<para>Then PA client communicates with PA server, exchanges environment data and
-				initiates a network tunnel.</para>
-			</listitem>
-			<listitem>
-				<para>When PA server accepts a client connection, the client is ready to be a PROOF
-				worker node.</para>
-			</listitem>
-			<listitem>
-				<para>When PA server detects good connections with its clients, this information is
-				immediately reflected by pod-console.</para>
-			</listitem>
-			<listitem>
-				<para>When all workers are connected or when the user is satisfied with the number of
-				connected workers, the PROOF analysis can be processed like on a local batch farm.</para>
-			</listitem>
-			<listitem>
-				<para>PA can manage disconnects, the user can restart the ROOT session without resubmitting
-				PoD Grid jobs.</para>
-			</listitem>
-			</orderedlist>
-		</para>
-		</sect1>
-	</chapter>
+	
+</chapter>

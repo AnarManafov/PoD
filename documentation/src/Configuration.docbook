@@ -171,7 +171,7 @@ gui.accessibility.visual_bell=yes
     <sect1 id="XROOTD">
       <title>XROOTD</title>
       <para>
-      There is a default XROOTD configuration file, which is located in the <filename class="directory">/tmp/test/PoDpackage/etc</filename>
+      There is a default XROOTD configuration file, which is located in the <filename class="directory">$POD_LOCATION/etc</filename>
       directory and it's called <filename>xpd.cf</filename>. PoD uses this file to configure both local redirector and
       remote workers.
             

@@ -12,7 +12,7 @@ Installation
 <command>tar -xzvf <replaceable>PoD-X.Y.Z-Source.tar.gz</replaceable></command>
 </screen>
 		Tar will created a new directory <filename class="directory">./PoD-X.Y.Z-Source</filename>,
-		where <replaceable>X.Y.Z</replaceable> represent a version of <application>PoD</application>.</para>
+		where <replaceable>X.Y.Z</replaceable> represents a version of <application>PoD</application>.</para>
     </sect1>
 
 
@@ -77,10 +77,10 @@ Installation
 <command>make install</command>
 </screen>
       <note><para>
-       	Please note, that <application>PoD</application> will install in <envar>HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
+       	Please note, that <application>PoD</application> will install in <envar>$HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
         <application>PoD</application>.
         The user may change it however by setting the <envar>POD_LOCATION</envar> environment variable before processing the configuration of
-        the source. In this case <application>PoD</application> will install to a directory path specified by <envar>POD_LOCATION</envar>.
+        the source. In this case <application>PoD</application> will install to a directory path specified by <envar>$POD_LOCATION</envar>.
       	</para></note>
         </para>
     </sect1>
