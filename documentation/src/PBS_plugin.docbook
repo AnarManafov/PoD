@@ -30,10 +30,16 @@ PBS plug-in description
 
     <sect1 id="PBS_CLI"><title>CLI</title>
     <para>
-    
+    For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
+    Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
     </para>
     </sect1>
 
-        
+    <sect1 id="PBS_CFG"><title>Configuration</title>
+    <para>
+    There are PBS plug-in options in the PoD user defaults (see <xref linkend="PBS_CFG_TABLE"/>), which you can use to tune the plug-in.
+    </para>
+    </sect1>
+
   </chapter>
 

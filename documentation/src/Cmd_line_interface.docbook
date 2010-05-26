@@ -351,7 +351,7 @@ Command-line interface
  <!-- pod-submit -->
  <!-- ......................................................................... -->
 
-  <refentry>
+  <refentry id="pod_submit">
   <refentryinfo>
 	  <title>pod-submit</title>
 	  <date>2010-01-31</date>

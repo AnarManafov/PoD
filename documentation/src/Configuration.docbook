@@ -10,19 +10,137 @@ Configuration
     and to fine tune <application>PoD</application> one may want to configure some of these modules.
     Recommended only for advanced users.
     </para>
-    <sect1 id="PoD">
+    <sect1 id="PoD_CFG">
       <title>PoD user defaults configuration</title>
       <para>
 	Since PoD v2.1.1 a user defaults configuration file is support. This is a general configuration of PoD.
 	All modules read from that file. By default it is located in <filename  class="directory">$POD_LOCATION/etc/</filename>
 and is called <filename>PoD.cfg</filename>.
       </para>
+      <para>
+       The <filename>PoD.cfg</filename> is a simple INI-like configuration file. Configuration file syntax is line based:
+        <itemizedlist>
+        <listitem><para>A line in the form:
+<screen>
+key_name=value
+</screen>
+gives a value to an option.
+         </para></listitem>
+         <listitem><para>A line in the form:
+<screen>
+[section name]
+</screen>    
+        introduces a new section in the configuration file.
+        </para></listitem>
+        <listitem><para>The # character introduces a comment that spans until the end of the line.</para>
+        <para>The option names are relative to the section names, so the following configuration file part:
+<screen>
+[gui.accessibility]
+visual_bell=yes
+</screen>
+        is equivalent to
+<screen>
+gui.accessibility.visual_bell=yes
+</screen>      
+       </para></listitem>
+       </itemizedlist>
+      </para>
 	<para>
-	PoD comes with default values in PoD.cfg and should work out of the box.  
+	PoD is shipped with default values in PoD.cfg and should work out of the box.  
 	</para>
-	<para>
-	TODO: document all entries from the PoD.cfg
-	</para>
+
+    <para>
+    <table id="POD_SERVER_CFG_TABLE">
+		<title>PoD server configuration</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>key</entry>
+            <entry>value</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+        </tbody>
+   	</tgroup>
+		</table>
+    </para>
+
+    <para>
+    <table id="POD_WORKER_CFG_TABLE">
+		<title>PoD worker configuration</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>key</entry>
+            <entry>value</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+        </tbody>
+   	</tgroup>
+		</table>
+    </para>
+
+    <para>
+    <table id="LSF_CFG_TABLE">
+		<title>LSF plug-in configuration</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>key</entry>
+            <entry>value</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+      		<row>
+        			<entry>lsf_plugin.email_job_output</entry>
+              <entry>yes/no (default: no)</entry>
+        			<entry>The parameter specifies whether job's output is sent to the user by mail.
+              if "no" is set, output will be delivered the log directory in std_[INDEX].err and std_[INDEX].out files</entry>
+      		</row>
+      		<row>
+        			<entry>lsf_plugin.upload_job_log</entry>
+              <entry>yes/no (default: no)</entry>
+        			<entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
+              Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
+      		</row>
+        </tbody>
+   	</tgroup>
+		</table>
+    </para>
+
+  <para>
+    <table id="PBS_CFG_TABLE">
+		<title>PBS plug-in configuration</title>
+  		<tgroup cols="2">
+    		<thead>
+      	<row>
+        		<entry>key</entry>
+            <entry>value</entry>
+        		<entry>Description</entry>        
+      	</row>
+    		</thead>
+    		<tbody>
+      		<row>
+        			<entry>pbs_plugin.shared_home</entry>
+              <entry>yes/no (default: no)</entry>
+        			<entry>The parameter specifies whether a shared home files system is used. 
+              If "no" is set, than PoD will use the scp command to stagin/out required files.</entry>
+      		</row>
+      		<row>
+        			<entry>pbs_plugin.upload_job_log</entry>
+              <entry>yes/no (default: no)</entry>
+        			<entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
+              Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
+      		</row>
+        </tbody>
+   	</tgroup>
+		</table>
+    </para>
+
     </sect1>
 
     <sect1 id="GAW">
