@@ -21,11 +21,9 @@ LSF plug-in description
         <phrase></phrase>
         </textobject>
         </mediaobject></screenshot>
-        </figure></para>
-    </sect1>
-      
-     <sect1 id="LSF_JobScript">
-      <title>LSF Job Script</title>
+        </figure>
+      </para>
+
       <para>
        Using the plug-ins GUI (see. <xref linkend="PAConsole_LSF_plug-in"/>) users are able to specify a number of workers and an LSF queue.
        PoD provides a default LSF job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks.
