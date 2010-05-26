@@ -1,0 +1,39 @@
+<!--
+PBS plug-in description
+-->
+  <chapter id="PBS_plugin">
+    <title>PBS plug-in</title>
+        <chapterinfo>
+       </chapterinfo>
+           
+    <sect1 id="PBS_GUI"><title>GUI</title>
+      <para>
+      The <xref linkend="PAConsole_PBS_plug-in"/> shows a screen shot of the PBS plug-in GUI page for pod-console.
+      </para>
+      <para><figure float="0" id="PAConsole_PBS_plug-in">
+        <title>pod-console: PBS job manager</title>
+        <screenshot><mediaobject>
+        <imageobject>
+        <imagedata fileref="PAConsole_PBS_plugin_snapshot.png" format="PNG"/>
+        </imageobject>
+        <textobject>
+        <phrase></phrase>
+        </textobject>
+        </mediaobject></screenshot>
+        </figure></para>
+
+      <para>
+      Using the plug-ins GUI (see. <xref linkend="PAConsole_PBS_plug-in"/>) users are able to specify a number of workers and an PBS queue.
+      PoD provides a default PBS job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
+      </para>
+    </sect1>
+
+    <sect1 id="PBS_CLI"><title>CLI</title>
+    <para>
+    
+    </para>
+    </sect1>
+
+        
+  </chapter>
+
