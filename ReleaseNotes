@@ -1,5 +1,5 @@
-********************* Release 2.1.4 not yet released ************************
-pod-agent: adapt the project to be build also as a sub-project in PoD.
+********************* Release 2.1.4 2010-05-26 ************************
+pod-agent: updated build system. Now can be build as a part of PoD or independently.
 
 ********************* Release 2.1.3 2010-01-18 ************************
 pod-agent: implemented a new internal communication protocol. It's used for Client/Server admin. communications.
