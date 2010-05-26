@@ -1,6 +1,7 @@
-********************* Release 1.2.2 not yet released ************************
-pod-console: adapt the project to be build also as a sub-project in PoD.
-pod-console: added glite-api-wrapper as a part of gLite plug-in.
+********************* Release 1.2.2 2010-05-26 ************************
+pod-console: updated build system. Now can be build as a part of PoD or independently.
+pod-console: added glite-api-wrapper as a part of gLite plug-in. Using GAW v3.3.0.
+pod-console: added a PBS/torque plug-in.
 
 ********************* Release 1.2.1 2010-01-18 ************************
 pod-console: lock-on-idle time is 30 minutes now (instead of 15 min.).
