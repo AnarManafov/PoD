@@ -52,7 +52,10 @@ HTML_OUT= \
 	How_to_test.html\
 	download.html\
 	Installation.html\
-	Requirements.html
+	Requirements.html\
+  Cmd_line_interface.html\
+  LSF_plugin.html\
+  PBS_plugin.html
 
 CSS_FILES=docbook.css
 
