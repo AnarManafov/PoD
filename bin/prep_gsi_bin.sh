@@ -6,7 +6,7 @@
  
 
 POD_SRC=$(readlink -f $1)
-LIBS_PATH= /misc/manafov/PoD/forGSI/libs32b_fo_64bit/
+LIBS_PATH=/misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 
 # build PoD
 mkdir $POD_SRC/build
