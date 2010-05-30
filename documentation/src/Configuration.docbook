@@ -65,7 +65,7 @@ gui.accessibility.visual_bell=yes
         			<entry>server.work_dir</entry>
               <entry>string (default: $POD_LOCATION)</entry>
         			<entry>PoD's working directory. Used by PoD modules to store temporary files, like pid files, for example.
-              A string of the value will be evaluated before is used, it therefore can contain environment variables.</entry>
+              A string of the value will be evaluated before it is used, it therefore can contain environment variables.</entry>
       		</row>
           <row>
         			<entry>server.logfile_dir</entry>
@@ -184,6 +184,101 @@ gui.accessibility.visual_bell=yes
       	</row>
     		</thead>
     		<tbody>
+          <row>
+        			<entry>worker.work_dir</entry>
+              <entry>string (default: $POD_LOCATION)</entry>
+        			<entry>PoD's working directory. Used by PoD modules to store temporary files, like pid files, for example.
+              A string of the value will be evaluated before it is used, it therefore can contain environment variables.</entry>
+      		</row>
+          <row>
+        			<entry>worker.logfile_dir</entry>
+              <entry>string (default: $POD_LOCATION)</entry>
+        			<entry>A path for PoD's log files. By the defined path PoD modules will place log files.</entry>
+      		</row>
+          <row>
+        			<entry>worker.logfile_overwrite</entry>
+              <entry>yes/no (default: yes)</entry>
+        			<entry>Defines whether PoD should overwrite its log files when starting a new session
+              (PoD worker's start/restart cycle)</entry>
+      		</row>
+          <row>
+        			<entry>worker.log_level</entry>
+              <entry>numeric (default: 1)</entry>
+        			<entry>Defines the level of the log. There are following numeric values are allowed:
+              <para>
+              <itemizedlist>
+                <listitem><para>0: Fault/Critical</para></listitem>
+                <listitem><para>1: Fault/Critical/Info</para></listitem>
+                <listitem><para>2: Fault/Critical/Info/Warning</para></listitem>
+                <listitem><para>3: Fault/Critical/Info/Warning/Debug</para></listitem>
+              </itemizedlist>
+              </para>
+              </entry>
+      		</row>
+          <row>
+        			<entry>worker.proof_cfg_path</entry>
+              <entry>string (default: $POD_LOCATION/proof.conf)</entry>
+        			<entry>A full path to a PROOF configuration file. This file is automatically created and maintained by PoD.</entry>
+      		</row>
+          <row>
+        			<entry>worker.set_my_rootsys</entry>
+              <entry>yes/no (default: yes)</entry>
+        			<entry>Whether to use user's ROOTSYS on workers.
+              If set to "yes", than the value of the worker.my_rootsys key, will be
+              exported to the workers. See worker.my_rootsys for more details.
+               If set to "no", PoD will download a default, pre-compiled version of
+               ROOT according to WN's environment.</entry>
+      		</row>
+          <row>
+        			<entry>worker.my_rootsys</entry>
+              <entry>string (default: $ROOTSYS)</entry>
+        			<entry>User's ROOTSYS to use on workers.
+              If set_my_rootsys is set to "yes", than PoD will export bin and library locations of this ROOT version
+              on the worker nodes. This is especially useful if you use shared home file system on the nodes where
+              PoD workers are started or you know for sure the location of the ROOT installation on the worker nodes.
+              A string of the value will be evaluated before it is used, it therefore can contain environment variables.</entry>
+      		</row>
+          <row>
+        			<entry>worker.agent_shutdown_if_idle_for_sec</entry>
+              <entry>numeric (default: 1800)</entry>
+        			<entry>Shut down a worker if its idle time is higher than the defined value in seconds.</entry>
+      		</row>
+          <row>
+        			<entry>worker.xrd_ports_range_(min/max)</entry>
+              <entry>numeric (default: 20000/21000)</entry>
+        			<entry><para>Recommended for advanced users only.</para> 
+              PoD's automatic port mapping algorithms use this range to dynamically assign ports 
+              to xrootd daemon when starting a PoD worker. In multi-user/core environment, when there are many PoD processes on the 
+              same physical machine, the automatic port mapping prevents different PoD process of 
+              different users to disturb each other.
+              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
+              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
+              </entry>
+      		</row>
+          <row>
+        			<entry>worker.xproof_ports_range_(min/max)</entry>
+              <entry>numeric (default: 21001/22000)</entry>
+        			<entry><para>Recommended for advanced users only.</para> 
+              PoD's automatic port mapping algorithms use this range to dynamically assign ports 
+              to xproof plug-in of xrootd when starting a PoD worker.
+              In multi-user/core environment, when there are many PoD processes on the 
+              same physical machine, the automatic port mapping prevents different PoD process of 
+              different users to disturb each other.
+              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
+              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
+              </entry>
+      		</row>
+          <row>
+        			<entry>worker.agent_threads</entry>
+              <entry>numeric (default:)</entry>
+        			<entry>Is not used currently.</entry>
+      		</row>
+          <row>
+        			<entry>worker.agent_node_readbuffer</entry>
+              <entry>numeric (default: 5000)</entry>
+        			<entry>A buffer size, used by the packet-forwarding algorithms (in bytes).
+              It will be allocated for each PoD worker.</entry>
+      		</row>
         </tbody>
    	</tgroup>
 		</table>
