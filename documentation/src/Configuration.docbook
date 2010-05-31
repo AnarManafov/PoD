@@ -269,11 +269,6 @@ gui.accessibility.visual_bell=yes
               </entry>
       		</row>
           <row>
-        			<entry>worker.agent_threads</entry>
-              <entry>numeric (default:)</entry>
-        			<entry>Is not used currently.</entry>
-      		</row>
-          <row>
         			<entry>worker.agent_node_readbuffer</entry>
               <entry>numeric (default: 5000)</entry>
         			<entry>A buffer size, used by the packet-forwarding algorithms (in bytes).
