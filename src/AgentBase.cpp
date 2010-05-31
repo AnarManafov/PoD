@@ -33,12 +33,17 @@ using namespace PoD;
 namespace po = boost::program_options;
 //=============================================================================
 sig_atomic_t graceful_quit = 0;
+int g_fdSignalPipe = 0;
 //=============================================================================
 namespace PROOFAgent {
 //=============================================================================
     void signal_handler( int _SignalNumber )
     {
         graceful_quit = 1;
+        if( g_fdSignalPipe )
+        {
+            write( g_fdSignalPipe, "1", 1 );
+        }
     }
 
 //=============================================================================
@@ -89,6 +94,7 @@ namespace PROOFAgent {
             throw system_error( ss.str() );
             graceful_quit = 1;
         }
+        g_fdSignalPipe = m_fdSignalPipe;
     }
 
 //=============================================================================
