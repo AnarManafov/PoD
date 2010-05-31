@@ -42,7 +42,7 @@ struct is_bad_wrk
 //=============================================================================
 CAgentServer::CAgentServer( const SOptions_t &_data ):
         CAgentBase( _data.m_podOptions.m_server.m_common ),
-        m_threadPool( _data.m_podOptions.m_server.m_common.m_agentThreads, m_signalPipeName ),
+        m_threadPool( _data.m_podOptions.m_server.m_agentThreads, m_signalPipeName ),
         m_workerMaxID( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
