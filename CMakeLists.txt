@@ -14,10 +14,10 @@
 #*************************************************************************
 project( pod-user-defaults )
 
-set(VERSION "1.0.4")
+set(VERSION "1.0.5a")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "4")
+set(CPACK_PACKAGE_VERSION_PATCH "5a")
 
 # Check if cmake has the required version
 cmake_minimum_required( VERSION 2.6 FATAL_ERROR )

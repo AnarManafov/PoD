@@ -1,5 +1,9 @@
 # Release Notes for pod-user-defaults
 
+## v.1.0.5 (not yet released)
+pod-user-defaults: updated user defaults configuration file - v0.5
+pod-user-defaults: removed worker.agent_threads
+
 ## v.1.0.4 (2010-05-26)
 pod-user-defaults: updated build system. Now can be build as a part of PoD or independently.
 pod-user-defaults: updated user defaults configuration file - v0.4
