@@ -1,3 +1,6 @@
+********************* Release 2.1.5 not yet released ************************
+pod-agent: removed UD's option: worker.agent_threads
+
 ********************* Release 2.1.4 2010-05-26 ************************
 pod-agent: updated build system. Now can be build as a part of PoD or independently.
 
