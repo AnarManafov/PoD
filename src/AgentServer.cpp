@@ -340,7 +340,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     }
 
     // we got a signal for update
-    // reading everything from the pipe and letting select update all of its FDs
+    // reading everything from the pipe and letting select to update all of its FDs
     if ( FD_ISSET( m_fdSignalPipe, &readset ) )
     {
         const int read_size = 64;
@@ -348,7 +348,6 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         int numread( 0 );
         numread = read( m_fdSignalPipe, buf, read_size );
     }
-
 }
 //=============================================================================
 void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
