@@ -1,0 +1,43 @@
+# Release Notes for pod-user-defaults
+
+## v.1.0.5 (not yet released)
+pod-user-defaults: updated user defaults configuration file - v0.5.
+pod-user-defaults: removed worker.agent_threads.
+pod-user-defaults: "pod-user-defaults" learned "--default/-d" option to generate a default PoD configuration file.
+pod-user-defaults: "pod-user-defaults" learned "--force/-f" option, wich can be used with "--default/-d".
+                   If the destination file exists, remove it and create a new file, without prompting for confirmation.
+
+## v.1.0.4 (2010-05-26)
+pod-user-defaults: updated build system. Now can be build as a part of PoD or independently.
+pod-user-defaults: updated user defaults configuration file - v0.4
+pod-user-defaults: new option <pbs_plugin.shared_home>, default is "no".
+                   The parameter specifies whether a shared home files system is used.
+                   If "no" is set, than PoD will use the scp command to stagin/out needed files.
+pod-user-defaults: new option <pbs_plugin.upload_job_log>, default if "no".
+                   The parameter specifies whether to upload jobs log files from workers
+                   when PoD jobs are completed. Jobs log files include a full log of PROOF,
+                   XROOTD and pod-agent's log files. 
+
+## v.1.0.3 (2010-01-18)
+pod-user-defaults: updated user defaults configuration file - v0.3
+pod-user-defaults: new option <server.packet_forwarding>, default is "auto".
+                   if workers are behind a firewall than PoD will use its packet forwarding (PF) algorithms
+                   to maintain the PROOF traffic between server and workers.
+                   By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
+                   will decide on the fly whether to use PF for each worker individually based on the possibility
+                   to directly connect to worker.
+
+## v.1.0.2 (2009-11-27)
+pod-user-defaults: updated user defaults configuration file - v0.2
+pod-user-defaults: if shared home is used, users can define $ROOTSYS as a ROOT version for workers.
+                   Workers will use that version of ROOT, which is defined on UI machine. (see worker.my_rootsys in PoD.cfg)
+pod-user-defaults: new option <lsf_plugin.email_job_output>, default is "no".
+                   The parameter specifies whether job's output is sent to the user by mail.
+                   If no is set, output will be delivered the log directory in std_[INDEX].err and std_[INDEX].out files
+pod-user-defaults: new option <lsf_plugin.upload_job_log>, default is "no".
+                   The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                   Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.
+
+## v.1.0.1 (2009-10-20)
+ -   The very first release.
+
