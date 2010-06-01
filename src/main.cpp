@@ -12,3 +12,9 @@
 
         Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 *************************************************************************/
+
+int main()
+{
+  return 0;
+}
+
