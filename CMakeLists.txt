@@ -142,8 +142,6 @@ if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
   install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
 endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
-# generate a default PoD configuration file
-install(CODE "execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/bin/pod-user-defaults -c ${CMAKE_INSTALL_PREFIX}/etc/PoD.cfg -d )")
 
 #
 # Package
