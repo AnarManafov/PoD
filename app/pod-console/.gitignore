@@ -1,0 +1,5 @@
+build/
+Doxyfile
+src/version.h
+.DS_Store
+*.swp
