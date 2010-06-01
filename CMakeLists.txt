@@ -85,7 +85,9 @@ if( NOT GSI_BUILD )
   message( STATUS " ***** Configuring pod-console *****" )
   add_subdirectory ( app/pod-console )
   message( STATUS " ***** Configuring pod-user-defaults *****" )
-  add_subdirectory ( app/pod-user-defaults ) 
+  add_subdirectory ( app/pod-user-defaults )
+  message( STATUS " ***** Configuring pod-ssh *****" )
+  add_subdirectory ( app/pod-ssh )
 endif( NOT GSI_BUILD )
 
 #
@@ -132,9 +134,13 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/pod-info DESTINATION bin)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
-
+# install bin files
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
+# install etc files
 install(FILES ${POD_ETC_FILES} DESTINATION etc)
+# install User's manual files
+install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
 
 #
 # Package
