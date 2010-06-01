@@ -1,0 +1,58 @@
+********************* Release 2.1.5 not yet released ************************
+pod-agent: removed UD's option: worker.agent_threads
+
+********************* Release 2.1.4 2010-05-26 ************************
+pod-agent: updated build system. Now can be build as a part of PoD or independently.
+
+********************* Release 2.1.3 2010-01-18 ************************
+pod-agent: implemented a new internal communication protocol. It's used for Client/Server admin. communications.
+pod-agent: now it is possible to use a direct connection between a PROOF server and PROOF workers.
+           Agent can automatically decided whether to use packet forwarding (for cases when PROOF workers are behind a firewall) or not.
+           It is also a configurable option in the PoD user defaults. To use this feature you need to have ROOT 5.25.04 or higher.
+pod-agent: minimally required version of ROOT is 5.25.04. Otherwise agent will not be able to detect idle when a native PROOF connection is used.
+pod-agent: minimally required version of Boost is 1.33.1 now.
+pod-agent: added unit tests.
+pod-agent: the log file name now is "pod-agent.<instance_name>.log".
+
+********************* Release 2.1.2 2009-11-28 ************************
+pod-agent: create admin files by the server/worker.work_dir path. For example, AFS doesn't support named pipes,
+           users therefore can install PoD on AFS but specify different work_dir where PoD is able to create pipes and other admin files.
+pod-agent: minor improvements of packet-forwarding algorithms.
+  
+********************* Release 2.1.1 2009-10-20 ************************
+- project's has been renamed to pod-agent.
+- use now PoD's user defaults ( $POD_LOCATION/etc/PoD.cfg) for configuration options.
+- a new proxy machinery based on a thread-pool pattern. This gives PoD a significant speed improvements in cases when PROOF does file validation and merging and when many workers are used.
+- a number of threads in the pool and a read buffer size can be changed via PoD's user defaults configuration file. 
+- when in the worker mode, use a server_info.cfg file, where a host name and a port number of the agent server are stored.
+- added new program options: 
+    - "proofport" - a PROOF (xproof) port. Used only by agents in a worker mode
+    - "serverinfo" - a server info file name. Default is $POD_LOCATION/etc/server_info.cfg
+- support Mac OS X 10.5 and 10.6.
+- a log level is now can be defined via PoD's user defaults configuration file.
+- a log file location is now can be defined via Pod's user defaults configuration file.
+
+********************* Release 2.0.1 2009-07-21 ************************
+A patch release.
+The patch addresses some stability issues and most importantly fixes a hanging-on-merging issue, which was due to a loose of TCP packages.
+Workers where sending data without checking that server could be temporary unavailable due to a full buffer of the socket.
+
+********************* Release 2.0.0 2009-06-15 ************************
+- Dramatically reduced a number of threads, which PA produces (on both server and client sides).
+- Slight redesign of the packet forwarder. PA now requires a factor of 3 less resources to handle each worker.
+- Removed the dependency on XERCES-C library.
+- The configuration file has been redesigned. Now using an INI style.
+- The build system has been switched from GNU Autotools to cmake.
+- Due to many bugs in FindBOOST of older versions of cmake we require cmake 2.6.4.
+- Switched from $GLITE_PROOF_LOCATION to $POD_LOCATION.
+- New configuration parameter - client.shutdown_if_idle_for_sec. Shut down a worker if its idle time is higher than this value.
+- Cosmetic changes.
+
+********************* Release 1.0.5 2008-08-20 ************************
+- Fixed typos.
+- The project has been moved to Eclipse 3.4 "Ganymede".
+- Fixed an improper behavior when PROOFAgent workers fail to connect to XROOTD on Grid WNs [Trac Ticket #76].
+
+********************* Release 1.0.4 2008-06-13 ************************
+- documentation has been updated.
+- minor fixes.
