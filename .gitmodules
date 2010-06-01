@@ -1,6 +1,3 @@
-[submodule "app/pod-agent"]
-	path = app/pod-agent
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-agent
 [submodule "app/pod-console"]
 	path = app/pod-console
 	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-console
