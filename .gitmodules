@@ -1,0 +1,3 @@
+[submodule "app/MiscCommon"]
+	path = app/MiscCommon
+	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/MiscCommon
