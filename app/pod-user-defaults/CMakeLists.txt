@@ -27,17 +27,6 @@ configure_file( ${pod-user-defaults_SOURCE_DIR}/src/version.h.in ${pod-user-defa
 set( SOURCE_FILES
     ./src/main.cpp
 )
-
-#
-# search for Boost
-#
-message( STATUS "Looking for BOOST" )
-find_package( Boost REQUIRED COMPONENTS program_options)
-if(Boost_FOUND)
-  message( STATUS "Looking for BOOST - YES" )
-else(Boost_FOUND)
-  message( FATAL_ERROR "Looking for BOOST - NO" )
-endif(Boost_FOUND)
 									
 #
 ## pod-user-defaults executable
@@ -54,7 +43,7 @@ add_executable(pod-user-defaults ${SOURCE_FILES})
 
 target_link_libraries (
     pod-user-defaults
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
 install(TARGETS pod-user-defaults DESTINATION bin)

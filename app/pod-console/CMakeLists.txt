@@ -18,28 +18,11 @@ project( pod-console )
 set (CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
 
-if( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
-  # Install directory
-  if ( DEFINED ENV{POD_LOCATION} )
-     set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH
-          "Install path prefix, prepended onto install directories." FORCE)
-  endif ( DEFINED ENV{POD_LOCATION} )
-endif( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
-
 #
 # configure files
 # 
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
-
-#
-# Options
-#
-option(BUILD_DOCUMENTATION "Build source code documentation" OFF)
-option(BUILD_TESTS "Build pod-console unit tests" OFF)
-option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
-option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
-option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h
@@ -68,26 +51,10 @@ set( UI_RESOURCE
         ./res/paconsole.qrc
 )
 
-set(QT_MIN_VERSION "4.4.2")
-find_package( Qt4 REQUIRED )
-#include_directories ( ${QT_INCLUDES} )
-#The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script
-include( ${QT_USE_FILE} )
 
 QT4_WRAP_CPP( MOC_SRCS ${MOC_HDRS} OPTIONS -f )
 QT4_WRAP_UI( UI_HDRS ${UI_FILES} )
 QT4_ADD_RESOURCES( RCS_SRCS  ${UI_RESOURCE} )
-
-#
-# search for Boost
-#
-message( STATUS "Looking for BOOST" )
-find_package( Boost REQUIRED COMPONENTS serialization program_options)
-if(Boost_FOUND)
-  message( STATUS "Looking for BOOST - YES" )
-else(Boost_FOUND)
-  message( FATAL_ERROR "Looking for BOOST - NO" )
-endif(Boost_FOUND)
 
 #
 # Add macros
@@ -119,7 +86,8 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 target_link_libraries (
     pod-console
     ${QT_LIBRARIES}
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${Boost_SERIALIZATION_LIBRARY}
 )
 
 #

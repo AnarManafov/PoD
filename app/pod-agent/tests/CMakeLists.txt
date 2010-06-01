@@ -14,22 +14,13 @@
 #*************************************************************************
 project( pod-aget-tests )
 
-
-#set(CPACK_PACKAGE_VERSION_MAJOR "0")
-#set(CPACK_PACKAGE_VERSION_MINOR "0")
-#set(CPACK_PACKAGE_VERSION_PATCH "1")
-
-# Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
-
-find_package( Boost 1.33.1 REQUIRED unit_test_framework)
-
+include_directories(${pod-agent_SOURCE_DIR}/src)
 #=============================================================================
 add_executable(pod-agent_test_ProtocolCommands Test_ProtocolCommands.cpp  ${pod-agent_SOURCE_DIR}/src/ProtocolCommands.cpp)
 
 target_link_libraries (
-    pod-agent_test_ProtocolCommands 
-    ${Boost_LIBRARIES}
+    pod-agent_test_ProtocolCommands
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
 install(TARGETS pod-agent_test_ProtocolCommands DESTINATION tests)
@@ -45,7 +36,7 @@ add_executable(pod-agent_test_Protocol ${SRC_PROTOCOL})
 
 target_link_libraries (
     pod-agent_test_Protocol 
-    ${Boost_LIBRARIES}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)
@@ -65,7 +56,7 @@ add_executable(pod-agent_test_ProofStatusFile ${SRC_PROTOCOL})
 
 target_link_libraries (
     pod-agent_test_ProofStatusFile 
-    ${Boost_LIBRARIES}
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)

@@ -13,7 +13,6 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************
 project( PoD )
-
 #
 # Version
 #
@@ -21,12 +20,10 @@ set(VERSION "2.1.5a")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "5a")
-
 #
 # Check if cmake has the required version
 #
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
-
+cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 #
 # Options
 #
@@ -34,6 +31,19 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 # will be removed as soon as GSI will upgrade to modern version of Linux ;) or will 
 # get all required software installed GSI wide.
 option(GSI_BUILD "Build a GSI version" OFF)
+option(BUILD_DOCUMENTATION "Build project and source code documentation" OFF)
+# tests
+option(BUILD_TESTS "Build PoD unit tests" OFF)
+# modules
+option(BUILD_pod_agent "Build pod-agent" ON)
+option(BUILD_pod_console "Build pod-console" ON)
+option(BUILD_pod_ssh "Build pod-ssh" ON)
+option(BUILD_pod_user_defaults "Build pod-user-defaults" ON)
+# plug-ins
+option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
+option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
+option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
+
 
 #
 # Install directory
@@ -43,20 +53,18 @@ if (DEFINED ENV{POD_LOCATION})
 else (DEFINED ENV{POD_LOCATION})
    set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif (DEFINED ENV{POD_LOCATION})
-
+#
 # This is needed to properly install PoD modules
+#
 set(IS_SET_POD_INSTALL_PREFIX 1 CACHE INTERNAL "")
-
 #
 # Where to lookup modules
 #
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
-
 #
 # MiscCommon location
 #
 set(MiscCommon_LOCATION ${CMAKE_SOURCE_DIR}/app/MiscCommon)
-
 #
 # "additional" files
 #
@@ -64,7 +72,6 @@ SET(POD_ADD_FILES
     ${CMAKE_SOURCE_DIR}/LICENSE
     ${CMAKE_SOURCE_DIR}/ReleaseNotes
     )
-
 #
 # "bin" files
 #
@@ -74,7 +81,6 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults-lite
     ${CMAKE_SOURCE_DIR}/bin/pod-submit
     )
-
 #
 # "etc" files
 #
@@ -82,18 +88,93 @@ SET(POD_ETC_FILES
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF.jdl
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
     )
-
+#
+# BUILD Sub Modules of PoD
+#
 if( NOT GSI_BUILD )
-  message( STATUS " ***** Configuring pod-agent *****" )
-  add_subdirectory ( app/pod-agent )
-  message( STATUS " ***** Configuring pod-console *****" )
-  add_subdirectory ( app/pod-console )
-  message( STATUS " ***** Configuring pod-user-defaults *****" )
-  add_subdirectory ( app/pod-user-defaults )
-  message( STATUS " ***** Configuring pod-ssh *****" )
-  add_subdirectory ( app/pod-ssh )
-endif( NOT GSI_BUILD )
 
+#
+# search for Boost
+#
+# boost needed by
+# pod_agent: thread program_options filesystem (system)
+# pod-console: threads serialization (+ some Header-Only libraries)
+# pod-user-defaults: program_options
+# unit tests: unit_test_framework
+#
+find_package(Boost 1.33.1 REQUIRED)
+if(Boost_FOUND)
+  set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
+
+  set(Boost_Components thread program_options filesystem serialization)
+  if(local_boost_version VERSION_GREATER "1.33.1")
+      set(Boost_Components ${Boost_Components} system)
+  endif(local_boost_version VERSION_GREATER "1.33.1")
+  
+  if( BUILD_TESTS)
+    set(Boost_Components ${Boost_Components} unit_test_framework)
+  endif( BUILD_TESTS)
+  
+  find_package( Boost 1.33.1 REQUIRED COMPONENTS  ${Boost_Components} )
+else(Boost_FOUND)
+    set(BUILD_pod_agent OFF)
+    set(BUILD_pod_console OFF)
+    set(BUILD_pod_user_defaults OFF)
+    set(BUILD_pod_ssh OFF)
+endif(Boost_FOUND)
+#
+# search for Qt
+#
+# Qt is needed by
+# pod_console
+#
+find_package( Qt4 )
+#The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script
+include( ${QT_USE_FILE} )
+if(QT4_FOUND)
+  set(local_qt_version "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+  if(local_qt_version VERSION_LESS "4.4.2")
+     message(WARNING "The version of Qt is too low. You will be not able to use PoD's GUI")
+     set(BUILD_pod_console OFF)
+  endif(local_qt_version VERSION_LESS "4.4.2")
+else(QT4_FOUND)
+  set(BUILD_pod_console OFF)
+endif(QT4_FOUND)
+
+
+  if(BUILD_pod_agent)
+    message(STATUS "Build pod-agent - YES")
+    add_subdirectory ( app/pod-agent )
+  else(BUILD_pod_agent)
+    message(STATUS "Build pod-agent - NO")
+  endif(BUILD_pod_agent)
+
+  if(BUILD_pod_user_defaults)
+    message(STATUS "Build pod-user-defaults - YES")
+    add_subdirectory ( app/pod-user-defaults )
+  else(BUILD_pod_user_defaults)
+    message(STATUS "Build pod-user-defaults - NO")
+  endif(BUILD_pod_user_defaults)
+
+  if(BUILD_pod_ssh)
+    message(STATUS "Build pod-ssh - YES")
+    add_subdirectory ( app/pod-ssh )
+  else(BUILD_pod_ssh)
+    message(STATUS "Build pod-ssh - NO")
+  endif(BUILD_pod_ssh)
+
+  if(BUILD_pod_console)
+    message(STATUS "Build pod-console - YES")
+    add_subdirectory ( app/pod-console )
+  else(BUILD_pod_console)
+    message(STATUS "Build pod-console - NO")
+  endif(BUILD_pod_console)
+
+  if( (NOT BUILD_pod_agent) OR (NOT BUILD_pod_user_defaults) )
+    message( FATAL_ERROR "Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
+  endif( (NOT BUILD_pod_agent) OR (NOT BUILD_pod_user_defaults) )
+
+endif( NOT GSI_BUILD )
 #
 # GSI specific settings
 #
@@ -117,7 +198,6 @@ if (GSI_BUILD)
     install(FILES ${GSI_ADD_LIB} DESTINATION lib)
     install(FILES ${CMAKE_SOURCE_DIR}/plugins/libpod-console-lsf.so DESTINATION plugins )
 endif (GSI_BUILD)
-
 #
 # configure files
 # 
@@ -147,7 +227,6 @@ if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
   install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
 endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
-
 #
 # Package
 #

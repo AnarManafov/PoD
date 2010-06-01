@@ -25,12 +25,6 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
 
-#
-# Options
-#
-option(BUILD_TESTS "Build pod-agent unit tests" OFF)
-
-
 set( SOURCE_FILES
     ./src/Main.cpp
     ./src/AgentBase.cpp
@@ -44,20 +38,10 @@ set( SOURCE_FILES
     ./src/ProofStatusFile.cpp
 )
 
-#
-# search for Boost
-#
-find_package(Boost 1.33.1)
-set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
+set(Boost_libs_for_agent ${Boost_THREAD_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 if(local_boost_version VERSION_GREATER "1.33.1")
-    FIND_PACKAGE(Boost 1.33.1 REQUIRED thread program_options filesystem system)
-else(local_boost_version VERSION_GREATER "1.33.1")
-    FIND_PACKAGE(Boost 1.33.1 REQUIRED thread program_options filesystem)
+  set(Boost_libs_for_agent ${Boost_libs_for_agent} ${Boost_SYSTEM_LIBRARY})
 endif(local_boost_version VERSION_GREATER "1.33.1")
-
-message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
-message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
-message(STATUS "  libs: ${Boost_LIBRARIES}")
 
 #
 ## pod-agent executable
@@ -73,7 +57,7 @@ add_executable(pod-agent ${SOURCE_FILES})
 
 target_link_libraries (
     pod-agent
-    ${Boost_LIBRARIES}
+    ${Boost_libs_for_agent}
 )
 
 install(TARGETS pod-agent DESTINATION bin)
@@ -84,7 +68,7 @@ install(PROGRAMS run_test.sh DESTINATION bin)
 #
 if (BUILD_TESTS)
     message (STATUS "Build pod-agent unit tests - YES")
-    add_subdirectory ( tests ) 
+    add_subdirectory ( ${pod-agent_SOURCE_DIR}/tests ) 
 else (BUILD_TESTS)
     message (STATUS "Build pod-agent unit tests - NO")
 endif (BUILD_TESTS)
