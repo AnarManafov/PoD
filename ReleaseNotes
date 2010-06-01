@@ -1,8 +1,11 @@
 # Release Notes for pod-user-defaults
 
 ## v.1.0.5 (not yet released)
-pod-user-defaults: updated user defaults configuration file - v0.5
-pod-user-defaults: removed worker.agent_threads
+pod-user-defaults: updated user defaults configuration file - v0.5.
+pod-user-defaults: removed worker.agent_threads.
+pod-user-defaults: "pod-user-defaults" learned "--default/-d" option to generate a default PoD configuration file.
+pod-user-defaults: "pod-user-defaults" learned "--force/-f" option, wich can be used with "--default/-d".
+                   If the destination file exists, remove it and create a new file, without prompting for confirmation.
 
 ## v.1.0.4 (2010-05-26)
 pod-user-defaults: updated build system. Now can be build as a part of PoD or independently.

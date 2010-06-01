@@ -15,6 +15,7 @@
 project( pod-user-defaults )
 
 set(VERSION "1.0.5a")
+set(USER_DEFAULTS_CFG_VERSION "0.5")
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "0")
 set(CPACK_PACKAGE_VERSION_PATCH "5a")
@@ -41,13 +42,11 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 #
 # configure files
 # 
-configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/version.h @ONLY )
+configure_file( ${pod-user-defaults_SOURCE_DIR}/src/version.h.in ${pod-user-defaults_BINARY_DIR}/version.h @ONLY )
 
 set( SOURCE_FILES
-    ./src/
     ./src/main.cpp
 )
-
 
 #
 # search for Boost
@@ -59,18 +58,11 @@ if(Boost_FOUND)
 else(Boost_FOUND)
   message( FATAL_ERROR "Looking for BOOST - NO" )
 endif(Boost_FOUND)
-
-#
-# Documentation
-#
-#if(BUILD_DOCUMENTATION)
-#    add_subdirectory(documentation)
-#endif(BUILD_DOCUMENTATION)
 									
 #
 ## pod-user-defaults executable
 #
-include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( ${pod-user-defaults_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -82,7 +74,6 @@ target_link_libraries (
 )
 
 install(TARGETS pod-user-defaults DESTINATION bin)
-
 
 #
 # Package

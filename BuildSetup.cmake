@@ -15,11 +15,3 @@
 set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #set(CMAKE_VERBOSE_MAKEFILE TRUE CACHE BOOL "This is useful for debugging only." FORCE)
 
-# This is needed if you want to use gLite plug-in and have several version of BOOST installed
-#set( Boost_USE_MULTITHREADED OFF CACHE BOOL "BOOST" FORCE )
-
-#
-# Documentation
-#
-#set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
-
