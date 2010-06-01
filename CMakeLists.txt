@@ -74,7 +74,6 @@ SET(POD_BIN_FILES
 # "etc" files
 #
 SET(POD_ETC_FILES
-     ${CMAKE_SOURCE_DIR}/etc/PoD.cfg
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF.jdl
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
     )
@@ -141,6 +140,8 @@ install(FILES ${POD_ETC_FILES} DESTINATION etc)
 # install User's manual files
 install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
+# generate a default PoD configuration file
+install(CODE "EXECUTE_PROCESS(COMMAND pod-user-defaults -c ${CMAKE_INSTALL_PREFIX}/etc/PoD.cfg -d )")
 
 #
 # Package
