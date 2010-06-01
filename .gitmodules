@@ -1,9 +1,0 @@
-[submodule "app/pod-console"]
-	path = app/pod-console
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-console
-[submodule "app/pod-user-defaults"]
-	path = app/pod-user-defaults
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-user-defaults
-[submodule "app/pod-ssh"]
-	path = app/pod-ssh
-	url = ssh://anar@depc218.gsi.de/~/GitRepository/PROOFonDemand/pod-ssh
