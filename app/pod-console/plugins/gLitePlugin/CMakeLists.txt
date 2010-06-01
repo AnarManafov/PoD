@@ -14,8 +14,6 @@
 #*************************************************************************
 project( pod-console-glite )
 
-# Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 
 # build glite-api-wrapper first
 message( STATUS " ***** Configuring glite-api-wrapper *****" )

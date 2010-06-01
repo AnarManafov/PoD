@@ -14,14 +14,6 @@
 #*************************************************************************
 project( pod-console )
 
-set(VERSION "1.2.2")
-set(CPACK_PACKAGE_VERSION_MAJOR "1")
-set(CPACK_PACKAGE_VERSION_MINOR "2")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
-
-# Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
-
 # Where to lookup modules
 set (CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/cmake;${PROJECT_SOURCE_DIR}/plugins/gLitePlugin/glite-api-wrapper/cmake")
@@ -37,7 +29,7 @@ endif( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
 #
 # configure files
 # 
-configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/version.h @ONLY )
+configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
 
 #
@@ -107,16 +99,14 @@ if( CMAKE_BUILD_TYPE STREQUAL "Release" )
 endif()
 
 #
-# Documentation
-#
-#if(BUILD_DOCUMENTATION)
-#    add_subdirectory(documentation)
-#endif(BUILD_DOCUMENTATION)
-									
-#
 ## pod-console executable
 #
-include_directories( ${PROJECT_BINARY_DIR} src Include ${Boost_INCLUDE_DIRS} )
+include_directories( 
+    ${PROJECT_BINARY_DIR}/src 
+    ${PROJECT_BINARY_DIR}
+    ${MiscCommon_LOCATION}
+    ${Boost_INCLUDE_DIRS}
+)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -200,16 +190,3 @@ endif( BUILD_PBS_PLUGIN )
 # Install Target
 #
 install(TARGETS pod-console DESTINATION bin)
-
-
-#
-# Package
-#
-
-# excluding build directory
-# excluding svn files and Eclipse project files
-SET(CPACK_GENERATOR "TGZ")
-set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES
-"/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
-include(CPack)

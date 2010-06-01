@@ -53,6 +53,11 @@ set(IS_SET_POD_INSTALL_PREFIX 1 CACHE INTERNAL "")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 
 #
+# MiscCommon location
+#
+set(MiscCommon_LOCATION ${CMAKE_SOURCE_DIR}/app/MiscCommon)
+
+#
 # "additional" files
 #
 SET(POD_ADD_FILES

@@ -14,19 +14,6 @@
 #*************************************************************************
 project( pod-ssh )
 
-#
-# Version
-#
-set(VERSION "0.0.1")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "0")
-set(CPACK_PACKAGE_VERSION_PATCH "1")
-
-#
-# Check if cmake has the required version
-#
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
-
 if( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
   # Install directory
   if ( DEFINED ENV{POD_LOCATION} )
@@ -64,13 +51,6 @@ message(STATUS "  inc. dir.: ${Boost_INCLUDE_DIRS}")
 message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
 message(STATUS "  libs: ${Boost_LIBRARIES}")
 
-#
-# Documentation
-#
-#if(BUILD_DOCUMENTATION)
-#    add_subdirectory(documentation)
-#endif(BUILD_DOCUMENTATION)
-
 include_directories( ${PROJECT_BINARY_DIR}/src src Include ${Boost_INCLUDE_DIRS} )
 
 #
@@ -96,15 +76,3 @@ else (BUILD_TESTS)
     message (STATUS "Build pod-ssh unit tests - NO")
 endif (BUILD_TESTS)
 
-
-#
-# Package
-#
-
-# excluding build directory
-# excluding svn files and Eclipse project files
-SET(CPACK_GENERATOR "TGZ")
-set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES
-"/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
-include(CPack)

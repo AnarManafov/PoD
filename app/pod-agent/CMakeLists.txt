@@ -15,27 +15,6 @@
 project( pod-agent )
 
 #
-# Version
-#
-set(VERSION "2.1.5a")
-set(CPACK_PACKAGE_VERSION_MAJOR "2")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "5a")
-
-#
-# Check if cmake has the required version
-#
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
-
-if( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
-  # Install directory
-  if ( DEFINED ENV{POD_LOCATION} )
-     set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH
-          "Install path prefix, prepended onto install directories." FORCE)
-  endif ( DEFINED ENV{POD_LOCATION} )
-endif( NOT DEFINED IS_SET_POD_INSTALL_PREFIX )
-
-#
 # Where to lookup modules
 #
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
@@ -81,16 +60,12 @@ message(STATUS "  lib. dir.: ${Boost_LIBRARY_DIRS}")
 message(STATUS "  libs: ${Boost_LIBRARIES}")
 
 #
-# Documentation
+## pod-agent executable
 #
-#if(BUILD_DOCUMENTATION)
-#    add_subdirectory(documentation)
-#endif(BUILD_DOCUMENTATION)
-									
-#
-## PROOFAgent executable
-#
-include_directories( ${PROJECT_BINARY_DIR}/src src Include ${Boost_INCLUDE_DIRS} )
+include_directories( 
+    ${PROJECT_BINARY_DIR}/src 
+    ${MiscCommon_LOCATION}
+    ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -114,15 +89,3 @@ else (BUILD_TESTS)
     message (STATUS "Build pod-agent unit tests - NO")
 endif (BUILD_TESTS)
 
-
-#
-# Package
-#
-
-# excluding build directory
-# excluding svn files and Eclipse project files
-SET(CPACK_GENERATOR "TGZ")
-set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES
-"/\\\\.;~$;/_;^${PROJECT_SOURCE_DIR}/build;CMakeFiles/;CMakeCache;gz$;Makefile\\\\.;.project;.cproject;.settings;cmake_install;CPack;;\\\\.svn/;Makefile$")
-include(CPack)

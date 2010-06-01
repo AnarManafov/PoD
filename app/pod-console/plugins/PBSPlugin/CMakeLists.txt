@@ -14,15 +14,6 @@
 #*************************************************************************
 project( pod-console-pbs )
 
-
-#set(CPACK_PACKAGE_VERSION_MAJOR "0")
-#set(CPACK_PACKAGE_VERSION_MINOR "0")
-#set(CPACK_PACKAGE_VERSION_PATCH "1")
-
-# Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
-
-
 set( HDRS_pbs
      ./src/PbsMng.h
       ./src/JobInfo.h
@@ -79,7 +70,7 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 set(CMAKE_CXX_FLAGS " -Wall")
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${PBS_INCLUDE_DIR} src )
+include_directories( ${pod-console_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
 
 
 target_link_libraries (

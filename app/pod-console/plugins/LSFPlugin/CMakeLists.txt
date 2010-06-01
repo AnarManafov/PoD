@@ -15,14 +15,6 @@
 project( pod-console-lsf )
 
 
-#set(CPACK_PACKAGE_VERSION_MAJOR "0")
-#set(CPACK_PACKAGE_VERSION_MINOR "0")
-#set(CPACK_PACKAGE_VERSION_PATCH "1")
-
-# Check if cmake has the required version
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
-
-
 set( MOC_HDRS_lsf
     ./src/LSFDlg.h
     ./src/LSFJobSubmitter.h
