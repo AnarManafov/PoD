@@ -242,6 +242,8 @@ set(CPACK_SOURCE_IGNORE_FILES
     "bin/pod-info$"
     "etc/xpd.cf$"
     "documentation/Diagrams"
+    "app/pod-agent/doc"
+    "app/pod-console/doc"
     "Logo"
     "/\\\\."
     "~$;/_"
