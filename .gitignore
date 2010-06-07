@@ -4,3 +4,10 @@ src/version.h
 tests/xpd.cf
 .DS_Store
 *.swp
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+*.xcodeproj

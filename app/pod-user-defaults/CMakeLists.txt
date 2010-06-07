@@ -37,8 +37,6 @@ include_directories(
     ${Boost_INCLUDE_DIRS}
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-
 add_executable(pod-user-defaults ${SOURCE_FILES})
 
 target_link_libraries (
