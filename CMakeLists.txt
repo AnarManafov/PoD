@@ -52,7 +52,7 @@ set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
 # Custom targets
 #
 add_custom_target( api-docs COMMENT "Generating API docs" )
-add_dependencies( api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
+add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
 
 add_custom_target( upload-api-docs 
     COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
@@ -154,6 +154,7 @@ else(QT4_FOUND)
   set(BUILD_pod_console OFF)
 endif(QT4_FOUND)
 
+  add_subdirectory( app/MiscCommon )
 
   if(BUILD_pod_agent)
     message(STATUS "Build pod-agent - YES")
