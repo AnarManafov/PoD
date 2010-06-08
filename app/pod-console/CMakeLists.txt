@@ -23,6 +23,11 @@ set (CMAKE_MODULE_PATH
 # 
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+#
+# Custom targets
+#
+add_custom_target(pod-console-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
+    COMMENT "Generating pod-console API docs")
 
 set( MOC_HDRS
     ./src/PreferencesDlg.h

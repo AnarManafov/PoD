@@ -55,8 +55,9 @@ set( SRC_PROTOCOL
 add_executable(pod-agent_test_ProofStatusFile ${SRC_PROTOCOL})
 
 target_link_libraries (
-    pod-agent_test_ProofStatusFile 
+    pod-agent_test_ProofStatusFile
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    ${Boost_filesystem_libs} 
 )
 
 install(TARGETS pod-agent_test_Protocol DESTINATION tests)

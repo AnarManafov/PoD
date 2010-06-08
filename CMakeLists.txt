@@ -31,7 +31,7 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # will be removed as soon as GSI will upgrade to modern version of Linux ;) or will 
 # get all required software installed GSI wide.
 option(GSI_BUILD "Build a GSI version" OFF)
-option(BUILD_DOCUMENTATION "Build project and source code documentation" OFF)
+option(BUILD_DOCUMENTATION "Build documentation" OFF)
 # tests
 option(BUILD_TESTS "Build PoD unit tests" OFF)
 # modules
@@ -44,7 +44,20 @@ option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
 option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
 option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
 
+#
+# Documentation output directory
+#
+set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
+#
+# Custom targets
+#
+add_custom_target( api-docs COMMENT "Generating API docs" )
+add_dependencies( api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
 
+add_custom_target( upload-api-docs 
+    COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
+    COMMENT "Upload API documentation to PoD's web server")
+add_dependencies( upload-api-docs api-docs )
 #
 # Install directory
 #

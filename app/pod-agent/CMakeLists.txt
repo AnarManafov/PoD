@@ -24,6 +24,11 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 # 
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+#
+# Custom targets
+#
+add_custom_target(pod-agent-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
+    COMMENT "Generating pod-agent API docs")
 
 set( SOURCE_FILES
     ./src/Main.cpp
@@ -38,10 +43,13 @@ set( SOURCE_FILES
     ./src/ProofStatusFile.cpp
 )
 
-set(Boost_libs_for_agent ${Boost_THREAD_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
+set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
 if(local_boost_version VERSION_GREATER "1.33.1")
-  set(Boost_libs_for_agent ${Boost_libs_for_agent} ${Boost_SYSTEM_LIBRARY})
+  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
 endif(local_boost_version VERSION_GREATER "1.33.1")
+
+set(Boost_libs_for_agent ${Boost_THREAD_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_libs})
+
 
 #
 ## pod-agent executable

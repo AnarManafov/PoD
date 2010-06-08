@@ -25,6 +25,12 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
 configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
 #
+# Custom targets
+#
+add_custom_target(pod-ssh-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
+    COMMENT "Generating pod-ssh API docs")
+
+#
 # Source files
 #
 set( SOURCE_FILES
@@ -38,7 +44,7 @@ include_directories(
     ${Boost_INCLUDE_DIRS} )
 
 #
-## pod-ssh executable
+# pod-ssh executable
 #
 add_executable(pod-ssh ${SOURCE_FILES})
 
@@ -51,7 +57,7 @@ install(TARGETS pod-ssh DESTINATION bin)
 install(PROGRAMS run_test.sh DESTINATION bin)
 
 #
-## Unit tests
+# Unit tests
 #
 if (BUILD_TESTS)
     message (STATUS "Build pod-ssh unit tests - YES")
@@ -59,3 +65,4 @@ if (BUILD_TESTS)
 else (BUILD_TESTS)
     message (STATUS "Build pod-ssh unit tests - NO")
 endif (BUILD_TESTS)
+

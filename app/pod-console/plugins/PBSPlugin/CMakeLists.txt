@@ -77,7 +77,8 @@ target_link_libraries (
     pod-console-pbs
     ${PBS_LIBRARIES}
     ${QT_LIBRARIES}
-    ${Boost_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${Boost_SERIALIZATION_LIBRARY}
 )
 
 install(TARGETS pod-console-pbs DESTINATION plugins)
