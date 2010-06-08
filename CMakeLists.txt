@@ -16,10 +16,9 @@ project( PoD )
 #
 # Version
 #
-set(VERSION "2.1.5a")
-set(CPACK_PACKAGE_VERSION_MAJOR "2")
-set(CPACK_PACKAGE_VERSION_MINOR "1")
-set(CPACK_PACKAGE_VERSION_PATCH "5a")
+execute_process(COMMAND git describe --tags --long
+                OUTPUT_VARIABLE VERSION
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
 #
 # Check if cmake has the required version
 #
@@ -273,9 +272,10 @@ set(CPACK_SOURCE_IGNORE_FILES
     "\\\\.svn/"
     "Makefile$")
 
-if (GSI_BUILD)
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME
-      "PoD-${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}-GSI-etch32-bin")
+if(GSI_BUILD)
+  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${VERSION}-GSI-etch32-bin")
+else(GSI_BUILD)
+  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${VERSION}-Source")
 endif(GSI_BUILD)
 
 include(CPack)

@@ -33,7 +33,7 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 void printVersion()
 {
     cout
-            << PROJECT_NAME << " v." << PROJECT_VERSION_STRING << "\n"
+            << PROJECT_NAME << " " << PROJECT_VERSION_STRING << "\n"
             << "PoD configuration file" << " v." << USER_DEFAULTS_CFG_VERSION  << "\n"
             << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }

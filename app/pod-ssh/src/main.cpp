@@ -29,7 +29,7 @@ namespace bpo = boost::program_options;
 //=============================================================================
 void printVersion()
 {
-    cout << PROJECT_NAME << " v." << PROJECT_VERSION_STRING << "\n"
+    cout << PROJECT_NAME << " " << PROJECT_VERSION_STRING << "\n"
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 //=============================================================================
