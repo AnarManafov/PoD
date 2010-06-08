@@ -1,5 +1,7 @@
 ********************* Release 2.1.5 not yet released ************************
-
+pod: The project has been restructured. Now all submodules have been incorporated directly into PoD's source tree.
+pod: A number of fixed to optimize the build process speed and the size of the source package.
+pod: Added new build targets, api-docs and upload-api-docs. In order to build PoD's private API documentation.
 
 ********************* Release 2.1.4 2010-05-26 ************************
 pod: A new build system and installation procedure have been introduced.
