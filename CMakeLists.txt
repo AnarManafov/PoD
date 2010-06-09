@@ -263,8 +263,6 @@ endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
 #
 # Package
 #
-# excluding build directory
-# excluding svn files and Eclipse project files
 SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
