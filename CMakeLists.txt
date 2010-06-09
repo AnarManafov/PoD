@@ -24,13 +24,8 @@ if( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
                   COMMAND sed -e "s/-/./g"
                   OUTPUT_VARIABLE POD_VERSION
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
-message("POD_VERSION = ${POD_VERSION}")
-# remove leading "v"
+  # remove leading "v"
   string(REGEX REPLACE "^v(.*)" "\\1" POD_VERSION ${POD_VERSION})
-#  execute_process(COMMAND "expr \"${POD_VERSION}\" : v*'\(.*\)'"
-#                  OUTPUT_VARIABLE POD_VERSION
-#                  OUTPUT_STRIP_TRAILING_WHITESPACE)
-message("POD_VERSION = ${POD_VERSION}")
   execute_process( COMMAND bash -c "echo \"${POD_VERSION}\" > ${CMAKE_SOURCE_DIR}/etc/version" )
 
 else( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
