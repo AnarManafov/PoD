@@ -16,9 +16,24 @@ project( PoD )
 #
 # Version
 #
+# take the version string from git and write it to a version file
+# or take it from the version file if git is unavailable (a package distribution) 
 execute_process(COMMAND git describe --tags --long
+                COMMAND awk -F- "{printf \"%s (%s-%s)\", $1, $2, $3}"
                 OUTPUT_VARIABLE VERSION
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+if( VERSION )
+  execute_process( COMMAND bash -c "echo \"${VERSION}\" > ${CMAKE_SOURCE_DIR}/etc/version" )
+else( VERSION )
+  execute_process(COMMAND cat ${CMAKE_SOURCE_DIR}/etc/version
+      OUTPUT_VARIABLE VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif( VERSION )
+#
+# remove all white spaces in a VERSION string
+# The resulting string will be used as a PoD install dir. name.
+string(REPLACE " " "" VERSION_DIR ${VERSION})
 #
 # Check if cmake has the required version
 #
@@ -63,7 +78,7 @@ add_dependencies( upload-api-docs api-docs )
 if (DEFINED ENV{POD_LOCATION})
    set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 else (DEFINED ENV{POD_LOCATION})
-   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION_DIR}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif (DEFINED ENV{POD_LOCATION})
 #
 # This is needed to properly install PoD modules
