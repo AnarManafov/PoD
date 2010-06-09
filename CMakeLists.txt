@@ -13,27 +13,33 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************
 project( PoD )
-#
+
 # Version
 #
 # take the version string from git and write it to a version file
-# or take it from the version file if git is unavailable (a package distribution) 
-execute_process(COMMAND git describe --tags --long
-                COMMAND awk -F- "{printf \"%s (%s-%s)\", $1, $2, $3}"
-                OUTPUT_VARIABLE VERSION
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
+# or take it from the version file if git is unavailable (a package distribution)
+if( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 
-if( VERSION )
-  execute_process( COMMAND bash -c "echo \"${VERSION}\" > ${CMAKE_SOURCE_DIR}/etc/version" )
-else( VERSION )
+  execute_process(COMMAND git describe --abbrev=4 HEAD
+                  COMMAND sed -e "s/-/./g"
+                  OUTPUT_VARIABLE POD_VERSION
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+message("POD_VERSION = ${POD_VERSION}")
+# remove leading "v"
+  string(REGEX REPLACE "^v(.*)" "\\1" POD_VERSION ${POD_VERSION})
+#  execute_process(COMMAND "expr \"${POD_VERSION}\" : v*'\(.*\)'"
+#                  OUTPUT_VARIABLE POD_VERSION
+#                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+message("POD_VERSION = ${POD_VERSION}")
+  execute_process( COMMAND bash -c "echo \"${POD_VERSION}\" > ${CMAKE_SOURCE_DIR}/etc/version" )
+
+else( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
+
   execute_process(COMMAND cat ${CMAKE_SOURCE_DIR}/etc/version
-      OUTPUT_VARIABLE VERSION
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-endif( VERSION )
-#
-# remove all white spaces in a VERSION string
-# The resulting string will be used as a PoD install dir. name.
-string(REPLACE " " "" VERSION_DIR ${VERSION})
+                  OUTPUT_VARIABLE POD_VERSION
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+endif( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 #
 # Check if cmake has the required version
 #
@@ -78,7 +84,7 @@ add_dependencies( upload-api-docs api-docs )
 if (DEFINED ENV{POD_LOCATION})
    set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 else (DEFINED ENV{POD_LOCATION})
-   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${VERSION_DIR}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${POD_VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 endif (DEFINED ENV{POD_LOCATION})
 #
 # This is needed to properly install PoD modules
@@ -288,9 +294,9 @@ set(CPACK_SOURCE_IGNORE_FILES
     "Makefile$")
 
 if(GSI_BUILD)
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${VERSION}-GSI-etch32-bin")
+  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-GSI-etch32-bin")
 else(GSI_BUILD)
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${VERSION}-Source")
+  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-Source")
 endif(GSI_BUILD)
 
 include(CPack)
