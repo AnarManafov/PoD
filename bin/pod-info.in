@@ -21,7 +21,7 @@
 
 #######
 eval PROOF_CFG=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
-POD_VERSION=@VERSION@
+POD_VERSION=@POD_VERSION@
 #######
 
 #=============================================================================
