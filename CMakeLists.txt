@@ -14,6 +14,10 @@
 #*************************************************************************
 project( PoD )
 
+#
+# Check if cmake has the required version
+#
+cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # Version
 #
 # take the version string from git and write it to a version file
@@ -35,10 +39,6 @@ else( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 endif( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
-#
-# Check if cmake has the required version
-#
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 #
 # Options
 #
