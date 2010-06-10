@@ -46,7 +46,7 @@ QT4_ADD_RESOURCES( RCS_SRCS_lsf  ${UI_SRSC_lsf} )
 add_library(pod-console-lsf SHARED ${SOURCE_FILES_lsf} ${MOC_SRCS_lsf} ${RCS_SRCS_lsf} ${UI_HDRS_lsf})
 
 set(CMAKE_CXX_FLAGS " -Wall")
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} ${LSF_INCLUDE_DIR} src )
+include_directories( ${pod-console_SOURCE_DIR}/src ${CMAKE_CURRENT_BINARY_DIR} ${LSF_INCLUDE_DIR} src )
 
 
 target_link_libraries (
