@@ -169,13 +169,13 @@ int main( int argc, char *argv[] )
         pid_t pid = CPIDFile::GetPIDFromFile( pidfile_name.str() );
         if ( pid > 0 && IsProcessExist( pid ) )
         {
-            cout << "PROOFAgent process ("
+            cout << PROJECT_NAME << " process ("
             << pid
             << ") is running..." << endl;
         }
         else
         {
-            cout << "PROOFAgent is not running..." << endl;
+            cout << PROJECT_NAME << " is not running..." << endl;
         }
 
         return erOK;
@@ -189,7 +189,7 @@ int main( int argc, char *argv[] )
         if ( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
         {
             cout
-            << "PROOFAgent: closing PROOFAgent ("
+            << PROJECT_NAME << ": self exiting ("
             << pid_to_kill
             << ")..." << endl;
             // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
@@ -211,7 +211,7 @@ int main( int argc, char *argv[] )
                 ++iter;
             }
             if ( IsProcessExist( pid_to_kill ) )
-                cerr << "FAILED! PROOFAgent has failed to close the process." << endl;
+                cerr << "FAILED to close the process." << endl;
         }
 
         return erOK;
