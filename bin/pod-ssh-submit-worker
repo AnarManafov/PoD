@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #/************************************************************************/
 #/**
-# * @file pod-ssh-submit0worker
+# * @file pod-ssh-submit-worker
 # * @brief 
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
@@ -14,6 +14,46 @@
 #
 # Usage
 # $1 ssh host (login@host.fqdn)
-# $2 ssh params
-# $3 remote working dir
+# $2 remote working dir
+# $3 ssh params
 
+TOOL_NAME="pod-ssh-submit-worker"
+WRK_P=$POD_LOCATION/etc/pod-worker.tar.gz
+WRK_S_R=PoDWorker.sh
+WRK_S_L=$POD_LOCATION/etc/PoDWorker.sh
+
+SSH_CMD="ssh -n -f -q $1 $3 PasswordAuthentication=no"
+# check that the worker package is ready
+if [ ! -r $WRK_PKG ]; then
+    echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_PKG\""
+    exit 1
+fi
+
+# create remote dir
+$($SSH_CMD "mkdir -p $2")
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: can't create directory \"$2\" on the host \"$1\""
+    exit 1
+fi
+
+# send a worker package and worker's script
+$(scp $3 $WRK_P $1:$2/ )
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: failed to send worker's package"
+    exit 1
+fi
+
+$(scp $3 $WRK_S_L $1:$2/ )
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: failed to send worker's script"
+    exit 1
+fi
+
+# execute the worker script
+$($SSH_CMD "nohup bash -c \"cd $2 && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &")
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: faild to start PoD worker"
+    exit 1
+fi
+
+exit 0
