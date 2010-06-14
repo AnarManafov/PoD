@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-ssh-clean-worker
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-06-10
+#
+#        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+#*************************************************************************/
+#
+# Usage
+# $1 ssh host (login@host.fqdn)
+# $2 remote working dir
+# $3 ssh params
+
+TOOL_NAME="pod-ssh-clean-worker"
+WRK_PID=PoDWorker.pid
+
+SSH_CMD="ssh -q $1 $3 PasswordAuthentication=no"
+SCP_CMD="scp $3"
+
+# a special case, executed on the remote host
+# check for pid file of worker's script.
+# If the file is available, read pid from it and send a TERM signal using that pid.
+# If the file is unavailable, exit with 0 - it is not an error for us.
+if [ "$1" = "clean" ]; then
+    pid_file="$2/$WRK_PID"
+    
+    if [  -e $pid_file ]; then
+	pid=`cat $pid_file`
+	kill -15 $pid
+	wait $pid
+    fi
+
+    rm -rf "$2"
+
+    exit 0
+fi
+
+SELF_PATH=$(readlink -f $0)
+
+$($SCP_CMD $SELF_PATH $1:$2/ )
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: failed to send worker's cleaning script $SELF_PATH"
+    exit 1
+fi
+
+# this part is executed locally
+$($SSH_CMD "$2/$TOOL_NAME clean $2")
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: faild to stop PoD worker."
+    exit 1
+fi
+
+exit 0

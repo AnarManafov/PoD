@@ -14,6 +14,8 @@
 #        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
 #*************************************************************************/
 #
+LOCK_FILE=PoDWorker.lock
+PID_FILE=PoDWorker.pid
 #
 # ************************************************************************
 # F U N C T I O N S
@@ -33,7 +35,7 @@ clean_up()
 # Archive and removing local proof directory
     _WD=`pwd`
     proof_dir="$_WD/proof"
-    
+   
     if [ -e "$proof_dir" ]; then
 	# making an archive of proof logs
 	# it will be transfered to a user
@@ -41,7 +43,13 @@ clean_up()
 	logMsg "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir
     fi
-    
+
+    # remove lock file
+    rm -f $_WD/$LOCK_FILE
+    rm -f $_WD/$PID_FILE
+
+    logMsg "done cleaning up."
+
     exit $1
 }
 # ************************************************************************
@@ -130,12 +138,21 @@ get_freeport()
 # M A I N
 # ************************************************************************
 
+# current working dir
+WD=$(pwd)
+# check for lock file
+if lockfile -! -r1 $WD/$LOCK_FILE 
+then
+  logMsg "Error: There is already a PoD session running in the directory: $WD"
+  exit 1
+fi
+echo $$ > $WD/$PID_FILE
+
+
 # handle signals
 trap clean_up SIGHUP SIGINT SIGTERM 
 
 logMsg "+++ START +++"
-# current working dir
-WD=$(pwd)
 logMsg "Current working directory: $WD"
 
 user_defaults="$WD/pod-user-defaults-lite"
@@ -313,14 +330,18 @@ fi
 
 logMsg "starting pod-agent..."
 # start pod-agent
-$PROOFAGENTSYS/pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET
+$PROOFAGENTSYS/pod-agent -c $WD/PoD.cfg -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
+
+AGENT=$(pgrep -U $UID pod-agent)
 RET_VAL=$?
 if [ "X$RET_VAL" = "X0" ]; then
-    logMsg "pod-agent finished successfully. Exit code: $RET_VAL"
+    logMsg "checking pod-agent process: running..."
 else
-    logMsg "cant start pod-agent. Exit code: $RET_VAL"
+    logMsg "checking pod-agent process: is NOT running"
     clean_up 1
 fi
+
+wait $!
 
 logMsg "--- DONE ---"
 
