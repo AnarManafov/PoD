@@ -76,11 +76,9 @@ add_dependencies( upload-api-docs api-docs )
 #
 # Install directory
 #
-if (DEFINED ENV{POD_LOCATION})
-   set (CMAKE_INSTALL_PREFIX "$ENV{POD_LOCATION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
-else (DEFINED ENV{POD_LOCATION})
-   set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${POD_VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
-endif (DEFINED ENV{POD_LOCATION})
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/PoD/${POD_VERSION}" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
+endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 #
 # This is needed to properly install PoD modules
 #

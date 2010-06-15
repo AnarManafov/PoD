@@ -6,6 +6,8 @@
 #  4) make install
 #
 
+# Install prefix
+#SET (CMAKE_INSTALL_PREFIX "MY_PATH_HERE" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 
 #
 # BUILD TYPE

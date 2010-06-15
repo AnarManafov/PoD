@@ -117,8 +117,6 @@ gui.accessibility.visual_bell=yes
               to xrootd daemon when restarting a PoD server. In multi-user/core environment, when there are many PoD processes on the 
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
-              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
-              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
               </entry>
       		</row>
           <row>
@@ -130,9 +128,7 @@ gui.accessibility.visual_bell=yes
               In multi-user/core environment, when there are many PoD processes on the 
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
-              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
-              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
-              </entry>
+               </entry>
       		</row>
           <row>
         			<entry>server.agent_ports_range_(min/max)</entry>
@@ -251,8 +247,6 @@ gui.accessibility.visual_bell=yes
               to xrootd daemon when starting a PoD worker. In multi-user/core environment, when there are many PoD processes on the 
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
-              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
-              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
               </entry>
       		</row>
           <row>
@@ -264,8 +258,6 @@ gui.accessibility.visual_bell=yes
               In multi-user/core environment, when there are many PoD processes on the 
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
-              <important>It is very important to keep xrd_ports_range_(min/max) ports range with lower values,
-              then xproof_ports_range_(min/max) ports range. PoD relays on this feature in its algorithms.</important>
               </entry>
       		</row>
           <row>
@@ -335,6 +327,9 @@ gui.accessibility.visual_bell=yes
         </tbody>
    	</tgroup>
 		</table>
+	
+	<important>All port ranges in the PoD configuration must not have intersection.</important>
+	
     </para>
 
     </sect1>
