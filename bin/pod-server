@@ -84,7 +84,6 @@ server_status()
 
     return 0
 }
-
 # ************************************************************************
 # ***** returns a free port from a given range  *****
 get_freeport()
@@ -166,7 +165,7 @@ start()
     ####
     create_agent_server_info_file $SERVER_HOST_NAME $NEW_PROOFAGENT_PORT
 
-    # Start Proofagent
+    # Start pod-agent
     ####
     $POD_LOCATION/bin/pod-agent -d -m server -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --start
 
@@ -180,7 +179,7 @@ start()
 # ***** STOP  *****
 stop()
 {
-    echo "Stoping PoD server..."
+    echo "Stopping PoD server..."
 
     #TODO: make it less aggressive
     pkill -9 -U $UID xrootd
@@ -202,7 +201,6 @@ status()
        echo 'WARNING: $ROOTSYS is not set.'
     fi
 }
-
 
 
 # ************************************************************************
@@ -235,3 +233,4 @@ case "$1" in
 esac
 
 exit $RETVAL
+
