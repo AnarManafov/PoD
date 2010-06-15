@@ -17,6 +17,9 @@
 # $2 remote working dir
 # $3 ssh params
 
+#TODO: ssh params must be passed to the "-o" option of scp
+# except -P
+
 TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
 WRK_S_R=PoDWorker.sh
@@ -27,8 +30,8 @@ SCP_CMD="scp $3"
 
 # check that the worker package is ready
 if [ ! -r $WRK_PKG ]; then
-    echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_PKG\""
-    exit 1
+echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_PKG\""
+exit 1
 fi
 
 # create remote dir
@@ -39,15 +42,9 @@ if [ $? -ne 0 ]; then
 fi
 
 # send a worker package and worker's script
-$($SCP_CMD $WRK_P $1:$2/ )
+$($SCP_CMD $WRK_P $WRK_S_L $1:$2/ )
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: failed to send worker's package"
-    exit 1
-fi
-
-$($SCP_CMD $WRK_S_L $1:$2/ )
-if [ $? -ne 0 ]; then
-    echo "$TOOL_NAME error: failed to send worker's script"
     exit 1
 fi
 
