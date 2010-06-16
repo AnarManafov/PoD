@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
 
     stringstream ss;
     ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
-       << "r2, anar@lxi001.gsi.de,, /tmp/test, 2\n"
+       << "r2, anar@lxi001.gsi.de,, /tmp/test/fff fff, 2\n"
        << "125, anar@lxg0055.gsi.de, -p22, /tmp/test, 8\n";
 
     config.readFrom( ss );
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
     rec.m_id = "r2";
     rec.m_addr = "anar@lxi001.gsi.de";
     rec.m_sshOptions = "";
-    rec.m_wrkDir = "/tmp/test";
+    rec.m_wrkDir = "/tmp/test/fff fff";
     rec.m_nWorkers = 2;
     BOOST_REQUIRE( recs[1] == rec );
     
