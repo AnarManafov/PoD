@@ -195,7 +195,7 @@ case "$host_arch" in
 	;;
 esac
 
-logMsg "host's CPU/instruction set: " $host_arch
+logMsg "host's CPU/instruction set: $host_arch"
 
 case "$host_arch" in
     x86)
