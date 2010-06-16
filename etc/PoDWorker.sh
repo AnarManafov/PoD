@@ -75,8 +75,8 @@ xrd_detect()
     fi
     
     var0=0
-    RETRY_CNT=10
-    # we try for 10 times to detect xrd ports
+    RETRY_CNT=15
+    # we try for 15 times to detect xrd ports
     # it is needed in case when several PoD workers are started in the same time on one machine
     while [ "$var0" -lt "$RETRY_CNT" ]
       do
