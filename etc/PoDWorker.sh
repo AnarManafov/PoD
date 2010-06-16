@@ -211,7 +211,7 @@ RELEASE_REPO="http://pod.gsi.de/releases/add/"
 # ***** ROOT *****
 set_my_rootsys=$($user_defaults -c $POD_CFG --section worker --key set_my_rootsys)
 if [ "$set_my_rootsys" = "no" ]; then
-    wget --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
+    wget --no-verbose --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
     tar -xzf $ROOT_ARC || clean_up 1
 
     export ROOTSYS="$WD/root"
@@ -227,7 +227,7 @@ fi
 
 # **********************
 # ***** getting pod-agent from the repository site *****
-wget --tries=2 $RELEASE_REPO$PROOFAGENT_ARC  || clean_up 1
+wget --no-verbose --tries=2 $RELEASE_REPO$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
 export PROOFAGENTSYS="$WD/pod-agent"
