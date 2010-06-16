@@ -22,6 +22,7 @@ WRK_PID=PoDWorker.pid
 
 SSH_CMD="ssh -q $1 $3 PasswordAuthentication=no"
 SCP_CMD="scp $3"
+WAITTIMEOUT=60
 
 # a special case, executed on the remote host
 # check for pid file of worker's script.
@@ -33,7 +34,15 @@ if [ "$1" = "clean" ]; then
     if [  -e $pid_file ]; then
 	pid=$(cat $pid_file)
 	kill -15 $pid
-	wait $pid
+	cnt=0
+	while $(kill -0 $pid &>/dev/null); do
+	   cnt=$(expr $cnt + 1)
+	   if [ $cnt -gt $WAITTIMEOUT ]; then
+	      echo "$TOOL_NAME error: failed to wait for pid $pid"
+	      exit 1
+	   fi
+	   sleep 1
+	done
     fi
 
     rm -rf "$2"
@@ -42,6 +51,11 @@ if [ "$1" = "clean" ]; then
 fi
 
 SELF_PATH=$(readlink -f $0)
+
+$($SSH_CMD "test -d $2")
+if [ $? -ne 0 ]; then
+   exit 0
+fi
 
 $($SCP_CMD $SELF_PATH $1:$2/ )
 if [ $? -ne 0 ]; then
