@@ -10,11 +10,11 @@
 // a configuration should be a comma-separated values (CSV) with
 // the following records:
 // ________________________________________________________
-// id, login@host.fqdn, ssh params, number of workers,
+// id, login@host.fqdn, ssh params, remote working dir, number of workers,
 //////// example:
-// r1, anar@lxg0527.gsi.de, -p24, 4
-// r2, anar@lxi001.gsi.de,,2
-// 125, anar@lxg0055.gsi.de, -p22, 8
+// r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4
+// r2, anar@lxi001.gsi.de,,/tmp/test,2
+// 125, anar@lxg0055.gsi.de, -p22, /tmp/test,8
 // ________________________________________________________
 //
 // it can be read from a stream.
@@ -49,8 +49,13 @@ struct SConfigRecord
 
         if( ++iter == _end )
             return 3;
-        m_params = *iter;
-        MiscCommon::trim( &m_params, ' ' );
+        m_sshOptions = *iter;
+        MiscCommon::trim( &m_sshOptions, ' ' );
+
+        if( ++iter == _end )
+            return 3;
+        m_wrkDir = *iter;
+        MiscCommon::trim( &m_wrkDir, ' ' );
 
         if( ++iter == _end )
             return 4;
@@ -64,13 +69,15 @@ struct SConfigRecord
     {
         return ( m_id == _rec.m_id &&
                  m_addr == _rec.m_addr &&
-                 m_params == _rec.m_params &&
+                 m_sshOptions == _rec.m_sshOptions &&
+                 m_wrkDir == _rec.m_wrkDir &&
                  m_nWorkers == _rec.m_nWorkers );
 
     }
     std::string m_id;
     std::string m_addr;
-    std::string m_params;
+    std::string m_sshOptions;
+    std::string m_wrkDir;
     size_t m_nWorkers;
 };
 //=============================================================================

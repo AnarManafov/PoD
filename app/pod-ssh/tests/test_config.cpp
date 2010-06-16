@@ -49,17 +49,17 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
     SConfigRecord rec;
     rec.m_id = "r1";
     rec.m_addr = "\"anar@lxg0527.gsi.de\"";
-    rec.m_params = "-p24";
+    rec.m_sshOptions = "-p24";
     rec.m_nWorkers = 4;
     BOOST_REQUIRE( recs[0] == rec );
     rec.m_id = "r2";
     rec.m_addr = "anar@lxi001.gsi.de";
-    rec.m_params = "";
+    rec.m_sshOptions = "";
     rec.m_nWorkers = 2;
     BOOST_REQUIRE( recs[1] == rec );
     rec.m_id = "125";
     rec.m_addr = "anar@lxg0055.gsi.de";
-    rec.m_params = "-p22";
+    rec.m_sshOptions = "-p22";
     rec.m_nWorkers = 8;
     BOOST_REQUIRE( recs[2] == rec );
 }
