@@ -53,12 +53,12 @@ struct SConfigRecord
         MiscCommon::trim( &m_sshOptions, ' ' );
 
         if( ++iter == _end )
-            return 3;
+            return 4;
         m_wrkDir = *iter;
         MiscCommon::trim( &m_wrkDir, ' ' );
 
         if( ++iter == _end )
-            return 4;
+            return 5;
         std::stringstream ss;
         ss << *iter;
         ss >> m_nWorkers;
