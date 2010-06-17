@@ -60,6 +60,6 @@ target_link_libraries (
     ${Boost_filesystem_libs} 
 )
 
-install(TARGETS pod-agent_test_Protocol DESTINATION tests)
+install(TARGETS pod-agent_test_ProofStatusFile DESTINATION tests)
 install(FILES ${PROJECT_BINARY_DIR}/xpd.cf DESTINATION tests)
 
