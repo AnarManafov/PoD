@@ -255,6 +255,10 @@ if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
   install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
 endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
+# tests runner
+if( BUILD_TESTS )
+  install(PROGRAMS run_test.sh DESTINATION tests)
+endif( BUILD_TESTS )
 #
 # Package
 #
