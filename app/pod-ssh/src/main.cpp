@@ -102,7 +102,6 @@ int main( int argc, char *argv[] )
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-
                 CWorker wrk( rec );
                 workers.push_back( wrk );
 
@@ -122,7 +121,6 @@ int main( int argc, char *argv[] )
             cout << "\n";
         }
         cout << endl;
-
     }
     catch( exception& e )
     {

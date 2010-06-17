@@ -50,7 +50,6 @@ void CConfig::readFrom( istream &_stream )
                << i + 1;
             throw runtime_error( ss.str() );
         }
-
         // check for duplicate ids
         pair<ids_t::iterator, bool> ret = ids.insert( rec->m_id );
         if( !ret.second )
