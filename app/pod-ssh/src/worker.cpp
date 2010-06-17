@@ -7,6 +7,7 @@
  *
  */
 //=============================================================================
+// pod-ssh
 #include "worker.h"
 // MiscCommon
 #include <SysHelper.h>
@@ -14,28 +15,23 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-CWorker::CWorker( const string &_id, const string &_addr,
-                  const string &_sshOptions, const string &_wrkDir,
-                  size_t _nNumber ):
-    m_addr( _addr ),
-    m_sshOptions( _sshOptions )
+CWorker::CWorker( configRecord_t _rec ): m_rec( _rec )
 {
-    // m_id is <_id>_<_nNumber>
-    stringstream ss;
-    ss << _id << "_" << _nNumber;
-    m_id = ss.str();
-
     // constructing a full path of the worker for this id
-    // pattern: <_wrkDir>/<m_id>
-    m_wrkDir = _wrkDir;
-    smart_append( &m_wrkDir, '/' );
-    smart_path( &m_wrkDir );
-    m_wrkDir += m_id;
+    // pattern: <m_wrkDir>/<m_id>
+    smart_append( &m_rec->m_wrkDir, '/' );
+    smart_path( &m_rec->m_wrkDir );
+    m_rec->m_wrkDir += m_rec->m_id;
+}
+//=============================================================================
+CWorker::~CWorker()
+{
 }
 //=============================================================================
 void CWorker::printInfo( ostream &_stream ) const
 {
-    _stream << "[" << m_id << "] "
-            << m_addr << ":" << m_wrkDir;
+    _stream << "[" << m_rec->m_id << "] with "
+            << m_rec->m_nWorkers << " workers at "
+            << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
 //=============================================================================

@@ -31,13 +31,15 @@ void CConfig::readFrom( istream &_stream )
           back_inserter( lines ) );
 
     // pars the configuration using boost's tokenizer
-    SConfigRecord rec;
     StringVector_t::const_iterator iter = lines.begin();
     StringVector_t::const_iterator iter_end = lines.end();
     for( size_t i = 0; iter != iter_end; ++iter, ++i )
     {
         Tok t( *iter );
-        int res = rec.assignValues( t.begin(), t.end() );
+        // create config. records here. But this class is not deleting them.
+        // Each CWorker is responsible to delete it's config record info.
+        configRecord_t rec = configRecord_t( new SConfigRecord() );
+        int res = rec->assignValues( t.begin(), t.end() );
         if( res )
         {
             stringstream ss;

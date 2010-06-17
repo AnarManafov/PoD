@@ -6,7 +6,8 @@
  *  Copyright 2010 Anar Manafov <Anar.Manafov@gmail.com>. All rights reserved.
  *
  */
-
+#ifndef CONFIG_H
+#define CONFIG_H
 // a configuration should be a comma-separated values (CSV) with
 // the following records:
 // ________________________________________________________
@@ -24,6 +25,9 @@
 //=============================================================================
 // std
 #include <vector>
+#include <sstream>
+// BOOST
+#include <boost/shared_ptr.hpp>
 // MiscCommon
 #include "MiscUtils.h"
 //=============================================================================
@@ -81,7 +85,8 @@ struct SConfigRecord
     size_t m_nWorkers;
 };
 //=============================================================================
-typedef std::vector<SConfigRecord> configRecords_t;
+typedef boost::shared_ptr<SConfigRecord> configRecord_t;
+typedef std::vector<configRecord_t> configRecords_t;
 //=============================================================================
 class CConfig
 {
@@ -93,3 +98,4 @@ class CConfig
         configRecords_t m_records;
 
 };
+#endif

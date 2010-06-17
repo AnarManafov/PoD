@@ -90,6 +90,7 @@ int main( int argc, char *argv[] )
 
         // Collect workers list
         typedef map<string, CWorker> workersMap_t;
+        size_t wrkCount( 0 );
         workersMap_t workers;
         {
             CConfig config;
@@ -100,24 +101,26 @@ int main( int argc, char *argv[] )
             configRecords_t::const_iterator iter_end = recs.end();
             for( ; iter != iter_end; ++iter )
             {
-                for( size_t i = 0; i < iter->m_nWorkers; ++i )
-                {
-                    CWorker wrk( iter->m_id, iter->m_addr,
-                                 iter->m_sshOptions, iter->m_wrkDir, i );
+                configRecord_t rec( *iter );
 
-                    pair<workersMap_t::iterator, bool> ret =
-                        workers.insert( workersMap_t::value_type( wrk.getID(), wrk ) );
-                    if( !ret.second )
-                    {
-                        stringstream msg;
-                        msg << "a not unique id has been found: "  << "[" << iter->m_id << "]";
-                        throw runtime_error( msg.str() );
-                    }
+                CWorker wrk( rec );
+                wrkCount += rec->m_nWorkers;
+
+                pair<workersMap_t::iterator, bool> ret =
+                    workers.insert( workersMap_t::value_type( rec->m_id, wrk ) );
+                if( !ret.second )
+                {
+                    stringstream msg;
+                    msg << "a not unique id has been found: "  << "[" << rec->m_id << "]";
+                    throw runtime_error( msg.str() );
                 }
             }
         }
 
-        cout << "Workers:\n";
+        cout << "Number of PoD workers: " << workers.size() << endl;
+        cout << "Number of PROOF workers: " << wrkCount << endl;
+
+        cout << "Workers list:\n";
         workersMap_t::const_iterator iter = workers.begin();
         workersMap_t::const_iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )
