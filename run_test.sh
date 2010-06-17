@@ -22,8 +22,11 @@ fi
 
 }
 
-pushd `pwd`
+pushd $(pwd)
 cd $1
+
+echo "Working directory: $(pwd)"
+echo
 
 echo "----------------------"
 echo "pod-agent UNIT-TESTs"
