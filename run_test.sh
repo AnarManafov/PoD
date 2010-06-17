@@ -29,6 +29,12 @@ echo "Working directory: $(pwd)"
 echo
 
 echo "----------------------"
+echo "MiscCommon UNIT-TESTs"
+echo "----------------------"
+exec_test "MiscCommon_test_MiscUtils"
+
+
+echo "----------------------"
 echo "pod-agent UNIT-TESTs"
 echo "----------------------"
 exec_test "pod-agent_test_ProtocolCommands"
