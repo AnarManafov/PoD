@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
     rec.m_wrkDir = "/tmp/test";
     rec.m_nWorkers = 4;
     BOOST_REQUIRE( *recs[0] == rec );
-    
+
     rec = SConfigRecord();
     rec.m_id = "r2";
     rec.m_addr = "anar@lxi001.gsi.de";
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
     rec.m_wrkDir = "/tmp/test/fff fff";
     rec.m_nWorkers = 2;
     BOOST_REQUIRE( *recs[1] == rec );
-    
+
     rec = SConfigRecord();
     rec.m_id = "125";
     rec.m_addr = "anar@lxg0055.gsi.de";
@@ -73,13 +73,24 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
 BOOST_AUTO_TEST_CASE( test_readconfig_bad )
 {
     CConfig config;
-    
+
     stringstream ss;
     ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
-    << "r2, anar@lxi001.gsi.de,/tmp/test,2\n"
-    << "125, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
-    
-    BOOST_REQUIRE_THROW(config.readFrom( ss ), runtime_error );
+       << "r2, anar@lxi001.gsi.de,/tmp/test,2\n"
+       << "125, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
+
+    BOOST_REQUIRE_THROW( config.readFrom( ss ), runtime_error );
+}
+BOOST_AUTO_TEST_CASE( test_duplicate_id )
+{
+    CConfig config;
+
+    stringstream ss;
+    ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
+       << "r2, anar@lxi001.gsi.de,,/tmp/test,2\n"
+       << "r1, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
+
+    BOOST_REQUIRE_THROW( config.readFrom( ss ), runtime_error );
 }
 
 BOOST_AUTO_TEST_SUITE_END();

@@ -30,6 +30,9 @@ void CConfig::readFrom( istream &_stream )
           custom_istream_iterator<string>(),
           back_inserter( lines ) );
 
+    typedef set<string> ids_t;
+    ids_t ids;
+
     // pars the configuration using boost's tokenizer
     StringVector_t::const_iterator iter = lines.begin();
     StringVector_t::const_iterator iter_end = lines.end();
@@ -47,6 +50,16 @@ void CConfig::readFrom( istream &_stream )
                << i + 1;
             throw runtime_error( ss.str() );
         }
+
+        // check for duplicate ids
+        pair<ids_t::iterator, bool> ret = ids.insert( rec->m_id );
+        if( !ret.second )
+        {
+            stringstream ss;
+            ss << "a not unique id has been found: "  << "[" << rec->m_id << "]";
+            throw runtime_error( ss.str() );
+        }
+
         // save a configuration record to a container
         m_records.push_back( rec );
     }

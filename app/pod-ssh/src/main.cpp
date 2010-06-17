@@ -20,7 +20,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
-#include <map>
+#include <list>
 // pod-ssh
 #include "version.h"
 #include "config.h"
@@ -89,9 +89,9 @@ int main( int argc, char *argv[] )
         }
 
         // Collect workers list
-        typedef map<string, CWorker> workersMap_t;
+        typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
-        workersMap_t workers;
+        workersList_t workers;
         {
             CConfig config;
             config.readFrom( f );
@@ -104,28 +104,21 @@ int main( int argc, char *argv[] )
                 configRecord_t rec( *iter );
 
                 CWorker wrk( rec );
-                wrkCount += rec->m_nWorkers;
+                workers.push_back( wrk );
 
-                pair<workersMap_t::iterator, bool> ret =
-                    workers.insert( workersMap_t::value_type( rec->m_id, wrk ) );
-                if( !ret.second )
-                {
-                    stringstream msg;
-                    msg << "a not unique id has been found: "  << "[" << rec->m_id << "]";
-                    throw runtime_error( msg.str() );
-                }
+                wrkCount += rec->m_nWorkers;
             }
         }
 
+        // Some debug info
         cout << "Number of PoD workers: " << workers.size() << endl;
         cout << "Number of PROOF workers: " << wrkCount << endl;
-
         cout << "Workers list:\n";
-        workersMap_t::const_iterator iter = workers.begin();
-        workersMap_t::const_iterator iter_end = workers.end();
+        workersList_t::const_iterator iter = workers.begin();
+        workersList_t::const_iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )
         {
-            iter->second.printInfo( cout );
+            iter->printInfo( cout );
             cout << "\n";
         }
         cout << endl;
