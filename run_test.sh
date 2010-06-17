@@ -32,7 +32,9 @@ echo "----------------------"
 echo "MiscCommon UNIT-TESTs"
 echo "----------------------"
 exec_test "MiscCommon_test_MiscUtils"
-
+exec_test "MiscCommon_test_Process"
+exec_test "MiscCommon_test_SysHelper"
+exec_test "MiscCommon_test_FindCfgFile"
 
 echo "----------------------"
 echo "pod-agent UNIT-TESTs"
