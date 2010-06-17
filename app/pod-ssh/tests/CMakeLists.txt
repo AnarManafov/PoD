@@ -23,3 +23,4 @@ target_link_libraries (
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
+install(TARGETS pod-ssh_test_config DESTINATION tests)
