@@ -8,11 +8,13 @@ clean_up()
 }
 
 trap clean_up SIGHUP SIGINT SIGTERM
-echo "----------------------"
-echo "pod-agent's UNIT-TESTs"
-echo "----------------------"
+
 pushd `pwd`
 cd $1
+
+echo "----------------------"
+echo "pod-agent UNIT-TESTs"
+echo "----------------------"
 echo ">>> Processing tests of ProtocoleCommands"
 ./pod-agent_test_ProtocolCommands || clean_up
 echo
@@ -31,5 +33,12 @@ echo "0" > $ADMIN_PATH/manafov.default.1234.status
 echo "1" > $ADMIN_PATH/manafov.default.5678.status
 echo "3" > $ADMIN_PATH/manafov.default.9.status
 ./pod-agent_test_ProofStatusFile || clean_up
+
+echo "----------------------"
+echo "pod-ssh UNIT-TESTs"
+echo "----------------------"
+echo ">>> Processing tests of the ssh-plugin config file engine"
+./pod-ssh_test_config
+
 popd
 
