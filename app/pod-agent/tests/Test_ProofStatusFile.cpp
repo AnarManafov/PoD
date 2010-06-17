@@ -31,21 +31,19 @@ using namespace PROOFAgent;
 using boost::unit_test::test_suite;
 using namespace MiscCommon;
 namespace fs = boost::filesystem;
-
+//=============================================================================
 #define PATH_CHECK( a, b ) check( a, b, __LINE__ )
 void check( const fs::path & source,
             const std::string & expected, int line )
 {
-    if ( source.string() == expected ) return;
+    if( source.string() == expected ) return;
 
     std::cout << '(' << line << ") source.string(): \"" << source.string()
               << "\" != expected: \"" << expected
               << "\"" << std::endl;
 }
-
-BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
-
+BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_getAdminPath_server )
 {
@@ -82,7 +80,7 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles_server )
     //      ostream_iterator<fs::path>(cout, "\n"));
     PathVector_t::const_iterator iter = files.begin();
     PathVector_t::const_iterator iter_end = files.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
         cout << iter->string() << "\n";
 
 
@@ -109,7 +107,7 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles_worker )
     //      ostream_iterator<fs::path>(cout, "\n"));
     PathVector_t::const_iterator iter = files.begin();
     PathVector_t::const_iterator iter_end = files.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
         cout << iter->string() << "\n";
 
 
@@ -120,4 +118,5 @@ BOOST_AUTO_TEST_CASE( test_enumStatusFiles_worker )
     copy( status.begin(), status.end(),
           ostream_iterator<EProofStatus>( cout, "\n" ) );
 }
+//=============================================================================
 BOOST_AUTO_TEST_SUITE_END();
