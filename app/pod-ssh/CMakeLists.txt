@@ -54,7 +54,6 @@ target_link_libraries (
 )
 
 install(TARGETS pod-ssh DESTINATION bin)
-install(PROGRAMS run_test.sh DESTINATION bin)
 
 #
 # Unit tests
