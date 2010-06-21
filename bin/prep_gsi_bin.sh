@@ -11,16 +11,15 @@ LIBS_PATH=/misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 # build PoD
 mkdir $POD_SRC/build
 mkdir $POD_SRC/inst_tmp
-# set a local install prefix
-export POD_LOCATION=$POD_SRC/inst_tmp
+
+POD_INST=$POD_SRC/inst_tmp
 
 pushd `pwd`
 cd $POD_SRC/build
-cmake -C ../BuildSetup.cmake ..
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -C ../BuildSetup.cmake ..
 make install
 popd
 
-POD_INST=$POD_LOCATION
 
 # Copy compiled parts of PoD
 cp -v $POD_INST/bin/* $POD_SRC/bin/ || exit 1
