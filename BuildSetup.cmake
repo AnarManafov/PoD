@@ -42,3 +42,4 @@ set( BUILD_TESTS ON CACHE BOOL "Build PoD tests" FORCE )
 # PBS plug-in
 #set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
 
+#set( GSI_BUILD ON CACHE BOOL "Build a GSI specific version" FORCE )

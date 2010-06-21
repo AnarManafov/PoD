@@ -4,13 +4,16 @@
 #
 # Provide a path to a source tree of PoD as a parameter to the script.
  
+export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
+export LD_LIBRARY_PATH=/LSF/lsf/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/misc/manafov/Qt/4.4.2_etch32/lib:$LD_LIBRARY_PATH
 
 POD_SRC=$(readlink -f $1)
 LIBS_PATH=/misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 
 # build PoD
-mkdir $POD_SRC/build
-mkdir $POD_SRC/inst_tmp
+mkdir $POD_SRC/build || exit 1
+mkdir $POD_SRC/inst_tmp || exit 1
 
 POD_INST=$POD_SRC/inst_tmp
 
@@ -20,10 +23,9 @@ cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -C ../BuildSetup.cmake ..
 make install
 popd
 
-
 # Copy compiled parts of PoD
 cp -v $POD_INST/bin/* $POD_SRC/bin/ || exit 1
-                      rm $POD_SRC/bin/pod-info || exit 1
+rm $POD_SRC/bin/pod-info || exit 1
 
 # Copy plug-ins
 mkdir -p $POD_SRC/plugins
@@ -44,8 +46,8 @@ make package_source
 popd
 
 # release the tarball
-$(chmod go+xr $POD_SRC/build/*.tar.gz) || exit 1
-$(scp -p $POD_SRC/build/*.tar.gz manafov@lxg0527:/misc/manafov/web-docs/D-Grid/Release/Nightly) || exit 1
+chmod go+xr $POD_SRC/build/*.tar.gz || exit 1
+scp -p $POD_SRC/build/*.tar.gz manafov@lxg0527:/misc/manafov/web-docs/D-Grid/Release/Nightly || exit 1
 
 exit 0
 
