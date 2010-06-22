@@ -2,6 +2,8 @@
 
 # This script helps to build a GSI specific version of PoD and
 # bins packages for PoD workers
+# I will remove it as soon as I get a hardware for buildbot slaves. So I can
+# have different virtual machines with different architecture to test on and produce binary packages.
 
 export LD_LIBRARY_PATH=/misc/manafov/Qt/4.4.2_etch32/lib:$LD_LIBRARY_PATH
 export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
@@ -37,6 +39,7 @@ else
 	       popd
 	       ;;
 	"gsi_bin")
+	       echo ">>> Building GSI pkg..."
 	       $POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD || exit 1
 	       ;;
 	"wrk_bin") 

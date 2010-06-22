@@ -266,7 +266,9 @@ SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
-    "prep_gsi_bin.sh"
+    "bin/prep_gsi_bin.sh"
+    "bin/prep_wrk_bins.sh"
+    "prep_bins.sh"
     "inst_tmp"
     "PoD_env.sh$"
     "bin/pod-info$"
