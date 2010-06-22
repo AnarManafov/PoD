@@ -22,7 +22,7 @@ POD_INST=$POD_SRC/inst_tmp
 pushd `pwd`
 cd $POD_SRC/build
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -C ../BuildSetup.cmake ..
-make install
+make -j4 install
 popd
 
 # Copy compiled parts of PoD

@@ -50,7 +50,7 @@ POD_INST=$POD_SRC/inst_tmp
 pushd `pwd`
 cd $POD_BUILD_DIR
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -C ../BuildSetup.cmake .. || exit 1
-make -j2 install || exit 1
+make -j4 install || exit 1
 popd
 
 PKG_VERSION=$(cat $POD_SRC/etc/version)
