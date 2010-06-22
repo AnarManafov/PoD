@@ -52,4 +52,3 @@ chmod go+xr $POD_SRC/build/*.tar.gz || exit 1
 scp -p $POD_SRC/build/*.tar.gz manafov@lxg0527:/misc/manafov/web-docs/D-Grid/Release/Nightly || exit 1
 
 exit 0
-
