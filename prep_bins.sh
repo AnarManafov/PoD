@@ -5,7 +5,6 @@
 
 export LD_LIBRARY_PATH=/misc/manafov/Qt/4.4.2_etch32/lib:$LD_LIBRARY_PATH
 export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
-export PATH=/misc/manafov/Soft/git/bin:$PATH
 
 POD_SRC="/misc/manafov/PoD/BinBuilds"
 
@@ -15,26 +14,36 @@ HOST32=lxi009.gsi.de
 
 if [ -z "$1" ]; then
     # executing locally
-    echo "sending script to a remote host..."
-    cat ./prep_bins.sh | ssh manafov@$HOST32 "cat > /tmp/prep_bins.sh; chmod 755 /tmp/prep_bins.sh; /tmp/prep_bins.sh remote"
+    echo ">>> sending script to a remote host..."
+    SCRIPT="/misc/manafov/tmp/prep_bins.sh"
+    
+    cat ./prep_bins.sh | ssh manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo"
+    ssh manafov@$HOST32 "$SCRIPT wrk_bin"
+    ssh manafov@$HOST64 "$SCRIPT wrk_bin"
+    # gsi build needs to be the last, since it modifies bootstrap, so other builds would need to rewrite it
+    ssh manafov@$HOST32 "$SCRIPT gsi_bin"
 else
-    # executing remotly
-    # prep repo
-    echo "executing on the remote host..."
-    pushd `pwd`
-    cd $POD_SRC
-    rm -rf PoD
-    git clone ssh://anar@depc218.gsi.de//home/anar/GitRepository/PROOFonDemand/PoD
-    cd PoD
-    git submodule update --init --recursive || exit 1
-    popd
-    
-    # GSI bin
-    ssh manafov@$HOST32 "$POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD" || exit 1
-    
-    # Workers bins
-    ssh manafov@$HOST64 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
-    ssh manafov@$HOST32 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
+    echo ">>> executing on the host: "$(hostname -f)
+    case "$1" in
+	"get_repo")
+	       export PATH=/misc/manafov/Soft/git/bin:$PATH
+	       echo ">>> Preparing PoD repository..."
+	       pushd `pwd`
+	       cd $POD_SRC
+	       rm -rf PoD
+	       git clone ssh://anar@depc218.gsi.de//home/anar/GitRepository/PROOFonDemand/PoD
+	       cd PoD
+	       git submodule update --init --recursive || exit 1
+	       popd
+	       ;;
+	"gsi_bin")
+	       $POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD || exit 1
+	       ;;
+	"wrk_bin") 
+	    echo ">>> Building wrk. pkg..."
+	    $POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD || exit 1
+	    ;;
+    esac
 fi
 
 exit 0

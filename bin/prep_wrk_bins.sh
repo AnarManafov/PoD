@@ -68,7 +68,7 @@ cd $POD_AGENT_BIN_DIR/..
 $(tar -czvf $PKG_NAME pod-agent/ &>/dev/null)
 
 # release the tarball
-chmod go+xr $PKG_NAME) || exit 1
+chmod go+xr $PKG_NAME || exit 1
 scp -p $PKG_NAME manafov@lxg0527:/misc/manafov/web-docs/D-Grid/Release/Nightly || exit 1
 popd
 
