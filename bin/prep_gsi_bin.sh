@@ -14,8 +14,8 @@ POD_SRC=$(readlink -f $1)
 LIBS_PATH=/misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 
 # build PoD
-mkdir $POD_SRC/build || exit 1
-mkdir $POD_SRC/inst_tmp || exit 1
+mkdir -p $POD_SRC/build || exit 1
+mkdir -p $POD_SRC/inst_tmp || exit 1
 
 POD_INST=$POD_SRC/inst_tmp
 
