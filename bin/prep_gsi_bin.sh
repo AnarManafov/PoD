@@ -12,15 +12,6 @@ export LD_LIBRARY_PATH=/misc/manafov/Qt/4.4.2_etch32/lib:$LD_LIBRARY_PATH
 POD_SRC=$(readlink -f $1)
 LIBS_PATH=/misc/manafov/PoD/forGSI/libs32b_fo_64bit/
 
-# prep repo
-pushd `pwd`
-cd $POD_SRC
-rm -rf $POD_SRC/PoD/*
-git clone ssh://anar@depc218.gsi.de//home/anar/GitRepository/PROOFonDemand/PoD || exit 1
-cd PoD
-git submodule update --init --recursive || exit 1
-popd
-
 # build PoD
 mkdir $POD_SRC/build || exit 1
 mkdir $POD_SRC/inst_tmp || exit 1
