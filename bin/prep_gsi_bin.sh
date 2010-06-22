@@ -6,6 +6,7 @@
  
 export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
 export PATH=/misc/manafov/Soft/git/bin:$PATH
+export PATH=/misc/manafov/Qt/4.4.2_etch32/bin:$PATH
 export LD_LIBRARY_PATH=/LSF/lsf/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/misc/manafov/Qt/4.4.2_etch32/lib:$LD_LIBRARY_PATH
 

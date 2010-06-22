@@ -12,10 +12,12 @@ POD_SRC="/misc/manafov/PoD/BinBuilds"
 
 if [ -z "$1" ]; then
     # executing locally
+    echo "sending script to a remote host..."
     cat ./prep_bins.sh | ssh manafov@lxetch32 "cat > /tmp/prep_bins.sh; chmod 755 /tmp/prep_bins.sh; /tmp/prep_bins.sh remote"
 else
     # executing remotly
     # prep repo
+    echo "executing on the remote host..."
     pushd `pwd`
     cd $POD_SRC
     rm -rf PoD
@@ -25,11 +27,11 @@ else
     popd
     
     # GSI bin
-    ssh lxetch32 "$POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@lxetch32 "$POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD" || exit 1
     
     # Workers bins
-    ssh lxetch64 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
-    ssh lxetch32 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@lxetch64 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@lxetch32 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
 fi
 
 exit 0
