@@ -9,11 +9,14 @@ export PATH=/misc/manafov/Soft/git/bin:$PATH
 
 POD_SRC="/misc/manafov/PoD/BinBuilds"
 
+# hard-codded because of key changing problem (local GSI issue)
+HOST64=lxi020.gsi.de
+HOST32=lxi009.gsi.de
 
 if [ -z "$1" ]; then
     # executing locally
     echo "sending script to a remote host..."
-    cat ./prep_bins.sh | ssh manafov@lxetch32 "cat > /tmp/prep_bins.sh; chmod 755 /tmp/prep_bins.sh; /tmp/prep_bins.sh remote"
+    cat ./prep_bins.sh | ssh manafov@$HOST32 "cat > /tmp/prep_bins.sh; chmod 755 /tmp/prep_bins.sh; /tmp/prep_bins.sh remote"
 else
     # executing remotly
     # prep repo
@@ -27,11 +30,11 @@ else
     popd
     
     # GSI bin
-    ssh manafov@lxetch32 "$POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@$HOST32 "$POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD" || exit 1
     
     # Workers bins
-    ssh manafov@lxetch64 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
-    ssh manafov@lxetch32 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@$HOST64 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
+    ssh manafov@$HOST32 "$POD_SRC/PoD/bin/prep_wrk_bins.sh $POD_SRC/PoD" || exit 1
 fi
 
 exit 0
