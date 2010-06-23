@@ -35,21 +35,21 @@ exit 1
 fi
 
 # create remote dir
-$($SSH_CMD "mkdir -p $2")
+$SSH_CMD "mkdir -p $2"
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: can't create directory \"$2\" on the host \"$1\""
     exit 1
 fi
 
 # send a worker package and worker's script
-$($SCP_CMD $WRK_P $WRK_S_L $1:$2/ )
+$SCP_CMD $WRK_P $WRK_S_L $1:$2/
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: failed to send worker's package"
     exit 1
 fi
 
 # execute the worker script
-$($SSH_CMD "nohup bash -c \"cd $2 && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &")
+$SSH_CMD "nohup bash -c \"cd $2 && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &"
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: faild to start PoD worker"
     exit 1

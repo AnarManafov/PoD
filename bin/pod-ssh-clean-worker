@@ -52,19 +52,19 @@ fi
 
 SELF_PATH=$(readlink -f $0)
 
-$($SSH_CMD "test -d $2")
+$SSH_CMD "test -d $2"
 if [ $? -ne 0 ]; then
    exit 0
 fi
 
-$($SCP_CMD $SELF_PATH $1:$2/ )
+$SCP_CMD $SELF_PATH $1:$2/
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: failed to send worker's cleaning script $SELF_PATH"
     exit 1
 fi
 
 # this part is executed locally
-$($SSH_CMD "$2/$TOOL_NAME clean $2")
+$SSH_CMD "$2/$TOOL_NAME clean $2"
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: faild to stop PoD worker."
     exit 1
