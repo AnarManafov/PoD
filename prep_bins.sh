@@ -10,20 +10,22 @@ export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
 
 POD_SRC="/misc/manafov/PoD/BinBuilds"
 
+# ssh host key on lxetch64 is changing very oftn (bug?), we therefore use the following ssh options
+SSH_CMD="ssh -o userknownhostsfile=/dev/null -o stricthostkeychecking=no"
 # hard-codded because of key changing problem (local GSI issue)
-HOST64=lxi020.gsi.de
-HOST32=lxi009.gsi.de
+HOST64="lxi020.gsi.de"
+HOST32="lxi009.gsi.de "
 
 if [ -z "$1" ]; then
     # executing locally
     echo ">>> sending script to a remote host..."
     SCRIPT="/misc/manafov/tmp/prep_bins.sh"
     
-    cat ./prep_bins.sh | ssh manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo"
-    ssh manafov@$HOST32 "$SCRIPT wrk_bin"
-    ssh manafov@$HOST64 "$SCRIPT wrk_bin"
+    cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo"
+    $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin"
+    $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin"
     # gsi build needs to be the last, since it modifies bootstrap, so other builds would need to rewrite it
-    ssh manafov@$HOST32 "$SCRIPT gsi_bin"
+    $SSH_CMD manafov@$HOST32 "$SCRIPT gsi_bin"
 else
     echo ">>> executing on the host: "$(hostname -f)
     case "$1" in
