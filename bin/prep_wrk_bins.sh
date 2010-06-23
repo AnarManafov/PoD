@@ -49,7 +49,7 @@ POD_INST=$POD_SRC/inst_tmp
 
 pushd `pwd`
 cd $POD_BUILD_DIR
-cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -C ../BuildSetup.cmake .. || exit 1
+cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -DCMAKE_BUILD_TYPE=Release .. || exit 1
 make -j4 pod-agent || exit 1
 make install || exit 1
 popd
