@@ -259,6 +259,10 @@ endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
 if( BUILD_TESTS )
   install(PROGRAMS run_test.sh DESTINATION tests)
 endif( BUILD_TESTS )
+
+# generate a default PoD configuration file
+install(CODE "execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/bin/pod-user-defaults -c ${CMAKE_INSTALL_PREFIX}/etc/PoD.cfg -d )")
+
 #
 # Package
 #

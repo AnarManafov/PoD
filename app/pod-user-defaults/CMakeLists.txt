@@ -45,6 +45,4 @@ target_link_libraries (
 )
 
 install(TARGETS pod-user-defaults DESTINATION bin)
-# generate a default PoD configuration file
-install(CODE "execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/bin/pod-user-defaults -c ${CMAKE_INSTALL_PREFIX}/etc/PoD.cfg -d )")
 
