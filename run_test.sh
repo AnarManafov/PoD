@@ -59,6 +59,8 @@ echo "----------------------"
 echo "pod-ssh UNIT-TESTs"
 echo "----------------------"
 exec_test "pod-ssh_test_config"
+exec_test "pod-ssh_test_threadpool"
 
 popd
 
+exit 0
