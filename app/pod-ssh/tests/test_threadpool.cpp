@@ -40,7 +40,7 @@ enum EProc {start, clean};
 class CTestTask: public CTaskImp<CTestTask, EProc>
 {
     public:
-        void runTask()
+        void runTask( EProc _param )
         {
             m_tid = MiscCommon::gettid();
             sleep( g_sleeptime );
@@ -65,7 +65,7 @@ int main()
     vector <CTestTask> tasksList( g_numTasks );
     for( size_t i = 0; i < g_numTasks; ++i )
     {
-        threadPool.pushTask( tasksList[i] );
+        threadPool.pushTask( tasksList[i], start );
     }
     threadPool.stop( true );
 

@@ -28,14 +28,14 @@ template <class _T, class _P>
 class CTaskImp
 {
     public:
-        void setTaskParam( _P _param )
+        void setTaskParam( _P &_param )
         {
             m_taskParam = _param;
         }
         void run()
         {
             _T *pThis = reinterpret_cast<_T *>( this );
-            pThis->runTask();
+            pThis->runTask( m_taskParam );
         }
     private:
         _P m_taskParam;
@@ -48,8 +48,9 @@ class CTask
         typedef CTaskImp<_T, _P> task_t;
 
     public:
-        CTask( task_t &_task ): m_task( _task )
+        CTask( task_t &_task, _P &_param ): m_task( _task )
         {
+            m_task.setTaskParam( _param );
         }
         void run()
         {
@@ -79,10 +80,10 @@ class CThreadPool
             stop();
         }
 
-        void pushTask( typename CTask<_T, _P>::task_t &_task )
+        void pushTask( typename CTask<_T, _P>::task_t &_task, _P _param )
         {
             boost::mutex::scoped_lock lock( m_mutex );
-            task_t *task = new task_t( _task );
+            task_t *task = new task_t( _task, _param );
             m_tasks.push( task );
 
             m_threadNeeded.notify_all();
