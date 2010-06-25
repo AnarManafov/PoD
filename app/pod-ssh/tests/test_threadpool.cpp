@@ -12,6 +12,13 @@
 
         Copyright (c) 2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
+//=============================================================================
+// This is a simple test of threadPool.h
+// We just start a thread pool and push simple tasks in it.
+// Each task sleeps for a defined amount of time and records a thread id
+// of the thread, which executed this task.
+// At the end we check that each thread was used an equal amount of times.
+//=============================================================================
 // STD
 #include <iostream>
 #include <iterator>
