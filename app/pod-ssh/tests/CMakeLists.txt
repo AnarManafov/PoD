@@ -16,7 +16,7 @@ project( pod-ssh-tests )
 
 include_directories(${pod-ssh_SOURCE_DIR}/src)
 #=============================================================================
-add_executable(pod-ssh_test_config test_config.cpp  ${pod-ssh_SOURCE_DIR}/src/config.cpp)
+add_executable(pod-ssh_test_config test_config.cpp ${pod-ssh_SOURCE_DIR}/src/config.cpp)
 
 target_link_libraries (
     pod-ssh_test_config
@@ -24,3 +24,13 @@ target_link_libraries (
 )
 
 install(TARGETS pod-ssh_test_config DESTINATION tests)
+#=============================================================================
+add_executable(pod-ssh_test_threadpool test_threadpool.cpp )
+
+target_link_libraries (
+    pod-ssh_test_threadpool
+    ${Boost_THREAD_LIBRARY}
+)
+
+install(TARGETS pod-ssh_test_threadpool DESTINATION tests)
+
