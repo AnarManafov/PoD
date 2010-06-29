@@ -21,11 +21,11 @@ if [ -z "$1" ]; then
     echo ">>> sending script to a remote host..."
     SCRIPT="/misc/manafov/tmp/prep_bins.sh"
     
-    cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo"
-    $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin"
-    $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin"
+    cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo" || exit 1
+    $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin" || exit 1
+    $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin" || exit 1
     # gsi build needs to be the last, since it modifies bootstrap, so other builds would need to rewrite it
-    $SSH_CMD manafov@$HOST32 "$SCRIPT gsi_bin"
+    $SSH_CMD manafov@$HOST32 "$SCRIPT gsi_bin" || exit 1
 else
     echo ">>> executing on the host: "$(hostname -f)
     case "$1" in
