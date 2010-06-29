@@ -70,7 +70,7 @@ $(tar -czvf $PKG_NAME pod-agent/ &>/dev/null)
 
 # release the tarball
 chmod go+xr $PKG_NAME || exit 1
-scp -p $PKG_NAME podwww@lxg0527:/u/podwww/web-docs/releases/pod/nightly || exit 1
+scp -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
 popd
 
 exit 0
