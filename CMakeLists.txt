@@ -17,7 +17,7 @@ project( PoD )
 #
 # Check if cmake has the required version
 #
-cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 # Version
 #
 # take the version string from git and write it to a version file
@@ -86,7 +86,7 @@ set(IS_SET_POD_INSTALL_PREFIX 1 CACHE INTERNAL "")
 #
 # Where to lookup modules
 #
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}; ${CMAKE_SOURCE_DIR}/cmake")
 #
 # MiscCommon location
 #
@@ -198,9 +198,9 @@ endif(QT4_FOUND)
     message(STATUS "Build pod-console - NO")
   endif(BUILD_pod_console)
 
-  if( (NOT BUILD_pod_agent) OR (NOT BUILD_pod_user_defaults) )
+  if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
     message( FATAL_ERROR "Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
-  endif( (NOT BUILD_pod_agent) OR (NOT BUILD_pod_user_defaults) )
+  endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
 
 endif( NOT GSI_BUILD )
 #
@@ -260,8 +260,8 @@ if( BUILD_TESTS )
   install(PROGRAMS run_test.sh DESTINATION tests)
 endif( BUILD_TESTS )
 
-# generate a default PoD configuration file
-install(CODE "execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/bin/pod-user-defaults -c ${CMAKE_INSTALL_PREFIX}/etc/PoD.cfg -d )")
+# executing the post-install script
+install(SCRIPT "cmake/postinstall.cmake")
 
 #
 # Package
