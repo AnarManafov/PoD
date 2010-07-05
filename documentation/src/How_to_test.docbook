@@ -36,7 +36,23 @@ Test
 <screen>
 <prompt>$ </prompt><command>pod-info -c</command>
 </screen>
-        You can also use the PoD helper header to generate this URL, please see <xref linkend="A_helper_header"/>, .
+This command so far can be run only on the machine where you started a PoD server. In the future this limitation will be removed.
+<para>
+You also can call the command from you code, like the following:
+</para>
+<screen>
+gSystem->GetFromPipe("pod-info -c")
+</screen>
+So, the test could look like:
+<screen>
+<prompt>$ </prompt><command>cd $ROOTSYS/tutorials/proof</command>
+<prompt>$ </prompt><command>root</command>
+<prompt>root[] </prompt><command>.L runProof.C+</command>
+<prompt>root[] </prompt><command>runProof("simple", gSystem->GetFromPipe("pod-info -c"))</command>
+<prompt>root[] </prompt><command>runProof("event(nevt=1000000)", gSystem->GetFromPipe("pod-info -c"))</command>
+</screen>
+
+        You can also use the PoD helper header to generate the connection URL, please see <xref linkend="A_helper_header"/>, .
         </para>
 		   	</para>
 		</sect1>
