@@ -54,12 +54,11 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "start", "Start agent daemon (default action)" )
     ( "stop", "Stop agent daemon" )
     ( "status", "Query current status of agent daemon" )
-    ( "pidfile,p", bpo::value<string>()->default_value( "/tmp/" ), "Directory, where daemon can keep its pid file" ) // TODO: I am thinking to move this option to PoD config file
     ( "serverinfo", bpo::value<string>()->default_value( "$POD_LOCATION/etc/server_info.cfg" ), "A server info file name" )
     ( "proofport", bpo::value<unsigned int>(), "A PROOF (xproof) port. Used only by agents in a worker mode" )
     // This parameter is mostly used by SSH plug-in to allow
     // spawning several PROOF workers in one PoD session on a single worker node.
-    // The parameter can be used only by pod-agent workers and only when in
+    // The parameter can only be used by pod-agent workers and only when in
     // the native PROOF connection.
     ( "workers", bpo::value<unsigned int>(), "A number of PROOF workers to spawn. Used only by agents in a worker mode and only in the native PROOF connection." )
     ;
@@ -113,12 +112,6 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
         _Options->m_Command = SOptions_t::Stop;
     if( vm.count( "status" ) )
         _Options->m_Command = SOptions_t::Status;
-    if( vm.count( "pidfile" ) )
-    {
-        _Options->m_sPidfileDir = vm["pidfile"].as<string>();
-        // We need to be sure that there is "/" always at the end of the path
-        smart_append( &_Options->m_sPidfileDir, '/' );
-    }
     _Options->m_bDaemonize = vm.count( "daemonize" );
 
     if( vm.count( "serverinfo" ) )
@@ -168,15 +161,13 @@ int main( int argc, char *argv[] )
 
 
     // pidfile name: proofagent.<instance_name>.pid
-    stringstream pidfile_name;
-    pidfile_name
-            << Options.m_sPidfileDir
-            << "proofagent.pid";
+    string pidfile_name(common.m_workDir);
+    pidfile_name += "proofagent.pid";
 
     // Checking for "status" option
     if( Options.m_Command == SOptions_t::Status )
     {
-        pid_t pid = CPIDFile::GetPIDFromFile( pidfile_name.str() );
+        pid_t pid = CPIDFile::GetPIDFromFile( pidfile_name );
         if( pid > 0 && IsProcessExist( pid ) )
         {
             cout << PROJECT_NAME << " process ("
@@ -195,7 +186,7 @@ int main( int argc, char *argv[] )
     if( SOptions_t::Stop == Options.m_Command )
     {
         // TODO: make wait for the process here to check for errors
-        const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name.str() );
+        const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( pidfile_name );
         if( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
         {
             cout
@@ -256,7 +247,7 @@ int main( int argc, char *argv[] )
 
     try
     {
-        CPIDFile pidfile( pidfile_name.str(), ( Options.m_bDaemonize ) ? ::getpid() : 0 );
+        CPIDFile pidfile( pidfile_name, ( Options.m_bDaemonize ) ? ::getpid() : 0 );
 
         // Daemon-specific initialization goes here
         agent.setConfiguration( Options );

@@ -31,7 +31,6 @@ namespace PROOFAgent
 
         SOptions():                        // Default options' values
             m_Command( Start ),
-            m_sPidfileDir( "/tmp/" ),
             m_bDaemonize( false ),
             m_bValidate( false ),
             m_agentMode( Server ),
@@ -42,7 +41,6 @@ namespace PROOFAgent
 
         std::string m_sConfigFile;
         ECommand_t m_Command;
-        std::string m_sPidfileDir;
         bool m_bDaemonize;
         bool m_bValidate;
         EAgentMode_t m_agentMode;       //!< A mode of PROOFAgent, defined by ::EAgentMode_t.

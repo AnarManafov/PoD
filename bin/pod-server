@@ -167,7 +167,7 @@ start()
 
     # Start pod-agent
     ####
-    $POD_LOCATION/bin/pod-agent -d -m server -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --start
+    $POD_LOCATION/bin/pod-agent -d -m server -c $POD_LOCATION/etc/PoD.cfg --start
 
     # Prepare the worker package
     ####
@@ -185,7 +185,7 @@ stop()
     pkill -9 -U $UID xrootd
     pkill -9 -U $UID proofserv
 
-    $POD_LOCATION/bin/pod-agent -d -p "$1/" -c $POD_LOCATION/etc/PoD.cfg --stop
+    $POD_LOCATION/bin/pod-agent -d -c $POD_LOCATION/etc/PoD.cfg --stop
     
     return 0
 }
