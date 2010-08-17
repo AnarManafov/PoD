@@ -30,17 +30,19 @@ const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
 const char *const g_xpdCFG = "$POD_LOCATION/xpd.cf";
 //=============================================================================
-CAgentClient::CAgentClient(const SOptions_t &_data ):
-        CAgentBase( _data.m_podOptions.m_worker.m_common ),
-        m_id( 0 ),
-        m_isDirect( false ){
+CAgentClient::CAgentClient( const SOptions_t &_data ):
+    CAgentBase( _data.m_podOptions.m_worker.m_common ),
+    m_id( 0 ),
+    m_isDirect( false )
+{
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
     m_proofPort = _data.m_proofPort;
+    m_numberOfPROOFWorkers = _data.m_numberOfPROOFWorkers;
 
-    string xpd( g_xpdCFG);
+    string xpd( g_xpdCFG );
     smart_path( &xpd );
-    if ( !m_proofStatus.readAdminPath( xpd, adminp_worker ) )
+    if( !m_proofStatus.readAdminPath( xpd, adminp_worker ) )
     {
         string msg( "Can't find xrootd config: " );
         msg += xpd;
@@ -62,11 +64,11 @@ void CAgentClient::processAdminConnection( int _serverSock )
     v.convertToData( &data );
     protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), data );
 
-    while ( true )
+    while( true )
     {
         InfoLog( "waiting for server commands" );
         CProtocol::EStatus_t ret = protocol.read( _serverSock );
-        switch ( ret )
+        switch( ret )
         {
             case CProtocol::stDISCONNECT:
                 throw runtime_error( "a disconnect has been detected on the adminChannel" );
@@ -79,7 +81,7 @@ void CAgentClient::processAdminConnection( int _serverSock )
                     stringstream ss;
                     ss << "CMD: " <<  header.m_cmd;
                     InfoLog( ss.str() );
-                    switch ( static_cast<ECmdType>( header.m_cmd ) )
+                    switch( static_cast<ECmdType>( header.m_cmd ) )
                     {
                             //case cmdVERSION_BAD:
                             //    break;
@@ -122,6 +124,16 @@ void CAgentClient::processAdminConnection( int _serverSock )
                             m_isDirect = true;
                             InfoLog( "Server requested to use a direct connection for PROOF packages." );
                             break;
+                        case cmdGET_WRK_NUM:
+                            {
+                                // reuse SIdCmd
+                                SIdCmd wn_num;
+                                wn_num.m_id = m_numberOfPROOFWorkers;
+                                BYTEVector_t data;
+                                wn_num.convertToData( &data );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdGET_WRK_NUM ), data );
+                            }
+                            break;
                         case cmdSHUTDOWN:
                             InfoLog( "Shutting down, by the server's request..." );
                             graceful_quit = true;
@@ -142,9 +154,9 @@ void CAgentClient::run()
     {
         createPROOFCfg();
 
-        while ( true )
+        while( true )
         {
-            if ( graceful_quit )
+            if( graceful_quit )
             {
                 InfoLog( "shutting Agent's instance down..." );
                 return;
@@ -163,7 +175,7 @@ void CAgentClient::run()
                 // Starting a server communication
                 processAdminConnection( client.getSocket() );
             }
-            catch ( exception & e )
+            catch( exception & e )
             {
                 WarningLog( 0, e.what() );
                 continue;
@@ -186,14 +198,14 @@ void CAgentClient::run()
                 // now we are ready to proxy all packages
                 mainSelect( &node );
             }
-            catch ( exception & e )
+            catch( exception & e )
             {
                 WarningLog( erError, e.what() );
                 continue;
             }
         }
     }
-    catch ( exception & e )
+    catch( exception & e )
     {
         FaultLog( erError, e.what() );
     }
@@ -202,38 +214,38 @@ void CAgentClient::run()
 //=============================================================================
 void CAgentClient::monitor()
 {
-    while ( true )
+    while( true )
     {
         // TODO: we need to check real PROOF port here (from cfg)
-        if ( !IsPROOFReady( m_proofPort ) )
+        if( !IsPROOFReady( m_proofPort ) )
         {
             FaultLog( erError, "Can't connect to PROOF/XRD service." );
             graceful_quit = 1;
         }
 
         static uint16_t count = 0;
-        if ( count < 3 )
+        if( count < 3 )
             ++count;
         // check status files of the proof
         // do that when at least one connection is direct
         // NOTE: Call this check every third time or something, in order
         // to avoid resource overloading.
-        if ( m_isDirect && 3 == count )
+        if( m_isDirect && 3 == count )
         {
             updateIdle();
             count = 0;
         }
 
-        if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
+        if( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
         {
             InfoLog( "Agent's idle time has just reached a defined maximum. Exiting..." );
             graceful_quit = 1;
         }
 
-        if ( graceful_quit )
+        if( graceful_quit )
         {
             // wake up (from "select") the main thread, so that it can update it self
-            if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+            if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
 
             return;
@@ -257,16 +269,16 @@ void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWai
 
     int retval = ::select(( _sockToWait > m_fdSignalPipe ? _sockToWait : m_fdSignalPipe ) + 1,
                           &readset, NULL, NULL, NULL );
-    if ( retval < 0 )
+    if( retval < 0 )
         throw system_error( "Error occurred while waiting for Agent server:" );
 
     // must actually never happen
-    if ( 0 == retval )
+    if( 0 == retval )
         throw system_error( "Select has timeout while waiting for an Agent server." );
 
     // we got a signal for update
     // reading everything from the pipe and exiting from the function
-    if ( FD_ISSET( m_fdSignalPipe, &readset ) )
+    if( FD_ISSET( m_fdSignalPipe, &readset ) )
     {
         const int read_size = 20;
         char buf[read_size];
@@ -275,7 +287,7 @@ void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWai
         {
             numread = read( m_fdSignalPipe, buf, read_size );
         }
-        while ( numread > 0 );
+        while( numread > 0 );
 
         throw runtime_error( "Got a wake up signal from the signal pipe. Stopping the main select..." );
     }
@@ -304,12 +316,12 @@ MiscCommon::INet::Socket_t CAgentClient::connectToLocalPROOF( unsigned int _proo
 //=============================================================================
 void CAgentClient::mainSelect( CNode *_node )
 {
-    while ( true )
+    while( true )
     {
         m_idleWatch.touch();
 
         // Checking whether signal has arrived
-        if ( graceful_quit )
+        if( graceful_quit )
         {
             InfoLog( erOK, "STOP signal received." );
             return;
@@ -319,7 +331,7 @@ void CAgentClient::mainSelect( CNode *_node )
         fd_set readset;
         FD_ZERO( &readset );
 
-        if ( !_node || !_node->isValid() )
+        if( !_node || !_node->isValid() )
             return;
 
         int fd_first = _node->getSocket( CNode::nodeSocketFirst );
@@ -333,18 +345,18 @@ void CAgentClient::mainSelect( CNode *_node )
         fd_max = fd_max > m_fdSignalPipe ? fd_max : m_fdSignalPipe;
 
         int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
-        if ( retval < 0 )
+        if( retval < 0 )
             throw system_error( "Error occurred while in the main select:" );
 
         // must actually never happen
-        if ( 0 == retval )
+        if( 0 == retval )
             throw system_error( "The main select has timeout." );
 
-        if ( FD_ISSET( fd_first, &readset ) )
+        if( FD_ISSET( fd_first, &readset ) )
         {
             _node->dealWithData( CNode::nodeSocketFirst );
         }
-        if ( FD_ISSET( fd_second, &readset ) )
+        if( FD_ISSET( fd_second, &readset ) )
         {
             _node->dealWithData( CNode::nodeSocketSecond );
         }
@@ -352,7 +364,7 @@ void CAgentClient::mainSelect( CNode *_node )
 
         // we got a signal for update
         // reading everything from the pipe and exiting from the function
-        if ( FD_ISSET( m_fdSignalPipe, &readset ) )
+        if( FD_ISSET( m_fdSignalPipe, &readset ) )
         {
             const int read_size = 20;
             char buf[read_size];
@@ -375,7 +387,7 @@ void CAgentClient::createPROOFCfg()
     DebugLog( erOK, "Creating a PROOF configuration file..." );
 
     ofstream f( m_commonOptions.m_proofCFG.c_str() );
-    if ( !f.is_open() )
+    if( !f.is_open() )
         throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
 
     // getting local host name

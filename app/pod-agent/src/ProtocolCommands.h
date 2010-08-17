@@ -26,6 +26,9 @@ const uint16_t g_protocolVersion = 2;
 // v2
 // - init version
 //
+// v3
+// added: cmdGET_WRK_NUM
+//
 namespace PROOFAgent
 {
 //=============================================================================
@@ -49,9 +52,12 @@ namespace PROOFAgent
 
         cmdGET_ID = 70,
         cmdID = cmdGET_ID + 1,
-        cmdSET_ID = cmdGET_ID + 2
+        cmdSET_ID = cmdGET_ID + 2,
 
         // cmdKillPROOFSERV =  // NOT Implemented yet
+
+        // > > > > > protocol v3 < < < < <
+        cmdGET_WRK_NUM = 80
     };
 //=============================================================================
     template<class _Owner>

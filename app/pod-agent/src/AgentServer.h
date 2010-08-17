@@ -29,17 +29,18 @@ namespace PROOFAgent
     struct SWorkerInfo
     {
         SWorkerInfo():
-                m_proofPort( 0 ),
-                m_removeMe( false ),
-                m_id( 0 )
+            m_proofPort( 0 ),
+            m_removeMe( false ),
+            m_id( 0 ),
+            m_numberOfPROOFWorkers( 1 )
         {
         }
         std::string string() const
         {
             std::stringstream ss;
             ss
-            << m_user << "@" << m_host << ":" << m_proofPort
-            << "[id:" << m_id << "]";
+                    << m_user << "@" << m_host << ":" << m_proofPort
+                    << "[id:" << m_id << "]";
 
             return ss.str();
         }
@@ -51,6 +52,7 @@ namespace PROOFAgent
         bool m_removeMe;
         uint32_t m_id;
         requests_t m_requests;
+        unsigned int m_numberOfPROOFWorkers;
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;
@@ -62,8 +64,8 @@ namespace PROOFAgent
      *
      */
     class CAgentServer :
-            public CAgentBase,
-            MiscCommon::CLogImp<CAgentServer>
+        public CAgentBase,
+        MiscCommon::CLogImp<CAgentServer>
     {
             typedef boost::shared_ptr<CNode> node_type;
             typedef std::list<node_type> Sockets_type;
@@ -116,7 +118,8 @@ namespace PROOFAgent
             std::string createPROOFCfgEntryString( const std::string &_UsrName,
                                                    unsigned short _Port,
                                                    const std::string &_RealWrkHost,
-                                                   bool usePF );
+                                                   bool usePF,
+                                                   unsigned int _numberOfPROOFWorkers = 1 );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
             void setupPROOFWorker( workersMap_t::value_type &_wrk );
