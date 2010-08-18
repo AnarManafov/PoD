@@ -33,7 +33,7 @@ void PrintVersion()
     // TODO: make VERSION to be taken from the build
     cout
             << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
-            << "protocol version: " << CProtocol::version() << "\n"
+            << "protocol: v" << CProtocol::version() << "\n"
             << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
@@ -161,7 +161,7 @@ int main( int argc, char *argv[] )
 
 
     // pidfile name: proofagent.<instance_name>.pid
-    string pidfile_name(common.m_workDir);
+    string pidfile_name( common.m_workDir );
     pidfile_name += "proofagent.pid";
 
     // Checking for "status" option
@@ -193,7 +193,8 @@ int main( int argc, char *argv[] )
                     << PROJECT_NAME << ": self exiting ("
                     << pid_to_kill
                     << ")..." << endl;
-            // TODO: Maybe we need more validations of the process before send a signal. We don't want to kill someone else.
+            // TODO: Maybe we need more validations of the process before
+            // sending a signal. We don't want to kill someone else.
             kill( pid_to_kill, SIGTERM );
 
             // Waiting for the process to finish
@@ -208,7 +209,7 @@ int main( int argc, char *argv[] )
                 }
                 cout << ".";
                 cout.flush();
-                sleep( 2 ); // sleeping 2 seconds
+                sleep( 1 ); // sleeping for 1 second
                 ++iter;
             }
             if( IsProcessExist( pid_to_kill ) )
@@ -267,10 +268,10 @@ int main( int argc, char *argv[] )
             close( STDERR_FILENO );
 
             // Establish new open descriptors for stdin, stdout, and stderr. Even if
-            //  we don't plan to use them, it is still a good idea to have them open.
+            // we don't plan to use them, it is still a good idea to have them open.
             int fd = open( "/dev/null", O_RDWR ); // stdin - file handle 0.
-            dup( fd );                      // stdout - file handle 1.
-            dup( fd );                      // stderr - file handle 2.
+            dup( fd );                            // stdout - file handle 1.
+            dup( fd );                            // stderr - file handle 2.
         }
 
         // Starting Agent
