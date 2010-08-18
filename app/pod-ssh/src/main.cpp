@@ -21,6 +21,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <list>
+// MiscCommon
+#include "BOOSTHelper.h"
 // pod-ssh
 #include "version.h"
 #include "config.h"
@@ -28,6 +30,7 @@
 
 using namespace std;
 namespace bpo = boost::program_options;
+namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 void printVersion()
 {
@@ -44,6 +47,10 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
     ( "config,c", bpo::value<string>(), "PoD's ssh plug-in configuration file" )
+    ( "submit", "Submit workers" )
+    // TODO: we need to be able to clean only selected worker(s)
+    // At this moment we clean all workers.
+    ( "clean", "Clean all workers" )
     ;
 
     // Parsing command-line
@@ -67,6 +74,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
         cout << visible << endl;
         throw runtime_error( "You need to specify a configuration file at least." );
     }
+
+    boost_hlp::conflicting_options( vm, "submit", "clean" );
 
     _vm->swap( vm );
     return true;
@@ -113,14 +122,21 @@ int main( int argc, char *argv[] )
         cout << "Number of PoD workers: " << workers.size() << endl;
         cout << "Number of PROOF workers: " << wrkCount << endl;
         cout << "Workers list:\n";
-        workersList_t::const_iterator iter = workers.begin();
-        workersList_t::const_iterator iter_end = workers.end();
+
+        // start threadpool and push tasks into it
+        CThreadPool<CWorker, ETaskType> threadPool( 4 );
+        ETaskType task_type = ( vm.count( "submit" ) ) ? task_submit : task_clean;
+        workersList_t::iterator iter = workers.begin();
+        workersList_t::iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )
         {
+            cout << "adding new task: \n";
             iter->printInfo( cout );
             cout << "\n";
+            threadPool.pushTask( *iter, task_type );
         }
         cout << endl;
+        threadPool.stop( true );
     }
     catch( exception& e )
     {

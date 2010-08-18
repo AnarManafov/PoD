@@ -6,6 +6,10 @@ pod: A number of fixed to optimize the build process speed and the size of the s
 pod: Added new build targets, api-docs and upload-api-docs. In order to build PoD's private API documentation.
 pod: A new versioning system has been introduced. Now using a git canonical version number as a basis for PoD's version string.
 pod-agent: removed UD's option: worker.agent_threads
+pod-agent: learned "--workers" option. A number of PROOF workers to spawn.
+           Used only by agents in a worker mode and only in the native PROOF connection.
+pod-agent: the internal administration protocol has been upgraded to version 3.
+pod-agent: the "--pidfile/p" option has been removed. User default's "<server/worker>.work_dir" is used instead.
 pod-user-defaults: updated user defaults configuration file - v0.5.
 pod-user-defaults: removed worker.agent_threads.
 pod-user-defaults: "pod-user-defaults" learned "--default/-d" option to generate a default PoD configuration file.

@@ -35,3 +35,26 @@ void CWorker::printInfo( ostream &_stream ) const
             << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
 //=============================================================================
+void CWorker::runTask( ETaskType _param )
+{
+    switch( _param )
+    {
+        case task_submit:
+            submit();
+            break;
+        case task_clean:
+            clean();
+            break;
+        default:
+            return;
+    }
+}
+//=============================================================================
+void CWorker::submit()
+{
+}
+//=============================================================================
+void CWorker::clean()
+{
+}
+//=============================================================================

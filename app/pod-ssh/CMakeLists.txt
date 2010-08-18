@@ -51,6 +51,7 @@ add_executable(pod-ssh ${SOURCE_FILES})
 target_link_libraries (
     pod-ssh
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
 )
 
 install(TARGETS pod-ssh DESTINATION bin)
