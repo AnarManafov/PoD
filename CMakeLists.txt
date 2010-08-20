@@ -213,7 +213,8 @@ if (GSI_BUILD)
     set(GSI_ADD_BIN
         ${CMAKE_SOURCE_DIR}/bin/pod-agent
         ${CMAKE_SOURCE_DIR}/bin/pod-console
-        ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults 
+        ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults
+	${CMAKE_SOURCE_DIR}/bin/pod-ssh
     )
     set(GSI_ADD_LIB
         ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0
