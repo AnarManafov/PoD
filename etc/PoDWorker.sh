@@ -206,7 +206,7 @@ case "$host_arch" in
 	PROOFAGENT_ARC="pod-agent-Linux-x86-DEV.tar.gz"
 	ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
     amd64)
-        PROOFAGENT_ARC="pod-agent-Linux-x86_64-DEV.tar.gz"
+        PROOFAGENT_ARC="pod-agent-Linux-amd64-DEV.tar.gz"
         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
