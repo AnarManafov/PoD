@@ -37,27 +37,28 @@ namespace PROOFAgent
         // > > > > > protocol v2 < < < < <
         cmdUNKNOWN = -1,
 
-        cmdVERSION = 10,
+        cmdVERSION = 1,
         //   cmdVERSION_BAD = cmdVERSION + 1, // NOT Implemented yet
 
-        cmdHOST_INFO = 30,
+        cmdHOST_INFO = 10,
         cmdGET_HOST_INFO = cmdHOST_INFO + 1,
 
-        cmdUSE_PACKETFORWARDING_PROOF = 50,
+        cmdUSE_PACKETFORWARDING_PROOF = 20,
         cmdUSE_DIRECT_PROOF = cmdUSE_PACKETFORWARDING_PROOF + 1,
 
-        cmdSHUTDOWN = 60,
+        cmdSHUTDOWN = 30,
         // cmdRESTART = cmdSHUTDOWN + 1 // NOT Implemented yet
         // cmdIDLE_SHUTDOWN = cmdSHUTDOWN + 2, // NOT Implemented yet
 
-        cmdGET_ID = 70,
+        cmdGET_ID = 40,
         cmdID = cmdGET_ID + 1,
         cmdSET_ID = cmdGET_ID + 2,
 
         // cmdKillPROOFSERV =  // NOT Implemented yet
 
         // > > > > > protocol v3 < < < < <
-        cmdGET_WRK_NUM = 80
+        cmdGET_WRK_NUM = 50, // request a number of PROOF workers, which pod wn want to spawn
+        cmdWRK_NUM = cmdGET_WRK_NUM + 1 // answer with number of PROOF wns
     };
 //=============================================================================
     template<class _Owner>

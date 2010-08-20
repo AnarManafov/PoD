@@ -470,7 +470,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 _wrk.second.m_id = id.m_id;
                             }
                             break;
-                        case cmdGET_WRK_NUM:
+                        case cmdWRK_NUM:
                             {
                                 SIdCmd id;
                                 id.convertFromData( data );

@@ -131,7 +131,10 @@ void CAgentClient::processAdminConnection( int _serverSock )
                                 wn_num.m_id = m_numberOfPROOFWorkers;
                                 BYTEVector_t data;
                                 wn_num.convertToData( &data );
-                                protocol.write( _serverSock, static_cast<uint16_t>( cmdGET_WRK_NUM ), data );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdWRK_NUM ), data );
+                                stringstream ss;
+                                ss << "A number of PROOF workers [" << m_numberOfPROOFWorkers << "] has been sent to server.";
+                                InfoLog( ss.str() );
                             }
                             break;
                         case cmdSHUTDOWN:
