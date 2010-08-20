@@ -67,7 +67,7 @@ namespace PROOFAgent
             unsigned int m_proofPort;
             uint32_t m_id;
             bool m_isDirect;
-            unsigned int m_numberOfPROOFWorkers;
+            uint32_t m_numberOfPROOFWorkers;
     };
 
 }
