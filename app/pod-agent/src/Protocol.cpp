@@ -59,7 +59,7 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
 
     memcpy( &header, &_msg[0], HEADER_SIZE );
     if ( !header.isValid() )
-        throw runtime_error( "the protocol message is bad or corrupted." );
+        throw runtime_error( "the protocol message is bad or corrupted. Invalid header." );
 
     header.m_cmd = _normalizeRead16( header.m_cmd );
     header.m_len = _normalizeRead32( header.m_len );
