@@ -92,17 +92,18 @@ void CAgentClient::processAdminConnection( int _serverSock )
                                 get_cuser_name( &h.m_username );
                                 get_hostname( &h.m_host );
                                 h.m_proofPort = m_proofPort;
-                                h.convertToData( &data );
-                                protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data );
+                                BYTEVector_t data_to_send;
+                                h.convertToData( &data_to_send );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
                             }
                             break;
                         case cmdGET_ID:
                             {
                                 SIdCmd id;
                                 id.m_id = m_id;
-                                BYTEVector_t data;
-                                id.convertToData( &data );
-                                protocol.write( _serverSock, static_cast<uint16_t>( cmdID ), data );
+                                BYTEVector_t data_to_send;
+                                id.convertToData( &data_to_send );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdID ), data_to_send );
                             }
                             break;
                         case cmdSET_ID:
@@ -129,9 +130,9 @@ void CAgentClient::processAdminConnection( int _serverSock )
                                 // reuse SIdCmd
                                 SIdCmd wn_num;
                                 wn_num.m_id = m_numberOfPROOFWorkers;
-                                BYTEVector_t data;
-                                wn_num.convertToData( &data );
-                                protocol.write( _serverSock, static_cast<uint16_t>( cmdWRK_NUM ), data );
+                                BYTEVector_t data_to_send;
+                                wn_num.convertToData( &data_to_send );
+                                protocol.write( _serverSock, static_cast<uint16_t>( cmdWRK_NUM ), data_to_send );
                                 stringstream ss;
                                 ss << "A number of PROOF workers [" << m_numberOfPROOFWorkers << "] has been sent to server.";
                                 InfoLog( ss.str() );
