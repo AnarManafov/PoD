@@ -123,10 +123,14 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     if( vm.count( "proofport" ) )
         _Options->m_proofPort = vm["proofport"].as<unsigned int>();
 
-    if( vm.count( "workers" ) && Client != _Options->m_agentMode )
-        throw runtime_error( "The \"workers\" parametr can only be used by pod-aget workers." );
-    else // TODO: set some protection on the number of workers
+    if( vm.count( "workers" ) )
+    {
+        if( Client != _Options->m_agentMode )
+            throw runtime_error( "The \"workers\" parametr can only be used by pod-aget workers." );
+
+        // TODO: set some protection on the number of workers
         _Options->m_numberOfPROOFWorkers = vm["workers"].as<unsigned int>();
+    }
 
     return true;
 }
