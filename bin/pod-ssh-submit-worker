@@ -15,18 +15,20 @@
 # Usage
 # $1 ssh host (login@host.fqdn)
 # $2 remote working dir
-# $3 ssh params
+# $3 a number of PROOF workers to spawn
+# $4 ssh params
+
 
 #TODO: ssh params must be passed to the "-o" option of scp
 # except -P
 
 TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
-WRK_S_R=PoDWorker.sh
+WRK_S_R="PoDWorker.sh $3"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
 
-SSH_CMD="ssh -n -f -q $1 $3 PasswordAuthentication=no"
-SCP_CMD="scp $3"
+SSH_CMD="ssh -n -f -q $1 $4 PasswordAuthentication=no"
+SCP_CMD="scp $4"
 
 # check that the worker package is ready
 if [ ! -r $WRK_PKG ]; then
