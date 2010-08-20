@@ -199,10 +199,10 @@ logMsg "host's CPU/instruction set: $host_arch"
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="pod-agent-2_1_4a-x86-linux-gcc_4_1.tar.gz"
+	PROOFAGENT_ARC="pod-agent-Linux-x86-DEV.tar.gz"
 	ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
     amd64)
-        PROOFAGENT_ARC="pod-agent-2_1_4a-x86_64-linux-gcc_4_1.tar.gz"
+        PROOFAGENT_ARC="pod-agent-Linux-x86_64-DEV.tar.gz"
         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
