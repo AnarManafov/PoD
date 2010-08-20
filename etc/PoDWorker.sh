@@ -15,7 +15,7 @@
 #*************************************************************************/
 #
 # Arguments:
-# $2 - a number of PROOF workers to spawn (default is 1). Used by SSH plug-in.
+# $1 - a number of PROOF workers to spawn (default is 1). Used by SSH plug-in.
 #
 #
 # current working dir
@@ -313,8 +313,8 @@ fi
 
 logMsg "starting pod-agent..."
 # start pod-agent
-if [ -n $2 ]; then
-	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $2 &
+if [ -n "$1" ]; then
+	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
 else
 	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
 fi
