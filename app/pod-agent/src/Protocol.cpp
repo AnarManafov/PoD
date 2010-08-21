@@ -74,9 +74,8 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
     if( 0 == header.m_len )
         return header;
 
-    copy( _msg.begin() + HEADER_SIZE, _msg.end(), back_inserter( *_data ) );
-    if( _data->size() < header.m_len )
-        return SMessageHeader();
+    BYTEVector_t::const_iterator iter = _msg.begin() + HEADER_SIZE;
+    copy( iter, iter + header.m_len, back_inserter( *_data ) );
 
     if( _data->size() == header.m_len )
         return header;
