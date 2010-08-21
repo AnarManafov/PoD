@@ -60,9 +60,9 @@ void CAgentClient::processAdminConnection( int _serverSock )
     CProtocol protocol;
     SVersionCmd v;
     v.m_version = CProtocol::version();
-    BYTEVector_t data;
-    v.convertToData( &data );
-    protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), data );
+    BYTEVector_t ver;
+    v.convertToData( &ver );
+    protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), ver );
 
     while( true )
     {
@@ -118,12 +118,12 @@ void CAgentClient::processAdminConnection( int _serverSock )
                             break;
                         case cmdUSE_PACKETFORWARDING_PROOF:
                             // going out of the admin channel and start the packet forwarding
-                            InfoLog( "Server requested to use a packet forwarding for PROOF packages." );
+                            InfoLog( "Server requests to use a packet forwarding for PROOF packages." );
                             return;
                         case cmdUSE_DIRECT_PROOF:
                             // TODO: we keep admin channel open and start the monitoring (proof status) thread
                             m_isDirect = true;
-                            InfoLog( "Server requested to use a direct connection for PROOF packages." );
+                            InfoLog( "Server requests to use a direct connection for PROOF packages." );
                             break;
                         case cmdGET_WRK_NUM:
                             {

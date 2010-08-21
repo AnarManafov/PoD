@@ -443,6 +443,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                             << ". It has incompatible protocol version.";
                                     InfoLog( ss.str() );
                                     _wrk.second.m_requests.push( cmdSHUTDOWN );
+                                    break;
                                 }
                                 // request client's id
                                 // it could happen that worker has already ID.
@@ -486,10 +487,11 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 _wrk.second.m_user = h.m_username;
                                 _wrk.second.m_proofPort = h.m_proofPort;
 
-                                setupPROOFWorker( _wrk );
                                 stringstream ss;
                                 ss << "Server received client's host info: " << h;
                                 DebugLog( 0, ss.str() );
+
+                                setupPROOFWorker( _wrk );
                             }
                             break;
                         default:

@@ -18,6 +18,7 @@
 // MiscCommon
 #include "ErrorCode.h"
 #include "INet.h"
+#include "HexView.h"
 //=============================================================================
 using namespace std;
 using namespace PROOFAgent;
@@ -54,27 +55,38 @@ BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
 {
     SMessageHeader header;
-    if ( _msg.size() < HEADER_SIZE )
+    if( _msg.size() < HEADER_SIZE )
         return SMessageHeader();
 
     memcpy( &header, &_msg[0], HEADER_SIZE );
-    if ( !header.isValid() )
-        throw runtime_error( "the protocol message is bad or corrupted. Invalid header." );
+    if( !header.isValid() )
+    {
+        stringstream ss;
+        ss
+                << "the protocol message is bad or corrupted. Invalid header:\n"
+                <<  BYTEVectorHexView_t( _msg );
+        throw runtime_error( ss.str() );
+    }
 
     header.m_cmd = _normalizeRead16( header.m_cmd );
     header.m_len = _normalizeRead32( header.m_len );
 
-    if ( 0 == header.m_len )
+    if( 0 == header.m_len )
         return header;
 
     copy( _msg.begin() + HEADER_SIZE, _msg.end(), back_inserter( *_data ) );
-    if ( _data->size() < header.m_len )
+    if( _data->size() < header.m_len )
         return SMessageHeader();
 
-    if ( _data->size() == header.m_len )
+    if( _data->size() == header.m_len )
         return header;
 
-    throw runtime_error( "the protocol message is bad or corrupted." );
+    // Error occurred
+    stringstream ss;
+    ss
+            << "the protocol message is bad or corrupted:\n"
+            <<  BYTEVectorHexView_t( _msg );
+    throw runtime_error( ss.str() );
 }
 //=============================================================================
 //=============================================================================
@@ -96,20 +108,20 @@ SMessageHeader CProtocol::getMsg( BYTEVector_t *_data ) const
 CProtocol::EStatus_t CProtocol::read( int _socket )
 {
     BYTEVector_t tmp_buf( MAX_MSG_SIZE );
-    while ( true )
+    while( true )
     {
         // need to read more to complete the header
         const ssize_t bytes_read = ::recv( _socket, &tmp_buf[0],
                                            MAX_MSG_SIZE, 0 );
-        if ( 0 == bytes_read )
+        if( 0 == bytes_read )
             return stDISCONNECT;
 
-        if ( bytes_read < 0 )
+        if( bytes_read < 0 )
         {
-            if ( ECONNRESET == errno || ENOTCONN == errno )
+            if( ECONNRESET == errno || ENOTCONN == errno )
                 return stDISCONNECT;
 
-            if ( EAGAIN == errno || EWOULDBLOCK == errno )
+            if( EAGAIN == errno || EWOULDBLOCK == errno )
                 return stAGAIN;
 
             throw system_error( "Error occurred while reading a protocol message." );
@@ -120,7 +132,7 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
         {
             m_curDATA.clear();
             m_msgHeader = parseMsg( &m_curDATA, m_buffer );
-            if ( !m_msgHeader.isValid() )
+            if( !m_msgHeader.isValid() )
                 continue;
 
             // delete the message from the buffer
@@ -128,7 +140,7 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
                             m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
             break;
         }
-        catch ( ... )
+        catch( ... )
         {
             // TODO: Clear only until there is another <POD_CMD> found
             m_buffer.clear();
