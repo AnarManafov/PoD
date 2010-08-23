@@ -97,7 +97,6 @@ void CAgentServer::monitor()
 
         if( graceful_quit )
         {
-            shutdownAllWns();
             // wake up (from "select") the main thread, so that it can update it self
             if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
@@ -132,7 +131,6 @@ void CAgentServer::run()
             if( graceful_quit )
             {
                 InfoLog( erOK, "STOP signal received." );
-                shutdownAllWns();
                 m_threadPool.stop();
                 return ;
             }
@@ -694,19 +692,5 @@ void CAgentServer::updatePROOFCfg()
             continue;
 
         f << wrk_iter->second.m_proofCfgEntry << endl;
-    }
-}
-//=============================================================================
-void CAgentServer::shutdownAllWns()
-{
-    // Shutdown workers
-    workersMap_t::iterator wrk_iter = m_adminConnections.begin();
-    workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
-    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
-    {
-        if( wrk_iter->first <= 0 )
-            continue;
-        wrk_iter->second.m_requests.push( cmdSHUTDOWN );
-        sendServerRequest( *wrk_iter );
     }
 }
