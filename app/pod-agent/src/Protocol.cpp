@@ -77,17 +77,7 @@ SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_m
     BYTEVector_t::const_iterator iter = _msg.begin() + HEADER_SIZE;
     copy( iter, iter + header.m_len, back_inserter( *_data ) );
 
-    // TODO: remove this condition check and the following "throw"
-    // It is used right now only for debugging
-    if( _data->size() == header.m_len )
-        return header;
-
-    // Error occurred
-    stringstream ss;
-    ss
-            << "the protocol message is bad or corrupted:\n"
-            <<  BYTEVectorHexView_t( _msg );
-    throw runtime_error( ss.str() );
+    return header;
 }
 //=============================================================================
 //=============================================================================
@@ -147,7 +137,6 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             m_buffer.clear();
             throw;
         }
-
     }
 
     return stOK;
