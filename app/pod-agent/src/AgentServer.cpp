@@ -97,6 +97,17 @@ void CAgentServer::monitor()
 
         if( graceful_quit )
         {
+            // Shutdown workers
+            workersMap_t::iterator wrk_iter = m_adminConnections.begin();
+            workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
+            for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+            {
+                if( wrk_iter->first <= 0 )
+                    continue;
+                wrk_iter->second.m_requests.push( cmdSHUTDOWN );
+                sendServerRequest( *wrk_iter );
+            }
+
             // wake up (from "select") the main thread, so that it can update it self
             if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
