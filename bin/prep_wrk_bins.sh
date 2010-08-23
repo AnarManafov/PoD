@@ -26,11 +26,13 @@ case "$host_arch" in
         host_arch=x86
 	export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
 	LIBS_PATH=$LIBS_PATH_X86
+	LINK_NAME="pod-agent-Linux-x86-DEV.tar.gz"
         ;;
     x86_64)
         host_arch=amd64
 	export PATH=/misc/manafov/cmake/cmake_64bit/cmake/bin:$PATH
 	LIBS_PATH=$LIBS_PATH_AMD64
+	LINK_NAME="pod-agent-Linux-amd64-DEV.tar.gz"
         ;;
     *)
         logMsg "Error: unsupported architecture: $host_arch"
@@ -71,6 +73,8 @@ $(tar -czvf $PKG_NAME pod-agent/ &>/dev/null)
 # release the tarball
 chmod go+xr $PKG_NAME || exit 1
 scp -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
+# Make a soft link for a development package
+ssh podwww@lxi001 'ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME $LINK_NAME'
 popd
 
 exit 0
