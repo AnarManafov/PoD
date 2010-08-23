@@ -125,6 +125,7 @@ namespace PROOFAgent
             void setupPROOFWorker( workersMap_t::value_type &_wrk );
             void usePacketForwarding( workersMap_t::value_type &_wrk );
             void sendServerRequest( workersMap_t::value_type &_wrk );
+            void shutdownAllWns();
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
