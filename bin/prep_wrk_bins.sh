@@ -74,7 +74,7 @@ $(tar -czvf $PKG_NAME pod-agent/ &>/dev/null)
 chmod go+xr $PKG_NAME || exit 1
 scp -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
 # Make a soft link for a development package
-ssh podwww@lxi001 'ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME $LINK_NAME'
+ssh podwww@lxi001 'ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME /u/podwww/web-docs/releases/add/$LINK_NAME'
 popd
 
 exit 0
