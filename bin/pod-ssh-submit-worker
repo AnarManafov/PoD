@@ -19,16 +19,12 @@
 # $4 ssh params
 
 
-#TODO: ssh params must be passed to the "-o" option of scp
-# except -P
-
 TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
 WRK_S_R="PoDWorker.sh $3"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
 
 SSH_CMD="ssh -n -f -q $1 $4 PasswordAuthentication=no"
-SCP_CMD="scp $4"
 
 # check that the worker package is ready
 if [ ! -r $WRK_PKG ]; then
@@ -36,15 +32,9 @@ echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_PKG\""
 exit 1
 fi
 
-# create remote dir
-$SSH_CMD "mkdir -p $2"
-if [ $? -ne 0 ]; then
-    echo "$TOOL_NAME error: can't create directory \"$2\" on the host \"$1\""
-    exit 1
-fi
-
 # send a worker package and worker's script
-$SCP_CMD $WRK_P $WRK_S_L $1:$2/
+# use rsync since it can automatically create a remote working dir
+rsync -aqe ssh $4 $WRK_P $WRK_S_L $1:$2/
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: failed to send worker's package"
     exit 1
@@ -58,3 +48,4 @@ if [ $? -ne 0 ]; then
 fi
 
 exit 0
+
