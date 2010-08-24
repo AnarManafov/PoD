@@ -19,11 +19,11 @@
 
 TOOL_NAME="pod-ssh-clean-worker"
 WRK_PID=PoDWorker.pid
-TIMEOUT=20
+TIMEOUT=30
 
 SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $1 $3"
 SCP_CMD="scp -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $3"
-WAITTIMEOUT=60
+WAITTIMEOUT=10
 
 # a special case, executed on the remote host
 # check for pid file of worker's script.
@@ -46,11 +46,14 @@ if [ "$1" = "clean" ]; then
 	done
     fi
 
+    # let all processes clearly finish
+    sleep 2
     rm -rf "$2"
 
     exit 0
 fi
 
+# this part is executed locally
 SELF_PATH=$(readlink -f $0)
 
 $SSH_CMD "test -d $2"
@@ -64,7 +67,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# this part is executed locally
 $SSH_CMD "$2/$TOOL_NAME clean $2"
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: faild to stop PoD worker."

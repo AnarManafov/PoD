@@ -23,7 +23,7 @@ TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
 WRK_S_R="PoDWorker.sh $3"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
-TIMEOUT=20
+TIMEOUT=30
 
 SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $1 $4"
 

@@ -37,6 +37,20 @@ logMsg()
 # ***** Perform program exit housekeeping *****
 clean_up()
 {
+    # Try to kill pod-agent by first sending a TERM signal
+    # And if after 10 sec. it still exists send a non-ignorable kill
+    WAIT_TIME=10
+    kill -15 $PODAGENT_PID
+    cnt=0
+    while $(kill -0 $PODAGENT_PID &>/dev/null); do
+       cnt=$(expr $cnt + 1)
+       if [ $cnt -gt $WAIT_TIME ]; then
+          kill -9 $PODAGENT_PID
+          break
+       fi
+       sleep 1
+    done
+
     # force kill of xrootd and proof processes
     # pod-agent will shutdown automatically if there will be no xrootd 
     pkill -9 -U $UID xrootd
@@ -319,7 +333,8 @@ else
 	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
 fi
 # wait for pod-agent's process
-wait $!
+PODAGENT_PID=$!
+wait $PODAGENT_PID
 
 logMsg "--- DONE ---"
 

@@ -16,7 +16,7 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-const size_t g_cmdTimeout = 25; // in sec.
+const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec ): m_rec( _rec )
 {
@@ -75,7 +75,7 @@ void CWorker::submit()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    cout << m_rec->m_id << "Output: " << outPut << endl;
+    cout << m_rec->m_id << "---> Output: " << outPut << endl;
 }
 //=============================================================================
 void CWorker::clean()
@@ -97,6 +97,6 @@ void CWorker::clean()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    cout << m_rec->m_id << "Output: " << outPut << endl;
+    cout << m_rec->m_id << "---> Output: " << outPut << endl;
 }
 //=============================================================================
