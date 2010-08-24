@@ -130,7 +130,6 @@ int main( int argc, char *argv[] )
         workersList_t::iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )
         {
-            cout << "adding new task: \n";
             iter->printInfo( cout );
             cout << "\n";
             threadPool.pushTask( *iter, task_type );

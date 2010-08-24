@@ -19,9 +19,10 @@
 
 TOOL_NAME="pod-ssh-clean-worker"
 WRK_PID=PoDWorker.pid
+TIMEOUT=20
 
-SSH_CMD="ssh -oBatchMode=yes -q $1 $3 PasswordAuthentication=no"
-SCP_CMD="scp -oBatchMode=yes $3"
+SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $1 $3"
+SCP_CMD="scp -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $3"
 WAITTIMEOUT=60
 
 # a special case, executed on the remote host
@@ -71,3 +72,4 @@ if [ $? -ne 0 ]; then
 fi
 
 exit 0
+

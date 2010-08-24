@@ -23,18 +23,19 @@ TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
 WRK_S_R="PoDWorker.sh $3"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
+TIMEOUT=20
 
-SSH_CMD="ssh -oBatchMode=yes -n -f -q $1 $4 PasswordAuthentication=no"
+SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $1 $4"
 
 # check that the worker package is ready
-if [ ! -r $WRK_PKG ]; then
-echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_PKG\""
+if [ ! -r $WRK_P ]; then
+echo "$TOOL_NAME error: can't read a PoD worker package \"$WRK_P\""
 exit 1
 fi
 
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
-rsync -aqe ssh $4 $WRK_P $WRK_S_L $1:$2/
+rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $4" $WRK_P $WRK_S_L $1:$2/
 if [ $? -ne 0 ]; then
     echo "$TOOL_NAME error: failed to send worker's package"
     exit 1

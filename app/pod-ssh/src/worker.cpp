@@ -16,7 +16,7 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-const size_t g_cmdTimeout = 20; // in sec.
+const size_t g_cmdTimeout = 25; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec ): m_rec( _rec )
 {
@@ -72,12 +72,31 @@ void CWorker::submit()
     }
     catch( exception &e )
     {
-        cout << "Exception: " << e.what() << endl;
+        cout << m_rec->m_id << "---> Failed to process the task." << endl;
+        return;
     }
+    cout << m_rec->m_id << "Output: " << outPut << endl;
 }
 //=============================================================================
 void CWorker::clean()
 {
-    cout << "c: " << m_rec->m_id << endl;
+    string cmd( "$POD_LOCATION/bin/pod-ssh-clean-worker" );
+    smart_path( &cmd );
+    StringVector_t params;
+    params.push_back( m_rec->m_addr );
+    params.push_back( m_rec->m_wrkDir );
+    params.push_back( m_rec->m_sshOptions );
+
+    string outPut;
+    try
+    {
+        do_execv( cmd, params, g_cmdTimeout, &outPut );
+    }
+    catch( exception &e )
+    {
+        cout << m_rec->m_id << "---> Failed to process the task." << endl;
+        return;
+    }
+    cout << m_rec->m_id << "Output: " << outPut << endl;
 }
 //=============================================================================
