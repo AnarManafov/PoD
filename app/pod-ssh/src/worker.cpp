@@ -65,6 +65,7 @@ void CWorker::submit()
     params.push_back( ss.str() );
     params.push_back( m_rec->m_sshOptions );
 
+    // TODO: since it will be executed in threads we need a sync. output
     string outPut;
     try
     {
@@ -75,7 +76,8 @@ void CWorker::submit()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    cout << m_rec->m_id << "---> Output: " << outPut << endl;
+    if( !outPut.empty! )
+        cout << m_rec->m_id << "---> Output: " << outPut << endl;
 }
 //=============================================================================
 void CWorker::clean()
@@ -87,6 +89,7 @@ void CWorker::clean()
     params.push_back( m_rec->m_wrkDir );
     params.push_back( m_rec->m_sshOptions );
 
+    // TODO: since it will be executed in threads we need a sync. output
     string outPut;
     try
     {
@@ -97,6 +100,8 @@ void CWorker::clean()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    cout << m_rec->m_id << "---> Output: " << outPut << endl;
+    if( !outPut.empty! )
+        cout << m_rec->m_id << "---> Output: " << outPut << endl;
+
 }
 //=============================================================================
