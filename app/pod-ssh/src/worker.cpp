@@ -10,10 +10,13 @@
 // pod-ssh
 #include "worker.h"
 // MiscCommon
-#include <SysHelper.h>
+#include "SysHelper.h"
+#include "Process.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
+//=============================================================================
+const size_t g_cmdTimeout = 20; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec ): m_rec( _rec )
 {
@@ -52,7 +55,25 @@ void CWorker::runTask( ETaskType _param )
 //=============================================================================
 void CWorker::submit()
 {
-    cout << "s: " << m_rec->m_id << endl;
+    string cmd( "$POD_LOCATION/bin/pod-ssh-submit-worker" );
+    smart_path( &cmd );
+    StringVector_t params;
+    params.push_back( m_rec->m_addr );
+    params.push_back( m_rec->m_wrkDir );
+    stringstream ss;
+    ss << m_rec->m_nWorkers;
+    params.push_back( ss.str() );
+    params.push_back( m_rec->m_sshOptions );
+
+    string outPut;
+    try
+    {
+        do_execv( cmd, params, g_cmdTimeout, &outPut );
+    }
+    catch( exception &e )
+    {
+        cout << "Exception: " << e.what() << endl;
+    }
 }
 //=============================================================================
 void CWorker::clean()

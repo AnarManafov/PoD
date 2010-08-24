@@ -10,7 +10,7 @@
 #define CONFIG_H
 // a configuration should be a comma-separated values (CSV) with
 // the following records:
-// ________________________________________________________
+//
 // id, login@host.fqdn, ssh params, remote working dir, number of workers,
 //////// example:
 // r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4

@@ -24,7 +24,7 @@ WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
 WRK_S_R="PoDWorker.sh $3"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
 
-SSH_CMD="ssh -n -f -q $1 $4 PasswordAuthentication=no"
+SSH_CMD="ssh -oBatchMode=yes -n -f -q $1 $4 PasswordAuthentication=no"
 
 # check that the worker package is ready
 if [ ! -r $WRK_PKG ]; then

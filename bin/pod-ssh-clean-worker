@@ -20,8 +20,8 @@
 TOOL_NAME="pod-ssh-clean-worker"
 WRK_PID=PoDWorker.pid
 
-SSH_CMD="ssh -q $1 $3 PasswordAuthentication=no"
-SCP_CMD="scp $3"
+SSH_CMD="ssh -oBatchMode=yes -q $1 $3 PasswordAuthentication=no"
+SCP_CMD="scp -oBatchMode=yes $3"
 WAITTIMEOUT=60
 
 # a special case, executed on the remote host
