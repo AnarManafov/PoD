@@ -18,7 +18,9 @@ using namespace MiscCommon;
 //=============================================================================
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
-CWorker::CWorker( configRecord_t _rec ): m_rec( _rec )
+CWorker::CWorker( configRecord_t _rec, int _fdPipe ):
+    m_rec( _rec ),
+    m_fdPipe( _fdPipe )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -73,11 +75,18 @@ void CWorker::submit()
     }
     catch( exception &e )
     {
-        cout << m_rec->m_id << "---> Failed to process the task." << endl;
+        ostringstream ss;
+        ss << m_rec->m_id << " ---> Failed to process the task." << "\n";
+        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
         return;
     }
     if( !outPut.empty() )
-        cout << m_rec->m_id << "---> Output: " << outPut << endl;
+    {
+        ostringstream ss;
+        ss << m_rec->m_id << " --->DBG Output: " << outPut << "\n";
+        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
+
+    }
 }
 //=============================================================================
 void CWorker::clean()
@@ -97,11 +106,17 @@ void CWorker::clean()
     }
     catch( exception &e )
     {
-        cout << m_rec->m_id << "---> Failed to process the task." << endl;
+        ostringstream ss;
+        ss << m_rec->m_id << " ---> Failed to process the task." << "\n";
+        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
         return;
     }
     if( !outPut.empty() )
-        cout << m_rec->m_id << "---> Output: " << outPut << endl;
-
+    {
+        ostringstream ss;
+        ss << m_rec->m_id << " --->DBG Output: " << outPut << "\n";
+        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
+        
+    }
 }
 //=============================================================================

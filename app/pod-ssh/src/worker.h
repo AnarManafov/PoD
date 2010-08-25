@@ -20,7 +20,7 @@ enum ETaskType {task_submit, task_clean};
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
-        CWorker( configRecord_t _rec );
+        CWorker( configRecord_t _rec, int _fdPipe );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
@@ -32,5 +32,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
 
     private:
         configRecord_t m_rec;
+        int m_fdPipe;
 };
 #endif

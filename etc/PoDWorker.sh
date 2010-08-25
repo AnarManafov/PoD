@@ -31,7 +31,12 @@ POD_CFG="$WD/PoD.cfg"
 # ***** Log function  *****
 logMsg()
 {
-    echo "*** [$(date -R)]   $1"
+# date format
+#RFC-2822:
+# *    www, dd mmm yyyy hh:mm:ss +zzzz
+#
+# Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
+    echo "*** [$(date '+%a, %d %b %Y %T %z')]   $1"
 }
 # ************************************************************************
 # ***** Perform program exit housekeeping *****
