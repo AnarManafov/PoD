@@ -46,10 +46,6 @@ if [ "$1" = "clean" ]; then
 	done
     fi
 
-    # let all processes clearly finish
-    sleep 2
-    rm -rf "$2"
-
     exit 0
 fi
 
@@ -67,11 +63,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Submit a cleaning script
 $SSH_CMD "$2/$TOOL_NAME clean $2"
 if [ $? -ne 0 ]; then
-    echo "$TOOL_NAME error: faild to stop PoD worker."
+    echo "$TOOL_NAME error: failed to stop PoD worker."
     exit 1
 fi
+
+# remove the working directory
+$SSH_CMD "rm -rf $2"
+if [ $? -ne 0 ]; then
+    echo "$TOOL_NAME error: failed to remove the remote working dir: $2"
+    exit 1
+fi
+
 
 exit 0
 
