@@ -76,7 +76,7 @@ void CWorker::submit()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    if( !outPut.empty! )
+    if( !outPut.empty() )
         cout << m_rec->m_id << "---> Output: " << outPut << endl;
 }
 //=============================================================================
@@ -100,7 +100,7 @@ void CWorker::clean()
         cout << m_rec->m_id << "---> Failed to process the task." << endl;
         return;
     }
-    if( !outPut.empty! )
+    if( !outPut.empty() )
         cout << m_rec->m_id << "---> Output: " << outPut << endl;
 
 }
