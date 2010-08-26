@@ -29,6 +29,7 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
     private:
         void submit();
         void clean();
+        void log( const std::string &_msg );
 
     private:
         configRecord_t m_rec;

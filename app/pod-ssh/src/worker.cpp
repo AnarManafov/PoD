@@ -67,7 +67,6 @@ void CWorker::submit()
     params.push_back( ss.str() );
     params.push_back( m_rec->m_sshOptions );
 
-    // TODO: since it will be executed in threads we need a sync. output
     string outPut;
     try
     {
@@ -75,17 +74,14 @@ void CWorker::submit()
     }
     catch( exception &e )
     {
-        ostringstream ss;
-        ss << m_rec->m_id << " ---> Failed to process the task." << "\n";
-        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
+        log( "Failed to process the task.\n" );
         return;
     }
     if( !outPut.empty() )
     {
         ostringstream ss;
-        ss << m_rec->m_id << " --->DBG Output: " << outPut << "\n";
-        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
-
+        ss << "Cmnd Output: " << outPut << "\n";
+        log( ss.str() );
     }
 }
 //=============================================================================
@@ -98,7 +94,6 @@ void CWorker::clean()
     params.push_back( m_rec->m_wrkDir );
     params.push_back( m_rec->m_sshOptions );
 
-    // TODO: since it will be executed in threads we need a sync. output
     string outPut;
     try
     {
@@ -106,17 +101,46 @@ void CWorker::clean()
     }
     catch( exception &e )
     {
-        ostringstream ss;
-        ss << m_rec->m_id << " ---> Failed to process the task." << "\n";
-        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
+        log( "Failed to process the task.\n" );
         return;
     }
     if( !outPut.empty() )
     {
         ostringstream ss;
-        ss << m_rec->m_id << " --->DBG Output: " << outPut << "\n";
-        write( m_fdPipe, ss.str().c_str(), ss.str().size() );
-        
+        ss << "Cmnd Output: " << outPut << "\n";
+        log( ss.str() );
     }
 }
 //=============================================================================
+void CWorker::log( const std::string &_msg )
+{
+    // All the following calls must be thread-safe.
+
+    // print time with RFC 2822 - compliant date format
+    char timestr[200];
+    time_t t = time( NULL );
+    struct tm tmp;
+    if( localtime_r( &t, &tmp ) == NULL )
+    {
+        // TODO: log it.
+        return;
+    }
+
+    if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
+    {
+        // TODO: log it.
+        return;
+    }
+
+    // write to a pipe is an atomic operation,
+    // according to POSIX we just need to be shorte than PIPE_BUF
+    string out( m_rec->m_id );
+    out += "\t[";
+    out += timestr;
+    out += "]\t";
+    if( _msg.size() > PIPE_BUF )
+        out += "ERROR. Message is too long.\n";
+    else
+        out += _msg;
+    write( m_fdPipe, out.c_str(), out.size() );
+}

@@ -94,6 +94,39 @@ void closePipe()
     unlink( signalPipeName.c_str() );
 }
 //=============================================================================
+void log( const std::string &_msg )
+{
+    // All the following calls must be thread-safe.
+
+    // print time with RFC 2822 - compliant date format
+    char timestr[200];
+    time_t t = time( NULL );
+    struct tm tmp;
+    if( localtime_r( &t, &tmp ) == NULL )
+    {
+        // TODO: log it.
+        return;
+    }
+
+    if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
+    {
+        // TODO: log it.
+        return;
+    }
+
+    // write to a pipe is an atomic operation,
+    // according to POSIX we just need to be shorte than PIPE_BUF
+    string out( "**" );
+    out += "\t[";
+    out += timestr;
+    out += "]\t";
+    if( _msg.size() > PIPE_BUF )
+        out += "ERROR. Message is too long.\n";
+    else
+        out += _msg;
+    write( fdSignalPipe, out.c_str(), out.size() );
+}
+//=============================================================================
 int main( int argc, char *argv[] )
 {
     bpo::variables_map vm;
@@ -163,11 +196,15 @@ int main( int argc, char *argv[] )
         // some controle information
         {
             ostringstream ss;
-            ss << PROJECT_NAME << ": " << "Number of PoD workers: " << workers.size() << "\n"
-               << PROJECT_NAME << ": " << "Number of PROOF workers: " << wrkCount << "\n"
-               << PROJECT_NAME << ": " << "Workers list:\n";
-            write( fdSignalPipe, ss.str().c_str(), ss.str().size() );
+            ss << "Number of PoD workers: " << workers.size() << "\n";
+            log( ss.str() );
         }
+        {
+            ostringstream ss;
+            ss << "Number of PROOF workers: " << wrkCount << "\n";
+            log( ss.str() );
+        }
+        log( "Workers list:\n" );
 
         // start threadpool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( 4 );
