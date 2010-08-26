@@ -12,27 +12,87 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************/
 #
-# Usage
-# $1 ssh host (login@host.fqdn)
-# $2 remote working dir
-# $3 a number of PROOF workers to spawn
-# $4 ssh params
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which is used to submit a PoD worker via ssh. It's used by pod-ssh utility.
+   Copyright (C) 2010 GSI, Scientific Computing group.
 
+Usage: pod-info [OPTION]
+     -i id			ID of the worker.
+     -l ssh login@host.fqdn 	SSH connection string.
+     -w dir      		Remote working directory.
+     -n X        		Desired number or PROOF workers.
+     -o SSH_Opt			Additinal SSH parameters.
+     -h          		Show summary of options.
 
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+WORKER_ID=""
+SSH_CON_STR=""
+RDIR=""
+NWORKERS=1
+SSHOPT=""
+while getopts ":i:l:w:n:o:h" opt; do
+  case $opt in
+  i)
+    WORKER_ID="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  w) 
+    RDIR="$OPTARG"
+    ;;
+  n)
+    NWORKERS=$OPTARG
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
 TOOL_NAME="pod-ssh-submit-worker"
 WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
-WRK_S_R="PoDWorker.sh $3"
+WRK_S_R="PoDWorker.sh $NWORKERS"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
 TIMEOUT=30
 
-SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $1 $4"
-
+SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $SSH_CON_STR $SSHOPT"
+#=============================================================================
+# ***** POD-SSH NAMED PIPE *****
+#=============================================================================
 # a pod-ssh communication pipe (log engine)
 pipe="$POD_LOCATION/.ssh_plugin_pipe"
 if [[ ! -p $pipe ]]; then
     echo "$TOOL_NAME error: pod-ssh log engine is not running"
     exit 1
 fi
+#=============================================================================
+# ***** LOG *****
+#=============================================================================
 logMsg()
 {
 # date format
@@ -40,10 +100,14 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo -e "**\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+    echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
 }
 
-logMsg "$TOOL_NAME is started for $1"
+
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, nworkers: $NWORKERS, sshopt: $SSHOPT)"
 
 # check that the worker package is ready
 if [ ! -r $WRK_P ]; then
@@ -53,14 +117,14 @@ fi
 
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
-rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $4" $WRK_P $WRK_S_L $1:$2/ &> $pipe
+rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to send worker's package"
     exit 1
 fi
 
 # execute the worker script
-$SSH_CMD "nohup bash -c \"cd $2 && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" &> $pipe
+$SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: faild to start PoD worker"
     exit 1

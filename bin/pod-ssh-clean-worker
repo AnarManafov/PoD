@@ -12,24 +12,87 @@
 #        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
 #*************************************************************************/
 #
-# Usage
-# $1 ssh host (login@host.fqdn)
-# $2 remote working dir
-# $3 ssh params
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which is used to clean a PoD worker via ssh. It's used by pod-ssh utility.
+   Copyright (C) 2010 GSI, Scientific Computing group.
 
+Usage: pod-info [OPTION]
+     -i id			ID of the worker.
+     -l ssh login@host.fqdn 	SSH connection string.
+     -w dir      		Remote working directory.
+     -o SSH_Opt			Additinal SSH parameters.
+     -c arg			Start a remote cleanning (internal argument).
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+WORKER_ID=""
+SSH_CON_STR=""
+RDIR=""
+SSHOPT=""
+CLEAN=""
+while getopts ":i:l:w:n:o:c:h" opt; do
+  case $opt in
+  i)
+    WORKER_ID="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  w) 
+    RDIR="$OPTARG"
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  c)
+    CLEAN="$OPTARG"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
 TOOL_NAME="pod-ssh-clean-worker"
 WRK_PID=PoDWorker.pid
 TIMEOUT=30
 
-SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $1 $3"
-SCP_CMD="scp -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $3"
+SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
+SCP_CMD="scp -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $SSHOPT"
 WAITTIMEOUT=10
+#=============================================================================
+# ***** POD-SSH NAMED PIPE *****
+#=============================================================================
 # a pod-ssh communication pipe (log engine)
 pipe="$POD_LOCATION/.ssh_plugin_pipe"
 if [[ ! -p $pipe ]]; then
     echo "$TOOL_NAME error: pod-ssh log engine is not running"
     exit 1
 fi
+#=============================================================================
+# ***** LOG *****
+#=============================================================================
 logMsg()
 {
 # date format
@@ -37,16 +100,18 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo "*** [$(date '+%a, %d %b %Y %T %z')]   $1" > $pipe
+    echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
 }
 
-
+#=============================================================================
+# ***** remote part *****
+#=============================================================================
 # a special case, executed on the remote host
 # check for pid file of worker's script.
 # If the file is available, read pid from it and send a TERM signal using that pid.
 # If the file is unavailable, exit with 0 - it is not an error for us.
-if [ "$1" = "clean" ]; then
-    pid_file="$2/$WRK_PID"
+if [ "$CLEAN" = "clean" ]; then
+    pid_file="$RDIR/$WRK_PID"
     
     if [  -e $pid_file ]; then
 	pid=$(cat $pid_file)
@@ -64,32 +129,34 @@ if [ "$1" = "clean" ]; then
 
     exit 0
 fi
-
+#=============================================================================
+# ***** local part *****
+#=============================================================================
 # this part is executed locally
 SELF_PATH=$(readlink -f $0)
 
-$SSH_CMD "test -d $2" &> $pipe
+$SSH_CMD "test -d $RDIR" &> $pipe
 if [ $? -ne 0 ]; then
    exit 0
 fi
 
-$SCP_CMD $SELF_PATH $1:$2/  &> $pipe
+$SCP_CMD $SELF_PATH $SSH_CON_STR:$RDIR/  &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to send worker's cleaning script $SELF_PATH"
     exit 1
 fi
 
 # Submit a cleaning script
-$SSH_CMD "$2/$TOOL_NAME clean $2"  &> $pipe
+$SSH_CMD "$RDIR/$TOOL_NAME -c clean -w $RDIR"  &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to stop PoD worker."
     exit 1
 fi
 
 # remove the working directory
-$SSH_CMD "rm -rf $2"  &> $pipe
+$SSH_CMD "rm -rf $RDIR"  &> $pipe
 if [ $? -ne 0 ]; then
-    logMsg "$TOOL_NAME error: failed to remove the remote working dir: $2"
+    logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
     exit 1
 fi
 
