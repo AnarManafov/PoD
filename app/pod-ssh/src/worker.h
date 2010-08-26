@@ -14,13 +14,14 @@
 // pod-ssh
 #include "config.h"
 #include "threadPool.h"
+#include "local_types.h"
 //=============================================================================
 enum ETaskType {task_submit, task_clean};
 //=============================================================================
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
-        CWorker( configRecord_t _rec, int _fdPipe );
+        CWorker( configRecord_t _rec, log_func_t _log );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
@@ -33,6 +34,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
 
     private:
         configRecord_t m_rec;
-        int m_fdPipe;
+        log_func_t m_log;
 };
 #endif

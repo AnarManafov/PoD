@@ -18,9 +18,9 @@ using namespace MiscCommon;
 //=============================================================================
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
-CWorker::CWorker( configRecord_t _rec, int _fdPipe ):
+CWorker::CWorker( configRecord_t _rec, log_func_t _log ):
     m_rec( _rec ),
-    m_fdPipe( _fdPipe )
+    m_log( _log )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -116,33 +116,5 @@ void CWorker::clean()
 //=============================================================================
 void CWorker::log( const std::string &_msg )
 {
-    // All the following calls must be thread-safe.
-
-    // print time with RFC 2822 - compliant date format
-    char timestr[200];
-    time_t t = time( NULL );
-    struct tm tmp;
-    if( localtime_r( &t, &tmp ) == NULL )
-    {
-        // TODO: log it.
-        return;
-    }
-
-    if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
-    {
-        // TODO: log it.
-        return;
-    }
-
-    // write to a pipe is an atomic operation,
-    // according to POSIX we just need to be shorte than PIPE_BUF
-    string out( m_rec->m_id );
-    out += "\t[";
-    out += timestr;
-    out += "]\t";
-    if( _msg.size() > PIPE_BUF )
-        out += "ERROR. Message is too long.\n";
-    else
-        out += _msg;
-    write( m_fdPipe, out.c_str(), out.size() );
+    m_log( _msg, m_rec->m_id );
 }

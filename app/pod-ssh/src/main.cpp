@@ -34,6 +34,9 @@ using namespace MiscCommon;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
+// Global variables of named pipe - used by logger
+// This can be easely be redesigned in order to avoid of global variables usage.
+// So-far we will keep it that way...
 int fdSignalPipe( 0 );
 string signalPipeName;
 void log_engine();
@@ -94,7 +97,7 @@ void closePipe()
     unlink( signalPipeName.c_str() );
 }
 //=============================================================================
-void log( const std::string &_msg )
+void main_log( const string &_msg, const string &_id = "**" )
 {
     // All the following calls must be thread-safe.
 
@@ -116,7 +119,7 @@ void log( const std::string &_msg )
 
     // write to a pipe is an atomic operation,
     // according to POSIX we just need to be shorte than PIPE_BUF
-    string out( "**" );
+    string out( _id );
     out += "\t[";
     out += timestr;
     out += "]\t";
@@ -186,7 +189,7 @@ int main( int argc, char *argv[] )
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-                CWorker wrk( rec, fdSignalPipe );
+                CWorker wrk( rec, main_log );
                 workers.push_back( wrk );
 
                 wrkCount += rec->m_nWorkers;
@@ -197,14 +200,14 @@ int main( int argc, char *argv[] )
         {
             ostringstream ss;
             ss << "Number of PoD workers: " << workers.size() << "\n";
-            log( ss.str() );
+            main_log( ss.str() );
         }
         {
             ostringstream ss;
             ss << "Number of PROOF workers: " << wrkCount << "\n";
-            log( ss.str() );
+            main_log( ss.str() );
         }
-        log( "Workers list:\n" );
+        main_log( "Workers list:\n" );
 
         // start threadpool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( 4 );
