@@ -91,9 +91,10 @@ void CWorker::clean()
     string cmd( "$POD_LOCATION/bin/pod-ssh-clean-worker" );
     smart_path( &cmd );
     StringVector_t params;
-    params.push_back( m_rec->m_addr );
-    params.push_back( m_rec->m_wrkDir );
-    params.push_back( m_rec->m_sshOptions );
+    params.push_back( "-i" + m_rec->m_id );
+    params.push_back( "-l" + m_rec->m_addr );
+    params.push_back( "-w" + m_rec->m_wrkDir );
+    params.push_back( "-o" + m_rec->m_sshOptions );
 
     string outPut;
     try
