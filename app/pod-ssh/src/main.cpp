@@ -34,11 +34,12 @@ using namespace MiscCommon;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
-// Global variables of named pipe - used by logger
+// A pipe fd - global variable - used by logger
 // This can be easely be redesigned in order to avoid of global variables usage.
 // So-far we will keep it that way...
 int fdSignalPipe( 0 );
-string signalPipeName;
+//=============================================================================
+// Forward declaration
 void log_engine();
 //=============================================================================
 void printVersion()
@@ -90,11 +91,11 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     return true;
 }
 //=============================================================================
-void closePipe()
+void closePipe( int fd, const string & _pipename )
 {
-    close( fdSignalPipe );
-    fdSignalPipe = 0;
-    unlink( signalPipeName.c_str() );
+    close( fd );
+    fd = 0;
+    unlink( _pipename.c_str() );
 }
 //=============================================================================
 void main_log( const string &_msg, const string &_id = "**" )
@@ -132,6 +133,7 @@ void main_log( const string &_msg, const string &_id = "**" )
 //=============================================================================
 int main( int argc, char *argv[] )
 {
+    string signalPipeName;
     bpo::variables_map vm;
     try
     {
@@ -153,24 +155,12 @@ int main( int argc, char *argv[] )
         signalPipeName += ".ssh_plugin_pipe";
         int ret_val = mkfifo( signalPipeName.c_str(), 0666 );
         if(( -1 == ret_val ) && ( EEXIST != errno ) )
-        {
-            ostringstream ss;
-            ss
-                    << "Can't create a named pipe: "
-                    << signalPipeName;
-            cerr << PROJECT_NAME << ": " << ss.str() << endl;
-        }
+            throw runtime_error( "Can't create a named pipe: " + signalPipeName );
 
         // Open the pipe for reading
         fdSignalPipe = open( signalPipeName.c_str(), O_RDWR | O_NONBLOCK );
         if(( -1 == fdSignalPipe ) && ( EEXIST != errno ) )
-        {
-            ostringstream ss;
-            ss
-                    << "Can't open a named pipe: "
-                    << signalPipeName;
-            cerr << PROJECT_NAME << ": " << ss.str() << endl;
-        }
+            throw runtime_error( "Can't opem a named pipe: " + signalPipeName );
 
         // Start the log engine
         boost::thread monitorThread( log_engine );
@@ -226,12 +216,12 @@ int main( int argc, char *argv[] )
     }
     catch( exception& e )
     {
-        closePipe();
+        closePipe( fdSignalPipe, signalPipeName );
         cerr << PROJECT_NAME << ": error: " << e.what() << endl;
         return 1;
     }
 
-    closePipe();
+    closePipe( fdSignalPipe, signalPipeName );
     return 0;
 }
 //=============================================================================
