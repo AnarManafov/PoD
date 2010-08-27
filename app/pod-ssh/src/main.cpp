@@ -21,6 +21,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <list>
+// API
+#include <limits.h> // for PIPE_BUF
 // MiscCommon
 #include "BOOSTHelper.h"
 #include "SysHelper.h"
