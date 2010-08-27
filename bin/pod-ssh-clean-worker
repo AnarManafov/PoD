@@ -95,6 +95,16 @@ fi
 #=============================================================================
 # ***** LOG *****
 #=============================================================================
+# function read input from stdin and write output to the stdout
+# caller must take care about where come stdin and where go stdout
+logMsgPipe() 
+{
+  while read data
+  do
+      logMsg "$data" 
+  done
+}
+
 logMsg()
 {
 # date format
@@ -138,13 +148,13 @@ fi
 logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
 SELF_PATH=$(readlink -f $0)
 
-$SSH_CMD "test -d $RDIR" &> $pipe
+$SSH_CMD "test -d $RDIR" 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
    logMsg "$TOOL_NAME: There is nothing to clean."
    exit 0
 fi
 
-$SCP_CMD $SELF_PATH $SSH_CON_STR:$RDIR/  &> $pipe
+$SCP_CMD $SELF_PATH $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to send worker's cleaning script $SELF_PATH"
     exit 1
@@ -152,7 +162,7 @@ fi
 
 logMsg "$TOOL_NAME: Executing the cleaner on the remote host..."
 # Submit a cleaning script
-$SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR"  &> $pipe
+$SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR" 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to stop PoD worker."
     exit 1
@@ -160,7 +170,7 @@ fi
 
 logMsg "$TOOL_NAME: Removing the remote working dir..."
 # remove the working directory
-$SSH_CMD "rm -rf $RDIR"  &> $pipe
+$SSH_CMD "rm -rf $RDIR" 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
     exit 1

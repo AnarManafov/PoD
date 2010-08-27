@@ -93,6 +93,15 @@ fi
 #=============================================================================
 # ***** LOG *****
 #=============================================================================
+# function read input from stdin and write output to the stdout
+# caller must take care about where come stdin and where go stdout
+logMsgPipe() 
+{
+  while read data
+  do
+      logMsg "$data" 
+  done
+}
 logMsg()
 {
 # date format
@@ -102,8 +111,6 @@ logMsg()
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
     echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
 }
-
-
 #=============================================================================
 # ***** MAIN *****
 #=============================================================================
@@ -117,14 +124,14 @@ fi
 
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
-rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ &> $pipe
+rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to send worker's package"
     exit 1
 fi
 
 # execute the worker script
-$SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" &> $pipe
+$SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: faild to start PoD worker"
     exit 1
