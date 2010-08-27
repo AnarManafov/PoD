@@ -36,7 +36,7 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo "*** [$(date '+%a, %d %b %Y %T %z')]   $1"
+    echo -e "***\t[$(date '+%a, %d %b %Y %T %z')]\t$1"
 }
 # ************************************************************************
 # ***** Perform program exit housekeeping *****
