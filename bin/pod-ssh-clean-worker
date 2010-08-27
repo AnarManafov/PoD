@@ -122,7 +122,8 @@ get_log_files()
    eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
 
    # create a local log dir. for this worker
-   LOG_DIR="$LOG_DIR/$WORKER_ID"
+   DT=$(date "+%Y_%m_%d_%H_%M_%S")
+   LOG_DIR="$LOG_DIR/$WORKER_ID/$DT"
    mkdir -p $LOG_DIR
 
    # proof_log.tgz, pod-agent.client.log, ssh_worker.log
