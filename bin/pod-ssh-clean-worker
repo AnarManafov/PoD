@@ -114,7 +114,24 @@ logMsg()
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
     echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
 }
+#=============================================================================
+# ***** RETRIEVE REMOTE LOG FILES *****
+#=============================================================================
+get_log_files()
+{
+   eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
 
+   # create a local log dir. for this worker
+   LOG_DIR="$LOG_DIR/$WORKER_ID"
+   mkdir -p $LOG_DIR
+
+   # proof_log.tgz, pod-agent.client.log, ssh_worker.log
+   $SCP_CMD $SSH_CON_STR:"$RDIR/proof_log.tgz $RDIR/pod-agent.client.log $RDIR/ssh_worker.log" $LOG_DIR/  2>&1 | logMsgPipe
+   if [ $? -ne 0 ]; then
+      logMsg "$TOOL_NAME error: failed to send workers cleaning script $SELF_PATH"
+      exit 1
+   fi
+}
 #=============================================================================
 # ***** remote part *****
 #=============================================================================
@@ -161,12 +178,14 @@ if [ $? -ne 0 ]; then
 fi
 
 logMsg "$TOOL_NAME: Executing the cleaner on the remote host..."
-# Submit a cleaning script
 $SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR" 2>&1 | logMsgPipe
 if [ $? -ne 0 ]; then
-    logMsg "$TOOL_NAME error: failed to stop PoD worker."
-    exit 1
+   logMsg "$TOOL_NAME warning: failed to retrieve remote log files."
 fi
+
+logMsg "$TOOL_NAME: retrieving worker's log files..."
+get_log_files
+
 
 logMsg "$TOOL_NAME: Removing the remote working dir..."
 # remove the working directory
