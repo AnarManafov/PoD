@@ -39,7 +39,7 @@ SSH_CON_STR=""
 RDIR=""
 SSHOPT=""
 CLEAN=""
-while getopts ":i:l:w:n:o:c:h" opt; do
+while getopts ":i:l:w:o:c:h" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -84,11 +84,13 @@ WAITTIMEOUT=10
 #=============================================================================
 # ***** POD-SSH NAMED PIPE *****
 #=============================================================================
-# a pod-ssh communication pipe (log engine)
-pipe="$POD_LOCATION/.ssh_plugin_pipe"
-if [[ ! -p $pipe ]]; then
-    echo "$TOOL_NAME error: pod-ssh log engine is not running"
-    exit 1
+if [ "$CLEAN" != "clean" ]; then
+   # a pod-ssh communication pipe (log engine)
+   pipe="$POD_LOCATION/.ssh_plugin_pipe"
+   if [[ ! -p $pipe ]]; then
+       echo "$TOOL_NAME error: pod-ssh log engine is not running"
+       exit 1
+   fi
 fi
 #=============================================================================
 # ***** LOG *****
@@ -133,10 +135,12 @@ fi
 # ***** local part *****
 #=============================================================================
 # this part is executed locally
+logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
 SELF_PATH=$(readlink -f $0)
 
 $SSH_CMD "test -d $RDIR" &> $pipe
 if [ $? -ne 0 ]; then
+   logMsg "$TOOL_NAME: There is nothing to clean."
    exit 0
 fi
 
@@ -146,19 +150,23 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+logMsg "$TOOL_NAME: Executing the cleaner on the remote host..."
 # Submit a cleaning script
-$SSH_CMD "$RDIR/$TOOL_NAME -c clean -w $RDIR"  &> $pipe
+$SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR"  &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to stop PoD worker."
     exit 1
 fi
 
+logMsg "$TOOL_NAME: Removing the remote working dir..."
 # remove the working directory
 $SSH_CMD "rm -rf $RDIR"  &> $pipe
 if [ $? -ne 0 ]; then
     logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
     exit 1
 fi
+
+logMsg "$TOOL_NAME: Done cleaning!"
 
 exit 0
 
