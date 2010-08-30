@@ -20,6 +20,8 @@
 using namespace MiscCommon;
 using namespace std;
 //=============================================================================
+const char g_comment_char = '#';
+//=============================================================================
 typedef boost::tokenizer<boost::escaped_list_separator<char> > Tok;
 //=============================================================================
 void CConfig::readFrom( istream &_stream )
@@ -38,6 +40,14 @@ void CConfig::readFrom( istream &_stream )
     StringVector_t::const_iterator iter_end = lines.end();
     for( size_t i = 0; iter != iter_end; ++iter, ++i )
     {
+        // ignore empty lines
+        if( iter->empty() )
+            continue;
+        
+        // ignore comments
+        if( g_comment_char == iter->at(0) )
+            continue;
+        
         Tok t( *iter );
         // create config. records here. But this class is not deleting them.
         // Each CWorker is responsible to delete it's config record info.
