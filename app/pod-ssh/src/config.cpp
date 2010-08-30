@@ -43,11 +43,11 @@ void CConfig::readFrom( istream &_stream )
         // ignore empty lines
         if( iter->empty() )
             continue;
-        
+
         // ignore comments
-        if( g_comment_char == iter->at(0) )
+        if( g_comment_char == iter->at( 0 ) )
             continue;
-        
+
         Tok t( *iter );
         // create config. records here. But this class is not deleting them.
         // Each CWorker is responsible to delete it's config record info.
