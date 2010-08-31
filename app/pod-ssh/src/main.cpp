@@ -87,6 +87,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
 int main( int argc, char * argv[] )
 {
     CLogEngine slog;
+    // convert log engine functor to a free call-back function
+    // this is needed to pass the logger further to other objects
     log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2 );
     bpo::variables_map vm;
     try
