@@ -125,16 +125,12 @@ int main( int argc, char * argv[] )
         }
 
         // some controle information
-        {
-            ostringstream ss;
-            ss << "Number of PoD workers: " << workers.size() << "\n";
-            slog( ss.str() );
-        }
-        {
-            ostringstream ss;
-            ss << "Number of PROOF workers: " << wrkCount << "\n";
-            slog( ss.str() );
-        }
+        ostringstream ss;
+        ss << "Number of PoD workers: " << workers.size() << "\n";
+        slog( ss.str() );
+        ss.str( "" );
+        ss << "Number of PROOF workers: " << wrkCount << "\n";
+        slog( ss.str() );
 
         // it's a dry run - configuration check only
         if( !vm.count( "submit" ) && !vm.count( "clean" ) )
