@@ -9,6 +9,6 @@
 #ifndef LOCAL_TYPES_H
 #define LOCAL_TYPES_H
 
-typedef void(*log_func_t)(const std::string&, const std::string&);
+typedef boost::function<void ( const std::string&, const std::string& )> log_func_t;
 
 #endif

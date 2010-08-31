@@ -36,7 +36,8 @@ add_custom_target(pod-ssh-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
 set( SOURCE_FILES
     ./src/main.cpp
     ./src/config.cpp
-    ./src/worker.cpp )
+    ./src/worker.cpp
+    ./src/logEngine.cpp )
 
 include_directories(
     ${PROJECT_BINARY_DIR}/src
