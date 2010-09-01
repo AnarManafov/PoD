@@ -194,6 +194,7 @@ export POD_PROOFCFG_FILE
 eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 # populating the tmp dir.
 _TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
+chmod 777 $_TMP_DIR
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
