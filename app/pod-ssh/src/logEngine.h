@@ -27,7 +27,7 @@ class CLogEngine
 
     private:
         int m_fd;
-        boost::thread m_thread;
+        boost::thread *m_thread;
         volatile sig_atomic_t m_stopLogEngine;
         std::string m_pipeName;
 };

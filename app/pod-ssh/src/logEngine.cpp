@@ -43,14 +43,16 @@ void CLogEngine::start()
         throw runtime_error( "Can't opem a named pipe: " + m_pipeName );
 
     // Start the log engine
-    m_thread = boost::thread( boost::bind( &CLogEngine::thread_worker, this, m_fd, m_pipeName ) );
+    m_thread = new boost::thread( boost::bind( &CLogEngine::thread_worker, this, m_fd, m_pipeName ) );
 }
 //=============================================================================
 void CLogEngine::stop()
 {
     m_stopLogEngine = 1;
     this->operator()( "Stopping the log engine...\n", "**" );
-    m_thread.join();
+    m_thread->join();
+    delete m_thread;
+    
     if( m_fd > 0 )
     {
         close( m_fd );
