@@ -15,7 +15,7 @@
 class CLogEngine
 {
     public:
-        CLogEngine(): m_fd( 0 ), m_stopLogEngine( 0 )
+        CLogEngine(): m_fd( 0 ), m_thread(NULL), m_stopLogEngine( 0 )
         {}
         ~CLogEngine();
         void start();

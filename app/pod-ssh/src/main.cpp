@@ -157,7 +157,7 @@ int main( int argc, char * argv[] )
     }
     catch( exception& e )
     {
-        slog( e.what() );
+        slog( e.what() + string("\n") );
         return 1;
     }
     return 0;

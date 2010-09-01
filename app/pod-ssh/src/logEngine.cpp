@@ -48,11 +48,15 @@ void CLogEngine::start()
 //=============================================================================
 void CLogEngine::stop()
 {
-    m_stopLogEngine = 1;
-    this->operator()( "Stopping the log engine...\n", "**" );
-    m_thread->join();
-    delete m_thread;
-    
+    if( NULL != m_thread )
+    {
+        m_stopLogEngine = 1;
+        this->operator()( "Done\n", "**" );
+        m_thread->join();
+        delete m_thread;
+        m_thread = NULL;
+    }
+
     if( m_fd > 0 )
     {
         close( m_fd );
