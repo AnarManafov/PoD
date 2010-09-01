@@ -239,14 +239,14 @@ if [ "$set_my_rootsys" = "no" ]; then
     tar -xzf $ROOT_ARC || clean_up 1
 
     export ROOTSYS="$WD/root"
-    export PATH=$ROOTSYS/bin:$PATH
-    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 else
     eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --section worker --key my_rootsys)
     export ROOTSYS=$ROOTSYS_FROM_CFG
-    export PATH=$ROOTSYS/bin:$PATH
-    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
 fi
+logMsg "using ROOTSYS: $ROOTSYS"
+export PATH=$ROOTSYS/bin:$PATH
+export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
 
 
 # **********************
