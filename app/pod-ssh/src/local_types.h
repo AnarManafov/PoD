@@ -12,3 +12,4 @@
 typedef boost::function<void ( const std::string&, const std::string& )> log_func_t;
 
 #endif
+
