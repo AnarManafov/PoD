@@ -17,7 +17,8 @@ project( PoD )
 #
 # Check if cmake has the required version
 #
-cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
+# we need cmake v. < v2.6.2 in order to use VERSION_EQUAL and other VERSION_*
+cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 # Version
 #
 # take the version string from git and write it to a version file
@@ -161,7 +162,7 @@ include( ${QT_USE_FILE} )
 if(QT4_FOUND)
   set(local_qt_version "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
   if(local_qt_version VERSION_LESS "4.4.2")
-     message(WARNING "The version of Qt is too low. You will be not able to use PoD's GUI")
+     message(WARNING " The version of Qt is too low. You will be not able to use PoD's GUI")
      set(BUILD_pod_console OFF)
   endif(local_qt_version VERSION_LESS "4.4.2")
 else(QT4_FOUND)
@@ -199,7 +200,7 @@ endif(QT4_FOUND)
   endif(BUILD_pod_console)
 
   if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
-    message( FATAL_ERROR "Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
+    message( FATAL_ERROR " Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
   endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
 
 endif( NOT GSI_BUILD )
