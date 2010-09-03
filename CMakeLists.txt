@@ -261,6 +261,9 @@ endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
 if( BUILD_TESTS )
   install(PROGRAMS run_test.sh DESTINATION tests)
 endif( BUILD_TESTS )
+# create empty log dir for release package
+# be sure to escape ",$ since evaluated at install time not configure time
+install(CODE "file(MAKE_DIRECTORY \"\${CMAKE_INSTALL_PREFIX}/log\")")
 
 #
 # Package
