@@ -45,7 +45,7 @@ clean_up()
     # Try to kill pod-agent by first sending a TERM signal
     # And if after 10 sec. it still exists send a non-ignorable kill
     WAIT_TIME=10
-    kill -15 $PODAGENT_PID
+    kill $PODAGENT_PID
     cnt=0
     while $(kill -0 $PODAGENT_PID &>/dev/null); do
        cnt=$(expr $cnt + 1)
@@ -313,7 +313,7 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   fi
 
   logMsg "starting xrootd..."
-  $(xrootd -c $WD/xpd.cf -b -l $WD/xpd.log)   
+  xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
   #give xrootd some time to start
   sleep 3
 
