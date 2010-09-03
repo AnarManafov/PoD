@@ -126,8 +126,8 @@ get_log_files()
    LOG_DIR="$LOG_DIR/$WORKER_ID/$DT"
    mkdir -p $LOG_DIR
 
-   # proof_log.tgz, pod-agent.client.log, ssh_worker.log
-   $SCP_CMD $SSH_CON_STR:"$RDIR/proof_log.tgz $RDIR/pod-agent.client.log $RDIR/ssh_worker.log" $LOG_DIR/  2>&1 | logMsgPipe
+   # xpd.log, proof_log.tgz, pod-agent.client.log, ssh_worker.log
+   $SCP_CMD $SSH_CON_STR:"$RDIR/xpd.log $RDIR/proof_log.tgz $RDIR/pod-agent.client.log $RDIR/ssh_worker.log" $LOG_DIR/  2>&1 | logMsgPipe
    if [ $? -ne 0 ]; then
       logMsg "$TOOL_NAME error: failed to send workers cleaning script $SELF_PATH"
       exit 1
