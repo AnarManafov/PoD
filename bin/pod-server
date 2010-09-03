@@ -158,6 +158,11 @@ start()
     # Start XRD
     ####
     xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
+    XRD_RET_VAL=$?
+    if [ "X$XRD_RET_VAL" != "X0" ]; then
+       return 1
+    fi
+
     
     sleep $XRD_START_TIMEOUT # let XRD to start
 	
