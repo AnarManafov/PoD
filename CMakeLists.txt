@@ -262,9 +262,6 @@ if( BUILD_TESTS )
   install(PROGRAMS run_test.sh DESTINATION tests)
 endif( BUILD_TESTS )
 
-# executing the post-install script
-install(SCRIPT "cmake/postinstall.cmake")
-
 #
 # Package
 #
