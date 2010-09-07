@@ -19,6 +19,8 @@ How to run
     
     <sect1 id="Services">
       <title>Services</title>
+      <sect2>
+      <title>GUI</title>
       <para>
       Start pod-console, a GUI application, which automates and helps to manage most of the operations.
 <screen>
@@ -40,7 +42,7 @@ How to run
         </mediaobject></screenshot>
         </figure></para>
 
-        Click the <guibutton>Start</guibutton> button in order to start PoD services. To stop PoD
+        Click the <guibutton>Start</guibutton> button in order to start PoD server. To stop PoD
         the <guibutton>Stop</guibutton> button should be pressed. Status of the PoD server is retrieved automatically
         by a timer event.
         </para>
@@ -49,6 +51,17 @@ How to run
         The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
         been pressed and PoD services are up - PoD Server is up and running.
       </para>
+      </sect2>
+
+      <sect2>
+      <title>CLI</title>
+      <para>
+      Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+<screen>
+<command>pod-server <parameter class='command'>start</parameter></command>
+</screen>
+      </para>
+      </sect2>
     </sect1>
 
 	 <sect1 id="JobManagerPlugins">
@@ -56,7 +69,7 @@ How to run
       <para>
       The next step is to submit remote workers using PoD's job manager.
       Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
-      That means PoD could be used on different Grid and batch sites. For instance currently PoD supports gLite and LSF job submissions.
+      That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
       It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
       </para>
       <para>
@@ -69,10 +82,31 @@ How to run
     
     <sect1 id="PROOF_workers">
       <title>PROOF workers</title>
-      <para>
+       <sect2>
+       <title>General</title>
+       <para>
        As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
        about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
-       PROOF Worker for the user. A list of accepted workers could be checked on Workers page of pod-console
+       PROOF Worker for the user.
+       </para>
+       <para>
+        It is not required to wait until all requested workers will be connected. Users could start analysis after
+        reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
+        When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
+        arrived workers.                 
+       </para>
+       <tip><para>
+       PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
+       need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
+       reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
+       until s Grid and/or batch queue time is over.
+       </para></tip>
+
+       </sect2>
+       <sect2>
+       <title>GUI</title>
+       <para>
+       A list of accepted workers could be checked on Workers page of pod-console
        (see the <xref linkend="pod_console_Workers"/>).        
           <para><figure float="0" id="pod_console_Workers">
         <title>pod-console: Workers</title>
@@ -85,18 +119,24 @@ How to run
         </textobject>
         </mediaobject></screenshot>
         </figure></para>
-        It is not required to wait until all requested workers will be connected. Users could start analysis after
-        reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
-        When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
-        arrived workers.                 
        </para>
-       <tip><para>
-       PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
-       need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
-       reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
-       until s Grid and/or batch queue time is over.
-       </para></tip>
-       </sect1>
+       </sect2>      
+       <sect2>
+       <title>CLI</title>
+       <para>
+       Use the <xref linkend="pod-info"/> command to find out a number
+<screen>
+<command>pod-info <parameter class='command'>-n</parameter></command>
+</screen>
+or a list
+<screen>
+<command>pod-info <parameter class='command'>-l</parameter></command>
+</screen>
+ of available PROOF workers.
+       </para>
+       </sect2>
+
+    </sect1>
 
        
     <sect1 id="pod_console_preferences">
@@ -160,12 +200,31 @@ This will help always get a proper settings of a current master host and PROOF's
        
     <sect1 id="How_to_shut_down_PoD">
       <title>How to shut down PoD</title>
+      <sect2>
+      <title>General</title>
       <para>
-      In order to shut down PoD the PoD server should be stopped. On the Server page, click the
+      In order to shut down PoD the PoD server should be stopped.
+      </para>
+      </sect2>
+      <sect2>
+      <title>GUI</title>
+      <para>
+      On the Server page, click the
       <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
       remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
       plug-in page, after some time statuses of jobs should be equal to "Done".
       </para>
+      </sect2>
+      <sect2>
+      <title>CLI</title>
+      <para>
+      Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+<screen>
+<command>pod-server <parameter class='command'>stop</parameter></command>
+</screen>
+      </para>
+      </sect2>
+
       </sect1>
            
   </chapter>

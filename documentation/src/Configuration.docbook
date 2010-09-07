@@ -13,10 +13,14 @@ Configuration
     <sect1 id="PoD_CFG">
       <title>PoD user defaults configuration</title>
       <para>
-	Since PoD v2.1.1 a user defaults configuration file is support. This is a general configuration of PoD.
-	All modules read from that file. By default it is located in <filename  class="directory">$POD_LOCATION/etc/</filename>
-and is called <filename>PoD.cfg</filename>.
+	Since PoD v2.1.1 a user defaults configuration file is supported. This is the configuration entry point of PoD.
+	All modules configure themselves according to that file. It must be located in the <filename  class="directory">$POD_LOCATION/etc/</filename>
+        directory and be called <filename>PoD.cfg</filename>.
       </para>
+      <tip><para>
+      Every time users sources PoD's environment script, the script checks whether the configuration file is exists and creates it if it's missing.
+      Also the <xref linkend="pod-user-defaults"/> command can be used to create a default configuration file at anytime.
+      </para></tip>
       <para>
        The <filename>PoD.cfg</filename> is a simple INI-like configuration file. Configuration file syntax is line based:
         <itemizedlist>
@@ -337,10 +341,9 @@ gui.accessibility.visual_bell=yes
     <sect1 id="XROOTD">
       <title>XROOTD</title>
       <para>
-      There is a default XROOTD configuration file, which is located in the <filename class="directory">$POD_LOCATION/etc</filename>
-      directory and it's called <filename>xpd.cf</filename>. PoD uses this file to configure both local redirector and
-      remote workers.
-            
+      There is a default XROOTD configuration file, <filename>$POD_LOCATION/etc/xpd.cf</filename>.
+      PoD uses this file to configure both local redirector and remote workers.
+
       <tip>
       <para>
       In <ulink url="http://xrootd.slac.stanford.edu/">XROOTD documentation</ulink>

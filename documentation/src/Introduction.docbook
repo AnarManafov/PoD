@@ -76,7 +76,7 @@ Private PoD instances can’t disturb each other.
 <listitem><para><emphasis role="bold">Different job managers</emphasis></para>
 <para>
 PoD supports different job managers via a plug-in system. It is a very easy to extend system.
-PoD currently supports gLite, LSF and PBS.</para>
+PoD currently supports gLite, LSF, PBS and SSH.</para>
 </listitem>
 </itemizedlist>
 </sect1>

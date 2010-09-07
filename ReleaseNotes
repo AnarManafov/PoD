@@ -5,6 +5,8 @@ pod: The project has been restructured. Now all submodules have been incorporate
 pod: A number of fixed to optimize the build process speed and the size of the source package.
 pod: Added new build targets, api-docs and upload-api-docs. In order to build PoD's private API documentation.
 pod: A new versioning system has been introduced. Now using a git canonical version number as a basis for PoD's version string.
+pod: The user manual has been updated.
+pod: New plug-in has been implemented - SSH.
 pod-agent: removed UD's option: worker.agent_threads
 pod-agent: learned "--workers" option. A number of PROOF workers to spawn.
            Used only by agents in a worker mode and only in the native PROOF connection.

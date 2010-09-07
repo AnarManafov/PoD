@@ -11,7 +11,7 @@ Command-line interface
   <!-- pod-server -->
   <!-- ......................................................................... -->
 
-  <refentry>
+  <refentry id="pod-server">
   <refentryinfo>
 	  <title>pod-server</title>
 	  <date>2010-01-31</date>
@@ -82,7 +82,7 @@ Command-line interface
  -->
  <!-- ......................................................................... -->
 
-   <refentry>
+  <refentry id="pod-info">
   <refentryinfo>
 	  <title>pod-info</title>
 	  <date>2010-01-31</date>
@@ -174,7 +174,7 @@ Command-line interface
  -->
  <!-- ......................................................................... -->
 
-  <refentry>
+  <refentry id="pod-user-defaults">
   <refentryinfo>
 	  <title>pod-user-defaults</title>
 	  <date>2010-01-31</date>
