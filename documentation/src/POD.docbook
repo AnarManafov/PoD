@@ -10,6 +10,7 @@
 <!ENTITY gLite_plugin SYSTEM "gLite_plugin.docbook">
 <!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
 <!ENTITY PBS_plugin SYSTEM "PBS_plugin.docbook">
+<!ENTITY SSH_plugin SYSTEM "SSH_plugin.docbook">
 <!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
@@ -93,6 +94,11 @@ LSF plug-in
 PBS plug-in
 -->
   &PBS_plugin;
+
+<!-- 
+PBS plug-in
+-->
+  &SSH_plugin;
 
 <!-- 
 How to test

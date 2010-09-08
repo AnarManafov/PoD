@@ -17,8 +17,8 @@ How to run
       </para>    
     </sect1>
     
-    <sect1 id="Services">
-      <title>Services</title>
+    <sect1 id="Server">
+      <title>Server</title>
       <sect2>
       <title>GUI</title>
       <para>
@@ -64,20 +64,27 @@ How to run
       </sect2>
     </sect1>
 
-	 <sect1 id="JobManagerPlugins">
-      <title>Job Manager plug-ins</title>
+	 <sect1 id="JobManager">
+      <title>Job Manager</title>
       <para>
-      The next step is to submit remote workers using PoD's job manager.
+      The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
+      the according hosts.
       Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
       That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
       It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
       </para>
       <para>
-       For the gLite plug-in specific, please see <xref linkend="gLite_plugin"/>.
+	 How to submit PoD jobs using:
+      <para>
+       <emphasis role="bold">gLite plug-in</emphasis>, please, see <xref linkend="gLite_plugin"/>.
        </para>
        <para>
-       For the LSF plug-in specific, please see <xref linkend="LSF_plugin"/>.
+       <emphasis role="bold">LSF plug-in</emphasis>, please, see <xref linkend="LSF_plugin"/>.
        </para>
+       <para>
+       <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
+      </para>
+     </para>
     </sect1>
     
     <sect1 id="PROOF_workers">
@@ -184,6 +191,10 @@ This will help always get a proper settings of a current master host and PROOF's
 #endif	
 	</screen>
 	</para>
+        <para>
+        Another solution is to use the <xref linkend="pod-info"/> command, which can output a current connection string.
+        Fined a useful example of the command usage on the <xref linkend="How_to_test"/>.
+        </para>
        </sect1>      
 
 
@@ -226,6 +237,39 @@ This will help always get a proper settings of a current master host and PROOF's
       </sect2>
 
       </sect1>
+    <sect1><title>if something is wrong</title>
+    <para>
+    If something goes wrong, something doesn't work as expected, please, check the log files first.
+        <table id="POD_LOG_FILES">
+		<title>PoD log files</title>
+  		<tgroup cols="2">
+    		<thead>
+	<row>
+        	<entry>Name</entry>
+		<entry>Location</entry>
+		<entry>Description</entry>
+      	</row>      
+    		</thead>
+    		<tbody>		
+               	<row>
+        	<entry>pod-agent.server.log</entry>
+		<entry>$POD_LOCATION/log</entry>
+		<entry>This file contains a log messages of the pod-agent, which runs on the user interface.</entry>
+         	</row>
+		<row>
+        	<entry>xpd.log</entry>
+		<entry>$POD_LOCATION/log/PoDServer</entry>
+		<entry>This is an XROOTD log file.</entry>
+         	</row>
+		</tbody>
+   	        </tgroup>
+     </table>
+    All job manager plug-ins are also able to deliver the logs from worker nodes. Please refer to the plug-ins configuration for more details.
+    </para>
+    <para>
+    If you still can't resolve the issue or have something to report, use <xref linkend="Support"/>.
+    </para>
+    </sect1>
            
   </chapter>
  

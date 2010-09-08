@@ -6,9 +6,7 @@ LSF plug-in description
         <chapterinfo>
        </chapterinfo>
            
-    <sect1 id="LSF_Workers">
-      <title>LSF workers</title>
-      <sect2><title>GUI</title>
+      <sect1><title>GUI</title>
       <para>
       The <xref linkend="PAConsole_LSF_plug-in"/> shows a screen shot of the LSF plug-in GUI page for pod-console.
       </para>
@@ -29,9 +27,9 @@ LSF plug-in description
        Using the plug-ins GUI (see. <xref linkend="PAConsole_LSF_plug-in"/>) users are able to specify a number of workers and an LSF queue.
        PoD provides a default LSF job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks.
       </para>
-    </sect2>
+    </sect1>
 
-    <sect2 id="LSF_CLI"><title>CLI</title>
+    <sect1 id="LSF_CLI"><title>CLI</title>
     <para>
     For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
     Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
@@ -42,7 +40,6 @@ LSF plug-in description
 <command>pod-submit <parameter class='command'>-r</parameter> lsf <parameter class='command'>-q</parameter> proof <parameter class='command'>-n</parameter> 15</command>
 </screen>
     </para>
-    </sect2>
     </sect1>
     <sect1 id="LSF_CFG"><title>Configuration</title>
     <para>

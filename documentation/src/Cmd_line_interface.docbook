@@ -54,7 +54,7 @@ Command-line interface
 	      <para>Start PoD server.</para>
 	    </listitem>
 	  </varlistentry>
-    <varlistentry>
+          <varlistentry>
 	    <term><option>stop</option></term>
 	    <listitem>
 	      <para>Stop PoD server.</para>
@@ -259,7 +259,7 @@ Command-line interface
   <refsynopsisdiv>
 	  <cmdsynopsis>
 	    <command>pod-user-defaults-lite</command>
-	        <arg><option>-s, --help</option></arg>
+	        <arg><option>-h, --help</option></arg>
 	        <arg><option>-v, --version</option></arg>
           <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
           <arg><option>-s <replaceable>name</replaceable>, --section=<replaceable>name</replaceable></option></arg>
@@ -370,8 +370,8 @@ Command-line interface
 	    <command>pod-submit</command>
 	        <arg><option>-h</option></arg>
 	        <arg><option>-r <replaceable>lsf|pbs</replaceable></option></arg>
-          <arg><option>-q <replaceable>queue</replaceable></option></arg>
-          <arg><option>-n <replaceable>X</replaceable></option></arg>
+                <arg><option>-q <replaceable>queue</replaceable></option></arg>
+                <arg><option>-n <replaceable>X</replaceable></option></arg>
  	    </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -415,6 +415,126 @@ Command-line interface
   </refsect1>
   </refentry>
 
+ <!-- ......................................................................... -->
+ <!-- pod-ssh -->
+ <!--
+    "help,h",     Produce help message
+    "version,v"   Version information
+    "config,c",   PoD's ssh plug-in configuration file. A workers description file
+    "submit",     Submit workers
+    "clean",      Clean all workers
+ -->
+ <!-- ......................................................................... -->
+
+  <refentry id="pod-ssh">
+  <refentryinfo>
+	  <title>pod-ssh</title>
+	  <date>2010-09-08</date>
+	  <productname>pod-ssh vXXX</productname>
+  </refentryinfo>
+  <refmeta>
+	  <refentrytitle>pod-ssh</refentrytitle>
+	  <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+	  <refname>pod-ssh</refname>
+	  <refpurpose>Submits/Cleans PoD workers using an ssh connection.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+	  <cmdsynopsis>
+	    <command>pod-ssh</command>
+	        <arg><option>-h, --help</option></arg>
+	        <arg><option>-v, --version</option></arg>
+                <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
+                <group choice="req">
+	           <arg>--submit</arg>
+	           <arg>--clean</arg>
+	        </group>
+	  </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+	<title>Description</title>
+    <para>
+    The <command>pod-ssh</command> command can be used to submit and clean PoD workers using an ssh connection.
+    </para>
+    <important><para>
+    The current implementation requires users to have a public key access (password less) to destination remote hosts (worker nodes).
+    </para></important>
+    <para>
+     The <command>pod-ssh</command> command takes PoD's ssh plug-in configuration file as input.
+     The configuration file is a comma-separated values (CSV) file.
+     Fields are normally separated by commas. If you want to put a comma in a field, you need to put quotes around it. Also 3 escape sequences are supported.
+    </para>
+    <para>
+    <table id="POD_SSH_CFG_TABLE">
+		<title>PoD's ssh plug-in configuration fields</title>
+  		<tgroup cols="1">
+    		<thead>
+	<row>
+        	<entry>1</entry>
+		<entry>2</entry>
+		<entry>3</entry>
+		<entry>4</entry>
+		<entry>5</entry>
+      	</row>      
+    		</thead>
+    		<tbody>		
+               	<row>
+        	<entry>id (must be a unique string)</entry>
+		<entry>a host name with or without a login, in a form: login@host.fqdn</entry>
+		<entry>additional ssh params (could be empty)</entry>
+		<entry>remote working dir</entry>
+		<entry>number of workers</entry>
+         	</row>
+		</tbody>
+   	        </tgroup>
+     </table>
+
+An example of a configuration file:
+<screen>
+r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4
+# this is a comment
+r2, user@lxi001.gsi.de,,/home/user/pod,16
+125, user2@host, , /tmp/test,8
+</screen>
+</para>
+  </refsect1>
+  <refsect1>
+	<title>Options</title>
+  <variablelist>
+	  <varlistentry>
+	    <term><option>-h, --help</option></term>
+	    <listitem>
+	      <para>Show summary of options.</para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+	    <term><option>-v, --version</option></term>
+	    <listitem>
+	      <para>Version information.</para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+	    <term><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></term>
+	    <listitem>
+	      <para>PoD's ssh plug-in configuration file. A workers description file.</para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+	    <term><option>--submit</option></term>
+	    <listitem>
+	       <para>Submit PoD workers according to the entries in the configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+	    <term><option>--clean</option></term>
+	    <listitem>
+	       <para>Clean all PoD workers according to the entries in the configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+  </variablelist>
+  </refsect1>
+  </refentry>
 
 </chapter>
 

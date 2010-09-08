@@ -9,7 +9,8 @@ SRC=\
 	How_to_run.docbook\
 	gLite_plugin.docbook\
 	LSF_plugin.docbook\
-  PBS_plugin.docbook\
+        PBS_plugin.docbook\
+        SSH_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
