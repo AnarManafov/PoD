@@ -25,6 +25,12 @@ SSH plug-in description
 <screen>
 <command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--clean</parameter></command>
 </screen>
+    <important><para>
+     The cleaning of the workers is very important in order to keep the remote environment safe and clean. 
+     Also the cleaning procedure will deliver log files from the workers and place them in
+     <filename class="directory">$POD_LOCATION/log</filename> directory. Unfortunately SSH plug-in can't automatically decide
+     when to clean the workers, you therefor is responsible to do it.
+    </para></important>
     Detailed description of the command and of the configuration file can be found in the <xref linkend="pod-ssh"/> reference manual.
     </para>
     </sect1>
