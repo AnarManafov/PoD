@@ -19,7 +19,7 @@
 
 <book id="POD" lang="en">
 <bookinfo>
-<title>"PROOF on Demand" (PoD) - v.2.1.4</title> 
+<title>"PROOF on Demand" (PoD) - v.2.2</title> 
   <authorgroup>
     <author>
        <firstname>Anar</firstname>
@@ -29,16 +29,16 @@
          </affiliation>
     </author>
   </authorgroup>
-  <edition>"PROOF on Demand" v2.1.4</edition>
+  <edition>"PROOF on Demand" v2.2</edition>
   <copyright>
 	<year>2007</year>
 	<year>2008</year>
 	<year>2009</year>
   <year>2010</year>
 	<holder>GSI mbH.</holder>
-	<holder>GSI GridTeam</holder>
+	<holder>GSI Scientific Computing group</holder>
   </copyright>
-  <releaseinfo>
+  <!---releaseinfo>
   $Revision$
   </releaseinfo>
   <pubdate>
@@ -46,7 +46,7 @@
   </pubdate>
   <publisher>
   <publishername>$LastChangedBy$</publishername>
-  </publisher>
+  </publisher-->
   
   </bookinfo>
 

@@ -66,6 +66,11 @@ Installation
 <command>cmake -C ../BuildSetup.cmake ..</command>
 </screen>
     </para>
+    <tip><para>
+    If for some reason, for example a missing dependency, configuration failed, after fixing the issue before starting the <command>cmake</command> command
+    it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the 
+    source configuration is restarted.
+    </para></tip>
     </sect1>
 
 
@@ -88,6 +93,7 @@ Installation
       <para>
       In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script. Change to your newly installed PoD directory and issue:
 <screen>
+<command>cd <replaceable>[POD INSTALLATION]</replaceable></command>
 <command>source PoD_env.sh</command>
 </screen>
       You need to source this script every time in a new shell when you want to use <application>PoD</application>

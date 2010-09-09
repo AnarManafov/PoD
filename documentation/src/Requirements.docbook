@@ -6,19 +6,13 @@ Requirements
 <chapterinfo>
 </chapterinfo>
    <sect1 id="User_workspace_requirements">
-   <title>User's workspace requirements</title>
+   <title>User interface</title>
    <para>
-      PoD works as a client/server application.
-      We define user's workspace as a side, which is located on the local (for the user) space,
-      on users laptop, for example. For simplification we will call it a user's workspace or
-      local workspace. There a PoD server is running.
+	   Officially PoD runs on Linux only.
    </para>
-	<para>
-	   Officially PoD runs only on Linux.
-	</para>
    <para>
 	<itemizedlist>
-		<title>General workspace requirements: </title>
+		<title>General requirements: </title>
 		<listitem>Incoming connection on pod-agent's port (configurable)</listitem>
 		<listitem>ROOT 5.25.04 or higher (xrootd enabled)</listitem>
 		<listitem>Qt 4.4.2 or higher</listitem>
@@ -39,19 +33,18 @@ Requirements
       <title>Additional requirements for PBS plug-in:</title>
       <listitem>PBSPro/Torque API (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
    </itemizedlist>
+   <itemizedlist>
+      <title>Additional requirements for SSH plug-in: </title>
+      <listitem>A public key access (password less) to destination worker nodes.</listitem>
+   </itemizedlist>
    </para>
    </sect1>
    
    <sect1 id="Workers_workspace_requirements">
-   <title>Workers' workspace requirements</title>
-   <para>
-      We define workers' workspace as a side which is located on the remote space,
-      gLite Grid Worker Nodes or batch workers, for example.
-      Clients are actually workers for us. For simplification we will call it a remote workspace.
-   </para>       
+   <title>Workers</title>      
    <para>
    <itemizedlist>
-      <title>General workspace requirements: </title>
+      <title>General requirements: </title>
       <listitem>Outgoing connection for a port in a range (configurable).
 		          This is needed by pod-agent worker to be able to connect to a server</listitem>
 	</itemizedlist>
@@ -59,7 +52,7 @@ Requirements
       <title>Additional requirements for gLite plug-in: </title>
       <listitem>gLite WMS (WMProxy endpoint)</listitem>
 		<listitem>gLite WNs (at least v3.0)</listitem>
-	</itemizedlist>
+   </itemizedlist>
    </para>
    </sect1>   
   </chapter>
