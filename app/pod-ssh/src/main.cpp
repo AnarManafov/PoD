@@ -24,6 +24,7 @@
 // MiscCommon
 #include "BOOSTHelper.h"
 #include "SysHelper.h"
+#include "PoDUserDefaultsOptions.h"
 // pod-ssh
 #include "version.h"
 #include "config.h"
@@ -86,6 +87,13 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
 //=============================================================================
 int main( int argc, char * argv[] )
 {
+    // PoD user defaults
+    string cfgFile( "$POD_LOCATION/etc/PoD.cfg" );
+    smart_path( &cfgFile );
+    PoD::CPoDUserDefaults user_defaults;
+    user_defaults.init( cfgFile );
+    PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
+
     CLogEngine slog;
     // convert log engine's functor to a free call-back function
     // this is needed to pass the logger further to other objects
@@ -105,7 +113,7 @@ int main( int argc, char * argv[] )
         }
 
         // Collect workers list
-        slog.start();
+        slog.start( cfg.m_server.m_common.m_workDir );
         typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
         workersList_t workers;
@@ -157,7 +165,7 @@ int main( int argc, char * argv[] )
     }
     catch( exception& e )
     {
-        slog( e.what() + string("\n") );
+        slog( e.what() + string( "\n" ) );
         return 1;
     }
     return 0;

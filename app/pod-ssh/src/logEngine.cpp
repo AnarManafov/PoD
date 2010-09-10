@@ -25,14 +25,15 @@ CLogEngine::~CLogEngine()
     stop();
 }
 //=============================================================================
-void CLogEngine::start()
+void CLogEngine::start( const string &_wrkDir )
 {
     m_stopLogEngine = 0;
     // create a named pipe (our signal pipe)
     // it's use to collect outputs from the threads and called shell scripts...
-    m_pipeName = "$POD_LOCATION/";
+    m_pipeName = _wrkDir;
     smart_path( &m_pipeName );
-    m_pipeName += ".ssh_plugin_pipe";
+    smart_append( &m_pipeName, '/' );
+    m_pipeName += ".pod_ssh_pipe";
     int ret_val = mkfifo( m_pipeName.c_str(), 0666 );
     if(( -1 == ret_val ) && ( EEXIST != errno ) )
         throw runtime_error( "Can't create a named pipe: " + m_pipeName );

@@ -86,7 +86,8 @@ WAITTIMEOUT=10
 #=============================================================================
 if [ "$CLEAN" != "clean" ]; then
    # a pod-ssh communication pipe (log engine)
-   pipe="$POD_LOCATION/.ssh_plugin_pipe"
+   eval pipe_dir=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
+   pipe="$pipe_dir/.pod_ssh_pipe"
    if [[ ! -p $pipe ]]; then
        echo "$TOOL_NAME error: pod-ssh log engine is not running"
        exit 1
