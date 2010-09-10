@@ -140,7 +140,7 @@ get_freeport()
 {
     for(( i = $1; i < $2; ++i ))
     do
-       netstat -an 2>/dev/null | grep $i | grep -i listen &>/dev/null || { echo $i; exit 0; }
+       netstat -ant 2>/dev/null | grep ":$i" | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
     done
 
     echo "Error: Cant find free socket port"
