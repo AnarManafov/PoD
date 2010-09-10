@@ -7,6 +7,7 @@ pod: Added new build targets, api-docs and upload-api-docs. In order to build Po
 pod: A new versioning system has been introduced. Now using a git canonical version number as a basis for PoD's version string.
 pod: The user manual has been updated.
 pod: New plug-in has been implemented - SSH.
+pod: Using a new bash algorithm, instead of a perl code to find out free tcp ports.
 pod-agent: removed UD's option: worker.agent_threads
 pod-agent: learned "--workers" option. A number of PROOF workers to spawn.
            Used only by agents in a worker mode and only in the native PROOF connection.

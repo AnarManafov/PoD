@@ -88,25 +88,13 @@ server_status()
 # ***** returns a free port from a given range  *****
 get_freeport()
 {
-    perl -e '
-    use IO::Socket;
-    my $port = $ARGV[0];
-    for (; $port < $ARGV[1]; $port++) {
-        $fh = IO::Socket::INET->new( Proto     => "tcp",
-                                     LocalPort => $port,
-                                     Listen    => SOMAXCONN,
-                                     Reuse     => 0);
-        if ($fh){
-            $fh->close();
-            print "$port";
-            exit(0);
-        }
+    for(( i = $1; i < $2; ++i ))
+    do
+       netstat -an 2>/dev/null | grep $i | grep -i listen &>/dev/null || { echo $i; exit 0; }
+    done
 
-
-    }
-    die "%Error: Cant find free socket port\n";
-    exit(1);
-' $1 $2
+    echo "Error: Cant find free socket port"
+    exit 1
 }
 # ************************************************************************
 # ***** returns a free port from a given range  *****
@@ -130,9 +118,9 @@ start()
     # proof.conf must be presented before xrootd is started
     touch $POD_PROOFCFG_FILE
 
-    NEW_XRD_PORT=`get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX`
-    NEW_XPROOF_PORT=`get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX`
-    NEW_PROOFAGENT_PORT=`get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX`
+    NEW_XRD_PORT=$(get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX)
+    NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
+    NEW_PROOFAGENT_PORT=$(get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX)
     echo "using XRD port: "$NEW_XRD_PORT
     echo "using XPROOF port: "$NEW_XPROOF_PORT
     echo "using PoD agent port: "$NEW_PROOFAGENT_PORT
