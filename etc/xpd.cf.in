@@ -10,9 +10,9 @@
 ###         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 ###*************************************************************************/
 #
-## XRD port
+## XPROOFD port
 #
-xrd.port 000
+xpd.port 000
 #
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.

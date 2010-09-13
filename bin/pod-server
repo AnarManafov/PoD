@@ -119,7 +119,7 @@ start()
     echo "using PoD agent port: "$NEW_PROOFAGENT_PORT
 
     # updating XRD configuration file
-    regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+    regexp_xrd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
     sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
     mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf

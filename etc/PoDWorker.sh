@@ -282,7 +282,7 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   
   # updating XRD configuration file. Needed even if another scrip has already started an xproofd process,
   # since we might want to use port's info somewhere else.
-  regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+  regexp_xrd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
   sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
   mv $WD/xpd.cf.temp $WD/xpd.cf
 
