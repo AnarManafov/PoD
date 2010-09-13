@@ -10,13 +10,9 @@
 ###         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
 ###*************************************************************************/
 #
-## XRD port
+## XPROOFD port
 #
-xrd.port 000
-#
-## FS lib
-#
-xrootd.fslib libXrdOfs.so
+xpd.port 000
 #
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.
@@ -24,18 +20,17 @@ xrootd.fslib libXrdOfs.so
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 ## comment if you want to help the WN pools
 #
-#
-# !!! DON'T REMOVE THE FOLLOWING COMMENTS
-#
-# server.adminpath @CMAKE_INSTALL_PREFIX@/tests
-# worker.adminpath @CMAKE_INSTALL_PREFIX@/tests
-#
+# !!! DON'T REMOVE/CHANGE THE FOLLOWING COMMENTS
+# * * * * * * * * * *
+# server.adminpath @CMAKE_POD_TMP_DIR@
+# worker.adminpath _G_WORKER_TMP_DIR
+# * * * * * * * * * *
 if named PoDServer
- xrd.adminpath ./ group
- xrootd.export _G_XRD_EXPORT_DIR
+ xrd.adminpath @CMAKE_POD_TMP_DIR@
+# xrootd.export @CMAKE_INSTALL_PREFIX@
 else
- xrd.adminpath _G_WORKER_TMP_DIR group
- xrootd.export _G_WRK_DIR/
+ xrd.adminpath _G_WORKER_TMP_DIR
+# xrootd.export _G_WRK_DIR/
 fi
 #
 ## logging
@@ -45,7 +40,7 @@ xrd.trace all debug
 ## setting a PROOF temp dir.
 #
 if named PoDServer
- set PROOFTMP=_G_SERVER_TMP_DIR
+ set PROOFTMP=@CMAKE_POD_TMP_DIR@
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
 fi
@@ -53,9 +48,7 @@ fi
 ## Load the XrdProofd protocol:
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 #
-if exec xrootd
- xrd.protocol xproofd:22222 libXrdProofd.so tmp:/$PROOFTMP
-fi
+xpd.tmp $PROOFTMP
 #
 ## Resource finder
 #
