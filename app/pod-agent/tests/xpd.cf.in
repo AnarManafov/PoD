@@ -22,11 +22,11 @@ xpd.port 22222
 #
 # !!! DON'T REMOVE/CHANGE THE FOLLOWING COMMENTS
 # * * * * * * * * * *
-# server.adminpath @CMAKE_POD_TMP_DIR@
-# worker.adminpath _G_WORKER_TMP_DIR
+# server.adminpath @CMAKE_INSTALL_PREFIX@/tests
+# worker.adminpath @CMAKE_INSTALL_PREFIX@/tests
 # * * * * * * * * * *
 if named PoDServer
- xrd.adminpath @CMAKE_POD_TMP_DIR@
+ xrd.adminpath ./ group
 # xrootd.export @CMAKE_INSTALL_PREFIX@
 else
  xrd.adminpath _G_WORKER_TMP_DIR

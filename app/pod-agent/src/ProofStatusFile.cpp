@@ -95,7 +95,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
 
 
     // find a xpd port
-    const string xpd_str( "xpd.port " );
+    const string xpd_str( "xpd.port" );
     iter = find_if( vec.begin(), vec.end(), SFind<string>( xpd_str ) );
     if ( iter == vec.end() )
         return false;
