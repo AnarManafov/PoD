@@ -28,9 +28,9 @@ class CServerInfo
 
     public:
         bool IsRunning( bool _check_all ) const;
-        pid_t IsXROOTDRunning() const;
+        pid_t IsXPROOFDRunning() const;
         pid_t IsPROOFAgentRunning() const;
-        std::string GetXROOTDInfo() const;
+        std::string GetXPROOFDInfo() const;
         std::string GetPAInfo() const;
 
     private:

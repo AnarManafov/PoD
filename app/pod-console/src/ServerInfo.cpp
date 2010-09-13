@@ -47,17 +47,17 @@ pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 //=============================================================================
 bool CServerInfo::IsRunning( bool _check_all ) const
 {
-    const pid_t pidXrootD = IsXROOTDRunning();
+    const pid_t pidXProofD = IsXPROOFDRunning();
     const pid_t pidPA = IsPROOFAgentRunning();
     if( _check_all )
-        return ( pidXrootD && pidPA );
+        return ( pidXProofD && pidPA );
     else
-        return ( pidXrootD || pidPA );
+        return ( pidXProofD || pidPA );
 }
 //=============================================================================
-pid_t CServerInfo::IsXROOTDRunning() const
+pid_t CServerInfo::IsXPROOFDRunning() const
 {
-    return _IsRunning( "xrootd" );
+    return _IsRunning( "xproofd" );
 }
 //=============================================================================
 pid_t CServerInfo::IsPROOFAgentRunning() const
@@ -65,9 +65,9 @@ pid_t CServerInfo::IsPROOFAgentRunning() const
     return _IsRunning( "pod-agent" );
 }
 //=============================================================================
-string CServerInfo::GetXROOTDInfo() const
+string CServerInfo::GetXPROOFDInfo() const
 {
-    const pid_t pid = IsXROOTDRunning();
+    const pid_t pid = IsXPROOFDRunning();
 
     stringstream spid;
     if( pid )
@@ -75,7 +75,7 @@ string CServerInfo::GetXROOTDInfo() const
 
     stringstream ss;
     ss
-            << "xrootd" << spid.str() << ": is "
+            << "xproofd" << spid.str() << ": is "
             << ( pid ? "running" : "NOT RUNNING" );
 
     return ss.str();
