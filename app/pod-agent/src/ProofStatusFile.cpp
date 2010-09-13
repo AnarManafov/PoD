@@ -52,7 +52,7 @@ CProofStatusFile::~CProofStatusFile()
 //=============================================================================
 /// This function reads xpd.cfg and extracts adminpath paths for servers and workers.
 /// Paths are parsed from a special comment block in PoD's xpd.cfg
-/// A path is excluded if it doens't exist at the moment when the search is done.
+/// The path is excluded if it doens't exist at the moment when the search is done.
 bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
@@ -95,7 +95,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
 
 
     // find a xpd port
-    const string xpd_str( "xrd.protocol xproofd:" );
+    const string xpd_str( "xpd.port " );
     iter = find_if( vec.begin(), vec.end(), SFind<string>( xpd_str ) );
     if ( iter == vec.end() )
         return false;

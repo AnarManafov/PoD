@@ -223,7 +223,7 @@ void CAgentClient::monitor()
         // TODO: we need to check real PROOF port here (from cfg)
         if( !IsPROOFReady( m_proofPort ) )
         {
-            FaultLog( erError, "Can't connect to PROOF/XRD service." );
+            FaultLog( erError, "Can't connect to PROOF service." );
             graceful_quit = 1;
         }
 
