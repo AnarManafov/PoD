@@ -52,7 +52,7 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
     smart_path( &xpd );
     if( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
     {
-        string msg( "Can't find xrootd config: " );
+        string msg( "Can't find xproofd config: " );
         msg += xpd;
         WarningLog( 0, msg );
     }
@@ -70,7 +70,7 @@ void CAgentServer::monitor()
         // TODO: we need to check real PROOF port here (from cfg)
         if( !IsPROOFReady( 0 ) || graceful_quit )
         {
-            FaultLog( erError, "Can't connect to PROOF/XRD service." );
+            FaultLog( erError, "Can't connect to PROOF service." );
             graceful_quit = 1;
         }
 

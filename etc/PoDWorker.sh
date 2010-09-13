@@ -56,9 +56,9 @@ clean_up()
        sleep 1
     done
 
-    # force kill of xrootd and proof processes
-    # pod-agent will shutdown automatically if there will be no xrootd 
-    pkill -9 -U $UID xrootd
+    # force kill of xproofd and proof processes
+    # pod-agent will shutdown automatically if there will be no xproofd 
+    pkill -9 -U $UID xproofd
     pkill -9 -U $UID proofserv
     
     # archive and remove the local proof directory
@@ -88,12 +88,12 @@ clean_up()
 xrd_detect()
 {
     # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
+    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
     
     if [ -n "$XRD_PID" ]; then
-	logMsg "XRD is running under PID: "$XRD_PID
+	logMsg "XPROOFD is running under PID: "$XRD_PID
     else
-	logMsg "XRD is NOT running"
+	logMsg "XPROOFD is NOT running"
 	return 0
     fi
     
@@ -103,31 +103,29 @@ xrd_detect()
     # it is needed in case when several PoD workers are started in the same time on one machine
     while [ "$var0" -lt "$RETRY_CNT" ]
       do
-      logMsg "detecting xrd ports. Try $var0"
+      logMsg "detecting xproofd ports. Try $var0"
       # getting an array of XRD LISTEN ports
       # change a string separator
-      O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | grep "xrootd")) IFS=$O;
+      O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | grep "xproofd")) IFS=$O;
       
       # look for ports of the server
       for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
 	do
 	port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g')
 	if [ -n "$port" ]; then
-	    if (( ($port >= $XRD_PORTS_RANGE_MIN) && ($port <= $XRD_PORTS_RANGE_MAX) )); then
-		XRD_PORT=$port
-	    elif (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
+	    if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
 		XPROOF_PORT=$port
+                break
 	    fi
 	fi
       done
        
-      logMsg "PoD has detected XRD port: "$XRD_PORT
-      logMsg "PoD has detected XPROOF port: "$XPROOF_PORT
-      if [ -n "$XRD_PORT" ] && [ -n "$XPROOF_PORT" ]; then
+      logMsg "PoD has detected XPROOFD port: "$XPROOF_PORT
+      if [ -n "$XPROOF_PORT" ]; then
 	  return 0
       else
 	  var0=`expr $var0 + 1`
-	  # TODO: move the magic number to a var
+	  # TODO: move the magic number to vars
 	  sleep 5
       fi
     done
@@ -254,8 +252,6 @@ fi
 touch $POD_PROOFCFG_FILE
 
 # user defaults for ports
-XRD_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --section worker --key xrd_ports_range_min)
-XRD_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --section worker --key xrd_ports_range_max)
 XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_max)
 
@@ -275,46 +271,42 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   
   if [ -n "$XRD_PID" ]; then
       # use existing ports for xrd and xproof
-      logMsg "found a running XRD instance with pid: "$XRD_PID
-      POD_XRD_PORT_TOSET=$XRD_PORT
+      logMsg "found a running xproofd instance with pid: "$XRD_PID
       POD_XPROOF_PORT_TOSET=$XPROOF_PORT
   else
-      # if xrootd is not yet running on this machine for this user, try to start it
-      logMsg "xrootd is not running yet on this machine for this user."
-      POD_XRD_PORT_TOSET=$(get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX)
+      # if xproofd is not yet running on this machine for this user, try to start it
+      logMsg "xproofd is not running yet on this machine for this user."
       POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
   fi
-  logMsg "using XRD port: "$POD_XRD_PORT_TOSET
   logMsg "using XPROOF port: "$POD_XPROOF_PORT_TOSET
   
-  # updating XRD configuration file. Needed even if another scrip has already started an xrootd process,
+  # updating XRD configuration file. Needed even if another scrip has already started an xproofd process,
   # since we might want to use port's info somewhere else.
-  regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XRD_PORT_TOSET/g"
-  regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+  regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
   sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
   mv $WD/xpd.cf.temp $WD/xpd.cf
 
-  # break the loop if xrootd is running already
+  # break the loop if xproofd is running already
   if [ -n "$XRD_PID" ]; then
       break
   fi
 
-  logMsg "starting xrootd..."
-  xrootd -c $WD/xpd.cf -b -l $WD/xpd.log
-  #give xrootd some time to start
+  logMsg "starting xproofd..."
+  xproofd -c $WD/xpd.cf -b -l $WD/xpd.log
+  #give xproofd some time to start
   sleep 3
 
   # loop counter
   COUNT=$(expr $COUNT + 1)
 done
 
-# detect that xrootd failed to start
-XRD=$(pgrep -U $UID xrootd)
+# detect that xproofd failed to start
+XRD=$(pgrep -U $UID xproofd)
 XRD_RET_VAL=$?
 if [ "X$XRD_RET_VAL" = "X0" ]; then
-    logMsg "checking XROOTD process: running..."
+    logMsg "checking XPROOFD process: running..."
 else
-    logMsg "checking XROOTD process: is NOT running"
+    logMsg "checking XPROOFD process: is NOT running"
     clean_up 1
 fi
 

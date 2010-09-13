@@ -14,10 +14,6 @@
 #
 xrd.port 000
 #
-## FS lib
-#
-xrootd.fslib libXrdOfs.so
-#
 ## We can't use "_G_WRK_DIR/" for adminpath because:
 ## "Local TCP socket names are limited to 108 characters.
 ## Up to 32 characters are needed to define actual socket files;
@@ -31,10 +27,10 @@ xrootd.fslib libXrdOfs.so
 # * * * * * * * * * *
 if named PoDServer
  xrd.adminpath @CMAKE_POD_TMP_DIR@
- xrootd.export @CMAKE_INSTALL_PREFIX@
+# xrootd.export @CMAKE_INSTALL_PREFIX@
 else
  xrd.adminpath _G_WORKER_TMP_DIR
- xrootd.export _G_WRK_DIR/
+# xrootd.export _G_WRK_DIR/
 fi
 #
 ## logging
@@ -52,9 +48,7 @@ fi
 ## Load the XrdProofd protocol:
 ## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
 #
-if exec xrootd
- xrd.protocol xproofd:000 libXrdProofd.so tmp:/$PROOFTMP
-fi
+xpd.tmp $PROOFTMP
 #
 ## Resource finder
 #

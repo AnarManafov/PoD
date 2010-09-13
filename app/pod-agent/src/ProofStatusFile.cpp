@@ -81,7 +81,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     string p( *iter );
     trim<string>( &p, ' ' );
 
-    // NOTE: "PoDServer" - is added to the admin path by xrootd.
+    // NOTE: "PoDServer" - is added to the admin path by xproofd.
     // we therefore also have to use it
     // This is only valid for PoD servers
     if ( adminp_server == _type )

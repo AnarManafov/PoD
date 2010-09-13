@@ -44,7 +44,7 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
     smart_path( &xpd );
     if( !m_proofStatus.readAdminPath( xpd, adminp_worker ) )
     {
-        string msg( "Can't find xrootd config: " );
+        string msg( "Can't find xproofd config: " );
         msg += xpd;
         WarningLog( 0, msg );
     }

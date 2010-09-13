@@ -19,8 +19,6 @@
 #
 
 #######
-XRD_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_min)
-XRD_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xrd_ports_range_max)
 XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max)
 PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_min)
@@ -38,7 +36,7 @@ SERVER_HOST_NAME=$(hostname -f)
 server_status()
 {
 # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xrootd | grep -v grep | awk '{print $1}')
+    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
     AGENT_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}')
     
     if [ -z "$XRD_PID" -a  -z "$AGENT_PID" ]; then
@@ -47,16 +45,14 @@ server_status()
     fi  
     
     # change a string separator
-    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xrootd|pod-agent")) IFS=$O;
+    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xproofd|pod-agent")) IFS=$O;
  
     # look for ports of the server
     for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
     do
 	port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g')
 	if [ -n "$port" ]; then
-	    if (( ($port >= $XRD_PORTS_RANGE_MIN) && ($port <= $XRD_PORTS_RANGE_MAX) )); then
-		XRD_PORT=$port
-	    elif (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
+	    if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
 		XPROOF_PORT=$port
 	    elif (( ($port >= $PROOFAGENT_PORTS_RANGE_MIN) && ($port <= $PROOFAGENT_PORTS_RANGE_MAX) )); then
 		POD_AGENT_PORT=$port
@@ -65,11 +61,10 @@ server_status()
     done
 
     if [ -n  "$XRD_PID" ]; then
-	echo "XROOTD [$XRD_PID]"
-	echo "-- XROOTD port: "$XRD_PORT
+	echo "XPROOFD [$XRD_PID]"
 	echo "-- XPROOF port: "$XPROOF_PORT
     else
-	echo "WARNING: XROOTD is NOT running."
+	echo "WARNING: XPROOFD is NOT running."
     fi
     if [ -n  "$AGENT_PID" ]; then
 	echo "PoD agent [$AGENT_PID]"
@@ -115,19 +110,16 @@ start()
 
     # S T A R T I N G the server
     echo "Starting PoD server..."
-    # proof.conf must be presented before xrootd is started
+    # proof.conf must be presented before xproofd is started
     touch $POD_PROOFCFG_FILE
 
-    NEW_XRD_PORT=$(get_freeport $XRD_PORTS_RANGE_MIN $XRD_PORTS_RANGE_MAX)
     NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
     NEW_PROOFAGENT_PORT=$(get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX)
-    echo "using XRD port: "$NEW_XRD_PORT
-    echo "using XPROOF port: "$NEW_XPROOF_PORT
+    echo "using XPROOFD port: "$NEW_XPROOF_PORT
     echo "using PoD agent port: "$NEW_PROOFAGENT_PORT
 
     # updating XRD configuration file
-    regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XRD_PORT/g"
-    regexp_xproof_port="s/\(xrd.protocol[[:space:]]xproofd:\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+    regexp_xrd_port="s/\(xrd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
     sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
     mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
@@ -143,9 +135,9 @@ start()
     echo "#define POD_XROOTD_PORT \"$NEW_XRD_PORT\"" >> $HEADER_HELPER
     echo "#endif" >> $HEADER_HELPER
 
-    # Start XRD
+    # Start XPROOFD
     ####
-    xrootd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
+    xproofd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
     XRD_RET_VAL=$?
     if [ "X$XRD_RET_VAL" != "X0" ]; then
        return 1
@@ -175,7 +167,7 @@ stop()
     echo "Stopping PoD server..."
 
     #TODO: make it less aggressive
-    pkill -9 -U $UID xrootd
+    pkill -9 -U $UID xproofd
     pkill -9 -U $UID proofserv
 
     $POD_LOCATION/bin/pod-agent -d -c $POD_LOCATION/etc/PoD.cfg --stop
