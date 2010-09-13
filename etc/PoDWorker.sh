@@ -11,7 +11,7 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2007-2010 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
 # Arguments:
@@ -80,18 +80,17 @@ clean_up()
     exit $1
 }
 # ************************************************************************
-# ***** detects ports for XRD and XPROOF  *****
-# return 1 if XRD/XPD ports were not detected, otherwise returns 0
-# sets XRD_PID to a pid of a found XRD
-# sets XRD_PORT - XRD port
+# ***** detects ports of XPROOFD  *****
+# return 1 if the XPD port were not detected, otherwise returns 0
+# sets XPD_PID to a pid of a found XPD
 # sets XPROOF_PORT - XPD port
-xrd_detect()
+xpd_detect()
 {
-    # get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
+    # get a pid of our xpd. We get any xpd running by $UID
+    XPD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
     
-    if [ -n "$XRD_PID" ]; then
-	logMsg "XPROOFD is running under PID: "$XRD_PID
+    if [ -n "$XPD_PID" ]; then
+	logMsg "XPROOFD is running under PID: "$XPD_PID
     else
 	logMsg "XPROOFD is NOT running"
 	return 0
@@ -99,12 +98,12 @@ xrd_detect()
     
     var0=0
     RETRY_CNT=15
-    # we try for 15 times to detect xrd ports
+    # we try for 15 times to detect xpd ports
     # it is needed in case when several PoD workers are started in the same time on one machine
     while [ "$var0" -lt "$RETRY_CNT" ]
       do
       logMsg "detecting xproofd ports. Try $var0"
-      # getting an array of XRD LISTEN ports
+      # getting an array of XPD LISTEN ports
       # change a string separator
       O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | grep "xproofd")) IFS=$O;
       
@@ -186,7 +185,7 @@ eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 # so far we support only Linux (amd64 and x86)
 OS=$(uname -s 2>&1)
 if [ "$OS" != "Linux" ]; then
-    logMsg "Error: PoD doen't support this operating system, exiting..."
+    logMsg "Error: PoD doesn't support this operating system. Exiting..."
     exit 1
 fi
 
@@ -255,23 +254,23 @@ touch $POD_PROOFCFG_FILE
 XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_max)
 
-# we try for 5 times to detect/start xrd
+# we try for 5 times to detect/start xpd
 # it is needed in case when several PoD workers are started in the same time on one machine
 COUNT=0
 MAX_COUNT=5
 while [ "$COUNT" -lt "$MAX_COUNT" ]
   do
-  # detecting whether xrd is running and on which ports xrd and xproof are listening
-  xrd_detect
+  # detecting whether xpd is running and on which port is listening
+  xpd_detect
   return_val=$?
   if [ "X$return_val" != "X0" ]; then
-      logMsg "problem to detect XRD/XPD ports. Exiting..."
+      logMsg "problem to detect XPD/XPD ports. Exiting..."
       clean_up 1
   fi
   
-  if [ -n "$XRD_PID" ]; then
-      # use existing ports for xrd and xproof
-      logMsg "found a running xproofd instance with pid: "$XRD_PID
+  if [ -n "$XPD_PID" ]; then
+      # use existing ports for xpd
+      logMsg "found a running xproofd instance with pid: "$XPD_PID
       POD_XPROOF_PORT_TOSET=$XPROOF_PORT
   else
       # if xproofd is not yet running on this machine for this user, try to start it
@@ -280,14 +279,14 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   fi
   logMsg "using XPROOF port: "$POD_XPROOF_PORT_TOSET
   
-  # updating XRD configuration file. Needed even if another scrip has already started an xproofd process,
+  # updating XPD configuration file. Needed even if another scrip has already started an xproofd process,
   # since we might want to use port's info somewhere else.
-  regexp_xrd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-  sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
+  regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+  sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
   mv $WD/xpd.cf.temp $WD/xpd.cf
 
   # break the loop if xproofd is running already
-  if [ -n "$XRD_PID" ]; then
+  if [ -n "$XPD_PID" ]; then
       break
   fi
 
@@ -301,9 +300,9 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
 done
 
 # detect that xproofd failed to start
-XRD=$(pgrep -U $UID xproofd)
-XRD_RET_VAL=$?
-if [ "X$XRD_RET_VAL" = "X0" ]; then
+XPD=$(pgrep -U $UID xproofd)
+XPD_RET_VAL=$?
+if [ "X$XPD_RET_VAL" = "X0" ]; then
     logMsg "checking XPROOFD process: running..."
 else
     logMsg "checking XPROOFD process: is NOT running"

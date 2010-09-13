@@ -7,7 +7,7 @@
 ###                             2007-02-06
 ###         last changed by:    $LastChangedBy$ $LastChangedDate$
 ###
-###         Copyright (c) 2007-2009 GSI GridTeam. All rights reserved.
+###         Copyright (c) 2007-2010 GSI, Scientific Computing devision. All rights reserved.
 ###*************************************************************************/
 #
 ## XPROOFD port
@@ -27,15 +27,14 @@ xpd.port 000
 # * * * * * * * * * *
 if named PoDServer
  xrd.adminpath @CMAKE_POD_TMP_DIR@
-# xrootd.export @CMAKE_INSTALL_PREFIX@
 else
  xrd.adminpath _G_WORKER_TMP_DIR
-# xrootd.export _G_WRK_DIR/
 fi
 #
 ## logging
 #
 xrd.trace all debug
+#xpd.trace all debug
 #
 ## setting a PROOF temp dir.
 #
@@ -44,10 +43,6 @@ if named PoDServer
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
 fi
-#
-## Load the XrdProofd protocol:
-## using absolute paths (<ROOT_sys> with the path to the ROOT distribution)
-#
 xpd.tmp $PROOFTMP
 #
 ## Resource finder
@@ -64,7 +59,4 @@ else
  xpd.workdir _G_WRK_DIR/proof
  xpd.role worker
 fi
-#
-## Log
-#
-#xpd.trace all debug
+

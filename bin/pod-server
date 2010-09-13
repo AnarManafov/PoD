@@ -11,7 +11,7 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007-2010 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2007-2010 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
 # Usage:
@@ -25,21 +25,21 @@ PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --ke
 PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.agent_ports_range_max)
 eval WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
 #######
-# a number of seconds we wait until xrd is started 
-XRD_START_TIMEOUT=3
+# a number of seconds we wait until xpd is started 
+XPD_START_TIMEOUT=3
 
 SERVER_HOST_NAME=$(hostname -f)
 
 
 # ************************************************************************
-# ***** detects ports for XRD, XPROOF and for PoD Agent  *****
+# ***** detects ports for XPROOFD and for the PoD Agent  *****
 server_status()
 {
-# get a pid of our xrd. We get any xrd running by $UID
-    XRD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
+# get a pid of our xpd. We get any xpd running by $UID
+    XPD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
     AGENT_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}')
     
-    if [ -z "$XRD_PID" -a  -z "$AGENT_PID" ]; then
+    if [ -z "$XPD_PID" -a  -z "$AGENT_PID" ]; then
 	echo "PoD server is NOT running"
 	return 1
     fi  
@@ -60,20 +60,18 @@ server_status()
 	fi
     done
 
-    if [ -n  "$XRD_PID" ]; then
-	echo "XPROOFD [$XRD_PID]"
-	echo "-- XPROOF port: "$XPROOF_PORT
+    if [ -n  "$XPD_PID" ]; then
+	echo "XPROOFD [$XPD_PID] port: "$XPROOF_PORT
     else
 	echo "WARNING: XPROOFD is NOT running."
     fi
     if [ -n  "$AGENT_PID" ]; then
-	echo "PoD agent [$AGENT_PID]"
-	echo "-- PoD agent port: "$POD_AGENT_PORT
+	echo "PoD agent [$AGENT_PID] port: "$POD_AGENT_PORT
     else
 	echo "WARNING: PoD agent is NOT running."
     fi
 
-    if [ -n  "$XRD_PID" ]; then
+    if [ -n  "$XPD_PID" ]; then
 	echo "PROOF connection string: "$SERVER_HOST_NAME:$XPROOF_PORT
     fi    
 
@@ -115,13 +113,14 @@ start()
 
     NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
     NEW_PROOFAGENT_PORT=$(get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX)
-    echo "using XPROOFD port: "$NEW_XPROOF_PORT
-    echo "using PoD agent port: "$NEW_PROOFAGENT_PORT
+    echo "trying to use XPROOFD port: "$NEW_XPROOF_PORT
+    echo "trying to use PoD agent port: "$NEW_PROOFAGENT_PORT
 
-    # updating XRD configuration file
-    regexp_xrd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+    # updating XPD configuration file
+    echo "updating xproofd configuration file..."
+    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
-    sed -e "$regexp_xrd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
+    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
     mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
 
     # generate a helper header
@@ -132,26 +131,27 @@ start()
     echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
     echo "#define POD_MASTER_HOST \"$SERVER_HOST_NAME\"" >> $HEADER_HELPER
     echo "#define POD_XPROOF_PORT \"$NEW_XPROOF_PORT\"" >> $HEADER_HELPER
-    echo "#define POD_XROOTD_PORT \"$NEW_XRD_PORT\"" >> $HEADER_HELPER
     echo "#endif" >> $HEADER_HELPER
 
     # Start XPROOFD
     ####
+    echo "starting xproofd..."
     xproofd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
-    XRD_RET_VAL=$?
-    if [ "X$XRD_RET_VAL" != "X0" ]; then
+    XPD_RET_VAL=$?
+    if [ "X$XPD_RET_VAL" != "X0" ]; then
        return 1
     fi
 
-    
-    sleep $XRD_START_TIMEOUT # let XRD to start
+    sleep $XPD_START_TIMEOUT # let XPD to start
 	
     # setting a port to listen for pod-agent server and server's host name
     ####
+    echo "creating PoD agent info file..."
     create_agent_server_info_file $SERVER_HOST_NAME $NEW_PROOFAGENT_PORT
 
     # Start pod-agent
     ####
+    echo "starting PoD agent..."
     $POD_LOCATION/bin/pod-agent -d -m server -c $POD_LOCATION/etc/PoD.cfg --start
 
     # Prepare the worker package
