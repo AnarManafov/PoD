@@ -163,8 +163,6 @@ trap clean_up SIGHUP SIGINT SIGTERM
 logMsg "+++ START +++"
 logMsg "Current working directory: $WD"
 
-user_defaults="$WD/pod-user-defaults"
-
 # extract PoD worker package
 tar -xzvf pod-worker.tar.gz
 
@@ -205,25 +203,8 @@ case "$host_arch" in
 esac
 
 RELEASE_REPO="http://pod.gsi.de/releases/add/"
-# ****************
-# ***** ROOT *****
-set_my_rootsys=$($user_defaults -c $POD_CFG --section worker --key set_my_rootsys)
-if [ "$set_my_rootsys" = "no" ]; then
-    wget --no-verbose --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
-    tar -xzf $ROOT_ARC || clean_up 1
 
-    export ROOTSYS="$WD/root"
-else
-    eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --section worker --key my_rootsys)
-    export ROOTSYS=$ROOTSYS_FROM_CFG
-fi
-logMsg "using ROOTSYS: $ROOTSYS"
-export PATH=$ROOTSYS/bin:$PATH
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
-export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
-
-
-# **********************
+# **********************************************************************
 # ***** getting pod-agent from the repository site *****
 wget --no-verbose --tries=2 $RELEASE_REPO$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
@@ -231,6 +212,8 @@ tar -xzf $PROOFAGENT_ARC || clean_up 1
 export PROOFAGENTSYS="$WD/pod-agent"
 export PATH=$PROOFAGENTSYS:$PATH 
 export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
+user_defaults="$PROOFAGENTSYS/pod-user-defaults"
+
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
 if [ ! -x $PROOFAGENTSYS/pod-agent ]; then 
@@ -240,8 +223,26 @@ if [ ! -x $PROOFAGENTSYS/pod-user-defaults ]; then
     chmod +x $PROOFAGENTSYS/pod-user-defaults
 fi
 
+# ****************
+# ***** ROOT *****
+set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
+if [ "$set_my_rootsys" = "no" ]; then
+    wget --no-verbose --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
+    tar -xzf $ROOT_ARC || clean_up 1
+
+    export ROOTSYS="$WD/root"
+else
+    eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --key worker.my_rootsys)
+    export ROOTSYS=$ROOTSYS_FROM_CFG
+fi
+logMsg "using ROOTSYS: $ROOTSYS"
+export PATH=$ROOTSYS/bin:$PATH
+export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
+export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
+
+# **********************************************************************
 # export the location of the proof.cfg file
-eval POD_PROOFCFG_FILE=$($user_defaults -c $POD_CFG --section worker --key proof_cfg_path)
+eval POD_PROOFCFG_FILE=$($user_defaults -c $POD_CFG --key worker.proof_cfg_path)
 export POD_PROOFCFG_FILE
 
 # Using eval to force variable substitution
@@ -257,8 +258,8 @@ eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 touch $POD_PROOFCFG_FILE
 
 # user defaults for ports
-XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_min)
-XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --section worker --key xproof_ports_range_max)
+XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_min)
+XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_max)
 
 # we try for 5 times to detect/start xpd
 # it is needed in case when several PoD workers are started in the same time on one machine
