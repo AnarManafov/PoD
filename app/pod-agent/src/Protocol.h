@@ -31,8 +31,8 @@ namespace PROOFAgent
     struct SMessageHeader
     {
         SMessageHeader():
-                m_cmd( 0 ),
-                m_len( 0 )
+            m_cmd( 0 ),
+            m_len( 0 )
         {
         }
         char m_sign[10];
@@ -72,6 +72,7 @@ namespace PROOFAgent
             void write( int _socket, uint16_t _cmd, const MiscCommon::BYTEVector_t &_data ) const;
             void writeSimpleCmd( int _socket, uint16_t _cmd ) const;
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data ) const;
+            bool checkoutNextMsg();
             static uint16_t version()
             {
                 return m_ver;

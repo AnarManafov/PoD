@@ -121,25 +121,38 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
         copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read, back_inserter( m_buffer ) );
         try
         {
-            m_curDATA.clear();
-            m_msgHeader = parseMsg( &m_curDATA, m_buffer );
-            if( !m_msgHeader.isValid() )
+            if( !checkoutNextMsg() )
                 continue;
-
-            // delete the message from the buffer
-            m_buffer.erase( m_buffer.begin(),
-                            m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
-            break;
         }
         catch( ... )
         {
-            // TODO: Clear only until there is another <POD_CMD> found
-            m_buffer.clear();
             throw;
         }
     }
 
     return stOK;
+}
+//=============================================================================
+bool CProtocol::checkoutNextMsg()
+{
+    try
+    {
+        m_curDATA.clear();
+        m_msgHeader = parseMsg( &m_curDATA, m_buffer );
+        if( !m_msgHeader.isValid() )
+            return false;
+
+        // delete the message from the buffer
+        m_buffer.erase( m_buffer.begin(),
+                        m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
+        return true;
+    }
+    catch( ... )
+    {
+        // TODO: Clear only until there is another <POD_CMD> found
+        m_buffer.clear();
+        throw;
+    }
 }
 //=============================================================================
 void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data ) const

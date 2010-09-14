@@ -338,8 +338,8 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         wrk.set_nonblock();
         string strRealWrkHost;
         inet::peer2string( wrk, &strRealWrkHost );
-        m_adminConnections.push_back( workersMap_t::value_type( wrk.detach(), SWorkerInfo(strRealWrkHost) ) );
-        
+        m_adminConnections.push_back( workersMap_t::value_type( wrk.detach(), SWorkerInfo( strRealWrkHost ) ) );
+
     }
 
     // we got a signal for update
@@ -423,85 +423,88 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                 }
                 break;
             case CProtocol::stAGAIN:
-                // send queued requests
+                // don't block, send queued requests and go out
                 sendServerRequest( _wrk );
                 return;
             case CProtocol::stOK:
                 {
-                    BYTEVector_t data;
-                    SMessageHeader header = _wrk.second.m_protocol.getMsg( &data );
-                    switch( static_cast<ECmdType>( header.m_cmd ) )
+                    do
                     {
-                        case cmdVERSION:
-                            {
-                                SVersionCmd v;
-                                v.convertFromData( data );
-                                // so far we require all versions to be the same
-                                if( v.m_version != CProtocol::version() )
+                        BYTEVector_t data;
+                        SMessageHeader header = _wrk.second.m_protocol.getMsg( &data );
+                        switch( static_cast<ECmdType>( header.m_cmd ) )
+                        {
+                            case cmdVERSION:
                                 {
+                                    SVersionCmd v;
+                                    v.convertFromData( data );
+                                    // so far we require all versions to be the same
+                                    if( v.m_version != CProtocol::version() )
+                                    {
+                                        stringstream ss;
+                                        ss
+                                                << "Shutting the worker down: "
+                                                << _wrk.second.string()
+                                                << ". It has incompatible protocol version.";
+                                        InfoLog( ss.str() );
+                                        _wrk.second.m_requests.push( cmdSHUTDOWN );
+                                        break;
+                                    }
+                                    // request client's id
+                                    // it could happen that worker has already ID.
+                                    // so, before assigning a new id we have to ask first
+                                    _wrk.second.m_requests.push( cmdGET_ID );
+                                    // request a number of PROOF workers
+                                    _wrk.second.m_requests.push( cmdGET_WRK_NUM );
+                                    // request client's host information
+                                    _wrk.second.m_requests.push( cmdGET_HOST_INFO );
+                                }
+                                break;
+                            case cmdID:
+                                {
+                                    SIdCmd id;
+                                    id.convertFromData( data );
+                                    if( 0 == id.m_id )
+                                    {
+                                        // set an id to the worker
+                                        ++m_workerMaxID;
+                                        id.m_id = m_workerMaxID;
+                                        data.clear();
+                                        id.convertToData( &data );
+                                        _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdSET_ID ), data );
+                                    }
+                                    _wrk.second.m_id = id.m_id;
+                                }
+                                break;
+                            case cmdWRK_NUM:
+                                {
+                                    SIdCmd id;
+                                    id.convertFromData( data );
+                                    if( id.m_id > 0 )
+                                        _wrk.second.m_numberOfPROOFWorkers = id.m_id;
+                                }
+                                break;
+                            case cmdHOST_INFO:
+                                {
+                                    SHostInfoCmd h;
+                                    h.convertFromData( data );
+                                    _wrk.second.m_host = h.m_host;
+                                    _wrk.second.m_user = h.m_username;
+                                    _wrk.second.m_proofPort = h.m_proofPort;
+
                                     stringstream ss;
-                                    ss
-                                            << "Shutting the worker down: "
-                                            << _wrk.second.string()
-                                            << ". It has incompatible protocol version.";
-                                    InfoLog( ss.str() );
-                                    _wrk.second.m_requests.push( cmdSHUTDOWN );
-                                    break;
+                                    ss << "Server received client's host info: " << h;
+                                    DebugLog( 0, ss.str() );
+
+                                    setupPROOFWorker( _wrk );
                                 }
-                                // request client's id
-                                // it could happen that worker has already ID.
-                                // so, before assigning a new id we have to ask first
-                                _wrk.second.m_requests.push( cmdGET_ID );
-                                // request a number of PROOF workers
-                                _wrk.second.m_requests.push( cmdGET_WRK_NUM );
-                                // request client's host information
-                                _wrk.second.m_requests.push( cmdGET_HOST_INFO );
-                            }
-                            break;
-                        case cmdID:
-                            {
-                                SIdCmd id;
-                                id.convertFromData( data );
-                                if( 0 == id.m_id )
-                                {
-                                    // set an id to the worker
-                                    ++m_workerMaxID;
-                                    id.m_id = m_workerMaxID;
-                                    data.clear();
-                                    id.convertToData( &data );
-                                    _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdSET_ID ), data );
-                                }
-                                _wrk.second.m_id = id.m_id;
-                            }
-                            break;
-                        case cmdWRK_NUM:
-                            {
-                                SIdCmd id;
-                                id.convertFromData( data );
-                                if( id.m_id > 0 )
-                                    _wrk.second.m_numberOfPROOFWorkers = id.m_id;
-                            }
-                            break;
-                        case cmdHOST_INFO:
-                            {
-                                SHostInfoCmd h;
-                                h.convertFromData( data );
-                                _wrk.second.m_host = h.m_host;
-                                _wrk.second.m_user = h.m_username;
-                                _wrk.second.m_proofPort = h.m_proofPort;
-
-                                stringstream ss;
-                                ss << "Server received client's host info: " << h;
-                                DebugLog( 0, ss.str() );
-
-                                setupPROOFWorker( _wrk );
-                            }
-                            break;
-                        default:
-                            WarningLog( 0, "Unexpected message in the admin channel" );
-                            break;
-
+                                break;
+                            default:
+                                WarningLog( 0, "Unexpected message in the admin channel" );
+                                break;
+                        }
                     }
+                    while( _wrk.second.m_protocol.checkoutNextMsg() );
                     break;
                 }
         }
