@@ -18,6 +18,11 @@
 # -n X   : Desired number or PROOF workers.
 # -h     : Show summary of options.
 
+#
+# PoD environment variables exported to the workers:
+#  POD_UI_LOG_LOCATION : log dir on the PoD UI
+#  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
+#  POD_PBS_SHARED_HOME : (yes/no) whether shared home file system is used on PBS
 
 #=============================================================================
 # ***** USAGE *****
@@ -82,6 +87,9 @@ fi
 
 EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
 eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
+
+export POD_UI_LOG_LOCATION=$LOG_DIR
+export POD_UI_LOCATION=$POD_LOCATION
 
 if [ "$RMS" = "lsf" ]; then
   # LSF 
