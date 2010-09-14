@@ -77,81 +77,87 @@ void CAgentClient::processAdminConnection( int _serverSock )
                 {
                     while( protocol.checkoutNextMsg() )
                     {
-                        BYTEVector_t data;
-                        SMessageHeader header = protocol.getMsg( &data );
-                        stringstream ss;
-                        ss << "CMD: " <<  header.m_cmd;
-                        InfoLog( ss.str() );
-                        switch( static_cast<ECmdType>( header.m_cmd ) )
-                        {
-                                //case cmdVERSION_BAD:
-                                //    break;
-                            case cmdGET_HOST_INFO:
-                                {
-                                    InfoLog( "The server requests host information." );
-                                    SHostInfoCmd h;
-                                    get_cuser_name( &h.m_username );
-                                    get_hostname( &h.m_host );
-                                    h.m_proofPort = m_proofPort;
-                                    BYTEVector_t data_to_send;
-                                    h.convertToData( &data_to_send );
-                                    protocol.write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
-                                }
-                                break;
-                            case cmdGET_ID:
-                                {
-                                    SIdCmd id;
-                                    id.m_id = m_id;
-                                    BYTEVector_t data_to_send;
-                                    id.convertToData( &data_to_send );
-                                    protocol.write( _serverSock, static_cast<uint16_t>( cmdID ), data_to_send );
-                                }
-                                break;
-                            case cmdSET_ID:
-                                {
-                                    SIdCmd id;
-                                    id.convertFromData( data );
-                                    m_id = id.m_id;
-                                    stringstream ss;
-                                    ss << "Server has assigned ID = " << m_id << " to this worker.";
-                                    InfoLog( ss.str() );
-                                }
-                                break;
-                            case cmdUSE_PACKETFORWARDING_PROOF:
-                                // going out of the admin channel and start the packet forwarding
-                                InfoLog( "Server requests to use a packet forwarding for PROOF packages." );
-                                return;
-                            case cmdUSE_DIRECT_PROOF:
-                                // TODO: we keep admin channel open and start the monitoring (proof status) thread
-                                m_isDirect = true;
-                                InfoLog( "Server requests to use a direct connection for PROOF packages." );
-                                break;
-                            case cmdGET_WRK_NUM:
-                                {
-                                    // reuse SIdCmd
-                                    SIdCmd wn_num;
-                                    wn_num.m_id = m_numberOfPROOFWorkers;
-                                    BYTEVector_t data_to_send;
-                                    wn_num.convertToData( &data_to_send );
-                                    protocol.write( _serverSock, static_cast<uint16_t>( cmdWRK_NUM ), data_to_send );
-                                    stringstream ss;
-                                    ss << "A number of PROOF workers [" << m_numberOfPROOFWorkers << "] has been sent to server.";
-                                    InfoLog( ss.str() );
-                                }
-                                break;
-                            case cmdSHUTDOWN:
-                                InfoLog( "Shutting down, by the server's request..." );
-                                graceful_quit = true;
-                                throw runtime_error( "stop admin channel." );
-                            default:
-                                WarningLog( 0, "Unexpected message in the admin channel" );
-                                break;
-                        }
+                        processProtocolMsgs( _serverSock, &protocol );
                     }
                 }
                 break;
         }
     }
+}
+//=============================================================================
+void CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
+{
+    BYTEVector_t data;
+    SMessageHeader header = _protocol->getMsg( &data );
+    stringstream ss;
+    ss << "CMD: " <<  header.m_cmd;
+    InfoLog( ss.str() );
+    switch( static_cast<ECmdType>( header.m_cmd ) )
+    {
+            //case cmdVERSION_BAD:
+            //    break;
+        case cmdGET_HOST_INFO:
+            {
+                InfoLog( "The server requests host information." );
+                SHostInfoCmd h;
+                get_cuser_name( &h.m_username );
+                get_hostname( &h.m_host );
+                h.m_proofPort = m_proofPort;
+                BYTEVector_t data_to_send;
+                h.convertToData( &data_to_send );
+                _protocol->write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
+            }
+            break;
+        case cmdGET_ID:
+            {
+                SIdCmd id;
+                id.m_id = m_id;
+                BYTEVector_t data_to_send;
+                id.convertToData( &data_to_send );
+                _protocol->write( _serverSock, static_cast<uint16_t>( cmdID ), data_to_send );
+            }
+            break;
+        case cmdSET_ID:
+            {
+                SIdCmd id;
+                id.convertFromData( data );
+                m_id = id.m_id;
+                stringstream ss;
+                ss << "Server has assigned ID = " << m_id << " to this worker.";
+                InfoLog( ss.str() );
+            }
+            break;
+        case cmdUSE_PACKETFORWARDING_PROOF:
+            // going out of the admin channel and start the packet forwarding
+            InfoLog( "Server requests to use a packet forwarding for PROOF packages." );
+            return;
+        case cmdUSE_DIRECT_PROOF:
+            // TODO: we keep admin channel open and start the monitoring (proof status) thread
+            m_isDirect = true;
+            InfoLog( "Server requests to use a direct connection for PROOF packages." );
+            break;
+        case cmdGET_WRK_NUM:
+            {
+                // reuse SIdCmd
+                SIdCmd wn_num;
+                wn_num.m_id = m_numberOfPROOFWorkers;
+                BYTEVector_t data_to_send;
+                wn_num.convertToData( &data_to_send );
+                _protocol->write( _serverSock, static_cast<uint16_t>( cmdWRK_NUM ), data_to_send );
+                stringstream ss;
+                ss << "A number of PROOF workers [" << m_numberOfPROOFWorkers << "] has been sent to server.";
+                InfoLog( ss.str() );
+            }
+            break;
+        case cmdSHUTDOWN:
+            InfoLog( "Shutting down, by the server's request..." );
+            graceful_quit = true;
+            throw runtime_error( "stop admin channel." );
+        default:
+            WarningLog( 0, "Unexpected message in the admin channel" );
+            break;
+    }
+
 }
 //=============================================================================
 void CAgentClient::run()

@@ -131,6 +131,7 @@ namespace PROOFAgent
                                                    unsigned int _numberOfPROOFWorkers = 1 );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
+            void processProtocolMsgs( workersMap_t::value_type &_wrk );
             void setupPROOFWorker( workersMap_t::value_type &_wrk );
             void usePacketForwarding( workersMap_t::value_type &_wrk );
             void sendServerRequest( workersMap_t::value_type &_wrk );

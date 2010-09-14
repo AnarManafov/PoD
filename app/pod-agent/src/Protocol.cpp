@@ -143,7 +143,7 @@ bool CProtocol::checkoutNextMsg()
         m_buffer.clear();
         throw;
     }
-    
+
     return true;
 }
 //=============================================================================
