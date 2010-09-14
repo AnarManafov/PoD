@@ -119,15 +119,6 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
         }
 
         copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read, back_inserter( m_buffer ) );
-        try
-        {
-            if( !checkoutNextMsg() )
-                continue;
-        }
-        catch( ... )
-        {
-            throw;
-        }
     }
 
     return stOK;
@@ -145,7 +136,6 @@ bool CProtocol::checkoutNextMsg()
         // delete the message from the buffer
         m_buffer.erase( m_buffer.begin(),
                         m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
-        return true;
     }
     catch( ... )
     {
@@ -153,6 +143,8 @@ bool CProtocol::checkoutNextMsg()
         m_buffer.clear();
         throw;
     }
+    
+    return true;
 }
 //=============================================================================
 void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data ) const

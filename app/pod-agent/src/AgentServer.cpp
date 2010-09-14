@@ -423,12 +423,9 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                 }
                 break;
             case CProtocol::stAGAIN:
-                // don't block, send queued requests and go out
-                sendServerRequest( _wrk );
-                return;
             case CProtocol::stOK:
                 {
-                    do
+                    while( _wrk.second.m_protocol.checkoutNextMsg() )
                     {
                         BYTEVector_t data;
                         SMessageHeader header = _wrk.second.m_protocol.getMsg( &data );
@@ -504,7 +501,6 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
                                 break;
                         }
                     }
-                    while( _wrk.second.m_protocol.checkoutNextMsg() );
                     break;
                 }
         }
