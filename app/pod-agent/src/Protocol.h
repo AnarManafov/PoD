@@ -34,6 +34,7 @@ namespace PROOFAgent
             m_cmd( 0 ),
             m_len( 0 )
         {
+            m_sign[0] = '\0';
         }
         char m_sign[10];
         uint16_t m_cmd;
