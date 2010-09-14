@@ -39,7 +39,7 @@ namespace PROOFAgent
         std::string string() const
         {
             std::stringstream ss;
-            if( 0 == m_id )
+            if( 0 != m_id )
             {
                 ss
                         << m_user << "@" << m_host << ":" << m_proofPort
