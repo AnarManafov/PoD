@@ -26,7 +26,7 @@ using namespace MiscCommon;
 using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
-const size_t MAX_MSG_SIZE = 256;
+const ssize_t MAX_MSG_SIZE = 256;
 //=============================================================================
 // CURRENT PROTOCOL VERSION
 uint16_t CProtocol::m_ver = 3;
@@ -118,7 +118,11 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
             throw system_error( "Error occurred while reading a protocol message." );
         }
 
-        copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read, back_inserter( m_buffer ) );
+        copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read,
+              back_inserter( m_buffer ) );
+
+        if( bytes_read < MAX_MSG_SIZE )
+            break;
     }
 
     return stOK;
