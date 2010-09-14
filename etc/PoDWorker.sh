@@ -163,23 +163,13 @@ trap clean_up SIGHUP SIGINT SIGTERM
 logMsg "+++ START +++"
 logMsg "Current working directory: $WD"
 
-user_defaults="$WD/pod-user-defaults-lite"
+user_defaults="$WD/pod-user-defaults"
 
 # extract PoD worker package
 tar -xzvf pod-worker.tar.gz
 
-#Exporting PoD variables
+#Exporting PoD location
 export POD_LOCATION=$WD
-eval POD_PROOFCFG_FILE=$($user_defaults -c $POD_CFG --section worker --key proof_cfg_path)
-export POD_PROOFCFG_FILE
-
-# Using eval to force variable substitution
-# changing _G_WRK_DIR to a working directory in the following files:
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
-# populating the tmp dir.
-_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
-chmod 777 $_TMP_DIR
-eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
 
 # host's CPU/instruction set
 # so far we support only Linux (amd64 and x86)
@@ -246,6 +236,22 @@ export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
 if [ ! -x $PROOFAGENTSYS/pod-agent ]; then 
     chmod +x $PROOFAGENTSYS/pod-agent
 fi
+if [ ! -x $PROOFAGENTSYS/pod-user-defaults ]; then 
+    chmod +x $PROOFAGENTSYS/pod-user-defaults
+fi
+
+# export the location of the proof.cfg file
+eval POD_PROOFCFG_FILE=$($user_defaults -c $POD_CFG --section worker --key proof_cfg_path)
+export POD_PROOFCFG_FILE
+
+# Using eval to force variable substitution
+# changing _G_WRK_DIR to a working directory in the following files:
+eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
+# populating the tmp dir.
+_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
+chmod 777 $_TMP_DIR
+eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
+
 
 # creating an empty proof.conf, so that xproof will be happy
 touch $POD_PROOFCFG_FILE

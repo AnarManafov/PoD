@@ -53,13 +53,16 @@ pushd `pwd`
 cd $POD_BUILD_DIR
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$POD_INST -DCMAKE_BUILD_TYPE=Release .. || exit 1
 make -j4 pod-agent || exit 1
+make -j4 pod-user-defaults || exit 1
 make install || exit 1
 popd
 
 PKG_VERSION=$(cat $POD_SRC/etc/version)
 
-# Copy pod-agent
+# Copy the binaries
 cp -v "$POD_INST/bin/pod-agent" $POD_AGENT_BIN_DIR/ || exit 1
+cp -v "$POD_INST/bin/pod-user-defaults" $POD_AGENT_BIN_DIR/ || exit 1
+
 
 # Copy external libs
 cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1
@@ -68,7 +71,7 @@ cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1
 PKG_NAME="pod-agent-$PKG_VERSION-$OS-$host_arch-$GCC_VER.tar.gz"
 pushd `pwd`
 cd $POD_AGENT_BIN_DIR/..
-$(tar -czvf $PKG_NAME pod-agent/ &>/dev/null)
+tar -czvf $PKG_NAME pod-agent/ &>/dev/null
 
 # release the tarball
 chmod go+xr $PKG_NAME || exit 1
