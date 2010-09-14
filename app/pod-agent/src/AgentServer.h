@@ -28,19 +28,27 @@ namespace PROOFAgent
     typedef std::queue<ECmdType> requests_t;
     struct SWorkerInfo
     {
-        SWorkerInfo():
+        SWorkerInfo( const std::string &_infoString ):
             m_proofPort( 0 ),
             m_removeMe( false ),
             m_id( 0 ),
-            m_numberOfPROOFWorkers( 1 )
+            m_numberOfPROOFWorkers( 1 ),
+            m_bupInfoString( _infoString )
         {
         }
         std::string string() const
         {
             std::stringstream ss;
-            ss
-                    << m_user << "@" << m_host << ":" << m_proofPort
-                    << "[id:" << m_id << "]";
+            if( 0 == m_id )
+            {
+                ss
+                        << m_user << "@" << m_host << ":" << m_proofPort
+                        << "[id:" << m_id << "]";
+            }
+            else
+            {
+                ss << m_bupInfoString;
+            }
 
             return ss.str();
         }
@@ -53,6 +61,7 @@ namespace PROOFAgent
         uint32_t m_id;
         requests_t m_requests;
         unsigned int m_numberOfPROOFWorkers;
+        std::string m_bupInfoString;
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;

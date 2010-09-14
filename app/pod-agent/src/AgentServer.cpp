@@ -336,7 +336,10 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         // accepting a new connection on the admin channel
         inet::smart_socket wrk( _server.Accept() );
         wrk.set_nonblock();
-        m_adminConnections.push_back( workersMap_t::value_type( wrk.detach(), SWorkerInfo() ) );
+        string strRealWrkHost;
+        inet::peer2string( wrk, &strRealWrkHost );
+        m_adminConnections.push_back( workersMap_t::value_type( wrk.detach(), SWorkerInfo(strRealWrkHost) ) );
+        
     }
 
     // we got a signal for update

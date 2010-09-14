@@ -56,10 +56,10 @@ upload_job_log=$($user_defaults -c $pod_cfg --key lsf_plugin.upload_job_log)
 echo "PoD UI Log dir: $LOG_DIR"
 echo "PoD upload jobs log: $upload_job_log"
 
-if [ "$upload_job_log" = "yes" ]; then
-   cp $WRK_DIR/proof_log.tgz $POD_SERVER_LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
-   cp $WRK_DIR/xpd.log $POD_SERVER_LOG_DIR/xpd_$LSB_JOBINDEX.log
-   cp $WRK_DIR/pod-agent.client.log $POD_SERVER_LOG_DIR/pod-agent.client_$LSB_JOBINDEX.log 
+if [ "$upload_job_log" = "1" ]; then
+   cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
+   cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$LSB_JOBINDEX.log
+   cp $WRK_DIR/pod-agent.client.log $LOG_DIR/pod-agent.client_$LSB_JOBINDEX.log 
 fi
 
 if [[ -d $WRK_DIR ]]; then
