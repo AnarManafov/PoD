@@ -86,11 +86,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
 
-    // request queues info before loading cfg,
-    // since setAllDefault is using the queues info.
-    LSFQueueInfoMap_t queues;
-    m_JobSubmitter.getLSF().getQueues( &queues );
-
     try
     {
         // Loading class from the config file
@@ -99,26 +94,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     catch ( ... )
     {
         setAllDefault();
-    }
-
-    // TODO: handle errors here.
-    LSFQueueInfoMap_t::iterator iter = queues.begin();
-    LSFQueueInfoMap_t::iterator iter_end = queues.end();
-    for ( ; iter != iter_end; ++iter )
-    {
-        m_ui.lsfQueueList->addItem( iter->first.c_str(), QVariant::fromValue( iter->second ) );
-        // selecting default
-        if ( m_queue.empty() )
-        {
-            // if there is no default queue set, then select any queue with the "proof" word in the name
-            if ( string::npos != iter->first.find( "proof" ) )
-                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
-        }
-        else
-        {
-            if ( iter->first == m_queue )
-                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
-        }
     }
 
     // default queue name
@@ -172,6 +147,32 @@ void CLSFDlg::UpdateAfterLoad()
 {
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
+
+    // request queues info before loading cfg,
+    // since setAllDefault is using the queues info.
+    LSFQueueInfoMap_t queues;
+    m_JobSubmitter.getLSF().getQueues( &queues );
+
+    // TODO: handle errors here.
+    LSFQueueInfoMap_t::iterator iter = queues.begin();
+    LSFQueueInfoMap_t::iterator iter_end = queues.end();
+    for ( ; iter != iter_end; ++iter )
+    {
+        m_ui.lsfQueueList->addItem( iter->first.c_str(), QVariant::fromValue( iter->second ) );
+        // selecting default
+        if ( m_queue.empty() )
+        {
+            // if there is no default queue set, then select any queue with the "proof" word in the name
+            if ( string::npos != iter->first.find( "proof" ) )
+                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+        }
+        else
+        {
+            if ( iter->first == m_queue )
+                m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
+        }
+    }
+
     m_ui.spinNumWorkers->setValue( m_WorkersCount );
 }
 //=============================================================================
