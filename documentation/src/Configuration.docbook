@@ -100,29 +100,19 @@ gui.accessibility.visual_bell=yes
         			<entry>server.proof_cfg_path</entry>
               <entry>string (default: $POD_LOCATION/etc/proof.conf)</entry>
         			<entry>A full path to a PROOF configuration file. This file is automatically created and maintained by PoD.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.agent_shutdown_if_idle_for_sec</entry>
               <entry>numeric (default: 1800)</entry>
         			<entry>Shut down a server if its idle time is higher than the defined value in seconds.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.agent_local_client_port_(min/max)</entry>
               <entry>numeric (default: 20000/25000)</entry>
         			<entry><para>Recommended for advanced users only.</para>
               The following range is used by PoD agent locally on the server host, when in the packet-forwarding mode.
               Each PROOF client gets its proxy redirected vie the ports from that range.</entry>
-      		</row>
-          <row>
-        			<entry>server.xrd_ports_range_(min/max)</entry>
-              <entry>numeric (default: 20000/21000)</entry>
-        			<entry><para>Recommended for advanced users only.</para> 
-              PoD's automatic port mapping algorithms use this range to dynamically assign ports 
-              to xrootd daemon when restarting a PoD server. In multi-user/core environment, when there are many PoD processes on the 
-              same physical machine, the automatic port mapping prevents different PoD process of 
-              different users to disturb each other.
-              </entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.xproof_ports_range_(min/max)</entry>
               <entry>numeric (default: 21001/22000)</entry>
@@ -133,7 +123,7 @@ gui.accessibility.visual_bell=yes
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
                </entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.agent_ports_range_(min/max)</entry>
               <entry>numeric (default: 22001/23000)</entry>
@@ -144,20 +134,20 @@ gui.accessibility.visual_bell=yes
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
               </entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.agent_threads</entry>
               <entry>numeric (default: 5)</entry>
         			<entry> A number of threads in a thread pool.
               The thread pool is used by the <application>pod-agent</application> to distribute tasks of a proxy, when in
               the packet-forwarding mode.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.agent_node_readbuffer</entry>
               <entry>numeric (default: 5000)</entry>
         			<entry>A buffer size, used by the packet-forwarding algorithms (in bytes).
               It will be allocated for each PoD worker.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>server.packet_forwarding</entry>
               <entry> yes/no/auto (default: auto)</entry>
@@ -166,7 +156,7 @@ gui.accessibility.visual_bell=yes
               By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
               will decide on the fly whether to use PF for each worker individually based on the possibility
               to directly connect to worker.</entry>
-      		</row>
+      	  </row>
         </tbody>
    	</tgroup>
 		</table>
@@ -219,7 +209,7 @@ gui.accessibility.visual_bell=yes
         			<entry>worker.proof_cfg_path</entry>
               <entry>string (default: $POD_LOCATION/proof.conf)</entry>
         			<entry>A full path to a PROOF configuration file. This file is automatically created and maintained by PoD.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>worker.set_my_rootsys</entry>
               <entry>yes/no (default: yes)</entry>
@@ -228,7 +218,7 @@ gui.accessibility.visual_bell=yes
               exported to the workers. See worker.my_rootsys for more details.
                If set to "no", PoD will download a default, pre-compiled version of
                ROOT according to WN's environment.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>worker.my_rootsys</entry>
               <entry>string (default: $ROOTSYS)</entry>
@@ -237,22 +227,12 @@ gui.accessibility.visual_bell=yes
               on the worker nodes. This is especially useful if you use shared home file system on the nodes where
               PoD workers are started or you know for sure the location of the ROOT installation on the worker nodes.
               A string of the value will be evaluated before it is used, it therefore can contain environment variables.</entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>worker.agent_shutdown_if_idle_for_sec</entry>
               <entry>numeric (default: 1800)</entry>
         			<entry>Shut down a worker if its idle time is higher than the defined value in seconds.</entry>
-      		</row>
-          <row>
-        			<entry>worker.xrd_ports_range_(min/max)</entry>
-              <entry>numeric (default: 20000/21000)</entry>
-        			<entry><para>Recommended for advanced users only.</para> 
-              PoD's automatic port mapping algorithms use this range to dynamically assign ports 
-              to xrootd daemon when starting a PoD worker. In multi-user/core environment, when there are many PoD processes on the 
-              same physical machine, the automatic port mapping prevents different PoD process of 
-              different users to disturb each other.
-              </entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>worker.xproof_ports_range_(min/max)</entry>
               <entry>numeric (default: 21001/22000)</entry>
@@ -263,13 +243,13 @@ gui.accessibility.visual_bell=yes
               same physical machine, the automatic port mapping prevents different PoD process of 
               different users to disturb each other.
               </entry>
-      		</row>
+      	  </row>
           <row>
         			<entry>worker.agent_node_readbuffer</entry>
               <entry>numeric (default: 5000)</entry>
         			<entry>A buffer size, used by the packet-forwarding algorithms (in bytes).
               It will be allocated for each PoD worker.</entry>
-      		</row>
+      	  </row>
         </tbody>
    	</tgroup>
 		</table>
@@ -291,7 +271,7 @@ gui.accessibility.visual_bell=yes
         			<entry>lsf_plugin.email_job_output</entry>
               <entry>yes/no (default: no)</entry>
         			<entry>The parameter specifies whether job's output is sent to the user by mail.
-              if "no" is set, output will be delivered the log directory in std_[INDEX].err and std_[INDEX].out files</entry>
+              if "no" is set, output will be delivered to the log directory in std_[INDEX].err and std_[INDEX].out files</entry>
       		</row>
       		<row>
         			<entry>lsf_plugin.upload_job_log</entry>
@@ -332,7 +312,7 @@ gui.accessibility.visual_bell=yes
    	</tgroup>
 		</table>
 	
-	<important>All port ranges in the PoD configuration must not have intersection.</important>
+	<important>All port ranges in the PoD configuration must not have intersections.</important>
 	
     </para>
 
