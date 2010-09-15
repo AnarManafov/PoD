@@ -24,6 +24,7 @@ WD=$(pwd)
 LOCK_FILE="$WD/PoDWorker.lock"
 PID_FILE="$WD/PoDWorker.pid"
 POD_CFG="$WD/PoD.cfg"
+USER_SCRIPT="$WD/user.worker_env.sh"
 #
 # ************************************************************************
 # F U N C T I O N S
@@ -170,9 +171,9 @@ tar -xzvf pod-worker.tar.gz
 export POD_LOCATION=$WD
 
 # execute user's script if present
-if [ -r "$WD/user.worker_env.sh" ]; then
+if [ -r $USER_SCRIPT ]; then
    logMsg "Sourcing a user defined environment script..."
-   source "$WD/user.worker_env.sh"
+   source $USER_SCRIPT
 fi
 
 # host's CPU/instruction set

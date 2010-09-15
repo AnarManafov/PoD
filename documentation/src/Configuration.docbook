@@ -317,9 +317,32 @@ gui.accessibility.visual_bell=yes
     </para>
 
     </sect1>
+   
+    <sect1><title>User's environment on workers</title>
+    <para>
+    PoD provides a possibility for users to execute a custom environment script on workers before PoD processes start.
+    </para>
+    <para>
+    Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user.worker_env.sh</filename> name and code there all
+    variables and commands user want to export to the workers. PoD will automatically transfer the script to each worker node and it will be sourced there.
+    </para>
+    <para>
+    For example, I need to set the path to the ROOT or something like that on my workers, than I will create the following file.
+<programlisting>
+#! /usr/bin/env bash
+
+export ROOTSYS=/usr/local/pub/debian4.0/x86_64/gcc411-21/rootmgr/526-00
+export MYVAR="some vallue :)"
+</programlisting>
+    </para>
+    <para>
+    Be advised, that you need to recreate PoD worker package every time, when you modify the user script or if you removed it.
+    To recreate the package, just call: <command>pod-prep-worker</command> 
+    </para>
+    </sect1>
 
     <sect1 id="XROOTD">
-      <title>XROOTD</title>
+      <title>XROOTD/XPROOFD</title>
       <para>
       There is a default XROOTD configuration file, <filename>$POD_LOCATION/etc/xpd.cf</filename>.
       PoD uses this file to configure both local redirector and remote workers.

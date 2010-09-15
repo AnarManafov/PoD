@@ -60,8 +60,8 @@ do
 done
 
 # add user's script if present
-if [ -r "$WD/user.worker_env.sh" ]; then
-   logMsg "Adding a user defined environment script to worker package..."
+if [ -r $USER_SCRIPT ]; then
+   echo "Adding a user defined environment script to worker package..."
    tar --append --file=$ARC_NAME -C $(dirname $USER_SCRIPT) $(basename $USER_SCRIPT)
 fi
 
