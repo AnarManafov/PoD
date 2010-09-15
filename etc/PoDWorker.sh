@@ -169,6 +169,12 @@ tar -xzvf pod-worker.tar.gz
 #Exporting PoD location
 export POD_LOCATION=$WD
 
+# execute user's script if present
+if [ -r "$WD/user.worker_env.sh" ]; then
+   logMsg "Sourcing a user defined environment script..."
+   source "$WD/user.worker_env.sh"
+fi
+
 # host's CPU/instruction set
 # so far we support only Linux (amd64 and x86)
 OS=$(uname -s 2>&1)

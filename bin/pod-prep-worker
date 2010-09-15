@@ -16,6 +16,7 @@
 
 ARC_NAME="$POD_LOCATION/etc/pod-worker.tar"
 ARC_NAME_GZ=$ARC_NAME".gz"
+USER_SCRIPT="$POD_LOCATION/etc/user.worker_env.sh"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
@@ -57,6 +58,13 @@ do
     exit 1
   fi
 done
+
+# add user's script if present
+if [ -r "$WD/user.worker_env.sh" ]; then
+   logMsg "Adding a user defined environment script to worker package..."
+   tar --append --file=$ARC_NAME -C $(dirname $USER_SCRIPT) $(basename $USER_SCRIPT)
+fi
+
 
 gzip -9 $ARC_NAME
 echo "finished successfully: "$ARC_NAME_GZ
