@@ -43,6 +43,7 @@ logMsg()
 # ***** Perform program exit housekeeping *****
 clean_up()
 {
+    logMsg "Starting the cleaning procedure..."
     # Try to kill pod-agent by first sending a TERM signal
     # And if after 10 sec. it still exists send a non-ignorable kill
     WAIT_TIME=10
@@ -161,10 +162,11 @@ echo $$ > $PID_FILE
 # handle signals
 trap clean_up SIGHUP SIGINT SIGTERM 
 
-logMsg "+++ START +++"
+logMsg "+++ PoD Worker START +++"
 logMsg "Current working directory: $WD"
 
 # extract PoD worker package
+logMsg "Content of the worker package:"
 tar -xzvf pod-worker.tar.gz
 
 #Exporting PoD location
