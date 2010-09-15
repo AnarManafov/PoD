@@ -86,6 +86,11 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
 
+    // request queues info before loading cfg,
+    // since setAllDefault is using the queues info.
+    LSFQueueInfoMap_t queues;
+    m_JobSubmitter.getLSF().getQueues( &queues );
+
     try
     {
         // Loading class from the config file
@@ -96,8 +101,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
         setAllDefault();
     }
 
-    LSFQueueInfoMap_t queues;
-    m_JobSubmitter.getLSF().getQueues( &queues );
     // TODO: handle errors here.
     LSFQueueInfoMap_t::iterator iter = queues.begin();
     LSFQueueInfoMap_t::iterator iter_end = queues.end();

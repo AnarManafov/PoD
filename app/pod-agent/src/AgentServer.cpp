@@ -359,7 +359,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
     {
         stringstream ss;
         ss
-                << "server request ";
+                << "sending request ";
 
         switch( _wrk.second.m_requests.front() )
         {
@@ -411,7 +411,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
         case CProtocol::stDISCONNECT:
             {
                 stringstream ss;
-                ss << "Worker [" << _wrk.second.string() << "] has just dropped the connection";
+                ss << "Worker " << _wrk.second.string() << " has just dropped the connection";
                 InfoLog( ss.str() );
                 close( _wrk.first );
                 _wrk.first = -1;

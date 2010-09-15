@@ -40,7 +40,11 @@ cp $POD_LOCATION/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 #
 $WRK_DIR/PoDWorker.sh
 # global variables
-user_defaults=$WRK_DIR/pod-agent/pod-user-defaults
+# we need to define lib path to ensure that we use proper libraries
+export PROOFAGENTSYS="$WRK_DIR/pod-agent"
+export PATH=$PROOFAGENTSYS:$PATH 
+export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
+user_defaults="$PROOFAGENTSYS/pod-user-defaults"
 pod_cfg=$WRK_DIR/PoD.cfg
 #
 ## logs
