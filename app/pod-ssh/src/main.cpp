@@ -52,6 +52,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     ( "version,v", "Version information" )
     ( "config,c", bpo::value<string>(), "PoD's ssh plug-in configuration file" )
     ( "submit", "Submit workers" )
+    ( "status", "Request status of the workers" )
     // TODO: we need to be able to clean only selected worker(s)
     // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
