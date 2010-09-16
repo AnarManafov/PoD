@@ -16,7 +16,7 @@
 #include "threadPool.h"
 #include "local_types.h"
 //=============================================================================
-enum ETaskType {task_submit, task_clean};
+enum ETaskType {task_submit, task_clean, task_status};
 //=============================================================================
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
@@ -30,6 +30,7 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
     private:
         void submit();
         void clean();
+        void status();
         void log( const std::string &_msg );
 
     private:

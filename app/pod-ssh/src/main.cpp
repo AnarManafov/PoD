@@ -81,6 +81,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     }
 
     boost_hlp::conflicting_options( vm, "submit", "clean" );
+    boost_hlp::conflicting_options( vm, "status", "clean" );
+    boost_hlp::conflicting_options( vm, "status", "submit" );
 
     _vm->swap( vm );
     return true;
@@ -151,7 +153,12 @@ int main( int argc, char * argv[] )
 
         // start threadpool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( 4 );
-        ETaskType task_type = ( vm.count( "submit" ) ) ? task_submit : task_clean;
+        ETaskType task_type( task_submit );
+        if( vm.count( "clean" ) )
+            task_type = task_clean;
+        else if( vm.count( "status" ) )
+            task_type = task_status;
+
         workersList_t::iterator iter = workers.begin();
         workersList_t::iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )

@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-ssh-status-worker
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-09-15
+#
+#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which is used to retrieve a status of a PoD worker via ssh. It's used by pod-ssh utility.
+   Copyright (C) 2010 GSI, Scientific Computing group.
+
+Usage: pod-info [OPTION]
+     -i id			ID of the worker.
+     -l ssh login@host.fqdn 	SSH connection string.
+     -w dir      		Remote working directory.
+     -o SSH_Opt			Additinal SSH parameters.
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+WORKER_ID=""
+SSH_CON_STR=""
+RDIR=""
+SSHOPT=""
+while getopts ":i:l:w:o:c:h" opt; do
+  case $opt in
+  i)
+    WORKER_ID="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  w) 
+    RDIR="$OPTARG"
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
+TOOL_NAME="pod-ssh-status-worker"
+WRK_PID=PoDWorker.pid
+TIMEOUT=30
+
+SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
+#=============================================================================
+# ***** POD-SSH NAMED PIPE *****
+#=============================================================================
+# a pod-ssh communication pipe (log engine)
+eval pipe_dir=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
+pipe="$pipe_dir/.pod_ssh_pipe"
+if [[ ! -p $pipe ]]; then
+   echo "$TOOL_NAME error: pod-ssh log engine is not running"
+   exit 1
+fi
+#=============================================================================
+# ***** LOG *****
+#=============================================================================
+# function read input from stdin and write output to the stdout
+# caller must take care about where come stdin and where go stdout
+logMsgPipe() 
+{
+  while read data
+  do
+      logMsg "$data" 
+  done
+}
+
+logMsg()
+{
+# date format
+#RFC-2822:
+# *    www, dd mmm yyyy hh:mm:ss +zzzz
+#
+# Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
+    echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+}
+#=============================================================================
+# ***** remote part *****
+#=============================================================================
+# a special case, executed on the remote host
+# check for pid file of worker's script.
+# If the file is available, read pid from it and send a TERM signal using that pid.
+# If the file is unavailable, exit with 0 - it is not an error for us.
+if [ "$CLEAN" = "clean" ]; then
+    pid_file="$RDIR/$WRK_PID"
+    if [  -e $pid_file ]; then
+	pid=$(cat $pid_file)
+	kill -15 $pid
+	cnt=0
+	while $(kill -0 $pid &>/dev/null); do
+	   cnt=$(expr $cnt + 1)
+	   if [ $cnt -gt $WAITTIMEOUT ]; then
+	      echo "$TOOL_NAME error: failed to wait for pid $pid"
+	      exit 1
+	   fi
+	   sleep 1
+	done
+    fi
+
+    exit 0
+fi
+#=============================================================================
+# ***** local part *****
+#=============================================================================
+# this part is executed locally
+logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
+SELF_PATH=$(readlink -f $0)
+
+$SSH_CMD "test -d $RDIR" 2>&1 | logMsgPipe
+if [ $? -ne 0 ]; then
+   logMsg "CLEAN"
+   exit 0
+fi
+
+$SSH_CMD "pid_file=\"$RDIR/$WRK_PID\";if [  -e $pid_file ]; then; exit 0; fi; exit 1;" 2>&1 | logMsgPipe
+if [ $? -ne 0 ]; then
+   logMsg "DONE"
+else
+   logMsg "RUN"
+fi
+
+exit 0
+
