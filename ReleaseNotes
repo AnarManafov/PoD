@@ -6,7 +6,7 @@ pod: The project has been restructured. Now all submodules have been incorporate
 pod: A number of fixed to optimize the build process speed and the size of the source package.
 pod: Added new build targets, api-docs and upload-api-docs. In order to build PoD's private API documentation.
 pod: A new versioning system has been introduced. Now using a git canonical version number as a basis for PoD's version string.
-pod: The user manual has been updated.
+pod: The user manual has been updated and a new chapter - "Quick Start" has been added.
 pod: Using a new bash algorithm, instead of a perl code to find out free tcp ports.
 pod: The pod-user-defaults-lite executable (python implementation) has been removed from the project.
      The generic pod-user-defaults (C++) is used now on both sides, server and worker.
