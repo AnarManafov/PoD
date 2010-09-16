@@ -129,7 +129,7 @@ get_log_files()
 
    # xpd.log, proof_log.tgz, pod-agent.client.log, ssh_worker.log
    $SCP_CMD $SSH_CON_STR:"$RDIR/xpd.log $RDIR/proof_log.tgz $RDIR/pod-agent.client.log $RDIR/ssh_worker.log" $LOG_DIR/  2>&1 | logMsgPipe
-   if [ $? -ne 0 ]; then
+   if (( ${PIPESTATUS[0]} != 0 )); then
       logMsg "$TOOL_NAME error: failed to send workers cleaning script $SELF_PATH"
       exit 1
    fi
@@ -168,20 +168,20 @@ logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
 SELF_PATH=$(readlink -f $0)
 
 $SSH_CMD "test -d $RDIR" 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
    logMsg "$TOOL_NAME: There is nothing to clean."
    exit 0
 fi
 
 $SCP_CMD $SELF_PATH $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to send worker's cleaning script $SELF_PATH"
     exit 1
 fi
 
 logMsg "$TOOL_NAME: Executing the cleaner on the remote host..."
 $SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR" 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
    logMsg "$TOOL_NAME warning: failed to retrieve remote log files."
 fi
 
@@ -192,7 +192,7 @@ get_log_files
 logMsg "$TOOL_NAME: Removing the remote working dir..."
 # remove the working directory
 $SSH_CMD "rm -rf $RDIR" 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
     exit 1
 fi

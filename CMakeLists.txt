@@ -108,6 +108,7 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-submit
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-submit-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-clean-worker
+    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-status-worker 
     )
 #
 # "etc" files

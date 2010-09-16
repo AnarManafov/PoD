@@ -126,14 +126,14 @@ fi
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
 rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to send worker's package"
     exit 1
 fi
 
 # execute the worker script
 $SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" 2>&1 | logMsgPipe
-if [ $? -ne 0 ]; then
+if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: faild to start PoD worker"
     exit 1
 fi
