@@ -146,7 +146,7 @@ int main( int argc, char * argv[] )
         slog( ss.str() );
 
         // it's a dry run - configuration check only
-        if( !vm.count( "submit" ) && !vm.count( "clean" ) )
+        if( !vm.count( "submit" ) && !vm.count( "clean" ) && !vm.count( "status" ) )
             throw runtime_error( "It's a configuration check only. Specify submit/clean options to actually execute." );
 
         slog( "Workers list:\n" );
