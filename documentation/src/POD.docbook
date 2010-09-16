@@ -15,6 +15,7 @@
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
 <!ENTITY Support SYSTEM "Support.docbook">
+<!ENTITY QuickStart SYSTEM "QuickStart.docbook">
 ]>
 
 <book id="POD" lang="en">
@@ -74,7 +75,12 @@ Installation
 Configuration 
 -->
   &Configuration;
-    
+
+<!-- 
+Quick Start
+-->
+  &QuickStart;    
+
 <!-- 
 How to run 
 -->

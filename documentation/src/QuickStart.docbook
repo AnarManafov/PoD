@@ -1,0 +1,64 @@
+<!--
+How to run
+-->
+  <chapter id="QuickStart">
+    <title>Quick Start</title>
+        <chapterinfo>
+       </chapterinfo>
+    
+    <para>
+   <orderedlist id="PoD Quick Start">
+		<title>PoD Quick Start: </title>
+		<listitem>Initialize PoD environment: <xref linkend="Environment"/></listitem>
+		<listitem>Start PoD server: <xref linkend="Server"/></listitem>
+		<listitem>Submit PoD workers to start dynamic PROOF cluster: <xref linkend="JobManager"/></listitem>
+		<listitem>Check status of dynamic PROOF cluster: <xref linkend="PROOF_workers"/></listitem>		
+		<listitem>Use the PROOF cluster for an analysis: <xref linkend="Analysis"/></listitem>
+		<listitem>Restart PoD workers (if cluster needs to be reloaded): <xref linkend="JobManager"/></listitem>
+		<listitem>Stop PoD server: <xref linkend="How_to_shut_down_PoD"/></listitem>
+	</orderedlist>
+    </para>
+
+   <para>
+   The following is the example to illustrate the Quick Start. We use PoD with ssh plug-in to setup our PROOF cluster on the bunch of the machines, which
+   are described in the <filename>pod_ssh.cfg</filename> configuration file. In the examle we will use only CLI. Note, that PoD also provides GUI.
+   </para>
+ <para>
+    Detailed description of the command and of the configuration file can be found in the <xref linkend="pod-ssh"/> reference manual.
+    </para>
+
+<para>
+Starting the cluster:
+<screen>
+<command>pod-server <parameter class='command'>start</parameter></command>
+<command>pod-server <parameter class='command'>status</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--submit</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+<command>pod-info <parameter class='command'>-n</parameter></command>
+<command>pod-info <parameter class='command'>-l</parameter></command>
+</screen>
+The Dynamic PROOF cluster is ready to perform user's analysis code...
+</para>
+
+<para>
+If needed we can restart it:
+<screen>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--clean</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--submit</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+<command>pod-info <parameter class='command'>-n</parameter></command>
+</screen>
+</para>
+
+<para>
+And finally, lets shut down out PoD(PROOF) cluster:
+<screen>
+<command>pod-server <parameter class='command'>stop</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--clean</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+</screen>
+</para>
+
+             
+  </chapter>
+ 

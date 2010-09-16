@@ -14,7 +14,8 @@ SRC=\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
-  Cmd_line_interface.docbook
+        Cmd_line_interface.docbook\
+        QuickStart.docbook
 
 
 DOCBOOK=POD.docbook

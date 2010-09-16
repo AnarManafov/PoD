@@ -17,13 +17,29 @@ SSH plug-in description
     Meet the CLI documentation and check out the <xref linkend="pod-ssh"/> reference for further information.
     </para>
     <para>
-    The following simple example illustrates a submission of a number of PoD workers to a bunch of the machines via SSH.
+    Before you start, check that PoD <xref linkend="Server"/> is running.
+    </para>
+    <para>
+    The following simple example illustrates a submission of a number of PoD workers (described in the <filename>pod_ssh.cfg</filename>
+    configuration file) to a bunch of the machines via SSH.
 <screen>
 <command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--submit</parameter></command>
 </screen>
-    and cleaning all of them, when user is done with his/her dynamic PROOF cluster:
+    check the status of PoD workers:
+<screen>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+</screen>
+    now check the status of your dynamic PROOF clusters. The following commands show a number/list of available PROOF workers, which
+    have been already set up and are online:
+<screen>
+<command>pod-info <parameter class='command'>-n</parameter></command>
+<command>pod-info <parameter class='command'>-l</parameter></command>
+</screen> 
+    and finally clean the PoD cluster. The cleaning needs to be performed when user is done with his/her dynamic PROOF cluster or want to
+    refresh workers (in this case, you need to submit workers again, after the cleaning). BTW, no need to stop pod-server.
 <screen>
 <command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--clean</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
 </screen>
     <important><para>
      The cleaning of the workers is very important in order to keep the remote environment safe and clean. 
@@ -31,9 +47,15 @@ SSH plug-in description
      <filename class="directory">$POD_LOCATION/log</filename> directory. Unfortunately SSH plug-in can't automatically decide
      when to clean the workers, you therefor is responsible to do it.
     </para></important>
+    </para>
+    <para>
+    At the end, check that you shut you PoD server down - <xref linkend="How_to_shut_down_PoD"/>.
+    </para>
+    <para>
     Detailed description of the command and of the configuration file can be found in the <xref linkend="pod-ssh"/> reference manual.
     </para>
     </sect1>
+
     <sect1 id="SSH_CFG"><title>Configuration</title>
     <para>
     <!-- There are LSF plug-in options in the PoD user defaults (see <xref linkend="LSF_CFG_TABLE"/>), which you can use to tune the plug-in. -->

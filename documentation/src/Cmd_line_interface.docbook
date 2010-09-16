@@ -423,6 +423,7 @@ Command-line interface
     "config,c",   PoD's ssh plug-in configuration file. A workers description file
     "submit",     Submit workers
     "clean",      Clean all workers
+    "status",     Request status of the workers
  -->
  <!-- ......................................................................... -->
 
@@ -449,6 +450,7 @@ Command-line interface
                 <group choice="req">
 	           <arg>--submit</arg>
 	           <arg>--clean</arg>
+                   <arg>--status</arg>
 	        </group>
 	  </cmdsynopsis>
   </refsynopsisdiv>
@@ -530,6 +532,12 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
 	    <term><option>--clean</option></term>
 	    <listitem>
 	       <para>Clean all PoD workers according to the entries in the configuration file.</para>
+	    </listitem>
+	  </varlistentry>
+          <varlistentry>
+	    <term><option>--status</option></term>
+	    <listitem>
+	       <para>Request status of PoD workers listed in the configuration file.</para>
 	    </listitem>
 	  </varlistentry>
   </variablelist>
