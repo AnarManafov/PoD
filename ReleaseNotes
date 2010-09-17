@@ -1,12 +1,12 @@
 # Release Notes for pod-user-defaults
 
-## v2.2 (not yet released)
-pod: The first release of the PoD SSH plug-in.
-pod: The project has been restructured. Now all submodules have been incorporated directly into PoD's source tree.
-pod: A number of fixed to optimize the build process speed and the size of the source package.
+## v2.2 (2010-09-17)
+pod: A major highlite of this release is the first implementation of the PoD with SSH plug-in (see User's Manual, Chapter 11. SSH plug-in).
+pod: The project has been restructured. Now most of the submodules have been incorporated directly into PoD's source tree.
+pod: A number of fixes to optimize the build process speed and the size of the source package.
 pod: Added new build targets, api-docs and upload-api-docs. In order to build PoD's private API documentation.
 pod: A new versioning system has been introduced. Now using a git canonical version number as a basis for PoD's version string.
-pod: The user manual has been updated and a new chapter - "Quick Start" has been added.
+pod: The User's Manual has been significatly updated and a new chapter - "Quick Start" has been added.
 pod: Using a new bash algorithm, instead of a perl code to find out free tcp ports.
 pod: The pod-user-defaults-lite executable (python implementation) has been removed from the project.
      The generic pod-user-defaults (C++) is used now on both sides, server and worker.
@@ -16,15 +16,15 @@ pod: PoD doesn't use xrootd anymore. Instead xproofd is used.
      the XrdProofdProtocol instead of the data-serving protocol XrdXrootdProtocol. The purpose of this daemon is to simplify
      the configuration when data-serving is not needed or it is handled differently.
 pod: Implemented an automatic execution of a custom (user specified) environment script on workers before PoD processes start. (User's Manual, section 5.2.)
-pod-agent: removed UD's option: worker.agent_threads
 pod-agent: learned "--workers" option. A number of PROOF workers to spawn.
            Used only by agents in a worker mode and only in the native PROOF connection.
 pod-agent: the internal administration protocol has been upgraded to version 3.
 pod-agent: the "--pidfile/p" option has been removed. User default's "<server/worker>.work_dir" is used instead.
+pod-agent: the internal-administration protocol algorithms has been improoved.
 pod-user-defaults: updated user defaults configuration file - v0.5.
 pod-user-defaults: removed xrd port settings, since PoD is using the xproofd executable, instead of the xrootd executable.
-pod-user-defaults: removed worker.agent_threads.
-pod-user-defaults: "pod-user-defaults" learned "--default/-d" option to generate a default PoD configuration file.
+pod-user-defaults: removed the worker.agent_threads setting.
+pod-user-defaults: "pod-user-defaults" learned "--default/-d" option to generate the default PoD configuration file.
 pod-user-defaults: "pod-user-defaults" learned "--force/-f" option, wich can be used with "--default/-d".
                    If the destination file exists, remove it and create a new file, without prompting for confirmation.
 pod-console (LSF plug-in): Fixed a bug. After a reload the console shows an incorrect number of previously submitted PoD workers.
