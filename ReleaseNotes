@@ -1,4 +1,4 @@
-# Release Notes for pod-user-defaults
+# Release Notes for PoD (PROOF on Demand)
 
 ## v2.2 (2010-09-17)
 pod: A major highlite of this release is the first implementation of the PoD with SSH plug-in (see User's Manual, Chapter 11. SSH plug-in).
