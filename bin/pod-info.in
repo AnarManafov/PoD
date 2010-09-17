@@ -70,7 +70,7 @@ list_workers() {
 # ***** PROOF CONNECTION STRING
 #=============================================================================
 proof_connection_string() {
-echo "$($POD_LOCATION/bin/pod-server status | grep 'connection string' | egrep -o '([a-zA-Z.0-9]*:[0-9]*$)')"
+echo "$($POD_LOCATION/bin/pod-server status | grep 'connection string' | egrep -o '([a-zA-Z\.0-9\-]*:[0-9]*$)')"
 }
 #=============================================================================
 # ***** MAIN  *****
