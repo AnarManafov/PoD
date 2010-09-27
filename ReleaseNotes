@@ -1,5 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
+## v2.3 (not yet released)
+
+
 ## v2.2 (2010-09-17)
 pod: A major highlight of this release is the first implementation of the PoD with SSH plug-in (see User's Manual, Chapter 11. SSH plug-in).
 pod: The project has been restructured. Now most of the submodules have been incorporated directly into PoD's source tree.
