@@ -161,14 +161,24 @@ start()
     return 0
 }
 # ************************************************************************
+# ***** pkill  *****
+# we need this function since Mac OS X doesn't provide pkill yet
+my_pkill()
+{
+   for X in `ps cx | grep -i $1 | awk {'print $1'}`; do
+      kill -9 $X;
+   done
+}
+
+# ************************************************************************
 # ***** STOP  *****
 stop()
 {
     echo "Stopping PoD server..."
 
-    #TODO: make it less aggressive
-    pkill -9 -U $UID xproofd
-    pkill -9 -U $UID proofserv
+    #TODO: make it less aggressive    
+    my_pkill xproofd
+    my_pkill proofserv
 
     $POD_LOCATION/bin/pod-agent -d -c $POD_LOCATION/etc/PoD.cfg --stop
     
