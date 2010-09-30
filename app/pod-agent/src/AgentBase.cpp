@@ -148,28 +148,8 @@ namespace PROOFAgent
         // #1  - Check whether xproofd process exists
         try
         {
-            vectorPid_t pids = getprocbyname( "xproofd" );
+            vectorPid_t pids = getprocbyname( "xproofd", true );
             if( pids.empty() )
-                return false;
-
-            vectorPid_t::const_iterator iter = pids.begin();
-            vectorPid_t::const_iterator iter_end = pids.end();
-            // checking that the process is running under current's user id
-            bool found = false;
-            for( ; iter != iter_end; ++iter )
-            {
-                CProcStatus p;
-                p.Open( *iter );
-                istringstream ss( p.GetValue( "Uid" ) );
-                uid_t realUid( 0 );
-                ss >> realUid;
-                if( getuid() == realUid )
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if( !found )
                 return false;
         }
         catch( ... )
