@@ -32,7 +32,8 @@ echo "----------------------"
 echo "MiscCommon UNIT-TESTs"
 echo "----------------------"
 exec_test "MiscCommon_test_MiscUtils"
-exec_test "MiscCommon_test_Process"
+#  we use --catch_system_errors=no here to prevent BOOST catching SIGCHLD
+exec_test "MiscCommon_test_Process --catch_system_errors=no"
 exec_test "MiscCommon_test_SysHelper"
 exec_test "MiscCommon_test_FindCfgFile"
 
