@@ -63,8 +63,8 @@ void CAgentClient::processAdminConnection( int _serverSock )
     BYTEVector_t ver;
     v.convertToData( &ver );
     protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), ver );
-
-    while( true )
+    bool bProcessNoMore( false );
+    while( !bProcessNoMore )
     {
         InfoLog( "waiting for server commands" );
         CProtocol::EStatus_t ret = protocol.read( _serverSock );
@@ -77,7 +77,10 @@ void CAgentClient::processAdminConnection( int _serverSock )
                 {
                     while( protocol.checkoutNextMsg() )
                     {
-                        processProtocolMsgs( _serverSock, &protocol );
+                        bProcessNoMore = ( processProtocolMsgs( _serverSock, &protocol ) > 0 );
+                        if( bProcessNoMore )
+                            break;
+
                     }
                 }
                 break;
@@ -85,7 +88,7 @@ void CAgentClient::processAdminConnection( int _serverSock )
     }
 }
 //=============================================================================
-void CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
+int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
 {
     BYTEVector_t data;
     SMessageHeader header = _protocol->getMsg( &data );
@@ -130,7 +133,8 @@ void CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
         case cmdUSE_PACKETFORWARDING_PROOF:
             // going out of the admin channel and start the packet forwarding
             InfoLog( "Server requests to use a packet forwarding for PROOF packages." );
-            return;
+            m_isDirect = false;
+            return 1;
         case cmdUSE_DIRECT_PROOF:
             // TODO: we keep admin channel open and start the monitoring (proof status) thread
             m_isDirect = true;
@@ -157,7 +161,7 @@ void CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
             WarningLog( 0, "Unexpected message in the admin channel" );
             break;
     }
-
+    return 0;
 }
 //=============================================================================
 void CAgentClient::run()

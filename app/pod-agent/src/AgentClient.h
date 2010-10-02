@@ -60,7 +60,7 @@ namespace PROOFAgent
             void mainSelect( CNode *_node );
             void createPROOFCfg();
             void processAdminConnection( int _serverSock );
-            void processProtocolMsgs( int _serverSock, CProtocol * _protocol );
+            int processProtocolMsgs( int _serverSock, CProtocol * _protocol );
 
         private:
             PoD::SWorkerOptions_t m_Data;
