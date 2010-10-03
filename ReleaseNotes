@@ -1,7 +1,10 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v2.3 (not yet released)
-
+## v2.3 (2010-10-03)
+pod: pod-ssh doesn't use scp anymore, instead rsync is used.
+pod: A number of minor changes.
+pod-agent: Fixed a regression bug, which in some cases prevented Agent Clients to go out of admin-channel.
+           This could blocked the packet-forwarder operations.
 
 ## v2.2 (2010-09-17)
 pod: A major highlight of this release is the first implementation of the PoD with SSH plug-in (see User's Manual, Chapter 11. SSH plug-in).

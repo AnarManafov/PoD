@@ -80,7 +80,6 @@ void CAgentClient::processAdminConnection( int _serverSock )
                         bProcessNoMore = ( processProtocolMsgs( _serverSock, &protocol ) > 0 );
                         if( bProcessNoMore )
                             break;
-
                     }
                 }
                 break;
