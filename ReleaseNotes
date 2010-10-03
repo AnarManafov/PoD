@@ -3,6 +3,8 @@
 ## v2.3 (2010-10-03)
 pod: pod-ssh doesn't use scp anymore, instead rsync is used.
 pod: A number of minor changes.
+pod: MacOSX port. Implemented a custom pkill function, since MacOSX doesn't support pkill command.
+pod-agent: MacOSX port. The agent has been slightly updated in order to support MacOSX.
 pod-agent: Fixed a regression bug, which in some cases prevented Agent Clients to go out of admin-channel.
            This could blocked the packet-forwarder operations.
 
