@@ -9,6 +9,8 @@ POD_SRC=$(readlink -f $1)
 LIBS_PATH_X86=/misc/manafov/PoD/forGSI/pod-agent-bin-libs/x86
 LIBS_PATH_AMD64=/misc/manafov/PoD/forGSI/pod-agent-bin-libs/amd64
 
+SSH_ARGS="-o BatchMode=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no -q"
+
 # bin name:
 # <pakage>-<version>-<OS>-<ARCH>-<GCC_VER>.tar.gz
 
@@ -75,9 +77,9 @@ tar -czvf $PKG_NAME pod-agent/ &>/dev/null
 
 # release the tarball
 chmod go+xr $PKG_NAME || exit 1
-scp -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
+scp $SSH_ARGS -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
 # Make a soft link for a development package
-ssh podwww@lxi001 "ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME /u/podwww/web-docs/releases/add/$LINK_NAME"
+ssh $SSH_ARGS podwww@lxi001 "ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME /u/podwww/web-docs/releases/add/$LINK_NAME"
 popd
 
 exit 0

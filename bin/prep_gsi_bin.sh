@@ -49,6 +49,7 @@ popd
 
 # release the tarball
 chmod go+xr $POD_SRC/build/*.tar.gz || exit 1
-scp -p $POD_SRC/build/*.tar.gz podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
+SSH_ARGS="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=30 -o PasswordAuthentication=no -q"
+scp $SSH_ARGS -p $POD_SRC/build/*.tar.gz podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
 
 exit 0
