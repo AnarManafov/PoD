@@ -14,7 +14,7 @@ exec_test() {
 
 if [ -e $1 ]; then
 	echo ">>> Processing $1"
-	./$1 || clean_up
+	./$1 $2 || clean_up
 	echo
 else
 	echo "WARNING: can't find $1"
@@ -33,7 +33,7 @@ echo "MiscCommon UNIT-TESTs"
 echo "----------------------"
 exec_test "MiscCommon_test_MiscUtils"
 #  we use --catch_system_errors=no here to prevent BOOST catching SIGCHLD
-exec_test "MiscCommon_test_Process --catch_system_errors=no"
+exec_test "MiscCommon_test_Process" "--catch_system_errors=no"
 exec_test "MiscCommon_test_SysHelper"
 exec_test "MiscCommon_test_FindCfgFile"
 
