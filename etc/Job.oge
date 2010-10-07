@@ -2,7 +2,7 @@
 #/************************************************************************/
 ##/**
 ## * @file Job.oge
-## * @brief a OGE job script
+## * @brief a OGE/SGE job script
 ## * @author Anar Manafov A.Manafov@gsi.de
 ## *//*
 ##

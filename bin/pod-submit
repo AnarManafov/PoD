@@ -143,7 +143,7 @@ elif [ "$RMS" = "oge" ]; then
   # we need to create a logs output dir
   stat=$?
   # extract a job id only, without an array indexes
-  jobid=$(echo $jobid | cut -f3 -d" "|cut -f1 -d.)
+  jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
   if test $stat -eq 0; then
     echo "Job ID: $jobid"
     mkdir -p  $LOG_DIR/$jobid

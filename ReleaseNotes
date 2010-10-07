@@ -1,6 +1,7 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v2.4 (not yet released)
+pod: Added a Oracle Grid Engine (OGE/SGE) plug-in. So-far only a CLI is supported.
 
 
 ## v2.3 (2010-10-03)
