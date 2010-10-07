@@ -137,9 +137,11 @@ elif [ "$RMS" = "oge" ]; then
   # -terse      tersed output, print only the job-id
   oge_job_array_param="-t 1-$NUM_WRK"
   job_name="PoD_OGE_Job"
-  jobid=$(qsub -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR -e $LOG_DIR $POD_LOCATION/etc/Job.oge | cut -f3 -d" "|cut -f1 -d.)
+  jobid=$(qsub -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR -e $LOG_DIR $POD_LOCATION/etc/Job.oge)
   # we need to create a logs output dir
   stat=$?
+  # extract a job id only, without an array indexes
+  jobid=$(echo $jobid | cut -f3 -d" "|cut -f1 -d.)
   if test $stat -eq 0; then
     echo "Job ID: $jobid"
     mkdir -p  $LOG_DIR/$jobid
