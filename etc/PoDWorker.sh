@@ -74,7 +74,7 @@ clean_up()
     if [ -e "$proof_dir" ]; then
 	# making an archive of proof logs
 	# it will be transfered to a user
-	tar -czvf proof_log.tgz $proof_dir
+	tar -czPf proof_log.tgz $proof_dir
 	logMsg "$proof_dir exists and will be deleted..."
 	rm -rf $proof_dir
     fi

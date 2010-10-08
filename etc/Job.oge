@@ -46,7 +46,7 @@ stageout()
 {
  eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key pbs_plugin.upload_job_log)
 
- if [ "$upload_job_log" = "yes" ]; then
+ if [ "$upload_job_log" = "1" ]; then
     echo "Staging the log files out..."
     echo "log dir: "$UI_LOG_DIR
 

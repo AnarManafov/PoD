@@ -261,7 +261,7 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
 
     // set POD_PBS_SHARED_HOME variable on the worker nodes
     env += "POD_PBS_SHARED_HOME=";
-    env += m_pbs_sharedHome ? "yes" : "no";
+    env += m_pbs_sharedHome ? "1" : "0";
 
     // export all env. variables of the process to jobs
     // if the home is shared

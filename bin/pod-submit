@@ -110,13 +110,13 @@ elif  [ "$RMS" = "pbs" ]; then
     pbs_job_array_param="-t 1-$NUM_WRK"
   fi
 
-  PBS_SHARED_HOME=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key pbs_plugin.shared_home)
+  POD_PBS_SHARED_HOME=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key pbs_plugin.shared_home)
   # if shared home is in use, we command that all of the environment variables of the process
   # are exported to the context of the batch job. We therefore use -V parameter
-  if [ $PBS_SHARED_HOME -eq 0 ]; then
-    jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs)
+  if [ $POD_PBS_SHARED_HOME -eq 0 ]; then
+    jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe -o $LOG_DIR/ -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR, POD_PBS_SHARED_HOME=$POD_PBS_SHARED_HOME" $POD_LOCATION/etc/Job.pbs)
   else
-    jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs)
+    jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR, POD_PBS_SHARED_HOME=$POD_PBS_SHARED_HOME" $POD_LOCATION/etc/Job.pbs)
   fi
 # we need to create a logs output dir
   stat=$?
