@@ -45,7 +45,7 @@ esac
 POD_BUILD_DIR="$POD_SRC/build_$host_arch"
 mkdir -p $POD_BUILD_DIR || exit 1
 mkdir -p $POD_SRC/inst_tmp || exit 1
-POD_AGENT_BIN_DIR="$POD_SRC/build_agent_$host_arch/pod-agent"
+POD_AGENT_BIN_DIR="$POD_SRC/build_agent_$host_arch/$BASE_NAME"
 mkdir -p $POD_AGENT_BIN_DIR || exit 1
 
 POD_INST=$POD_SRC/inst_tmp
@@ -72,7 +72,6 @@ cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1
 PKG_NAME="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
 pushd `pwd`
 cd $POD_AGENT_BIN_DIR/..
-mv pod_agent $BASE_NAME
 tar -czvf $PKG_NAME $BASE_NAME &>/dev/null
 
 # release the tarball
