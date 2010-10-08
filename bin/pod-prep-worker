@@ -34,6 +34,7 @@ fi
 # check that all needed components are available
 COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf" 
              "$POD_LOCATION/etc/PoD.cfg"
+             "$POD_LOCATION/etc/version"
              "$POD_LOCATION/etc/server_info.cfg" )
 
 COMPONENTS=(  "${COMPONENTS_ETC[@]}" )

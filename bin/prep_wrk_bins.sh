@@ -4,7 +4,6 @@
 # So far it is only pod-agent, who is needed
 # Provide a path to a source tree of PoD as a parameter to the script.
  
- 
 POD_SRC=$(readlink -f $1)
 LIBS_PATH_X86=/misc/manafov/PoD/forGSI/pod-agent-bin-libs/x86
 LIBS_PATH_AMD64=/misc/manafov/PoD/forGSI/pod-agent-bin-libs/amd64
@@ -16,12 +15,6 @@ SSH_ARGS="-o BatchMode=yes -o StrictHostKeyChecking=no -o PasswordAuthentication
 BASE_NAME="pod-wrk-bin"
 
 OS=$(uname -s 2>&1)
-#GCC_VER=$(gcc -dumpversion 2>/dev/null) #| sed 's/\./x/g')
-#if [ -z "GCC_VER" ]; then
-#    echo "bad gcc version"
-#    exit 1
-#fi
-#GCC_VER="gcc$GCC_VER"
 
 host_arch=$( uname -m  2>&1)
 case "$host_arch" in
@@ -45,6 +38,7 @@ esac
 POD_BUILD_DIR="$POD_SRC/build_$host_arch"
 mkdir -p $POD_BUILD_DIR || exit 1
 mkdir -p $POD_SRC/inst_tmp || exit 1
+
 POD_AGENT_BIN_DIR="$POD_SRC/build_agent_$host_arch/$BASE_NAME"
 mkdir -p $POD_AGENT_BIN_DIR || exit 1
 
@@ -63,7 +57,6 @@ PKG_VERSION=$(cat $POD_SRC/etc/version)
 # Copy the binaries
 cp -v "$POD_INST/bin/pod-agent" $POD_AGENT_BIN_DIR/ || exit 1
 cp -v "$POD_INST/bin/pod-user-defaults" $POD_AGENT_BIN_DIR/ || exit 1
-
 
 # Copy external libs
 cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1

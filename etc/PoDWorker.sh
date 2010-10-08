@@ -25,6 +25,12 @@ LOCK_FILE="$WD/PoDWorker.lock"
 PID_FILE="$WD/PoDWorker.pid"
 POD_CFG="$WD/PoD.cfg"
 USER_SCRIPT="$WD/user.worker_env.sh"
+# bin name:
+# <pakage>-<version>-<OS>-<ARCH>.tar.gz
+BASE_NAME="pod-wrk-bin"
+BIN_REPO="http://pod.gsi.de/releases/add/"
+PKG_VERSION=$(cat $WD/version)
+
 #
 # ************************************************************************
 # F U N C T I O N S
@@ -204,18 +210,15 @@ logMsg "host's CPU/instruction set: $host_arch"
 
 case "$host_arch" in
     x86)
-	PROOFAGENT_ARC="pod-agent-2.3-Linux-x86-gcc4.1.2.tar.gz"
 	ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
     amd64)
-        PROOFAGENT_ARC="pod-agent-2.3-Linux-amd64-gcc4.1.2.tar.gz"
         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
-RELEASE_REPO="http://pod.gsi.de/releases/add/"
-
 # **********************************************************************
 # ***** getting pod-agent from the repository site *****
-wget --no-verbose --tries=2 $RELEASE_REPO$PROOFAGENT_ARC  || clean_up 1
+PROOFAGENT_ARC="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
+wget --no-verbose --tries=2 $BIN_REPO/$PKG_VERSION/$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
 export PROOFAGENTSYS="$WD/pod-agent"
@@ -236,7 +239,7 @@ fi
 # ***** ROOT *****
 set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
 if [ "$set_my_rootsys" = "no" ]; then
-    wget --no-verbose --tries=2 $RELEASE_REPO$ROOT_ARC || clean_up 1
+    wget --no-verbose --tries=2 $BIN_REPO$ROOT_ARC || clean_up 1
     tar -xzf $ROOT_ARC || clean_up 1
 
     export ROOTSYS="$WD/root"
