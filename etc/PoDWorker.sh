@@ -29,7 +29,6 @@ USER_SCRIPT="$WD/user.worker_env.sh"
 # <pakage>-<version>-<OS>-<ARCH>.tar.gz
 BASE_NAME="pod-wrk-bin"
 BIN_REPO="http://pod.gsi.de/releases/add/"
-PKG_VERSION=$(cat $WD/version)
 
 #
 # ************************************************************************
@@ -178,6 +177,9 @@ tar -xzvf pod-worker.tar.gz
 #Exporting PoD location
 export POD_LOCATION=$WD
 
+# getting the version of PoD
+PKG_VERSION=$(cat $WD/version)
+
 # execute user's script if present
 if [ -r $USER_SCRIPT ]; then
    logMsg "Sourcing a user defined environment script..."
@@ -221,7 +223,7 @@ PROOFAGENT_ARC="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
 wget --no-verbose --tries=2 $BIN_REPO/$PKG_VERSION/$PROOFAGENT_ARC  || clean_up 1
 tar -xzf $PROOFAGENT_ARC || clean_up 1
 
-export PROOFAGENTSYS="$WD/pod-agent"
+export PROOFAGENTSYS="$WD/$BASE_NAME"
 export PATH=$PROOFAGENTSYS:$PATH 
 export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
 user_defaults="$PROOFAGENTSYS/pod-user-defaults"
