@@ -30,11 +30,9 @@ USER_SCRIPT="$WD/user.worker_env.sh"
 BASE_NAME="pod-wrk-bin"
 BIN_REPO="http://pod.gsi.de/releases/add/"
 
-#
-# ************************************************************************
-# F U N C T I O N S
-# ************************************************************************
-# ***** Log function  *****
+#=============================================================================
+# ***** LOG function *****
+#=============================================================================
 logMsg()
 {
 # date format
@@ -44,7 +42,9 @@ logMsg()
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
     echo -e "***\t[$(date '+%a, %d %b %Y %T %z')]\t$1"
 }
-# ************************************************************************
+#=============================================================================
+# ***** clean_up *****
+#=============================================================================
 # ***** Perform program exit housekeeping *****
 clean_up()
 {
@@ -86,7 +86,9 @@ clean_up()
     logMsg "done cleaning up."
     exit $1
 }
-# ************************************************************************
+#=============================================================================
+# ***** xpd_detect *****
+#=============================================================================
 # ***** detects ports of XPROOFD  *****
 # return 1 if the XPD port were not detected, otherwise returns 0
 # sets XPD_PID to a pid of a found XPD
@@ -138,7 +140,9 @@ xpd_detect()
 
     return 1
 }
-# ************************************************************************
+#=============================================================================
+# ***** get_freeport *****
+#=============================================================================
 # ***** returns a free port from a given range  *****
 get_freeport()
 {
@@ -150,10 +154,11 @@ get_freeport()
     echo "Error: Cant find free socket port"
     exit 1
 }
-# ************************************************************************
 
 # ************************************************************************
-# M A I N
+#
+# 				M A I N
+#
 # ************************************************************************
 
 # check for lock file
@@ -227,7 +232,6 @@ export PROOFAGENTSYS="$WD/$BASE_NAME"
 export PATH=$PROOFAGENTSYS:$PATH 
 export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
 user_defaults="$PROOFAGENTSYS/pod-user-defaults"
-
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
 if [ ! -x $PROOFAGENTSYS/pod-agent ]; then 
