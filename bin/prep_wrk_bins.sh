@@ -12,15 +12,16 @@ LIBS_PATH_AMD64=/misc/manafov/PoD/forGSI/pod-agent-bin-libs/amd64
 SSH_ARGS="-o BatchMode=yes -o StrictHostKeyChecking=no -o PasswordAuthentication=no -q"
 
 # bin name:
-# <pakage>-<version>-<OS>-<ARCH>-<GCC_VER>.tar.gz
+# <pakage>-<version>-<OS>-<ARCH>.tar.gz
+BASE_NAME="pod-wrk-bin"
 
 OS=$(uname -s 2>&1)
-GCC_VER=$(gcc -dumpversion 2>/dev/null) #| sed 's/\./x/g')
-if [ -z "GCC_VER" ]; then
-    echo "bad gcc version"
-    exit 1
-fi
-GCC_VER="gcc$GCC_VER"
+#GCC_VER=$(gcc -dumpversion 2>/dev/null) #| sed 's/\./x/g')
+#if [ -z "GCC_VER" ]; then
+#    echo "bad gcc version"
+#    exit 1
+#fi
+#GCC_VER="gcc$GCC_VER"
 
 host_arch=$( uname -m  2>&1)
 case "$host_arch" in
@@ -28,13 +29,11 @@ case "$host_arch" in
         host_arch=x86
 	export PATH=/misc/manafov/cmake/cmake_32bit/cmake-2.6.4/bin:$PATH
 	LIBS_PATH=$LIBS_PATH_X86
-	LINK_NAME="pod-agent-Linux-x86-DEV.tar.gz"
         ;;
     x86_64)
         host_arch=amd64
 	export PATH=/misc/manafov/cmake/cmake_64bit/cmake/bin:$PATH
 	LIBS_PATH=$LIBS_PATH_AMD64
-	LINK_NAME="pod-agent-Linux-amd64-DEV.tar.gz"
         ;;
     *)
         logMsg "Error: unsupported architecture: $host_arch"
@@ -70,16 +69,17 @@ cp -v "$POD_INST/bin/pod-user-defaults" $POD_AGENT_BIN_DIR/ || exit 1
 cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1
 
 # Tar the package
-PKG_NAME="pod-agent-$PKG_VERSION-$OS-$host_arch-$GCC_VER.tar.gz"
+PKG_NAME="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
 pushd `pwd`
 cd $POD_AGENT_BIN_DIR/..
-tar -czvf $PKG_NAME pod-agent/ &>/dev/null
+mv pod_agent $BASE_NAME
+tar -czvf $PKG_NAME $BASE_NAME &>/dev/null
 
 # release the tarball
 chmod go+xr $PKG_NAME || exit 1
-scp $SSH_ARGS -p $PKG_NAME podwww@lxi001:/u/podwww/web-docs/releases/pod/nightly || exit 1
-# Make a soft link for a development package
-ssh $SSH_ARGS podwww@lxi001 "ln -sf /u/podwww/web-docs/releases/pod/nightly/$PKG_NAME /u/podwww/web-docs/releases/add/$LINK_NAME"
+REPO_LOCATION="/u/podwww/web-docs/releases/add/$PKG_VERSION"
+ssh $SSH_ARGS podwww@lxi001 "mkdir -p $REPO_LOCATION && chmod go+xr $REPO_LOCATION"
+scp $SSH_ARGS -p $PKG_NAME podwww@lxi001:$REPO_LOCATION || exit 1
 popd
 
 exit 0
