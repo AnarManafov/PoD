@@ -52,7 +52,7 @@ clean_up()
     # Try to kill pod-agent by first sending a TERM signal
     # And if after 10 sec. it still exists send a non-ignorable kill
     WAIT_TIME=10
-    kill $PODAGENT_PID
+    kill $PODAGENT_PID &>/dev/null
     cnt=0
     while $(kill -0 $PODAGENT_PID &>/dev/null); do
        cnt=$(expr $cnt + 1)
