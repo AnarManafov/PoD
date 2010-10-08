@@ -115,7 +115,8 @@ SET(POD_BIN_FILES
 #
 SET(POD_ETC_FILES
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF.jdl
-     ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl)
+     ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
+     ${CMAKE_SOURCE_DIR}/etc/version)
 #
 # BUILD Sub Modules of PoD
 #
