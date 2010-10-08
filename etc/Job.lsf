@@ -24,7 +24,7 @@
 #
 ## create a working folder
 #
-WRK_DIR=`mktemp -d /tmp/PoD_XXXXXXXXXX`
+WRK_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
 if [ -z $WRK_DIR ]; then
    echo "Error: Can't create a working directory."
    exit 1
@@ -45,10 +45,9 @@ cp $POD_LOCATION/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
 $WRK_DIR/PoDWorker.sh
 # global variables
 # we need to define lib path to ensure that we use proper libraries
-export PROOFAGENTSYS="$WRK_DIR/pod-agent"
-export PATH=$PROOFAGENTSYS:$PATH 
-export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
-user_defaults="$PROOFAGENTSYS/pod-user-defaults"
+export PATH=$WRK_DIR:$PATH 
+export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
+user_defaults="$WRK_DIR/pod-user-defaults"
 pod_cfg=$WRK_DIR/PoD.cfg
 #
 ## logs

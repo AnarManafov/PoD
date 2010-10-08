@@ -226,19 +226,19 @@ esac
 # ***** getting pod-agent from the repository site *****
 PROOFAGENT_ARC="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
 wget --no-verbose --tries=2 $BIN_REPO/$PKG_VERSION/$PROOFAGENT_ARC  || clean_up 1
-tar -xzf $PROOFAGENT_ARC || clean_up 1
+# un-tar without creating a sub-directory
+tar --strip-components=1 -xzf $PROOFAGENT_ARC || clean_up 1
 
-export PROOFAGENTSYS="$WD/$BASE_NAME"
-export PATH=$PROOFAGENTSYS:$PATH 
-export LD_LIBRARY_PATH=$PROOFAGENTSYS:$LD_LIBRARY_PATH
-user_defaults="$PROOFAGENTSYS/pod-user-defaults"
+export PATH=$WD:$PATH 
+export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
+user_defaults="$WD/pod-user-defaults"
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
-if [ ! -x $PROOFAGENTSYS/pod-agent ]; then 
-    chmod +x $PROOFAGENTSYS/pod-agent
+if [ ! -x $WD/pod-agent ]; then 
+    chmod +x $WD/pod-agent
 fi
-if [ ! -x $PROOFAGENTSYS/pod-user-defaults ]; then 
-    chmod +x $PROOFAGENTSYS/pod-user-defaults
+if [ ! -x $WD/pod-user-defaults ]; then 
+    chmod +x $WD/pod-user-defaults
 fi
 
 # ****************
@@ -337,9 +337,9 @@ fi
 logMsg "starting pod-agent..."
 # start pod-agent
 if [ -n "$1" ]; then
-	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
+	$WD/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
 else
-	$PROOFAGENTSYS/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
+	$WD/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
 fi
 # wait for pod-agent's process
 PODAGENT_PID=$!

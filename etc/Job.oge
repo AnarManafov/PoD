@@ -20,7 +20,6 @@ UI_HOST=${PBS_O_HOST}
 # $POD_UI_LOCATION and $POD_UI_LOG_LOCATION are set by the OGE plug-in
 UI_WRK_DIR=$POD_UI_LOCATION
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$JOB_ID
-
 ###############################################################
 #
 #    Function: Transfer files from UI to WN.                  
@@ -45,7 +44,7 @@ stagein()
 ###############################################################
 stageout()
 {
- eval upload_job_log=$($WRK_DIR/pod-agent/pod-user-defaults -c $WRK_DIR/PoD.cfg --key pbs_plugin.upload_job_log)
+ eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key pbs_plugin.upload_job_log)
 
  if [ "$upload_job_log" = "yes" ]; then
     echo "Staging the log files out..."
