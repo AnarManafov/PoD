@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-check-update
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-10-10
+#
+#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+# Utility returns:
+#    0  - if there is no updates available
+#    2 - if an update available
+#    1 - if an error occurred
+#
+UTIL_NAME="pod-check-update"
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which checks for PoD updates.
+   Copyright (C) 2010 GSI, Scientific Computing group.
+
+Usage: pod-check-update [OPTION]
+     -v		Produce verbose output.
+     -h         Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+VERBOSE=0
+while getopts ":vh" opt; do
+  case $opt in
+  v)
+    VERBOSE=1
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+POD_URL=" http://pod.gsi.de/releases/pod/"
+OPT[1]=" -q -O- " # wget options
+CMD[1]="wget"
+OPT[2]=" -s " # curl options
+CMD[2]="curl"
+# check for wget or curl commands
+for index in 1 2
+do
+        ${CMD[index]} --version > /dev/null 2>&1
+        ret=$?
+        if [ ! $ret = 0 ] ; then
+            continue
+        fi
+	CMD_URL="${CMD[index]}${OPT[index]} ${POD_URL}"
+done
+
+if [ -z "${CMD_URL}" ]; then
+   echo "${UTIL_NAME} error: Can't find neither wget, nor curl commands. At least one of these commands must be installed on the system."
+   exit 1
+fi
+
+VERSION_FILE="${POD_LOCATION}/etc/version"
+if [ -z "${POD_LOCATION}" ]; then
+   echo "${UTIL_NAME} error: The POD_LOCATION environment variable is not set."
+   exit 1
+fi
+if [ ! -r ${VERSION_FILE} ]; then
+   echo "${UTIL_NAME} error: The PoD version file is missing: ${VERSION_FILE}"
+   exit 1
+fi 
+LOCAL_POD_VERSION=$(cat $POD_LOCATION/etc/version | cut -d . -f 1,2)
+
+version=$($CMD_URL | egrep -o 'href=[^>]+[0-9]' | awk -F\" '{print $2}' | sort -gr | head -1)
+
+## convert to integers 
+a1=$(( ${LOCAL_POD_VERSION%.*} * 100 + ${LOCAL_POD_VERSION#*.} )) 
+b1=$(( ${version%.*} * 100 + ${version#*.} )) 
+
+if [ $a1 -lt $b1 ] 
+then 
+   echo "PoD's new version (v${version}) is now available. You can download it from: http://pod.gsi.de/download.html"
+   exit 2
+else 
+   echo "There is no PoD updates available for your version."
+fi
+
+exit 0

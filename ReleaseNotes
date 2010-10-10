@@ -4,6 +4,7 @@
 pod: Added a Oracle Grid Engine (OGE/SGE) plug-in. So-far only a CLI is supported.
 pod: Fixed a typo/bug, which prevented PoD worker to download the pre-compiled binary of pod-agent for x86 machines.
 pod: Now the PoD pre-compiled worker packages naming is automated and unified.
+pod: Added "pod-check-update" command.
 
 ## v2.3 (2010-10-03)
 pod: pod-ssh doesn't use scp anymore, instead rsync is used.
