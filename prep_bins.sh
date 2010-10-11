@@ -35,7 +35,7 @@ else
 	       pushd `pwd`
 	       cd $POD_SRC
 	       rm -rf PoD
-	       git clone ssh://anar@depc218.gsi.de//home/anar/GitRepository/PROOFonDemand/PoD
+	       git clone ssh://anar@demac012.gsi.de//Users/anar/GitRepository/PROOFonDemand/PoD
 	       cd PoD
 	       git submodule update --init --recursive || exit 1
 	       popd
