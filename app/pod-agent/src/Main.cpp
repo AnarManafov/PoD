@@ -274,8 +274,12 @@ int main( int argc, char *argv[] )
             // Establish new open descriptors for stdin, stdout, and stderr. Even if
             // we don't plan to use them, it is still a good idea to have them open.
             int fd = open( "/dev/null", O_RDWR ); // stdin - file handle 0.
-            dup( fd );                            // stdout - file handle 1.
-            dup( fd );                            // stderr - file handle 2.
+            // stdout - file handle 1.
+            if( dup( fd ) < 0 )
+                throw system_error( "Error occurred while duplicating stdout descriptor" );
+            // stderr - file handle 2.
+            if( dup( fd ) < 0 )
+                throw system_error( "Error occurred while duplicating stderr descriptor" );
         }
 
         // Starting Agent

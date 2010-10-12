@@ -96,7 +96,8 @@ void CLogEngine::operator()( const string &_msg, const string &_id ) const
         out += "ERROR. Message is too long.\n";
     else
         out += _msg;
-    write( m_fd, out.c_str(), out.size() );
+    if( write( m_fd, out.c_str(), out.size() ) < 0 )
+        throw system_error( "Write error" );
 }
 //=============================================================================
 void CLogEngine::thread_worker( int _fd, const string & _pipename )
