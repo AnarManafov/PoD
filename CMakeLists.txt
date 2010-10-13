@@ -59,7 +59,7 @@ option(BUILD_pod_user_defaults "Build pod-user-defaults" ON)
 option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
 option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
 option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
-
+option(BUILD_OGE_PLUGIN "Build OGE plug-in" ON)
 #
 # Documentation output directory
 #
