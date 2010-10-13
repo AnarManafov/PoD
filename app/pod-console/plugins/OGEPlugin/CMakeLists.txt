@@ -37,7 +37,7 @@ set( SOURCE_FILES_oge
 )
 
 set( UI_FILES_oge
-    ./res/wgOGE.i
+    ./res/wgOGE.ui
 )
 
 set( UI_SRSC_oge
@@ -69,12 +69,12 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 set(CMAKE_CXX_FLAGS " -Wall")
 
-include_directories( ${pod-console_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
+include_directories( ${pod-console_SOURCE_DIR}/src ${OGE_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
 
 
 target_link_libraries (
     pod-console-oge
-    ${PBS_LIBRARIES}
+    ${OGE_LIBRARIES}
     ${QT_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SERIALIZATION_LIBRARY}
