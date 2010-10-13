@@ -15,7 +15,7 @@
 #ifndef PBSJOBSUBMITTER_H_
 #define PBSJOBSUBMITTER_H_
 //=============================================================================
-// gLite plug-in
+// PBS plug-in
 #include "PbsMng.h"
 // STD
 #include <sstream>
