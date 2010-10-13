@@ -12,16 +12,16 @@
 
         Copyright (c) 2010 Anar Manafov. All rights reserved.
 *************************************************************************/
-#ifndef PBSJOBINFOITEMMODEL_H_
-#define PBSJOBINFOITEMMODEL_H_
+#ifndef OGEJOBINFOITEMMODEL_H_
+#define OGEJOBINFOITEMMODEL_H_
 //=============================================================================
-// PBS plug-in
+// OGE plug-in
 #include "JobsContainer.h"
 // Qt
 #include <QAbstractItemModel>
 #include <QStringList>
 
-namespace pbs_plug
+namespace oge_plug
 {
 //=============================================================================
     class CJobInfoItemModel: public QAbstractItemModel
@@ -29,7 +29,7 @@ namespace pbs_plug
             Q_OBJECT
 
         public:
-            CJobInfoItemModel( CPbsJobSubmitter *_submitter, int _updateInterval, QObject * _parent = NULL );
+            CJobInfoItemModel( COgeJobSubmitter *_submitter, int _updateInterval, QObject * _parent = NULL );
             virtual ~CJobInfoItemModel();
 
         public:
@@ -58,8 +58,8 @@ namespace pbs_plug
             void jobChanged( SJobInfo *_info );
             void insertJobs( SJobInfo *_info );
             void removeJobs( SJobInfo *_info );
-            void addJob( const CPbsMng::jobID_t &_jobID );
-            void removeJob( const CPbsMng::jobID_t &_jobID );
+            void addJob( const COgeMng::jobID_t &_jobID );
+            void removeJob( const COgeMng::jobID_t &_jobID );
             void numberOfActiveJobsChanged( size_t _count );
 
 
@@ -79,4 +79,4 @@ namespace pbs_plug
     };
 }
 
-#endif /* PBSJOBINFOITEMMODEL_H_ */
+#endif /* OGEJOBINFOITEMMODEL_H_ */

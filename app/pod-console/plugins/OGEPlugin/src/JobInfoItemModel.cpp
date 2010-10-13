@@ -18,11 +18,11 @@
 #include "JobInfoItemModel.h"
 //=============================================================================
 using namespace std;
-using namespace pbs_plug;
+using namespace oge_plug;
 
 const short g_columnCount = 2;
 //=============================================================================
-CJobInfoItemModel::CJobInfoItemModel( CPbsJobSubmitter *_submitter,
+CJobInfoItemModel::CJobInfoItemModel( COgeJobSubmitter *_submitter,
                                       int _updateInterval,
                                       QObject * _parent ):
     QAbstractItemModel( _parent ),
@@ -256,12 +256,12 @@ void CJobInfoItemModel::setUpdateInterval( int _newVal )
     _newVal <= 0 ? m_jobinfo.stopUpdate() : m_jobinfo.update( m_updateInterval );
 }
 //=============================================================================
-void CJobInfoItemModel::addJob( const CPbsMng::jobID_t &_jobID )
+void CJobInfoItemModel::addJob( const COgeMng::jobID_t &_jobID )
 {
     m_jobinfo.updateNumberOfJobs();
 }
 //=============================================================================
-void CJobInfoItemModel::removeJob( const CPbsMng::jobID_t &_jobID )
+void CJobInfoItemModel::removeJob( const COgeMng::jobID_t &_jobID )
 {
     m_jobinfo.updateNumberOfJobs();
 }

@@ -36,69 +36,70 @@ BOOST_AUTO_TEST_SUITE( test_oge );
 //=============================================================================
 size_t g_jobsCount = 2;
 //=============================================================================
-BOOST_AUTO_TEST_CASE( test_pbs_0 )
-{
-    // create a test script
-    char tmpname[] = "/tmp/pbs_script.XXXXXX";
-    int tmpfd( 0 );
-    BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
-    FILE *file;
-    BOOST_REQUIRE(( file = fdopen( tmpfd, "w" ) ) != NULL );
-    fprintf( file, "#! /usr/bin/env bash\n" );
-    fprintf( file, "echo \"Test\"\n" );
+//BOOST_AUTO_TEST_CASE( test_oge_submitjob )
+//{
+//    // create a test script
+//    char tmpname[] = "/tmp/pbs_script.XXXXXX";
+//    int tmpfd( 0 );
+//    BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
+//    FILE *file;
+//    BOOST_REQUIRE(( file = fdopen( tmpfd, "w" ) ) != NULL );
+//    fprintf( file, "#! /usr/bin/env bash\n" );
+//    fprintf( file, "echo \"Test\"\n" );
+//
+//    COgeMng mng;
+//
+//    // check that submit works
+//    // submit a job to a default queue
+//    COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
+//    BOOST_REQUIRE( !ids.empty() );
 
-    CPbsMng mng;
-
-    // check that submit works
-    CPbsMng::jobArray_t ids = mng.jobSubmit( tmpname, "batch", g_jobsCount );
-    BOOST_REQUIRE( !ids.empty() );
-
-    // we need to sleep a bit. Otherwise we could be too fast asking for status, than PBS registers a job
-    sleep( 2 );
-
-    cout << "Fake parent ID: " << ids[0] << endl;
-    CPbsMng::jobArray_t::const_iterator iter = ids.begin() + 1;
-    CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
-    for ( ; iter != iter_end; ++iter )
-    {
-        cout << "Array jobs ID: " << *iter << endl;
-
-        // get job's status
-        string status = mng.jobStatus( *iter );
-        cout << "Status: " << status << endl;
-        BOOST_REQUIRE( status.size() == 1 );
-    }
-
-    // TODO: delete the script, even in case of an error
-    // remove the test script
-    //unlink( tmpname );
-}
-//=============================================================================
-BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
-{
-    cout << "Check status of all jobs" << endl;
-    CPbsMng mng;
-
-    CPbsMng::jobInfoContainer_t info;
-    mng.jobStatusAllJobs( &info );
-
-    BOOST_REQUIRE( !info.empty() );
-
-    CPbsMng::jobInfoContainer_t::const_iterator iter = info.begin();
-    CPbsMng::jobInfoContainer_t::const_iterator iter_end = info.end();
-    for ( ; iter != iter_end ; ++iter )
-    {
-        cout << iter->first << " has status \""
-        << CPbsMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;
-    }
-}
-//=============================================================================
-BOOST_AUTO_TEST_CASE( test_pbs_allqueues )
+//    // we need to sleep a bit. Otherwise we could be too fast asking for status, than OGE registers a job
+//    sleep( 2 );
+//
+//    cout << "Fake parent ID: " << ids[0] << endl;
+//    COgeMng::jobArray_t::const_iterator iter = ids.begin() + 1;
+//    COgeMng::jobArray_t::const_iterator iter_end = ids.end();
+//    for ( ; iter != iter_end; ++iter )
+//    {
+//        cout << "Array jobs ID: " << *iter << endl;
+//
+//        // get job's status
+//        string status = mng.jobStatus( *iter );
+//        cout << "Status: " << status << endl;
+//        BOOST_REQUIRE( status.size() == 1 );
+//    }
+//
+//    // TODO: delete the script, even in case of an error
+//    // remove the test script
+//    //unlink( tmpname );
+//}
+////=============================================================================
+//BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
+//{
+//    cout << "Check status of all jobs" << endl;
+//    COgeMng mng;
+//
+//    COgeMng::jobInfoContainer_t info;
+//    mng.jobStatusAllJobs( &info );
+//
+//    BOOST_REQUIRE( !info.empty() );
+//
+//    COgeMng::jobInfoContainer_t::const_iterator iter = info.begin();
+//    COgeMng::jobInfoContainer_t::const_iterator iter_end = info.end();
+//    for ( ; iter != iter_end ; ++iter )
+//    {
+//        cout << iter->first << " has status \""
+//        << COgeMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;
+//    }
+//}
+////=============================================================================
+BOOST_AUTO_TEST_CASE( test_oge_allqueues )
 {
     cout << "Getting a list of available queues" << endl;
-    CPbsMng mng;
+    COgeMng mng;
 
-    CPbsMng::queueInfoContainer_t queues;
+    COgeMng::queueInfoContainer_t queues;
     mng.getQueues( &queues );
 
     BOOST_REQUIRE( !queues.empty() );

@@ -1,27 +1,27 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file OgeDlg.h
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
 
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
-                           2010-03-30
+                           2010-10-13
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef PBSDLG_H_
-#define PBSDLG_H_
+#ifndef OGEDLG_H_
+#define OGEDLG_H_
 //=============================================================================
-// Pbs plug-in
-#include "PbsJobSubmitter.h"
+// OGE plug-in
+#include "OgeJobSubmitter.h"
 // Qt autogen. file
-#include "ui_wgPBS.h"
+#include "ui_wgOGE.h"
 // PAConsole
 #include "IJobManager.h"
-namespace pbs_plug
+namespace oge_plug
 {
 //=============================================================================
     class CJobInfoItemModel;
@@ -121,6 +121,6 @@ namespace pbs_plug
 
 };
 
-BOOST_CLASS_VERSION( pbs_plug::CPbsDlg, 1 )
+BOOST_CLASS_VERSION( oge_plug::CPbsDlg, 1 )
 
-#endif /*PBSDLG_H_*/
+#endif /*OGEDLG_H_*/

@@ -12,23 +12,23 @@
 
         Copyright (c) 2010 Anar Manafov. All rights reserved.
 *************************************************************************/
-#ifndef PBS_JOBINFO_H_
-#define PBS_JOBINFO_H_
+#ifndef OGE_JOBINFO_H_
+#define OGE_JOBINFO_H_
 //=============================================================================
 // STD
 #include <algorithm>
 // pbs plug-in
-#include "PbsJobSubmitter.h"
+#include "OgeJobSubmitter.h"
 
 // TODO: release a general impelemention of JobInfo, Submitter and ItemModel
 // for all plug-ins (which needs Tree View for jobs).
 
-namespace pbs_plug
+namespace oge_plug
 {
 //=============================================================================
     struct SJobInfo;
 //=============================================================================
-    typedef std::map<CPbsMng::jobID_t, SJobInfo *> JobsContainer_t;
+    typedef std::map<COgeMng::jobID_t, SJobInfo *> JobsContainer_t;
     typedef QList<SJobInfo *> jobs_children_t;
 //=============================================================================
     struct SJobInfo
@@ -40,7 +40,7 @@ namespace pbs_plug
                 m_parent( NULL )
             {
             }
-            SJobInfo( const CPbsMng::jobID_t &_id, SJobInfo *_parent = NULL ):
+            SJobInfo( const COgeMng::jobID_t &_id, SJobInfo *_parent = NULL ):
                 m_id( _id ),
                 m_expanded( false ),
                 m_completed( false ),
@@ -86,7 +86,7 @@ namespace pbs_plug
                 m_children.clear();
             }
 
-            CPbsMng::jobID_t m_id;
+            COgeMng::jobID_t m_id;
             std::string m_strID;
             std::string m_status;
             std::string m_strStatus;
@@ -118,14 +118,14 @@ namespace pbs_plug
             virtual ~CJobInfo();
 
         public:
-            void update( const CPbsJobSubmitter::jobslist_t &_Jobs,
+            void update( const COgeJobSubmitter::jobslist_t &_Jobs,
                          JobsContainer_t *_Container = NULL );
 
         private:
-            void addChildItem( const CPbsMng::jobID_t &_JobID, SJobInfo *_parent ) const;
+            void addChildItem( const COgeMng::jobID_t &_JobID, SJobInfo *_parent ) const;
 
         private:
             JobsContainer_t m_Container;
     };
 }
-#endif /* PBS_JOBINFO_H_ */
+#endif /* OGE_JOBINFO_H_ */

@@ -1,22 +1,22 @@
 /************************************************************************/
 /**
- * @file
+ * @file OgeJobSubmitter.h
  * @brief
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 
         version number:     $LastChangedRevision$
         created by:         Anar Manafov
-                            2010-03-30
+                            2010-10-13
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2010 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef PBSJOBSUBMITTER_H_
-#define PBSJOBSUBMITTER_H_
+#ifndef OGEJOBSUBMITTER_H_
+#define OGEJOBSUBMITTER_H_
 //=============================================================================
-// gLite plug-in
-#include "PbsMng.h"
+// OGE plug-in
+#include "OgeMng.h"
 // STD
 #include <sstream>
 #include <stdexcept>
@@ -34,10 +34,10 @@
 // MiscCommon
 #include "PoDUserDefaultsOptions.h"
 
-namespace pbs_plug
+namespace oge_plug
 {
 //=============================================================================
-    class CPbsJobSubmitter: public QThread
+    class COgeJobSubmitter: public QThread
     {
             Q_OBJECT
 
@@ -45,14 +45,14 @@ namespace pbs_plug
 
         public:
             // <parent job id, num of children>
-            typedef std::map<CPbsMng::jobID_t, size_t> jobslist_t;
+            typedef std::map<COgeMng::jobID_t, size_t> jobslist_t;
 
         public:
-            CPbsJobSubmitter( QObject *parent ): QThread( parent )
+            COgeJobSubmitter( QObject *parent ): QThread( parent )
             {
-                qRegisterMetaType<CPbsMng::jobID_t>( "CPbsMng::jobID_t" );
+                qRegisterMetaType<COgeMng::jobID_t>( "COgeMng::jobID_t" );
             }
-            ~CPbsJobSubmitter()
+            ~COgeJobSubmitter()
             {
                 if( isRunning() )
                     terminate();
@@ -83,7 +83,7 @@ namespace pbs_plug
             {
                 m_queue = _queue;
             }
-            void removeJob( const CPbsMng::jobID_t &_jobID, bool _emitSignal = true )
+            void removeJob( const COgeMng::jobID_t &_jobID, bool _emitSignal = true )
             {
                 m_mutex.lock();
                 m_parentJobs.erase( _jobID );
@@ -92,15 +92,15 @@ namespace pbs_plug
                 if( _emitSignal )
                     emit removedJob( _jobID );
             }
-            void killJob( const CPbsMng::jobID_t &_jobID )
+            void killJob( const COgeMng::jobID_t &_jobID )
             {
                 m_pbs.killJob( _jobID );
             }
-            void getQueues( CPbsMng::queueInfoContainer_t *_container ) const
+            void getQueues( COgeMng::queueInfoContainer_t *_container ) const
             {
                 m_pbs.getQueues( _container );
             }
-            void jobStatusAllJobs( CPbsMng::jobInfoContainer_t *_container ) const
+            void jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
             {
                 m_pbs.jobStatusAllJobs( _container );
             }
@@ -111,8 +111,8 @@ namespace pbs_plug
 
         signals:
             void changeProgress( int _Val );
-            void newJob( const CPbsMng::jobID_t &_jobID );
-            void removedJob( const CPbsMng::jobID_t &_jobID );
+            void newJob( const COgeMng::jobID_t &_jobID );
+            void removedJob( const COgeMng::jobID_t &_jobID );
             void sendThreadMsg( const QString &_Msg );
 
         protected:
@@ -125,7 +125,7 @@ namespace pbs_plug
                 {
                     emit changeProgress( 30 );
 
-                    CPbsMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
+                    COgeMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
                                                                 m_queue,
                                                                 m_numberOfWrk );
 
@@ -133,7 +133,7 @@ namespace pbs_plug
                     if( jobs.empty() )
                         throw std::runtime_error( "Bad jobs' parent index" );
 
-                    CPbsMng::jobID_t lastJobID = jobs[0];
+                    COgeMng::jobID_t lastJobID = jobs[0];
 
                     emit changeProgress( 90 );
 
@@ -174,11 +174,11 @@ namespace pbs_plug
             std::string m_JobScriptFilename;
             size_t m_numberOfWrk;
             std::string m_queue;
-            CPbsMng m_pbs;
+            COgeMng m_pbs;
     };
 
 }
 
-BOOST_CLASS_VERSION( pbs_plug::CPbsJobSubmitter, 1 )
+BOOST_CLASS_VERSION( oge_plug::COgeJobSubmitter, 1 )
 
-#endif /*PBSJOBSUBMITTER_H_*/
+#endif /*OGEJOBSUBMITTER_H_*/

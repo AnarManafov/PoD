@@ -18,7 +18,7 @@
 #include "JobInfo.h"
 //=============================================================================
 using namespace std;
-using namespace pbs_plug;
+using namespace oge_plug;
 //=============================================================================
 CJobInfo::CJobInfo( )
 {
@@ -28,7 +28,7 @@ CJobInfo::~CJobInfo()
 {
 }
 //=============================================================================
-void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
+void CJobInfo::update( const COgeJobSubmitter::jobslist_t &_Jobs,
                        JobsContainer_t *_Container )
 {
     // TODO: !!! the entire algorithm MUST be revised - since it is very inefficient !!!
@@ -38,8 +38,8 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
     JobsContainer_t copyContainer( m_Container );
     m_Container.clear();
 
-    CPbsJobSubmitter::jobslist_t::const_iterator iter = _Jobs.begin();
-    CPbsJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
+    COgeJobSubmitter::jobslist_t::const_iterator iter = _Jobs.begin();
+    COgeJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
     for( ; iter != iter_end; ++iter )
     {
         // checking the old status
@@ -63,10 +63,10 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
         SJobInfo *info( new SJobInfo( iter->first ) );
 
         // adding children
-        for( size_t i = CPbsMng::jobArrayStartIdx(); i < iter->second; ++i )
+        for( size_t i = COgeMng::jobArrayStartIdx(); i < iter->second; ++i )
         {
 
-            addChildItem( CPbsMng::generateArrayJobID( iter->first, i ),
+            addChildItem( COgeMng::generateArrayJobID( iter->first, i ),
                           info );
         }
 
@@ -89,7 +89,7 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
               inserter( *_Container, _Container->begin() ) );
 }
 //=============================================================================
-void CJobInfo::addChildItem( const CPbsMng::jobID_t &_JobID, SJobInfo *_parent ) const
+void CJobInfo::addChildItem( const COgeMng::jobID_t &_JobID, SJobInfo *_parent ) const
 {
     SJobInfo *info( new SJobInfo( _JobID, _parent ) );
     _parent->addChild( info );

@@ -20,9 +20,9 @@
 const size_t g_maxRetryCount = 1;
 //=============================================================================
 using namespace std;
-using namespace pbs_plug;
+using namespace oge_plug;
 //=============================================================================
-CJobsContainer::CJobsContainer( CPbsJobSubmitter *_submitter ):
+CJobsContainer::CJobsContainer( COgeJobSubmitter *_submitter ):
     m_submitter( _submitter ),
     m_updateNumberOfJobs( true ),
     m_removeAllCompletedJobs( false ),
@@ -208,7 +208,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 {
     size_t run_jobs( 0 );
 
-    // if all jobs are marked already as completed, we don't need to ask PBS
+    // if all jobs are marked already as completed, we don't need to ask OGE
     JobsContainer_t::const_iterator iter = _container->begin();
     JobsContainer_t::const_iterator iter_end = _container->end();
     bool need_request( false );
@@ -224,10 +224,10 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     // Getting a status for all available jobs
 
     // FIXME: Be advised, if job's status is asked too fast (immediately after submission),
-    // than it could be the case that a PBS server is too slow to register the job
+    // than it could be the case that a OGE server is too slow to register the job
     // and it will not return its status.
     // We need to have a counter before marking a job as completed
-    CPbsMng::jobInfoContainer_t all_available_jobs;
+    COgeMng::jobInfoContainer_t all_available_jobs;
     try
     {
         m_submitter->jobStatusAllJobs( &all_available_jobs );
@@ -248,15 +248,15 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         if( iter->second->m_completed )
             continue;
 
-        CPbsMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
+        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
         if( all_available_jobs.end() == found )
         {
             // if the parent, we don't write any status so-far,
-            // in PBS plug-in, a parent job is just a fake and can't have a
+            // in OGE plug-in, a parent job is just a fake and can't have a
             // status.
             // FIXME: implement a status lagorthm for parent jobs (some summary of
             // status of children)
-            if( CPbsMng::isParentID( iter->first ) )
+            if( COgeMng::isParentID( iter->first ) )
             {
                 iter->second->m_completed = true;
                 iter->second->m_status = "completed";
@@ -282,18 +282,18 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         {
             // calculate a number of expected PoD workers.
             // We exclude "parent" job ids
-            if( !CPbsMng::isParentID( iter->first ) )
+            if( !COgeMng::isParentID( iter->first ) )
                 ++run_jobs;
 
             if( iter->second->m_status == found->second.m_status )
                 continue;
 
-            iter->second->m_completed = CPbsMng::isJobComplete( found->second.m_status );
+            iter->second->m_completed = COgeMng::isJobComplete( found->second.m_status );
             if( iter->second->m_completed )
                 --run_jobs;
 
             iter->second->m_status = found->second.m_status;
-            iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status );
+            iter->second->m_strStatus = COgeMng::jobStatusToString( found->second.m_status );
         }
         if( _emitUpdate )
             emit jobChanged( iter->second );

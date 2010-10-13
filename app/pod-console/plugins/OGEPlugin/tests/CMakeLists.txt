@@ -20,13 +20,15 @@ cmake_minimum_required( VERSION 2.6 FATAL_ERROR )
 find_package( Boost 1.33.1 REQUIRED unit_test_framework)
 
 #=============================================================================
-add_executable(pod-console_oge_test test_oge.cpp )
+add_executable(pod-console_oge_test
+               test_oge.cpp  
+               ${pod-console-oge_SOURCE_DIR}/src/OgeMng.cpp )
 
 include_directories( ${pod-console-oge_SOURCE_DIR}/src ${OGE_INCLUDE_DIR} )
 
 target_link_libraries (
     pod-console_oge_test
-    pod-console-oge
+    ${OGE_LIBRARIES}
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
 )
 

@@ -1,13 +1,13 @@
 /************************************************************************/
 /**
- * @file PbsDlg.cpp
+ * @file OgeDlg.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*
 
         version number:    $LastChangedRevision$
         created by:        Anar Manafov
-                           2010-03-30
+                           2010-10-13
         last changed by:   $LastChangedBy$ $LastChangedDate$
 
         Copyright (c) 2010 GSI GridTeam. All rights reserved.
@@ -15,9 +15,9 @@
 // BOOST
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
-// PBS plug-in
+// OGE plug-in
 #include "JobInfoItemModel.h"
-#include "PbsDlg.h"
+#include "OgeDlg.h"
 // Qt
 #include <QtGui>
 // STD
@@ -31,16 +31,16 @@
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
-using namespace pbs_plug;
+using namespace oge_plug;
 //=============================================================================
 // making Qt to know this data type
 // in order to use it in QVariant, for example
-Q_DECLARE_METATYPE( pbs_plug::SQueueInfo )
+Q_DECLARE_METATYPE( oge_plug::SQueueInfo )
 //=============================================================================
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.pbs";
 // configuration file of the plug-in
-const LPCTSTR g_szPbsPluginCfgFileName = "$POD_LOCATION/etc/pod-console_PBS.xml.cfg";
+const LPCTSTR g_szOgePluginCfgFileName = "$POD_LOCATION/etc/pod-console_OGE.xml.cfg";
 //=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
@@ -71,7 +71,7 @@ void _savecfg( const T &_s, string _FileName )
     oa << BOOST_SERIALIZATION_NVP( _s );
 }
 //=============================================================================
-CPbsDlg::CPbsDlg( QWidget *parent ) :
+COgeDlg::COgeDlg( QWidget *parent ) :
     QWidget( parent ),
     m_AllJobsCount( 0 ),
     m_JobSubmitter( this ),
@@ -96,7 +96,7 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     try
     {
         // Loading class from the config file
-        _loadcfg( *this, g_szPbsPluginCfgFileName );
+        _loadcfg( *this, g_szOgePluginCfgFileName );
     }
     catch( ... )
     {
@@ -106,10 +106,10 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     // Set the queues list
     try
     {
-        CPbsMng::queueInfoContainer_t queues;
+        COgeMng::queueInfoContainer_t queues;
         m_JobSubmitter.getQueues( &queues );
-        CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
-        CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
+        COgeMng::queueInfoContainer_t::iterator iter = queues.begin();
+        COgeMng::queueInfoContainer_t::iterator iter_end = queues.end();
         for( ; iter != iter_end; ++iter )
         {
             m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
@@ -142,9 +142,9 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
 
 
     connect( &m_JobSubmitter,
-             SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
+             SIGNAL( newJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const COgeMng::jobID_t & ) ) );
     connect( &m_JobSubmitter,
-             SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
+             SIGNAL( removedJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const COgeMng::jobID_t & ) ) );
     connect( m_treeModel,
              SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
 
@@ -159,12 +159,12 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
              this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
-CPbsDlg::~CPbsDlg()
+COgeDlg::~COgeDlg()
 {
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szPbsPluginCfgFileName );
+        _savecfg( *this, g_szOgePluginCfgFileName );
     }
     catch( ... )
     {
@@ -173,7 +173,7 @@ CPbsDlg::~CPbsDlg()
     delete m_treeModel;
 }
 //=============================================================================
-void CPbsDlg::setAllDefault()
+void COgeDlg::setAllDefault()
 {
     m_JobScript = g_szDefaultJobScript;
     m_WorkersCount = 1;
@@ -182,20 +182,20 @@ void CPbsDlg::setAllDefault()
     UpdateAfterLoad();
 }
 //=============================================================================
-void CPbsDlg::UpdateAfterLoad()
+void COgeDlg::UpdateAfterLoad()
 {
     smart_path( &m_JobScript );
     m_ui.edtJobScriptFileName->setText( m_JobScript.c_str() );
     m_ui.spinNumWorkers->setValue( m_WorkersCount );
 }
 //=============================================================================
-void CPbsDlg::recieveThreadMsg( const QString &_Msg )
+void COgeDlg::recieveThreadMsg( const QString &_Msg )
 {
     QMessageBox::warning( this, tr( "pod-console" ), _Msg );
     m_ui.btnSubmitClient->setEnabled( true );
 }
 //=============================================================================
-void CPbsDlg::on_btnSubmitClient_clicked()
+void COgeDlg::on_btnSubmitClient_clicked()
 {
     // Checking queue up
     m_queue = m_ui.queuesList->currentText().toAscii().data();
@@ -244,11 +244,11 @@ void CPbsDlg::on_btnSubmitClient_clicked()
     }
 }
 //=============================================================================
-void CPbsDlg::on_btnBrowseJobScript_clicked()
+void COgeDlg::on_btnBrowseJobScript_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
-                                                           tr( "PBS script (*.pbs)" ) );
+                                                           tr( "OGE script (*.pbs)" ) );
     if( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
@@ -256,14 +256,14 @@ void CPbsDlg::on_btnBrowseJobScript_clicked()
     }
 }
 //=============================================================================
-void CPbsDlg::on_queuesList_currentIndexChanged( int _index )
+void COgeDlg::on_queuesList_currentIndexChanged( int _index )
 {
     // max number of workers
     const QVariant data = m_ui.queuesList->itemData( _index );
     m_ui.spinNumWorkers->setMaximum( data.value<SQueueInfo>().m_maxJobs );
 }
 //=============================================================================
-void CPbsDlg::createActions()
+void COgeDlg::createActions()
 {
     // Remove Job from the monitoring
     removeJobAct = new QAction( tr( "&Exclude" ), this );
@@ -283,7 +283,7 @@ void CPbsDlg::createActions()
     connect( killJobAct, SIGNAL( triggered() ), this, SLOT( killJob() ) );
 }
 //=============================================================================
-void CPbsDlg::showContextMenu( const QPoint &_point )
+void COgeDlg::showContextMenu( const QPoint &_point )
 {
     // We need to disable menu items when no jobID is selected
     const QModelIndex clicked = m_ui.treeJobs->indexAt( _point );
@@ -301,7 +301,7 @@ void CPbsDlg::showContextMenu( const QPoint &_point )
     menu.exec( QCursor::pos() );
 }
 //=============================================================================
-void CPbsDlg::expandTreeNode( const QModelIndex &_index )
+void COgeDlg::expandTreeNode( const QModelIndex &_index )
 {
 //    // expand only one node at time to reduce a number of requests to LSF daemon
 //    if ( m_expandedNode.isValid() && m_expandedNode != _index )
@@ -315,14 +315,14 @@ void CPbsDlg::expandTreeNode( const QModelIndex &_index )
 //    m_expandedNode = _index;
 }
 //=============================================================================
-void CPbsDlg::collapseTreeNode( const QModelIndex &_index )
+void COgeDlg::collapseTreeNode( const QModelIndex &_index )
 {
 //    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
 //    if ( info )
 //        info->m_expanded = false;
 }
 //=============================================================================
-void CPbsDlg::killJob()
+void COgeDlg::killJob()
 {
     // TODO: if clicked on parent, than send kill to all its children
 
@@ -336,7 +336,7 @@ void CPbsDlg::killJob()
         return;
 
     const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
-                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the PBS queue." );
+                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the OGE queue." );
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
@@ -353,7 +353,7 @@ void CPbsDlg::killJob()
     }
 }
 //=============================================================================
-void CPbsDlg::removeJob()
+void COgeDlg::removeJob()
 {
     // Job ID
     QModelIndex item = m_ui.treeJobs->currentIndex();
@@ -365,7 +365,7 @@ void CPbsDlg::removeJob()
         return;
 
     const string msg( "Are you sure you want to remove the selected job from the monitoring?\n"
-                      "Be advised, removing the job from the monitoring will not kill/remove it from the PBS queue." );
+                      "Be advised, removing the job from the monitoring will not kill/remove it from the OGE queue." );
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
@@ -377,10 +377,10 @@ void CPbsDlg::removeJob()
     m_JobSubmitter.removeJob(( NULL != info->parent() && !info->parent()->m_id.empty() ) ? info->parent()->m_id : info->m_id );
 }
 //=============================================================================
-void CPbsDlg::removeAllCompletedJobs()
+void COgeDlg::removeAllCompletedJobs()
 {
     const string msg( "Are you sure you want to remove all completed jobs from the monitoring?\n"
-                      "Be advised, removing a job from the monitoring will not kill/remove it from the PBS queue." );
+                      "Be advised, removing a job from the monitoring will not kill/remove it from the OGE queue." );
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
@@ -391,19 +391,19 @@ void CPbsDlg::removeAllCompletedJobs()
         m_treeModel->removeAllCompletedJobs();
 }
 //=============================================================================
-void CPbsDlg::enableTree()
+void COgeDlg::enableTree()
 {
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szPbsPluginCfgFileName );
+        _savecfg( *this, g_szOgePluginCfgFileName );
     }
     catch( ... )
     {
     }
 }
 //=============================================================================
-void CPbsDlg::setProgress( int _Val )
+void COgeDlg::setProgress( int _Val )
 {
     if( 100 == _Val )
     {
@@ -412,33 +412,33 @@ void CPbsDlg::setProgress( int _Val )
     m_ui.progressSubmittedJobs->setValue( _Val );
 }
 //=============================================================================
-void CPbsDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
+void COgeDlg::on_edtJobScriptFileName_textChanged( const QString &/*_text*/ )
 {
     m_JobScript = m_ui.edtJobScriptFileName->text().toAscii().data();
 }
 //=============================================================================
-void CPbsDlg::setNumberOfJobs( size_t _count )
+void COgeDlg::setNumberOfJobs( size_t _count )
 {
     m_AllJobsCount = _count;
     emit changeNumberOfJobs( _count );
 }
 //=============================================================================
-QString CPbsDlg::getName() const
+QString COgeDlg::getName() const
 {
-    return QString( "PBS\nJob Manager" );
+    return QString( "OGE\nJob Manager" );
 }
 //=============================================================================
-QWidget* CPbsDlg::getWidget()
+QWidget* COgeDlg::getWidget()
 {
     return this;
 }
 //=============================================================================
-QIcon CPbsDlg::getIcon()
+QIcon COgeDlg::getIcon()
 {
     return QIcon( ":/images/pbs.png" );
 }
 //=============================================================================
-void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval )
+void COgeDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     if( _JobStatusUpdInterval <= 0 )
     {
@@ -453,7 +453,7 @@ void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval )
     }
 }
 //=============================================================================
-void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
+void COgeDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
 {
     if( _hideMode )
     {
@@ -464,30 +464,30 @@ void CPbsDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
     }
 }
 //=============================================================================
-void CPbsDlg::showEvent( QShowEvent* )
+void COgeDlg::showEvent( QShowEvent* )
 {
     startUpdTimer( m_updateInterval );
 }
 //=============================================================================
-void CPbsDlg::hideEvent( QHideEvent* )
+void COgeDlg::hideEvent( QHideEvent* )
 {
     startUpdTimer( 0, true );
 }
 //=============================================================================
-int CPbsDlg::getJobsCount() const
+int COgeDlg::getJobsCount() const
 {
     return m_AllJobsCount;
 }
 //=============================================================================
-void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+void COgeDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
     m_JobSubmitter.setUserDefaults( _ud );
 }
 //=============================================================================
-void CPbsDlg::setEnvironment( const std::string &_envp )
+void COgeDlg::setEnvironment( const std::string &_envp )
 {
     m_JobSubmitter.setEnvironment( _envp );
 }
 
 //=============================================================================
-Q_EXPORT_PLUGIN2( PBSJobManager, CPbsDlg );
+Q_EXPORT_PLUGIN2( OGEJobManager, COgeDlg );

@@ -12,15 +12,15 @@
 
         Copyright (c) 2010 Anar Manafov. All rights reserved.
 *************************************************************************/
-#ifndef PBSJOBSCONTAINER_H_
-#define PBSJOBSCONTAINER_H_
+#ifndef OGEJOBSCONTAINER_H_
+#define OGEJOBSCONTAINER_H_
 // pbs plug-in
 #include "JobInfo.h"
 // Qt
 #include <QObject>
 #include <QtCore>
 
-namespace pbs_plug
+namespace oge_plug
 {
 //=============================================================================
     class CJobsContainer: public QThread
@@ -28,7 +28,7 @@ namespace pbs_plug
             Q_OBJECT
 
         public:
-            CJobsContainer( CPbsJobSubmitter *_submitter );
+            CJobsContainer( COgeJobSubmitter *_submitter );
             virtual ~CJobsContainer();
 
         signals:
@@ -64,7 +64,7 @@ namespace pbs_plug
 
         private:
             JobsContainer_t m_cur_ids;
-            CPbsJobSubmitter *m_submitter;
+            COgeJobSubmitter *m_submitter;
             CJobInfo m_jobInfo;
             bool m_updateNumberOfJobs;
             bool m_removeAllCompletedJobs;
@@ -75,4 +75,4 @@ namespace pbs_plug
     };
 }
 
-#endif /* PBSJOBSCONTAINER_H_ */
+#endif /* OGEJOBSCONTAINER_H_ */
