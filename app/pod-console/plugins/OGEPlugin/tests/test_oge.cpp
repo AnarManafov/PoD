@@ -36,23 +36,27 @@ BOOST_AUTO_TEST_SUITE( test_oge );
 //=============================================================================
 size_t g_jobsCount = 2;
 //=============================================================================
-//BOOST_AUTO_TEST_CASE( test_oge_submitjob )
-//{
-//    // create a test script
-//    char tmpname[] = "/tmp/pbs_script.XXXXXX";
-//    int tmpfd( 0 );
-//    BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
-//    FILE *file;
-//    BOOST_REQUIRE(( file = fdopen( tmpfd, "w" ) ) != NULL );
-//    fprintf( file, "#! /usr/bin/env bash\n" );
-//    fprintf( file, "echo \"Test\"\n" );
-//
-//    COgeMng mng;
-//
-//    // check that submit works
-//    // submit a job to a default queue
-//    COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
-//    BOOST_REQUIRE( !ids.empty() );
+BOOST_AUTO_TEST_CASE( test_oge_submitjob )
+{
+    // create a test script
+    char tmpname[] = "/tmp/pbs_script.XXXXXX";
+    int tmpfd( 0 );
+    BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
+    FILE *file;
+    BOOST_REQUIRE(( file = fdopen( tmpfd, "w" ) ) != NULL );
+    fprintf( file, "#! /usr/bin/env bash\n" );
+    fprintf( file, "echo \"Test\"\n" );
+    fclose( file );
+
+    COgeMng mng;
+
+    // check that submit works
+    // submit a job to a default queue
+   // COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
+   // BOOST_REQUIRE( !ids.empty() );
+    COgeMng::jobID_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
+    BOOST_REQUIRE( !ids.empty() );
+
 
 //    // we need to sleep a bit. Otherwise we could be too fast asking for status, than OGE registers a job
 //    sleep( 2 );
@@ -69,11 +73,11 @@ size_t g_jobsCount = 2;
 //        cout << "Status: " << status << endl;
 //        BOOST_REQUIRE( status.size() == 1 );
 //    }
-//
-//    // TODO: delete the script, even in case of an error
-//    // remove the test script
-//    //unlink( tmpname );
-//}
+
+    // TODO: delete the script, even in case of an error
+    // remove the test script
+    //unlink( tmpname );
+}
 ////=============================================================================
 //BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
 //{

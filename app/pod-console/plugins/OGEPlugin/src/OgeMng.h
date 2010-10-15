@@ -51,28 +51,28 @@ namespace oge_plug
 
     //
     // This class uses DRMAA v1 to access API of OGE.
-    //    
+    //
     class COgeMng
     {
         public:
-//            typedef std::string jobID_t;
+            typedef std::string jobID_t;
 //            typedef std::vector<jobID_t> jobArray_t;
 //            typedef std::map<jobID_t, SNativeJobInfo> jobInfoContainer_t;
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
 //            void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
-//            jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
-//                                  size_t _nJobs ) const;
+            jobID_t jobSubmit( const std::string &_script, const std::string &_queue,
+                               size_t _nJobs ) const;
 //            std::string jobStatus( const jobID_t &_id ) const;
 //            void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
 //            static std::string jobStatusToString( const std::string &_status );
-        
+
             // Unfortunately DRMAA 1 doesn't support a requests
             // for a list of queues. It looks like it will be supported in v2.
             // We use "qconf -sql" to retrieve this information.
             void getQueues( queueInfoContainer_t *_container ) const;
-        
+
 //            void killJob( const jobID_t &_id ) const;
 //            static size_t jobArrayStartIdx()
 //            {
@@ -93,7 +93,7 @@ namespace oge_plug
 //            void cleanAttr( attrl **attrib ) const;
 //            void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
 //                                    size_t _nJobs ) const;
-//            void createJobsLogDir( const jobID_t &_parent ) const;
+            void createJobsLogDir( const jobID_t &_parent ) const;
 
         private:
             std::string m_server_logDir;

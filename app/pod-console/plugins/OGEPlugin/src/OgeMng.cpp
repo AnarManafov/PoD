@@ -42,6 +42,14 @@ ostream &SQueueInfo::print( ostream &_stream ) const
 
     return _stream;
 }
+struct SFindQueue
+{
+    bool operator()( const SQueueInfo &_info )
+    {
+        // "proof" is a default queue name
+        return( _info.m_name >= "proof" );
+    }
+};
 //=============================================================================
 //class pbs_error: public exception
 //{
@@ -158,17 +166,113 @@ void COgeMng::exitDRMAA() const
 //    ret.insert( pos, ss.str() );
 //    return ret;
 //}
-////=============================================================================
-//COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_queue,
-//                                        size_t _nJobs ) const
-//{
-//    // Connect to the pbs server
-//    // We use NULL as a OGE server string, a connection will be
-//    // opened to the default server.
-//    int connect = pbs_connect( NULL );
-//    if( connect < 0 )
-//        throw pbs_error( "Error occurred while connecting to pbs server." );
-//
+//=============================================================================
+COgeMng::jobID_t COgeMng::jobSubmit( const string &_script, const string &_queue,
+                                     size_t _nJobs ) const
+{
+    char jobid[DRMAA_JOBNAME_BUFFER];
+    try
+    {
+        initDRMAA();
+
+        char error[DRMAA_ERROR_STRING_BUFFER];
+        int errnum = 0;
+        drmaa_job_template_t *jt = NULL;
+
+        // Create a job template
+        errnum = drmaa_allocate_job_template( &jt, error, DRMAA_ERROR_STRING_BUFFER );
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not create job template: " );
+            msg += error;
+            throw runtime_error( msg );
+        }
+
+        // set job's attributes
+        errnum = drmaa_set_attribute( jt, DRMAA_REMOTE_COMMAND, _script.c_str(),
+                                      error, DRMAA_ERROR_STRING_BUFFER );
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not set attribute " );
+            msg += DRMAA_REMOTE_COMMAND;
+            msg += " :";
+            msg += error;
+            throw runtime_error( msg );
+        }
+
+        // OGE specific settings
+        string nativeSpecification;
+        // set queue
+        // use default queue if parameter is empty
+        string queue;
+        if( _queue.empty() )
+        {
+            queueInfoContainer_t queues;
+            getQueues( &queues );
+            if( queues.empty() )
+                throw runtime_error( "Can't find any resource queue." );
+
+            queueInfoContainer_t::const_iterator found = find_if( queues.begin(),
+                                                                  queues.end(),
+                                                                  SFindQueue() );
+            queue = ( queues.end() == found ) ? queues[0].m_name : found->m_name;
+
+        }
+
+        nativeSpecification += " -q ";
+        nativeSpecification += queue;
+
+        // export all environment vars.
+        nativeSpecification += " -V ";
+
+        // request tmp dir (needed by PoD workers)
+        nativeSpecification += " -l tmp_free=100M ";
+
+        // merge stdout and stderr
+        nativeSpecification += " -j yes ";
+        // output
+        nativeSpecification += " -o ";
+        nativeSpecification += m_server_logDir;
+
+        // array job
+        stringstream array_job_arg( " -t 1-" );
+        array_job_arg << _nJobs << " ";
+        nativeSpecification += array_job_arg.str();
+
+
+        errnum = drmaa_set_attribute( jt, DRMAA_NATIVE_SPECIFICATION, ( char * )nativeSpecification.c_str(),
+                                      error, DRMAA_ERROR_STRING_BUFFER );
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not set attribute " );
+            msg += DRMAA_NATIVE_SPECIFICATION;
+            msg += " :";
+            msg += error;
+            throw runtime_error( msg );
+        }
+
+        // Submit the job
+        errnum = drmaa_run_job( jobid, DRMAA_JOBNAME_BUFFER, jt, error,
+                                DRMAA_ERROR_STRING_BUFFER );
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not submit job: " );
+            msg += error;
+            throw runtime_error( msg );
+        }
+
+        // creating a log dir for the job
+        createJobsLogDir( jobid );
+    }
+    catch( ... )
+    {
+        exitDRMAA();
+        throw;
+    }
+    exitDRMAA();
+
+    return jobid;
+
 //    // TODO: don't forget to call free
 //    attrl *attrib = NULL;
 //
@@ -202,8 +306,7 @@ void COgeMng::exitDRMAA() const
 //    // close the connection with the server
 //    pbs_disconnect( connect );
 //
-//    // creating a log dir for the job
-//    createJobsLogDir( jobid );
+//
 //
 //    // return job id
 //    // return an array of jobs id.
@@ -217,9 +320,9 @@ void COgeMng::exitDRMAA() const
 //        ret.push_back( id );
 //    }
 //    free( jobid );
-//
+
 //    return ret;
-//}
+}
 ////=============================================================================
 //void COgeMng::cleanAttr( attrl **attrib ) const
 //{
@@ -415,7 +518,7 @@ void COgeMng::getQueues( queueInfoContainer_t *_container ) const
         do_execv( cmd, args, 3/*3 secs timeout*/, &output );
 
         StringVector_t queueNames;
-        stringstream ss(output);
+        stringstream ss( output );
         copy( istream_iterator<string>( ss ),
               istream_iterator<string>(),
               back_inserter( queueNames ) );
@@ -501,15 +604,15 @@ void COgeMng::getQueues( queueInfoContainer_t *_container ) const
 //
 //    return ( 'C' == _status[0] );
 //}
-////=============================================================================
-//void COgeMng::createJobsLogDir( const COgeMng::jobID_t &_parent ) const
-//{
+//=============================================================================
+void COgeMng::createJobsLogDir( const COgeMng::jobID_t &_parent ) const
+{
 //    string path( m_server_logDir + getCleanParentID( _parent ) );
-//    // create a dir with read/write/search permissions for owner and group,
-//    // and with read/search permissions for others
-//    // TODO:Check for errors
+    // create a dir with read/write/search permissions for owner and group,
+    // and with read/search permissions for others
+    // TODO:Check for errors
 //    mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
-//}
+}
 ////=============================================================================
 //void COgeMng::setEnvironment( const string &_envp )
 //{
