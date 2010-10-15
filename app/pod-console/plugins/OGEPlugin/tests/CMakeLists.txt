@@ -29,7 +29,8 @@ include_directories( ${pod-console-oge_SOURCE_DIR}/src ${OGE_INCLUDE_DIR} )
 target_link_libraries (
     pod-console_oge_test
     ${OGE_LIBRARIES}
-    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
 install(TARGETS pod-console_oge_test DESTINATION tests)

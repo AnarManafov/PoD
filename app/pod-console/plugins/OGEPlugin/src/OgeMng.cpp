@@ -201,6 +201,9 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         }
 
         // OGE specific settings
+        // DRMAA_NATIVE_SPECIFICATION: there is an issue that will
+        // be fixed in an upcoming release of DRMAA, that requires that
+        // the native specification not start with whitespace.
         string nativeSpecification;
         // set queue
         // use default queue if parameter is empty
@@ -215,11 +218,15 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             queueInfoContainer_t::const_iterator found = find_if( queues.begin(),
                                                                   queues.end(),
                                                                   SFindQueue() );
-            queue = ( queues.end() == found ) ? queues[0].m_name : found->m_name;
+            queue = ( queues.end() == found ) ? queues[0].m_name` : found->m_name;
 
         }
+        else {
+            queue = _queue;
+        }
 
-        nativeSpecification += " -q ";
+
+        nativeSpecification += "-q ";
         nativeSpecification += queue;
 
         // export all environment vars.

@@ -36,10 +36,24 @@ BOOST_AUTO_TEST_SUITE( test_oge );
 //=============================================================================
 size_t g_jobsCount = 2;
 //=============================================================================
+BOOST_AUTO_TEST_CASE( test_oge_allqueues )
+{
+    cout << "Getting a list of available queues" << endl;
+    COgeMng mng;
+    
+    COgeMng::queueInfoContainer_t queues;
+    mng.getQueues( &queues );
+    
+    BOOST_REQUIRE( !queues.empty() );
+    
+    copy( queues.begin(), queues.end(),
+         ostream_iterator<SQueueInfo>( cout, "\n" ) );
+}
+//=============================================================================
 BOOST_AUTO_TEST_CASE( test_oge_submitjob )
 {
     // create a test script
-    char tmpname[] = "/tmp/pbs_script.XXXXXX";
+    char tmpname[] = "/tmp/oge_test_job.XXXXXX";
     int tmpfd( 0 );
     BOOST_REQUIRE(( tmpfd = mkstemp( tmpname ) ) >= 0 );
     FILE *file;
@@ -103,19 +117,5 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
 //        << COgeMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;
 //    }
 //}
-////=============================================================================
-BOOST_AUTO_TEST_CASE( test_oge_allqueues )
-{
-    cout << "Getting a list of available queues" << endl;
-    COgeMng mng;
-
-    COgeMng::queueInfoContainer_t queues;
-    mng.getQueues( &queues );
-
-    BOOST_REQUIRE( !queues.empty() );
-
-    copy( queues.begin(), queues.end(),
-          ostream_iterator<SQueueInfo>( cout, "\n" ) );
-}
 
 BOOST_AUTO_TEST_SUITE_END();
