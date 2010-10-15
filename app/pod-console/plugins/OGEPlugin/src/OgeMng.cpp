@@ -167,10 +167,10 @@ void COgeMng::exitDRMAA() const
 //    return ret;
 //}
 //=============================================================================
-COgeMng::jobID_t COgeMng::jobSubmit( const string &_script, const string &_queue,
+COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_queue,
                                      size_t _nJobs ) const
 {
-    char jobid[DRMAA_JOBNAME_BUFFER];
+    jobArray_t ret;
     try
     {
         initDRMAA();
@@ -234,12 +234,6 @@ COgeMng::jobID_t COgeMng::jobSubmit( const string &_script, const string &_queue
         nativeSpecification += " -o ";
         nativeSpecification += m_server_logDir;
 
-        // array job
-        stringstream array_job_arg( " -t 1-" );
-        array_job_arg << _nJobs << " ";
-        nativeSpecification += array_job_arg.str();
-
-
         errnum = drmaa_set_attribute( jt, DRMAA_NATIVE_SPECIFICATION, ( char * )nativeSpecification.c_str(),
                                       error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
@@ -251,15 +245,23 @@ COgeMng::jobID_t COgeMng::jobSubmit( const string &_script, const string &_queue
             throw runtime_error( msg );
         }
 
-        // Submit the job
-        errnum = drmaa_run_job( jobid, DRMAA_JOBNAME_BUFFER, jt, error,
-                                DRMAA_ERROR_STRING_BUFFER );
+        // Submit the array job
+        drmaa_job_ids_t *ids = NULL;
+        errnum = drmaa_run_bulk_jobs( &ids, jt, 1, _nJobs, 1, error,
+                                      DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
         {
             string msg( "Could not submit job: " );
             msg += error;
             throw runtime_error( msg );
         }
+
+        char jobid[DRMAA_JOBNAME_BUFFER];
+        while( drmaa_get_next_job_id( ids, jobid, DRMAA_JOBNAME_BUFFER ) == DRMAA_ERRNO_SUCCESS )
+        {
+            ret.push_back( jobid );
+        }
+        drmaa_release_job_ids( ids );
 
         // creating a log dir for the job
         createJobsLogDir( jobid );
@@ -271,7 +273,7 @@ COgeMng::jobID_t COgeMng::jobSubmit( const string &_script, const string &_queue
     }
     exitDRMAA();
 
-    return jobid;
+    return ret;
 
 //    // TODO: don't forget to call free
 //    attrl *attrib = NULL;

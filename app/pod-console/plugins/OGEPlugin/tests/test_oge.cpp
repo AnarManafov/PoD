@@ -52,10 +52,16 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
 
     // check that submit works
     // submit a job to a default queue
-   // COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
-   // BOOST_REQUIRE( !ids.empty() );
-    COgeMng::jobID_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
+    COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
     BOOST_REQUIRE( !ids.empty() );
+
+    COgeMng::jobArray_t::const_iterator iter = ids.begin() + 1;
+    COgeMng::jobArray_t::const_iterator iter_end = ids.end();
+    for( ; iter != iter_end; ++iter )
+    {
+        cout << "Array jobs ID: " << *iter << endl;
+    }
+
 
 
 //    // we need to sleep a bit. Otherwise we could be too fast asking for status, than OGE registers a job

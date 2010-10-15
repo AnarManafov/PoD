@@ -56,14 +56,14 @@ namespace oge_plug
     {
         public:
             typedef std::string jobID_t;
-//            typedef std::vector<jobID_t> jobArray_t;
+            typedef std::vector<jobID_t> jobArray_t;
 //            typedef std::map<jobID_t, SNativeJobInfo> jobInfoContainer_t;
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
 //            void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
-            jobID_t jobSubmit( const std::string &_script, const std::string &_queue,
-                               size_t _nJobs ) const;
+            jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
+                                  size_t _nJobs ) const;
 //            std::string jobStatus( const jobID_t &_id ) const;
 //            void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
 //            static std::string jobStatusToString( const std::string &_status );
