@@ -106,22 +106,22 @@ void COgeMng::exitDRMAA() const
         throw runtime_error( error );
 }
 //=============================================================================
-//void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
-//{
-//    try
-//    {
-//        m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
-//        smart_path( &m_server_logDir );
-//        smart_append( &m_server_logDir, '/' );
-//
+void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+{
+    try
+    {
+        m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
+        smart_path( &m_server_logDir );
+        smart_append( &m_server_logDir, '/' );
+
 //        stringstream ss;
 //        ss << _ud.getValueForKey( "oge_plugin.shared_home" );
-//        ss >> m_pbs_sharedHome;
-//    }
-//    catch( exception &e )
-//    {
-//    }
-//}
+//        ss >> m_oge_sharedHome;
+    }
+    catch( exception &e )
+    {
+    }
+}
 ////=============================================================================
 //bool COgeMng::isValid( const jobID_t &_id )
 //{
@@ -168,7 +168,7 @@ void COgeMng::exitDRMAA() const
 //}
 //=============================================================================
 COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_queue,
-                                     size_t _nJobs ) const
+                                        size_t _nJobs ) const
 {
     jobArray_t ret;
     try
@@ -231,9 +231,12 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         // merge stdout and stderr
         nativeSpecification += " -j yes ";
         // output
-        nativeSpecification += " -o ";
-        nativeSpecification += m_server_logDir;
-
+        if( !m_server_logDir.empty() )
+        {
+            nativeSpecification += " -o ";
+            nativeSpecification += m_server_logDir;
+        }
+        
         errnum = drmaa_set_attribute( jt, DRMAA_NATIVE_SPECIFICATION, ( char * )nativeSpecification.c_str(),
                                       error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
@@ -386,11 +389,11 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
 //
 //    // set POD_OGE_SHARED_HOME variable on the worker nodes
 //    env += "POD_OGE_SHARED_HOME=";
-//    env += m_pbs_sharedHome ? "1" : "0";
+//    env += m_oge_sharedHome ? "1" : "0";
 //
 //    // export all env. variables of the process to jobs
 //    // if the home is shared
-//    if( m_pbs_sharedHome )
+//    if( m_oge_sharedHome )
 //    {
 //        env += ',';
 //        env += m_envp;

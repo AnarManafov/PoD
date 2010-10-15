@@ -61,7 +61,7 @@ namespace oge_plug
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
-//            void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
+            void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
                                   size_t _nJobs ) const;
 //            std::string jobStatus( const jobID_t &_id ) const;
@@ -97,7 +97,7 @@ namespace oge_plug
 
         private:
             std::string m_server_logDir;
-            bool m_pbs_sharedHome;
+            bool m_oge_sharedHome;
             std::string m_envp;
     };
 
