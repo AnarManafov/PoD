@@ -134,7 +134,7 @@ string COgeMng::getCleanParentID( const jobID_t &_id ) const
 {
     // JobID in DRMAA OGE: PARENTID.ARRAYINDEX
     // Clean ParentID is the PARENTID parent of these ids.
-    jobID_t::size_type pos = _id.find_first_of( "." );
+    jobID_t::size_type pos = _id.find( '.' );
     if( jobID_t::npos == pos )
         return _id;
 
@@ -143,7 +143,7 @@ string COgeMng::getCleanParentID( const jobID_t &_id ) const
 //=============================================================================
 bool COgeMng::isParentID( const jobID_t &_parent )
 {
-    jobID_t::size_type pos = _parent.find_first_of( "." );
+    jobID_t::size_type pos = _parent.find( '.' );
     return ( jobID_t::npos == pos );
 }
 //=============================================================================
@@ -226,10 +226,11 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         {
             ret.push_back( jobid );
         }
+
         if( ret.size() > 1 )
         {
             // push first the fake parrent id
-            ret[0] = getCleanParentID( jobid );
+            ret[0] = getCleanParentID( ret[1] );
         }
         else
         {
