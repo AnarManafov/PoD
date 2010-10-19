@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
     sleep( 2 );
 
     cout << "Fake parent ID: " << ids[0] << endl;
-    while( true )
+    while( ids.size() > 1 )
     {
         COgeMng::jobArray_t::iterator iter = ids.begin() + 1;
         COgeMng::jobArray_t::iterator iter_end = ids.end();
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
             // we compare status with some unknown (99999) value
             BOOST_REQUIRE( mng.status2string( 99999 ) != strStatus );
         }
-        sleep( 2 );
+        sleep( 1 );
     }
     // TODO: delete the script, even in case of an error
     // remove the test script
