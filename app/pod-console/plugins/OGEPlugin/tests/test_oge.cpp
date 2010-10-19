@@ -79,15 +79,15 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
         COgeMng::jobArray_t::iterator iter_end = ids.end();
         for( ; iter != iter_end; ++iter )
         {
-            cout << "Array jobs ID: " << *iter << "\t";
-
             // get job's status
             int status = mng.jobStatus( *iter );
             if( mng.isJobComplete( status ) )
             {
+                cout << "Array jobs ID: " << *iter << "is DONE" << endl;
                 ids.erase( iter );
                 break;
             }
+            cout << "Array jobs ID: " << *iter << "\t";
             string strStatus( mng.status2string( status ) );
             cout << "Status: " << strStatus << endl;
             // we compare status with some unknown (99999) value
