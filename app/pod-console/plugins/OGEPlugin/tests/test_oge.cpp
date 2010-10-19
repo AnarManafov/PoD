@@ -40,14 +40,14 @@ BOOST_AUTO_TEST_CASE( test_oge_allqueues )
 {
     cout << "Getting a list of available queues" << endl;
     COgeMng mng;
-    
+
     COgeMng::queueInfoContainer_t queues;
     mng.getQueues( &queues );
-    
+
     BOOST_REQUIRE( !queues.empty() );
-    
+
     copy( queues.begin(), queues.end(),
-         ostream_iterator<SQueueInfo>( cout, "\n" ) );
+          ostream_iterator<SQueueInfo>( cout, "\n" ) );
 }
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_oge_submitjob )
@@ -69,34 +69,27 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
     COgeMng::jobArray_t ids = mng.jobSubmit( tmpname, "", g_jobsCount );
     BOOST_REQUIRE( !ids.empty() );
 
+    // we need to sleep a bit. Otherwise we could be too fast asking for status, than OGE registers a job
+    sleep( 2 );
+
+    cout << "Fake parent ID: " << ids[0] << endl;
     COgeMng::jobArray_t::const_iterator iter = ids.begin() + 1;
     COgeMng::jobArray_t::const_iterator iter_end = ids.end();
     for( ; iter != iter_end; ++iter )
     {
         cout << "Array jobs ID: " << *iter << endl;
+
+        // get job's status
+        int status = mng.jobStatus( *iter );
+        string strStatus( mng.status2string( status ) );
+        cout << "Status: " << strStatus << endl;
+        // we compare status with some unknown (99999) value
+        BOOST_REQUIRE( mng.status2string( 99999 ) != strStatus );
     }
-
-
-
-//    // we need to sleep a bit. Otherwise we could be too fast asking for status, than OGE registers a job
-//    sleep( 2 );
-//
-//    cout << "Fake parent ID: " << ids[0] << endl;
-//    COgeMng::jobArray_t::const_iterator iter = ids.begin() + 1;
-//    COgeMng::jobArray_t::const_iterator iter_end = ids.end();
-//    for ( ; iter != iter_end; ++iter )
-//    {
-//        cout << "Array jobs ID: " << *iter << endl;
-//
-//        // get job's status
-//        string status = mng.jobStatus( *iter );
-//        cout << "Status: " << status << endl;
-//        BOOST_REQUIRE( status.size() == 1 );
-//    }
 
     // TODO: delete the script, even in case of an error
     // remove the test script
-    //unlink( tmpname );
+    unlink( tmpname );
 }
 ////=============================================================================
 //BOOST_AUTO_TEST_CASE( test_pbs_alljobs )

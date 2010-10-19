@@ -64,7 +64,7 @@ namespace oge_plug
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
                                   size_t _nJobs ) const;
-//            std::string jobStatus( const jobID_t &_id ) const;
+            int jobStatus( const jobID_t &_id ) const;
 //            void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
 //            static std::string jobStatusToString( const std::string &_status );
 
@@ -80,19 +80,19 @@ namespace oge_plug
 //                return 0;
 //            }
 //
-//            static bool isValid( const jobID_t &_id );
+            static bool isValid( const jobID_t &_id );
 //            static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
-//            static bool isParentID( const jobID_t &_parent );
+            static bool isParentID( const jobID_t &_parent );
 //            static bool isJobComplete( const std::string &_status );
 //            void setEnvironment( const std::string &_envp );
-//            std::string getCleanParentID( const jobID_t &_id ) const;
+            std::string getCleanParentID( const jobID_t &_id ) const;
+        std::string status2string( int _ogeJobStatus ) const;
 
         private:
             void initDRMAA() const;
             void exitDRMAA() const;
-//            void cleanAttr( attrl **attrib ) const;
-//            void setDefaultPoDAttr( attrl **attrib, const std::string &_queue,
-//                                    size_t _nJobs ) const;
+            std::string getDefaultNativeSpecification( const std::string &_queue,
+                                                       size_t _nJobs ) const;
             void createJobsLogDir( const jobID_t &_parent ) const;
 
         private:

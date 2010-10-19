@@ -33,6 +33,8 @@ using namespace std;
 using namespace oge_plug;
 using namespace MiscCommon;
 //=============================================================================
+const LPCSTR g_OGEOptionFile = "$POD_LOCATION/etc/Job.oge.option";
+//=============================================================================
 ostream &SQueueInfo::print( ostream &_stream ) const
 {
     _stream
@@ -122,40 +124,34 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
     {
     }
 }
-////=============================================================================
-//bool COgeMng::isValid( const jobID_t &_id )
-//{
-//    return !_id.empty();
-//}
-////=============================================================================
-//string COgeMng::getCleanParentID( const jobID_t &_id ) const
-//{
-//    // JobID in OpenOGE: PARENTID.server.fqdn PARENTID-ARRAYINDEX.server.fqdn
-//    // JobID in OGEPro: PARENTID[].server.fqdn PARENTID[ARRAYINDEX].server.fqdn
-//    // Clean ParentID is the PARENTID parent of these ids.
-//    jobID_t::size_type pos = _id.find_first_of( ".[" );
-//    if( jobID_t::npos == pos )
-//        return _id;
-//
-//    return _id.substr( 0, pos );
-//}
-////=============================================================================
-//bool COgeMng::isParentID( const jobID_t &_parent )
-//{
-//    jobID_t::size_type pos = _parent.find_first_of( ".[" );
-//    if( jobID_t::npos == pos )
-//        return false; // Bad id?
-//
-//    string str( _parent, 0, pos );
-//    return ( str.find( '-' ) == string::npos );
-//}
-////=============================================================================
+//=============================================================================
+bool COgeMng::isValid( const jobID_t &_id )
+{
+    return !_id.empty();
+}
+//=============================================================================
+string COgeMng::getCleanParentID( const jobID_t &_id ) const
+{
+    // JobID in DRMAA OGE: PARENTID.ARRAYINDEX
+    // Clean ParentID is the PARENTID parent of these ids.
+    jobID_t::size_type pos = _id.find_first_of( "." );
+    if( jobID_t::npos == pos )
+        return _id;
+
+    return _id.substr( 0, pos );
+}
+//=============================================================================
+bool COgeMng::isParentID( const jobID_t &_parent )
+{
+    jobID_t::size_type pos = _parent.find_first_of( "." );
+    return ( jobID_t::npos == pos );
+}
+//=============================================================================
 //COgeMng::jobID_t COgeMng::generateArrayJobID( const jobID_t &_parent,
 //                                              size_t _idx )
 //{
-//    // to get an array ID we need to add "-index" to a parentID, to get:
-//    // SERVERID-INDEX.SERVER
-//    jobID_t::size_type pos = _parent.find_first_of( ".[" );
+//    // to get an array ID we need to add ".index" to a parentID, to get
+//    jobID_t::size_type pos = _parent.find_first_of( "." );
 //    if( jobID_t::npos == pos )
 //        return _parent;
 //
@@ -200,50 +196,7 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             throw runtime_error( msg );
         }
 
-        // OGE specific settings
-        // DRMAA_NATIVE_SPECIFICATION: there is an issue that will
-        // be fixed in an upcoming release of DRMAA, that requires that
-        // the native specification not start with whitespace.
-        string nativeSpecification;
-        // set queue
-        // use default queue if parameter is empty
-        string queue;
-        if( _queue.empty() )
-        {
-            queueInfoContainer_t queues;
-            getQueues( &queues );
-            if( queues.empty() )
-                throw runtime_error( "Can't find any resource queue." );
-
-            queueInfoContainer_t::const_iterator found = find_if( queues.begin(),
-                                                                  queues.end(),
-                                                                  SFindQueue() );
-            queue = ( queues.end() == found ) ? queues[0].m_name : found->m_name;
-
-        }
-        else {
-            queue = _queue;
-        }
-
-
-        nativeSpecification += "-q ";
-        nativeSpecification += queue;
-
-        // export all environment vars.
-        nativeSpecification += " -V ";
-
-        // request tmp dir (needed by PoD workers)
-        nativeSpecification += " -l tmp_free=100M ";
-
-        // merge stdout and stderr
-        nativeSpecification += " -j yes ";
-        // output
-        if( !m_server_logDir.empty() )
-        {
-            nativeSpecification += " -o ";
-            nativeSpecification += m_server_logDir;
-        }
-        
+        string nativeSpecification( getDefaultNativeSpecification( _queue, _nJobs ) );
         errnum = drmaa_set_attribute( jt, DRMAA_NATIVE_SPECIFICATION, ( char * )nativeSpecification.c_str(),
                                       error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
@@ -284,102 +237,70 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
     exitDRMAA();
 
     return ret;
-
-//    // TODO: don't forget to call free
-//    attrl *attrib = NULL;
-//
-//    // Set default attributes for PoD
-//    setDefaultPoDAttr( &attrib, _queue, _nJobs );
-//
-//    qDebug( "pbs call: job submit" );
-//    // The destination (4th parameter) will be provided via attributes - ATTR_
-//    // HACK: I hate to use const_cast, but
-//    // for some unknown reason API developers wants char* and not const char * const
-//    char *jobid = pbs_submit( connect, reinterpret_cast<attropl*>( attrib ),
-//                              const_cast<char*>( _script.c_str() ), NULL, NULL );
-//
-//    cleanAttr( &attrib );
-//
-//    if( NULL == jobid )
-//    {
-//        // get error message and disconnect
-//        char* errmsg = pbs_geterrmsg( connect );
-//        pbs_disconnect( connect );
-//
-//        if( errmsg != NULL )
-//        {
-//            string msg( "Error submitting job." );
-//            msg += errmsg;
-//            throw runtime_error( msg );
-//        }
-//        throw pbs_error( "Error submitting job." );
-//    }
-//
-//    // close the connection with the server
-//    pbs_disconnect( connect );
-//
-//
-//
-//    // return job id
-//    // return an array of jobs id.
-//    // the first element is the "parent" job id - a fake parent
-//    // all the rest is array jobs ids
-//    jobArray_t ret;
-//    ret.push_back( jobid );
-//    for( size_t i = jobArrayStartIdx(); i < _nJobs; ++i )
-//    {
-//        jobID_t id = generateArrayJobID( jobid, i );
-//        ret.push_back( id );
-//    }
-//    free( jobid );
-
-//    return ret;
 }
-////=============================================================================
-//void COgeMng::cleanAttr( attrl **attrib ) const
-//{
-//    attrl *next = *attrib;
-//    while( next != NULL )
-//    {
-//        attrl *del = next;
-//        next = del->next;
-//
-//        free( del->name );
-//        del->name = NULL;
-//        free( del->resource );
-//        del->resource = NULL;
-//        free( del->value );
-//        del->value = NULL;
-//        free( del );
-//        del = NULL;
-//    }
-//}
-////=============================================================================
-//void COgeMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
-//                                 size_t _nJobs ) const
-//{
-//    // TODO: check plug-in setting for "pbs shared home", before adding a host to output path
-//    // OGE needs a fullpath including an UI host name
-//    // Currently we assume that our UI is the machine where
-//    // pod-console has been started
-//    string output( m_server_logDir );
-//    string hostname;
-//    MiscCommon::get_hostname( &hostname );
-//    output = hostname + ":" + output;
-//
-//    // job's name
-//    set_attr( attrib, ATTR_N, "PoD" );
-//    // join error/stdoutput
-//    set_attr( attrib, ATTR_j, "oe" );
-//    // queue (desti nation)
-//    set_attr( attrib, ATTR_queue, _queue.c_str() );
-//    // an array job
-//    stringstream ss;
-//    ss << jobArrayStartIdx() << "-" << ( jobArrayStartIdx() + _nJobs - 1 );
-//    set_attr( attrib, ATTR_t, ss.str().c_str() );
-//    // output path
-//    set_attr( attrib, ATTR_o, output.c_str() );
-//    // set additional environment variables
+//=============================================================================
+string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJobs ) const
+{
+
+    // OGE specific settings
+    // DRMAA_NATIVE_SPECIFICATION: there is an issue that will
+    // be fixed in an upcoming release of DRMAA, that requires that
+    // the native specification not start with whitespace.
+    string nativeSpecification;
+    // set queue
+    // use default queue if parameter is empty
+    string queue;
+    if( _queue.empty() )
+    {
+        queueInfoContainer_t queues;
+        getQueues( &queues );
+        if( queues.empty() )
+            throw runtime_error( "Can't find any resource queue." );
+
+        queueInfoContainer_t::const_iterator found = find_if( queues.begin(),
+                                                              queues.end(),
+                                                              SFindQueue() );
+        queue = ( queues.end() == found ) ? queues[0].m_name : found->m_name;
+
+    }
+    else
+    {
+        queue = _queue;
+    }
+
+
+    nativeSpecification += "-q ";
+    nativeSpecification += queue;
+    // export all environment vars.
+    nativeSpecification += " -V ";
+    // FIX: there is an issue with SGE 6.2, see bug ticket:
+    // http://gridengine.sunsource.net/issues/show_bug.cgi?id=3261
+    // if I submit a job with DRMAA or qsub (for qsub add the '-w v' option),
+    // it fails with the error: "no suitable queues".
+    // So I guess job verification is turned on by default for DRMAA for some reason.
+    // Adding '-w n' to my DRMAA native specification makes things work for me
+    nativeSpecification += " -w n ";
+    // request tmp dir (needed by PoD workers)
+    nativeSpecification += " -l tmp_free=100M ";
+    // merge stdout and stderr
+    nativeSpecification += " -j yes ";
+    // output
+    if( !m_server_logDir.empty() )
+    {
+        nativeSpecification += " -o ";
+        nativeSpecification += m_server_logDir;
+    }
+    // TODO: add -@ if the user's option file is exists: "$POD_LOCATION/etc/Job.oge.options"
+    string options_file( g_OGEOptionFile );
+    smart_path( &options_file );
+    if( does_file_exists( g_OGEOptionFile ) )
+    {
+        nativeSpecification += " -@ ";
+        nativeSpecification += options_file;
+    }
+
+    return nativeSpecification;
+
 //    string env;
 //    // set POD_UI_LOCATION on the worker nodes
 //    char *loc = getenv( "POD_LOCATION" );
@@ -405,56 +326,73 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
 //        env += ',';
 //        env += m_envp;
 //    }
-//
-//    set_attr( attrib, ATTR_v, env.c_str() );
-//}
-////=============================================================================
-//string COgeMng::jobStatus( const jobID_t &_id ) const
-//{
-//    string retval;
-//    if( _id.empty() )
-//        return retval;
-//
-//    // Connect to the pbs server
-//    // We use NULL as a OGE server string, a connection will be
-//    // opened to the default server.
-//    int connect = pbs_connect( NULL );
-//    if( connect < 0 )
-//        throw pbs_error( "Error occurred while connecting to pbs server." );
-//
-//    batch_status *p_status = NULL;
-//
-//    qDebug( "pbs call: job status" );
-//    p_status = pbs_statjob( connect, const_cast<char*>( _id.c_str() ),
-//                            NULL, const_cast<char*>( EXECQUEONLY ) );
-//    if( NULL == p_status && 0 != pbs_errno )
-//    {
-//        // close the connection with the server
-//        pbs_disconnect( connect );
-//        throw pbs_error( "Error getting job's status." );
-//    }
-//
-//    attrl *a( p_status->attribs );
-//    while( a != NULL )
-//    {
-//        if( NULL == a->name )
-//            break;
-//
-//        if( !strcmp( a->name, ATTR_state ) )
-//        {
-//            retval = a->value;
-//            break;
-//        }
-//
-//        a = a->next;
-//    }
-//
-//    pbs_statfree( p_status );
-//
-//    // close the connection with the server
-//    pbs_disconnect( connect );
-//    return retval;
-//}
+}
+//=============================================================================
+string COgeMng::status2string( int _ogeJobStatus ) const
+{
+    switch( _ogeJobStatus )
+    {
+        case DRMAA_PS_UNDETERMINED:
+            return ( "UNDETERMINED" ); //("Job status cannot be determined");
+        case DRMAA_PS_QUEUED_ACTIVE:
+            return ( "QUEUED_ACTIVE" ); //("Job is queued and active");
+        case DRMAA_PS_SYSTEM_ON_HOLD:
+            return ( "SYSTEM_ON_HOLD" ); //("Job is queued and in system hold");
+        case DRMAA_PS_USER_ON_HOLD:
+            return ( "USER_ON_HOLD" ); //("Job is queued and in user hold");
+        case DRMAA_PS_USER_SYSTEM_ON_HOLD:
+            return ( "USER_SYSTEM_ON_HOLD" ); //("Job is queued and in user and system hold");
+        case DRMAA_PS_RUNNING:
+            return ( "RUNNING" ); //("Job is running");
+        case DRMAA_PS_SYSTEM_SUSPENDED:
+            return ( "SYSTEM_SUSPENDED" ); //("Job is system suspended");
+        case DRMAA_PS_USER_SUSPENDED:
+            return ( "USER_SUSPENDED" ); //("Job is user suspended");
+        case DRMAA_PS_USER_SYSTEM_SUSPENDED:
+            return ( "USER_SYSTEM_SUSPENDED" ); //("Job is user and system suspended");
+        case DRMAA_PS_DONE:
+            return ( "DONE" ); //("Job finished normally");
+        case DRMAA_PS_FAILED:
+            return ( "FAILED" ); //("Job finished, but failed");
+        default:
+            return ( "UNKNOWN" );
+    }
+}
+//=============================================================================
+int COgeMng::jobStatus( const jobID_t &_id ) const
+{
+    int retval;
+    if( !isValid( _id ) )
+        return retval;
+
+    try
+    {
+        initDRMAA();
+
+        char error[DRMAA_ERROR_STRING_BUFFER];
+        int errnum = 0;
+
+        errnum = drmaa_job_ps( _id.c_str(), &retval, error,
+                               DRMAA_ERROR_STRING_BUFFER );
+
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not get job' status [id=" );
+            msg += _id;
+            msg += "] :";
+            msg += error;
+            throw runtime_error( msg );
+        }
+    }
+    catch( ... )
+    {
+        exitDRMAA();
+        throw;
+    }
+    exitDRMAA();
+
+    return retval;
+}
 ////=============================================================================
 //void COgeMng::jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
 //{
