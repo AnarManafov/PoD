@@ -57,7 +57,6 @@ namespace oge_plug
         public:
             typedef std::string jobID_t;
             typedef std::vector<jobID_t> jobArray_t;
-//            typedef std::map<jobID_t, SNativeJobInfo> jobInfoContainer_t;
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
@@ -65,9 +64,6 @@ namespace oge_plug
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
                                   size_t _nJobs ) const;
             int jobStatus( const jobID_t &_id ) const;
-//            void jobStatusAllJobs( jobInfoContainer_t *_container ) const;
-//            static std::string jobStatusToString( const std::string &_status );
-
             // Unfortunately DRMAA 1 doesn't support a requests
             // for a list of queues. It looks like it will be supported in v2.
             // We use "qconf -sql" to retrieve this information.
@@ -83,10 +79,10 @@ namespace oge_plug
             static bool isValid( const jobID_t &_id );
 //            static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
             static bool isParentID( const jobID_t &_parent );
-//            static bool isJobComplete( const std::string &_status );
+            static bool isJobComplete( int _status );
 //            void setEnvironment( const std::string &_envp );
             std::string getCleanParentID( const jobID_t &_id ) const;
-        std::string status2string( int _ogeJobStatus ) const;
+            std::string status2string( int _ogeJobStatus ) const;
 
         private:
             void initDRMAA() const;

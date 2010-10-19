@@ -73,42 +73,31 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
     sleep( 2 );
 
     cout << "Fake parent ID: " << ids[0] << endl;
-    COgeMng::jobArray_t::const_iterator iter = ids.begin() + 1;
-    COgeMng::jobArray_t::const_iterator iter_end = ids.end();
-    for( ; iter != iter_end; ++iter )
+    while( true )
     {
-        cout << "Array jobs ID: " << *iter << endl;
+        COgeMng::jobArray_t::iterator iter = ids.begin() + 1;
+        COgeMng::jobArray_t::iterator iter_end = ids.end();
+        for( ; iter != iter_end; ++iter )
+        {
+            cout << "Array jobs ID: " << *iter << "\t";
 
-        // get job's status
-        int status = mng.jobStatus( *iter );
-        string strStatus( mng.status2string( status ) );
-        cout << "Status: " << strStatus << endl;
-        // we compare status with some unknown (99999) value
-        BOOST_REQUIRE( mng.status2string( 99999 ) != strStatus );
+            // get job's status
+            int status = mng.jobStatus( *iter );
+            if( mng.isJobComplete( status ) )
+            {
+                ids.erase( iter );
+                break;
+            }
+            string strStatus( mng.status2string( status ) );
+            cout << "Status: " << strStatus << endl;
+            // we compare status with some unknown (99999) value
+            BOOST_REQUIRE( mng.status2string( 99999 ) != strStatus );
+        }
+        sleep( 2 );
     }
-
     // TODO: delete the script, even in case of an error
     // remove the test script
     unlink( tmpname );
 }
-////=============================================================================
-//BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
-//{
-//    cout << "Check status of all jobs" << endl;
-//    COgeMng mng;
-//
-//    COgeMng::jobInfoContainer_t info;
-//    mng.jobStatusAllJobs( &info );
-//
-//    BOOST_REQUIRE( !info.empty() );
-//
-//    COgeMng::jobInfoContainer_t::const_iterator iter = info.begin();
-//    COgeMng::jobInfoContainer_t::const_iterator iter_end = info.end();
-//    for ( ; iter != iter_end ; ++iter )
-//    {
-//        cout << iter->first << " has status \""
-//        << COgeMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;
-//    }
-//}
 
 BOOST_AUTO_TEST_SUITE_END();

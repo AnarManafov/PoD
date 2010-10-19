@@ -220,10 +220,23 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         }
 
         char jobid[DRMAA_JOBNAME_BUFFER];
+        // reserve the first position
+        ret.push_back( "0" );
         while( drmaa_get_next_job_id( ids, jobid, DRMAA_JOBNAME_BUFFER ) == DRMAA_ERRNO_SUCCESS )
         {
             ret.push_back( jobid );
         }
+        if( ret.size() > 1 )
+        {
+            // push first the fake parrent id
+            ret[0] = getCleanParentID( jobid );
+        }
+        else
+        {
+            // something is wrong, we therefore remove the fake parent reservation
+            ret.clear();
+        }
+
         drmaa_release_job_ids( ids );
 
         // creating a log dir for the job
@@ -375,7 +388,9 @@ int COgeMng::jobStatus( const jobID_t &_id ) const
         errnum = drmaa_job_ps( _id.c_str(), &retval, error,
                                DRMAA_ERROR_STRING_BUFFER );
 
-        if( errnum != DRMAA_ERRNO_SUCCESS )
+        if( DRMAA_ERRNO_INVALID_JOB == errnum )
+            retval = DRMAA_PS_DONE;
+        else if( errnum != DRMAA_ERRNO_SUCCESS )
         {
             string msg( "Could not get job' status [id=" );
             msg += _id;
@@ -393,59 +408,6 @@ int COgeMng::jobStatus( const jobID_t &_id ) const
 
     return retval;
 }
-////=============================================================================
-//void COgeMng::jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
-//{
-//    if( !_container )
-//        return;
-//
-//    // Connect to the pbs server
-//    // We use NULL as a OGE server string, a connection will be
-//    // opened to the default server.
-//    int connect = pbs_connect( NULL );
-//    if( connect < 0 )
-//        throw pbs_error( "Error occurred while connecting to pbs server." );
-//
-//    batch_status *p_status = NULL;
-//
-//    qDebug( "pbs call: job status" );
-//    // request information of all jobs
-//    p_status = pbs_statjob( connect, NULL, NULL, NULL );
-//    if( NULL == p_status && 0 != pbs_errno )
-//    {
-//        // close the connection with the server
-//        pbs_disconnect( connect );
-//        throw pbs_error( "Error getting job's status." );
-//    }
-//
-//    batch_status *p( NULL );
-//    for( p = p_status; p != NULL; p = p->next )
-//    {
-//        string id = p->name;
-//
-//        attrl *a( p->attribs );
-//        while( a != NULL )
-//        {
-//            if( NULL == a->name )
-//                break;
-//
-//            if( !strcmp( a->name, ATTR_state ) )
-//            {
-//                SNativeJobInfo info;
-//                info.m_status = a->value;
-//
-//                _container->insert( jobInfoContainer_t::value_type( id, info ) );
-//            }
-//
-//            a = a->next;
-//        }
-//    }
-//
-//    pbs_statfree( p_status );
-//
-//    // close the connection with the server
-//    pbs_disconnect( connect );
-//}
 //=============================================================================
 void COgeMng::getQueues( queueInfoContainer_t *_container ) const
 {
@@ -509,51 +471,13 @@ void COgeMng::getQueues( queueInfoContainer_t *_container ) const
 //    // close the connection with the server
 //    pbs_disconnect( connect );
 //}
-////=============================================================================
-//string COgeMng::jobStatusToString( const string &_status )
-//{
-//    if( _status.empty() )
-//        return "unknown";
-//
-//    // OGE's status job is just a char so far.
-//    // we use string as a parameter in case we decide to change the algorithms
-//    switch( _status[0] )
-//    {
-//        case 'T': // Job is in transition (being moved to a new location)
-//            return "transit";
-//        case 'Q': // Job is queued, eligible to run or be routed
-//            return "queued";
-//        case 'H': // Job is held
-//            return "held";
-//        case 'W': // Job is waiting for its requested execution time to be reached,
-//            // or the job’s specified stagein request has failed for some reason
-//            return "waiting";
-//        case 'R': // Job is running
-//            return "running";
-//        case 'E': // Job is exiting after having run
-//            return "exiting";
-//        case 'C':
-//            return "complete";
-//        case 'B': // Job arrays only: job array has started
-//            return "started";
-//        case 'S': // Job is suspended by server
-//            return "suspended";
-//        case 'U': // Job is suspended due to workstation becoming busy
-//            return "suspended by keyboard activity";
-//        case 'X': // Subjobs only; subjob is finished (expired.)
-//            return "finished";
-//        default:
-//            return "unknown";
-//    }
-//}
-////=============================================================================
-//bool COgeMng::isJobComplete( const string &_status )
-//{
-//    if( _status.empty() )
-//        return false;
-//
-//    return ( 'C' == _status[0] );
-//}
+//=============================================================================
+bool COgeMng::isJobComplete( int _status )
+{
+    return (( DRMAA_PS_DONE == _status ) ||
+            ( DRMAA_PS_FAILED == _status )
+           );
+}
 //=============================================================================
 void COgeMng::createJobsLogDir( const COgeMng::jobID_t &_parent ) const
 {
