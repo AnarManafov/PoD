@@ -207,97 +207,97 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, b
 size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool _emitUpdate )
 {
     size_t run_jobs( 0 );
-
-    // if all jobs are marked already as completed, we don't need to ask OGE
-    JobsContainer_t::const_iterator iter = _container->begin();
-    JobsContainer_t::const_iterator iter_end = _container->end();
-    bool need_request( false );
-    for( ; iter != iter_end; ++iter )
-    {
-        if( !iter->second->m_completed )
-            need_request = true;
-    }
-
-    if( !need_request )
-        return run_jobs;
-
-    // Getting a status for all available jobs
-
-    // FIXME: Be advised, if job's status is asked too fast (immediately after submission),
-    // than it could be the case that a OGE server is too slow to register the job
-    // and it will not return its status.
-    // We need to have a counter before marking a job as completed
-    COgeMng::jobInfoContainer_t all_available_jobs;
-    try
-    {
-        m_submitter->jobStatusAllJobs( &all_available_jobs );
-    }
-    catch( const exception &_e )
-    {
-        // TODO: show message
-    }
-
-    iter = _container->begin();
-    iter_end = _container->end();
-    for( ; iter != iter_end; ++iter )
-    {
-        // Bad ID or a root item
-        if( iter->first.empty() )
-            continue;
-
-        if( iter->second->m_completed )
-            continue;
-
-        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
-        if( all_available_jobs.end() == found )
-        {
-            // if the parent, we don't write any status so-far,
-            // in OGE plug-in, a parent job is just a fake and can't have a
-            // status.
-            // FIXME: implement a status lagorthm for parent jobs (some summary of
-            // status of children)
-            if( COgeMng::isParentID( iter->first ) )
-            {
-                iter->second->m_completed = true;
-                iter->second->m_status = "completed";
-                iter->second->m_strStatus = "(expand to see the status)";
-                continue;
-            }
-
-            ++iter->second->m_tryCount;
-            if( iter->second->m_tryCount > g_maxRetryCount )
-            {
-                // set job to completed
-                iter->second->m_completed = true;
-                iter->second->m_status = "completed";
-                iter->second->m_strStatus = "completed";
-            }
-            else
-            {
-                iter->second->m_strStatus = "not known yet...";
-            }
-
-        }
-        else
-        {
-            // calculate a number of expected PoD workers.
-            // We exclude "parent" job ids
-            if( !COgeMng::isParentID( iter->first ) )
-                ++run_jobs;
-
-            if( iter->second->m_status == found->second.m_status )
-                continue;
-
-            iter->second->m_completed = COgeMng::isJobComplete( found->second.m_status );
-            if( iter->second->m_completed )
-                --run_jobs;
-
-            iter->second->m_status = found->second.m_status;
-            iter->second->m_strStatus = COgeMng::jobStatusToString( found->second.m_status );
-        }
-        if( _emitUpdate )
-            emit jobChanged( iter->second );
-    }
-
+//
+//    // if all jobs are marked already as completed, we don't need to ask OGE
+//    JobsContainer_t::const_iterator iter = _container->begin();
+//    JobsContainer_t::const_iterator iter_end = _container->end();
+//    bool need_request( false );
+//    for( ; iter != iter_end; ++iter )
+//    {
+//        if( !iter->second->m_completed )
+//            need_request = true;
+//    }
+//
+//    if( !need_request )
+//        return run_jobs;
+//
+//    // Getting a status for all available jobs
+//
+//    // FIXME: Be advised, if job's status is asked too fast (immediately after submission),
+//    // than it could be the case that a OGE server is too slow to register the job
+//    // and it will not return its status.
+//    // We need to have a counter before marking a job as completed
+////    COgeMng::jobInfoContainer_t all_available_jobs;
+////    try
+////    {
+////        m_submitter->jobStatusAllJobs( &all_available_jobs );
+////    }
+////    catch( const exception &_e )
+////    {
+////        // TODO: show message
+////    }
+//
+//    iter = _container->begin();
+//    iter_end = _container->end();
+//    for( ; iter != iter_end; ++iter )
+//    {
+//        // Bad ID or a root item
+//        if( iter->first.empty() )
+//            continue;
+//
+//        if( iter->second->m_completed )
+//            continue;
+//
+//        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
+//        if( all_available_jobs.end() == found )
+//        {
+//            // if the parent, we don't write any status so-far,
+//            // in OGE plug-in, a parent job is just a fake and can't have a
+//            // status.
+//            // FIXME: implement a status lagorthm for parent jobs (some summary of
+//            // status of children)
+//            if( COgeMng::isParentID( iter->first ) )
+//            {
+//                iter->second->m_completed = true;
+//                iter->second->m_status = "completed";
+//                iter->second->m_strStatus = "(expand to see the status)";
+//                continue;
+//            }
+//
+//            ++iter->second->m_tryCount;
+//            if( iter->second->m_tryCount > g_maxRetryCount )
+//            {
+//                // set job to completed
+//                iter->second->m_completed = true;
+//                iter->second->m_status = "completed";
+//                iter->second->m_strStatus = "completed";
+//            }
+//            else
+//            {
+//                iter->second->m_strStatus = "not known yet...";
+//            }
+//
+//        }
+//        else
+//        {
+//            // calculate a number of expected PoD workers.
+//            // We exclude "parent" job ids
+//            if( !COgeMng::isParentID( iter->first ) )
+//                ++run_jobs;
+//
+//            if( iter->second->m_status == found->second.m_status )
+//                continue;
+//
+//            iter->second->m_completed = COgeMng::isJobComplete( found->second.m_status );
+//            if( iter->second->m_completed )
+//                --run_jobs;
+//
+//            iter->second->m_status = found->second.m_status;
+//            iter->second->m_strStatus = COgeMng::jobStatusToString( found->second.m_status );
+//        }
+//        if( _emitUpdate )
+//            emit jobChanged( iter->second );
+//    }
+//
     return run_jobs;
 }

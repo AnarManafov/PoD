@@ -100,10 +100,10 @@ namespace oge_plug
             {
                 m_pbs.getQueues( _container );
             }
-            void jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
-            {
-                m_pbs.jobStatusAllJobs( _container );
-            }
+//            void jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
+//            {
+//                m_pbs.jobStatusAllJobs( _container );
+//            }
             void setEnvironment( const std::string &_envp )
             {
                 m_pbs.setEnvironment( _envp );

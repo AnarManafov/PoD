@@ -26,7 +26,7 @@ namespace oge_plug
 //=============================================================================
     class CJobInfoItemModel;
 //=============================================================================
-    class CPbsDlg: public QWidget, IJobManager
+    class COgeDlg: public QWidget, IJobManager
     {
             Q_OBJECT
             Q_INTERFACES( IJobManager )
@@ -34,8 +34,8 @@ namespace oge_plug
             friend class boost::serialization::access;
 
         public:
-            CPbsDlg( QWidget *parent = NULL );
-            virtual ~CPbsDlg();
+            COgeDlg( QWidget *parent = NULL );
+            virtual ~COgeDlg();
 
         public:
             // IJobManager interface
@@ -110,7 +110,7 @@ namespace oge_plug
             std::string m_JobScript;
             int m_AllJobsCount;
             int m_WorkersCount;
-            CPbsJobSubmitter m_JobSubmitter;
+            COgeJobSubmitter m_JobSubmitter;
             CJobInfoItemModel *m_treeModel;
             int m_updateInterval;
             std::string m_queue;
@@ -121,6 +121,6 @@ namespace oge_plug
 
 };
 
-BOOST_CLASS_VERSION( oge_plug::CPbsDlg, 1 )
+BOOST_CLASS_VERSION( oge_plug::COgeDlg, 1 )
 
 #endif /*OGEDLG_H_*/
