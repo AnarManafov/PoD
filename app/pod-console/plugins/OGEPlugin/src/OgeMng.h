@@ -69,18 +69,18 @@ namespace oge_plug
             // We use "qconf -sql" to retrieve this information.
             void getQueues( queueInfoContainer_t *_container ) const;
 
-//            void killJob( const jobID_t &_id ) const;
-//            static size_t jobArrayStartIdx()
-//            {
-//                // job's array start index
-//                return 0;
-//            }
-//
+            void killJob( const jobID_t &_id ) const;
+            static size_t jobArrayStartIdx()
+            {
+                // job's array start index
+                return 1;
+            }
+
             static bool isValid( const jobID_t &_id );
-//            static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
+            static jobID_t generateArrayJobID( const jobID_t &_parent, size_t _idx );
             static bool isParentID( const jobID_t &_parent );
             static bool isJobComplete( int _status );
-//            void setEnvironment( const std::string &_envp );
+            void setEnvironment( const std::string &_envp );
             std::string getCleanParentID( const jobID_t &_id ) const;
             std::string status2string( int _ogeJobStatus ) const;
 
@@ -90,6 +90,7 @@ namespace oge_plug
             std::string getDefaultNativeSpecification( const std::string &_queue,
                                                        size_t _nJobs ) const;
             void createJobsLogDir( const jobID_t &_parent ) const;
+            std::string getEnvArray() const;
 
         private:
             std::string m_server_logDir;

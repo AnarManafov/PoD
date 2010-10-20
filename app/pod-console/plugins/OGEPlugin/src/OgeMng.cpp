@@ -53,34 +53,6 @@ struct SFindQueue
     }
 };
 //=============================================================================
-//class pbs_error: public exception
-//{
-//    public:
-//        explicit pbs_error( const string &_ErrorPrefix )
-//        {
-//            m_errno = pbs_errno;
-//            stringstream ss;
-//            if( !_ErrorPrefix.empty() )
-//                ss << _ErrorPrefix << " ";
-//            ss <<  "OGE error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
-//            m_Msg = ss.str();
-//        }
-//        virtual ~pbs_error() throw()
-//        {}
-//        virtual const char* what() const throw()
-//        {
-//            return m_Msg.c_str();
-//        }
-//        int getErrno() const throw()
-//        {
-//            return m_errno;
-//        }
-//
-//    private:
-//        string m_Msg;
-//        int m_errno;
-//};
-//=============================================================================
 /**
  * @brief Initializes the drmaa library.
  *
@@ -147,21 +119,18 @@ bool COgeMng::isParentID( const jobID_t &_parent )
     return ( jobID_t::npos == pos );
 }
 //=============================================================================
-//COgeMng::jobID_t COgeMng::generateArrayJobID( const jobID_t &_parent,
-//                                              size_t _idx )
-//{
-//    // to get an array ID we need to add ".index" to a parentID, to get
-//    jobID_t::size_type pos = _parent.find_first_of( "." );
-//    if( jobID_t::npos == pos )
-//        return _parent;
-//
-//    stringstream ss;
-//    ss << "-" << _idx;
-//
-//    string ret( _parent );
-//    ret.insert( pos, ss.str() );
-//    return ret;
-//}
+COgeMng::jobID_t COgeMng::generateArrayJobID( const jobID_t &_parent,
+                                              size_t _idx )
+{
+    // to get an array ID we need to add ".index" to a parentID, to get
+    jobID_t::size_type pos = _parent.find( '.' );
+    if( jobID_t::npos == pos )
+        return _parent;
+
+    stringstream ss( _parent );
+    ss << "." << _idx;
+    return ss.str();
+}
 //=============================================================================
 COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_queue,
                                         size_t _nJobs ) const
@@ -208,9 +177,20 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             throw runtime_error( msg );
         }
 
+        errnum = drmaa_set_attribute( jt, DRMAA_V_ENV, ( char * )getEnvArray().c_str(),
+                                      error, DRMAA_ERROR_STRING_BUFFER );
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not set environment " );
+            msg += DRMAA_V_ENV;
+            msg += " :";
+            msg += error;
+            throw runtime_error( msg );
+        }
+
         // Submit the array job
         drmaa_job_ids_t *ids = NULL;
-        errnum = drmaa_run_bulk_jobs( &ids, jt, 1, _nJobs, 1, error,
+        errnum = drmaa_run_bulk_jobs( &ids, jt, jobArrayStartIdx(), _nJobs, 1, error,
                                       DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
         {
@@ -251,6 +231,37 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
     exitDRMAA();
 
     return ret;
+}
+//=============================================================================
+string COgeMng::getEnvArray() const
+{
+    string env;
+    // set POD_UI_LOCATION on the worker nodes
+    char *loc = getenv( "POD_LOCATION" );
+    if( loc != NULL )
+    {
+        env += "POD_UI_LOCATION=";
+        env += loc;
+        env += ' ';
+    }
+    // set POD_UI_LOG_LOCATION variable on the worker nodes
+    env += "POD_UI_LOG_LOCATION=";
+    env += m_server_logDir;
+    env += ' ';
+
+//    // set POD_OGE_SHARED_HOME variable on the worker nodes
+//    env += "POD_OGE_SHARED_HOME=";
+//    env += m_oge_sharedHome ? "1" : "0";
+
+    // export all env. variables of the process to jobs
+    // if the home is shared
+    if( m_oge_sharedHome )
+    {
+        env += ' ';
+        env += m_envp;
+    }
+
+    return env;
 }
 //=============================================================================
 string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJobs ) const
@@ -314,32 +325,6 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     }
 
     return nativeSpecification;
-
-//    string env;
-//    // set POD_UI_LOCATION on the worker nodes
-//    char *loc = getenv( "POD_LOCATION" );
-//    if( loc != NULL )
-//    {
-//        env += "POD_UI_LOCATION=";
-//        env += loc;
-//        env += ',';
-//    }
-//    // set POD_UI_LOG_LOCATION variable on the worker nodes
-//    env += "POD_UI_LOG_LOCATION=";
-//    env += m_server_logDir;
-//    env += ',';
-//
-//    // set POD_OGE_SHARED_HOME variable on the worker nodes
-//    env += "POD_OGE_SHARED_HOME=";
-//    env += m_oge_sharedHome ? "1" : "0";
-//
-//    // export all env. variables of the process to jobs
-//    // if the home is shared
-//    if( m_oge_sharedHome )
-//    {
-//        env += ',';
-//        env += m_envp;
-//    }
 }
 //=============================================================================
 string COgeMng::status2string( int _ogeJobStatus ) const
@@ -451,27 +436,33 @@ void COgeMng::getQueues( queueInfoContainer_t *_container ) const
         throw runtime_error( "Error retrieving queues information." );
     }
 }
-////=============================================================================
-//void COgeMng::killJob( const jobID_t &_id ) const
-//{
-//    // Connect to the pbs server
-//    // We use NULL as a OGE server string, a connection will be
-//    // opened to the default server.
-//    int connect = pbs_connect( NULL );
-//    if( connect < 0 )
-//        throw pbs_error( "Error occurred while connecting to pbs server." );
-//
-//    qDebug( "pbs call: job kill" );
-//    if( 0 != ( pbs_deljob( connect, const_cast<char*>( _id.c_str() ), NULL ) ) )
-//    {
-//        // close the connection with the server
-//        pbs_disconnect( connect );
-//        throw pbs_error( "Error killing the job." );
-//    }
-//
-//    // close the connection with the server
-//    pbs_disconnect( connect );
-//}
+//=============================================================================
+void COgeMng::killJob( const jobID_t &_id ) const
+{
+    char error[DRMAA_ERROR_STRING_BUFFER];
+    int errnum = 0;
+    try
+    {
+        initDRMAA();
+        errnum = drmaa_control( _id.c_str(), DRMAA_CONTROL_TERMINATE, error,
+                                DRMAA_ERROR_STRING_BUFFER );
+
+        if( errnum != DRMAA_ERRNO_SUCCESS )
+        {
+            string msg( "Could not delete job [id=" );
+            msg += _id;
+            msg += "] :";
+            msg += error;
+            throw runtime_error( msg );
+        }
+    }
+    catch( ... )
+    {
+        exitDRMAA();
+        throw;
+    }
+    exitDRMAA();
+}
 //=============================================================================
 bool COgeMng::isJobComplete( int _status )
 {
@@ -482,14 +473,14 @@ bool COgeMng::isJobComplete( int _status )
 //=============================================================================
 void COgeMng::createJobsLogDir( const COgeMng::jobID_t &_parent ) const
 {
-//    string path( m_server_logDir + getCleanParentID( _parent ) );
+    string path( m_server_logDir + getCleanParentID( _parent ) );
     // create a dir with read/write/search permissions for owner and group,
     // and with read/search permissions for others
     // TODO:Check for errors
-//    mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+    mkdir( path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 }
-////=============================================================================
-//void COgeMng::setEnvironment( const string &_envp )
-//{
-//    m_envp = _envp;
-//}
+//=============================================================================
+void COgeMng::setEnvironment( const string &_envp )
+{
+    m_envp = _envp;
+}
