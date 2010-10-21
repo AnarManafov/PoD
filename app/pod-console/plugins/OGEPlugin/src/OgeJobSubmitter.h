@@ -61,7 +61,7 @@ namespace oge_plug
         public:
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud )
             {
-                m_pbs.setUserDefaults( _ud );
+                m_oge.setUserDefaults( _ud );
             }
             const jobslist_t &getParentJobsList() const
             {
@@ -94,19 +94,27 @@ namespace oge_plug
             }
             void killJob( const COgeMng::jobID_t &_jobID )
             {
-                m_pbs.killJob( _jobID );
+                m_oge.killJob( _jobID );
             }
             void getQueues( COgeMng::queueInfoContainer_t *_container ) const
             {
-                m_pbs.getQueues( _container );
+                m_oge.getQueues( _container );
             }
-//            void jobStatusAllJobs( COgeMng::jobInfoContainer_t *_container ) const
-//            {
-//                m_pbs.jobStatusAllJobs( _container );
-//            }
+            int jobStatus( const COgeMng::jobID_t &_id ) const
+            {
+                return m_oge.jobStatus( _id );
+            }
+            std::string jobStatusAsString( int _jobStatus ) const
+            {
+                return m_oge.status2string( _jobStatus );
+            }
+            bool isJobComplete( int _status )
+            {
+                return m_oge.isJobComplete( _status );
+            }
             void setEnvironment( const std::string &_envp )
             {
-                m_pbs.setEnvironment( _envp );
+                m_oge.setEnvironment( _envp );
             }
 
         signals:
@@ -125,7 +133,7 @@ namespace oge_plug
                 {
                     emit changeProgress( 30 );
 
-                    COgeMng::jobArray_t jobs = m_pbs.jobSubmit( m_JobScriptFilename,
+                    COgeMng::jobArray_t jobs = m_oge.jobSubmit( m_JobScriptFilename,
                                                                 m_queue,
                                                                 m_numberOfWrk );
 
@@ -174,7 +182,7 @@ namespace oge_plug
             std::string m_JobScriptFilename;
             size_t m_numberOfWrk;
             std::string m_queue;
-            COgeMng m_pbs;
+            COgeMng m_oge;
     };
 
 }

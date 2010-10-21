@@ -207,47 +207,37 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, b
 size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool _emitUpdate )
 {
     size_t run_jobs( 0 );
-//
-//    // if all jobs are marked already as completed, we don't need to ask OGE
-//    JobsContainer_t::const_iterator iter = _container->begin();
-//    JobsContainer_t::const_iterator iter_end = _container->end();
-//    bool need_request( false );
-//    for( ; iter != iter_end; ++iter )
-//    {
-//        if( !iter->second->m_completed )
-//            need_request = true;
-//    }
-//
-//    if( !need_request )
-//        return run_jobs;
-//
-//    // Getting a status for all available jobs
-//
-//    // FIXME: Be advised, if job's status is asked too fast (immediately after submission),
-//    // than it could be the case that a OGE server is too slow to register the job
-//    // and it will not return its status.
-//    // We need to have a counter before marking a job as completed
-////    COgeMng::jobInfoContainer_t all_available_jobs;
-////    try
-////    {
-////        m_submitter->jobStatusAllJobs( &all_available_jobs );
-////    }
-////    catch( const exception &_e )
-////    {
-////        // TODO: show message
-////    }
-//
-//    iter = _container->begin();
-//    iter_end = _container->end();
-//    for( ; iter != iter_end; ++iter )
-//    {
-//        // Bad ID or a root item
-//        if( iter->first.empty() )
-//            continue;
-//
-//        if( iter->second->m_completed )
-//            continue;
-//
+
+    // if all jobs are marked already as completed, we don't need to ask OGE
+    JobsContainer_t::const_iterator iter = _container->begin();
+    JobsContainer_t::const_iterator iter_end = _container->end();
+    bool need_request( false );
+    for( ; iter != iter_end; ++iter )
+    {
+        if( !iter->second->m_completed )
+        {
+            // request status of not completed jobs
+           // int status = m_submitter->jobStatus(iter->first);
+            //if(  )
+            
+            need_request = true;
+        }
+    }
+
+    if( !need_request )
+        return run_jobs;
+
+    iter = _container->begin();
+    iter_end = _container->end();
+    for( ; iter != iter_end; ++iter )
+    {
+        // Bad ID or a root item
+        if( iter->first.empty() )
+            continue;
+
+        if( iter->second->m_completed )
+            continue;
+
 //        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
 //        if( all_available_jobs.end() == found )
 //        {
@@ -295,9 +285,9 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 //            iter->second->m_status = found->second.m_status;
 //            iter->second->m_strStatus = COgeMng::jobStatusToString( found->second.m_status );
 //        }
-//        if( _emitUpdate )
-//            emit jobChanged( iter->second );
-//    }
-//
+        if( _emitUpdate )
+            emit jobChanged( iter->second );
+    }
+
     return run_jobs;
 }
