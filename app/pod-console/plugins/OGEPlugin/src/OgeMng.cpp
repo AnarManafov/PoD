@@ -305,8 +305,8 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     // So I guess job verification is turned on by default for DRMAA for some reason.
     // Adding '-w n' to my DRMAA native specification makes things work for me
     nativeSpecification += " -w n ";
-    // request tmp dir (needed by PoD workers)
-    nativeSpecification += " -l tmp_free=100M ";
+    // request tmp dir (needed by PoD workers) -- GSI specific
+    // nativeSpecification += " -l tmp_free=100M ";
     // merge stdout and stderr
     nativeSpecification += " -j yes ";
     // output

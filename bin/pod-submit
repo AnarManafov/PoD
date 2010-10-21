@@ -144,7 +144,7 @@ elif [ "$RMS" = "oge" ]; then
   if [ -r $OGE_OPTION_FILE ]; then
      OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
   fi
-  jobid=$(qsub -l tmp_free=100M -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
+  jobid=$(qsub -l -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
   # we need to create a logs output dir
   stat=$?
   # extract a job id only, without an array indexes
