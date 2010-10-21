@@ -17,7 +17,7 @@
 // LSF plug-in
 #include "JobsContainer.h"
 //=============================================================================
-const size_t g_maxRetryCount = 1;
+//const size_t g_maxRetryCount = 1;
 //=============================================================================
 using namespace std;
 using namespace oge_plug;
@@ -217,9 +217,9 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         if( !iter->second->m_completed )
         {
             // request status of not completed jobs
-           // int status = m_submitter->jobStatus(iter->first);
+            // int status = m_submitter->jobStatus(iter->first);
             //if(  )
-            
+
             need_request = true;
         }
     }
@@ -237,6 +237,21 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 
         if( iter->second->m_completed )
             continue;
+
+        int status = m_submitter->jobStatus( iter->first );
+        if( m_submitter->isJobComplete( status ) )
+        {
+            // set job to completed
+            iter->second->m_completed = true;
+            iter->second->m_status = m_submitter->jobStatusAsString( status );
+            iter->second->m_strStatus = iter->second->m_status;
+        }
+        else
+        {
+            iter->second->m_status = m_submitter->jobStatusAsString( status );
+            iter->second->m_strStatus = "(expand to see the status)";
+        }
+
 
 //        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
 //        if( all_available_jobs.end() == found )
