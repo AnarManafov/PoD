@@ -137,13 +137,14 @@ elif [ "$RMS" = "oge" ]; then
   # -terse      tersed output, print only the job-id
   # -j yes      merge std out and err to one file
   # -l tmp_free=100M we tmp, since PoD workers it use as a working dir
+  OGE_OPTION_FILE="$POD_LOCATION/etc/Job.oge.option"
   oge_job_array_param="-t 1-$NUM_WRK"
   job_name="PoD_OGE_Job"
   # OGE option file
-  if [ -r "$POD_LOCATION/etc/Job.oge.option" ]; then
-     OGE_OPTION_FILE=" -@ $POD_LOCATION/etc/Job.oge.option"
+  if [ -r $OGE_OPTION_FILE ]; then
+     OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
   fi
-  jobid=$(qsub -l tmp_free=100M -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
+  jobid=$(qsub -l tmp_free=100M -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
   # we need to create a logs output dir
   stat=$?
   # extract a job id only, without an array indexes
