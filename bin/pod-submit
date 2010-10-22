@@ -106,7 +106,7 @@ elif  [ "$RMS" = "pbs" ]; then
   # We try to check a version of PBS to figure out, what to use
   pbs_pro=$(pbsnodes --version 2>&1 | grep -o PBSPro)
   pbs_job_array_param="-J 1-$NUM_WRK"
-  if [ -z pbs_pro ]; then
+  if [ -z $pbs_pro ]; then
     pbs_job_array_param="-t 1-$NUM_WRK"
   fi
 

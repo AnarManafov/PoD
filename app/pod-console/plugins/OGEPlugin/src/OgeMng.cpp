@@ -160,7 +160,7 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         {
             string msg( "Could not set attribute " );
             msg += DRMAA_REMOTE_COMMAND;
-            msg += " :";
+            msg += ": ";
             msg += error;
             throw runtime_error( msg );
         }
@@ -172,18 +172,19 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         {
             string msg( "Could not set attribute " );
             msg += DRMAA_NATIVE_SPECIFICATION;
-            msg += " :";
+            msg += ": ";
             msg += error;
             throw runtime_error( msg );
         }
 
-        errnum = drmaa_set_attribute( jt, DRMAA_V_ENV, ( char * )getEnvArray().c_str(),
+        env_array_t env(getEnvArray());
+        errnum = drmaa_set_attribute( jt, DRMAA_V_ENV, ( char * )&env[0],
                                       error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
         {
             string msg( "Could not set environment " );
             msg += DRMAA_V_ENV;
-            msg += " :";
+            msg += ": ";
             msg += error;
             throw runtime_error( msg );
         }
@@ -233,33 +234,50 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
     return ret;
 }
 //=============================================================================
-string COgeMng::getEnvArray() const
+COgeMng::env_array_t COgeMng::getEnvArray() const
 {
-    string env;
+    env_array_t env;
+    env_array_t::value_type env_element;
+    string tmp;
     // set POD_UI_LOCATION on the worker nodes
     char *loc = getenv( "POD_LOCATION" );
     if( loc != NULL )
     {
-        env += "POD_UI_LOCATION=";
-        env += loc;
-        env += ' ';
+        tmp = "POD_UI_LOCATION=";
+        tmp += loc;
     }
+    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
+    env.push_back(env_element);
+    env_element.clear();
+    
     // set POD_UI_LOG_LOCATION variable on the worker nodes
-    env += "POD_UI_LOG_LOCATION=";
-    env += m_server_logDir;
-    env += ' ';
+    tmp = "POD_UI_LOG_LOCATION=";
+    tmp += m_server_logDir;
+    
+    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
+    env.push_back(env_element);
+    env_element.clear();
 
 //    // set POD_OGE_SHARED_HOME variable on the worker nodes
 //    env += "POD_OGE_SHARED_HOME=";
 //    env += m_oge_sharedHome ? "1" : "0";
+//    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
+//    env.push_back(env_element);
+//    env_element.clear();
 
     // export all env. variables of the process to jobs
     // if the home is shared
-    if( m_oge_sharedHome )
-    {
-        env += ' ';
-        env += m_envp;
-    }
+    // TODO: parse the command seporated list, which comes from the main
+//    if( m_oge_sharedHome )
+//    {
+//        env += ' ';
+//        env += m_envp;
+//        copy(tmp.begin(), tmp.end(), back_inserter(env_element));
+//        env.push_back(env_element);
+//        env_element.clear();
+//    }
+    env_element.push_back('\0');
+    env.push_back(env_element);
 
     return env;
 }
