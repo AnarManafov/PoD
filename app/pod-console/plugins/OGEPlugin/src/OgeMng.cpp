@@ -177,6 +177,9 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             throw runtime_error( msg );
         }
 
+        // DRMAA_V_ENV ( vector of strings )
+        // The environment values that define the remote environment. Each string
+        // complies with the format <name>=<value>.
         env_array_t env(getEnvArray());
         errnum = drmaa_set_attribute( jt, DRMAA_V_ENV, ( char * )&env[0],
                                       error, DRMAA_ERROR_STRING_BUFFER );
