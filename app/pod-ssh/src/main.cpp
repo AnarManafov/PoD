@@ -151,7 +151,7 @@ int main( int argc, char * argv[] )
 
         slog( "Workers list:\n" );
 
-        // start threadpool and push tasks into it
+        // start thread-pool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( 4 );
         ETaskType task_type( task_submit );
         if( vm.count( "clean" ) )
