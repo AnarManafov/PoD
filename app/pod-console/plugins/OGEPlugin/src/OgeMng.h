@@ -21,6 +21,7 @@
 #include <map>
 // MiscCommon
 #include "PoDUserDefaultsOptions.h"
+#include "def.h"
 
 namespace oge_plug
 {
@@ -58,7 +59,6 @@ namespace oge_plug
             typedef std::string jobID_t;
             typedef std::vector<jobID_t> jobArray_t;
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
-            typedef std::vector<std::vector<char> > env_array_t;
 
         public:
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
@@ -91,7 +91,7 @@ namespace oge_plug
             std::string getDefaultNativeSpecification( const std::string &_queue,
                                                        size_t _nJobs ) const;
             void createJobsLogDir( const jobID_t &_parent ) const;
-            env_array_t getEnvArray() const;
+            MiscCommon::StringVector_t getEnvArray() const;
 
         private:
             std::string m_server_logDir;

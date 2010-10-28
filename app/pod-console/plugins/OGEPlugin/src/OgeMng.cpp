@@ -154,6 +154,8 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         }
 
         // set job's attributes
+
+        // ===== Job Script
         errnum = drmaa_set_attribute( jt, DRMAA_REMOTE_COMMAND, _script.c_str(),
                                       error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
@@ -164,7 +166,7 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             msg += error;
             throw runtime_error( msg );
         }
-
+        // ===== Set Native specifications
         string nativeSpecification( getDefaultNativeSpecification( _queue, _nJobs ) );
         errnum = drmaa_set_attribute( jt, DRMAA_NATIVE_SPECIFICATION, ( char * )nativeSpecification.c_str(),
                                       error, DRMAA_ERROR_STRING_BUFFER );
@@ -179,10 +181,21 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
 
         // DRMAA_V_ENV ( vector of strings )
         // The environment values that define the remote environment. Each string
-        // complies with the format <name>=<value>.
-        env_array_t env(getEnvArray());
-        errnum = drmaa_set_attribute( jt, DRMAA_V_ENV, ( char * )&env[0],
-                                      error, DRMAA_ERROR_STRING_BUFFER );
+        StringVector_t env( getEnvArray() );
+        char **env_tmp = ( char** )malloc( env.size() + 1 );
+        StringVector_t::const_iterator iter = env.begin();
+        StringVector_t::const_iterator iter_end = env.end();
+        size_t i = 0;
+        for( ; iter != iter_end; ++iter, ++i )
+        {
+            env_tmp[i] = ( char* )malloc( iter->size() + 1 );
+            strcpy( env_tmp[i], iter->c_str() );
+        }
+        env_tmp[i] = NULL;
+
+
+        errnum = drmaa_set_vector_attribute( jt, DRMAA_V_ENV, ( const char ** )env_tmp,
+                                             error, DRMAA_ERROR_STRING_BUFFER );
         if( errnum != DRMAA_ERRNO_SUCCESS )
         {
             string msg( "Could not set environment " );
@@ -191,6 +204,9 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             msg += error;
             throw runtime_error( msg );
         }
+
+        //TODO: FREE the env_tmp here!!!
+
 
         // Submit the array job
         drmaa_job_ids_t *ids = NULL;
@@ -237,10 +253,9 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
     return ret;
 }
 //=============================================================================
-COgeMng::env_array_t COgeMng::getEnvArray() const
+MiscCommon::StringVector_t COgeMng::getEnvArray() const
 {
-    env_array_t env;
-    env_array_t::value_type env_element;
+    StringVector_t env;
     string tmp;
     // set POD_UI_LOCATION on the worker nodes
     char *loc = getenv( "POD_LOCATION" );
@@ -249,24 +264,20 @@ COgeMng::env_array_t COgeMng::getEnvArray() const
         tmp = "POD_UI_LOCATION=";
         tmp += loc;
     }
-    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
-    env.push_back(env_element);
-    env_element.clear();
-    
+    env.push_back( tmp );
+
     // set POD_UI_LOG_LOCATION variable on the worker nodes
-    tmp = "POD_UI_LOG_LOCATION=";
-    tmp += m_server_logDir;
-    
-    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
-    env.push_back(env_element);
-    env_element.clear();
+    if( !m_server_logDir.empty() )
+    {
+        tmp = "POD_UI_LOG_LOCATION=";
+        tmp += m_server_logDir;
+        env.push_back( tmp );
+    }
 
 //    // set POD_OGE_SHARED_HOME variable on the worker nodes
 //    env += "POD_OGE_SHARED_HOME=";
 //    env += m_oge_sharedHome ? "1" : "0";
-//    copy(tmp.begin(), tmp.end(), back_inserter(env_element));
-//    env.push_back(env_element);
-//    env_element.clear();
+//    env.push_back(tmp);
 
     // export all env. variables of the process to jobs
     // if the home is shared
@@ -275,12 +286,8 @@ COgeMng::env_array_t COgeMng::getEnvArray() const
 //    {
 //        env += ' ';
 //        env += m_envp;
-//        copy(tmp.begin(), tmp.end(), back_inserter(env_element));
-//        env.push_back(env_element);
-//        env_element.clear();
+//        env.push_back(tmp);
 //    }
-    env_element.push_back('\0');
-    env.push_back(env_element);
 
     return env;
 }
@@ -295,28 +302,12 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     string nativeSpecification;
     // set queue
     // use default queue if parameter is empty
-    string queue;
-    if( _queue.empty() )
+    if( !_queue.empty() )
     {
-        queueInfoContainer_t queues;
-        getQueues( &queues );
-        if( queues.empty() )
-            throw runtime_error( "Can't find any resource queue." );
-
-        queueInfoContainer_t::const_iterator found = find_if( queues.begin(),
-                                                              queues.end(),
-                                                              SFindQueue() );
-        queue = ( queues.end() == found ) ? queues[0].m_name : found->m_name;
-
-    }
-    else
-    {
-        queue = _queue;
+        nativeSpecification += "-q ";
+        nativeSpecification += _queue;
     }
 
-
-    nativeSpecification += "-q ";
-    nativeSpecification += queue;
     // export all environment vars.
     nativeSpecification += " -V ";
     // FIX: there is an issue with SGE 6.2, see bug ticket:
@@ -326,6 +317,14 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     // So I guess job verification is turned on by default for DRMAA for some reason.
     // Adding '-w n' to my DRMAA native specification makes things work for me
     nativeSpecification += " -w n ";
+    // By default DRMAA sets four options for all jobs.  These  are
+    //    "-p  0", "-b yes", "-shell no", and "-w e".  This means that
+    //    by default, all jobs will have priority 0, all jobs will  be
+    //    treated  as binary, i.e. no scripts args will be parsed, all
+    //    jobs will be executed without  a  wrapper  shell,  and  jobs
+    //    which are unschedulable will cause a submit error.
+    nativeSpecification += " -shell yes ";
+    nativeSpecification += " -b no ";
     // request tmp dir (needed by PoD workers) -- GSI specific
     // nativeSpecification += " -l tmp_free=100M ";
     // merge stdout and stderr

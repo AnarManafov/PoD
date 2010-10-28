@@ -34,17 +34,17 @@ namespace PROOFAgent
 // CThreadPool
 //=============================================================================
     CThreadPool::CThreadPool( size_t _threadsCount, const string &_signalPipePath ):
-            m_stopped( false ),
-            m_stopping( false )
+        m_stopped( false ),
+        m_stopping( false )
     {
-        for ( size_t i = 0; i < _threadsCount; ++i )
+        for( size_t i = 0; i < _threadsCount; ++i )
             m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
 
         // open our signal pipe for writing
         string path( _signalPipePath );
         smart_path( &path );
         m_fdSignalPipe = open( path.c_str(), O_RDWR | O_NONBLOCK );
-        if ( m_fdSignalPipe < 0 )
+        if( m_fdSignalPipe < 0 )
             CriticalErrLog( errno, "Can't open a signal pipe: " + errno2str() );
     }
 
@@ -64,14 +64,15 @@ namespace PROOFAgent
         {
             task_t* task = NULL;
 
-            { // Find a job to perform
+            {
+                // Find a job to perform
                 boost::mutex::scoped_lock lock( m_mutex );
-                if ( m_tasks.empty() && !m_stopped )
+                if( m_tasks.empty() && !m_stopped )
                 {
                     //DebugLog( erOK, "wait for a task" );
                     m_threadNeeded.wait( lock );
                 }
-                if ( !m_stopped && !m_tasks.empty() )
+                if( !m_stopped && !m_tasks.empty() )
                 {
                     //DebugLog( erOK, "taking a task from the queue" );
                     task = m_tasks.front();
@@ -79,14 +80,14 @@ namespace PROOFAgent
                 }
             }
             //Execute job
-            if ( task )
+            if( task )
             {
                 //DebugLog( erOK, "processing a task" );
                 task->second->dealWithData( task->first );
-                  //DebugLog( erOK, "done processing" );
+                //DebugLog( erOK, "done processing" );
 
                 // report to the owner that socket is free to be added back to the "select"
-                if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+                if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                     FaultLog( erError, "Can't signal via a named pipe: " + errno2str() );
 
                 delete task;
@@ -94,7 +95,7 @@ namespace PROOFAgent
             }
             m_threadAvailable.notify_all();
         }
-        while ( !m_stopped );
+        while( !m_stopped );
 
         InfoLog( erOK, "stopping a thread worker." );
     }
@@ -125,14 +126,14 @@ namespace PROOFAgent
         {
             //prevent more jobs from being added to the queue
             boost::mutex::scoped_lock lock( m_mutex );
-            if ( m_stopped ) return;
+            if( m_stopped ) return;
             m_stopping = true;
         }
-        if ( processRemainingJobs )
+        if( processRemainingJobs )
         {
             boost::mutex::scoped_lock lock( m_mutex );
             //wait for queue to drain.
-            while ( !m_tasks.empty() && !m_stopped )
+            while( !m_tasks.empty() && !m_stopped )
             {
                 m_threadAvailable.wait( lock );
             }

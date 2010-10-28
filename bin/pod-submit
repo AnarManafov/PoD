@@ -136,7 +136,6 @@ elif [ "$RMS" = "oge" ]; then
   # -V          export all environment variables
   # -terse      tersed output, print only the job-id
   # -j yes      merge std out and err to one file
-  # -l tmp_free=100M we tmp, since PoD workers it use as a working dir
   OGE_OPTION_FILE="$POD_LOCATION/etc/Job.oge.option"
   oge_job_array_param="-t 1-$NUM_WRK"
   job_name="PoD_OGE_Job"

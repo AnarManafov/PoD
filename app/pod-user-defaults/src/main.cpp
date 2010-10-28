@@ -89,7 +89,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         ofstream f( filename.c_str() );
         if( !f.is_open() )
         {
-            string s( "Can't open file ");
+            string s( "Can't open file " );
             s += filename;
             s += " for writing.";
             throw runtime_error( s );

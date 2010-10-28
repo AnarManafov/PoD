@@ -31,7 +31,7 @@ namespace PROOFAgent
             }
             bool isTimedout( int _numSeconds )
             {
-                if ( _numSeconds <= 0 )
+                if( _numSeconds <= 0 )
                     return false;
 
                 time_t curTime = time( NULL );

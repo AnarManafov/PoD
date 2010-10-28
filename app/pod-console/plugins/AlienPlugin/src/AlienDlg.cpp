@@ -19,7 +19,7 @@
 
 
 CAlienDlg::CAlienDlg( QWidget *parent ) :
-        QWidget( parent )
+    QWidget( parent )
 {
     m_ui.setupUi( this );
 }
@@ -45,11 +45,11 @@ QIcon CAlienDlg::getIcon()
 
 void CAlienDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
-  // TODO: implement me!
+    // TODO: implement me!
 }
 int CAlienDlg::getJobsCount() const
 {
-  // TODO: implement me!
+    // TODO: implement me!
     return 0;
 }
 
