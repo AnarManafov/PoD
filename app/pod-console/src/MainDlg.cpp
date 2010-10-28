@@ -26,6 +26,7 @@
 #include "IJobManager.h"
 #include "ServerInfo.h"
 #include "MainDlg.h"
+
 #include "version.h"
 //=============================================================================
 using namespace std;

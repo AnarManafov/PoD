@@ -20,6 +20,7 @@
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
+
 using boost::unit_test::test_suite;
 // pod-agent
 #include "ProtocolCommands.h"
@@ -29,7 +30,7 @@ using namespace PROOFAgent;
 
 BOOST_AUTO_TEST_SUITE( pod_agent_ProtocolCommands );
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SVersionCmd)
+BOOST_AUTO_TEST_CASE( test_SVersionCmd )
 {
     SVersionCmd a;
     a.m_version = 34;
@@ -42,7 +43,7 @@ BOOST_AUTO_TEST_CASE(test_SVersionCmd)
     BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SVersionCmd_BadData)
+BOOST_AUTO_TEST_CASE( test_SVersionCmd_BadData )
 {
     SVersionCmd a;
     a.m_version = 34;
@@ -56,7 +57,7 @@ BOOST_AUTO_TEST_CASE(test_SVersionCmd_BadData)
     BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SHostInfoCmd)
+BOOST_AUTO_TEST_CASE( test_SHostInfoCmd )
 {
     SHostInfoCmd a;
     a.m_username = "testuser";
@@ -71,7 +72,7 @@ BOOST_AUTO_TEST_CASE(test_SHostInfoCmd)
     BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SHostInfoCmd_BadData)
+BOOST_AUTO_TEST_CASE( test_SHostInfoCmd_BadData )
 {
     SHostInfoCmd a;
     a.m_username = "testuser";
@@ -87,7 +88,7 @@ BOOST_AUTO_TEST_CASE(test_SHostInfoCmd_BadData)
     BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SIdCmd)
+BOOST_AUTO_TEST_CASE( test_SIdCmd )
 {
     SIdCmd a;
     a.m_id = 236734;
@@ -100,9 +101,9 @@ BOOST_AUTO_TEST_CASE(test_SIdCmd)
     BOOST_CHECK_EQUAL( a, b );
 }
 //=============================================================================
-BOOST_AUTO_TEST_CASE(test_SIdCmd_BadData)
+BOOST_AUTO_TEST_CASE( test_SIdCmd_BadData )
 {
-	SIdCmd a;
+    SIdCmd a;
     a.m_id = 34;
     MiscCommon::BYTEVector_t data;
     a.convertToData( &data );

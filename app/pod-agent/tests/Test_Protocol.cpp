@@ -20,6 +20,7 @@
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
 #include <boost/test/auto_unit_test.hpp>
+
 using boost::unit_test::test_suite;
 // pod-agent
 #include "Protocol.h"
@@ -63,7 +64,7 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize0 )
 BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdVERSION_badSize1 )
 {
     BYTEVector_t data_return;
-    BYTEVector_t msg(50);
+    BYTEVector_t msg( 50 );
 
     BOOST_CHECK_THROW( parseMsg( &data_return, msg ), runtime_error );
 }
