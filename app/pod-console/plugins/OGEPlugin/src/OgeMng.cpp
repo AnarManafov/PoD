@@ -88,9 +88,9 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
 
-//        stringstream ss;
-//        ss << _ud.getValueForKey( "oge_plugin.shared_home" );
-//        ss >> m_oge_sharedHome;
+        stringstream ss;
+        ss << _ud.getValueForKey( "oge_plugin.shared_home" );
+        ss >> m_oge_sharedHome;
     }
     catch( exception &e )
     {
@@ -185,17 +185,24 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         char **env_tmp = ( char** )malloc( env.size() + 1 );
         StringVector_t::const_iterator iter = env.begin();
         StringVector_t::const_iterator iter_end = env.end();
-        size_t i = 0;
-        for( ; iter != iter_end; ++iter, ++i )
+        size_t env_tmp_count = 0;
+        for( ; iter != iter_end; ++iter, ++env_tmp_count )
         {
-            env_tmp[i] = ( char* )malloc( iter->size() + 1 );
-            strcpy( env_tmp[i], iter->c_str() );
+            env_tmp[env_tmp_count] = ( char* )malloc( iter->size() + 1 );
+            strcpy( env_tmp[env_tmp_count], iter->c_str() );
         }
-        env_tmp[i] = NULL;
+        env_tmp[env_tmp_count] = NULL;
 
 
         errnum = drmaa_set_vector_attribute( jt, DRMAA_V_ENV, ( const char ** )env_tmp,
                                              error, DRMAA_ERROR_STRING_BUFFER );
+        // delete temporary array of environment variables
+        for( size_t i = 0; i < env_tmp_count; ++i )
+        {
+            free( env_tmp[i] );
+        }
+        free( env_tmp );
+
         if( errnum != DRMAA_ERRNO_SUCCESS )
         {
             string msg( "Could not set environment " );
@@ -204,9 +211,6 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
             msg += error;
             throw runtime_error( msg );
         }
-
-        //TODO: FREE the env_tmp here!!!
-
 
         // Submit the array job
         drmaa_job_ids_t *ids = NULL;
@@ -274,19 +278,35 @@ MiscCommon::StringVector_t COgeMng::getEnvArray() const
         env.push_back( tmp );
     }
 
-//    // set POD_OGE_SHARED_HOME variable on the worker nodes
-//    env += "POD_OGE_SHARED_HOME=";
-//    env += m_oge_sharedHome ? "1" : "0";
-//    env.push_back(tmp);
+    // set POD_OGE_SHARED_HOME variable on the worker nodes
+    tmp = "POD_OGE_SHARED_HOME=";
+    tmp += m_oge_sharedHome ? "1" : "0";
+    env.push_back( tmp );
 
-    // export all env. variables of the process to jobs
-    // if the home is shared
-    // TODO: parse the command seporated list, which comes from the main
+// We don't need to do the following commented code, since,
+// SGE supports environment export, qsub -V.
+// But we'll keep the code for a while just in case.
+//
+//    // export all env. variables of the process to jobs
+//    // if the home is shared.
+//    // Parsing a command seporated list, which comes from the main
 //    if( m_oge_sharedHome )
 //    {
-//        env += ' ';
-//        env += m_envp;
-//        env.push_back(tmp);
+//        size_t pos = m_envp.find( ',' );
+//        size_t last_pos = 0;
+//        for( ; pos != string::npos; )
+//        {
+//            tmp = m_envp.substr( last_pos, pos - last_pos );
+//            env.push_back( tmp );
+//
+//            last_pos = pos + 1;
+//            pos = m_envp.find( ',', last_pos );
+//            if( string::npos == pos )
+//            {
+//                // assing the last key=value
+//                tmp = m_envp.substr( last_pos, m_envp.size() - last_pos );
+//            }
+//        }
 //    }
 
     return env;
