@@ -96,7 +96,7 @@ b1=$(( ${version%.*} * 100 + ${version#*.} ))
 
 if [ $a1 -lt $b1 ] 
 then 
-   echo "PoD's new version (v${version}) is now available. You can download it from: http://pod.gsi.de/download.html"
+   echo "A new PoD version (v${version}) is now available. You can download it from: http://pod.gsi.de/download.html"
    exit 2
 else 
    echo "There is no PoD updates available for your version."
