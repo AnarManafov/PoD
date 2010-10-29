@@ -435,7 +435,7 @@ QWidget* COgeDlg::getWidget()
 //=============================================================================
 QIcon COgeDlg::getIcon()
 {
-    return QIcon( ":/images/pbs.png" );
+    return QIcon( ":/images/oge.png" );
 }
 //=============================================================================
 void COgeDlg::startUpdTimer( int _JobStatusUpdInterval )

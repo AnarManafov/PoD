@@ -193,7 +193,6 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         }
         env_tmp[env_tmp_count] = NULL;
 
-
         errnum = drmaa_set_vector_attribute( jt, DRMAA_V_ENV, ( const char ** )env_tmp,
                                              error, DRMAA_ERROR_STRING_BUFFER );
         // delete temporary array of environment variables
