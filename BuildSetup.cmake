@@ -6,7 +6,9 @@
 #  4) make install
 #
 
+#
 # Install prefix
+#
 #SET (CMAKE_INSTALL_PREFIX "MY_PATH_HERE" CACHE PATH "Install path prefix, prepended onto install directories." FORCE)
 
 #
@@ -21,25 +23,40 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 # This is needed if you want to use gLite plug-in and have several version of BOOST installed
 #set( Boost_USE_MULTITHREADED OFF CACHE BOOL "BOOST" FORCE )
 
+#
 # Documentation
+#
 # set( BUILD_DOCUMENTATION ON CACHE BOOL "Build source code documentation" FORCE )
 
+#
 # Tests
+#
 set( BUILD_TESTS ON CACHE BOOL "Build PoD tests" FORCE )
+
+#
+# gLite plug-in
+#
+#set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build gLite plug-in" FORCE )
+
+#
+# LSF plug-in
+#
+#set( BUILD_LSF_PLUGIN OFF CACHE BOOL "Build LSF plug-in" FORCE )
+#set( LSF_PREFIX "/home/anar/LSF" CACHE STRING "LSF prefix" FORCE)
+
+#
+# PBS plug-in
+#
+#set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build PBS plug-in" FORCE )
+
+#
+# SGE/OGE plug-in
+#
+#set( BUILD_OGE_PLUGIN OFF CACHE BOOL "Build OGE plug-in" FORCE )
 
 #
 # GSI specific build
 #
 #set( GSI_BUILD ON CACHE BOOL "Build a GSI specific version" FORCE )
 
-# gLite plug-in
-#set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
 
-# LSF plug-in
-#set( BUILD_LSF_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
-#set( LSF_PREFIX "/home/anar/LSF" CACHE STRING "LSF prefix" FORCE)
-
-# PBS plug-in
-#set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build source code documentation" FORCE )
-
-#set( GSI_BUILD ON CACHE BOOL "Build a GSI specific version" FORCE )
