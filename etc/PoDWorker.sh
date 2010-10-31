@@ -234,10 +234,10 @@ export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
 user_defaults="$WD/pod-user-defaults"
 
 # Transmitting an executable through the InputSandbox does not preserve execute permissions
-if [ ! -x $WD/pod-agent ]; then 
+if [ ! -x $WD/pod-agent ]; then
     chmod +x $WD/pod-agent
 fi
-if [ ! -x $WD/pod-user-defaults ]; then 
+if [ ! -x $WD/pod-user-defaults ]; then
     chmod +x $WD/pod-user-defaults
 fi
 

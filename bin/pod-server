@@ -30,6 +30,8 @@ XPD_START_TIMEOUT=3
 
 SERVER_HOST_NAME=$(hostname -f)
 
+# getting the version of PoD
+PKG_VERSION=$(cat $POD_LOCATION/etc/version) 
 
 # ************************************************************************
 # ***** detects ports for XPROOFD and for the PoD Agent  *****
@@ -99,6 +101,64 @@ create_agent_server_info_file()
     echo "host=$1" >> $SERVERINFO_FILE
     echo "port=$2" >> $SERVERINFO_FILE
 }
+# ************************************************************************
+# ***** Get pre-compiled bins for WNs  *****
+get_bins()
+{
+   WN_BIN_DIR="$POD_LOCATION/bin/wn_bins"
+   # we hard-code a list of supported architectures
+   FILE_ARCH=("x86" "amd64")
+   # check that bins dir exists and contain all supported bins
+   if [ -d "$WN_BIN_DIR" ]; then
+      for index in 0 1
+      do
+         FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
+         if [ ! -r $FILE_NAME]; then
+            NEED_DOWNLOAD="TRUE"
+         fi
+      done
+   fi
+
+   if [ -z $NEED_DOWNLOAD]; then
+      return 0
+   fi
+  
+   echo "WNs pre-compiled binaries are missing."
+   echo "Downloading WNs pre-compiled binaries..."
+  
+   POD_URL=" http://pod.gsi.de/releases/add"
+   OPT[0]=" -q -O- " # wget options
+   CMD[0]="wget"
+   OPT[1]=" -s -O" # curl options
+   CMD[1]="curl"
+   # check for wget or curl commands
+   for index in 0 1
+   do
+        ${CMD[index]} --version > /dev/null 2>&1
+        ret=$?
+        if [ ! $ret = 0 ] ; then
+            continue
+        fi
+	CMD_URL="${CMD[index]}${OPT[index]}"
+   done
+
+   if [ -z "${CMD_URL}" ]; then
+      echo "${UTIL_NAME} error: Can't find neither wget, nor curl commands. At least one of these commands must be installed on the system."
+      exit 1
+   fi
+
+   pushd $(pwd)
+   mkdir -p $WN_BIN_DIR
+   cd $WN_BIN_DIR
+   # download all pre-compiled bins
+   for index in 0 1
+   do
+     FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
+     $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
+   done
+   popd
+}
+
 # ************************************************************************
 # ***** START  *****
 start() 
@@ -214,7 +274,8 @@ fi
 
 # star|stop|status
 case "$1" in
-    start)	
+    start)
+        get_bins	
 	start $WORK_DIR
 	RETVAL=$?
 	;;
