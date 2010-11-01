@@ -31,10 +31,14 @@ XPD_START_TIMEOUT=3
 SERVER_HOST_NAME=$(hostname -f)
 
 # getting the version of PoD
-PKG_VERSION=$(cat $POD_LOCATION/etc/version) 
+PKG_VERSION=$(cat $POD_LOCATION/etc/version)
+
+# default location for WNs' pre-compiled binaries
+POD_URL=" http://pod.gsi.de/releases/add"
 
 # ************************************************************************
 # ***** detects ports for XPROOFD and for the PoD Agent  *****
+# ************************************************************************
 server_status()
 {
 # get a pid of our xpd. We get any xpd running by $UID
@@ -81,6 +85,7 @@ server_status()
 }
 # ************************************************************************
 # ***** returns a free port from a given range  *****
+# ************************************************************************
 get_freeport()
 {
     for(( i = $1; i < $2; ++i ))
@@ -94,6 +99,7 @@ get_freeport()
 # ************************************************************************
 # ***** returns a free port from a given range  *****
 # takes two parameters, pod agent server host name and port number
+# ************************************************************************
 create_agent_server_info_file()
 {
     SERVERINFO_FILE="$POD_LOCATION/etc/server_info.cfg"
@@ -103,6 +109,7 @@ create_agent_server_info_file()
 }
 # ************************************************************************
 # ***** Get pre-compiled bins for WNs  *****
+# ************************************************************************
 get_bins()
 {
    WN_BIN_DIR="$POD_LOCATION/bin/wn_bins"
@@ -113,24 +120,25 @@ get_bins()
       for index in 0 1
       do
          FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
-         if [ ! -r $FILE_NAME]; then
+         if [ ! -r $FILE_NAME ]; then
             NEED_DOWNLOAD="TRUE"
          fi
       done
+   else
+      NEED_DOWNLOAD="TRUE"
    fi
 
-   if [ -z $NEED_DOWNLOAD]; then
+   if [ -z $NEED_DOWNLOAD ]; then
       return 0
    fi
   
    echo "WNs pre-compiled binaries are missing."
    echo "Downloading WNs pre-compiled binaries..."
   
-   POD_URL=" http://pod.gsi.de/releases/add"
-   OPT[0]=" -q -O- " # wget options
-   CMD[0]="wget"
-   OPT[1]=" -s -O" # curl options
-   CMD[1]="curl"
+   OPT[0]=" --fail -s -O" # curl options
+   CMD[0]="curl"
+   OPT[1]=" -q " # wget options
+   CMD[1]="wget"
    # check for wget or curl commands
    for index in 0 1
    do
@@ -147,7 +155,7 @@ get_bins()
       exit 1
    fi
 
-   pushd $(pwd)
+   pushd $(pwd) &> /dev/null
    mkdir -p $WN_BIN_DIR
    cd $WN_BIN_DIR
    # download all pre-compiled bins
@@ -155,12 +163,18 @@ get_bins()
    do
      FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
      $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
+     RET_VAL=$?
+     if [ "X$RET_VAL" != "X0" ]; then
+        echo "Error: Can't download pre-compiled binaries for WNs."
+        echo "Please check availability of ${POD_URL}/$PKG_VERSION/$FILE_NAME"
+        exit 1
+     fi
    done
    popd
 }
-
 # ************************************************************************
 # ***** START  *****
+# ************************************************************************
 start() 
 {
     # S T O P I N G the server first
@@ -223,6 +237,7 @@ start()
 # ************************************************************************
 # ***** pkill  *****
 # we need this function since Mac OS X doesn't provide pkill yet
+# ************************************************************************
 my_pkill()
 {
    for X in `ps cx | grep -i $1 | awk {'print $1'}`; do
@@ -232,6 +247,7 @@ my_pkill()
 
 # ************************************************************************
 # ***** STOP  *****
+# ************************************************************************
 stop()
 {
     echo "Stopping PoD server..."
@@ -246,6 +262,7 @@ stop()
 }
 # ************************************************************************
 # ***** STATUS  *****
+# ************************************************************************
 status()
 {
     server_status
@@ -256,11 +273,10 @@ status()
        echo 'WARNING: $ROOTSYS is not set.'
     fi
 }
-
-
 # ************************************************************************
 # ***** MAIN  *****
 # checking the number of parameters
+# ************************************************************************
 if [ $# -ne 1 ]; then
     echo "Usage: pod-server start|stop|status"
     exit 1
