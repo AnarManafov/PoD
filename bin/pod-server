@@ -120,7 +120,7 @@ get_bins()
       for index in 0 1
       do
          FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
-         if [ ! -r $FILE_NAME ]; then
+         if [ ! -r "$WN_BIN_DIR/$FILE_NAME" ]; then
             NEED_DOWNLOAD="TRUE"
          fi
       done
@@ -128,7 +128,7 @@ get_bins()
       NEED_DOWNLOAD="TRUE"
    fi
 
-   if [ -z $NEED_DOWNLOAD ]; then
+   if [ -z "$NEED_DOWNLOAD" ]; then
       return 0
    fi
   
@@ -170,7 +170,7 @@ get_bins()
         exit 1
      fi
    done
-   popd
+   popd &> /dev/null
 }
 # ************************************************************************
 # ***** START  *****
