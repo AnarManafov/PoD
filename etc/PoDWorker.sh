@@ -221,8 +221,10 @@ if [ -r $USER_SCRIPT ]; then
 fi
 
 # host's CPU/instruction set
-check_arch()
+check_arch
 
+# define default ROOT packages
+# will be used on WNs if a user doesn't provide own ROOT
 case "$host_arch" in
    x86)
       ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
@@ -233,12 +235,12 @@ esac
 # **********************************************************************
 # ***** try to use pre-compiled bins from PoD Server *****
 rr=$(cat $WD/server_info.cfg | grep "os=")
-SERVER_OS=${rr:2}
+SERVER_OS=${rr:3}
 rr=$(cat $WD/server_info.cfg | grep "arch=")
 SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 # TODO: Need to check for POD_SHARED_HOME
-if [ "$os"="$SERVER_OS" && "$host_arch"="$SERVER_ARCH" ]; then
+if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
 else
