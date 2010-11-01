@@ -112,7 +112,10 @@ namespace PROOFAgent
         // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
         options.add_options()
         ( "server.host", po::value<string>(), "" )
-        ( "server.port", po::value<unsigned int>(), "" );
+        ( "server.port", po::value<unsigned int>(), "" )
+        ( "server.os", po::value<string>(), "" )
+        ( "server.arch", po::value<string>(), "" );
+        
         ifstream ifs( _filename.c_str() );
         if( !ifs.is_open() || !ifs.good() )
         {

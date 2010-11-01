@@ -5,6 +5,12 @@ pod: Added a Oracle Grid Engine (OGE/SGE) plug-in. So-far only a CLI is supporte
 pod: Fixed a typo/bug, which prevented PoD worker to download the pre-compiled binary of pod-agent for x86 machines.
 pod: Now the PoD pre-compiled worker packages naming is automated and unified.
 pod: Added "pod-check-update" command.
+pod: WNs don't download pre-compiled bins from the PoD central repository anymore. Now only PoD UI downloads them if missing.
+     User could also provide own binaries, instead of using the PoD central repository. This resolves several security issues and
+     speeds up the start up time of PoD jobs.
+pod: PoD WNs now try to use first binaries from PoD UI, if OS, ARCH of Server and UI are the same
+     and a shared home file system is detected. It speeds up the start up time of PoD jobs. If this try fails, PoD WN will use
+     pre-compiled bins, which come with PoD' worker package.
 
 ## v2.3 (2010-10-03)
 pod: pod-ssh doesn't use scp anymore, instead rsync is used.

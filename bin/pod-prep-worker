@@ -17,6 +17,7 @@
 ARC_NAME="$POD_LOCATION/etc/pod-worker.tar"
 ARC_NAME_GZ=$ARC_NAME".gz"
 USER_SCRIPT="$POD_LOCATION/etc/user.worker_env.sh"
+WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
@@ -25,10 +26,10 @@ echo "preparing PoD worker package..."
 
 # first delete a previous archive if available
 if [ -f $ARC_NAME ]; then
-  rm -rf $ARC_NAME
+   rm -rf $ARC_NAME
 fi
 if [ -f $ARC_NAME_GZ ]; then
-  rm -rf $ARC_NAME_GZ
+   rm -rf $ARC_NAME_GZ
 fi
 
 # check that all needed components are available
@@ -42,22 +43,23 @@ COMPONENTS=(  "${COMPONENTS_ETC[@]}" )
 # create an empty archive first
 tar cvf $ARC_NAME --files-from=/dev/null 
 
+# add all default components
 for i in "${COMPONENTS[@]}"
 do
-  if [ -f $i ]; then
-    tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
-    RET_VAL=$?
-    if [ "X$RET_VAL" = "X0" ]; then
-	continue
-    else
-	echo "failed. Exit code: $RET_VAL" >&2
-	exit 1
-    fi
-  else
-    echo "Error: missing component: $i" >&2
-    rm -rf $ARC_NAME
-    exit 1
-  fi
+   if [ -f $i ]; then
+      tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
+      RET_VAL=$?
+      if [ "X$RET_VAL" = "X0" ]; then
+	 continue
+      else
+	 echo "failed. Exit code: $RET_VAL" >&2
+	 exit 1
+      fi
+   else
+      echo "Error: missing component: $i" >&2
+      rm -rf $ARC_NAME
+      exit 1
+   fi
 done
 
 # add user's script if present
@@ -66,8 +68,21 @@ if [ -r $USER_SCRIPT ]; then
    tar --append --file=$ARC_NAME -C $(dirname $USER_SCRIPT) $(basename $USER_SCRIPT)
 fi
 
+# add all pre-compiled bins
+echo "Adding pre-compiled bins to worker package..."
+for i in ${WN_BINS[@]} 
+do
+   tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
+   RET_VAL=$?
+   if [ "X$RET_VAL" != "X0" ]; then
+      echo "failed. Exit code: $RET_VAL" >&2
+      exit 1
+   fi
+done
 
+# compress the archive
 gzip -9 $ARC_NAME
 echo "finished successfully: "$ARC_NAME_GZ
 
 exit 0
+

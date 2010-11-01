@@ -18,6 +18,7 @@
 # $1 - a number of PROOF workers to spawn (default is 1). Used by SSH plug-in.
 #
 #
+
 # current working dir
 WD=$(pwd)
 #
@@ -154,6 +155,34 @@ get_freeport()
     echo "Error: Cant find free socket port"
     exit 1
 }
+#=============================================================================
+# ***** check_arch *****
+# so far we support only Linux (amd64 and x86)
+#=============================================================================
+check_arch()
+{
+   OS=$(uname -s 2>&1)
+   if [ "$OS" != "Linux" ]; then
+      logMsg "Error: PoD doesn't support this operating system. Exiting..."
+      exit 1
+   fi
+
+   host_arch=$(uname -m  2>&1)
+   case "$host_arch" in
+      i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686)
+         host_arch=x86
+         ;;
+      x86_64)
+         host_arch=amd64
+         ;;
+      *)
+         logMsg "Error: unsupported architecture: $host_arch"
+         exit 1
+	 ;;
+   esac
+
+   logMsg "host's CPU/instruction set: $host_arch"
+}
 
 # ************************************************************************
 #
@@ -192,55 +221,48 @@ if [ -r $USER_SCRIPT ]; then
 fi
 
 # host's CPU/instruction set
-# so far we support only Linux (amd64 and x86)
-OS=$(uname -s 2>&1)
-if [ "$OS" != "Linux" ]; then
-    logMsg "Error: PoD doesn't support this operating system. Exiting..."
-    exit 1
-fi
-
-host_arch=$( uname -m  2>&1)
-case "$host_arch" in
-    i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686)
-        host_arch=x86
-        ;;
-    x86_64)
-        host_arch=amd64
-        ;;
-    *)
-        logMsg "Error: unsupported architecture: $host_arch"
-	exit 1
-	;;
-esac
-
-logMsg "host's CPU/instruction set: $host_arch"
+check_arch()
 
 case "$host_arch" in
-    x86)
-	ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
-    amd64)
-        ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
+   x86)
+      ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
+   amd64)
+      ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
 esac
 
 # **********************************************************************
-# ***** getting pod-agent from the repository site *****
-PROOFAGENT_ARC="$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
-wget --no-verbose --tries=2 $BIN_REPO/$PKG_VERSION/$PROOFAGENT_ARC  || clean_up 1
-# un-tar without creating a sub-directory
-tar --strip-components=1 -xzf $PROOFAGENT_ARC || clean_up 1
+# ***** try to use pre-compiled bins from PoD Server *****
+rr=$(cat $WD/server_info.cfg | grep "os=")
+SERVER_OS=${rr:2}
+rr=$(cat $WD/server_info.cfg | grep "arch=")
+SERVER_ARCH=${rr:5}
+logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
+# TODO: Need to check for POD_SHARED_HOME
+if [ "$os"="$SERVER_OS" && "$host_arch"="$SERVER_ARCH" ]; then
+   logMsg "PoD Server has the same arch and a shared home file system detected."
+   logMsg "Let's try to use PoD binaries directly from the server."
+else
+   # ***** prepare pre-compiled wn binaries *****
+   WN_BIN_ARC="$WD/$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
+   if [ ! -f "$WN_BIN_ARC" ]; then
+      logMsg "Error: Can't find WN pre-compiled bin.: $WN_BIN_ARC"
+      exit 1
+   fi
+   # un-tar without creating a sub-directory
+   tar --strip-components=1 -xzf $WN_BIN_ARC || clean_up 1
 
-export PATH=$WD:$PATH 
-export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
-user_defaults="$WD/pod-user-defaults"
+   export PATH=$WD:$PATH 
+   export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
+   user_defaults="$WD/pod-user-defaults"
 
-# Transmitting an executable through the InputSandbox does not preserve execute permissions
-if [ ! -x $WD/pod-agent ]; then
-    chmod +x $WD/pod-agent
+   # Transmitting an executable through the InputSandbox does not preserve execute permissions
+   if [ ! -x $WD/pod-agent ]; then
+      chmod +x $WD/pod-agent
+   fi
+   if [ ! -x $WD/pod-user-defaults ]; then
+      chmod +x $WD/pod-user-defaults
+   fi
 fi
-if [ ! -x $WD/pod-user-defaults ]; then
-    chmod +x $WD/pod-user-defaults
-fi
-
 # ****************
 # ***** ROOT *****
 set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
@@ -270,7 +292,6 @@ eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
 _TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
 chmod 777 $_TMP_DIR
 eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
-
 
 # creating an empty proof.conf, so that xproof will be happy
 touch $POD_PROOFCFG_FILE

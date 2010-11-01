@@ -17,7 +17,12 @@
 # Usage:
 #      pod-server start|stop|status
 #
-
+#
+# Notes:
+# On start the script will check whether WNs pre-compiled bins are present, if not, it will down load them.
+# Users could provide own version of the pre-compiled bins and avoid of downloading of them.
+# 
+#
 #######
 XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.xproof_ports_range_max)
@@ -29,6 +34,8 @@ eval WORK_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work
 XPD_START_TIMEOUT=3
 
 SERVER_HOST_NAME=$(hostname -f)
+SERVER_ARCH=$(uname -m  2>&1)
+SERVER_OS=$(uname -s 2>&1)
 
 # getting the version of PoD
 PKG_VERSION=$(cat $POD_LOCATION/etc/version)
@@ -97,7 +104,7 @@ get_freeport()
     exit 1
 }
 # ************************************************************************
-# ***** returns a free port from a given range  *****
+# ***** create PoD server info file  *****
 # takes two parameters, pod agent server host name and port number
 # ************************************************************************
 create_agent_server_info_file()
@@ -106,6 +113,8 @@ create_agent_server_info_file()
     echo "[server]" > $SERVERINFO_FILE
     echo "host=$1" >> $SERVERINFO_FILE
     echo "port=$2" >> $SERVERINFO_FILE
+    echo "os=$SERVER_OS" >> $SERVERINFO_FILE
+    echo "arch=$SERVER_ARCH" >> $SERVERINFO_FILE
 }
 # ************************************************************************
 # ***** Get pre-compiled bins for WNs  *****
@@ -231,6 +240,10 @@ start()
     # Prepare the worker package
     ####
     $POD_LOCATION/bin/pod-prep-worker
+    if [ "X$?" != "X0" ]; then
+       echo "Error: Can't start PoD server. Please check pod-agent.server.log and xpd.log for more information."
+       return 1
+    fi
 
     return 0
 }
