@@ -152,7 +152,7 @@ get_bins()
    for index in 0 1
    do
         ${CMD[index]} --version > /dev/null 2>&1
-        if [[ $? != 0 ]] ; then
+        if (( $? != 0 )) ; then
             continue
         fi
 	CMD_URL="${CMD[index]}${OPT[index]}"
@@ -171,7 +171,7 @@ get_bins()
    do
      FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
      $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
-     if [[ $? != 0 ]]; then
+     if (( $? != 0 )); then
         echo "Error: Can't download pre-compiled binaries for WNs."
         echo "Please check availability of ${POD_URL}/$PKG_VERSION/$FILE_NAME"
         exit 1
@@ -218,7 +218,7 @@ start()
     ####
     echo "starting xproofd..."
     xproofd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
-    if [[ $? != 0 ]]; then
+    if (( $? != 0 )); then
        return 1
     fi
 
@@ -237,7 +237,7 @@ start()
     # Prepare the worker package
     ####
     $POD_LOCATION/bin/pod-prep-worker
-    if [[ $? != 0 ]]; then
+    if (( $? != 0 )); then
        echo "Error: Can't start PoD server. Please check pod-agent.server.log and xpd.log for more information."
        return 1
     fi
