@@ -179,8 +179,8 @@ check_arch()
       exit 1
    fi
 
-   host_arch=$(uname -m  2>&1)
-   case "$host_arch" in
+   wn_host_arch=$(uname -m  2>&1)
+   case "$wn_host_arch" in
       i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686)
          host_arch=x86
          ;;
@@ -193,7 +193,7 @@ check_arch()
 	 ;;
    esac
 
-   logMsg "host's CPU/instruction set: $host_arch"
+   logMsg "host's CPU/instruction set: $wn_host_arch"
 }
 #=============================================================================
 # ***** get_default_ROOT *****
@@ -274,10 +274,11 @@ SERVER_OS=${rr:3}
 rr=$(cat $WD/server_info.cfg | grep "arch=")
 SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
+logMsg "PoD worker runs on $OS-$wn_host_arch"
 # check first whether we can use binaries from the PoD server directly.
 # Using these bins is more preferable, than using generic bins from the worker package
 need_bin_pkgs="TRUE"
-if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
+if [ "$OS-$wn_host_arch" = "$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
    cp "$POD_UI_LOCATION/bin/pod-user-defaults" $WD/
