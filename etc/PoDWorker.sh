@@ -312,6 +312,13 @@ if [ -n need_bin_pkgs ]; then
    if [ ! -x $WD/pod-user-defaults ]; then
       chmod +x $WD/pod-user-defaults
    fi
+
+   # check binary
+   $WD/pod-agent --version > /dev/null 2>&1
+   if (( $? != 0 )) ; then
+      logMsg "Error: Can't find a suitable pre-compiled binary for this system."
+      exit 1
+   fi
 fi
 
 user_defaults="$WD/pod-user-defaults"
