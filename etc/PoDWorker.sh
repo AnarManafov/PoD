@@ -242,6 +242,9 @@ echo $$ > $PID_FILE
 # handle signals
 trap clean_up SIGHUP SIGINT SIGTERM 
 
+# print the environment
+env
+
 logMsg "+++ PoD Worker START +++"
 logMsg "Current working directory: $WD"
 
@@ -271,13 +274,24 @@ SERVER_OS=${rr:3}
 rr=$(cat $WD/server_info.cfg | grep "arch=")
 SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
-# TODO: Need to check for POD_SHARED_HOME
+# check first whether we can use binaries from the PoD server directly.
+# Using these bins is more preferable, than using generic bins from the worker package
+need_bin_pkgs="TRUE"
 if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
-   user_defaults="$POD_UI_LOCATION/bin/pod-user-defaults"
-   pod_agent="$POD_UI_LOCATION/bin/pod-agent"
-else
+   cp "$POD_UI_LOCATION/bin/pod-user-defaults" $WD/
+   cp "$POD_UI_LOCATION/bin/pod-agent" $WD
+   
+   # check binary
+   $WD/pod-agent --version > /dev/null 2>&1
+   if (( $? == 0 )) ; then
+      need_bin_pkgs=""
+   fi
+fi
+
+# use pre-compiled binaries from the worker package
+if [ -n need_bin_pkgs ]; then
    # ***** prepare pre-compiled wn binaries *****
    WN_BIN_ARC="$WD/$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
    if [ ! -f "$WN_BIN_ARC" ]; then
@@ -289,8 +303,6 @@ else
 
    export PATH=$WD:$PATH 
    export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
-   user_defaults="$WD/pod-user-defaults"
-   pod_agent="$WD/pod-agent"
 
    # Transmitting an executable through the InputSandbox does not preserve execute permissions
    if [ ! -x $WD/pod-agent ]; then
@@ -300,6 +312,9 @@ else
       chmod +x $WD/pod-user-defaults
    fi
 fi
+
+user_defaults="$WD/pod-user-defaults"
+pod_agent="$WD/pod-agent"
 
 # Use a default ROOT distr. if needed
 get_default_ROOT $host_arch
