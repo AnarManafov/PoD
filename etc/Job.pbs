@@ -34,25 +34,42 @@ fi
 
 ###############################################################
 #
+#    Function: Transfer files from UI to WN, using shared home
+#    This function checks, whether SH FS is present.                
+#
+###############################################################
+try_shared_home()
+{
+   cp ${POD_UI_LOCATION}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   ret1=$?
+   cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+   ret2=$?
+   
+   if (( $ret1 == 0 && $ret2 == 0 ))
+      export POD_SHARED_HOME="YES"
+      echo "PoD has detected a shared home file system."
+   fi
+}
+###############################################################
+#
 #    Function: Transfer files from UI to WN.                  
 #
 ###############################################################
 stagein()
 {
- echo ""
- echo "Transferring files from the server to the compute node"
- echo "Writing files in node's directory  ${WRK_DIR}"
+   echo ""
+   echo "Transferring files from the server to the compute node"
+   echo "Writing files in node's directory  ${WRK_DIR}"
+ 
+   try_shared_home
 
- if [ "$POD_PBS_SHARED_HOME" = "0" ]; then
-   ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
-   ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
- else
-   cp ${UI_WRK_DIR}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
-   cp ${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
- fi
+   if [ -z "$POD_SHARED_HOME" ]; then
+      ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+      ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+   fi
 
- echo "Files in node work directory are as follows:"
- ls -l
+   echo "Files in node work directory are as follows:"
+   ls -l
 }
 ###############################################################
 #
@@ -61,22 +78,22 @@ stagein()
 ###############################################################
 stageout()
 {
- eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key pbs_plugin.upload_job_log)
+   eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key pbs_plugin.upload_job_log)
 
- if [ "$upload_job_log" = "1" ]; then
-    echo "Staging the log files out..."
-    echo "log dir: "$UI_LOG_DIR
+   if [ "$upload_job_log" = "1" ]; then
+      echo "Staging the log files out..."
+      echo "log dir: "$UI_LOG_DIR
 
-    if [ "$POD_PBS_SHARED_HOME" = "0" ]; then
-       $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$UI_LOG_DIR/proof_log.$ARRAYID.tgz
-       $SCP $WRK_DIR/xpd.log $UI_HOST:$UI_LOG_DIR/xpd.$ARRAYID.log
-       $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$UI_LOG_DIR/pod-agent.client.$ARRAYID.log
-    else
-       cp $WRK_DIR/proof_log.tgz $UI_LOG_DIR/proof_log.$ARRAYID.tgz
-       cp $WRK_DIR/xpd.log $UI_LOG_DIR/xpd.$ARRAYID.log
-       cp $WRK_DIR/pod-agent.client.log $UI_LOG_DIR/pod-agent.client.$ARRAYID.log 
-    fi
-fi
+      if [ -z "$POD_SHARED_HOME" ]; then
+         $SCP $WRK_DIR/proof_log.tgz $UI_HOST:$UI_LOG_DIR/proof_log.$ARRAYID.tgz
+         $SCP $WRK_DIR/xpd.log $UI_HOST:$UI_LOG_DIR/xpd.$ARRAYID.log
+         $SCP $WRK_DIR/pod-agent.client.log $UI_HOST:$UI_LOG_DIR/pod-agent.client.$ARRAYID.log
+      else
+         cp $WRK_DIR/proof_log.tgz $UI_LOG_DIR/proof_log.$ARRAYID.tgz
+         cp $WRK_DIR/xpd.log $UI_LOG_DIR/xpd.$ARRAYID.log
+         cp $WRK_DIR/pod-agent.client.log $UI_LOG_DIR/pod-agent.client.$ARRAYID.log 
+      fi
+   fi
 }
 
 ###############################################################

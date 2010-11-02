@@ -20,6 +20,24 @@ UI_WRK_DIR=$POD_UI_LOCATION
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$JOB_ID
 ###############################################################
 #
+#    Function: Transfer files from UI to WN, using shared home
+#    This function checks, whether SH FS is present.                
+#
+###############################################################
+try_shared_home()
+{
+   cp ${POD_UI_LOCATION}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   ret1=$?
+   cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+   ret2=$?
+   
+   if (( $ret1 == 0 && $ret2 == 0 ))
+      export POD_SHARED_HOME="YES"
+      echo "PoD has detected a shared home file system."
+   fi
+}
+###############################################################
+#
 #    Function: Transfer files from UI to WN.                  
 #
 ###############################################################
@@ -28,9 +46,14 @@ stagein()
  echo ""
  echo "Transferring files from the server to the compute node"
  echo "Writing files in node's directory  ${WRK_DIR}"
+ 
+ try_shared_home
 
- cp ${UI_WRK_DIR}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
- cp ${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+ if [ -z "$POD_SHARED_HOME" ]; then
+    echo "Error: can't detect a shared home file system." 
+    echo "This version of SGE/OGE plug-in supports only shared home file systems."
+    exit 1
+ fi
 
  echo "Files in node work directory are as follows:"
  ls -l

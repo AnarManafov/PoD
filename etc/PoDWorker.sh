@@ -17,6 +17,18 @@
 # Arguments:
 # $1 - a number of PROOF workers to spawn (default is 1). Used by SSH plug-in.
 #
+# Environment needed by workers:
+# A job script (like Job.pbs, Job.lsf, etc.) is responsible to export the following variables:
+# $POD_SHARED_HOME (optional) 	 : defined if a shared home file system is detected (where PoD is installed)
+# $POD_UI_LOG_LOCATION 		 : log dir on the PoD UI
+# $POD_UI_LOCATION     		 : $POD_LOCATION of the PoD UI
+#
+#
+# Notes:
+#
+# 1. The script redefines $POD_LOCATION to WN's working dir.
+# 2. If $POD_SHARED_HOME is defined and WN and Server have the same OS, CPU architecture combination,
+#    then the script will try to use binaries from the Server directly.
 #
 
 # current working dir
@@ -183,7 +195,36 @@ check_arch()
 
    logMsg "host's CPU/instruction set: $host_arch"
 }
+#=============================================================================
+# ***** get_default_ROOT *****
+# arg: $1 - is the architecture of the worker
+#=============================================================================
+get_default_ROOT()
+{
+   # define default ROOT packages
+   # will be used on WNs if a user doesn't provide own ROOT
+   case "$1" in
+      x86)
+         ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
+      amd64)
+         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
+   esac
 
+   local set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
+   if [ "$set_my_rootsys" = "no" ]; then
+      wget --no-verbose --tries=2 $BIN_REPO$ROOT_ARC || clean_up 1
+      tar -xzf $ROOT_ARC || clean_up 1
+
+      export ROOTSYS="$WD/root"
+   else
+      eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --key worker.my_rootsys)
+      export ROOTSYS=$ROOTSYS_FROM_CFG
+   fi
+   logMsg "using ROOTSYS: $ROOTSYS"
+   export PATH=$ROOTSYS/bin:$PATH
+   export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
+   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
+}
 # ************************************************************************
 #
 # 				M A I N
@@ -223,15 +264,6 @@ fi
 # host's CPU/instruction set
 check_arch
 
-# define default ROOT packages
-# will be used on WNs if a user doesn't provide own ROOT
-case "$host_arch" in
-   x86)
-      ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
-   amd64)
-      ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
-esac
-
 # **********************************************************************
 # ***** try to use pre-compiled bins from PoD Server *****
 rr=$(cat $WD/server_info.cfg | grep "os=")
@@ -240,7 +272,7 @@ rr=$(cat $WD/server_info.cfg | grep "arch=")
 SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 # TODO: Need to check for POD_SHARED_HOME
-if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" ]; then
+if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
 else
@@ -265,22 +297,9 @@ else
       chmod +x $WD/pod-user-defaults
    fi
 fi
-# ****************
-# ***** ROOT *****
-set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
-if [ "$set_my_rootsys" = "no" ]; then
-    wget --no-verbose --tries=2 $BIN_REPO$ROOT_ARC || clean_up 1
-    tar -xzf $ROOT_ARC || clean_up 1
 
-    export ROOTSYS="$WD/root"
-else
-    eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --key worker.my_rootsys)
-    export ROOTSYS=$ROOTSYS_FROM_CFG
-fi
-logMsg "using ROOTSYS: $ROOTSYS"
-export PATH=$ROOTSYS/bin:$PATH
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
-export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
+# Use a default ROOT distr. if needed
+get_default_ROOT $host_arch
 
 # **********************************************************************
 # export the location of the proof.cfg file
@@ -310,8 +329,7 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
   do
   # detecting whether xpd is running and on which port is listening
   xpd_detect
-  return_val=$?
-  if [ "X$return_val" != "X0" ]; then
+  if (( $? != 0 )); then
       logMsg "problem to detect XPD/XPD ports. Exiting..."
       clean_up 1
   fi
@@ -349,12 +367,11 @@ done
 
 # detect that xproofd failed to start
 XPD=$(pgrep -U $UID xproofd)
-XPD_RET_VAL=$?
-if [ "X$XPD_RET_VAL" = "X0" ]; then
-    logMsg "checking XPROOFD process: running..."
-else
+if (( $? != 0 )); then
     logMsg "checking XPROOFD process: is NOT running"
     clean_up 1
+else
+    logMsg "checking XPROOFD process: running..."
 fi
 
 logMsg "starting pod-agent..."

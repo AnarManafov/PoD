@@ -8,9 +8,14 @@ pod: Added "pod-check-update" command.
 pod: WNs don't download pre-compiled bins from the PoD central repository anymore. Now only PoD UI downloads them if missing.
      User could also provide own binaries, instead of using the PoD central repository. This resolves several security issues and
      speeds up the start up time of PoD jobs.
+pod: PoD tries to automatically detect whether PoD's server is installed on a shared home file system, which is also
+     mounted on WNs.  
 pod: PoD WNs now try to use first binaries from PoD UI, if OS, ARCH of Server and UI are the same
      and a shared home file system is detected. It speeds up the start up time of PoD jobs. If this try fails, PoD WN will use
      pre-compiled bins, which come with PoD' worker package.
+pod-user-defaults: updated user defaults configuration file - v0.6.
+pod-user-defaults: removed the pbs_plugin.shared_home option.
+pod-user-defaults: added the oge_plugin.upload_job_log option.
 
 ## v2.3 (2010-10-03)
 pod: pod-ssh doesn't use scp anymore, instead rsync is used.

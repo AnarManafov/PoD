@@ -95,7 +95,6 @@ namespace oge_plug
 
         private:
             std::string m_server_logDir;
-            bool m_oge_sharedHome;
             std::string m_envp;
     };
 

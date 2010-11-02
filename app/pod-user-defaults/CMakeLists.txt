@@ -14,7 +14,7 @@
 #*************************************************************************
 project( pod-user-defaults )
 
-set(USER_DEFAULTS_CFG_VERSION "0.5")
+set(USER_DEFAULTS_CFG_VERSION "0.6")
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")

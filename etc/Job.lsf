@@ -17,13 +17,86 @@
 ##
 ## Important: Assuming a shared file system in LSF!
 ##
-
 ######################################################
+# $POD_UI_LOCATION and $POD_UI_LOG_LOCATION are set by the OGE plug-in
+UI_WRK_DIR=$POD_UI_LOCATION
+###############################################################
+#
+#    Function: Transfer files from UI to WN, using shared home
+#    This function checks, whether SH FS is present.                
+#
+###############################################################
+try_shared_home()
+{
+   cp ${POD_UI_LOCATION}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   ret1=$?
+   cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+   ret2=$?
+   
+   if (( $ret1 == 0 && $ret2 == 0 ))
+      export POD_SHARED_HOME="YES"
+      echo "PoD has detected a shared home file system."
+   fi
+}
+###############################################################
+#
+#    Function: Transfer files from UI to WN.                  
+#
+###############################################################
+stagein()
+{
+   echo ""
+   echo "Transferring files from the server to the compute node"
+   echo "Writing files in node's directory  ${WRK_DIR}"
+ 
+   try_shared_home
 
-######################################################
+   if [ -z "$POD_SHARED_HOME" ]; then
+      echo "Error: can't detect a shared home file system." 
+      echo "This version of LSF plug-in supports only shared home file systems."
+      exit 1
+   fi
+
+   echo "Files in node work directory are as follows:"
+   ls -l
+}
+###############################################################
 #
-## create a working folder
+#    Function: Transfer files from WN to UI.                  
 #
+###############################################################
+stageout()
+{
+   # global variables
+   # we need to define lib path to ensure that we use proper libraries
+   export PATH=$WRK_DIR:$PATH 
+   export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
+   user_defaults="$WRK_DIR/pod-user-defaults"
+   pod_cfg=$WRK_DIR/PoD.cfg
+   #
+   ## logs
+   #
+   eval LOG_DIR=$($user_defaults -c $pod_cfg --key server.logfile_dir)/$LSB_JOBID
+   mkdir -p $LOG_DIR
+
+   upload_job_log=$($user_defaults -c $pod_cfg --key lsf_plugin.upload_job_log)
+
+   echo "PoD UI Log dir: $LOG_DIR"
+   echo "PoD upload jobs log: $upload_job_log"
+
+   if [ "$upload_job_log" = "1" ]; then
+      cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
+      cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$LSB_JOBINDEX.log
+      cp $WRK_DIR/pod-agent.client.log $LOG_DIR/pod-agent.client_$LSB_JOBINDEX.log 
+   fi
+}
+
+echo "Starting PoD worker on the host: $HOSTNAME"
+###############################################################
+#
+# create a working folder
+#
+###############################################################
 WRK_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
 if [ -z $WRK_DIR ]; then
    echo "Error: Can't create a working directory."
@@ -31,44 +104,33 @@ if [ -z $WRK_DIR ]; then
 fi
 echo "working directory: " $WRK_DIR
 cd $WRK_DIR || exit 1
+###############################################################
 #
-## input files.
-## we don't use BSUB-f since it doesn't support env. variables in paths
+# input files.
 #
-cp $POD_LOCATION/etc/pod-worker.tar.gz $WRK_DIR/pod-worker.tar.gz
-cp $POD_LOCATION/etc/PoDWorker.sh $WRK_DIR/PoDWorker.sh
+###############################################################
+stagein
+################################################################
 #
-## Here you can specify your own version of ROOT
-## or you can delete -r <ROOTSYS> parameter and 
-## PoDWorker will use its own settings
+# POD WORKER
 #
+# Here you can specify your own version of ROOT
+# or you can delete -r <ROOTSYS> parameter and 
+# PoDWorker will use its own settings
+#
+###############################################################
 $WRK_DIR/PoDWorker.sh
-# global variables
-# we need to define lib path to ensure that we use proper libraries
-export PATH=$WRK_DIR:$PATH 
-export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
-user_defaults="$WRK_DIR/pod-user-defaults"
-pod_cfg=$WRK_DIR/PoD.cfg
+###############################################################
 #
-## logs
+# get all logs
 #
+###############################################################
+stageout
+###############################################################
 #
-## log dir
+# remove working folder
 #
-eval LOG_DIR=$($user_defaults -c $pod_cfg --key server.logfile_dir)/$LSB_JOBID
-mkdir -p $LOG_DIR
-
-upload_job_log=$($user_defaults -c $pod_cfg --key lsf_plugin.upload_job_log)
-
-echo "PoD UI Log dir: $LOG_DIR"
-echo "PoD upload jobs log: $upload_job_log"
-
-if [ "$upload_job_log" = "1" ]; then
-   cp $WRK_DIR/proof_log.tgz $LOG_DIR/proof_log_$LSB_JOBINDEX.tgz
-   cp $WRK_DIR/xpd.log $LOG_DIR/xpd_$LSB_JOBINDEX.log
-   cp $WRK_DIR/pod-agent.client.log $LOG_DIR/pod-agent.client_$LSB_JOBINDEX.log 
-fi
-
+###############################################################
 if [[ -d $WRK_DIR ]]; then
    rm -rf $WRK_DIR
 fi

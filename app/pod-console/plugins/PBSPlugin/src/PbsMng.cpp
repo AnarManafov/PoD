@@ -85,10 +85,6 @@ void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
-
-        stringstream ss;
-        ss << _ud.getValueForKey( "pbs_plugin.shared_home" );
-        ss >> m_pbs_sharedHome;
     }
     catch( exception &e )
     {
@@ -257,15 +253,10 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // set POD_UI_LOG_LOCATION variable on the worker nodes
     env += "POD_UI_LOG_LOCATION=";
     env += m_server_logDir;
-    env += ',';
-
-    // set POD_PBS_SHARED_HOME variable on the worker nodes
-    env += "POD_PBS_SHARED_HOME=";
-    env += m_pbs_sharedHome ? "1" : "0";
 
     // export all env. variables of the process to jobs
     // if the home is shared
-    if( m_pbs_sharedHome )
+    if( !m_envp.empty() )
     {
         env += ',';
         env += m_envp;

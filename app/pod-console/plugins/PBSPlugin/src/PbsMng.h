@@ -88,7 +88,6 @@ namespace pbs_plug
 
         private:
             std::string m_server_logDir;
-            bool m_pbs_sharedHome;
             std::string m_envp;
     };
 

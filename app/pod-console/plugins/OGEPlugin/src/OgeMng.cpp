@@ -87,10 +87,6 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
-
-        stringstream ss;
-        ss << _ud.getValueForKey( "oge_plugin.shared_home" );
-        ss >> m_oge_sharedHome;
     }
     catch( exception &e )
     {
@@ -277,20 +273,11 @@ MiscCommon::StringVector_t COgeMng::getEnvArray() const
         env.push_back( tmp );
     }
 
-    // set POD_OGE_SHARED_HOME variable on the worker nodes
-    tmp = "POD_OGE_SHARED_HOME=";
-    tmp += m_oge_sharedHome ? "1" : "0";
-    env.push_back( tmp );
-
 // We don't need to do the following commented code, since,
 // SGE supports environment export, qsub -V.
 // But we'll keep the code for a while just in case.
 //
 //    // export all env. variables of the process to jobs
-//    // if the home is shared.
-//    // Parsing a command seporated list, which comes from the main
-//    if( m_oge_sharedHome )
-//    {
 //        size_t pos = m_envp.find( ',' );
 //        size_t last_pos = 0;
 //        for( ; pos != string::npos; )
@@ -305,7 +292,6 @@ MiscCommon::StringVector_t COgeMng::getEnvArray() const
 //                // assing the last key=value
 //                tmp = m_envp.substr( last_pos, m_envp.size() - last_pos );
 //            }
-//        }
 //    }
 
     return env;
