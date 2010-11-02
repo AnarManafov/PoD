@@ -276,7 +276,7 @@ SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 logMsg "PoD worker runs on $OS-$wn_host_arch"
 # check first whether we can use binaries from the PoD server directly.
-# Using these bins is more preferable, than using generic bins from the worker package
+# Using these bins is more preferable, than using generic bins from the worker package.
 need_bin_pkgs="TRUE"
 if [ "$OS-$wn_host_arch" = "$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
@@ -306,23 +306,19 @@ if [ -n need_bin_pkgs ]; then
    export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
 
    # Transmitting an executable through the InputSandbox does not preserve execute permissions
-   if [ ! -x $WD/pod-agent ]; then
-      chmod +x $WD/pod-agent
-   fi
-   if [ ! -x $WD/pod-user-defaults ]; then
-      chmod +x $WD/pod-user-defaults
-   fi
-
-   # check binary
-   $WD/pod-agent --version > /dev/null 2>&1
-   if (( $? != 0 )) ; then
-      logMsg "Error: Can't find a suitable pre-compiled binary for this system."
-      exit 1
-   fi
+   chmod +x $WD/pod-agent
+   chmod +x $WD/pod-user-defaults
 fi
 
 user_defaults="$WD/pod-user-defaults"
 pod_agent="$WD/pod-agent"
+
+# check binary
+$pod_agent --version > /dev/null 2>&1
+if (( $? != 0 )) ; then
+   logMsg "Error: Can't find a suitable pre-compiled binary for this system."
+   exit 1
+fi
 
 # Use a default ROOT distr. if needed
 get_default_ROOT $host_arch
@@ -394,18 +390,18 @@ done
 # detect that xproofd failed to start
 XPD=$(pgrep -U $UID xproofd)
 if (( $? != 0 )); then
-    logMsg "checking XPROOFD process: is NOT running"
-    clean_up 1
+   logMsg "checking XPROOFD process: is NOT running"
+   clean_up 1
 else
-    logMsg "checking XPROOFD process: running..."
+   logMsg "checking XPROOFD process: running..."
 fi
 
 logMsg "starting pod-agent..."
 # start pod-agent
 if [ -n "$1" ]; then
-	$pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
+   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
 else
-	$pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
+   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
 fi
 # wait for pod-agent's process
 PODAGENT_PID=$!
