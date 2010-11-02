@@ -176,7 +176,7 @@ check_arch()
    OS=$(uname -s 2>&1)
    if [ "$OS" != "Linux" ]; then
       logMsg "Error: PoD doesn't support this operating system. Exiting..."
-      exit 1
+      clean_up 1
    fi
 
    wn_host_arch=$(uname -m  2>&1)
@@ -189,11 +189,11 @@ check_arch()
          ;;
       *)
          logMsg "Error: unsupported architecture: $host_arch"
-         exit 1
+         clean_up 1
 	 ;;
    esac
 
-   logMsg "host's CPU/instruction set: $wn_host_arch"
+   logMsg "host's CPU/instruction set: $host_arch"
 }
 #=============================================================================
 # ***** get_default_ROOT *****
@@ -211,7 +211,8 @@ get_default_ROOT()
    esac
 
    local set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
-   if [ "$set_my_rootsys" = "no" ]; then
+   if (( $set_my_rootsys == 0 )); then
+      logMsg "User requested to use a PoD default ROOT version. Downloading..."
       wget --no-verbose --tries=2 $BIN_REPO$ROOT_ARC || clean_up 1
       tar -xzf $ROOT_ARC || clean_up 1
 
@@ -220,10 +221,23 @@ get_default_ROOT()
       eval ROOTSYS_FROM_CFG=$($user_defaults -c $POD_CFG --key worker.my_rootsys)
       export ROOTSYS=$ROOTSYS_FROM_CFG
    fi
-   logMsg "using ROOTSYS: $ROOTSYS"
+
+   if [ -z $ROOTSYS ]; then
+      logMsg "Warning: ROOTSYS is not defined."
+   else
+      logMsg "using ROOTSYS: $ROOTSYS"
+   fi
+   
    export PATH=$ROOTSYS/bin:$PATH
    export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
-   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH 
+   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH
+
+   # check binary
+   xproofd -h > /dev/null 2>&1
+   if (( $? != 0 )) ; then
+      logMsg "Error: can't execute xproofd. Check your ROOT installation."
+      clean_up 1
+   fi
 }
 # ************************************************************************
 #
@@ -297,7 +311,7 @@ if [ -n need_bin_pkgs ]; then
    WN_BIN_ARC="$WD/$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
    if [ ! -f "$WN_BIN_ARC" ]; then
       logMsg "Error: Can't find WN pre-compiled bin.: $WN_BIN_ARC"
-      exit 1
+      clean_up 1
    fi
    # un-tar without creating a sub-directory
    tar --strip-components=1 -xzf $WN_BIN_ARC || clean_up 1
@@ -317,7 +331,7 @@ pod_agent="$WD/pod-agent"
 $pod_agent --version > /dev/null 2>&1
 if (( $? != 0 )) ; then
    logMsg "Error: Can't find a suitable pre-compiled binary for this system."
-   exit 1
+   clean_up 1
 fi
 
 # Use a default ROOT distr. if needed
