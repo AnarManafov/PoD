@@ -45,7 +45,7 @@ try_shared_home()
    cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
    ret2=$?
    
-   if (( $ret1 == 0 && $ret2 == 0 ))
+   if (( $ret1 == 0 && $ret2 == 0 )); then
       export POD_SHARED_HOME="YES"
       echo "PoD has detected a shared home file system."
    fi
