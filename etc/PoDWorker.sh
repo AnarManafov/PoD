@@ -275,6 +275,8 @@ logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 if [ "$os-$host_arch"="$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
    logMsg "PoD Server has the same arch and a shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
+   user_defaults="$POD_UI_LOCATION/bin/pod-user-defaults"
+   pod_agent="$POD_UI_LOCATION/bin/pod-agent"
 else
    # ***** prepare pre-compiled wn binaries *****
    WN_BIN_ARC="$WD/$BASE_NAME-$PKG_VERSION-$OS-$host_arch.tar.gz"
@@ -288,6 +290,7 @@ else
    export PATH=$WD:$PATH 
    export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
    user_defaults="$WD/pod-user-defaults"
+   pod_agent="$WD/pod-agent"
 
    # Transmitting an executable through the InputSandbox does not preserve execute permissions
    if [ ! -x $WD/pod-agent ]; then
@@ -377,9 +380,9 @@ fi
 logMsg "starting pod-agent..."
 # start pod-agent
 if [ -n "$1" ]; then
-	$WD/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
+	$pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
 else
-	$WD/pod-agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
+	$pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
 fi
 # wait for pod-agent's process
 PODAGENT_PID=$!
