@@ -17,10 +17,13 @@
 # Usage:
 #      pod-server start|stop|status
 #
+# Supported OS:
+#    Linux, Mac OS X (tested on 10.6)
 #
+# 
 # Notes:
-# On start the script will check whether WNs pre-compiled bins are present, if not, it will down load them.
-# Users could provide own version of the pre-compiled bins and avoid of downloading of them.
+#    On start the script will check whether WNs pre-compiled bins are present, if not, it will down load them.
+#    Users could provide own version of the pre-compiled bins and avoid of downloading of them.
 # 
 #
 #######
@@ -58,12 +61,22 @@ server_status()
     fi  
     
     # change a string separator
-    O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xproofd|pod-agent")) IFS=$O;
- 
+    # on MacOSX we use lsof to get the ports of out processes
+    # on Linux we use netstat
+    if [ "$SERVER_OS" = "Darwin" ]; then
+       O=$IFS IFS=$'\n' NETSTAT_RET=($(lsof -P -n -i 2>/dev/null | grep LISTEN | egrep "xproofd|pod-agent")) IFS=$O;
+    else
+       O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xproofd|pod-agent")) IFS=$O;
+    fi
+
     # look for ports of the server
     for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
     do
-	port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g')
+        if [ "$SERVER_OS" = "Darwin" ]; then
+	   port=$(echo ${NETSTAT_RET[$i]} | awk '{print $9}' | sed 's/^.*://g')
+        else
+           port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g') 
+        fi
 	if [ -n "$port" ]; then
 	    if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
 		XPROOF_PORT=$port
