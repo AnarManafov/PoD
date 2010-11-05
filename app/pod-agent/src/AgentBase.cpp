@@ -113,8 +113,7 @@ namespace PROOFAgent
         options.add_options()
         ( "server.host", po::value<string>(), "" )
         ( "server.port", po::value<unsigned int>(), "" )
-        ( "server.os", po::value<string>(), "" )
-        ( "server.arch", po::value<string>(), "" );
+        ;
 
         ifstream ifs( _filename.c_str() );
         if( !ifs.is_open() || !ifs.good() )

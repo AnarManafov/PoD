@@ -113,8 +113,6 @@ create_agent_server_info_file()
     echo "[server]" > $SERVERINFO_FILE
     echo "host=$1" >> $SERVERINFO_FILE
     echo "port=$2" >> $SERVERINFO_FILE
-    echo "os=$SERVER_OS" >> $SERVERINFO_FILE
-    echo "arch=$SERVER_ARCH" >> $SERVERINFO_FILE
 }
 # ************************************************************************
 # ***** Get pre-compiled bins for WNs  *****

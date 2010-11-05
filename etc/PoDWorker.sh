@@ -27,8 +27,7 @@
 # Notes:
 #
 # 1. The script redefines $POD_LOCATION to WN's working dir.
-# 2. If $POD_SHARED_HOME is defined and WN and Server have the same OS, CPU architecture combination,
-#    then the script will try to use binaries from the Server directly.
+# 2. If $POD_SHARED_HOME is defined, then the script will try to use binaries from the Server directly.
 #
 
 # current working dir
@@ -283,25 +282,25 @@ check_arch
 
 # **********************************************************************
 # ***** try to use pre-compiled bins from PoD Server *****
-rr=$(cat $WD/server_info.cfg | grep "os=")
-SERVER_OS=${rr:3}
-rr=$(cat $WD/server_info.cfg | grep "arch=")
-SERVER_ARCH=${rr:5}
 logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 logMsg "PoD worker runs on $OS-$wn_host_arch"
 # check first whether we can use binaries from the PoD server directly.
 # Using these bins is more preferable, than using generic bins from the worker package.
 need_bin_pkgs="TRUE"
-if [ "$OS-$wn_host_arch" = "$SERVER_OS-$SERVER_ARCH" -a -n "$POD_SHARED_HOME" ]; then
-   logMsg "PoD Server has the same arch and a shared home file system detected."
+if [ -n "$POD_SHARED_HOME" ]; then
+   logMsg "A shared home file system detected."
    logMsg "Let's try to use PoD binaries directly from the server."
-   cp "$POD_UI_LOCATION/bin/pod-user-defaults" $WD/
-   cp "$POD_UI_LOCATION/bin/pod-agent" $WD
    
    # check binary
-   $WD/pod-agent --version > /dev/null 2>&1
+   bin_to_test="$POD_UI_LOCATION/bin/pod-agent"
+   $bin_to_test --version > /dev/null 2>&1
    if (( $? == 0 )) ; then
+      logMsg "Server's bins are working."
       need_bin_pkgs=""
+      cp "$POD_UI_LOCATION/bin/pod-user-defaults" $WD/
+      cp "$POD_UI_LOCATION/bin/pod-agent" $WD
+   else
+      logMsg "Can't use server's bins. Will try with the worker package."    
    fi
 fi
 
