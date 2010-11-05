@@ -22,7 +22,7 @@
 #
 # 
 # Notes:
-#    On start the script will check whether WNs pre-compiled bins are present, if not, it will down load them.
+#    On start the script checks whether WNs pre-compiled bins are present, if not, it will down load them.
 #    Users could provide own version of the pre-compiled bins and avoid of downloading of them.
 # 
 #
@@ -117,7 +117,7 @@ get_freeport()
        fi 
     done
 
-    echo "Error: Cant find free socket port"
+    echo "Error: Cant find a free socket port in the given range: $1 - $2"
     exit 1
 }
 # ************************************************************************
@@ -174,7 +174,7 @@ get_bins()
    done
 
    if [ -z "${CMD_URL}" ]; then
-      echo "${UTIL_NAME} error: Can't find neither wget, nor curl commands. At least one of these commands must be installed on the system."
+      echo "${UTIL_NAME} error: Can't find neither wget, nor curl commands. At least one of these commands must be available."
       exit 1
    fi
 
