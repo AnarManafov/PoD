@@ -56,8 +56,8 @@ server_status()
     AGENT_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}')
     
     if [ -z "$XPD_PID" -a  -z "$AGENT_PID" ]; then
-	echo "PoD server is NOT running"
-	return 1
+       echo "PoD server is NOT running"
+       return 1
     fi  
     
     # change a string separator
@@ -72,33 +72,33 @@ server_status()
     # look for ports of the server
     for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
     do
-        if [ "$SERVER_OS" = "Darwin" ]; then
-	   port=$(echo ${NETSTAT_RET[$i]} | awk '{print $9}' | sed 's/^.*://g')
-        else
-           port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g') 
-        fi
-	if [ -n "$port" ]; then
-	    if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
-		XPROOF_PORT=$port
-	    elif (( ($port >= $PROOFAGENT_PORTS_RANGE_MIN) && ($port <= $PROOFAGENT_PORTS_RANGE_MAX) )); then
-		POD_AGENT_PORT=$port
-	    fi
-	fi
+       if [ "$SERVER_OS" = "Darwin" ]; then
+	  port=$(echo ${NETSTAT_RET[$i]} | awk '{print $9}' | sed 's/^.*://g')
+       else
+          port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g') 
+       fi
+       if [ -n "$port" ]; then
+	  if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
+	     XPROOF_PORT=$port
+	  elif (( ($port >= $PROOFAGENT_PORTS_RANGE_MIN) && ($port <= $PROOFAGENT_PORTS_RANGE_MAX) )); then
+	       POD_AGENT_PORT=$port
+	  fi
+       fi
     done
 
     if [ -n  "$XPD_PID" ]; then
-	echo "XPROOFD [$XPD_PID] port: "$XPROOF_PORT
+       echo "XPROOFD [$XPD_PID] port: "$XPROOF_PORT
     else
-	echo "WARNING: XPROOFD is NOT running."
+       echo "WARNING: XPROOFD is NOT running."
     fi
     if [ -n  "$AGENT_PID" ]; then
-	echo "PoD agent [$AGENT_PID] port: "$POD_AGENT_PORT
+       echo "PoD agent [$AGENT_PID] port: "$POD_AGENT_PORT
     else
-	echo "WARNING: PoD agent is NOT running."
+       echo "WARNING: PoD agent is NOT running."
     fi
 
     if [ -n  "$XPD_PID" ]; then
-	echo "PROOF connection string: "$SERVER_HOST_NAME:$XPROOF_PORT
+       echo "PROOF connection string: "$SERVER_HOST_NAME:$XPROOF_PORT
     fi    
 
     return 0
@@ -166,11 +166,11 @@ get_bins()
    # check for wget or curl commands
    for index in 0 1
    do
-        ${CMD[index]} --version > /dev/null 2>&1
-        if (( $? != 0 )) ; then
-            continue
-        fi
-	CMD_URL="${CMD[index]}${OPT[index]}"
+      ${CMD[index]} --version > /dev/null 2>&1
+      if (( $? != 0 )) ; then
+         continue
+      fi
+      CMD_URL="${CMD[index]}${OPT[index]}"
    done
 
    if [ -z "${CMD_URL}" ]; then
@@ -184,13 +184,13 @@ get_bins()
    # download all pre-compiled bins
    for index in 0 1
    do
-     FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
-     $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
-     if (( $? != 0 )); then
-        echo "Error: Can't download pre-compiled binaries for WNs."
-        echo "Please check availability of ${POD_URL}/$PKG_VERSION/$FILE_NAME"
-        exit 1
-     fi
+      FILE_NAME="pod-wrk-bin-$PKG_VERSION-Linux-${FILE_ARCH[index]}.tar.gz"
+      $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
+      if (( $? != 0 )); then
+         echo "Error: Can't download pre-compiled binaries for WNs."
+         echo "Please check availability of ${POD_URL}/$PKG_VERSION/$FILE_NAME"
+         exit 1
+      fi
    done
    popd &> /dev/null
 }
