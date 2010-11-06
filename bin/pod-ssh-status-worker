@@ -111,7 +111,6 @@ logMsg()
 #=============================================================================
 # this part is executed locally
 logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
-SELF_PATH=$(readlink -f $0)
 
 $SSH_CMD "test -d $RDIR" 2>&1 | logMsgPipe
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
