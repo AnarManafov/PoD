@@ -13,6 +13,7 @@ pod: PoD tries to automatically detect whether PoD's server is installed on a sh
 pod: PoD WNs now try to use first binaries from PoD UI, if OS, ARCH of Server and UI are the same
      and a shared home file system is detected. It speeds up the start up time of PoD jobs. If this try fails, PoD WN will use
      pre-compiled bins, which come with PoD' worker package.
+pod: Now PoD UI/Server can run on Mac OS X. So far only CLI and only the SSH plug-in are working and have been tested.
 pod-user-defaults: updated user defaults configuration file - v0.6.
 pod-user-defaults: removed the pbs_plugin.shared_home option.
 pod-user-defaults: added the oge_plugin.upload_job_log option.
