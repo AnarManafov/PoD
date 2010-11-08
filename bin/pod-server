@@ -111,9 +111,9 @@ get_freeport()
     for(( i = $1; i < $2; ++i ))
     do
        if [ "$SERVER_OS" = "Darwin" ]; then
-          netstat -ant 2>/dev/null | grep ":$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
-       else
           netstat -an -p tcp 2>/dev/null | grep ".$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
+       else
+          netstat -ant 2>/dev/null | grep ":$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
        fi 
     done
 
