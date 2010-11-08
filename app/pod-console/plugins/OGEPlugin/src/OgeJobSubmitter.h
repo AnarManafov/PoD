@@ -143,7 +143,7 @@ namespace oge_plug
                         throw std::runtime_error( "Bad jobs' parent index" );
 
                     COgeMng::jobID_t lastJobID = jobs[0];
-                    qDebug( "COgeJobSubmitter::run(): job has been submitted, parentid=%s, numWNs=%d",
+                    qDebug( "COgeJobSubmitter::run(): job has been submitted, parentid=%s, numWNs=%lu",
                             lastJobID.c_str(), m_numberOfWrk );
 
                     emit changeProgress( 90 );
