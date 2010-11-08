@@ -38,7 +38,7 @@ using namespace oge_plug;
 Q_DECLARE_METATYPE( oge_plug::SQueueInfo )
 //=============================================================================
 // default Job Script file
-const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.pbs";
+const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.oge";
 // configuration file of the plug-in
 const LPCTSTR g_szOgePluginCfgFileName = "$POD_LOCATION/etc/pod-console_OGE.xml.cfg";
 //=============================================================================

@@ -92,8 +92,11 @@ void CJobsContainer::removeAllCompletedJobs()
 //=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
 {
+    qDebug("CJobsContainer::_updateNumberOfJobs()");
+    
     if( m_removeAllCompletedJobs )
     {
+        qDebug("CJobsContainer::_updateNumberOfJobs(): remove all completed");
         m_removeAllCompletedJobs = false;
 
         JobsContainer_t c( m_cur_ids );
