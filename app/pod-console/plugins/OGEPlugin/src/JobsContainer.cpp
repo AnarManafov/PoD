@@ -92,11 +92,11 @@ void CJobsContainer::removeAllCompletedJobs()
 //=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
 {
-    qDebug("CJobsContainer::_updateNumberOfJobs()");
-    
+    qDebug( "CJobsContainer::_updateNumberOfJobs" );
+
     if( m_removeAllCompletedJobs )
     {
-        qDebug("CJobsContainer::_updateNumberOfJobs(): remove all completed");
+        qDebug( "CJobsContainer::_updateNumberOfJobs: remove all completed" );
         m_removeAllCompletedJobs = false;
 
         JobsContainer_t c( m_cur_ids );
@@ -209,6 +209,7 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, b
 //=============================================================================
 size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool _emitUpdate )
 {
+    qDebug( "CJobsContainer::_markAllCompletedJobs" );
     size_t run_jobs( 0 );
 
     // if all jobs are marked already as completed, we don't need to ask OGE
@@ -219,11 +220,8 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     {
         if( !iter->second->m_completed )
         {
-            // request status of not completed jobs
-            // int status = m_submitter->jobStatus(iter->first);
-            //if(  )
-
             need_request = true;
+            break;
         }
     }
 
@@ -234,6 +232,8 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     iter_end = _container->end();
     for( ; iter != iter_end; ++iter )
     {
+        qDebug( "CJobsContainer::_markAllCompletedJobs: job=%s",
+                iter->first.c_str() );
         // Bad ID or a root item
         if( iter->first.empty() )
             continue;
@@ -241,71 +241,39 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         if( iter->second->m_completed )
             continue;
 
-        int status = m_submitter->jobStatus( iter->first );
-        if( m_submitter->isJobComplete( status ) )
+        // if the parent, we don't write any status so-far,
+        // in OGE plug-in, a parent job is just a fake and can't have a
+        // status.
+        if( COgeMng::isParentID( iter->first ) )
         {
-            // set job to completed
-            iter->second->m_completed = true;
-            iter->second->m_status = m_submitter->jobStatusAsString( status );
-            iter->second->m_strStatus = iter->second->m_status;
+            qDebug( "CJobsContainer::_markAllCompletedJobs: %s is a parent job",
+                    iter->first.c_str() );
+            iter->second->m_strStatus = "(expand to see the status)";
         }
         else
         {
+            int status = m_submitter->jobStatus( iter->first );
+            if( m_submitter->isJobComplete( status ) )
+            {
+                qDebug( "CJobsContainer::_markAllCompletedJobs: %s is completed",
+                        iter->first.c_str() );
+                // set job to completed
+                iter->second->m_completed = true;
+            }
+            else
+            {
+                qDebug( "CJobsContainer::_markAllCompletedJobs: %s is running",
+                        iter->first.c_str() );
+                ++run_jobs;
+            }
             iter->second->m_status = m_submitter->jobStatusAsString( status );
-            iter->second->m_strStatus = "(expand to see the status)";
+            iter->second->m_strStatus = iter->second->m_status;
         }
 
-
-//        COgeMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
-//        if( all_available_jobs.end() == found )
-//        {
-//            // if the parent, we don't write any status so-far,
-//            // in OGE plug-in, a parent job is just a fake and can't have a
-//            // status.
-//            // FIXME: implement a status lagorthm for parent jobs (some summary of
-//            // status of children)
-//            if( COgeMng::isParentID( iter->first ) )
-//            {
-//                iter->second->m_completed = true;
-//                iter->second->m_status = "completed";
-//                iter->second->m_strStatus = "(expand to see the status)";
-//                continue;
-//            }
-//
-//            ++iter->second->m_tryCount;
-//            if( iter->second->m_tryCount > g_maxRetryCount )
-//            {
-//                // set job to completed
-//                iter->second->m_completed = true;
-//                iter->second->m_status = "completed";
-//                iter->second->m_strStatus = "completed";
-//            }
-//            else
-//            {
-//                iter->second->m_strStatus = "not known yet...";
-//            }
-//
-//        }
-//        else
-//        {
-//            // calculate a number of expected PoD workers.
-//            // We exclude "parent" job ids
-//            if( !COgeMng::isParentID( iter->first ) )
-//                ++run_jobs;
-//
-//            if( iter->second->m_status == found->second.m_status )
-//                continue;
-//
-//            iter->second->m_completed = COgeMng::isJobComplete( found->second.m_status );
-//            if( iter->second->m_completed )
-//                --run_jobs;
-//
-//            iter->second->m_status = found->second.m_status;
-//            iter->second->m_strStatus = COgeMng::jobStatusToString( found->second.m_status );
-//        }
         if( _emitUpdate )
             emit jobChanged( iter->second );
     }
 
+    qDebug( "CJobsContainer::_markAllCompletedJobs: running jobs=%d", run_jobs );
     return run_jobs;
 }

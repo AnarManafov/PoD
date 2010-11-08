@@ -126,7 +126,7 @@ namespace oge_plug
         protected:
             void run()
             {
-                qDebug("COgeJobSubmitter::run()");
+                qDebug( "COgeJobSubmitter::run()" );
                 emit changeProgress( 0 );
 
                 // Submit a Grid Job
@@ -143,8 +143,8 @@ namespace oge_plug
                         throw std::runtime_error( "Bad jobs' parent index" );
 
                     COgeMng::jobID_t lastJobID = jobs[0];
-                    qDebug("COgeJobSubmitter::run(): job has been submitted, parentid=%s, numWNs=%d", 
-                            lastJobID.c_str(), m_numberOfWrk);
+                    qDebug( "COgeJobSubmitter::run(): job has been submitted, parentid=%s, numWNs=%d",
+                            lastJobID.c_str(), m_numberOfWrk );
 
                     emit changeProgress( 90 );
 
