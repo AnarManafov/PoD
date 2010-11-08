@@ -91,6 +91,8 @@ void CJobInfo::update( const COgeJobSubmitter::jobslist_t &_Jobs,
 //=============================================================================
 void CJobInfo::addChildItem( const COgeMng::jobID_t &_JobID, SJobInfo *_parent ) const
 {
+    qDebug( "CJobInfo::addChildItem: for parent %s, child to add: %s",
+            _parent->m_id.c_str(), _JobID.c_str() );
     SJobInfo *info( new SJobInfo( _JobID, _parent ) );
     _parent->addChild( info );
 }
