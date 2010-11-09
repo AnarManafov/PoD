@@ -53,12 +53,12 @@ namespace PROOFAgent
         private:
             void RefreshAgent( const SOptions_t &_data )
             {
-                if(( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
+                if (( m_Agent.get() && m_Agent->GetMode() != m_Mode ) || !m_Agent.get() )
                     m_Agent.reset( Spawn( _data ) );
             }
             CAgentBase* Spawn( const SOptions_t &_data )
             {
-                switch( m_Mode )
+                switch ( m_Mode )
                 {
                     case Server:
                         return new CAgentServer( _data );

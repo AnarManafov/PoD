@@ -31,8 +31,8 @@ namespace PROOFAgent
     struct SMessageHeader
     {
         SMessageHeader():
-            m_cmd( 0 ),
-            m_len( 0 )
+                m_cmd( 0 ),
+                m_len( 0 )
         {
             m_sign[0] = '\0';
         }

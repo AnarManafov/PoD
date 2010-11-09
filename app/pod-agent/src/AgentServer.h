@@ -29,21 +29,21 @@ namespace PROOFAgent
     struct SWorkerInfo
     {
         SWorkerInfo( const std::string &_infoString ):
-            m_proofPort( 0 ),
-            m_removeMe( false ),
-            m_id( 0 ),
-            m_numberOfPROOFWorkers( 1 ),
-            m_bupInfoString( _infoString )
+                m_proofPort( 0 ),
+                m_removeMe( false ),
+                m_id( 0 ),
+                m_numberOfPROOFWorkers( 1 ),
+                m_bupInfoString( _infoString )
         {
         }
         std::string string() const
         {
             std::stringstream ss;
-            if( 0 != m_id )
+            if ( 0 != m_id )
             {
                 ss
-                        << m_user << "@" << m_host << ":" << m_proofPort
-                        << "[id:" << m_id << "]";
+                << m_user << "@" << m_host << ":" << m_proofPort
+                << "[id:" << m_id << "]";
             }
             else
             {
@@ -73,8 +73,8 @@ namespace PROOFAgent
      *
      */
     class CAgentServer :
-        public CAgentBase,
-        MiscCommon::CLogImp<CAgentServer>
+                public CAgentBase,
+                MiscCommon::CLogImp<CAgentServer>
     {
             typedef boost::shared_ptr<CNode> node_type;
             typedef std::list<node_type> Sockets_type;

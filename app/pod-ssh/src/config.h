@@ -41,27 +41,27 @@ struct SConfigRecord
     int assignValues( const InputIterator &_begin, const InputIterator &_end )
     {
         InputIterator iter = _begin;
-        if( iter == _end )
+        if ( iter == _end )
             return 1;
         m_id = *iter;
         MiscCommon::trim( &m_id, ' ' );
 
-        if( ++iter == _end )
+        if ( ++iter == _end )
             return 2;
         m_addr = *iter;
         MiscCommon::trim( &m_addr, ' ' );
 
-        if( ++iter == _end )
+        if ( ++iter == _end )
             return 3;
         m_sshOptions = *iter;
         MiscCommon::trim( &m_sshOptions, ' ' );
 
-        if( ++iter == _end )
+        if ( ++iter == _end )
             return 4;
         m_wrkDir = *iter;
         MiscCommon::trim( &m_wrkDir, ' ' );
 
-        if( ++iter == _end )
+        if ( ++iter == _end )
             return 5;
         std::stringstream ss;
         ss << *iter;

@@ -34,7 +34,7 @@ namespace PROOFAgent
      *
      */
     class CPROOFAgent:
-        public MiscCommon::CLogImp<CPROOFAgent>
+                public MiscCommon::CLogImp<CPROOFAgent>
     {
         public:
             CPROOFAgent();

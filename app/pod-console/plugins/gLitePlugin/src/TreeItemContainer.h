@@ -23,7 +23,7 @@ class CTreeItemContainer
     public:
         void update( const CJobSubmitter::jobslist_t &_Jobs, QTreeWidget *_Tree )
         {
-            if( _Jobs != m_Jobs )
+            if ( _Jobs != m_Jobs )
                 _Reset( _Jobs, _Tree );
             else
                 _Update();
@@ -42,7 +42,7 @@ class CTreeItemContainer
 
             CJobSubmitter::jobslist_t::const_iterator iter = m_Jobs.begin();
             CJobSubmitter::jobslist_t::const_iterator iter_end = m_Jobs.end();
-            for( ; iter != iter_end; ++iter )
+            for ( ; iter != iter_end; ++iter )
             {
                 QTreeWidgetItem *ParentJobItem = new QTreeWidgetItem( _Tree );
                 m_ParentJobItem.push_back( container_t::value_type( *iter, ParentJobItem ) );
@@ -55,7 +55,7 @@ class CTreeItemContainer
                     std::for_each( jobs.begin(), jobs.end(),
                                    boost::bind( boost::mem_fn( &CTreeItemContainer::addChildItem ), this, _1, ParentJobItem ) );
                 }
-                catch( const std::exception &_e )
+                catch ( const std::exception &_e )
                     {}
             }
 
@@ -76,13 +76,13 @@ class CTreeItemContainer
 
         void updateItem( container_t::value_type &_Item )
         {
-            if( !_Item.second )
+            if ( !_Item.second )
                 return;
             try
             {
                 _Item.second->setText( 1, getJobStatus( _Item.first ).c_str() );
             }
-            catch( const std::exception &_e )
+            catch ( const std::exception &_e )
                 {}
         }
 

@@ -38,7 +38,7 @@ using namespace MiscCommon::INet;
 using namespace MiscCommon;
 //=============================================================================
 CServerDlg::CServerDlg( QWidget *_parent ):
-    QWidget( _parent )
+        QWidget( _parent )
 {
     m_ui.setupUi( this );
 
@@ -59,7 +59,7 @@ void CServerDlg::CommandServer( EServerCommands _command )
     string cmd( "$POD_LOCATION/bin/pod-server" );
     smart_path( &cmd );
     StringVector_t params;
-    switch( _command )
+    switch ( _command )
     {
         case srvSTART:
             params.push_back( "start" );
@@ -75,7 +75,7 @@ void CServerDlg::CommandServer( EServerCommands _command )
         string output;
         do_execv( cmd, params, 30, &output );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr( PROJECT_NAME ), tr( _e.what() ) );
     }
@@ -103,7 +103,7 @@ void CServerDlg::on_btnStopServer_clicked()
 void CServerDlg::update_check_srv_socket( bool _force )
 {
     // Don't process if the page is hidden
-    if( !_force && isHidden() )
+    if ( !_force && isHidden() )
         return;
 
     string cmd( "$POD_LOCATION/bin/pod-server" );
@@ -115,7 +115,7 @@ void CServerDlg::update_check_srv_socket( bool _force )
     {
         do_execv( cmd, params, g_WaitTimeout, &output );
     }
-    catch( ... )
+    catch ( ... )
     {
     }
     m_ui.edtServerInfo->setText( QString( output.c_str() ) );

@@ -26,8 +26,8 @@
 using namespace std;
 //=============================================================================
 CLogInfoDlg::CLogInfoDlg( QWidget *_parent, const string &_gLiteJobID ) :
-    QDialog( _parent ),
-    m_gLiteJobID( _gLiteJobID )
+        QDialog( _parent ),
+        m_gLiteJobID( _gLiteJobID )
 {
     m_ui.setupUi( this );
 
@@ -50,7 +50,7 @@ int CLogInfoDlg::exec()
     {
         GAW::Instance().GetJobManager().JobLogInfo( m_gLiteJobID, ss );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         QMessageBox::critical( this,
                                tr( "PROOFAgent Console" ),
@@ -66,7 +66,7 @@ void CLogInfoDlg::on_btnSave_clicked()
     // Saving the logging info to a file
     const QString filename = QFileDialog::getSaveFileName( this, tr( "Save log info to a file" ) );
     QFile file( filename );
-    if( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
         QMessageBox::critical( this,
                                tr( "PROOFAgent Console" ),

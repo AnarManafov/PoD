@@ -47,7 +47,7 @@ template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() || !does_file_exists( _FileName ) )
+    if ( _FileName.empty() || !does_file_exists( _FileName ) )
         throw exception();
 
     ifstream f( _FileName.c_str() );
@@ -60,7 +60,7 @@ template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() )
+    if ( _FileName.empty() )
         throw exception();
 
     // make an archive
@@ -71,8 +71,8 @@ void _savecfg( const T &_s, string _FileName )
 }
 //=============================================================================
 CMainDlg::CMainDlg( QDialog *_Parent ):
-    QDialog( _Parent ),
-    m_CurrentPage( 0 )
+        QDialog( _Parent ),
+        m_CurrentPage( 0 )
 {
     m_ui.setupUi( this );
 
@@ -97,7 +97,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         // Loading class from the config file
         _loadcfg( *this, g_szCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
         cerr << PROJECT_NAME << " Warning: "
              << "Can't load configuration from "
@@ -116,7 +116,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
         proofCfgFile = user_defaults.getValueForKey( "server.proof_cfg_path" );
     }
-    catch( exception &e )
+    catch ( exception &e )
     {
         QMessageBox::critical( this,
                                QString( PROJECT_NAME ),
@@ -137,13 +137,13 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     // ------>>>>> PLUG-INS page(s)
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         // setting user defaults for each plug-in
         ( *iter )->setUserDefaults( user_defaults );
 
         QWidget *w = ( *iter )->getWidget();
-        if( !w )
+        if ( !w )
             continue;
         m_ui.pagesWidget->insertWidget( ++index, w );
 
@@ -200,13 +200,13 @@ CMainDlg::~CMainDlg()
         // Saving class to the config file
         _savecfg( *this, g_szCfgFileName );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         QMessageBox::warning( this, PROJECT_NAME,
                               "Can't save configuration to\n" + QString( g_szCfgFileName ) +
                               "\n Error: " + QString( _e.what() ) );
     }
-    catch( ... )
+    catch ( ... )
     {
         QMessageBox::warning( this, PROJECT_NAME,
                               "Can't save configuration to\n" + QString( g_szCfgFileName ) );
@@ -223,13 +223,13 @@ void CMainDlg::createIcons()
 
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         // Starting the update timer
         ( *iter )->startUpdTimer( m_preferences.getJobStatusUpdInterval() );
 
         QWidget *w = ( *iter )->getWidget();
-        if( !w )
+        if ( !w )
             continue;
 
         QListWidgetItem *btn = new QListWidgetItem( m_ui.contentsWidget );
@@ -259,7 +259,7 @@ void CMainDlg::createIcons()
 //=============================================================================
 void CMainDlg::changePage( QListWidgetItem *_Current, QListWidgetItem *_Previous )
 {
-    if( !_Current )
+    if ( !_Current )
         _Current = _Previous;
 
     m_ui.pagesWidget->setCurrentIndex( m_ui.contentsWidget->row( _Current ) );
@@ -271,7 +271,7 @@ void CMainDlg::updatePluginTimer( int _interval )
     // TODO: fix the code using for_each algorithm
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         ( *iter )->startUpdTimer( _interval );
     }
@@ -287,10 +287,10 @@ void CMainDlg::loadPlugins()
     {
         QPluginLoader loader( pluginDirectory.absoluteFilePath( fileName ) );
         QObject *plugin = loader.instance();
-        if( plugin )
+        if ( plugin )
         {
             IJobManager *obj( qobject_cast<IJobManager *>( plugin ) );
-            if( obj )
+            if ( obj )
                 m_plugins.push_back( obj );
             else
                 QMessageBox::warning( this, PROJECT_NAME,
@@ -312,7 +312,7 @@ int CMainDlg::activeJobsFromPlugins()
     // TODO: fix the code using accumulate algorithm
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         count += ( *iter )->getJobsCount();
     }
@@ -329,7 +329,7 @@ void CMainDlg::changeNumberOfJobs( int /*_count*/ )
 void CMainDlg::on_closeButton_clicked()
 {
     CServerInfo si;
-    if( si.IsRunning( true ) )
+    if ( si.IsRunning( true ) )
     {
         const string msg( "PoD server is running.\n"
                           "Do you want to stop the server and shut all workers down?\n"
@@ -337,9 +337,9 @@ void CMainDlg::on_closeButton_clicked()
         const QMessageBox::StandardButton reply =
             QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-        if( QMessageBox::Cancel == reply )
+        if ( QMessageBox::Cancel == reply )
             return;
-        if( QMessageBox::Yes == reply )
+        if ( QMessageBox::Yes == reply )
             m_server.CommandServer( CServerDlg::srvSTOP );
     }
 
@@ -352,9 +352,9 @@ void CMainDlg::idleTimeout()
     switchAllSensors( false );
     stringstream ss;
     ss << "You have been inactive for "
-       << g_idleTimeout / 60000 << " minutes.\n"
-       << "The console has switched monitoring and all sensors off.\n"
-       << "Close this dialog to continue to monitor.";
+    << g_idleTimeout / 60000 << " minutes.\n"
+    << "The console has switched monitoring and all sensors off.\n"
+    << "Close this dialog to continue to monitor.";
     QMessageBox::information( this, PROJECT_NAME,
                               tr( ss.str().c_str() ) );
     // restarting all sensors here
@@ -363,10 +363,10 @@ void CMainDlg::idleTimeout()
 //=============================================================================
 void CMainDlg::childEvent( QChildEvent *_event )
 {
-    if( !_event->child()->isWidgetType() )
+    if ( !_event->child()->isWidgetType() )
         return;
 
-    if( _event->type() == QEvent::ChildAdded )
+    if ( _event->type() == QEvent::ChildAdded )
     {
         // setting up the event filter for the new child
         _event->child()->installEventFilter( this );
@@ -378,9 +378,9 @@ void CMainDlg::childEvent( QChildEvent *_event )
 //=============================================================================
 bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
 {
-    if( event->type() == QEvent::MouseMove )
+    if ( event->type() == QEvent::MouseMove )
     {
-        if( m_idleTimer->isActive() )
+        if ( m_idleTimer->isActive() )
             m_idleTimer->start( g_idleTimeout );
     }
 
@@ -390,16 +390,16 @@ bool CMainDlg::eventFilter( QObject *obj, QEvent *event )
 //=============================================================================
 void CMainDlg::switchAllSensors( bool _on )
 {
-    if( _on )
+    if ( _on )
     {
         m_idleTimer->start( g_idleTimeout );
-        if( !m_server.isHidden() )
+        if ( !m_server.isHidden() )
             m_server.m_updTimer->start( g_UpdateInterval * 1000 );
         PluginVec_t::const_iterator iter = m_plugins.begin();
         PluginVec_t::const_iterator iter_end = m_plugins.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
-            if(( *iter )->getWidget()->isHidden() )
+            if (( *iter )->getWidget()->isHidden() )
                 continue;
 
             ( *iter )->startUpdTimer( m_preferences.getJobStatusUpdInterval() );
@@ -411,7 +411,7 @@ void CMainDlg::switchAllSensors( bool _on )
         m_server.m_updTimer->stop();
         PluginVec_t::const_iterator iter = m_plugins.begin();
         PluginVec_t::const_iterator iter_end = m_plugins.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
             ( *iter )->startUpdTimer( 0 );
         }
@@ -423,9 +423,9 @@ void CMainDlg::setEnvironment( char **envp )
     // Setting a comma-separated list
     char** env;
     stringstream ss;
-    for( env = envp; *env != 0; env++ )
+    for ( env = envp; *env != 0; env++ )
     {
-        if( !ss.str().empty() )
+        if ( !ss.str().empty() )
             ss << ',';
         ss << *env;
     }
@@ -433,7 +433,7 @@ void CMainDlg::setEnvironment( char **envp )
     // enumerate plug-ins
     PluginVec_t::const_iterator iter = m_plugins.begin();
     PluginVec_t::const_iterator iter_end = m_plugins.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         // set the environment
         ( *iter )->setEnvironment( ss.str() );

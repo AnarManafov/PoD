@@ -31,8 +31,8 @@ namespace PROOFAgent
      *
      */
     class CAgentClient:
-        public CAgentBase,
-        MiscCommon::CLogImp<CAgentClient>
+                public CAgentBase,
+                MiscCommon::CLogImp<CAgentClient>
     {
         public:
             CAgentClient( const SOptions_t &_data );

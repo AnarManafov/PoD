@@ -48,7 +48,7 @@ class CLSFJobSubmitter: public QThread
         }
         ~CLSFJobSubmitter()
         {
-            if( isRunning() )
+            if ( isRunning() )
                 terminate();
         }
 
@@ -59,7 +59,7 @@ class CLSFJobSubmitter: public QThread
             {
                 m_lsf.init();
             }
-            catch( const std::exception &e )
+            catch ( const std::exception &e )
             {
                 return false;
             }
@@ -103,7 +103,7 @@ class CLSFJobSubmitter: public QThread
             m_parentJobs.erase( _jobID );
             m_mutex.unlock();
 
-            if( _emitSignal )
+            if ( _emitSignal )
                 emit removedJob( _jobID );
         }
         void killJob( lsf_jobid_t _jobID )
@@ -141,7 +141,7 @@ class CLSFJobSubmitter: public QThread
 
                 emit newJob( nLastJobID );
             }
-            catch( const std::exception &_e )
+            catch ( const std::exception &_e )
             {
                 emit sendThreadMsg( tr( _e.what() ) );
                 emit changeProgress( 0 );

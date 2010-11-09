@@ -20,10 +20,10 @@ using namespace std;
 const short g_columnCount = 2;
 //=============================================================================
 CJobInfoItemModel::CJobInfoItemModel( CLSFJobSubmitter *_lsfsubmitter, int _updateInterval, QObject * _parent ):
-    QAbstractItemModel( _parent ),
-    m_jobinfo( _lsfsubmitter ),
-    m_updateInterval( _updateInterval ),
-    m_rootItem( new SJobInfo( 0 ) )
+        QAbstractItemModel( _parent ),
+        m_jobinfo( _lsfsubmitter ),
+        m_updateInterval( _updateInterval ),
+        m_rootItem( new SJobInfo( 0 ) )
 {
     _setupHeader();
     _setupJobsContainer();
@@ -46,12 +46,12 @@ void CJobInfoItemModel::_setupJobsContainer()
 //=============================================================================
 int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 {
-    if( _parent.column() > 0 )
+    if ( _parent.column() > 0 )
         return 0;
 
     SJobInfo *parentItem = NULL;
 
-    if( !_parent.isValid() )
+    if ( !_parent.isValid() )
         parentItem = m_rootItem;
     else
         parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
@@ -61,7 +61,7 @@ int CJobInfoItemModel::rowCount( const QModelIndex &_parent ) const
 //=============================================================================
 int CJobInfoItemModel::columnCount( const QModelIndex & _parent ) const
 {
-    if( _parent.column() > 0 )
+    if ( _parent.column() > 0 )
         return 0;
     return g_columnCount;
 }
@@ -70,17 +70,17 @@ QVariant CJobInfoItemModel::data( const QModelIndex &_index, int _role ) const
 {
     // This function is called a lot of times and it therefore needs to be very optimized
 
-    if( !_index.isValid() )
+    if ( !_index.isValid() )
         return QVariant();
-    if( _index.column() >= g_columnCount )
+    if ( _index.column() >= g_columnCount )
         return QVariant();
 
     SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
-    switch( _role )
+    switch ( _role )
     {
         case Qt::DisplayRole:
             {
-                switch( _index.column() )
+                switch ( _index.column() )
                 {
                     case TitleJobID:
                         return QString( info->m_strID.c_str() );
@@ -99,11 +99,11 @@ QVariant CJobInfoItemModel::data( const QModelIndex &_index, int _role ) const
 //=============================================================================
 QVariant CJobInfoItemModel::headerData( int _section, Qt::Orientation _orientation, int _role ) const
 {
-    if( _role != Qt::DisplayRole )
+    if ( _role != Qt::DisplayRole )
         return QVariant();
-    if( _orientation != Qt::Horizontal )
+    if ( _orientation != Qt::Horizontal )
         return QVariant();
-    if( _section < 0 || _section >= g_columnCount )
+    if ( _section < 0 || _section >= g_columnCount )
         return QVariant();
 
     return m_Titles[_section];
@@ -111,7 +111,7 @@ QVariant CJobInfoItemModel::headerData( int _section, Qt::Orientation _orientati
 //=============================================================================
 Qt::ItemFlags CJobInfoItemModel::flags( const QModelIndex & _index ) const
 {
-    if( !_index.isValid() )
+    if ( !_index.isValid() )
         return 0;
 
     return ( QAbstractItemModel::flags( _index ) & ( ~Qt::ItemIsEditable ) );
@@ -121,12 +121,12 @@ QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) con
 {
     Q_CHECK_PTR( _info );
 
-    if( 0 >= _info->m_id )  // this is our fake item - which is a super parent for all jobs
+    if ( 0 >= _info->m_id ) // this is our fake item - which is a super parent for all jobs
         return QModelIndex();
 
     const int row( _info->parent()->m_children.indexOf( _info ) );
     Q_ASSERT( row != -1 );
-    if( -1 == row )
+    if ( -1 == row )
     {
         cout << "WARNING: can't find item: ";
         return QModelIndex();
@@ -137,19 +137,19 @@ QModelIndex CJobInfoItemModel::getQModelIndex( SJobInfo *_info, int column ) con
 //=============================================================================
 QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex & _parent ) const
 {
-    if( _column < 0 || _column >= g_columnCount || _row < 0 || _parent.column() > 0 )
+    if ( _column < 0 || _column >= g_columnCount || _row < 0 || _parent.column() > 0 )
         return QModelIndex();
 
     SJobInfo *parentItem = NULL;
     // it is a root item, the one who dosn't have parent
-    if( !_parent.isValid() )
+    if ( !_parent.isValid() )
         parentItem = m_rootItem;
     else
         parentItem = reinterpret_cast<SJobInfo *>( _parent.internalPointer() );
 
     Q_CHECK_PTR( parentItem );
 
-    if( !parentItem || _row >= parentItem->m_children.count() )
+    if ( !parentItem || _row >= parentItem->m_children.count() )
         return QModelIndex();
 
     return createIndex( _row, _column, parentItem->m_children[_row] );
@@ -157,12 +157,12 @@ QModelIndex CJobInfoItemModel::index( int _row, int _column, const QModelIndex &
 //=============================================================================
 QModelIndex CJobInfoItemModel::parent( const QModelIndex & _index ) const
 {
-    if( !_index.isValid() )
+    if ( !_index.isValid() )
         return QModelIndex();
 
     SJobInfo *childItem = reinterpret_cast<SJobInfo *>( _index.internalPointer() );
     Q_CHECK_PTR( childItem );
-    if( !childItem )
+    if ( !childItem )
         return QModelIndex();
 
     return getQModelIndex( childItem->parent(), 0 );
@@ -172,8 +172,8 @@ void CJobInfoItemModel::_setupHeader()
 {
     QStringList titles;
     titles
-            << "ID"
-            << "Status";
+    << "ID"
+    << "Status";
 
     beginInsertColumns( QModelIndex(), 0, titles.count() - 1 );
     m_Titles = titles;
@@ -182,7 +182,7 @@ void CJobInfoItemModel::_setupHeader()
 //=============================================================================
 void CJobInfoItemModel::jobChanged( SJobInfo * _info )
 {
-    if( !_info )
+    if ( !_info )
         return;
 
     emit dataChanged( getQModelIndex( _info, 0 ),
@@ -192,7 +192,7 @@ void CJobInfoItemModel::jobChanged( SJobInfo * _info )
 void CJobInfoItemModel::insertJobs( SJobInfo *_info )
 {
     // This model only supports insertion of the entire job with all its children
-    if( !_info || NULL != _info->parent() )
+    if ( !_info || NULL != _info->parent() )
         return;
 
     // inserting a parent
@@ -214,7 +214,7 @@ void CJobInfoItemModel::insertJobs( SJobInfo *_info )
 void CJobInfoItemModel::removeJobs( SJobInfo *_info )
 {
     // This model only supports removing of the entire job with all its children
-    if( !_info || _info->parent() != m_rootItem )
+    if ( !_info || _info->parent() != m_rootItem )
         return;
 
     // Removing first the children
@@ -227,7 +227,7 @@ void CJobInfoItemModel::removeJobs( SJobInfo *_info )
 
     // Removing the parent itself
     const int row = _info->parent()->m_children.indexOf( _info );
-    if( row < 0 )
+    if ( row < 0 )
         cerr << "Error: Can't remove " << _info->m_strID << endl;
 
     emit beginRemoveRows( getQModelIndex( _info->parent(), 0 ), row, row );

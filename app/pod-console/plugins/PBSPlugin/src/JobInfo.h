@@ -33,71 +33,71 @@ namespace pbs_plug
 //=============================================================================
     struct SJobInfo
     {
-            SJobInfo():
+        SJobInfo():
                 m_expanded( false ),
                 m_completed( false ),
                 m_tryCount( 0 ),
                 m_parent( NULL )
-            {
-            }
-            SJobInfo( const CPbsMng::jobID_t &_id, SJobInfo *_parent = NULL ):
+        {
+        }
+        SJobInfo( const CPbsMng::jobID_t &_id, SJobInfo *_parent = NULL ):
                 m_id( _id ),
                 m_expanded( false ),
                 m_completed( false ),
                 m_tryCount( 0 ),
                 m_parent( _parent )
-            {
-                m_id = _id;
-                m_strID = _id;
-            }
-            ~SJobInfo()
-            {
-                removeAllChildren();
-            }
-            void setParent( SJobInfo *_parent )
-            {
-                m_parent = _parent;
-            }
-            SJobInfo *parent()
-            {
-                return m_parent;
-            }
-            bool operator ==( const SJobInfo &_info )
-            {
-                if( m_id != _info.m_id )
-                    return false;
-                if( m_status != _info.m_status )
-                    return false;
+        {
+            m_id = _id;
+            m_strID = _id;
+        }
+        ~SJobInfo()
+        {
+            removeAllChildren();
+        }
+        void setParent( SJobInfo *_parent )
+        {
+            m_parent = _parent;
+        }
+        SJobInfo *parent()
+        {
+            return m_parent;
+        }
+        bool operator ==( const SJobInfo &_info )
+        {
+            if ( m_id != _info.m_id )
+                return false;
+            if ( m_status != _info.m_status )
+                return false;
 
-                return true;
-            }
-            int addChild( SJobInfo *_child )
+            return true;
+        }
+        int addChild( SJobInfo *_child )
+        {
+            m_children.push_back( _child );
+            return m_children.size() - 1;
+        }
+        void removeAllChildren()
+        {
+            while ( !m_children.isEmpty() )
             {
-                m_children.push_back( _child );
-                return m_children.size() - 1;
+                SJobInfo * p( m_children.takeFirst() );
+                delete p;
             }
-            void removeAllChildren()
-            {
-                while( !m_children.isEmpty() )
-                {
-                    SJobInfo * p( m_children.takeFirst() );
-                    delete p;
-                }
-                m_children.clear();
-            }
+            m_children.clear();
+        }
 
-            CPbsMng::jobID_t m_id;
-            std::string m_strID;
-            std::string m_status;
-            std::string m_strStatus;
-            bool m_expanded;
-            bool m_completed; //!< if false, we don't need to monitor this job
-            jobs_children_t m_children;
-            // how many times a job must be checked before getting a complete status
-            size_t m_tryCount;
+        CPbsMng::jobID_t m_id;
+        std::string m_strID;
+        std::string m_status;
+        std::string m_strStatus;
+        bool m_expanded;
+        bool m_completed; //!< if false, we don't need to monitor this job
+        jobs_children_t m_children;
+        // how many times a job must be checked before getting a complete status
+        size_t m_tryCount;
 
-        private:
-            SJobInfo *m_parent; //!< parent of this job or NULL
+private:
+        SJobInfo *m_parent; //!< parent of this job or NULL
     };
 //=============================================================================
     /**

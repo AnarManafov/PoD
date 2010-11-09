@@ -27,12 +27,12 @@ namespace PROOFAgent
 //=============================================================================
     CNode::CNode( MiscCommon::INet::Socket_t _first, MiscCommon::INet::Socket_t _second,
                   const string &_proofCFGString, unsigned int _readBufSize ):
-        m_proofCfgEntry( _proofCFGString ),
-        m_active( false ),
-        m_inUseFirst( false ),
-        m_inUseSecond( false ),
-        m_bufFirst( _readBufSize ),
-        m_bufSecond( _readBufSize )
+            m_proofCfgEntry( _proofCFGString ),
+            m_active( false ),
+            m_inUseFirst( false ),
+            m_inUseSecond( false ),
+            m_bufFirst( _readBufSize ),
+            m_bufSecond( _readBufSize )
     {
         m_first = new sock_type( _first );
         m_first->set_nonblock();
@@ -50,7 +50,7 @@ namespace PROOFAgent
 //=============================================================================
     int CNode::dealWithData( ENodeSocket_t _which )
     {
-        if( !isValid() )
+        if ( !isValid() )
         {
             setInUse( false, _which );
             return -1;
@@ -60,7 +60,7 @@ namespace PROOFAgent
         sock_type *output( NULL );
         BYTEVector_t *buf( NULL );
 
-        switch( _which )
+        switch ( _which )
         {
             case nodeSocketFirst:
                 input = m_first;
@@ -76,24 +76,24 @@ namespace PROOFAgent
 
         size_t m_bytesToSend( 0 );
         // collect as much as possible data from the socket w/o blocking it
-        while( true )
+        while ( true )
         {
             try
             {
                 m_bytesToSend = read_from_socket( *input, &( *buf ) );
             }
-            catch( const system_error &e )
+            catch ( const system_error &e )
             {
                 setInUse( false, _which );
                 // since the socket is non-blocking, we don't
                 // consider the following as errors
-                if( e.getErrno() == EAGAIN || e.getErrno() == EWOULDBLOCK )
+                if ( e.getErrno() == EAGAIN || e.getErrno() == EWOULDBLOCK )
                     break;
                 else
                     throw;
             }
             // DISCONNECT has been detected
-            if( m_bytesToSend <= 0 || !isValid() )
+            if ( m_bytesToSend <= 0 || !isValid() )
             {
                 setInUse( false, _which );
                 return -1;
@@ -123,14 +123,14 @@ namespace PROOFAgent
 
         stringstream ss;
         ss
-                << strSocket1 << " > " << strSocket2
-                << " (" << _buf.size() << " bytes): ";
-        if( !_buf.empty() )
+        << strSocket1 << " > " << strSocket2
+        << " (" << _buf.size() << " bytes): ";
+        if ( !_buf.empty() )
         {
             ss
-                    << "\n"
-                    << BYTEVectorHexView_t( _buf )
-                    << "\n";
+            << "\n"
+            << BYTEVectorHexView_t( _buf )
+            << "\n";
         }
         DebugLog( erOK, ss.str() );
     }

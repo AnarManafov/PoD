@@ -23,11 +23,11 @@ using namespace std;
 using namespace oge_plug;
 //=============================================================================
 CJobsContainer::CJobsContainer( COgeJobSubmitter *_submitter ):
-    m_submitter( _submitter ),
-    m_updateNumberOfJobs( true ),
-    m_removeAllCompletedJobs( false ),
-    m_updateInterval( 0 ),
-    m_countOfActiveJobs( 0 )
+        m_submitter( _submitter ),
+        m_updateNumberOfJobs( true ),
+        m_removeAllCompletedJobs( false ),
+        m_updateInterval( 0 ),
+        m_countOfActiveJobs( 0 )
 {
     // marshal this type
     qRegisterMetaType<size_t>( "size_t" );
@@ -46,7 +46,7 @@ void CJobsContainer::update( long _update_time_ms )
 {
     m_updateInterval = _update_time_ms;
 
-    if( !isRunning() )
+    if ( !isRunning() )
         start();
 }
 //=============================================================================
@@ -59,10 +59,10 @@ void CJobsContainer::run()
 {
     forever
     {
-        if( 0 == m_updateInterval )
+        if ( 0 == m_updateInterval )
             return;
 
-        if( m_updateNumberOfJobs )
+        if ( m_updateNumberOfJobs )
         {
             _updateNumberOfJobs();
             m_updateNumberOfJobs = false;
@@ -94,34 +94,34 @@ void CJobsContainer::_updateNumberOfJobs()
 {
     qDebug( "CJobsContainer::_updateNumberOfJobs" );
 
-    if( m_removeAllCompletedJobs )
+    if ( m_removeAllCompletedJobs )
     {
         qDebug( "CJobsContainer::_updateNumberOfJobs: remove all completed" );
         m_removeAllCompletedJobs = false;
 
         JobsContainer_t c( m_cur_ids );
 
-        // Delete children first
         JobsContainer_t::const_iterator iter = c.begin();
         JobsContainer_t::const_iterator iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
-            // TODO: the way we detect parents must be moved to a separated method
-            // in order to avoid of duplication
-            if( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
-                _removeJobInfo( *iter, false );
-        }
-        // Delete parents
-        iter = c.begin();
-        iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
-        {
-            if( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
+            if ( !COgeMng::isParentID( iter->first ) )
+                continue;
+
+            if ( iter->second->allChildrenCompleted() )
             {
+                // remove children
+                jobs_children_t::const_iterator c = iter->second->m_children.begin();
+                jobs_children_t::const_iterator c_end = iter->second->m_children.end();
+                for ( ; c != c_end; ++c )
+                {
+                    SJobInfo *inf = *c;
+                    _removeJobInfo( JobsContainer_t::value_type( inf->m_id, inf ), false );
+                }
+                // remove the parent
                 m_submitter->removeJob( iter->second->m_id, false );
                 _removeJobInfo( *iter, true );
             }
-
         }
         return;
     }
@@ -131,14 +131,14 @@ void CJobsContainer::_updateNumberOfJobs()
 
     size_t count = _markAllCompletedJobs( &newinfo, false );
 
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
     }
 
     // adding all jobs for the first time
-    if( m_cur_ids.empty() )
+    if ( m_cur_ids.empty() )
     {
         for_each( newinfo.begin(), newinfo.end(),
                   boost::bind( &CJobsContainer::_addJobInfo, this, _1 ) );
@@ -154,17 +154,17 @@ void CJobsContainer::_updateNumberOfJobs()
     // Delete children first
     JobsContainer_t::const_iterator iter = tmp.begin();
     JobsContainer_t::const_iterator iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) != string::npos )
+        if ( !COgeMng::isParentID( iter->first ) )
             _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
     iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) == string::npos )
+        if ( COgeMng::isParentID( iter->first ) )
             _removeJobInfo( *iter, true );
     }
 
@@ -181,7 +181,7 @@ void CJobsContainer::_updateJobsStatus()
 {
     // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
     size_t count = _markAllCompletedJobs( &m_cur_ids );
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
@@ -193,7 +193,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-    if( res.second && NULL == info->parent() )
+    if ( res.second && NULL == info->parent() )
     {
         emit addJob( info );
     }
@@ -201,9 +201,10 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
 //=============================================================================
 void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, bool _emitUpdate )
 {
+    qDebug( "CJobsContainer::_removeJobInfo: remove id=%s", _node.first.c_str() );
     m_cur_ids.erase( _node.first );
 
-    if( _emitUpdate )
+    if ( _emitUpdate )
         emit removeJob( _node.second );
 }
 //=============================================================================
@@ -216,38 +217,38 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     JobsContainer_t::const_iterator iter = _container->begin();
     JobsContainer_t::const_iterator iter_end = _container->end();
     bool need_request( false );
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( COgeMng::isParentID( iter->first ) )
-          continue;
+        if ( COgeMng::isParentID( iter->first ) )
+            continue;
 
-        if( !iter->second->m_completed )
+        if ( !iter->second->m_completed )
         {
             need_request = true;
             break;
         }
     }
 
-    if( !need_request )
+    if ( !need_request )
         return run_jobs;
 
     iter = _container->begin();
     iter_end = _container->end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         qDebug( "CJobsContainer::_markAllCompletedJobs: job=%s",
                 iter->first.c_str() );
         // Bad ID or a root item
-        if( iter->first.empty() )
+        if ( iter->first.empty() )
             continue;
 
-        if( iter->second->m_completed )
+        if ( iter->second->m_completed )
             continue;
 
         // if the parent, we don't write any status so-far,
         // in OGE plug-in, a parent job is just a fake and can't have a
         // status.
-        if( COgeMng::isParentID( iter->first ) )
+        if ( COgeMng::isParentID( iter->first ) )
         {
             qDebug( "CJobsContainer::_markAllCompletedJobs: %s is a parent job",
                     iter->first.c_str() );
@@ -256,7 +257,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         else
         {
             int status = m_submitter->jobStatus( iter->first );
-            if( m_submitter->isJobComplete( status ) )
+            if ( m_submitter->isJobComplete( status ) )
             {
                 qDebug( "CJobsContainer::_markAllCompletedJobs: %s is completed",
                         iter->first.c_str() );
@@ -273,7 +274,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             iter->second->m_strStatus = iter->second->m_status;
         }
 
-        if( _emitUpdate )
+        if ( _emitUpdate )
             emit jobChanged( iter->second );
     }
 

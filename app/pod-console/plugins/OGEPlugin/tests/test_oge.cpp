@@ -34,7 +34,7 @@ using boost::unit_test::test_suite;
 
 BOOST_AUTO_TEST_SUITE( test_oge );
 //=============================================================================
-size_t g_jobsCount = 2;
+size_t g_jobsCount = 3;
 //=============================================================================
 BOOST_AUTO_TEST_CASE( test_oge_allqueues )
 {
@@ -73,15 +73,15 @@ BOOST_AUTO_TEST_CASE( test_oge_submitjob )
     sleep( 2 );
 
     cout << "Fake parent ID: " << ids[0] << endl;
-    while( ids.size() > 1 )
+    while ( ids.size() > 1 )
     {
         COgeMng::jobArray_t::iterator iter = ids.begin() + 1;
         COgeMng::jobArray_t::iterator iter_end = ids.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
             // get job's status
             int status = mng.jobStatus( *iter );
-            if( mng.isJobComplete( status ) )
+            if ( mng.isJobComplete( status ) )
             {
                 cout << "Array jobs ID: " << *iter << "is DONE" << endl;
                 ids.erase( iter );

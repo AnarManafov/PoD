@@ -55,7 +55,7 @@ template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() || !does_file_exists( _FileName ) )
+    if ( _FileName.empty() || !does_file_exists( _FileName ) )
         throw exception();
 
     ifstream f( _FileName.c_str() );
@@ -68,7 +68,7 @@ template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() )
+    if ( _FileName.empty() )
         throw exception();
 
     // make an archive
@@ -79,9 +79,9 @@ void _savecfg( const T &_s, string _FileName )
 }
 //=============================================================================
 CGridDlg::CGridDlg( QWidget *parent ) :
-    QWidget( parent ),
-    m_JobSubmitter( this ),
-    m_JobsCount( 0 )
+        QWidget( parent ),
+        m_JobSubmitter( this ),
+        m_JobsCount( 0 )
 {
     m_ui.setupUi( this );
 
@@ -106,7 +106,7 @@ CGridDlg::CGridDlg( QWidget *parent ) :
         // Loading class from the config file
         _loadcfg( *this, g_szCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
         setAllDefault();
     }
@@ -119,7 +119,7 @@ CGridDlg::~CGridDlg()
         // Saving class to the config file
         _savecfg( *this, g_szCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
     }
 }
@@ -144,7 +144,7 @@ void CGridDlg::UpdateAfterLoad()
 
         updateJobsTree();
     }
-    catch( ... )
+    catch ( ... )
     {
     }
     m_ui.spinNumWorkers->setValue( num_jobs );
@@ -160,20 +160,20 @@ void CGridDlg::on_btnSubmitClient_clicked()
 {
     // Checking first that gLitePROOF server is running
     CServerInfo si;
-    if( !si.IsRunning( true ) )
+    if ( !si.IsRunning( true ) )
     {
         const string msg( "gLitePROOF server is not running.\n"
                           "Do you want to submit this job anyway?" );
         const QMessageBox::StandardButton reply =
             QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No );
-        if( QMessageBox::Yes != reply )
+        if ( QMessageBox::Yes != reply )
             return;
     }
 
-    if( !m_JobSubmitter.isRunning() )
+    if ( !m_JobSubmitter.isRunning() )
     {
-        if( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
+        if ( !QFileInfo( m_ui.edtJDLFileName->text() ).exists() )
         {
             QMessageBox::critical( this,
                                    tr( "PROOFAgent Console" ),
@@ -212,7 +212,7 @@ void CGridDlg::on_btnBrowseJDL_clicked()
     const QString dir = QFileInfo( m_ui.edtJDLFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a jdl file" ), dir,
                                                            tr( "JDL Files (*.jdl)" ) );
-    if( QFileInfo( filename ).exists() )
+    if ( QFileInfo( filename ).exists() )
     {
         m_JDLFileName = filename.toAscii().data();
         m_ui.edtJDLFileName->setText( filename );
@@ -252,7 +252,7 @@ void CGridDlg::contextMenuEvent( QContextMenuEvent *event )
 {
     // Checking that *treeJobs* has been selected
     QPoint pos = event->globalPos();
-    if( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
+    if ( !m_ui.treeJobs->childrenRect().contains( m_ui.treeJobs->mapFromGlobal( pos ) ) )
         return;
 
     // We need to disable menu items when no jobID is selected
@@ -283,7 +283,7 @@ void CGridDlg::copyJobID() const
 {
     // Copy selected JobID to clipboard
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if( !item )
+    if ( !item )
         return;
     clipboard->setText( item->text( 0 ), QClipboard::Clipboard );
     clipboard->setText( item->text( 0 ), QClipboard::Selection );
@@ -292,7 +292,7 @@ void CGridDlg::copyJobID() const
 void CGridDlg::cancelJob()
 {
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if( !item )
+    if ( !item )
         return;
 
     const string jobid( item->text( 0 ).toAscii().data() );
@@ -300,14 +300,14 @@ void CGridDlg::cancelJob()
     const QMessageBox::StandardButton
     reply( QMessageBox::question( this, tr( "PROOFAgent Console" ), tr( msg.c_str() ),
                                   QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) );
-    if( QMessageBox::Yes != reply )
+    if ( QMessageBox::Yes != reply )
         return;
 
     try
     {
         CGLiteAPIWrapper::Instance().GetJobManager().JobCancel( jobid );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
@@ -317,7 +317,7 @@ void CGridDlg::cancelJob()
 void CGridDlg::getJobOutput()
 {
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if( !item )
+    if ( !item )
         return;
 
     bool ok;
@@ -329,7 +329,7 @@ void CGridDlg::getJobOutput()
             tr(
                 "Enter the path, where output files should be delivered to:" ),
             QLineEdit::Normal, QDir::home().absolutePath(), &ok );
-    if( !ok || path.isEmpty() )
+    if ( !ok || path.isEmpty() )
         return;
 
     const string jobid( item->text( 0 ).toAscii().data() );
@@ -340,7 +340,7 @@ void CGridDlg::getJobOutput()
         CGLiteAPIWrapper::Instance().GetJobManager().JobOutput( jobid, path.toAscii().data(),
                                                                 &joboutput_path, true );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
@@ -356,7 +356,7 @@ void CGridDlg::getJobLoggingInfo()
 {
     // Job ID
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if( !item )
+    if ( !item )
         return;
 
     const string jobid( item->text( 0 ).toAscii().data() );
@@ -369,7 +369,7 @@ void CGridDlg::removeJob()
 {
     // Job ID
     const QTreeWidgetItem *item( m_ui.treeJobs->currentItem() );
-    if( !item )
+    if ( !item )
         return;
 
     const string jobid( item->text( 0 ).toAscii().data() );
@@ -380,7 +380,7 @@ void CGridDlg::removeJob()
 //=============================================================================
 void CGridDlg::setProgress( int _Val )
 {
-    if( 100 == _Val )
+    if ( 100 == _Val )
     {
         m_ui.btnSubmitClient->setEnabled( true );
         // The job is submitted, we need to update the tree
@@ -400,9 +400,9 @@ void CGridDlg::UpdateEndpoints( bool _Msg )
     {
         endpoint.Get( &endpoints, m_JDLFileName );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
-        if( _Msg )
+        if ( _Msg )
             QMessageBox::critical( this, tr( "PROOFAgent Console" ), tr( _e.what() ) );
         return;
     }
@@ -410,7 +410,7 @@ void CGridDlg::UpdateEndpoints( bool _Msg )
     // Let's fill the Combobox
     StringVector_t::const_iterator iter( endpoints.begin() );
     StringVector_t::const_iterator iter_end( endpoints.end() );
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         m_ui.cmbEndpoint->addItem( tr( iter->c_str() ) );
     }
@@ -446,7 +446,7 @@ QIcon CGridDlg::getIcon()
 void CGridDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
     // start or restart the timer
-    if( _JobStatusUpdInterval > 0 )
+    if ( _JobStatusUpdInterval > 0 )
         m_Timer->start( _JobStatusUpdInterval * 1000 );
 }
 //=============================================================================

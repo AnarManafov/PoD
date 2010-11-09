@@ -27,76 +27,76 @@ typedef QList<SJobInfo *> jobs_children_t;
 //=============================================================================
 struct SJobInfo
 {
-        SJobInfo():
+    SJobInfo():
             m_id( 0 ),
             m_status( JOB_STAT_UNKWN ),
             m_expanded( false ),
             m_completed( false ),
             m_parent( NULL )
-        {
-        }
-        SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
+    {
+    }
+    SJobInfo( lsf_jobid_t _id, SJobInfo *_parent = NULL ):
             m_id( _id ),
             m_status( JOB_STAT_UNKWN ),
             m_expanded( false ),
             m_completed( false ),
             m_parent( _parent )
-        {
-            std::ostringstream str;
-            if( NULL != m_parent )
-                str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
-            else
-                str << LSB_ARRAY_JOBID( _id );
+    {
+        std::ostringstream str;
+        if ( NULL != m_parent )
+            str << LSB_ARRAY_JOBID( _id ) << "[" << LSB_ARRAY_IDX( _id ) << "]";
+        else
+            str << LSB_ARRAY_JOBID( _id );
 
-            m_id = _id;
-            m_strID = str.str();
-        }
-        ~SJobInfo()
-        {
-            removeAllChildren();
-        }
-        void setParent( SJobInfo *_parent )
-        {
-            m_parent = _parent;
-        }
-        SJobInfo *parent()
-        {
-            return m_parent;
-        }
-        bool operator ==( const SJobInfo &_info )
-        {
-            if( m_strID != _info.m_strID )
-                return false;
-            if( m_status != _info.m_status )
-                return false;
+        m_id = _id;
+        m_strID = str.str();
+    }
+    ~SJobInfo()
+    {
+        removeAllChildren();
+    }
+    void setParent( SJobInfo *_parent )
+    {
+        m_parent = _parent;
+    }
+    SJobInfo *parent()
+    {
+        return m_parent;
+    }
+    bool operator ==( const SJobInfo &_info )
+    {
+        if ( m_strID != _info.m_strID )
+            return false;
+        if ( m_status != _info.m_status )
+            return false;
 
-            return true;
-        }
-        int addChild( SJobInfo *_child )
+        return true;
+    }
+    int addChild( SJobInfo *_child )
+    {
+        m_children.push_back( _child );
+        return m_children.size() - 1;
+    }
+    void removeAllChildren()
+    {
+        while ( !m_children.isEmpty() )
         {
-            m_children.push_back( _child );
-            return m_children.size() - 1;
+            SJobInfo * p( m_children.takeFirst() );
+            delete p;
         }
-        void removeAllChildren()
-        {
-            while( !m_children.isEmpty() )
-            {
-                SJobInfo * p( m_children.takeFirst() );
-                delete p;
-            }
-            m_children.clear();
-        }
+        m_children.clear();
+    }
 
-        lsf_jobid_t m_id;
-        std::string m_strID;
-        int m_status;
-        std::string m_strStatus;
-        bool m_expanded;
-        bool m_completed; //!< if false, we don't need to monitor this job
-        jobs_children_t m_children;
+    lsf_jobid_t m_id;
+    std::string m_strID;
+    int m_status;
+    std::string m_strStatus;
+    bool m_expanded;
+    bool m_completed; //!< if false, we don't need to monitor this job
+    jobs_children_t m_children;
 
-    private:
-        SJobInfo *m_parent; //!< parent of this job or NULL
+private:
+    SJobInfo *m_parent; //!< parent of this job or NULL
 };
 //=============================================================================
 /**

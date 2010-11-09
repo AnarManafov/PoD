@@ -25,7 +25,7 @@ using namespace MiscCommon;
 pid_t CServerInfo::_IsRunning( const string &_Srv ) const
 {
     vectorPid_t pids = getprocbyname( _Srv, true );
-    if( pids.empty() )
+    if ( pids.empty() )
         return 0;
 
     // TODO: send an error if there are more than one pid
@@ -36,7 +36,7 @@ bool CServerInfo::IsRunning( bool _check_all ) const
 {
     const pid_t pidXProofD = IsXPROOFDRunning();
     const pid_t pidPA = IsPROOFAgentRunning();
-    if( _check_all )
+    if ( _check_all )
         return ( pidXProofD && pidPA );
     else
         return ( pidXProofD || pidPA );
@@ -57,13 +57,13 @@ string CServerInfo::GetXPROOFDInfo() const
     const pid_t pid = IsXPROOFDRunning();
 
     stringstream spid;
-    if( pid )
+    if ( pid )
         spid << " <" << pid << ">";
 
     stringstream ss;
     ss
-            << "xproofd" << spid.str() << ": is "
-            << ( pid ? "running" : "NOT RUNNING" );
+    << "xproofd" << spid.str() << ": is "
+    << ( pid ? "running" : "NOT RUNNING" );
 
     return ss.str();
 }
@@ -73,17 +73,17 @@ string CServerInfo::GetPAInfo() const
     const pid_t pid = IsPROOFAgentRunning();
 
     stringstream spid;
-    if( pid )
+    if ( pid )
         spid << " <" << pid << ">";
 
     stringstream ss;
     ss
-            << "pod-agent" << spid.str() << ": is "
-            << ( pid ? "running" : "NOT RUNNING" );
+    << "pod-agent" << spid.str() << ": is "
+    << ( pid ? "running" : "NOT RUNNING" );
 
     string ver;
     GetPROOFAgentVersion( &ver );
-    if( !ver.empty() )
+    if ( !ver.empty() )
         ss << "\n" << "pod-agent version:\n" << ver;
 
     return ss.str();

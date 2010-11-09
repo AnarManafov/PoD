@@ -58,7 +58,7 @@ namespace PROOFAgent
             }
             void setInUse( bool _Val, ENodeSocket_t _which )
             {
-                switch( _which )
+                switch ( _which )
                 {
                     case nodeSocketFirst:
                         m_inUseFirst = _Val;

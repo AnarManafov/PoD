@@ -55,23 +55,23 @@ BYTEVector_t PROOFAgent::createMsg( uint16_t _cmd, const BYTEVector_t &_data )
 SMessageHeader PROOFAgent::parseMsg( BYTEVector_t *_data, const BYTEVector_t &_msg )
 {
     SMessageHeader header;
-    if( _msg.size() < HEADER_SIZE )
+    if ( _msg.size() < HEADER_SIZE )
         return SMessageHeader();
 
     memcpy( &header, &_msg[0], HEADER_SIZE );
-    if( !header.isValid() )
+    if ( !header.isValid() )
     {
         stringstream ss;
         ss
-                << "the protocol message is bad or corrupted. Invalid header:\n"
-                <<  BYTEVectorHexView_t( _msg );
+        << "the protocol message is bad or corrupted. Invalid header:\n"
+        <<  BYTEVectorHexView_t( _msg );
         throw runtime_error( ss.str() );
     }
 
     header.m_cmd = _normalizeRead16( header.m_cmd );
     header.m_len = _normalizeRead32( header.m_len );
 
-    if( 0 == header.m_len )
+    if ( 0 == header.m_len )
         return header;
 
     BYTEVector_t::const_iterator iter = _msg.begin() + HEADER_SIZE;
@@ -99,20 +99,20 @@ SMessageHeader CProtocol::getMsg( BYTEVector_t *_data ) const
 CProtocol::EStatus_t CProtocol::read( int _socket )
 {
     BYTEVector_t tmp_buf( MAX_MSG_SIZE );
-    while( true )
+    while ( true )
     {
         // need to read more to complete the header
         const ssize_t bytes_read = ::recv( _socket, &tmp_buf[0],
                                            MAX_MSG_SIZE, 0 );
-        if( 0 == bytes_read )
+        if ( 0 == bytes_read )
             return stDISCONNECT;
 
-        if( bytes_read < 0 )
+        if ( bytes_read < 0 )
         {
-            if( ECONNRESET == errno || ENOTCONN == errno )
+            if ( ECONNRESET == errno || ENOTCONN == errno )
                 return stDISCONNECT;
 
-            if( EAGAIN == errno || EWOULDBLOCK == errno )
+            if ( EAGAIN == errno || EWOULDBLOCK == errno )
                 return stAGAIN;
 
             throw system_error( "Error occurred while reading a protocol message." );
@@ -121,7 +121,7 @@ CProtocol::EStatus_t CProtocol::read( int _socket )
         copy( tmp_buf.begin(), tmp_buf.begin() + bytes_read,
               back_inserter( m_buffer ) );
 
-        if( bytes_read < MAX_MSG_SIZE )
+        if ( bytes_read < MAX_MSG_SIZE )
             break;
     }
 
@@ -134,14 +134,14 @@ bool CProtocol::checkoutNextMsg()
     {
         m_curDATA.clear();
         m_msgHeader = parseMsg( &m_curDATA, m_buffer );
-        if( !m_msgHeader.isValid() )
+        if ( !m_msgHeader.isValid() )
             return false;
 
         // delete the message from the buffer
         m_buffer.erase( m_buffer.begin(),
                         m_buffer.begin() + HEADER_SIZE + m_msgHeader.m_len );
     }
-    catch( ... )
+    catch ( ... )
     {
         // TODO: Clear only until there is another <POD_CMD> found
         m_buffer.clear();

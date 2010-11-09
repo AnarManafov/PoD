@@ -20,12 +20,12 @@
 using namespace std;
 //=============================================================================
 CJobsContainer::CJobsContainer( CLSFJobSubmitter *_lsfsubmitter ):
-    m_lsfsubmitter( _lsfsubmitter ),
-    m_jobInfo( _lsfsubmitter->getLSF() ),
-    m_updateNumberOfJobs( true ),
-    m_removeAllCompletedJobs( false ),
-    m_updateInterval( 0 ),
-    m_countOfActiveJobs( 0 )
+        m_lsfsubmitter( _lsfsubmitter ),
+        m_jobInfo( _lsfsubmitter->getLSF() ),
+        m_updateNumberOfJobs( true ),
+        m_removeAllCompletedJobs( false ),
+        m_updateInterval( 0 ),
+        m_countOfActiveJobs( 0 )
 {
     // marshal this type
     qRegisterMetaType<size_t>( "size_t" );
@@ -44,7 +44,7 @@ void CJobsContainer::update( long _update_time_ms )
 {
     m_updateInterval = _update_time_ms;
 
-    if( !isRunning() )
+    if ( !isRunning() )
         start();
 }
 //=============================================================================
@@ -57,10 +57,10 @@ void CJobsContainer::run()
 {
     forever
     {
-        if( 0 == m_updateInterval )
+        if ( 0 == m_updateInterval )
             return;
 
-        if( m_updateNumberOfJobs )
+        if ( m_updateNumberOfJobs )
         {
             _updateNumberOfJobs();
             m_updateNumberOfJobs = false;
@@ -90,7 +90,7 @@ void CJobsContainer::removeAllCompletedJobs()
 //=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
 {
-    if( m_removeAllCompletedJobs )
+    if ( m_removeAllCompletedJobs )
     {
         m_removeAllCompletedJobs = false;
 
@@ -99,19 +99,19 @@ void CJobsContainer::_updateNumberOfJobs()
         // Delete children first
         JobsContainer_t::const_iterator iter = c.begin();
         JobsContainer_t::const_iterator iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
             // TODO: the way we detect parents must be moved to a separated method
             // in order to avoid of duplication
-            if( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
+            if ( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
                 _removeJobInfo( *iter, false );
         }
         // Delete parents
         iter = c.begin();
         iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
-            if( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
+            if ( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
             {
                 m_lsfsubmitter->removeJob( iter->second->m_id, false );
                 _removeJobInfo( *iter, true );
@@ -126,14 +126,14 @@ void CJobsContainer::_updateNumberOfJobs()
 
     size_t count = _markAllCompletedJobs( &newinfo, false );
 
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
     }
 
     // adding all jobs for the first time
-    if( m_cur_ids.empty() )
+    if ( m_cur_ids.empty() )
     {
         for_each( newinfo.begin(), newinfo.end(),
                   boost::bind( &CJobsContainer::_addJobInfo, this, _1 ) );
@@ -149,17 +149,17 @@ void CJobsContainer::_updateNumberOfJobs()
     // Delete children first
     JobsContainer_t::const_iterator iter = tmp.begin();
     JobsContainer_t::const_iterator iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) != string::npos )
+        if ( iter->first.find( '[' ) != string::npos )
             _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
     iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) == string::npos )
+        if ( iter->first.find( '[' ) == string::npos )
             _removeJobInfo( *iter, true );
     }
 
@@ -176,7 +176,7 @@ void CJobsContainer::_updateJobsStatus()
 {
     // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
     size_t count = _markAllCompletedJobs( &m_cur_ids );
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
@@ -188,7 +188,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-    if( res.second && NULL == info->parent() )
+    if ( res.second && NULL == info->parent() )
     {
         emit addJob( info );
     }
@@ -198,7 +198,7 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, b
 {
     m_cur_ids.erase( _node.first );
 
-    if( _emitUpdate )
+    if ( _emitUpdate )
         emit removeJob( _node.second );
 }
 //=============================================================================
@@ -210,13 +210,13 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     JobsContainer_t::const_iterator iter = _container->begin();
     JobsContainer_t::const_iterator iter_end = _container->end();
     bool need_request( false );
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( !iter->second->m_completed )
+        if ( !iter->second->m_completed )
             need_request = true;
     }
 
-    if( !need_request )
+    if ( !need_request )
         return run_jobs;
 
     // Getting a list of unfinished LSF jobs
@@ -225,13 +225,13 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
 
     iter = _container->begin();
     iter_end = _container->end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->second->m_completed )
+        if ( iter->second->m_completed )
             continue;
 
         CLsfMng::IDContainerOrdered_t::const_iterator found = unfinished.find( iter->second->m_id );
-        if( unfinished.end() == found )
+        if ( unfinished.end() == found )
         {
             // set job to completed
             iter->second->m_completed = true;
@@ -241,17 +241,17 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         else
         {
             // calculate a number of expected PoD workers
-            if( iter->first.find( '[' ) != string::npos )
+            if ( iter->first.find( '[' ) != string::npos )
                 ++run_jobs;
 
-            if( iter->second->m_status == found->second )
+            if ( iter->second->m_status == found->second )
                 continue;
 
             iter->second->m_completed = false;
             iter->second->m_status = found->second;
             iter->second->m_strStatus = CLsfMng::jobStatusString( found->second );
         }
-        if( _emitUpdate )
+        if ( _emitUpdate )
             emit jobChanged( iter->second );
     }
 

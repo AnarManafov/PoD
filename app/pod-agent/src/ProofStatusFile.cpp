@@ -32,14 +32,14 @@ using namespace MiscCommon;
 template <class _T>
 struct SFind
 {
-        SFind( const _T &_sign ): m_sign( _sign )
-        {}
-        bool operator()( const _T &_Val ) const
-        {
-            return ( _Val.find( m_sign ) != _Val.npos );
-        }
-    private:
-        _T m_sign;
+    SFind( const _T &_sign ): m_sign( _sign )
+    {}
+    bool operator()( const _T &_Val ) const
+    {
+        return ( _Val.find( m_sign ) != _Val.npos );
+    }
+private:
+    _T m_sign;
 };
 //=============================================================================
 CProofStatusFile::CProofStatusFile(): m_xpdPort( 0 )
@@ -57,12 +57,12 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
                                       EAdminPathType _type )
 {
     //TODO: keeping fs::native is important for boost version earlier 1.34
-    if( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
+    if ( !fs::exists( fs::path( _xpdCFGFileName, fs::native ) ) )
         return false;
 
     // Read the content of the xpd.cf
     ifstream f( _xpdCFGFileName.c_str() );
-    if( !f.is_open() )
+    if ( !f.is_open() )
         return false;
 
     StringVector_t vec;
@@ -74,7 +74,7 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     const string m( mark[static_cast<int>( _type )] );
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
                                              SFind<string>( m ) );
-    if( iter == vec.end() )
+    if ( iter == vec.end() )
         return false;
 
     iter->erase( iter->find( m ), m.size() );
@@ -84,20 +84,20 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     // NOTE: "PoDServer" - is added to the admin path by xproofd.
     // we therefore also have to use it
     // This is only valid for PoD servers
-    if( adminp_server == _type )
+    if ( adminp_server == _type )
         p += "/PoDServer";
 
     //TODO: keeping fs::native is important for boost version earlier 1.34
     fs::path admin_path( p, fs::native );
 
-    if( fs::exists( admin_path ) )
+    if ( fs::exists( admin_path ) )
         swap( m_adminPath, admin_path );
 
 
     // find a xpd port
     const string xpd_str( "xpd.port" );
     iter = find_if( vec.begin(), vec.end(), SFind<string>( xpd_str ) );
-    if( iter == vec.end() )
+    if ( iter == vec.end() )
         return false;
 
     iter->erase( iter->find( xpd_str ), xpd_str.size() );
@@ -106,9 +106,9 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     stringstream ss;
     string::const_iterator itrs = port.begin();
     string::const_iterator itrs_end = port.end();
-    for( ; itrs != itrs_end; ++itrs )
+    for ( ; itrs != itrs_end; ++itrs )
     {
-        if( !isdigit( *itrs ) )
+        if ( !isdigit( *itrs ) )
             break;
 
         ss << *itrs;
@@ -124,7 +124,7 @@ void CProofStatusFile::enumStatusFiles()
     m_files.clear();
     m_status.clear();
 
-    if( m_adminPath.empty() )
+    if ( m_adminPath.empty() )
         throw runtime_error( "Can't enumerate proof status files. No admin path is specified." );
 
     stringstream ss;
@@ -132,35 +132,35 @@ void CProofStatusFile::enumStatusFiles()
     //TODO: keeping fs::native is important for boost version earlier 1.34
     fs::path fullpath( ss.str(), fs::native );
 
-    if( !fs::exists( fullpath ) )
+    if ( !fs::exists( fullpath ) )
     {
         stringstream ss;
         ss << "Can't enumerate proof status files. Admin path ["
-           << fullpath.string()
-           << "] doesn't exists.";
+        << fullpath.string()
+        << "] doesn't exists.";
         throw runtime_error( ss.str() );
     }
 
     fs::directory_iterator end_itr; // default construction yields past-the-end
-    for( fs::directory_iterator itr( fullpath ); itr != end_itr; ++itr )
+    for ( fs::directory_iterator itr( fullpath ); itr != end_itr; ++itr )
     {
-        if( fs::is_directory( *itr ) )
+        if ( fs::is_directory( *itr ) )
         {
             continue;
         }
-        else if( fs::extension( itr->leaf() ) == ".status" )
+        else if ( fs::extension( itr->leaf() ) == ".status" )
         {
             m_files.push_back( *itr );
 
             // read a proof status from the file
             ifstream f( itr->string().c_str() );
-            if( !f.is_open() )
+            if ( !f.is_open() )
             {
                 // TODO: Think, whether we need to throw here
                 stringstream ss;
                 ss << "Can't open proof status file ["
-                   << itr->string().c_str()
-                   << "].";
+                << itr->string().c_str()
+                << "].";
                 throw runtime_error( ss.str() );
             }
             int status( 0 );

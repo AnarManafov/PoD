@@ -52,13 +52,13 @@ void CPROOFAgent::initLogEngine()
     // log file name: pod-agent.<instance_name>.log
     std::stringstream logfile_name;
     logfile_name
-            << m_Data.m_logFileDir
-            << "pod-agent."
-            << (( Server == m_Mode ) ? "server" : "client" )
-            << ".log";
+    << m_Data.m_logFileDir
+    << "pod-agent."
+    << (( Server == m_Mode ) ? "server" : "client" )
+    << ".log";
 
     unsigned char logLevel( LOG_SEVERITY_FAULT | LOG_SEVERITY_CRITICAL_ERROR );
-    switch( m_Data.m_logLevel )
+    switch ( m_Data.m_logLevel )
     {
         case 3:
             logLevel |= LOG_SEVERITY_DEBUG;

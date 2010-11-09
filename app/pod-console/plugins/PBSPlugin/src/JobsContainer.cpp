@@ -23,11 +23,11 @@ using namespace std;
 using namespace pbs_plug;
 //=============================================================================
 CJobsContainer::CJobsContainer( CPbsJobSubmitter *_submitter ):
-    m_submitter( _submitter ),
-    m_updateNumberOfJobs( true ),
-    m_removeAllCompletedJobs( false ),
-    m_updateInterval( 0 ),
-    m_countOfActiveJobs( 0 )
+        m_submitter( _submitter ),
+        m_updateNumberOfJobs( true ),
+        m_removeAllCompletedJobs( false ),
+        m_updateInterval( 0 ),
+        m_countOfActiveJobs( 0 )
 {
     // marshal this type
     qRegisterMetaType<size_t>( "size_t" );
@@ -46,7 +46,7 @@ void CJobsContainer::update( long _update_time_ms )
 {
     m_updateInterval = _update_time_ms;
 
-    if( !isRunning() )
+    if ( !isRunning() )
         start();
 }
 //=============================================================================
@@ -59,10 +59,10 @@ void CJobsContainer::run()
 {
     forever
     {
-        if( 0 == m_updateInterval )
+        if ( 0 == m_updateInterval )
             return;
 
-        if( m_updateNumberOfJobs )
+        if ( m_updateNumberOfJobs )
         {
             _updateNumberOfJobs();
             m_updateNumberOfJobs = false;
@@ -92,7 +92,7 @@ void CJobsContainer::removeAllCompletedJobs()
 //=============================================================================
 void CJobsContainer::_updateNumberOfJobs()
 {
-    if( m_removeAllCompletedJobs )
+    if ( m_removeAllCompletedJobs )
     {
         m_removeAllCompletedJobs = false;
 
@@ -101,19 +101,19 @@ void CJobsContainer::_updateNumberOfJobs()
         // Delete children first
         JobsContainer_t::const_iterator iter = c.begin();
         JobsContainer_t::const_iterator iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
             // TODO: the way we detect parents must be moved to a separated method
             // in order to avoid of duplication
-            if( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
+            if ( iter->first.find( '[' ) != string::npos && iter->second->m_completed )
                 _removeJobInfo( *iter, false );
         }
         // Delete parents
         iter = c.begin();
         iter_end = c.end();
-        for( ; iter != iter_end; ++iter )
+        for ( ; iter != iter_end; ++iter )
         {
-            if( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
+            if ( iter->first.find( '[' ) == string::npos && iter->second->m_completed )
             {
                 m_submitter->removeJob( iter->second->m_id, false );
                 _removeJobInfo( *iter, true );
@@ -128,14 +128,14 @@ void CJobsContainer::_updateNumberOfJobs()
 
     size_t count = _markAllCompletedJobs( &newinfo, false );
 
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
     }
 
     // adding all jobs for the first time
-    if( m_cur_ids.empty() )
+    if ( m_cur_ids.empty() )
     {
         for_each( newinfo.begin(), newinfo.end(),
                   boost::bind( &CJobsContainer::_addJobInfo, this, _1 ) );
@@ -151,17 +151,17 @@ void CJobsContainer::_updateNumberOfJobs()
     // Delete children first
     JobsContainer_t::const_iterator iter = tmp.begin();
     JobsContainer_t::const_iterator iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) != string::npos )
+        if ( iter->first.find( '[' ) != string::npos )
             _removeJobInfo( *iter, false );
     }
     // Delete parents
     iter = tmp.begin();
     iter_end = tmp.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( iter->first.find( '[' ) == string::npos )
+        if ( iter->first.find( '[' ) == string::npos )
             _removeJobInfo( *iter, true );
     }
 
@@ -178,7 +178,7 @@ void CJobsContainer::_updateJobsStatus()
 {
     // TODO: for parent jobs just print a statistics information (X - pending; Y - run; ...)
     size_t count = _markAllCompletedJobs( &m_cur_ids );
-    if( count != m_countOfActiveJobs )
+    if ( count != m_countOfActiveJobs )
     {
         m_countOfActiveJobs = count;
         emit numberOfActiveJobsChanged( m_countOfActiveJobs );
@@ -190,7 +190,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     SJobInfo *info = _node.second;
 
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
-    if( res.second && NULL == info->parent() )
+    if ( res.second && NULL == info->parent() )
     {
         emit addJob( info );
     }
@@ -200,7 +200,7 @@ void CJobsContainer::_removeJobInfo( const JobsContainer_t::value_type &_node, b
 {
     m_cur_ids.erase( _node.first );
 
-    if( _emitUpdate )
+    if ( _emitUpdate )
         emit removeJob( _node.second );
 }
 //=============================================================================
@@ -212,13 +212,13 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     JobsContainer_t::const_iterator iter = _container->begin();
     JobsContainer_t::const_iterator iter_end = _container->end();
     bool need_request( false );
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
-        if( !iter->second->m_completed )
+        if ( !iter->second->m_completed )
             need_request = true;
     }
 
-    if( !need_request )
+    if ( !need_request )
         return run_jobs;
 
     // Getting a status for all available jobs
@@ -232,31 +232,31 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     {
         m_submitter->jobStatusAllJobs( &all_available_jobs );
     }
-    catch( const exception &_e )
+    catch ( const exception &_e )
     {
         // TODO: show message
     }
 
     iter = _container->begin();
     iter_end = _container->end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         // Bad ID or a root item
-        if( iter->first.empty() )
+        if ( iter->first.empty() )
             continue;
 
-        if( iter->second->m_completed )
+        if ( iter->second->m_completed )
             continue;
 
         CPbsMng::jobInfoContainer_t::const_iterator found = all_available_jobs.find( iter->second->m_id );
-        if( all_available_jobs.end() == found )
+        if ( all_available_jobs.end() == found )
         {
             // if the parent, we don't write any status so-far,
             // in PBS plug-in, a parent job is just a fake and can't have a
             // status.
             // FIXME: implement a status lagorthm for parent jobs (some summary of
             // status of children)
-            if( CPbsMng::isParentID( iter->first ) )
+            if ( CPbsMng::isParentID( iter->first ) )
             {
                 iter->second->m_completed = true;
                 iter->second->m_status = "completed";
@@ -265,7 +265,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             }
 
             ++iter->second->m_tryCount;
-            if( iter->second->m_tryCount > g_maxRetryCount )
+            if ( iter->second->m_tryCount > g_maxRetryCount )
             {
                 // set job to completed
                 iter->second->m_completed = true;
@@ -282,20 +282,20 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         {
             // calculate a number of expected PoD workers.
             // We exclude "parent" job ids
-            if( !CPbsMng::isParentID( iter->first ) )
+            if ( !CPbsMng::isParentID( iter->first ) )
                 ++run_jobs;
 
-            if( iter->second->m_status == found->second.m_status )
+            if ( iter->second->m_status == found->second.m_status )
                 continue;
 
             iter->second->m_completed = CPbsMng::isJobComplete( found->second.m_status );
-            if( iter->second->m_completed )
+            if ( iter->second->m_completed )
                 --run_jobs;
 
             iter->second->m_status = found->second.m_status;
             iter->second->m_strStatus = CPbsMng::jobStatusToString( found->second.m_status );
         }
-        if( _emitUpdate )
+        if ( _emitUpdate )
             emit jobChanged( iter->second );
     }
 

@@ -40,19 +40,19 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
 
     CPbsJobSubmitter::jobslist_t::const_iterator iter = _Jobs.begin();
     CPbsJobSubmitter::jobslist_t::const_iterator iter_end = _Jobs.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         // checking the old status
         JobsContainer_t::iterator found = copyContainer.find( iter->first );
         // don't need to update this job
-        if( copyContainer.end() != found )
+        if ( copyContainer.end() != found )
         {
             m_Container.insert( *found );
-            if( _Container )
+            if ( _Container )
             {
                 // adding child jobs to the output container
                 // TODO: do it in getInfo method
-                for( int i = 0; i < found->second->m_children.size(); ++i )
+                for ( int i = 0; i < found->second->m_children.size(); ++i )
                     _Container->insert( JobsContainer_t::value_type( found->second->m_children[i]->m_strID,
                                                                      found->second->m_children[i] ) );
             }
@@ -63,7 +63,7 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
         SJobInfo *info( new SJobInfo( iter->first ) );
 
         // adding children
-        for( size_t i = CPbsMng::jobArrayStartIdx(); i < iter->second; ++i )
+        for ( size_t i = CPbsMng::jobArrayStartIdx(); i < iter->second; ++i )
         {
 
             addChildItem( CPbsMng::generateArrayJobID( iter->first, i ),
@@ -73,18 +73,18 @@ void CJobInfo::update( const CPbsJobSubmitter::jobslist_t &_Jobs,
         // adding parent job
         m_Container.insert( JobsContainer_t::value_type( info->m_strID, info ) );
 
-        if( _Container )
+        if ( _Container )
         {
             // adding child jobs to the output container
             // TODO: do it in getInfo method
-            for( int i = 0; i < info->m_children.size(); ++i )
+            for ( int i = 0; i < info->m_children.size(); ++i )
                 _Container->insert( JobsContainer_t::value_type( info->m_children[i]->m_strID,
                                                                  info->m_children[i] ) );
         }
     }
 
     // a result set
-    if( _Container )
+    if ( _Container )
         copy( m_Container.begin(), m_Container.end(),
               inserter( *_Container, _Container->begin() ) );
 }

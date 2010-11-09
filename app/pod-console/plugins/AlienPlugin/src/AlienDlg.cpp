@@ -19,7 +19,7 @@
 
 
 CAlienDlg::CAlienDlg( QWidget *parent ) :
-    QWidget( parent )
+        QWidget( parent )
 {
     m_ui.setupUi( this );
 }

@@ -68,10 +68,10 @@ class CThreadPool
         typedef std::queue<task_t*> taskqueue_t;
     public:
         CThreadPool( size_t _threadsCount ):
-            m_stopped( false ),
-            m_stopping( false )
+                m_stopped( false ),
+                m_stopping( false )
         {
-            for( size_t i = 0; i < _threadsCount; ++i )
+            for ( size_t i = 0; i < _threadsCount; ++i )
                 m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
         }
 
@@ -97,18 +97,18 @@ class CThreadPool
                 {
                     // Find a job to perform
                     boost::mutex::scoped_lock lock( m_mutex );
-                    if( m_tasks.empty() && !m_stopped )
+                    if ( m_tasks.empty() && !m_stopped )
                     {
                         m_threadNeeded.wait( lock );
                     }
-                    if( !m_stopped && !m_tasks.empty() )
+                    if ( !m_stopped && !m_tasks.empty() )
                     {
                         task = m_tasks.front();
                         m_tasks.pop();
                     }
                 }
                 //Execute job
-                if( task )
+                if ( task )
                 {
                     task->run();
                     delete task;
@@ -116,21 +116,21 @@ class CThreadPool
                 }
                 m_threadAvailable.notify_all();
             }
-            while( !m_stopped );
+            while ( !m_stopped );
         }
         void stop( bool processRemainingJobs = false )
         {
             {
                 //prevent more jobs from being added to the queue
                 boost::mutex::scoped_lock lock( m_mutex );
-                if( m_stopped ) return;
+                if ( m_stopped ) return;
                 m_stopping = true;
             }
-            if( processRemainingJobs )
+            if ( processRemainingJobs )
             {
                 boost::mutex::scoped_lock lock( m_mutex );
                 //wait for queue to drain.
-                while( !m_tasks.empty() && !m_stopped )
+                while ( !m_tasks.empty() && !m_stopped )
                 {
                     m_threadAvailable.wait( lock );
                 }

@@ -30,13 +30,13 @@ namespace PROOFAgent
         typedef enum ECommand { Start, Stop, Status } ECommand_t;
 
         SOptions():                        // Default options' values
-            m_Command( Start ),
-            m_bDaemonize( false ),
-            m_bValidate( false ),
-            m_agentMode( Server ),
-            m_serverInfoFile( "$POD_LOCATION/etc/server_info.cfg" ),
-            m_proofPort( 0 ),
-            m_numberOfPROOFWorkers( 1 )
+                m_Command( Start ),
+                m_bDaemonize( false ),
+                m_bValidate( false ),
+                m_agentMode( Server ),
+                m_serverInfoFile( "$POD_LOCATION/etc/server_info.cfg" ),
+                m_proofPort( 0 ),
+                m_numberOfPROOFWorkers( 1 )
         {}
 
         std::string m_sConfigFile;

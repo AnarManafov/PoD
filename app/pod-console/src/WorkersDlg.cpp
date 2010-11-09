@@ -47,7 +47,7 @@ void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
 }
 //=============================================================================
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
-    QWidget( parent )
+        QWidget( parent )
 {
     m_ui.setupUi( this );
 }
@@ -57,7 +57,7 @@ void CWorkersDlg::init( const std::string &_proofCFG )
     m_CfgFileName = _proofCFG;
 
     smart_path( &m_CfgFileName );
-    if( m_CfgFileName.empty() )
+    if ( m_CfgFileName.empty() )
     {
         QMessageBox::critical( this,
                                tr( PROJECT_NAME ),
@@ -78,7 +78,7 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
 {
     // Read proof.conf and update Listbox
     ifstream f( m_CfgFileName.c_str() );
-    if( !f.is_open() )
+    if ( !f.is_open() )
     {
         m_ui.lstClientsList->clear();
         return 0;
@@ -98,14 +98,14 @@ int CWorkersDlg::getWorkersFromPROOFCfg()
     StringVector_t::iterator iter = find_if( vec.begin(), vec.end(),
                                              SFindComment<string>( chCmntSign ) );
     StringVector_t::const_iterator iter_end = vec.end();
-    while( iter != iter_end )
+    while ( iter != iter_end )
     {
         trim_left<string>( &*iter, chCmntSign );
         m_ui.lstClientsList->addItem( iter->c_str() );
         iter = find_if( ++iter, vec.end(),
                         SFindComment<string>( chCmntSign ) );
     }
-    if( m_ui.lstClientsList->count() >= cur_sel )
+    if ( m_ui.lstClientsList->count() >= cur_sel )
         m_ui.lstClientsList->setCurrentRow( cur_sel );
 
     return ( m_ui.lstClientsList->count() - 1 );
@@ -119,10 +119,10 @@ void CWorkersDlg::update()
 void CWorkersDlg::setActiveWorkers( size_t _Val1, size_t _Val2, bool _onlyTheFirst )
 {
     static size_t nTotal = 0;
-    if( !_onlyTheFirst )
+    if ( !_onlyTheFirst )
         nTotal = _Val2;
     tstring strMsg;
-    if( isWatching() )
+    if ( isWatching() )
     {
         strMsg = _T( "Available PROOF workers: %1 out of %2" );
         tstringstream ss;
@@ -142,7 +142,7 @@ void CWorkersDlg::showEvent( QShowEvent* )
 //=============================================================================
 bool CWorkersDlg::isWatching()
 {
-    if( !m_watcher )
+    if ( !m_watcher )
         return false;
 
     return ( !( m_watcher->files().isEmpty() ) );
@@ -150,13 +150,13 @@ bool CWorkersDlg::isWatching()
 //=============================================================================
 void CWorkersDlg::restartWatcher()
 {
-    if( isWatching() )
+    if ( isWatching() )
         return;
     else
         m_ui.lblJobsCount->setText( "" );
 
     // restart watcher if the file is available
-    if( !QFile::exists( m_CfgFileName.c_str() ) )
+    if ( !QFile::exists( m_CfgFileName.c_str() ) )
         return;
 
     // start to watching for proof.conf file

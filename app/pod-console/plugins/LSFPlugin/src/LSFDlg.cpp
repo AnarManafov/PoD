@@ -43,7 +43,7 @@ template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() || !does_file_exists( _FileName ) )
+    if ( _FileName.empty() || !does_file_exists( _FileName ) )
         throw exception();
 
     ifstream f( _FileName.c_str() );
@@ -56,7 +56,7 @@ template<class T>
 void _savecfg( const T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() )
+    if ( _FileName.empty() )
         throw exception();
 
     // make an archive
@@ -67,10 +67,10 @@ void _savecfg( const T &_s, string _FileName )
 }
 //=============================================================================
 CLSFDlg::CLSFDlg( QWidget *parent ) :
-    QWidget( parent ),
-    m_AllJobsCount( 0 ),
-    m_JobSubmitter( this ),
-    m_updateInterval( 10000 ) // default value: 10 sec.
+        QWidget( parent ),
+        m_AllJobsCount( 0 ),
+        m_JobSubmitter( this ),
+        m_updateInterval( 10000 ) // default value: 10 sec.
 {
     m_ui.setupUi( this );
 
@@ -91,7 +91,7 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
         // Loading class from the config file
         _loadcfg( *this, g_szLSFPluginCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
         setAllDefault();
     }
@@ -127,7 +127,7 @@ CLSFDlg::~CLSFDlg()
         // Saving class to the config file
         _savecfg( *this, g_szLSFPluginCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
     }
 
@@ -156,19 +156,19 @@ void CLSFDlg::UpdateAfterLoad()
     // TODO: handle errors here.
     LSFQueueInfoMap_t::iterator iter = queues.begin();
     LSFQueueInfoMap_t::iterator iter_end = queues.end();
-    for( ; iter != iter_end; ++iter )
+    for ( ; iter != iter_end; ++iter )
     {
         m_ui.lsfQueueList->addItem( iter->first.c_str(), QVariant::fromValue( iter->second ) );
         // selecting default
-        if( m_queue.empty() )
+        if ( m_queue.empty() )
         {
             // if there is no default queue set, then select any queue with the "proof" word in the name
-            if( string::npos != iter->first.find( "proof" ) )
+            if ( string::npos != iter->first.find( "proof" ) )
                 m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
         }
         else
         {
-            if( iter->first == m_queue )
+            if ( iter->first == m_queue )
                 m_ui.lsfQueueList->setCurrentIndex( distance( queues.begin(), iter ) );
         }
     }
@@ -189,20 +189,20 @@ void CLSFDlg::on_btnSubmitClient_clicked()
     m_JobSubmitter.setQueue( m_queue );
     // Checking first that gLitePROOF server is running
     CServerInfo si;
-    if( !si.IsRunning( true ) )
+    if ( !si.IsRunning( true ) )
     {
         const string msg( "PoD server is not running.\n"
                           "Do you want to submit this job anyway?" );
         const QMessageBox::StandardButton reply =
             QMessageBox::question( this, tr( "pod-console" ), tr( msg.c_str() ),
                                    QMessageBox::Yes | QMessageBox::No );
-        if( QMessageBox::Yes != reply )
+        if ( QMessageBox::Yes != reply )
             return;
     }
 
-    if( !m_JobSubmitter.isRunning() )
+    if ( !m_JobSubmitter.isRunning() )
     {
-        if( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
+        if ( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
         {
             QMessageBox::critical( this,
                                    tr( "PROOFAgent Console" ),
@@ -218,7 +218,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
 
         m_JobSubmitter.setJobScriptFilename( m_JobScript );
 
-        if( !m_emailJobOutput )
+        if ( !m_emailJobOutput )
             m_JobSubmitter.setOutputFiles( m_logDir );
 
         // submit gLite jobs
@@ -239,7 +239,7 @@ void CLSFDlg::on_btnBrowseJobScript_clicked()
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
                                                            tr( "LSF script (*.lsf)" ) );
-    if( QFileInfo( filename ).exists() )
+    if ( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
         m_ui.edtJobScriptFileName->setText( filename );
@@ -294,12 +294,12 @@ void CLSFDlg::showContextMenu( const QPoint &_point )
 void CLSFDlg::expandTreeNode( const QModelIndex &_index )
 {
     // expand only one node at time to reduce a number of requests to LSF daemon
-    if( m_expandedNode.isValid() && m_expandedNode != _index )
+    if ( m_expandedNode.isValid() && m_expandedNode != _index )
         m_ui.treeJobs->collapse( m_expandedNode );
 
 
     SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
-    if( info )
+    if ( info )
         info->m_expanded = true;
 
     m_expandedNode = _index;
@@ -308,7 +308,7 @@ void CLSFDlg::expandTreeNode( const QModelIndex &_index )
 void CLSFDlg::collapseTreeNode( const QModelIndex &_index )
 {
     SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
-    if( info )
+    if ( info )
         info->m_expanded = false;
 }
 //=============================================================================
@@ -316,11 +316,11 @@ void CLSFDlg::killJob()
 {
     // Job ID
     QModelIndex item = m_ui.treeJobs->currentIndex();
-    if( !item.isValid() )
+    if ( !item.isValid() )
         return;
 
     SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
-    if( !info )
+    if ( !info )
         return;
 
     const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
@@ -328,14 +328,14 @@ void CLSFDlg::killJob()
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-    if( QMessageBox::Cancel == reply )
+    if ( QMessageBox::Cancel == reply )
         return;
 
     try
     {
         m_JobSubmitter.killJob( info->m_id );
     }
-    catch( const std::exception &_e )
+    catch ( const std::exception &_e )
     {
         QMessageBox::warning( this, tr( "pod-console" ), _e.what() );
     }
@@ -346,11 +346,11 @@ void CLSFDlg::removeJob()
 {
     // Job ID
     QModelIndex item = m_ui.treeJobs->currentIndex();
-    if( !item.isValid() )
+    if ( !item.isValid() )
         return;
 
     SJobInfo *info = reinterpret_cast< SJobInfo * >( item.internalPointer() );
-    if( !info )
+    if ( !info )
         return;
 
     const string msg( "Are you sure you want to remove the selected job from the monitoring?\n"
@@ -358,7 +358,7 @@ void CLSFDlg::removeJob()
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-    if( QMessageBox::Cancel == reply )
+    if ( QMessageBox::Cancel == reply )
         return;
 
     // if the m_id == 0, then it means it is a rootItem - parent of
@@ -373,10 +373,10 @@ void CLSFDlg::removeAllCompletedJobs()
     const QMessageBox::StandardButton reply =
         QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
                                QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-    if( QMessageBox::Cancel == reply )
+    if ( QMessageBox::Cancel == reply )
         return;
 
-    if( m_treeModel )
+    if ( m_treeModel )
     {
         m_treeModel->removeAllCompletedJobs();
     }
@@ -389,14 +389,14 @@ void CLSFDlg::enableTree()
         // Saving class to the config file
         _savecfg( *this, g_szLSFPluginCfgFileName );
     }
-    catch( ... )
+    catch ( ... )
     {
     }
 }
 //=============================================================================
 void CLSFDlg::setProgress( int _Val )
 {
-    if( 100 == _Val )
+    if ( 100 == _Val )
     {
         m_ui.btnSubmitClient->setEnabled( true );
     }
@@ -431,13 +431,13 @@ QIcon CLSFDlg::getIcon()
 //=============================================================================
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 {
-    if( _JobStatusUpdInterval <= 0 )
+    if ( _JobStatusUpdInterval <= 0 )
     {
         m_treeModel->setUpdateInterval( 0 );
         return;
     }
     // start or restart the timer
-    if( _JobStatusUpdInterval > 0 )
+    if ( _JobStatusUpdInterval > 0 )
     {
         m_updateInterval = _JobStatusUpdInterval;
         m_treeModel->setUpdateInterval( _JobStatusUpdInterval * 1000 );
@@ -446,7 +446,7 @@ void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval )
 //=============================================================================
 void CLSFDlg::startUpdTimer( int _JobStatusUpdInterval, bool _hideMode )
 {
-    if( _hideMode )
+    if ( _hideMode )
     {
         // in hideMode we updated, but not very intensive (normal updated time +15 sec.).
         // this is needed for the GUI, to get a number of active jobs even when
@@ -479,7 +479,7 @@ void CLSFDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         ss << _ud.getValueForKey( "lsf_plugin.email_job_output" );
         ss >> m_emailJobOutput;
     }
-    catch( exception &e )
+    catch ( exception &e )
     {
         QMessageBox::critical( this,
                                QString( PROJECT_NAME ),
