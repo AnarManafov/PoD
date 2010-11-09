@@ -218,6 +218,9 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
     bool need_request( false );
     for( ; iter != iter_end; ++iter )
     {
+        if( COgeMng::isParentID( iter->first ) )
+          continue;
+
         if( !iter->second->m_completed )
         {
             need_request = true;
