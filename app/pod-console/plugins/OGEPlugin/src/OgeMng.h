@@ -55,6 +55,13 @@ namespace oge_plug
     //
     class COgeMng
     {
+        // Note:
+        // JobID in DRMAA of OGE has the following format:
+        // PARENTID.ARRAYINDEX
+        //
+        // To check the status of a job,
+        // you need to use the whole id (PARENTID.ARRAYINDEX).
+        // Checking status of a PARENTID is not usable, since it always return DONE
         public:
             typedef std::string jobID_t;
             typedef std::vector<jobID_t> jobArray_t;
