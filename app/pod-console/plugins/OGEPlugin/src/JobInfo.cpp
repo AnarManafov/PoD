@@ -63,7 +63,7 @@ void CJobInfo::update( const COgeJobSubmitter::jobslist_t &_Jobs,
         SJobInfo *info( new SJobInfo( iter->first ) );
 
         // adding children
-        for( size_t i = COgeMng::jobArrayStartIdx(); i < iter->second; ++i )
+        for( size_t i = COgeMng::jobArrayStartIdx(); i <= iter->second; ++i )
         {
 
             addChildItem( COgeMng::generateArrayJobID( iter->first, i ),

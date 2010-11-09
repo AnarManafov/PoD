@@ -120,11 +120,11 @@ COgeMng::jobID_t COgeMng::generateArrayJobID( const jobID_t &_parent,
 {
     // to get an array ID we need to add ".index" to a parentID, to get
     jobID_t::size_type pos = _parent.find( '.' );
-    if( jobID_t::npos == pos )
+    if( jobID_t::npos != pos )
         return _parent;
 
-    stringstream ss( _parent );
-    ss << "." << _idx;
+    stringstream ss;
+    ss << _parent << "." << _idx;
     return ss.str();
 }
 //=============================================================================
