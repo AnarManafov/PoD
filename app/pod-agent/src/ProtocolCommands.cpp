@@ -35,7 +35,7 @@ void SVersionCmd::normalizeToRemote()
 //=============================================================================
 void SVersionCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
 {
-    if ( _data.size() < size() )
+    if( _data.size() < size() )
         throw std::runtime_error( "Protocol message data is too short" );
 
     m_version = _data[0];
@@ -65,10 +65,10 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
     size_t idx( 0 );
     MiscCommon::BYTEVector_t::const_iterator iter = _data.begin();
     MiscCommon::BYTEVector_t::const_iterator iter_end = _data.end();
-    for ( ; iter != iter_end; ++iter, ++idx )
+    for( ; iter != iter_end; ++iter, ++idx )
     {
         char c( *iter );
-        if ( '\0' == c )
+        if( '\0' == c )
         {
             ++iter;
             ++idx;
@@ -77,10 +77,10 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
         m_username.push_back( c );
     }
 
-    for ( ; iter != iter_end; ++iter, ++idx )
+    for( ; iter != iter_end; ++iter, ++idx )
     {
         char c( *iter );
-        if ( '\0' == c )
+        if( '\0' == c )
         {
             ++iter;
             ++idx;
@@ -89,7 +89,7 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
         m_host.push_back( c );
     }
 
-    if ( _data.size() < size() )
+    if( _data.size() < size() )
         throw std::runtime_error( "Protocol message data is too short" );
 
     m_proofPort = _data[idx++];
@@ -121,7 +121,7 @@ void SIdCmd::normalizeToRemote()
 //=============================================================================
 void SIdCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
 {
-    if ( _data.size() < size() )
+    if( _data.size() < size() )
         throw std::runtime_error( "Protocol message data is too short" );
 
     m_id = _data[0];

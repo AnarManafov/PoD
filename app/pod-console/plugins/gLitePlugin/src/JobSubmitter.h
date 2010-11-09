@@ -47,7 +47,7 @@ class CJobSubmitter: public QThread
         }
         ~CJobSubmitter()
         {
-            if ( isRunning() )
+            if( isRunning() )
                 terminate();
         }
 
@@ -113,7 +113,7 @@ class CJobSubmitter: public QThread
                 // Retrieving a number of children of the parametric job
                 emit changeNumberOfJobs( getNumberOfJobs() );
             }
-            catch ( const std::exception &_e )
+            catch( const std::exception &_e )
             {
                 emit sendThreadMsg( tr( _e.what() ) );
                 emit changeProgress( 0 );
@@ -128,7 +128,7 @@ class CJobSubmitter: public QThread
         // Users can't call it any time they want.
         int getNumberOfJobs() const
         {
-            if ( m_JobsList.empty() )
+            if( m_JobsList.empty() )
                 return 0;
 
             try
@@ -138,7 +138,7 @@ class CJobSubmitter: public QThread
                 // Retrieving a number of children of the parametric job
                 size_t num( 0 );
                 MiscCommon::StringVector_t jobs;
-                for ( ; iter != iter_end; ++iter )
+                for( ; iter != iter_end; ++iter )
                 {
                     MiscCommon::gLite::CJobStatusObj( *iter ).GetChildren( &jobs );
                     num += jobs.size();
@@ -146,7 +146,7 @@ class CJobSubmitter: public QThread
                 }
                 return ( num );
             }
-            catch ( ... )
+            catch( ... )
                 {}
             return 0;
         }
@@ -161,7 +161,7 @@ class CJobSubmitter: public QThread
         void load( Archive & _ar, const unsigned int _version )
         {
             m_mutex.lock();
-            if ( _version >= 2 ) // TODO: make CJobSubmitter v1 in  PAconsole version 1.0.6 depreciated
+            if( _version >= 2 )  // TODO: make CJobSubmitter v1 in  PAconsole version 1.0.6 depreciated
                 _ar & BOOST_SERIALIZATION_NVP( m_JobsList );
             m_mutex.unlock();
 
@@ -169,7 +169,7 @@ class CJobSubmitter: public QThread
             {
                 DelegationCredential();
             }
-            catch ( ... )
+            catch( ... )
                 {}
         }
         BOOST_SERIALIZATION_SPLIT_MEMBER()

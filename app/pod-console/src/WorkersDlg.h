@@ -25,14 +25,14 @@ class QFileSystemWatcher;
 template <class _T>
 struct SFindComment
 {
-    SFindComment( const typename _T::value_type &_CmntSign ): m_CmntSign( _CmntSign )
-    {}
-    bool operator()( const _T &_Val ) const
-    {
-        return ( _Val.find( m_CmntSign ) != _Val.npos );
-    }
-private:
-    typename _T::value_type m_CmntSign;
+        SFindComment( const typename _T::value_type &_CmntSign ): m_CmntSign( _CmntSign )
+        {}
+        bool operator()( const _T &_Val ) const
+        {
+            return ( _Val.find( m_CmntSign ) != _Val.npos );
+        }
+    private:
+        typename _T::value_type m_CmntSign;
 };
 //=============================================================================
 class CWorkersDlg: public QWidget

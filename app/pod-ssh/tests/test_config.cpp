@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE( test_readconfig )
 
     stringstream ss;
     ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
-    << "r2, anar@lxi001.gsi.de,, /tmp/test/fff fff, 2\n"
-    << "125, anar@lxg0055.gsi.de, -p22, /tmp/test, 8\n";
+       << "r2, anar@lxi001.gsi.de,, /tmp/test/fff fff, 2\n"
+       << "125, anar@lxg0055.gsi.de, -p22, /tmp/test, 8\n";
 
     config.readFrom( ss );
 
@@ -76,8 +76,8 @@ BOOST_AUTO_TEST_CASE( test_readconfig_bad )
 
     stringstream ss;
     ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
-    << "r2, anar@lxi001.gsi.de,/tmp/test,2\n"
-    << "125, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
+       << "r2, anar@lxi001.gsi.de,/tmp/test,2\n"
+       << "125, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
 
     BOOST_REQUIRE_THROW( config.readFrom( ss ), runtime_error );
 }
@@ -87,8 +87,8 @@ BOOST_AUTO_TEST_CASE( test_duplicate_id )
 
     stringstream ss;
     ss << "r1, \\\"anar@lxg0527.gsi.de\\\", -p24, /tmp/test,4\n"
-    << "r2, anar@lxi001.gsi.de,,/tmp/test,2\n"
-    << "r1, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
+       << "r2, anar@lxi001.gsi.de,,/tmp/test,2\n"
+       << "r1, anar@lxg0055.gsi.de, -p22, /tmp/test,8\n";
 
     BOOST_REQUIRE_THROW( config.readFrom( ss ), runtime_error );
 }

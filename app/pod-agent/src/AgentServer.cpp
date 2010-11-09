@@ -41,16 +41,16 @@ struct is_bad_wrk
 };
 //=============================================================================
 CAgentServer::CAgentServer( const SOptions_t &_data ):
-        CAgentBase( _data.m_podOptions.m_server.m_common ),
-        m_threadPool( _data.m_podOptions.m_server.m_agentThreads, m_signalPipeName ),
-        m_workerMaxID( 0 )
+    CAgentBase( _data.m_podOptions.m_server.m_common ),
+    m_threadPool( _data.m_podOptions.m_server.m_agentThreads, m_signalPipeName ),
+    m_workerMaxID( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
 
     string xpd( g_xpdCFG );
     smart_path( &xpd );
-    if ( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
+    if( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
     {
         string msg( "Can't find xproofd config: " );
         msg += xpd;
@@ -65,17 +65,17 @@ CAgentServer::~CAgentServer()
 //=============================================================================
 void CAgentServer::monitor()
 {
-    while ( true )
+    while( true )
     {
         // TODO: we need to check real PROOF port here (from cfg)
-        if ( !IsPROOFReady( 0 ) || graceful_quit )
+        if( !IsPROOFReady( 0 ) || graceful_quit )
         {
             FaultLog( erError, "Can't connect to PROOF service." );
             graceful_quit = 1;
         }
 
         static uint16_t count = 0;
-        if ( count < 3 )
+        if( count < 3 )
             ++count;
         // check status files of the proof
         // do that when at least one connection is direct
@@ -83,22 +83,22 @@ void CAgentServer::monitor()
         // equal to a number of direct PROOF connections.
         // NOTE: Call this check every third time or something, in order
         // to avoid resource overloading.
-        if ( !m_adminConnections.empty() && 3 == count )
+        if( !m_adminConnections.empty() && 3 == count )
         {
             updateIdle();
             count = 0;
         }
 
-        if ( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
+        if( m_idleWatch.isTimedout( m_Data.m_common.m_shutdownIfIdleForSec ) )
         {
             InfoLog( "Agent's idle time has just reached a defined maximum. Exiting..." );
             graceful_quit = 1;
         }
 
-        if ( graceful_quit )
+        if( graceful_quit )
         {
             // wake up (from "select") the main thread, so that it can update it self
-            if ( write( m_fdSignalPipe, "1", 1 ) < 0 )
+            if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
 
             return;
@@ -125,10 +125,10 @@ void CAgentServer::run()
         f_serverSocket = server.getSocket();
 
         InfoLog( "Entering into the main \"select\" loop..." );
-        while ( true )
+        while( true )
         {
             // Checking whether signal has arrived
-            if ( graceful_quit )
+            if( graceful_quit )
             {
                 InfoLog( erOK, "STOP signal received." );
                 m_threadPool.stop();
@@ -141,7 +141,7 @@ void CAgentServer::run()
             mainSelect( server );
         }
     }
-    catch ( exception & e )
+    catch( exception & e )
     {
         FaultLog( erError, e.what() );
     }
@@ -162,13 +162,13 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     workersMap_t::size_type s( m_adminConnections.size() );
     // remove bad admin connections
     m_adminConnections.remove_if( is_bad_wrk() );
-    if ( s != m_adminConnections.size() )
+    if( s != m_adminConnections.size() )
         need_update = true;
 
     // adding all sockets which are on the admin channel
     workersMap_t::const_iterator wrk_iter = m_adminConnections.begin();
     workersMap_t::const_iterator wrk_iter_end = m_adminConnections.end();
-    for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
     {
         int fd = wrk_iter->first;
         FD_SET( fd, _readset );
@@ -179,12 +179,12 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     // TODO: implement poll or check that a number of sockets is not higher than 1024 (limitations of "select" )
     Sockets_type::iterator iter = m_socksToSelect.begin();
     Sockets_type::iterator iter_end = m_socksToSelect.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
-        if ( NULL == *iter )
+        if( NULL == *iter )
             continue;
 
-        if ( !( *iter )->isValid() )
+        if( !( *iter )->isValid() )
         {
             need_update = true;
             iter = m_socksToSelect.erase( iter );
@@ -195,13 +195,13 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
             continue;
         }
 
-        if ( !( *iter )->isInUse( CNode::nodeSocketFirst ) )
+        if( !( *iter )->isInUse( CNode::nodeSocketFirst ) )
         {
             int fd = ( *iter )->getSocket( CNode::nodeSocketFirst );
             FD_SET( fd, _readset );
             fd_max = fd > fd_max ? fd : fd_max;
         }
-        if ( !( *iter )->isInUse( CNode::nodeSocketSecond ) )
+        if( !( *iter )->isInUse( CNode::nodeSocketSecond ) )
         {
             int fd = ( *iter )->getSocket( CNode::nodeSocketSecond );
             FD_SET( fd, _readset );
@@ -210,7 +210,7 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     }
 
     // Updating nodes list and proof.cfg
-    if ( need_update )
+    if( need_update )
     {
         need_update = false;
         updatePROOFCfg();
@@ -226,23 +226,23 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 
     // main "Select"
     int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
-    if ( retval < 0 )
+    if( retval < 0 )
     {
         FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
         return;
     }
 
-    if ( 0 == retval )
+    if( 0 == retval )
         return;
 
     Sockets_type::iterator iter = m_socksToSelect.begin();
     Sockets_type::iterator iter_end = m_socksToSelect.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
-        if ( *iter == NULL || !( *iter )->isValid() )
+        if( *iter == NULL || !( *iter )->isValid() )
             continue; // TODO: Log me!
 
-        if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketFirst ), &readset ) )
+        if( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketFirst ), &readset ) )
         {
             // there is a read-ready socket
             // if the node is active, everything is fine, but
@@ -251,7 +251,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             // socket is read-ready but has 0 bytes in the stream.).
             // we try to read from it in anyway. Further procedures will mark
             // it as a bad one.
-            if ( !( *iter )->isActive() )
+            if( !( *iter )->isActive() )
             {
                 InfoLog( "An inactive remote worker is in the ready-to-read state. It could mean that it has just dropped the connection." );
             }
@@ -260,24 +260,24 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             m_idleWatch.touch();
 
             // we get a task for packet forwarder
-            if (( *iter )->isInUse( CNode::nodeSocketFirst ) )
+            if(( *iter )->isInUse( CNode::nodeSocketFirst ) )
                 continue;
             m_threadPool.pushTask( CNode::nodeSocketFirst, iter->get() );
         }
 
-        if ( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketSecond ), &readset ) )
+        if( FD_ISSET(( *iter )->getSocket( CNode::nodeSocketSecond ), &readset ) )
         {
             // check whether a proof server tries to connect to proof workers
 
             // update the idle timer
             m_idleWatch.touch();
 
-            if ( !( *iter )->isActive() )
+            if( !( *iter )->isActive() )
             {
                 // if yes, then we need to activate this node and
                 // add it to the packetforwarder
                 int fd = accept(( *iter )->getSocket( CNode::nodeSocketSecond ), NULL, NULL );
-                if ( fd < 0 )
+                if( fd < 0 )
                 {
                     FaultLog( erError, "PROOF client emulator can't accept a connection: " + errno2str() );
                     continue;
@@ -291,7 +291,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             else
             {
                 // we get a task for packet forwarder
-                if (( *iter )->isInUse( CNode::nodeSocketSecond ) )
+                if(( *iter )->isInUse( CNode::nodeSocketSecond ) )
                     continue;
 
                 m_threadPool.pushTask( CNode::nodeSocketSecond, iter->get() );
@@ -304,12 +304,12 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     // In this case the socket will be detected twice as a read-ready-socket.
     workersMap_t::iterator wrk_iter = m_adminConnections.begin();
     workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
-    for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
     {
-        if ( wrk_iter->first <= 0 )
+        if( wrk_iter->first <= 0 )
             continue;
 
-        if ( 0 == FD_ISSET( wrk_iter->first, &readset ) )
+        if( 0 == FD_ISSET( wrk_iter->first, &readset ) )
             continue;
 
         // update the idle timer
@@ -320,7 +320,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
             // Starting a server communication
             processAdminConnection( *wrk_iter );
         }
-        catch ( exception & e )
+        catch( exception & e )
         {
             WarningLog( 0, e.what() );
             continue;
@@ -328,7 +328,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     }
 
     // check whether agent's client tries to connect..
-    if ( FD_ISSET( f_serverSocket, &readset ) )
+    if( FD_ISSET( f_serverSocket, &readset ) )
     {
         // update the idle timer
         m_idleWatch.touch();
@@ -344,7 +344,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 
     // we got a signal for update
     // reading everything from the pipe and letting select to update all of its FDs
-    if ( FD_ISSET( m_fdSignalPipe, &readset ) )
+    if( FD_ISSET( m_fdSignalPipe, &readset ) )
     {
         const int read_size = 64;
         char buf[read_size];
@@ -355,13 +355,13 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 //=============================================================================
 void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
 {
-    while ( !_wrk.second.m_requests.empty() )
+    while( !_wrk.second.m_requests.empty() )
     {
         stringstream ss;
         ss
-        << "sending request ";
+                << "sending request ";
 
-        switch ( _wrk.second.m_requests.front() )
+        switch( _wrk.second.m_requests.front() )
         {
             case cmdGET_ID:
                 // request client's id
@@ -398,7 +398,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
         }
         _wrk.second.m_requests.pop();
         ss
-        << " to host: " << _wrk.second.string();
+                << " to host: " << _wrk.second.string();
         DebugLog( 0, ss.str() );
     }
 }
@@ -406,7 +406,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
 void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
 {
     CProtocol::EStatus_t ret = _wrk.second.m_protocol.read( _wrk.first );
-    switch ( ret )
+    switch( ret )
     {
         case CProtocol::stDISCONNECT:
             {
@@ -420,7 +420,7 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
         case CProtocol::stAGAIN:
         case CProtocol::stOK:
             {
-                while ( _wrk.second.m_protocol.checkoutNextMsg() )
+                while( _wrk.second.m_protocol.checkoutNextMsg() )
                 {
                     processProtocolMsgs( _wrk );
                 }
@@ -436,20 +436,20 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
 {
     BYTEVector_t data;
     SMessageHeader header = _wrk.second.m_protocol.getMsg( &data );
-    switch ( static_cast<ECmdType>( header.m_cmd ) )
+    switch( static_cast<ECmdType>( header.m_cmd ) )
     {
         case cmdVERSION:
             {
                 SVersionCmd v;
                 v.convertFromData( data );
                 // so far we require all versions to be the same
-                if ( v.m_version != CProtocol::version() )
+                if( v.m_version != CProtocol::version() )
                 {
                     stringstream ss;
                     ss
-                    << "Shutting the worker down: "
-                    << _wrk.second.string()
-                    << ". It has incompatible protocol version.";
+                            << "Shutting the worker down: "
+                            << _wrk.second.string()
+                            << ". It has incompatible protocol version.";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
                     break;
@@ -468,7 +468,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
             {
                 SIdCmd id;
                 id.convertFromData( data );
-                if ( 0 == id.m_id )
+                if( 0 == id.m_id )
                 {
                     // set an id to the worker
                     ++m_workerMaxID;
@@ -484,7 +484,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
             {
                 SIdCmd id;
                 id.convertFromData( data );
-                if ( id.m_id > 0 )
+                if( id.m_id > 0 )
                     _wrk.second.m_numberOfPROOFWorkers = id.m_id;
             }
             break;
@@ -517,7 +517,7 @@ void CAgentServer::usePacketForwarding( workersMap_t::value_type &_wrk )
 //=============================================================================
 void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
 {
-    if ( m_Data.m_packetForwarding == "yes" )
+    if( m_Data.m_packetForwarding == "yes" )
     {
         // use packet forwarder
         usePacketForwarding( _wrk );
@@ -531,15 +531,15 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
         inet::CSocketClient c;
         c.connect( _wrk.second.m_proofPort, _wrk.second.m_host );
     }
-    catch ( ... ) // we got a problem to connect to a worker
+    catch( ... )  // we got a problem to connect to a worker
     {
-        if ( m_Data.m_packetForwarding == "no" )
+        if( m_Data.m_packetForwarding == "no" )
         {
             stringstream ss;
             ss
-            << "Shutting the worker down: "
-            << _wrk.second.string()
-            << ". User requested a direct PROOF connection, which is not possible for this host.";
+                    << "Shutting the worker down: "
+                    << _wrk.second.string()
+                    << ". User requested a direct PROOF connection, which is not possible for this host.";
             InfoLog( ss.str() );
             _wrk.second.m_requests.push( cmdSHUTDOWN );
             return;
@@ -563,8 +563,8 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
 
     stringstream ss;
     ss
-    << "Using a direct connection to xproof for: "
-    << _wrk.second.string();
+            << "Using a direct connection to xproof for: "
+            << _wrk.second.string();
     InfoLog( ss.str() );
 }
 //=============================================================================
@@ -576,12 +576,12 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
 
     stringstream ss;
     ss
-    << "Using a packet forwarding for the worker: "
-    << _wrk.second.string();
+            << "Using a packet forwarding for the worker: "
+            << _wrk.second.string();
     InfoLog( erOK, ss.str() );
 
     const int port = inet::get_free_port( m_Data.m_agentLocalClientPortMin, m_Data.m_agentLocalClientPortMax );
-    if ( 0 == port )
+    if( 0 == port )
         throw runtime_error( "Can't find any free port from the given range." );
 
     // Add a worker to PROOF cfg
@@ -622,7 +622,7 @@ void CAgentServer::createPROOFCfg()
     DebugLog( erOK, "Creating a PROOF configuration file..." );
 
     ofstream f( m_commonOptions.m_proofCFG.c_str() );
-    if ( !f.is_open() )
+    if( !f.is_open() )
         throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
 
     // getting local host name
@@ -631,8 +631,8 @@ void CAgentServer::createPROOFCfg()
     // master host name is the same for Server and Worker and equal to local host name
     stringstream ss;
     ss
-    << "#master " << host << "\n"
-    << "master " << host;
+            << "#master " << host << "\n"
+            << "master " << host;
 
     m_masterEntryInPROOFCfg = ss.str();
 
@@ -646,19 +646,19 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
                                                 unsigned int _numberOfPROOFWorkers )
 {
     stringstream ss;
-    if ( _usePF )
+    if( _usePF )
     {
         ss
-        << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n"
-        << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
+                << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n"
+                << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
     }
     else
     {
-        for ( size_t i = 0; i < _numberOfPROOFWorkers; ++i )
+        for( size_t i = 0; i < _numberOfPROOFWorkers; ++i )
         {
             ss
-            << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
-            << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100" << endl;
+                    << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
+                    << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100" << endl;
         }
     }
     return ss.str();
@@ -667,7 +667,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
 void CAgentServer::updatePROOFCfg()
 {
     std::ofstream f( m_commonOptions.m_proofCFG.c_str() );
-    if ( !f.is_open() )
+    if( !f.is_open() )
         throw std::runtime_error( "Can't open the PROOF configuration file: " + m_commonOptions.m_proofCFG );
 
     // a master host
@@ -677,7 +677,7 @@ void CAgentServer::updatePROOFCfg()
     // proof workers
     Sockets_type::const_iterator iter = m_socksToSelect.begin();
     Sockets_type::const_iterator iter_end = m_socksToSelect.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
         f << ( *iter )->getPROOFCfgEntry() << endl;
     }
@@ -685,12 +685,12 @@ void CAgentServer::updatePROOFCfg()
     // a directly connected workers
     workersMap_t::iterator wrk_iter = m_adminConnections.begin();
     workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
-    for ( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
     {
-        if ( 0 >= wrk_iter->first )
+        if( 0 >= wrk_iter->first )
             continue;
 
-        if ( wrk_iter->second.m_proofCfgEntry.empty() )
+        if( wrk_iter->second.m_proofCfgEntry.empty() )
             continue;
 
         f << wrk_iter->second.m_proofCfgEntry << endl;

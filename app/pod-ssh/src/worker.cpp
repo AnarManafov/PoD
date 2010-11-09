@@ -19,8 +19,8 @@ using namespace MiscCommon;
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec, log_func_t _log ):
-        m_rec( _rec ),
-        m_log( _log )
+    m_rec( _rec ),
+    m_log( _log )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -36,13 +36,13 @@ CWorker::~CWorker()
 void CWorker::printInfo( ostream &_stream ) const
 {
     _stream << "[" << m_rec->m_id << "] with "
-    << m_rec->m_nWorkers << " workers at "
-    << m_rec->m_addr << ":" << m_rec->m_wrkDir;
+            << m_rec->m_nWorkers << " workers at "
+            << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
 //=============================================================================
 void CWorker::runTask( ETaskType _param )
 {
-    switch ( _param )
+    switch( _param )
     {
         case task_submit:
             submit();
@@ -76,12 +76,12 @@ void CWorker::submit()
     {
         do_execv( cmd, params, g_cmdTimeout, &outPut );
     }
-    catch ( exception &e )
+    catch( exception &e )
     {
         log( "Failed to process the task.\n" );
         return;
     }
-    if ( !outPut.empty() )
+    if( !outPut.empty() )
     {
         ostringstream ss;
         ss << "Cmnd Output: " << outPut << "\n";
@@ -104,12 +104,12 @@ void CWorker::clean()
     {
         do_execv( cmd, params, g_cmdTimeout, &outPut );
     }
-    catch ( exception &e )
+    catch( exception &e )
     {
         log( "Failed to process the task.\n" );
         return;
     }
-    if ( !outPut.empty() )
+    if( !outPut.empty() )
     {
         ostringstream ss;
         ss << "Cmnd Output: " << outPut << "\n";
@@ -132,12 +132,12 @@ void CWorker::status()
     {
         do_execv( cmd, params, g_cmdTimeout, &outPut );
     }
-    catch ( exception &e )
+    catch( exception &e )
     {
         log( "Failed to process the task.\n" );
         return;
     }
-    if ( !outPut.empty() )
+    if( !outPut.empty() )
     {
         ostringstream ss;
         ss << "Cmnd Output: " << outPut << "\n";

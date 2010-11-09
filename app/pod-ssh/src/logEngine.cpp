@@ -35,12 +35,12 @@ void CLogEngine::start( const string &_wrkDir )
     smart_append( &m_pipeName, '/' );
     m_pipeName += ".pod_ssh_pipe";
     int ret_val = mkfifo( m_pipeName.c_str(), 0666 );
-    if (( -1 == ret_val ) && ( EEXIST != errno ) )
+    if(( -1 == ret_val ) && ( EEXIST != errno ) )
         throw runtime_error( "Can't create a named pipe: " + m_pipeName );
 
     // Open the pipe for reading
     m_fd = open( m_pipeName.c_str(), O_RDWR | O_NONBLOCK );
-    if (( -1 == m_fd ) && ( EEXIST != errno ) )
+    if(( -1 == m_fd ) && ( EEXIST != errno ) )
         throw runtime_error( "Can't opem a named pipe: " + m_pipeName );
 
     // Start the log engine
@@ -49,7 +49,7 @@ void CLogEngine::start( const string &_wrkDir )
 //=============================================================================
 void CLogEngine::stop()
 {
-    if ( NULL != m_thread )
+    if( NULL != m_thread )
     {
         m_stopLogEngine = 1;
         this->operator()( "Done\n", "**" );
@@ -58,7 +58,7 @@ void CLogEngine::stop()
         m_thread = NULL;
     }
 
-    if ( m_fd > 0 )
+    if( m_fd > 0 )
     {
         close( m_fd );
         m_fd = 0;
@@ -74,13 +74,13 @@ void CLogEngine::operator()( const string &_msg, const string &_id ) const
     char timestr[200];
     time_t t = time( NULL );
     struct tm tmp;
-    if ( localtime_r( &t, &tmp ) == NULL )
+    if( localtime_r( &t, &tmp ) == NULL )
     {
         // TODO: log it.
         return;
     }
 
-    if ( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
+    if( strftime( timestr, sizeof( timestr ), "%a, %d %b %Y %T %z", &tmp ) == 0 )
     {
         // TODO: log it.
         return;
@@ -92,41 +92,41 @@ void CLogEngine::operator()( const string &_msg, const string &_id ) const
     out += "\t[";
     out += timestr;
     out += "]\t";
-    if ( _msg.size() > PIPE_BUF )
+    if( _msg.size() > PIPE_BUF )
         out += "ERROR. Message is too long.\n";
     else
         out += _msg;
-    if ( write( m_fd, out.c_str(), out.size() ) < 0 )
+    if( write( m_fd, out.c_str(), out.size() ) < 0 )
         throw system_error( "Write error" );
 }
 //=============================================================================
 void CLogEngine::thread_worker( int _fd, const string & _pipename )
 {
-    while ( _fd > 0 && !m_stopLogEngine )
+    while( _fd > 0 && !m_stopLogEngine )
     {
         fd_set readset;
         FD_ZERO( &readset );
         FD_SET( _fd, &readset );
         int retval = ::select( _fd + 1, &readset, NULL, NULL, NULL );
 
-        if ( EBADF == errno )
+        if( EBADF == errno )
             break;
 
-        if ( retval < 0 )
+        if( retval < 0 )
         {
             cerr << PROJECT_NAME << ": Problem in the log engine: " << errno2str() << endl;
             break;
         }
 
-        if ( FD_ISSET( _fd, &readset ) )
+        if( FD_ISSET( _fd, &readset ) )
         {
             const int read_size = 64;
             char buf[read_size];
             int numread( 0 );
-            while ( true )
+            while( true )
             {
                 numread = read( _fd, buf, read_size );
-                if ( numread > 0 )
+                if( numread > 0 )
                     cout << string( buf, numread );
                 else
                     break;

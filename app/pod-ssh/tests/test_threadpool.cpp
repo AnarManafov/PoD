@@ -63,7 +63,7 @@ int main()
 {
     CThreadPool<CTestTask, EProc> threadPool( 4 );
     vector <CTestTask> tasksList( g_numTasks );
-    for ( size_t i = 0; i < g_numTasks; ++i )
+    for( size_t i = 0; i < g_numTasks; ++i )
     {
         threadPool.pushTask( tasksList[i], start );
     }
@@ -78,10 +78,10 @@ int main()
     {
         vector <CTestTask>::const_iterator iter = tasksList.begin();
         vector <CTestTask>::const_iterator iter_end = tasksList.end();
-        for ( ; iter != iter_end; ++iter )
+        for( ; iter != iter_end; ++iter )
         {
             counter_t::iterator found = counter.find( iter->threadID() );
-            if ( found == counter.end() )
+            if( found == counter.end() )
                 counter.insert( counter_t::value_type( iter->threadID(), 1 ) );
             else
             {
@@ -92,12 +92,12 @@ int main()
 
     counter_t::const_iterator iter = counter.begin();
     counter_t::const_iterator iter_end = counter.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
         cout << iter->first << " was used " << iter->second << " times\n";
         // each thread suppose to be used equal amount of time,
         // exactly (g_numTasks/g_numThreads) times
-        if ( iter->second != ( g_numTasks / g_numThreads ) )
+        if( iter->second != ( g_numTasks / g_numThreads ) )
         {
             cerr << "ThreadPool: simple test - Failed" << endl;
             return 1;

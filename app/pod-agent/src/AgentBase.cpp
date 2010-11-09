@@ -44,9 +44,9 @@ namespace PROOFAgent
 
 //=============================================================================
     CAgentBase::CAgentBase( const SCommonOptions_t &_common ) :
-            m_commonOptions( _common ),
-            m_agentServerListenPort( 0 ),
-            m_fdSignalPipe( 0 )
+        m_commonOptions( _common ),
+        m_agentServerListenPort( 0 ),
+        m_fdSignalPipe( 0 )
     {
         // Registering signals handlers
         struct sigaction sa;
@@ -69,24 +69,24 @@ namespace PROOFAgent
         smart_append( &m_signalPipeName, '/' );
         m_signalPipeName += ".signal_pipe";
         int ret_val = mkfifo( m_signalPipeName.c_str(), 0666 );
-        if (( -1 == ret_val ) && ( EEXIST != errno ) )
+        if(( -1 == ret_val ) && ( EEXIST != errno ) )
         {
             ostringstream ss;
             ss
-            << "Can't create a named pipe: "
-            << m_signalPipeName;
+                    << "Can't create a named pipe: "
+                    << m_signalPipeName;
             throw system_error( ss.str() );
             graceful_quit = 1;
         }
 
         // Open the pipe for reading
         m_fdSignalPipe = open( m_signalPipeName.c_str(), O_RDWR | O_NONBLOCK );
-        if (( -1 == m_fdSignalPipe ) && ( EEXIST != errno ) )
+        if(( -1 == m_fdSignalPipe ) && ( EEXIST != errno ) )
         {
             ostringstream ss;
             ss
-            << "Can't open a named pipe: "
-            << m_signalPipeName;
+                    << "Can't open a named pipe: "
+                    << m_signalPipeName;
             throw system_error( ss.str() );
             graceful_quit = 1;
         }
@@ -97,7 +97,7 @@ namespace PROOFAgent
     {
         close( m_fdSignalPipe );
         // deleting proof configuration file
-        if ( !m_commonOptions.m_proofCFG.empty() )
+        if( !m_commonOptions.m_proofCFG.empty() )
             unlink( m_commonOptions.m_proofCFG.c_str() );
 
         unlink( m_signalPipeName.c_str() );
@@ -116,7 +116,7 @@ namespace PROOFAgent
         ;
 
         ifstream ifs( _filename.c_str() );
-        if ( !ifs.is_open() || !ifs.good() )
+        if( !ifs.is_open() || !ifs.good() )
         {
             string msg( "Could not open a server info configuration file: " );
             msg += _filename;
@@ -125,9 +125,9 @@ namespace PROOFAgent
         // Parse the config file
         po::store( po::parse_config_file( ifs, options ), keys );
         po::notify( keys );
-        if ( keys.count( "server.host" ) )
+        if( keys.count( "server.host" ) )
             m_agentServerHost = keys["server.host"].as<string> ();
-        if ( keys.count( "server.port" ) )
+        if( keys.count( "server.port" ) )
             m_agentServerListenPort = keys["server.port"].as<unsigned int> ();
     }
 
@@ -151,18 +151,18 @@ namespace PROOFAgent
         try
         {
             vectorPid_t pids = getprocbyname( "xproofd", true );
-            if ( pids.empty() )
+            if( pids.empty() )
                 return false;
         }
-        catch ( ... )
+        catch( ... )
         {
             return false;
         }
 
         // #2 - Check whether PROOF port is in use
-        if ( 0 == _Port )
+        if( 0 == _Port )
             return true;
-        if ( 0 != MiscCommon::INet::get_free_port( _Port ) )
+        if( 0 != MiscCommon::INet::get_free_port( _Port ) )
             return false; // PROOF port is not in use, that means we can't connect to it
         // TODO: Implement more checks of xproofd here
         return true;
@@ -180,9 +180,9 @@ namespace PROOFAgent
             ProofStatusContainer_t status( m_proofStatus.getStatus() );
             ProofStatusContainer_t::const_iterator iter = status.begin();
             ProofStatusContainer_t::const_iterator iter_end = status.end();
-            for ( ; iter != iter_end; ++iter )
+            for( ; iter != iter_end; ++iter )
             {
-                if ( proofstatus_idle != *iter )
+                if( proofstatus_idle != *iter )
                 {
                     m_idleWatch.touch();
                     log( LOG_SEVERITY_DEBUG, "updateIdle: touch" );
@@ -193,7 +193,7 @@ namespace PROOFAgent
                 }
             }
         }
-        catch ( const exception &_e )
+        catch( const exception &_e )
         {
             log( LOG_SEVERITY_WARNING, _e.what() );
         }

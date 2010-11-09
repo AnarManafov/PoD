@@ -38,14 +38,14 @@ void CConfig::readFrom( istream &_stream )
     // pars the configuration using boost's tokenizer
     StringVector_t::const_iterator iter = lines.begin();
     StringVector_t::const_iterator iter_end = lines.end();
-    for ( size_t i = 0; iter != iter_end; ++iter, ++i )
+    for( size_t i = 0; iter != iter_end; ++iter, ++i )
     {
         // ignore empty lines
-        if ( iter->empty() )
+        if( iter->empty() )
             continue;
 
         // ignore comments
-        if ( g_comment_char == iter->at( 0 ) )
+        if( g_comment_char == iter->at( 0 ) )
             continue;
 
         Tok t( *iter );
@@ -53,16 +53,16 @@ void CConfig::readFrom( istream &_stream )
         // Each CWorker is responsible to delete it's config record info.
         configRecord_t rec = configRecord_t( new SConfigRecord() );
         int res = rec->assignValues( t.begin(), t.end() );
-        if ( res )
+        if( res )
         {
             stringstream ss;
             ss << "pod-ssh configuration: syntax error at line "
-            << i + 1;
+               << i + 1;
             throw runtime_error( ss.str() );
         }
         // check for duplicate ids
         pair<ids_t::iterator, bool> ret = ids.insert( rec->m_id );
-        if ( !ret.second )
+        if( !ret.second )
         {
             stringstream ss;
             ss << "a not unique id has been found: "  << "[" << rec->m_id << "]";

@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_0 )
     cout << "Fake parent ID: " << ids[0] << endl;
     CPbsMng::jobArray_t::const_iterator iter = ids.begin() + 1;
     CPbsMng::jobArray_t::const_iterator iter_end = ids.end();
-    for ( ; iter != iter_end; ++iter )
+    for( ; iter != iter_end; ++iter )
     {
         cout << "Array jobs ID: " << *iter << endl;
 
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE( test_pbs_alljobs )
 
     CPbsMng::jobInfoContainer_t::const_iterator iter = info.begin();
     CPbsMng::jobInfoContainer_t::const_iterator iter_end = info.end();
-    for ( ; iter != iter_end ; ++iter )
+    for( ; iter != iter_end ; ++iter )
     {
         cout << iter->first << " has status \""
              << CPbsMng::jobStatusToString( iter->second.m_status ) << "\"" << endl;

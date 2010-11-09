@@ -54,7 +54,7 @@ namespace oge_plug
             }
             ~COgeJobSubmitter()
             {
-                if ( isRunning() )
+                if( isRunning() )
                     terminate();
             }
 
@@ -89,7 +89,7 @@ namespace oge_plug
                 m_parentJobs.erase( _jobID );
                 m_mutex.unlock();
 
-                if ( _emitSignal )
+                if( _emitSignal )
                     emit removedJob( _jobID );
             }
             void killJob( const COgeMng::jobID_t &_jobID )
@@ -139,7 +139,7 @@ namespace oge_plug
                                                                 m_numberOfWrk );
 
                     // get the parent index
-                    if ( jobs.empty() )
+                    if( jobs.empty() )
                         throw std::runtime_error( "Bad jobs' parent index" );
 
                     COgeMng::jobID_t lastJobID = jobs[0];
@@ -154,7 +154,7 @@ namespace oge_plug
 
                     emit newJob( lastJobID );
                 }
-                catch ( const std::exception &_e )
+                catch( const std::exception &_e )
                 {
                     emit sendThreadMsg( tr( _e.what() ) );
                     emit changeProgress( 0 );

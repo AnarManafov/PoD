@@ -63,18 +63,18 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
     bpo::notify( vm );
 
-    if ( vm.count( "help" ) || vm.empty() )
+    if( vm.count( "help" ) || vm.empty() )
     {
         cout << visible << endl;
         return false;
     }
-    if ( vm.count( "version" ) )
+    if( vm.count( "version" ) )
     {
         printVersion();
         return false;
     }
 
-    if ( !vm.count( "config" ) )
+    if( !vm.count( "config" ) )
     {
         cout << visible << endl;
         throw runtime_error( "You need to specify a configuration file at least." );
@@ -104,10 +104,10 @@ int main( int argc, char * argv[] )
     bpo::variables_map vm;
     try
     {
-        if ( !parseCmdLine( argc, argv, &vm ) )
+        if( !parseCmdLine( argc, argv, &vm ) )
             return 0;
         ifstream f( vm["config"].as<string>().c_str() );
-        if ( !f.is_open() )
+        if( !f.is_open() )
         {
             string msg( "can't open configuration file \"" );
             msg += vm["config"].as<string>();
@@ -127,7 +127,7 @@ int main( int argc, char * argv[] )
             configRecords_t recs( config.getRecords() );
             configRecords_t::const_iterator iter = recs.begin();
             configRecords_t::const_iterator iter_end = recs.end();
-            for ( ; iter != iter_end; ++iter )
+            for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
                 CWorker wrk( rec, log_fun_ptr );
@@ -146,7 +146,7 @@ int main( int argc, char * argv[] )
         slog( ss.str() );
 
         // it's a dry run - configuration check only
-        if ( !vm.count( "submit" ) && !vm.count( "clean" ) && !vm.count( "status" ) )
+        if( !vm.count( "submit" ) && !vm.count( "clean" ) && !vm.count( "status" ) )
             throw runtime_error( "It's a configuration check only. Specify submit/clean options to actually execute." );
 
         slog( "Workers list:\n" );
@@ -154,14 +154,14 @@ int main( int argc, char * argv[] )
         // start thread-pool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( 4 );
         ETaskType task_type( task_submit );
-        if ( vm.count( "clean" ) )
+        if( vm.count( "clean" ) )
             task_type = task_clean;
-        else if ( vm.count( "status" ) )
+        else if( vm.count( "status" ) )
             task_type = task_status;
 
         workersList_t::iterator iter = workers.begin();
         workersList_t::iterator iter_end = workers.end();
-        for ( ; iter != iter_end; ++iter )
+        for( ; iter != iter_end; ++iter )
         {
             ostringstream ss;
             iter->printInfo( ss );
@@ -171,7 +171,7 @@ int main( int argc, char * argv[] )
         }
         threadPool.stop( true );
     }
-    catch ( exception& e )
+    catch( exception& e )
     {
         slog( e.what() + string( "\n" ) );
         return 1;
