@@ -178,13 +178,13 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         // DRMAA_V_ENV ( vector of strings )
         // The environment values that define the remote environment. Each string
         StringVector_t env( getEnvArray() );
-        char **env_tmp = ( char** )malloc( sizeof(char*) * (env.size() + 1) );
+        char **env_tmp = ( char** )malloc( sizeof( char* ) * ( env.size() + 1 ) );
         StringVector_t::const_iterator iter = env.begin();
         StringVector_t::const_iterator iter_end = env.end();
         size_t env_tmp_count = 0;
         for( ; iter != iter_end; ++iter, ++env_tmp_count )
         {
-            env_tmp[env_tmp_count] = ( char* )malloc( sizeof(char) * (iter->size() + 1) );
+            env_tmp[env_tmp_count] = ( char* )malloc( sizeof( char ) * ( iter->size() + 1 ) );
             strcpy( env_tmp[env_tmp_count], iter->c_str() );
         }
         env_tmp[env_tmp_count] = NULL;
