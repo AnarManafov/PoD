@@ -303,23 +303,16 @@ void COgeDlg::showContextMenu( const QPoint &_point )
 //=============================================================================
 void COgeDlg::expandTreeNode( const QModelIndex &_index )
 {
-//    // expand only one node at time to reduce a number of requests to LSF daemon
-//    if ( m_expandedNode.isValid() && m_expandedNode != _index )
-//        m_ui.treeJobs->collapse( m_expandedNode );
-//
-//
-//    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
-//    if ( info )
-//        info->m_expanded = true;
-//
-//    m_expandedNode = _index;
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
+    if ( info )
+        info->m_strStatus = "";
 }
 //=============================================================================
 void COgeDlg::collapseTreeNode( const QModelIndex &_index )
 {
-//    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
-//    if ( info )
-//        info->m_expanded = false;
+    SJobInfo *info = reinterpret_cast< SJobInfo * >( _index.internalPointer() );
+    if ( info )
+        info->m_strStatus = "(expand to see the status)";
 }
 //=============================================================================
 void COgeDlg::killJob()

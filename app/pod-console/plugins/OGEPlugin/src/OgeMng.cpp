@@ -184,7 +184,7 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         size_t env_tmp_count = 0;
         for( ; iter != iter_end; ++iter, ++env_tmp_count )
         {
-            env_tmp[env_tmp_count] = ( char* )malloc( iter->size() + 1 );
+            env_tmp[env_tmp_count] = ( char* )malloc( sizeof(char) * (iter->size() + 1) );
             strcpy( env_tmp[env_tmp_count], iter->c_str() );
         }
         env_tmp[env_tmp_count] = NULL;

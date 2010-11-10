@@ -195,6 +195,7 @@ void CJobsContainer::_addJobInfo( const JobsContainer_t::value_type &_node )
     pair<JobsContainer_t::iterator, bool> res =  m_cur_ids.insert( JobsContainer_t::value_type( info->m_strID, info ) );
     if( res.second && NULL == info->parent() )
     {
+        info->m_strStatus = "(expand to see the status)";
         emit addJob( info );
     }
 }
@@ -252,7 +253,7 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
         {
             qDebug( "CJobsContainer::_markAllCompletedJobs: %s is a parent job",
                     iter->first.c_str() );
-            iter->second->m_strStatus = "(expand to see the status)";
+            //iter->second->m_strStatus = "(expand to see the status)";
         }
         else
         {
