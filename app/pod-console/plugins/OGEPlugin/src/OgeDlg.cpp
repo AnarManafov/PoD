@@ -328,16 +328,19 @@ void COgeDlg::killJob()
     if( !info )
         return;
 
-    const string msg( "Are you sure you want to send a KILL signal to the selected job?\n"
-                      "Be advised, after the signal is sent it will take some time until the job is killed and removed from the OGE queue." );
+    stringstream ss;
+    ss
+      << "Are you sure you want to send a KILL signal to the job with id "<< info->m_id << "?\n"
+      << "Be advised, after the signal is sent it will take some time until the job is killed and removed from the OGE queue.";
     const QMessageBox::StandardButton reply =
-        QMessageBox::question( this, tr( PROJECT_NAME ), tr( msg.c_str() ),
-                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
-    if( QMessageBox::Cancel == reply )
+        QMessageBox::question( this, tr( PROJECT_NAME ), tr( ss.str().c_str() ),
+                               QMessageBox::Yes | QMessageBox::No );
+    if( QMessageBox::No == reply )
         return;
-
+    
     try
     {
+        qDebug("COgeDlg::killJob(): id=%s", info->m_id.c_str());
         m_JobSubmitter.killJob( info->m_id );
     }
     catch( const std::exception &_e )
