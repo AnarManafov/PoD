@@ -14,7 +14,8 @@ pod: PoD WNs now try to use first binaries from PoD UI, if a shared home file sy
      It speeds up the start up time of PoD jobs. If this try fails, PoD WN will use
      pre-compiled bins, which come with PoD' worker package.
 pod: Now PoD UI/Server can run on Mac OS X. So far only CLI and only the SSH plug-in are working and have been tested.
-pod: All CLI plug-ins are now in seporate files. This makes it much easer to extend PoD with new plug-ins and support old ones.
+pod: All CLI plug-ins are now in separate files. This makes it much easer to extend PoD with new plug-ins and support old ones.
+pod: User's Manual has been updated.
 pod-user-defaults: updated user defaults configuration file - v0.6.
 pod-user-defaults: removed the pbs_plugin.shared_home option.
 pod-user-defaults: added the oge_plugin.upload_job_log option.

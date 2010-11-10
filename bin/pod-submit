@@ -12,20 +12,11 @@
 #        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
-# Usage: pod-submit [-r [lsf:pbs:oge]] [-q] [-n X] [-h]
-# -r rms : Name of the resource management system (supported: lsf, pbs, oge).
-# -q     : Submit the jobs to specified queue.
-# -n X   : Desired number or PROOF workers.
-# -h     : Show summary of options.
-
-#
 # PoD environment variables exported to the workers:
 #  POD_UI_LOG_LOCATION : log dir on the PoD UI
 #  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
-
-
+#
 PLUG_DIR="$POD_LOCATION/plugins"
-
 #=============================================================================
 # ***** USAGE *****
 #=============================================================================
@@ -35,7 +26,7 @@ PoD command line utility, which can be used to manually submit PoD jobs using LS
    Copyright (C) 2010 GSI, Scientific Computing group.
 
 Usage: pod-info [OPTION]
-     -l          List all available RMS plug-ins.
+     -l          Show all available RMS plug-ins.
      -r rms      Name of the resource management system (supported: $(list_plugins)).
      -q name     Submit the jobs to specified queue.
      -n X        Desired number or PROOF workers.
