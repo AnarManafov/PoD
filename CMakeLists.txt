@@ -111,6 +111,14 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-status-worker 
     )
 #
+# "plugins" files
+#
+SET(POD_CLI_PLUGINS_FILES 
+    ${CMAKE_SOURCE_DIR}/plugins/pod-lsf-submit
+    ${CMAKE_SOURCE_DIR}/plugins/pod-pbs-submit
+    ${CMAKE_SOURCE_DIR}/plugins/pod-oge-submit
+    )
+#
 # "etc" files
 #
 SET(POD_ETC_FILES
@@ -224,7 +232,7 @@ if (GSI_BUILD)
         ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0
         ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
         ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1
-        ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1 
+        ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
     )
     install(PROGRAMS ${GSI_ADD_BIN} DESTINATION bin)
     install(FILES ${GSI_ADD_LIB} DESTINATION lib)
@@ -255,6 +263,8 @@ install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
 # install etc files
 install(FILES ${POD_ETC_FILES} DESTINATION etc)
+# install CLI plug-ins
+install(PROGRAMS ${POD_CLI_PLUGINS_FILES} DESTINATION plugins)
 # install User's manual files
 if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
   install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-11-10
+#
+#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+QUEUE="proof"
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
+
+JOB_NAME="$BASHPID[1-$NUM_WRK]"
+OUTPUT=""
+if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
+   OUTPUT=" -o $LOG_DIR/%J/std_%I.out -e $LOG_DIR/%J/std_%I.err"
+fi
+bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
+

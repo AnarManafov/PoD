@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-11-10
+#
+#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+QUEUE="proof"
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+# We assume, that shared home file system is used.
+# qsub with parameters:
+# -V          export all environment variables
+# -terse      tersed output, print only the job-id
+# -j yes      merge std out and err to one file
+OGE_OPTION_FILE="$POD_LOCATION/etc/Job.oge.option"
+oge_job_array_param="-t 1-$NUM_WRK"
+job_name="PoD_OGE_Job"
+# OGE option file
+if [ -r $OGE_OPTION_FILE ]; then
+   OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
+fi
+jobid=$(qsub -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
+# we need to create a logs output dir
+stat=$?
+# extract a job id only, without an array indexes
+jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
+if (( $stat == 0 )); then
+   echo "Job ID: $jobid"
+   mkdir -p  $LOG_DIR/$jobid
+else
+   echo "Error submitting job. $jobid"
+fi
+

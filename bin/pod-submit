@@ -23,6 +23,9 @@
 #  POD_UI_LOG_LOCATION : log dir on the PoD UI
 #  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
 
+
+PLUG_DIR="$POD_LOCATION/plugins"
+
 #=============================================================================
 # ***** USAGE *****
 #=============================================================================
@@ -32,29 +35,44 @@ PoD command line utility, which can be used to manually submit PoD jobs using LS
    Copyright (C) 2010 GSI, Scientific Computing group.
 
 Usage: pod-info [OPTION]
-     -r rms      Name of the resource management system (supported: lsf, pbs).
-     -q name     Submit the jobs to specified queue (for rms=[lsf:pbs:oge]).
+     -l          List all available RMS plug-ins.
+     -r rms      Name of the resource management system (supported: $(list_plugins)).
+     -q name     Submit the jobs to specified queue.
      -n X        Desired number or PROOF workers.
      -h          Show summary of options.
 
 Report bugs to http://pod.gsi.de
 EOF
 }
-
+#=============================================================================
+# ***** List all plug-ins  *****
+#=============================================================================
+list_plugins()
+{
+   local PLUGS=($(ls -1 $PLUG_DIR/pod-*-submit))
+   local out=""
+   for i in ${PLUGS[@]}
+   do
+     if [ -n "$out" ]; then
+        out="$out, "
+     fi
+      
+     out="$out$(echo $(basename $i) | awk -F- '{ print $2}')"
+   done
+   echo $out
+}
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
-# checking the number of parameters
-if [ $# -ne 6 ]; then
-   usage
-   exit 1
-fi
-
-RMS="lsf"
+RMS=""
 QUEUE="proof"
 NUM_WRK=10
-while getopts ":q:n:hr:" opt; do
+while getopts "hlq:n:r:" opt; do
    case $opt in
+      l)
+       list_plugins
+       exit 0
+       ;;
       q)
        QUEUE="$OPTARG"
        ;;
@@ -75,82 +93,20 @@ while getopts ":q:n:hr:" opt; do
    esac
 done
 
-# check supported RMS
-if [ "$RMS" != "lsf" ] && [ "$RMS" != "pbs" ] && [ "$RMS" != "oge" ]; then
-   echo "Error: \"$RMS\" is not supported by this command."
-   echo ""
-   usage
+# translate to lowcase
+RMS=$(tr "[:upper:]" "[:lower:]" <<< "$RMS")
+
+#  plugins/pod-RMS-submit
+PLUG_CMD="$PLUG_DIR/pod-$RMS-submit"
+if [ ! -s $PLUG_CMD ]; then
+   echo "Error: can't find \"$RMS\" plug-in."
+   echo "The following is the list of available plug-ins: $(list_plugins)"
    exit 1
 fi
 
-
-EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
+# call the selected plug-in
 eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
-
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
-
-if [ "$RMS" = "lsf" ]; then
-   #
-   # LSF 
-   #
-   JOB_NAME="$BASHPID[1-$NUM_WRK]"
-   OUTPUT=""
-   if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
-      OUTPUT=" -o $LOG_DIR/%J/std_%I.out -e $LOG_DIR/%J/std_%I.err"
-   fi
-   bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
-elif  [ "$RMS" = "pbs" ]; then
-   #
-   # PBS
-   # 
-   # A job array parameter is different in PBS (torque) and PBS pro, it is -t and -J accordingly
-   # We try to check a version of PBS to figure out, what to use
-   pbs_pro=$(pbsnodes --version 2>&1 | grep -o PBSPro)
-   pbs_job_array_param="-J 1-$NUM_WRK"
-   if [ -z $pbs_pro ]; then
-      pbs_job_array_param="-t 1-$NUM_WRK"
-   fi
-
-   jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe -o $LOG_DIR/ -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$LOG_DIR" $POD_LOCATION/etc/Job.pbs)
-   # we need to create a logs output dir
-   if (( $? == 0 )); then
-      echo "Job ID: $jobid"
-      PARENT_PBS_JOBID=$(echo $jobid | egrep -o '^[[:digit:]]*')
-      mkdir -p  $LOG_DIR/$PARENT_PBS_JOBID
-   else
-      echo "Error submitting job. $jobid"
-   fi
- 
-elif [ "$RMS" = "oge" ]; then
-   #  
-   # SGE/OGE
-   #
-   # We assume, that shared home file system is used.
-   # qsub with parameters:
-   # -V          export all environment variables
-   # -terse      tersed output, print only the job-id
-   # -j yes      merge std out and err to one file
-   OGE_OPTION_FILE="$POD_LOCATION/etc/Job.oge.option"
-   oge_job_array_param="-t 1-$NUM_WRK"
-   job_name="PoD_OGE_Job"
-   # OGE option file
-   if [ -r $OGE_OPTION_FILE ]; then
-      OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
-   fi
-   jobid=$(qsub -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
-   # we need to create a logs output dir
-   stat=$?
-   # extract a job id only, without an array indexes
-   jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
-   if (( $stat == 0 )); then
-      echo "Job ID: $jobid"
-      mkdir -p  $LOG_DIR/$jobid
-   else
-      echo "Error submitting job. $jobid"
-   fi
-
-fi
-
-exit 0
+PLGU_CMD -q $QUEUE -n $NUM_WRK
 
