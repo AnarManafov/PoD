@@ -1,59 +1,56 @@
 <!--
-Requirements
--->
+ Requirements
+ -->
 <chapter id="Requirements">
-<title>Requirements</title>
-<chapterinfo>
-</chapterinfo>
-   <sect1 id="User_workspace_requirements">
-   <title>User interface</title>
-   <para>
-	   Officially PoD runs on Linux only.
-   </para>
-   <para>
-	<itemizedlist>
-		<title>General requirements: </title>
-		<listitem>Incoming connection on pod-agent's port (configurable)</listitem>
-		<listitem>ROOT 5.25.04 or higher (xrootd enabled)</listitem>
-		<listitem>Qt 4.4.2 or higher</listitem>
-		<listitem>BOOST 1.33.1 or higher </listitem>		
-		<listitem>cmake 2.6.2 or higher</listitem>
-	</itemizedlist>
-   <itemizedlist>
-      <title>Additional requirements for gLite plug-in:</title>
-      <listitem>gLite UI 3.2</listitem>
-   </itemizedlist>
-   <itemizedlist>
-      <title>Additional requirements for LSF plug-in:</title>
-      <listitem>LSF 6.x API (headers and libraries).
-      <footnote id="RMS_API"><para>There will be no PoD job manager plug-in's GUI if resource management system's API is missing. Then 
-      only PoD command line interface can be used to submit PoD jobs to an according resource management system.</para></footnote></listitem>
-   </itemizedlist>
-   <itemizedlist>
-      <title>Additional requirements for PBS plug-in:</title>
-      <listitem>PBSPro/Torque API (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
-   </itemizedlist>
-   <itemizedlist>
-      <title>Additional requirements for SSH plug-in: </title>
-      <listitem>A public key access (password less) to destination worker nodes.</listitem>
-   </itemizedlist>
-   </para>
-   </sect1>
-   
-   <sect1 id="Workers_workspace_requirements">
-   <title>Workers</title>      
-   <para>
-   <itemizedlist>
-      <title>General requirements: </title>
-      <listitem>Outgoing connection for a port in a range (configurable).
-		          This is needed by pod-agent worker to be able to connect to a server</listitem>
-	</itemizedlist>
-   <itemizedlist>
-      <title>Additional requirements for gLite plug-in: </title>
-      <listitem>gLite WMS (WMProxy endpoint)</listitem>
-		<listitem>gLite WNs (at least v3.0)</listitem>
-   </itemizedlist>
-   </para>
-   </sect1>   
-  </chapter>
- 
+    <title>Requirements</title>
+    <chapterinfo>
+    </chapterinfo>
+    <sect1 id="User_workspace_requirements">
+        <title>User interface</title>
+        <para>
+            PoD UI/Server runs on Linux and Mac OS X. On Mac we support only PoD CLI so-far.
+        </para>
+        <para>
+            <itemizedlist><title>General requirements: </title>
+                <listitem>Incoming connection on pod-agent's port (configurable)</listitem>
+                <listitem>ROOT 5.25.04 or higher (xrootd enabled)</listitem>
+                <listitem>Qt 4.4.2 or higher (optional. There will be no PoD GUI, if Qt is missing)</listitem>
+                <listitem>BOOST 1.33.1 or higher </listitem>		
+                <listitem>cmake 2.6.2 or higher</listitem>
+                <listitem>shell: BASH</listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for gLite plug-in:</title>
+                <listitem>gLite UI 3.2</listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for LSF plug-in:</title>
+                <listitem>LSF 6.x API (headers and libraries).
+                    <footnote id="RMS_API"><para>There will be no PoD job manager plug-ins' GUI if resource management system's API is missing. Then 
+                        only PoD command line interface can be used to submit PoD jobs to an according resource management system.</para></footnote></listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for PBS plug-in:</title>
+                <listitem>PBSPro/Torque API (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for SSH plug-in: </title>
+                <listitem>A public key access (password less) to destination worker nodes.</listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for OGE plug-in: </title>
+                <listitem>OGE DRMAA v1 (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
+            </itemizedlist>
+        </para>
+    </sect1>
+    
+    <sect1 id="Workers_workspace_requirements">
+        <title>Workers</title>      
+        <para>
+            <itemizedlist><title>General requirements: </title>
+                <listitem>Outgoing connection for a port in a range (configurable).
+                    This is needed by pod-agent worker to be able to connect to a server</listitem>
+                <listitem>shell: BASH</listitem>
+            </itemizedlist>
+            <itemizedlist><title>Additional requirements for gLite plug-in: </title>
+                <listitem>gLite WMS (WMProxy endpoint)</listitem>
+                <listitem>gLite WNs (at least v3.0)</listitem>
+            </itemizedlist>
+        </para>
+    </sect1>   
+</chapter>

@@ -1,96 +1,107 @@
 <!-- 
 Installation 
 -->
-  <chapter id="Installation">
-    <title>Installation</title>
-     	<chapterinfo>
-   	</chapterinfo>
+<chapter id="Installation"><title>Installation</title>
+<chapterinfo>
+</chapterinfo>
     
-    <sect1 id="step1"><title>Step #1: Unpack the source</title>
-      <para>Unpack <application>PoD</application> tarball:
+<sect1 id="step1"><title>Step #1: Unpack the source</title>
+   <para>
+   Unpack <application>PoD</application> tarball:
 <screen>
 <command>tar -xzvf <replaceable>PoD-X.Y.Z-Source.tar.gz</replaceable></command>
 </screen>
-		Tar will created a new directory <filename class="directory">./PoD-X.Y.Z-Source</filename>,
-		where <replaceable>X.Y.Z</replaceable> represents a version of <application>PoD</application>.</para>
-    </sect1>
+   Tar will created a new directory <filename class="directory">./PoD-X.Y.Z-Source</filename>,
+   where <replaceable>X.Y.Z</replaceable> represents a version of <application>PoD</application>.
+   </para>
+</sect1>
 
 
-    <sect1 id="step2"><title>Step #2: Configure the source</title>
-      <para>
-      Change to the PoD source directory:
+<sect1 id="step2"><title>Step #2: Configure the source</title>
+   <para>
+   Change to the PoD source directory:
 <screen>
 <command>cd <replaceable>./PoD-X.Y.Z-Source</replaceable></command>
 </screen>
-      You may want to change some setting in the <filename>BuildSetup.cmake</filename>.
-      Here we have a description of the variables, which could be used to adjust PoD installation:
-      <table>
-		<title>PoD configuration variables</title>
-  		<tgroup cols="2">
-    		<thead>
-      	<row>
-        		<entry>Variable</entry>
-        		<entry>Description</entry>        
-      	</row>
-    		</thead>
-    		<tbody>
-      		<row>
-        			<entry>CMAKE_BUILD_TYPE</entry>
-        			<entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default RelWithDebInfo)</entry>
-      		</row>
-      		<row>
-        			<entry>GSI_BUILD</entry>
-        			<entry>Use it only when building GSI specific installation. Possible options are: ON/OFF (default OFF)</entry>        
-      		</row>
-      		<row>
-        			<entry>BUILD_GLITE_PLUGIN</entry>
-        			<entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>        
-      		</row>
-      		<row>
-        			<entry>BUILD_LSF_PLUGIN</entry>
-        			<entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>        
-      		</row>
-      		<row>
-        			<entry>BUILD_PBS_PLUGIN</entry>
-        			<entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>        
-      		</row>
-     		</tbody>
-   	</tgroup>
-		</table>
-    </para>
-    <para>
-    Now, prepare a build directory for an out-of-source build and configure the source:
+   You may want to change some setting in the <filename>BuildSetup.cmake</filename> bootstrap file.
+   The following is a list of variables:
+   <table><title>PoD configuration variables</title>
+      <tgroup cols="2">
+      <thead>
+         <row>
+            <entry>Variable</entry>
+            <entry>Description</entry>        
+      	 </row>
+      </thead>
+      <tbody>
+         <row>
+            <entry>CMAKE_INSTALL_PREFIX</entry>
+            <entry>Install path prefix, prepended onto install directories.(default $HOME/PoD/[PoD_Version])</entry>
+         </row>     
+         <row>
+            <entry>CMAKE_BUILD_TYPE</entry>
+            <entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default Release)</entry>
+         </row>
+      	 <row>
+            <entry>GSI_BUILD</entry>
+            <entry>Use it only when building GSI specific installation. Possible options are: ON/OFF (default OFF)</entry>        
+         </row>
+      	 <row>
+            <entry>BUILD_GLITE_PLUGIN</entry>
+            <entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>        
+      	 </row>
+      	 <row>
+            <entry>BUILD_LSF_PLUGIN</entry>
+            <entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>        
+      	 </row>
+      	 <row>
+            <entry>BUILD_PBS_PLUGIN</entry>
+            <entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>        
+      	 </row>
+      	 <row>
+            <entry>BUILD_OGE_PLUGIN</entry>
+            <entry>Switch on or off the configuration and build of PoD OGE plug-in. Possible options are: ON/OFF (default ON)</entry>        
+      	 </row>
+      </tbody>
+      </tgroup>
+   </table>
+   </para>
+   <para>
+      Now, prepare a build directory for an out-of-source build and configure the source:
 <screen>
 <command>mkdir build</command>
 <command>cd build</command>
 <command>cmake -C ../BuildSetup.cmake ..</command>
 </screen>
-    </para>
+   </para>
+   
     <tip><para>
-    If for some reason, for example a missing dependency, configuration failed, after fixing the issue before starting the <command>cmake</command> command
-    it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the 
-    source configuration is restarted.
+       If for some reason, for example a missing dependency, configuration failed, after fixing the issue before starting the <command>cmake</command> command
+       it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the 
+       source configuration is restarted.
     </para></tip>
-    </sect1>
+</sect1>
 
 
-    <sect1 id="step3"><title>Step #3: Build and install</title>
-    <para>
+<sect1 id="step3"><title>Step #3: Build and install</title>
+   <para>
       Issue the following commands to build and install PoD:
 <screen>
 <command>make</command>
 <command>make install</command>
 </screen>
       <note><para>
-       	Please note, that by default <application>PoD</application> will be installed in <envar>$HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
-        <application>PoD</application>.
-        However a user can change this behavior by setting the install prefix path in a bootstrap script <filename>$POD_LOCATION/BuildSetup.cmake</filename>. Just uncomment the setting of CMAKE_INSTALL_PREFIX variable and change dummy MY_PATH_HERE to a desired path.
-      	</para></note>
-        </para>
-    </sect1>
+         Please note, that by default <application>PoD</application> will be installed in <envar>$HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
+         <application>PoD</application>.
+         However a user can change this behavior by setting the install prefix path in a bootstrap script <filename>$POD_LOCATION/BuildSetup.cmake</filename>.
+         Just uncomment the setting of CMAKE_INSTALL_PREFIX variable and change dummy MY_PATH_HERE to a desired path.
+      </para></note>
+   </para>
+</sect1>
 
-    <sect1 id="step4"><title>Step #4: PoD Environment</title>
-      <para>
+
+<sect1 id="step4"><title>Step #4: PoD Environment</title>
+   <para>
       In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script. Change to your newly installed PoD directory and issue:
 <screen>
 <command>cd <replaceable>[POD INSTALLATION]</replaceable></command>
@@ -98,15 +109,14 @@ Installation
 </screen>
       You need to source this script every time in a new shell when you want to use <application>PoD</application>
       or source it from your bash profile.
-      </para>
-      <para>
+   </para>
+   <para>
       Now the installation is done.
-      <important>
-      	<para>
+      <important><para>
        	If there were problems during installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
-      	</para>
-      </important>
-      </para>
-    </sect1>
-  </chapter>
+      </para></important>
+   </para>
+</sect1>
+  
+</chapter>
   

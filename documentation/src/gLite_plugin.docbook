@@ -1,114 +1,164 @@
 <!--
-How to run
--->
-  <chapter id="gLite_plugin">
+ How to run
+ -->
+<chapter id="gLite_plugin">
     <title>gLite plug-in</title>
-        <chapterinfo>
-       </chapterinfo>
-
+    <chapterinfo>
+    </chapterinfo>
+    
     <sect1 id="gLite_Environment">
-      <title>Environment</title>
-      <para>
-      You need to have a valid VOMS proxy, before starting POD with the gLite plug-in.
-      </para>      
+        <title>Environment</title>
+        <para>
+            You need to have a valid VOMS proxy, before starting POD with the gLite plug-in.
+        </para>      
     </sect1>
-
+    
     <sect1 id="Grid_workers">
-      <title>Grid workers</title>
-      <para>
-      As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
-      </para>
-      <para>
-      Select the Grid page of the pod-console by clicking on the left sided tool bar. The page looks something like
-      it is shown on the <xref linkend="PAConsole_Grid0"/>.
- 
-        <para><figure float="0" id="PAConsole_Grid0">
-        <title>pod-console: Grid page</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>     
-      To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
-      or a custom one). A WMProxy endpoint should be selected. If pod-console shows no Endpoints, that would probably mean you
-      don't have any predefined endpoints on your gLite UI and POD will use the one which is defined in the GAW
-      configuration file. If several endpoints found, than you can chose which one GAW should use to submit POD jobs.
-		pod-console uses an automatic endpoint recognition system provided by GAW.      
-      At the last users may want to specify a number of workers they desire to use. POD uses a parametric job submission,
-      which means that only one job will be send to WMS, but there it will be spread according to defined number of
-      workers.
-        <para><figure float="0" id="PAConsole_Grid1">
-        <title>pod-console: Submitting 5 workers</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-        
-        A current status of the last submitted jobs is dynamically shown by pod-console, which could be seen
-        on the <xref linkend="PAConsole_Grid1"/>.
-        
+        <title>Grid workers</title>
         <para>
-        pod-console is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>). Every newly submitted job will be added to monitoring
-        and kept there until removed via
-        <menuchoice>
-		  <shortcut><keycombo><keysym>Ctrl-R</keysym></keycombo></shortcut>
-		  <guimenu>Context Menu</guimenu>
-	     <guimenuitem>Remove Job</guimenuitem>
-	     </menuchoice>.
-        It is useful in case when user wants to add more workers on the fly. The job will be submitted with the currently
-        selected jdl file, that means users can submit several jobs with different jdl files. It is useful when user wants
-        to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
+            As the next step we need to submit a grid job to deploy our PROOF workers on the gLite Grid Worker nodes.
         </para>
-        <para><figure float="0" id="PAConsole_Grid3">
-        <title>pod-console: Monitoring of several jobs</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>        
-        
         <para>
-        Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
-        get output sandbox of the selected job, get logging information (see <xref linkend="PAConsole_LogInfo"/>),
-        remove a job from the monitoring or cancel it.
-        <figure float="0" id="PAConsole_Grid2">
-        <title>pod-console: Context menu</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
+            Select the Grid page of the pod-console by clicking on the left sided tool bar. The page looks something like
+            it is shown on the <xref linkend="PAConsole_Grid0"/>.
+            
+            <para><figure float="0" id="PAConsole_Grid0">
+                <title>pod-console: Grid page</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase></phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure></para>     
+            To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
+            or a custom one). A WMProxy endpoint should be selected. If pod-console shows no Endpoints, that would probably mean you
+            don't have any predefined endpoints on your gLite UI and POD will use the one which is defined in the GAW
+            configuration file. If several endpoints found, than you can chose which one GAW should use to submit POD jobs.
+            pod-console uses an automatic endpoint recognition system provided by GAW.      
+            At the last users may want to specify a number of workers they desire to use. POD uses a parametric job submission,
+            which means that only one job will be send to WMS, but there it will be spread according to defined number of
+            workers.
+            <para><figure float="0" id="PAConsole_Grid1">
+                <title>pod-console: Submitting 5 workers</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase></phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure></para>
+            
+            A current status of the last submitted jobs is dynamically shown by pod-console, which could be seen
+            on the <xref linkend="PAConsole_Grid1"/>.
+            
+            <para>
+                pod-console is able to monitor several jobs in the same time (see <xref linkend="PAConsole_Grid3"/>).
+                Every newly submitted job will be added to monitoring
+                and kept there until removed via
+                <menuchoice>
+                    <shortcut><keycombo><keysym>Ctrl-R</keysym></keycombo></shortcut>
+                    <guimenu>Context Menu</guimenu>
+                    <guimenuitem>Remove Job</guimenuitem>
+                </menuchoice>.
+                It is useful in case when user wants to add more workers on the fly. The job will be submitted with the currently
+                selected jdl file, that means users can submit several jobs with different jdl files. It is useful when user wants
+                to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
+            </para>
+            <para><figure float="0" id="PAConsole_Grid3">
+                <title>pod-console: Monitoring of several jobs</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase></phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure></para>        
+            
+            <para>
+                Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
+                get output sandbox of the selected job, get logging information (see <xref linkend="PAConsole_LogInfo"/>),
+                remove a job from the monitoring or cancel it.
+                <figure float="0" id="PAConsole_Grid2">
+                    <title>pod-console: Context menu</title>
+                    <screenshot><mediaobject>
+                        <imageobject>
+                            <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
+                        </imageobject>
+                        <textobject>
+                            <phrase></phrase>
+                        </textobject>
+                    </mediaobject></screenshot>
+                </figure></para>
+            
+            <figure float="0" id="PAConsole_LogInfo">
+                <title>pod-console: Logging Information</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase></phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure>
+        </para>
+    </sect1>
+    
+    <sect1 id="GAW">
+        <title>GAW (gLite plug-in)</title>
+        <para>
+            GAW needed for gLite plug-in (if you want to use gLite workers as your PROOF workers).
+            There is GAW's configuration file in the
+            <filename class="directory">/tmp/test/PoDpackage/etc</filename> directory, it's called
+            <filename>glite-api-wrapper.cfg.xml</filename>. Through this file one can configure GAW engine.
+            The file is an XML file and it's XML Schema documentation and description of all configuration keys could
+            be found by the following <ulink url="http://www-linux.gsi.de/~manafov/D-Grid/docz/">link</ulink>.
+        </para>
+        <para>
+            Since gLite plug-in uses GAW to submit gLite jobs the important parameter to configure would be
+            a <varname>wmp_endpoint</varname>. This parameter holds the value for the default WMProxy endpoint to use.
+            <tip>
+                <para>
+                    GAW has a smart method for endpoint guessing. So, if you have could configured gLite UI,
+                    in terms that WMProxy endpoints are configured for your VO, then GAW will find the best match and
+                    will use it, and you therefore could just keep the <varname>wmp_endpoint</varname> value empty or
+                    you could remove this key from the configuration file at all. Otherwise GAW will use the value from
+                    the configuration file.      
+                </para>
+            </tip>
+            All other settings may be changed to adjust PoD according to personal needs.
+        </para>
+    </sect1>
+    
+    
+    <sect1 id="A_JDL_file">
+        <title>A JDL file (gLite plug-in)</title>
+        <para>
+            PoD submits its workers with help of a JDL file. Default JDL files are a part of PoD packages.
+            User can find them in the <filename class="directory">/tmp/test/PoDpackage/etc</filename> folder.
+            There are <filename>gLitePROOF.jdl</filename> and <filename>gLitePROOF_FZK.jdl</filename> files in this folder.
+            The first file is the generic PoD jdl file and the second one is optimized for a specific FZK gLite computing element.
+            This files could be used as examples or real job files.
+        </para>
+        <para>
+            It is allowed to modify JDL files or create a custom one in order to tune job requirements for
+            a specific site or a resource.
+            The file in anyway must be inherited from <filename>gLitePROOF.jdl</filename>.       
+        </para>
+        <important><para>
+            If you want to use a custom JDL file, be advised that
+            the following keys of JDL file must be kept unchanged:
+            RetryCount, ParameterStart, PARAMETERS, JobType, Executable, ParameterStep, StdOutput, OutputSandbox, Type,
+            StdError, InputSandbox. Otherwise PoD functionality could be broken.
+        </para></important>
         
-        <figure float="0" id="PAConsole_LogInfo">
-        <title>pod-console: Logging Information</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure>
-       </para>
-     </sect1>            
-           
-  </chapter>
- 
+    </sect1>    
+        
+</chapter>

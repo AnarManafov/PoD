@@ -1,186 +1,187 @@
 <!--
-How to run
--->
-  <chapter id="How_to_run">
+ How to run
+ -->
+<chapter id="How_to_run">
     <title>How to run</title>
-        <chapterinfo>
-       </chapterinfo>           
+    <chapterinfo>
+    </chapterinfo>           
     <sect1 id="Environment">
-      <title>Environment</title>
-      <para>
-      In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script:
+        <title>Environment</title>
+        <para>
+            In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script.
+            The script is located in the directory where you installed PoD.
 <screen>
 <command>source PoD_env.sh</command>
 </screen>
-		Also don't forget, before starting PoD the ROOT should be in the PATH as well.
-      </para>    
+            Also don't forget, before starting PoD the ROOT should be in the PATH as well.
+        </para>    
     </sect1>
     
     <sect1 id="Server">
-      <title>Server</title>
-      <sect2>
-      <title>GUI</title>
-      <para>
-      Start pod-console, a GUI application, which automates and helps to manage most of the operations.
+        <title>Server</title>
+        <sect2>
+            <title>GUI</title>
+            <para>
+                Start pod-console, a GUI application, which automates and helps to manage most of the operations.
 <screen>
 <command>pod-console&amp;</command>
 </screen>
-        The <xref linkend="pod_console_Server"/> shows a screen shot of pod-console's Server page. Currently PoD
-        requires two services: xrootd and pod-agent (+ oldb, a part of xrootd, if you want to use pool workers.
-        Pool workers are not officially supported).
-
-        <para><figure float="0" id="pod_console_Server">
-        <title>pod-console: Server page</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-
-        Click the <guibutton>Start</guibutton> button in order to start PoD server. To stop PoD
-        the <guibutton>Stop</guibutton> button should be pressed. Status of the PoD server is retrieved automatically
-        by a timer event.
-        </para>
+                The <xref linkend="pod_console_Server"/> shows a screen shot of pod-console's Server page. Currently PoD
+                requires two services: xrootd and pod-agent (+ oldb, a part of xrootd, if you want to use pool workers.
+                Pool workers are not officially supported).
+                
+                <para><figure float="0" id="pod_console_Server">
+                    <title>pod-console: Server page</title>
+                    <screenshot><mediaobject>
+                        <imageobject>
+                            <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG"/>
+                        </imageobject>
+                        <textobject>
+                            <phrase></phrase>
+                        </textobject>
+                    </mediaobject></screenshot>
+                </figure></para>
+                
+                Click the <guibutton>Start</guibutton> button in order to start PoD server. To stop PoD
+                the <guibutton>Stop</guibutton> button should be pressed. Status of the PoD server is retrieved automatically
+                by a timer event.
+            </para>
+            
+            <para>
+                The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
+                been pressed and PoD services are up - PoD Server is up and running.
+            </para>
+        </sect2>
         
-        <para>
-        The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
-        been pressed and PoD services are up - PoD Server is up and running.
-      </para>
-      </sect2>
-
-      <sect2>
-      <title>CLI</title>
-      <para>
-      Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+        <sect2>
+            <title>CLI</title>
+            <para>
+                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
 <screen>
 <command>pod-server <parameter class='command'>start</parameter></command>
 </screen>
-      </para>
-      </sect2>
+            </para>
+        </sect2>
     </sect1>
-
-	 <sect1 id="JobManager">
-      <title>Job Manager</title>
-      <para>
-      The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
-      the according hosts.
-      Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
-      That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
-      It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
-      </para>
-      <para>
-	 How to submit PoD jobs using:
-      <para>
-       <emphasis role="bold">gLite plug-in</emphasis>, please, see <xref linkend="gLite_plugin"/>.
-       </para>
-       <para>
-       <emphasis role="bold">LSF plug-in</emphasis>, please, see <xref linkend="LSF_plugin"/>.
-       </para>
-       <para>
-       <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
-      </para>
-     </para>
+    
+    <sect1 id="JobManager">
+        <title>Job Manager</title>
+        <para>
+            The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
+            remoute hosts.
+            Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
+            That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
+            It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
+        </para>
+        <para>
+            How to submit PoD jobs using:
+            <para>
+                <emphasis role="bold">gLite plug-in</emphasis>, please, see <xref linkend="gLite_plugin"/>.
+            </para>
+            <para>
+                <emphasis role="bold">LSF plug-in</emphasis>, please, see <xref linkend="LSF_plugin"/>.
+            </para>
+            <para>
+                <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
+            </para>
+        </para>
     </sect1>
     
     <sect1 id="PROOF_workers">
-      <title>PROOF workers</title>
-       <sect2>
-       <title>General</title>
-       <para>
-       As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
-       about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
-       PROOF Worker for the user.
-       </para>
-       <para>
-        It is not required to wait until all requested workers will be connected. Users could start analysis after
-        reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
-        When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
-        arrived workers.                 
-       </para>
-       <tip><para>
-       PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
-       need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
-       reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
-       until s Grid and/or batch queue time is over.
-       </para></tip>
-
-       </sect2>
-       <sect2>
-       <title>GUI</title>
-       <para>
-       A list of accepted workers could be checked on Workers page of pod-console
-       (see the <xref linkend="pod_console_Workers"/>).        
-          <para><figure float="0" id="pod_console_Workers">
-        <title>pod-console: Workers</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-       </para>
-       </sect2>      
-       <sect2>
-       <title>CLI</title>
-       <para>
-       Use the <xref linkend="pod-info"/> command to find out a number
+        <title>PROOF workers</title>
+        <sect2>
+            <title>General</title>
+            <para>
+                As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
+                about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
+                PROOF Worker for the user.
+            </para>
+            <para>
+                It is not required to wait until all requested workers will be connected. Users could start analysis after
+                reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
+                When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
+                arrived workers.                 
+            </para>
+            <tip><para>
+                PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
+                need to resubmit PoD jobs. You just need to close current root session, open it again. PoD will manage
+                reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
+                until s Grid and/or batch queue time is over.
+            </para></tip>
+            
+        </sect2>
+        <sect2>
+            <title>GUI</title>
+            <para>
+                A list of accepted workers could be checked on Workers page of pod-console
+                (see the <xref linkend="pod_console_Workers"/>).        
+                <para><figure float="0" id="pod_console_Workers">
+                    <title>pod-console: Workers</title>
+                    <screenshot><mediaobject>
+                        <imageobject>
+                            <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG"/>
+                        </imageobject>
+                        <textobject>
+                            <phrase></phrase>
+                        </textobject>
+                    </mediaobject></screenshot>
+                </figure></para>
+            </para>
+        </sect2>      
+        <sect2>
+            <title>CLI</title>
+            <para>
+                Use the <xref linkend="pod-info"/> command to find out a number
 <screen>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 </screen>
-or a list
+                or a list
 <screen>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen>
- of available PROOF workers.
-       </para>
-       </sect2>
-
+                of available PROOF workers.
+            </para>
+        </sect2>
+        
     </sect1>
-
-       
+    
+    
     <sect1 id="pod_console_preferences">
-      <title>Preferences</title>
-      <para>
-      	
-        Using a preferences page (see <xref linkend="pod_console_Preferences"/>) users are able to change updated interval of
-        the remote jobs monitoring and the available
-        PROOF workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
-        otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
-        <para><figure float="0" id="pod_console_Preferences">
-        <title>pod-console: Preferences</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_Preferences.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
-        </figure></para>
-      </para>  
+        <title>Preferences</title>
+        <para>
+            
+            Using a preferences page (see <xref linkend="pod_console_Preferences"/>) users are able to change updated interval of
+            the remote jobs monitoring and the available
+            PROOF workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
+            otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
+            <para><figure float="0" id="pod_console_Preferences">
+                <title>pod-console: Preferences</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PAConsole_Preferences.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase></phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure></para>
+        </para>  
     </sect1>
-
-
- <sect1 id="A_helper_header">
-      <title>A helper header</title>
-      <para>
-      Since version 2.1.1 PoD generates a helper header <filename>$POD_LOCATION/etc/pod-master.h</filename>.
-This is a C++ header file, which contains a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analysis, and use constants from the header in a PROOF connection string. Every time when PoD automated port mapping choose a different port for xproof, the helper header will be updated.
-This will help always get a proper settings of a current master host and PROOF's port name.
-       </para>
-       <para>
-       For an example analysis, please see <xref linkend="How_to_test"/>.
-       </para>
-	<para>
-	The following is an example of the helper header:
-	<screen>
+    
+    
+    <sect1 id="A_helper_header">
+        <title>A helper header</title>
+        <para>
+            Since version 2.1.1 PoD generates a helper header <filename>$POD_LOCATION/etc/pod-master.h</filename>.
+            This is a C++ header file, which contains a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analysis, and use constants from the header in a PROOF connection string. Every time when PoD automated port mapping choose a different port for xproof, the helper header will be updated.
+            This will help always get a proper settings of a current master host and PROOF's port name.
+        </para>
+        <para>
+            For an example analysis, please see <xref linkend="How_to_test"/>.
+        </para>
+        <para>
+            The following is an example of the helper header:
+<screen>
 #ifndef _POD_MASTER_H_
 #define _POD_MASTER_H_
 #define POD_LOCATION "/misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package"
@@ -188,87 +189,87 @@ This will help always get a proper settings of a current master host and PROOF's
 #define POD_XPROOF_PORT "21001"
 #define POD_XROOTD_PORT "20000"
 #endif	
-	</screen>
-	</para>
-        <para>
-        Another solution is to use the <xref linkend="pod-info"/> command, which can output a current connection string.
-        Fined a useful example of the command usage on the <xref linkend="How_to_test"/>.
+</screen>
         </para>
-       </sect1>      
-
-
+        <para>
+            Another solution is to use the <xref linkend="pod-info"/> command, which can output a current connection string.
+            Fined a useful example of the command usage on the <xref linkend="How_to_test"/>.
+        </para>
+    </sect1>      
+    
+    
     <sect1 id="Analysis">
-      <title>Analysis</title>
-      <para>
-      Now when your remote PROOF workers (PoD workers) are on-line, you can process you ROOT/PROOF
-      analysis normally, if it would be a usual PROOF session.      
-       </para>
-       <para>
-       For an example analysis, please see <xref linkend="How_to_test"/>.
-       </para>
-       </sect1> 
-       
+        <title>Analysis</title>
+        <para>
+            Now when your remote PROOF workers (PoD workers) are on-line, you can process you ROOT/PROOF
+            analysis normally, if it would be a usual PROOF session.      
+        </para>
+        <para>
+            For an example analysis, please see <xref linkend="How_to_test"/>.
+        </para>
+    </sect1> 
+    
     <sect1 id="How_to_shut_down_PoD">
-      <title>How to shut down PoD</title>
-      <sect2>
-      <title>General</title>
-      <para>
-      In order to shut down PoD the PoD server should be stopped.
-      </para>
-      </sect2>
-      <sect2>
-      <title>GUI</title>
-      <para>
-      On the Server page, click the
-      <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
-      remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
-      plug-in page, after some time statuses of jobs should be equal to "Done".
-      </para>
-      </sect2>
-      <sect2>
-      <title>CLI</title>
-      <para>
-      Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+        <title>How to shut down PoD</title>
+        <sect2>
+            <title>General</title>
+            <para>
+                In order to shut down PoD the PoD server should be stopped.
+            </para>
+        </sect2>
+        <sect2>
+            <title>GUI</title>
+            <para>
+                On the Server page, click the
+                <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
+                remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
+                plug-in page, after some time statuses of jobs should be equal to "Done".
+            </para>
+        </sect2>
+        <sect2>
+            <title>CLI</title>
+            <para>
+                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
 <screen>
 <command>pod-server <parameter class='command'>stop</parameter></command>
 </screen>
-      </para>
-      </sect2>
-
-      </sect1>
-    <sect1><title>if something is wrong</title>
-    <para>
-    If something goes wrong, something doesn't work as expected, please, check the log files first.
-        <table id="POD_LOG_FILES">
-		<title>PoD log files</title>
-  		<tgroup cols="2">
-    		<thead>
-	<row>
-        	<entry>Name</entry>
-		<entry>Location</entry>
-		<entry>Description</entry>
-      	</row>      
-    		</thead>
-    		<tbody>		
-               	<row>
-        	<entry>pod-agent.server.log</entry>
-		<entry>$POD_LOCATION/log</entry>
-		<entry>This file contains a log messages of the pod-agent, which runs on the user interface.</entry>
-         	</row>
-		<row>
-        	<entry>xpd.log</entry>
-		<entry>$POD_LOCATION/log/PoDServer</entry>
-		<entry>This is an XROOTD log file.</entry>
-         	</row>
-		</tbody>
-   	        </tgroup>
-     </table>
-    All job manager plug-ins are also able to deliver the logs from worker nodes. Please refer to the plug-ins configuration for more details.
-    </para>
-    <para>
-    If you still can't resolve the issue or have something to report, use <xref linkend="Support"/>.
-    </para>
+            </para>
+        </sect2>
+        
     </sect1>
-           
-  </chapter>
- 
+    <sect1><title>if something is wrong</title>
+        <para>
+            If something goes wrong, something doesn't work as expected, please, check the log files first.
+            <table id="POD_LOG_FILES">
+                <title>PoD log files</title>
+                <tgroup cols="2">
+                    <thead>
+                        <row>
+                            <entry>Name</entry>
+                            <entry>Location</entry>
+                            <entry>Description</entry>
+                        </row>      
+                    </thead>
+                    <tbody>		
+                        <row>
+                            <entry>pod-agent.server.log</entry>
+                            <entry>$POD_LOCATION/log</entry>
+                            <entry>This file contains a log messages of the pod-agent, which runs on the user interface.</entry>
+                        </row>
+                        <row>
+                            <entry>xpd.log</entry>
+                            <entry>$POD_LOCATION/log/PoDServer</entry>
+                            <entry>This is an XROOTD log file.</entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+            All job manager plug-ins are also able to deliver the logs from worker nodes. Please refer to the plug-ins configuration for more details.
+        </para>
+        <para>
+            If you still can't resolve the issue or have something to report, use <xref linkend="Support"/>.
+        </para>
+    </sect1>
+    
+</chapter>
+

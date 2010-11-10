@@ -1,84 +1,98 @@
 <!-- 
-Introduction 
--->
-	<chapter id="Introduction">
-		<title>Introduction</title>
-		<chapterinfo>
-   	</chapterinfo>
-   	<sect1 id="PROOF-on-Demand"><title>PROOF on Demand</title>
-      <para>
-       <emphasis role="bold">PROOF on Demand (PoD)</emphasis> is a tool-set  (see <xref linkend="fig_PoD"/>)
-       developed at <ulink url="http://www.gsi.de">GSI</ulink>, which sets up a 
-       <ulink url="http://root.cern.ch/drupal/category/package-context/proof">PROOF</ulink> cluster on any resource management system.
-      PoD is a user oriented product with an easy to use GUI and a command-line interface. It is fully automated.
-      No administrative privileges or special knowledge is required to use it. PoD gives users, who don't have a centrally-administrated
-      static PROOF cluster at their institutions, the possibility to enjoy the full power of interactive analysis with PROOF.
-      </para>
-      <para>
-        PoD is a specially designed solution to provide a PROOF cluster on the fly.
-      </para>
-
-      		<para>
-		<figure id="fig_PoD" float="0">
-			<title>A generic schema of PoD</title>
-			<screenshot><mediaobject>
-			<imageobject>
-			<imagedata fileref="PoD_Components.png" format="PNG"/>
-			</imageobject>
-			<textobject>
-			<phrase>phrase</phrase>
-			</textobject>
-			</mediaobject></screenshot>
-		</figure>
-		</para>
-      </sect1>
-
-<sect1 id="POD_Features"><title>Features</title>
-<itemizedlist>
-<listitem><para><emphasis role="bold">Easy to use</emphasis></para>
-<para>
-The process of installation is very simple and fully automated.
-PoD works out of the box. Its distribution contains preconfigured modules and everything users need to
-just immediately start to work with it right after the installation.
-</para>
-</listitem>
-
-<listitem><para><emphasis role="bold">GUI &amp; Command-line</emphasis></para>
-<para>
-PoD provides a simple and intuitive graphics user interface in order to simplify access to its functionality.
-For user’s convenience there is also a command line interface, it helps to manage a PoD cluster remotely or use it in a batch mode.
-</para>
-</listitem>
-
-<listitem><para><emphasis role="bold">Native PROOF connections</emphasis></para>
-<para>
-Whenever possible, PoD setups direct PROOF connections between nodes. It results in a full functional PROOF cluster.
-Users get native speed and the whole range of PROOF features. To use native connections an incoming traffic must be allowed
-on PoD workers for a defined port. Otherwise PoD uses packet-forwarding algorithms.
-</para>
-</listitem>
-
-<listitem><para><emphasis role="bold">Packet-forwarding</emphasis></para>
-<para>
-When worker nodes are behind a firewall then PoD uses its packet-forwarding algorithms to maintain the PROOF traffic.
-The algorithms are very efficient, there will be no speed penalty, but some PROOF functions are limited.
-</para>
-</listitem>
-
-<listitem><para><emphasis role="bold">Multiuser/-core environment</emphasis></para>
-<para>
-PoD implements automatic port mapping algorithms to properly handle cases when several users start PoD instances
-(servers/ workers) on the same machine. PoD also automatically manages situations when multiple PoD workers are started on the same node.
-Private PoD instances can’t disturb each other.
-</para>
-</listitem>
-
-<listitem><para><emphasis role="bold">Different job managers</emphasis></para>
-<para>
-PoD supports different job managers via a plug-in system. It is a very easy to extend system.
-PoD currently supports gLite, LSF, PBS and SSH.</para>
-</listitem>
-</itemizedlist>
-</sect1>
-	
+ Introduction 
+ -->
+<chapter id="Introduction">
+    <title>Introduction</title>
+    <chapterinfo>
+    </chapterinfo>
+    <sect1 id="PROOF-on-Demand"><title>PROOF on Demand</title>
+        <para>
+            <emphasis role="bold">PROOF on Demand (PoD)</emphasis> is a tool-set  (see <xref linkend="fig_PoD"/>)
+            developed at <ulink url="http://www.gsi.de">GSI</ulink>, which sets up a 
+            <ulink url="http://root.cern.ch/drupal/category/package-context/proof">PROOF</ulink> cluster on any resource management system.
+            PoD is a user oriented product with an easy to use GUI and a command-line interface. It is fully automated.
+            No administrative privileges or special knowledge is required to use it. PoD gives users, who don't have a centrally-administrated
+            static PROOF cluster at their institutions, the possibility to enjoy the full power of interactive analysis with PROOF.
+        </para>
+        <para>
+            PoD is a specially designed solution to provide a PROOF cluster on the fly.
+        </para>
+        
+        <para>
+            <figure id="fig_PoD" float="0">
+                <title>A generic schema of PoD</title>
+                <screenshot><mediaobject>
+                    <imageobject>
+                        <imagedata fileref="PoD_Components.png" format="PNG"/>
+                    </imageobject>
+                    <textobject>
+                        <phrase>phrase</phrase>
+                    </textobject>
+                </mediaobject></screenshot>
+            </figure>
+        </para>
+    </sect1>
+    
+    <sect1 id="POD_Features"><title>Features</title>
+        <itemizedlist>
+            
+            <listitem><para><emphasis role="bold">Easy to use</emphasis></para>
+                <para>
+                    The process of installation is very simple and fully automated.
+                    PoD works out of the box. Its distribution contains preconfigured modules and everything users need to
+                    just immediately start to work with it right after the installation.
+                </para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">GUI &amp; Command-line</emphasis></para>
+                <para>
+                    PoD provides a simple and intuitive graphics user interface in order to simplify access to its functionality.
+                    For user’s convenience there is also a command line interface, it helps to manage a PoD cluster remotely or use it in a batch mode.
+                </para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">Native PROOF connections</emphasis></para>
+                <para>
+                    Whenever possible, PoD setups direct PROOF connections between nodes. It results in a full functional PROOF cluster.
+                    Users get native speed and the whole range of PROOF features. To use native connections an incoming traffic must be allowed
+                    on PoD workers for a defined port. Otherwise PoD uses packet-forwarding algorithms.
+                </para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">Packet-forwarding</emphasis></para>
+                <para>
+                    When worker nodes are behind a firewall then PoD uses its packet-forwarding algorithms to maintain the PROOF traffic.
+                    The algorithms are very efficient, there will be no speed penalty, but some PROOF functions are limited.
+                </para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">Multiuser/-core environment</emphasis></para>
+                <para>
+                    PoD implements automatic port mapping algorithms to properly handle cases when several users start PoD instances
+                    (servers/ workers) on the same machine. PoD also automatically manages situations when multiple PoD workers are started on the same node.
+                    Private PoD instances can't disturb each other.
+                </para>
+            </listitem>
+            
+            <listitem><para><emphasis role="bold">Different job managers</emphasis></para>
+                <para>
+                    PoD supports different job managers via a plug-in system. It is a very easy to extend system.
+                    PoD currently is shipped with the following plug-ins:
+                </para>
+                <itemizedlist>
+                    <listitem><para>SSH,</para></listitem>
+                    <listitem><para>LSF (Load Sharing Facility),</para></listitem>
+                    <listitem><para>PBS Pro/OpenPBS/Torque (Portable Batch System),</para></listitem>
+                    <listitem><para>OGE (Oracle/Sun Grid Engine),</para></listitem>
+                    <listitem><para>gLite.</para></listitem>
+                </itemizedlist>
+                <para>
+                    In future versions more plug-ins will be implemented (AliEn, Condor and some more).
+                </para>
+            </listitem>
+            
+        </itemizedlist>
+        
+    </sect1>
+    
 </chapter>
