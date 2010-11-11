@@ -1,45 +1,45 @@
 <!--
-PBS plug-in description
--->
-  <chapter id="PBS_plugin">
+ PBS plug-in description
+ -->
+<chapter id="PBS_plugin">
     <title>PBS plug-in</title>
-        <chapterinfo>
-       </chapterinfo>
-           
+    <chapterinfo>
+    </chapterinfo>
+    
     <sect1 id="PBS_GUI"><title>GUI</title>
-      <para>
-      The <xref linkend="PAConsole_PBS_plug-in"/> shows a screen shot of the PBS plug-in GUI page for pod-console.
-      </para>
-      <para><figure float="0" id="PAConsole_PBS_plug-in">
-        <title>pod-console: PBS job manager</title>
-        <screenshot><mediaobject>
-        <imageobject>
-        <imagedata fileref="PAConsole_PBS_plugin_snapshot.png" format="PNG"/>
-        </imageobject>
-        <textobject>
-        <phrase></phrase>
-        </textobject>
-        </mediaobject></screenshot>
+        <para>
+            The <xref linkend="PAConsole_PBS_plug-in"/> shows a screen shot of the PBS plug-in GUI page for pod-console.
+        </para>
+        <para><figure float="0" id="PAConsole_PBS_plug-in">
+            <title>pod-console: PBS job manager</title>
+            <screenshot><mediaobject>
+                <imageobject>
+                    <imagedata fileref="PAConsole_PBS_plugin_snapshot.png" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase></phrase>
+                </textobject>
+            </mediaobject></screenshot>
         </figure></para>
-
-      <para>
-      Using the plug-ins GUI (see. <xref linkend="PAConsole_PBS_plug-in"/>) users are able to specify a number of workers and an PBS queue.
-      PoD provides a default PBS job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
-      </para>
+        
+        <para>
+            Using the plug-ins GUI (see. <xref linkend="PAConsole_PBS_plug-in"/>) users are able to specify a number of workers and an PBS queue.
+            PoD provides a default PBS job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
+        </para>
     </sect1>
-
+    
     <sect1 id="PBS_CLI"><title>CLI</title>
-    <para>
-    For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
-    Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
-    </para>
+        <para>
+            For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
+            Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
+        </para>
     </sect1>
-
+    
     <sect1 id="PBS_CFG"><title>Configuration</title>
-    <para>
-    There are PBS plug-in options in the PoD user defaults (see <xref linkend="PBS_CFG_TABLE"/>), which you can use to tune the plug-in.
-    </para>
+        <para>
+            There are PBS plug-in options in the PoD user defaults (see <xref linkend="PBS_CFG_TABLE"/>), which you can use to tune the plug-in.
+        </para>
     </sect1>
-
-  </chapter>
+    
+</chapter>
 

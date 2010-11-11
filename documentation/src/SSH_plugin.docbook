@@ -35,6 +35,13 @@
 <command>pod-info <parameter class='command'>-n</parameter></command>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen> 
+            <note><para>
+                With SSH it is very often a case, when PoD can't start workers, because xproof/root is not in the PATH on worker nodes.
+                This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
+                (login script) and there is no environment variables, like for normal login users. To solve it, a user either can
+                specify the full path to desired ROOT version of worker nodes in the <filename>PoD.cfg</filename>
+                or just use <xref linkend="users_env_script"/>. The last one is very much advisable.
+            </para></note>
             and finally clean the PoD cluster. The cleaning needs to be performed when user is done with his/her dynamic PROOF cluster or want to
             refresh workers (in this case, you need to submit workers again, after the cleaning). BTW, no need to stop pod-server.
 <screen>

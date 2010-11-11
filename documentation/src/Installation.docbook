@@ -23,7 +23,7 @@ Installation
 <screen>
 <command>cd <replaceable>./PoD-X.Y.Z-Source</replaceable></command>
 </screen>
-   You may want to change some setting in the <filename>BuildSetup.cmake</filename> bootstrap file.
+   You can adjust some configuration settings in the <filename>BuildSetup.cmake</filename> bootstrap file.
    The following is a list of variables:
    <table><title>PoD configuration variables</title>
       <tgroup cols="2">
@@ -107,13 +107,13 @@ Installation
 <command>cd <replaceable>[POD INSTALLATION]</replaceable></command>
 <command>source PoD_env.sh</command>
 </screen>
-      You need to source this script every time in a new shell when you want to use <application>PoD</application>
-      or source it from your bash profile.
+      You need to source this script every time before using <application>PoD</application> in a new system shell.
+      Simplify it by sourcing the script in your bash profile.
    </para>
    <para>
       Now the installation is done.
       <important><para>
-       	If there were problems during installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
+       	If there were problems during the installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
       </para></important>
    </para>
 </sect1>

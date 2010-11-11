@@ -11,6 +11,7 @@
             In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script.
             The script is located in the directory where you installed PoD.
 <screen>
+<command>cd <replaceable>[POD INSTALLATION]</replaceable></command>
 <command>source PoD_env.sh</command>
 </screen>
             Also don't forget, before starting PoD the ROOT should be in the PATH as well.

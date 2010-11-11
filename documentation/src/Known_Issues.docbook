@@ -1,43 +1,43 @@
 <!-- 
-Known Issues 
--->
-  <chapter id="Known_Issues">
+ Known Issues 
+ -->
+<chapter id="Known_Issues">
     <title>Known Issues</title>
-    	<chapterinfo>
+    <chapterinfo>
    	</chapterinfo>
    	
-		<sect1 id="tmp_on_worker_nodes">
-      <title>/tmp on worker nodes</title>
+    <sect1 id="tmp_on_worker_nodes">
+        <title>/tmp on worker nodes</title>
       	<para>
-      	The <filename class="directory">/tmp</filename> directory on remote workers must be open
-      	for r/w. PROOF and ROOT writes there.
-      	I have redirected all possible temporary files to Grid's user home,
-      	but there are still some files ROOT/PROOF writes there, it includes sockets files of proof/xrootd.
+            The <filename class="directory">/tmp</filename> directory on remote workers must be open
+            for r/w. PROOF and ROOT writes there.
+            I have redirected all possible temporary files to Grid's user home,
+            but there are still some files ROOT/PROOF writes there, it includes sockets files of proof/xrootd.
       	</para>
-     	</sect1>
-      
-		<sect1 id="globus_config.h_is_missing">
-      <title>globus_config.h is missing</title>
+    </sect1>
+    
+    <sect1 id="globus_config.h_is_missing">
+        <title>globus_config.h is missing</title>
       	<para>
-      	Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
-      	(see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah - gLite Bug #31180</ulink>).
-      	gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
-      	to let GAW to use gLite API.       	 
+            Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
+            (see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah - gLite Bug #31180</ulink>).
+            gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
+            to let GAW to use gLite API.       	 
       	</para>
-       </sect1>
-      
-  		<sect1 id="MaxSlavesPerNode">
-      <title>It seems I run always X slaves, but I requested Y.</title>
+    </sect1>
+    
+    <sect1 id="MaxSlavesPerNode">
+        <title>It seems I run always X slaves, but I requested Y.</title>
       	<para>
-      	PoD setups workers on the remote nodes and it makes PROOF master to think,
-      	that all of his workers are on the localhost. Actually PoD hides remote PROOF workers from the
-      	PROOF server and acts as a "proxy" between them. And since default value for
-      	<varname>PROOF_MaxSlavesPerNode</varname> is 2, therefore only 2 slaves get packages.
-      	Since all slaves (for PROOF server) are on the localhost, the other Y-2 workers won't get packages.
+            PoD setups workers on the remote nodes and it makes PROOF master to think,
+            that all of his workers are on the localhost. Actually PoD hides remote PROOF workers from the
+            PROOF server and acts as a "proxy" between them. And since default value for
+            <varname>PROOF_MaxSlavesPerNode</varname> is 2, therefore only 2 slaves get packages.
+            Since all slaves (for PROOF server) are on the localhost, the other Y-2 workers won't get packages.
       	</para>
       	<para>
-      	See for more information
-      	<ulink url="http://root.cern.ch/twiki/bin/view/ROOT/ProofParameters">PROOF Wiki</ulink>:     	      	
+            See for more information
+            <ulink url="http://root.cern.ch/twiki/bin/view/ROOT/ProofParameters">PROOF Wiki</ulink>:     	      	
       	</para>
       	<blockquote>
       		<para>
@@ -46,33 +46,33 @@ PROOF_MaxSlavesPerNode
 Type: int
 Description: Parameter for the packetizers. Limit the number of slaves accessing data on any single node.
 Default Value:
-				In TPacketizer the default value is 4.
-				In TPacketizerAdaptive and TPacketizerProgressive it is 2.
+In TPacketizer the default value is 4.
+In TPacketizerAdaptive and TPacketizerProgressive it is 2.
 </programlisting>
 	      	</para>
       	</blockquote> 
       	<note><para>
-      	From other source of information, it looks like the default number of workers reading remotely from one file
-      	node (worker machine) is not "2", but a number of CPU cores of the master node.
+            From other source of information, it looks like the default number of workers reading remotely from one file
+            node (worker machine) is not "2", but a number of CPU cores of the master node.
       	</para></note>
       	<para>
-      	In order to resolve this issue, you need to change one variable of your PROOF session (50 is only an example):
-<programlisting>
-proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)100 );
-</programlisting>
-         Hopefully in the future, this will be possible to do through XROOTD configuration file and PoD will
-         manage it for you automatically.
+            In order to resolve this issue, you need to change one variable of your PROOF session (50 is only an example):
+            <programlisting>
+                proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)100 );
+            </programlisting>
+            Hopefully in the future, this will be possible to do through XROOTD configuration file and PoD will
+            manage it for you automatically.
       	</para>
-      </sect1>
-      
-		<sect1 id="ClassAdsNamespace">
-      <title>ClassAds and Namespace</title>
+    </sect1>
+    
+    <sect1 id="ClassAdsNamespace">
+        <title>ClassAds and Namespace</title>
       	<para>
-      	One may want to compile CLASSADS with namespace support,
-      	because <ulink url="https://savannah.cern.ch/bugs/?22696">gLite UI contains CLASSADS
-      	which compiled without support of namespaces</ulink>,
-      	though some of gLite API libraries (WMSUI for example) require classads with namespace support.
-      	This issue will prevent GAW to be build properly.
+            One may want to compile CLASSADS with namespace support,
+            because <ulink url="https://savannah.cern.ch/bugs/?22696">gLite UI contains CLASSADS
+                which compiled without support of namespaces</ulink>,
+            though some of gLite API libraries (WMSUI for example) require classads with namespace support.
+            This issue will prevent GAW to be build properly.
       	</para>
       	<para>
 			Download classads-0.9.9 from <ulink url="http://www.cs.wisc.edu/condor/classad/">here</ulink>.
@@ -89,40 +89,40 @@ proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)100 );
 <command>yum install <replaceable>classads-devel</replaceable></command>
 </screen>	
       	</para>
-      </sect1>
-
-		<sect1 id="GLOBUSLibsRelocation">
-      <title>GLOBUS Libs Relocation</title>
-          <para>
-          If you have gLiteUI installed from relocatable tarball, then you may face this
-          <ulink url="https://savannah.cern.ch/bugs/?22698">gLite bug</ulink> by having the following (or similar ones)
-          error messages while compiling GAW library:
+    </sect1>
+    
+    <sect1 id="GLOBUSLibsRelocation">
+        <title>GLOBUS Libs Relocation</title>
+        <para>
+            If you have gLiteUI installed from relocatable tarball, then you may face this
+            <ulink url="https://savannah.cern.ch/bugs/?22698">gLite bug</ulink> by having the following (or similar ones)
+            error messages while compiling GAW library:
 <screen>
 grep: /opt/globus/lib/libglobus_ftp_control_gcc32dbg.la: No such file or directory
 /bin/sed: can't read /opt/globus/lib/libglobus_ftp_control_gcc32dbg.la: No such file or directory
 libtool: link: `/opt/globus/lib/libglobus_ftp_control_gcc32dbg.la' is not a valid libtool archive
 </screen>
-          </para>
-          <para>
-             One of the solutions would be to just copy Globus libs to /opt/:
+        </para>
+        <para>
+            One of the solutions would be to just copy Globus libs to /opt/:
 <screen>
 <command>cd $GLOBUS_LOCATION</command>
 <command>mkdir -p /opt/globus</command>
 <command>cp -rv lib /opt/globus/</command>
 </screen>   
-          </para>
-      </sect1>
-      
-		<sect1 id="GridSiteHeadersMissing">
-      <title>GridSite headers missing</title>
-          <para>
-          If you have gLiteUI installed from relocatable tarball, then you may face this
-          <ulink url="https://savannah.cern.ch/bugs/?28113">gLite bug</ulink>.
-          This issue will prevent GAW to be build properly.
-          </para>
-          <para>
-             One of the solutions would be to just get these headers from somewhere.
-          </para>
-      </sect1>
-      
-  </chapter>
+        </para>
+    </sect1>
+    
+    <sect1 id="GridSiteHeadersMissing">
+        <title>GridSite headers missing</title>
+        <para>
+            If you have gLiteUI installed from relocatable tarball, then you may face this
+            <ulink url="https://savannah.cern.ch/bugs/?28113">gLite bug</ulink>.
+            This issue will prevent GAW to be build properly.
+        </para>
+        <para>
+            One of the solutions would be to just get these headers from somewhere.
+        </para>
+    </sect1>
+    
+</chapter>

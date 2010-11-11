@@ -77,7 +77,7 @@
             <listitem><para><emphasis role="bold">Different job managers</emphasis></para>
                 <para>
                     PoD supports different job managers via a plug-in system. It is a very easy to extend system.
-                    PoD currently is shipped with the following plug-ins:
+                    PoD is currently shipped with the following plug-ins:
                 </para>
                 <itemizedlist>
                     <listitem><para>SSH,</para></listitem>

@@ -479,7 +479,11 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 <varlistentry>
                     <term><option>--clean</option></term>
                     <listitem>
-                        <para>Clean all PoD workers according to the entries in the configuration file.</para>
+                        <para>
+                            Clean all PoD workers according to the entries in the configuration file.
+                            This command also delivers all log files from the worker nodes. Logs are copied to
+                            PoD log directory, the path to which is configurable via PoD user defaults.
+                        </para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>

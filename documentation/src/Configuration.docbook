@@ -5,8 +5,9 @@
     <chapterinfo>
     </chapterinfo>
     <para>
-        As it was mentioned above <application>PoD</application> consists of several modules
-        and to fine tune <application>PoD</application> one may want to configure some of these modules.
+        As it was mentioned above <application>PoD</application> consists of several modules, each module respects PoD user defaults settings.
+        PoD is shipped with predefined configuration values, which should work in most use cases.
+        However by changing PoD user defaults values, you can fine tune <application>PoD</application> for a specific environment and needs.
         Recommended only for advanced users.
     </para>
     
@@ -51,9 +52,6 @@ gui.accessibility.visual_bell=yes
                     </para>
                 </listitem>
             </itemizedlist> 
-        </para>
-        <para>
-            PoD is shipped with default values in PoD.cfg and should work out of the box.  
         </para>
         
         <para>
@@ -337,16 +335,17 @@ gui.accessibility.visual_bell=yes
         
     </sect1>
     
-    <sect1><title>User's environment on workers</title>
+    <sect1 id="users_env_script"><title>User's environment on workers</title>
         <para>
             PoD provides a possibility for users to execute a custom environment script on workers before PoD processes start.
         </para>
         <para>
             Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user.worker_env.sh</filename> name and code there all
-            variables and commands user want to export to the workers. PoD will automatically transfer the script to each worker node and it will be sourced there.
+            variables and commands user want to export to the workers. PoD will automatically transfer the script to each worker node and 
+            source it there.
         </para>
         <para>
-            For example, I need to set the path to the ROOT or something like that on my workers, than I will create the following file.
+            For example, If I need to set the path to my ROOT installation on workers. I would create the following file.
 <programlisting>
 #! /usr/bin/env bash
 
@@ -354,6 +353,9 @@ export ROOTSYS=/usr/local/pub/debian4.0/x86_64/gcc411-21/rootmgr/526-00
 export PATH=$ROOTSYS/bin:$PATH
 export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
 export MYVAR="some vallue :)"
+
+# I need also my special profile there
+source /etc/profile_extr
 </programlisting>
         </para>
         <para>
