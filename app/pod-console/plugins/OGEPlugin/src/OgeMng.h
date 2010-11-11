@@ -68,6 +68,10 @@ namespace oge_plug
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
+            COgeMng(): m_upload_log( false )
+            {}
+
+        public:
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
                                   size_t _nJobs ) const;
@@ -102,6 +106,7 @@ namespace oge_plug
 
         private:
             std::string m_server_logDir;
+            bool m_upload_log;
             std::string m_envp;
     };
 

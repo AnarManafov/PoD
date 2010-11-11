@@ -87,6 +87,8 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
+
+        m_upload_log = _ud.getOptions().m_oge.m_uploadJobLog;
     }
     catch( exception &e )
     {
@@ -335,10 +337,18 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     // merge stdout and stderr
     nativeSpecification += " -j yes ";
     // output
-    if( !m_server_logDir.empty() )
+    if( m_upload_log )
     {
-        nativeSpecification += " -o ";
-        nativeSpecification += m_server_logDir;
+        if( !m_server_logDir.empty() )
+        {
+            nativeSpecification += " -o ";
+            nativeSpecification += m_server_logDir;
+        }
+    }
+    else
+    {
+        // send outputs to hell
+        nativeSpecification += " -o /dev/null ";
     }
     // TODO: add -@ if the user's option file is exists: "$POD_LOCATION/etc/Job.oge.options"
     string options_file( g_OGEOptionFile );
