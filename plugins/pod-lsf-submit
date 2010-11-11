@@ -41,12 +41,16 @@ while getopts "q:n:h" opt; do
    esac
 done
 
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
 EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
 
 JOB_NAME="$BASHPID[1-$NUM_WRK]"
 OUTPUT=""
 if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
-   OUTPUT=" -o $LOG_DIR/%J/std_%I.out -e $LOG_DIR/%J/std_%I.err"
+   OUTPUT=" -o $POD_UI_LOG_LOCATION/%J/std_%I.out -e $POD_UI_LOG_LOCATION/%J/std_%I.err"
 fi
 bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
 

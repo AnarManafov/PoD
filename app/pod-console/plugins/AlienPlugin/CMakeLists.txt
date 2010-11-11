@@ -55,5 +55,5 @@ target_link_libraries (
     ${ALIEN_LIBRARIES}
 )
 
-install(TARGETS PAConsole_alien DESTINATION plugins)
+install(TARGETS PAConsole_alien DESTINATION plugins/gui)
 

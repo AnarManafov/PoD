@@ -81,5 +81,5 @@ target_link_libraries (
     ${Boost_SERIALIZATION_LIBRARY}
 )
 
-install(TARGETS pod-console-pbs DESTINATION plugins)
+install(TARGETS pod-console-pbs DESTINATION plugins/gui)
 

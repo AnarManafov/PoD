@@ -37,7 +37,7 @@ const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
 const size_t g_UpdateInterval = 6;  // in seconds
 
 const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
-const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins";
+const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins/gui";
 
 // idle timeout. In ms.
 // default 30 min.

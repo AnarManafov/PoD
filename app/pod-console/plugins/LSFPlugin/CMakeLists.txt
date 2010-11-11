@@ -54,5 +54,5 @@ target_link_libraries (
     ${LSF_LIBRARIES}
 )
 
-install(TARGETS pod-console-lsf DESTINATION plugins)
+install(TARGETS pod-console-lsf DESTINATION plugins/gui)
 

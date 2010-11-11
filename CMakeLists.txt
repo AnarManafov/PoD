@@ -114,9 +114,9 @@ SET(POD_BIN_FILES
 # "plugins" files
 #
 SET(POD_CLI_PLUGINS_FILES 
-    ${CMAKE_SOURCE_DIR}/plugins/pod-lsf-submit
-    ${CMAKE_SOURCE_DIR}/plugins/pod-pbs-submit
-    ${CMAKE_SOURCE_DIR}/plugins/pod-oge-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-lsf-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-pbs-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-oge-submit
     )
 #
 # "etc" files

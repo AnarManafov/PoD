@@ -80,5 +80,5 @@ target_link_libraries (
     ${Boost_SERIALIZATION_LIBRARY}
 )
 
-install(TARGETS pod-console-oge DESTINATION plugins)
+install(TARGETS pod-console-oge DESTINATION plugins/gui)
 

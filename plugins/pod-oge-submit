@@ -41,6 +41,10 @@ while getopts "q:n:h" opt; do
    esac
 done
 
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
 # We assume, that shared home file system is used.
 # qsub with parameters:
 # -V          export all environment variables
@@ -53,14 +57,14 @@ job_name="PoD_OGE_Job"
 if [ -r $OGE_OPTION_FILE ]; then
    OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
 fi
-jobid=$(qsub -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $LOG_DIR $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
+jobid=$(qsub -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE -o $POD_UI_LOG_LOCATION $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
 # we need to create a logs output dir
 stat=$?
 # extract a job id only, without an array indexes
 jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
 if (( $stat == 0 )); then
    echo "Job ID: $jobid"
-   mkdir -p  $LOG_DIR/$jobid
+   mkdir -p  $POD_UI_LOG_LOCATION/$jobid
 else
    echo "Error submitting job. $jobid"
 fi

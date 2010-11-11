@@ -54,5 +54,5 @@ target_link_libraries (
     glite-api-wrapper
 )
 
-install(TARGETS pod-console-glite DESTINATION plugins)
+install(TARGETS pod-console-glite DESTINATION plugins/gui)
 
