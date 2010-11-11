@@ -99,5 +99,5 @@ fi
 eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
-PLGU_CMD -q $QUEUE -n $NUM_WRK
+$PLUG_CMD -q $QUEUE -n $NUM_WRK
 
