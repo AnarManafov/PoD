@@ -31,7 +31,7 @@ rm $POD_SRC/bin/pod-info || exit 1
 
 # Copy plug-ins
 mkdir -p $POD_SRC/plugins
-cp -v $POD_INST/plugins/* $POD_SRC/plugins/ || exit 1
+cp -R -v $POD_INST/plugins/* $POD_SRC/plugins/ || exit 1
 
 # Copy external libs
 mkdir -p $POD_SRC/lib || exit 1
