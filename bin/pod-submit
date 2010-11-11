@@ -16,7 +16,7 @@
 #  POD_UI_LOG_LOCATION : log dir on the PoD UI
 #  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
 #
-PLUG_DIR="$POD_LOCATION/plugins"
+PLUG_DIR="$POD_LOCATION/plugins/cli"
 #=============================================================================
 # ***** USAGE *****
 #=============================================================================

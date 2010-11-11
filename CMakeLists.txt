@@ -236,7 +236,7 @@ if (GSI_BUILD)
     )
     install(PROGRAMS ${GSI_ADD_BIN} DESTINATION bin)
     install(FILES ${GSI_ADD_LIB} DESTINATION lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/plugins/libpod-console-lsf.so DESTINATION plugins )
+    install(FILES ${CMAKE_SOURCE_DIR}/plugins/gui/libpod-console-lsf.so DESTINATION plugins/gui )
 endif (GSI_BUILD)
 #
 # configure files
@@ -264,7 +264,7 @@ install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
 # install etc files
 install(FILES ${POD_ETC_FILES} DESTINATION etc)
 # install CLI plug-ins
-install(PROGRAMS ${POD_CLI_PLUGINS_FILES} DESTINATION plugins)
+install(PROGRAMS ${POD_CLI_PLUGINS_FILES} DESTINATION plugins/cli)
 # install User's manual files
 if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
   install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
