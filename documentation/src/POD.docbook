@@ -11,6 +11,7 @@
 <!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
 <!ENTITY PBS_plugin SYSTEM "PBS_plugin.docbook">
 <!ENTITY SSH_plugin SYSTEM "SSH_plugin.docbook">
+<!ENTITY OGE_plugin SYSTEM "OGE_plugin.docbook">
 <!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
@@ -19,111 +20,116 @@
 ]>
 
 <book id="POD" lang="en">
-<bookinfo>
-<title>"PROOF on Demand" (PoD) - v.2.4</title> 
-  <authorgroup>
-    <author>
-       <firstname>Anar</firstname>
-       <surname>Manafov</surname>
-         <affiliation>
-           <address><email>A.Manafov@gsi.de</email></address>
-         </affiliation>
-    </author>
-  </authorgroup>
-  <edition>"PROOF on Demand" v2.4</edition>
-  <copyright>
-	<year>2007</year>
-	<year>2008</year>
-	<year>2009</year>
-        <year>2010</year>
-	<holder>GSI mbH.</holder>
-	<holder>GSI Scientific Computing devision</holder>
-  </copyright>
-  <!---releaseinfo>
-  $Revision$
-  </releaseinfo>
-  <pubdate>
-  $Date$
-  </pubdate>
-  <publisher>
-  <publishername>$LastChangedBy$</publishername>
-  </publisher-->
-  
-  </bookinfo>
-
-<!-- 
-Introduction 
--->
-  &Introduction;
-  
-<!-- 
-Requirements 
--->
+    <bookinfo>
+        <title>"PROOF on Demand" (PoD) - v.2.4</title> 
+        <authorgroup>
+            <author>
+                <firstname>Anar</firstname>
+                <surname>Manafov</surname>
+                <affiliation>
+                    <address><email>A.Manafov@gsi.de</email></address>
+                </affiliation>
+            </author>
+        </authorgroup>
+        <edition>"PROOF on Demand" v2.4</edition>
+        <copyright>
+            <year>2007</year>
+            <year>2008</year>
+            <year>2009</year>
+            <year>2010</year>
+            <holder>GSI mbH.</holder>
+            <holder>GSI Scientific Computing devision</holder>
+        </copyright>
+        <!---releaseinfo>
+         $Revision$
+         </releaseinfo>
+         <pubdate>
+         $Date$
+         </pubdate>
+         <publisher>
+         <publishername>$LastChangedBy$</publishername>
+         </publisher-->
+        
+    </bookinfo>
+    
+    <!-- 
+     Introduction 
+     -->
+    &Introduction;
+    
+    <!-- 
+     Requirements 
+     -->
 	&Requirements;
 	
-<!-- 
-Download 
--->
+    <!-- 
+     Download 
+     -->
 	&Download;
-  
-<!-- 
-Installation 
--->
-  &Installation;
-  
- <!-- 
-Configuration 
--->
-  &Configuration;
+    
+    <!-- 
+     Installation 
+     -->
+    &Installation;
+    
+    <!-- 
+     Configuration 
+     -->
+    &Configuration;
+    
+    <!-- 
+     Quick Start
+     -->
+    &QuickStart;    
+    
+    <!-- 
+     How to run 
+     -->
+    &How_to_run;
+    
+    <!-- 
+     gLite plug-in
+     -->
+    &gLite_plugin;
+    
+    <!-- 
+     LSF plug-in
+     -->
+    &LSF_plugin;
+    
+    <!-- 
+     PBS plug-in
+     -->
+    &PBS_plugin;
 
-<!-- 
-Quick Start
--->
-  &QuickStart;    
-
-<!-- 
-How to run 
--->
-  &How_to_run;
- 
-<!-- 
-gLite plug-in
--->
-  &gLite_plugin;
-
-<!-- 
-LSF plug-in
--->
-  &LSF_plugin;
-
-<!-- 
-PBS plug-in
--->
-  &PBS_plugin;
-
-<!-- 
-PBS plug-in
--->
-  &SSH_plugin;
-
-<!-- 
-How to test
--->
-  &How_to_test;
-
-<!-- 
-Command-line interface
--->
-  &Cmd_line_interface;
-  
-<!-- 
-Known Issues 
--->
-  &Known_Issues;
-  
-<!-- 
-Support 
--->
-  &Support;
-
+    <!-- 
+     OGE plug-in
+     -->
+    &OGE_plugin;
+    
+    <!-- 
+     PBS plug-in
+     -->
+    &SSH_plugin;
+    
+    <!-- 
+     How to test
+     -->
+    &How_to_test;
+    
+    <!-- 
+     Command-line interface
+     -->
+    &Cmd_line_interface;
+    
+    <!-- 
+     Known Issues 
+     -->
+    &Known_Issues;
+    
+    <!-- 
+     Support 
+     -->
+    &Support;
+    
 </book>

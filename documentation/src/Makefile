@@ -11,6 +11,7 @@ SRC=\
 	LSF_plugin.docbook\
         PBS_plugin.docbook\
         SSH_plugin.docbook\
+        OGE_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
@@ -36,13 +37,15 @@ IMGS= \
 	PAConsole_Grid3.png\
 	PAConsole_LSF_plugin_snapshot.png\
 	PAConsole_Workers_LSF_snapshot.png\
-  PAConsole_PBS_plugin_snapshot.png\
+        PAConsole_PBS_plugin_snapshot.png\
+        PAConsole_OGE_plugin_snapshot.png\
 	PAConsole_Preferences.png\
 	PAConsole_LogInfo.png
 
 IMG_DIR = img
 
 HTML_OUT= \
+        POD.html\
 	Configuration.html\
 	How_to_run.html\
 	Introduction.html\
@@ -53,9 +56,11 @@ HTML_OUT= \
 	download.html\
 	Installation.html\
 	Requirements.html\
-  Cmd_line_interface.html\
-  LSF_plugin.html\
-  PBS_plugin.html
+        Cmd_line_interface.html\
+        LSF_plugin.html\
+        PBS_plugin.html\
+        SSH_plugin.html\
+        OGE_plugin.html
 
 CSS_FILES=docbook.css
 
