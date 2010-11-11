@@ -232,6 +232,9 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         {
             // push first the fake parrent id
             ret[0] = getCleanParentID( ret[1] );
+
+            // creating a log dir for the job
+            createJobsLogDir( ret[0] );
         }
         else
         {
@@ -240,9 +243,6 @@ COgeMng::jobArray_t COgeMng::jobSubmit( const string &_script, const string &_qu
         }
 
         drmaa_release_job_ids( ids );
-
-        // creating a log dir for the job
-        createJobsLogDir( jobid );
     }
     catch( ... )
     {
@@ -508,7 +508,10 @@ bool COgeMng::isJobComplete( int _status )
 //=============================================================================
 void COgeMng::createJobsLogDir( const COgeMng::jobID_t &_parent ) const
 {
-    string path( m_server_logDir + getCleanParentID( _parent ) );
+    if( !m_upload_log )
+        return;
+
+    string path( m_server_logDir + _parent );
     // create a dir with read/write/search permissions for owner and group,
     // and with read/search permissions for others
     // TODO:Check for errors
