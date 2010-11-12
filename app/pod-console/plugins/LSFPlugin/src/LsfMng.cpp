@@ -107,6 +107,15 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     submitReply reply; // results of job submission
     // submit the job with specifications
 
+    //export POD_UI_LOG_LOCATION
+    //export POD_UI_LOCATION
+    // TODO: Fix it. WE need to properly export these vars to job's env.
+    // Currently we rely on the Shared home!!! -- this is Wrong
+    // TODO: export also POD_UI_LOG_LOCATION
+    string ui_loc( "$POD_LOCATION" );
+    smart_path( &ui_loc );
+    setenv( "POD_UI_LOCATION", ui_loc.c_str(), 1 );
+
     // FIXME:
     // some time lsb_submit fails with the following message:
     // "System call failed: No child processes"
