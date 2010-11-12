@@ -48,7 +48,7 @@ EOF
 #=============================================================================
 check_proof_cfg() {
   if [ ! -r $PROOF_CFG ]; then
-    echo "Error: can't open: $PROOF_CFG" >&2
+    echo "Error: data is not available. Check that PoD Server is running: pod-server status" >&2
     exit 1
   fi
 }
