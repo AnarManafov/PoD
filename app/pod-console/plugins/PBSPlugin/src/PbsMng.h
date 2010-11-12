@@ -59,6 +59,10 @@ namespace pbs_plug
             typedef std::vector<SQueueInfo> queueInfoContainer_t;
 
         public:
+            CPbsMng(): m_upload_log( false )
+            {}
+
+        public:
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             jobArray_t jobSubmit( const std::string &_script, const std::string &_queue,
                                   size_t _nJobs ) const;
@@ -89,6 +93,7 @@ namespace pbs_plug
         private:
             std::string m_server_logDir;
             std::string m_envp;
+            bool m_upload_log;
     };
 
 };

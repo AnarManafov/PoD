@@ -85,6 +85,8 @@ void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
+
+        m_upload_log = _ud.getOptions().m_pbs.m_uploadJobLog;
     }
     catch( exception &e )
     {
@@ -239,7 +241,11 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     ss << jobArrayStartIdx() << "-" << ( jobArrayStartIdx() + _nJobs - 1 );
     set_attr( attrib, ATTR_t, ss.str().c_str() );
     // output path
-    set_attr( attrib, ATTR_o, output.c_str() );
+    if( m_upload_log )
+        set_attr( attrib, ATTR_o, output.c_str() );
+    else
+        set_attr( attrib, ATTR_o, "/dev/null" );
+
     // set additional environment variables
     string env;
     // set POD_UI_LOCATION on the worker nodes
@@ -495,6 +501,9 @@ bool CPbsMng::isJobComplete( const string &_status )
 //=============================================================================
 void CPbsMng::createJobsLogDir( const CPbsMng::jobID_t &_parent ) const
 {
+    if( !m_upload_log )
+        return;
+
     string path( m_server_logDir + getCleanParentID( _parent ) );
     // create a dir with read/write/search permissions for owner and group,
     // and with read/search permissions for others
