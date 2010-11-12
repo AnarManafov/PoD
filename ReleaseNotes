@@ -14,7 +14,7 @@ pod: PoD WNs now tries to use binaries from PoD UI, if a shared home file system
      It speeds up the start up time of PoD jobs. If this try fails, than PoD WN will use
      pre-compiled bins, which come with PoD's worker package.
 pod: PoD UI/Server supports Mac OS X. So far only CLI and only the SSH plug-in are working and have been tested.
-pod: All CLI plug-ins are now in separate files. This makes it much easer to extend PoD with new plug-ins and support old ones.
+pod: All CLI plug-ins are now in separate files. This makes it much easer to extend PoD with new plug-ins and to support old ones.
 pod: fixed behaviour for PBS and OGE plug-ins: when xxxx.upload_job_log is set to "no", there will be no jobs' output stored, even no stdout/err. 
 pod: User's Manual has been updated.
 pod: This release also has a number of minor fixes.
