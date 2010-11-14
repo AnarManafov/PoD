@@ -21,7 +21,7 @@
 
 <book id="POD" lang="en">
     <bookinfo>
-        <title>"PROOF on Demand" (PoD) - v.2.4</title> 
+        <title>"PROOF on Demand" (PoD) - v.2.5</title> 
         <authorgroup>
             <author>
                 <firstname>Anar</firstname>
@@ -31,7 +31,7 @@
                 </affiliation>
             </author>
         </authorgroup>
-        <edition>"PROOF on Demand" v2.4</edition>
+        <edition>"PROOF on Demand" v2.5</edition>
         <copyright>
             <year>2007</year>
             <year>2008</year>
