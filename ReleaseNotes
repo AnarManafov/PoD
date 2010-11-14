@@ -1,6 +1,6 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v2.4 (not yet released)
+## v2.4 (2010-11-14)
 pod: Implemented Oracle Grid Engine (OGE/SGE) plug-in for PoD. This plug-in can be used via PoD GUI and CLI.
 pod: Fixed a typo/bug, which prevented PoD worker to download pre-compiled binaries of pod-agent for x86 machines.
 pod: Now the PoD pre-compiled worker packages naming is automated and unified.
