@@ -21,7 +21,17 @@
 
 #######
 eval PROOF_CFG=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
-POD_VERSION=@POD_VERSION@
+
+VERSION_FILE="${POD_LOCATION}/etc/version"
+if [ -z "${POD_LOCATION}" ]; then
+   echo "${UTIL_NAME} error: The POD_LOCATION environment variable is not set."
+   exit 1
+fi
+if [ ! -r ${VERSION_FILE} ]; then
+   echo "${UTIL_NAME} error: The PoD version file is missing: ${VERSION_FILE}"
+   exit 1
+fi
+POD_VERSION=$(cat $POD_LOCATION/etc/version)
 #######
 
 #=============================================================================

@@ -104,6 +104,7 @@ SET(POD_ADD_FILES
 #
 SET(POD_BIN_FILES 
     ${CMAKE_SOURCE_DIR}/bin/pod-server
+    ${CMAKE_SOURCE_DIR}/bin/pod-info
     ${CMAKE_SOURCE_DIR}/bin/pod-prep-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-submit
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-submit-worker
@@ -246,14 +247,12 @@ execute_process(COMMAND mktemp -d /tmp/PoD_XXXXXXXXXX
                 OUTPUT_STRIP_TRAILING_WHITESPACE)
 configure_file( ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in ${CMAKE_BINARY_DIR}/etc/xpd.cf @ONLY )
 configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_env.sh @ONLY )
-configure_file( ${CMAKE_SOURCE_DIR}/bin/pod-info.in ${CMAKE_BINARY_DIR}/bin/pod-info @ONLY )
 #
 # Install
 #
 install(FILES ${POD_ADD_FILES} DESTINATION .)
 install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION etc)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
-install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/pod-info DESTINATION bin)
 # special files, these needs to be executables
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
@@ -290,7 +289,6 @@ set(CPACK_SOURCE_IGNORE_FILES
     "prep_bins.sh"
     "inst_tmp"
     "PoD_env.sh$"
-    "bin/pod-info$"
     "etc/xpd.cf$"
     "documentation/Diagrams"
     "app/pod-agent/doc"
