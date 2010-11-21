@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file JobInfoItemModel.cpp
+ * @file LSFPlugin/src/JobInfoItemModel.cpp
  * @brief $$File comment$$
  * @author Anar Manafov Anar.Manafov@gmail.com
  *//*
@@ -12,7 +12,7 @@
 
         Copyright (c) 2009 Anar Manafov. All rights reserved.
 *************************************************************************/
-// vnetstat
+//
 #include "JobInfoItemModel.h"
 //=============================================================================
 using namespace std;

@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file JobInfoItemModel.h
+ * @file LSFPlugin/src/JobInfoItemModel.h
  * @brief $$File comment$$
  * @author Anar Manafov Anar.Manafov@gmail.com
  *//*

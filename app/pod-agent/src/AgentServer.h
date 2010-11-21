@@ -69,7 +69,7 @@ namespace PROOFAgent
 //=============================================================================
     /**
      *
-     * @brief An agent class, for the server mode of PROOFAgent
+     * @brief The agent class interface, for the server mode of PROOFAgent
      *
      */
     class CAgentServer :

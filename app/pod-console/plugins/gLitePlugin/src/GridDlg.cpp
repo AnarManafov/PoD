@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file GridDlg.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*

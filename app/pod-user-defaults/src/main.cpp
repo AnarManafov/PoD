@@ -49,7 +49,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     visible.add_options()
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
-    ( "config,c", bpo::value<string>(), "PoD user-defaults configuration file" )
+    ( "path,p", "Show PoD user defaults config file path")
+    ( "config,c", bpo::value<string>(), "PoD user defaults configuration file" )
     ( "key", bpo::value<string>(), "Get a value for the given key" )
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
@@ -75,6 +76,20 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     boost_hlp::option_dependency( vm, "default", "config" );
     boost_hlp::conflicting_options( vm, "default", "key" );
     boost_hlp::conflicting_options( vm, "force", "key" );
+    
+    if( vm.count("path") )
+    {
+        string pud_file( showCurrentPUDFile() );
+        if(pud_file.empty())
+        {
+            string msg("Error: Can't find PoD user defaults configuration.\n");
+            msg += "Check that either $POD_LOCATION/etc/PoD.cfg or $HOME/.PoD/PoD.cfg exists.";
+            throw runtime_error( msg );
+        }
+        
+        cout << pud_file << endl;
+        return true;
+    }
 
     CPoDUserDefaults user_defaults;
 

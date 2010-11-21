@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file LSFDlg.h
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*

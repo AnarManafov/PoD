@@ -56,6 +56,11 @@ namespace PROOFAgent
 //=============================================================================
     SMessageHeader parseMsg( MiscCommon::BYTEVector_t *_data, const MiscCommon::BYTEVector_t &_msg );
 //=============================================================================
+    /**
+     *
+     * @brief The protocol low level class
+     *
+     */
     class CProtocol
     {
         public:

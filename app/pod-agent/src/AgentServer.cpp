@@ -219,6 +219,13 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
     return fd_max;
 }
 //=============================================================================
+// memberof to silence doxygen warning:
+// warning: no matching class member found for
+// This happens because doxygen is not handling namespaces in arguments properly
+/**
+ * @memberof PROOFAgent::CAgentServer
+ *
+ */
 void CAgentServer::mainSelect( const inet::CSocketServer &_server )
 {
     fd_set readset;

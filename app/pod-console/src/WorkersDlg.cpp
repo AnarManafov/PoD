@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file WorkersDlg.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*

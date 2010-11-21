@@ -112,6 +112,13 @@ namespace PROOFAgent
     }
 
 //=============================================================================
+    // memberof to silence doxygen warning:
+    // warning: no matching class member found for
+    // This happens because doxygen is not handling namespaces in arguments properly
+    /**
+     * @memberof CNode
+     *
+     */
     void CNode::ReportPackage( MiscCommon::INet::Socket_t _socket1,
                                MiscCommon::INet::Socket_t _socket2,
                                const BYTEVector_t &_buf )

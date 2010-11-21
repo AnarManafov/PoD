@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file PbsDlg.h
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*

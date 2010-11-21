@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file JobsContainer.h
+ * @file LSFPlugin/src/JobsContainer.h
  * @brief $$File comment$$
  * @author Anar Manafov Anar.Manafov@gmail.com
  *//*

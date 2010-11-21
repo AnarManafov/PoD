@@ -1,6 +1,6 @@
 /************************************************************************/
 /**
- * @file $$File name$$
+ * @file LogInfoDlg.cpp
  * @brief $$File comment$$
  * @author Anar Manafov A.Manafov@gsi.de
  *//*

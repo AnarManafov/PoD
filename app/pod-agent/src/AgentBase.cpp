@@ -43,6 +43,13 @@ namespace PROOFAgent
     }
 
 //=============================================================================
+    // memberof to silence doxygen warning:
+    // warning: no matching class member found for
+    // This happens because doxygen is not handling namespaces in arguments properly
+    /**
+     * @memberof CAgentBase
+     *
+     */
     CAgentBase::CAgentBase( const SCommonOptions_t &_common ) :
         m_commonOptions( _common ),
         m_agentServerListenPort( 0 ),

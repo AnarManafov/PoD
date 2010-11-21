@@ -27,7 +27,6 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 #
 # Custom targets
 #
-message ("DEBUG:  ${DOXYGEN_EXECUTABLE} ")
 add_custom_target(pod-agent-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
     COMMENT "Generating pod-agent API docs")
 

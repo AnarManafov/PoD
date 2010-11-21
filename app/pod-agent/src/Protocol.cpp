@@ -90,6 +90,13 @@ CProtocol::~CProtocol()
 {
 }
 //=============================================================================
+// memberof to silence doxygen warning:
+// warning: no matching class member found for
+// This happens because doxygen is not handling namespaces in arguments properly
+/**
+ * @memberof PROOFAgent::CProtocol
+ *
+ */
 SMessageHeader CProtocol::getMsg( BYTEVector_t *_data ) const
 {
     copy( m_curDATA.begin(), m_curDATA.end(), back_inserter( *_data ) );
@@ -151,12 +158,26 @@ bool CProtocol::checkoutNextMsg()
     return true;
 }
 //=============================================================================
+// memberof to silence doxygen warning:
+// warning: no matching class member found for
+// This happens because doxygen is not handling namespaces in arguments properly
+/**
+ * @memberof PROOFAgent::CProtocol
+ *
+ */
 void CProtocol::write( int _socket, uint16_t _cmd, const BYTEVector_t &_data ) const
 {
     BYTEVector_t msg( createMsg( _cmd, _data ) );
     sendall( _socket, &msg[0], msg.size(), 0 );
 }
 //=============================================================================
+// memberof to silence doxygen warning:
+// warning: no matching class member found for
+// This happens because doxygen is not handling namespaces in arguments properly
+/**
+ * @memberof PROOFAgent::CProtocol
+ *
+ */
 void CProtocol::writeSimpleCmd( int _socket, uint16_t _cmd ) const
 {
     BYTEVector_t data;
