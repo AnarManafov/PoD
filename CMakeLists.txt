@@ -63,7 +63,10 @@ option(BUILD_OGE_PLUGIN "Build OGE plug-in" ON)
 #
 # Documentation output directory
 #
-set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+   set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
+endif(DOXYGEN_FOUND)
 #
 # Custom targets
 #

@@ -26,7 +26,7 @@ configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile
 #
 # Custom targets
 #
-add_custom_target(pod-console-api-docs doxygen ${PROJECT_BINARY_DIR}/Doxyfile
+add_custom_target(pod-console-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
     COMMENT "Generating pod-console API docs")
 
 set( MOC_HDRS
