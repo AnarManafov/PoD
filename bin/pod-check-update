@@ -99,7 +99,7 @@ then
    echo "A new PoD version (v${version}) is now available. You can download it from: http://pod.gsi.de/download.html"
    exit 2
 else 
-   echo "There is no PoD updates available for your version."
+   echo "There are no PoD updates available for your version."
 fi
 
 exit 0
