@@ -1,7 +1,7 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.0 (not yet released)
-pod: A multi-user installation possible now.
+pod: Implemented an install-for-all-users feature.
 pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
 pod: This release fixes a number of minor issues.
 
