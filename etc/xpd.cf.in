@@ -22,11 +22,11 @@ xpd.port 000
 #
 # !!! DON'T REMOVE/CHANGE THE FOLLOWING COMMENTS
 # * * * * * * * * * *
-# server.adminpath @CMAKE_POD_TMP_DIR@
+# server.adminpath _POD_TMP_DIR
 # worker.adminpath _G_WORKER_TMP_DIR
 # * * * * * * * * * *
 if named PoDServer
- xrd.adminpath @CMAKE_POD_TMP_DIR@
+ xrd.adminpath _POD_TMP_DIR
 else
  xrd.adminpath _G_WORKER_TMP_DIR
 fi
@@ -39,7 +39,7 @@ xrd.trace all debug
 ## setting a PROOF temp dir.
 #
 if named PoDServer
- set PROOFTMP=@CMAKE_POD_TMP_DIR@
+ set PROOFTMP=_POD_TMP_DIR
 else
  set PROOFTMP=_G_WORKER_TMP_DIR
 fi

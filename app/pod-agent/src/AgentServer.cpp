@@ -30,7 +30,8 @@ namespace inet = MiscCommon::INet;
 extern sig_atomic_t graceful_quit;
 // a monitoring thread timeout (in seconds)
 const size_t g_monitorTimeout = 10;
-const char *const g_xpdCFG = "$POD_LOCATION/etc/xpd.cf";
+// will be concatenated with (m_Data.m_common.m_workDir + "/")
+const char *const g_xpdCFG = "etc/xpd.cf";
 //=============================================================================
 struct is_bad_wrk
 {
@@ -47,8 +48,10 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
-
-    string xpd( g_xpdCFG );
+    
+    string xpd( m_Data.m_common.m_workDir );
+    smart_append(&xpd, '/');
+    xpd += g_xpdCFG;
     smart_path( &xpd );
     if( !m_proofStatus.readAdminPath( xpd, adminp_server ) )
     {

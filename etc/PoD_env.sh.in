@@ -28,15 +28,27 @@ export PATH=$POD_LOCATION/bin:$PATH
 export LD_LIBRARY_PATH=$POD_LOCATION/lib:$LD_LIBRARY_PATH
 @CMAKE_ADDITIONAL_LIB_PATH@
 
+# local folder
+LOCAL_POD="$HOME/.PoD"
+
 # create local PoD direcories
-create_dir "$HOME/.PoD/log"
-create_dir "$HOME/.PoD/etc"
-create_dir "$HOME/.PoD/wrk"
+create_dir "$LOCAL_POD/log"
+create_dir "$LOCAL_POD/etc"
+create_dir "$LOCAL_POD/wrk"
 
 # create a default configuration file if needed
 POD_CFG=$(pod-user-defaults -p)
 if [ -z "$POD_CFG" ]; then
-   pod-user-defaults -d -c "$HOME/PoD.cfg"
+   pod-user-defaults -d -c "$LOCAL_POD/PoD.cfg"
+fi
+
+# make a local version of xpd config file for the first time
+XPD_CFG="$LOCAL_POD/etc/xpd.cf"
+if [ ! -r "$XPD_CFG" ]; then
+   cp $POD_LOCATION/etc/xpd.cf.in $XPD_CFG
+   _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
+   chmod 777 $_TMP_DIR
+   eval sed -i '.bup' 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
 fi
 
 eval POD_PROOFCFG_FILE=$(pod-user-defaults --key server.proof_cfg_path)

@@ -38,6 +38,9 @@ XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults --key server.xproof_ports_range_max)
 PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults --key server.agent_ports_range_min)
 PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults --key server.agent_ports_range_max)
 eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
+XPD_CFG="$WORK_DIR/etc/xpd.cf"
+eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
+SERVERINFO_FILE="$WORK_DIR/etc/server_info.cfg"
 #######
 # a number of seconds we wait until xpd is started 
 XPD_START_TIMEOUT=3
@@ -132,7 +135,6 @@ get_freeport()
 # ************************************************************************
 create_agent_server_info_file()
 {
-    SERVERINFO_FILE="$POD_LOCATION/etc/server_info.cfg"
     echo "[server]" > $SERVERINFO_FILE
     echo "host=$1" >> $SERVERINFO_FILE
     echo "port=$2" >> $SERVERINFO_FILE
@@ -186,7 +188,7 @@ get_bins()
 
    pushd $(pwd) &> /dev/null
    mkdir -p $WN_BIN_DIR
-   cd $WN_BIN_DIR
+   cd $WN_BIN_DIR 
    # download all pre-compiled bins
    for index in 0 1
    do
@@ -222,12 +224,12 @@ start()
     echo "updating xproofd configuration file..."
     regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
-    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $POD_LOCATION/etc/xpd.cf > $POD_LOCATION/etc/xpd.cf.temp
-    mv $POD_LOCATION/etc/xpd.cf.temp $POD_LOCATION/etc/xpd.cf
+    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
+    mv "$XPD_CFG.temp" $XPD_CFG
 
     # generate a helper header
     # this helps to keep track of PROOF master's host and port for user's scripts
-    HEADER_HELPER="$POD_LOCATION/etc/pod-master.h"
+    HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
     echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
     echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
     echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
@@ -238,7 +240,7 @@ start()
     # Start XPROOFD
     ####
     echo "starting xproofd..."
-    xproofd -n PoDServer -c $POD_LOCATION/etc/xpd.cf -b -l $POD_LOCATION/log/xpd.log
+    xproofd -c $XPD_CFG -b -l $POD_SRV_LOGDIR/xpd.log -n PoDServer
     if (( $? != 0 )); then
        return 1
     fi
@@ -253,7 +255,7 @@ start()
     # Start pod-agent
     ####
     echo "starting PoD agent..."
-    $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --start
+    $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --serverinfo "$SERVERINFO_FILE" --start
 
     # Prepare the worker package
     ####

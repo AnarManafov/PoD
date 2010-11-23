@@ -17,20 +17,18 @@
 # Comment:
 #    The worker package is saved to PoD server working directory.
 #
-eval ARC_DIR=$(pod-user-defaults --key server.work_dir)
-ARC_NAME="$ARC_DIR/pod-worker.tar"
+eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
+ARC_NAME="$WRK_DIR/pod-worker.tar"
 ARC_NAME_GZ=$ARC_NAME".gz"
 USER_SCRIPT=$(pod-user-defaults --userenvscript)
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
+SERVER_INFO_FILE="$WRK_DIR/etc/server_info.cfg"
+XPD_CFG="$WRK_DIR/etc/xpd.cf"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
 
 echo "preparing PoD worker package..."
-
-if [ ! -d "$ARC_DIR" ]; then
-   mkdir -p "$ARC_DIR"
-fi
    
 # first delete a previous archive if available
 if [ -f $ARC_NAME ]; then
@@ -47,10 +45,10 @@ if [ -z "$POD_CFG" ]; then
 fi
 
 # check that all needed components are available
-COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf" 
+COMPONENTS_ETC=( "$XPD_CFG" 
              "$POD_CFG"
              "$POD_LOCATION/etc/version"
-             "$POD_LOCATION/etc/server_info.cfg" )
+             "$SERVER_INFO_FILE" )
 
 COMPONENTS=(  "${COMPONENTS_ETC[@]}" )
 

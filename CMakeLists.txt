@@ -246,16 +246,12 @@ endif (GSI_BUILD)
 #
 # configure files
 # 
-execute_process(COMMAND mktemp -d /tmp/PoD_XXXXXXXXXX
-                OUTPUT_VARIABLE CMAKE_POD_TMP_DIR
-                OUTPUT_STRIP_TRAILING_WHITESPACE)
-configure_file( ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in ${CMAKE_BINARY_DIR}/etc/xpd.cf @ONLY )
 configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_env.sh @ONLY )
 #
 # Install
 #
 install(FILES ${POD_ADD_FILES} DESTINATION .)
-install(FILES ${CMAKE_BINARY_DIR}/etc/xpd.cf DESTINATION etc)
+install(FILES ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
