@@ -20,7 +20,11 @@
 # -c : print a PROOF connection string, which can be used in TProof::Open
 
 #######
-eval PROOF_CFG=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
+eval PROOF_CFG=$(pod-user-defaults --key server.proof_cfg_path)
+if (( $? != 0 )) ; then
+   echo "erro: Can't use PoD user defaults."
+   exit 1
+fi
 
 VERSION_FILE="${POD_LOCATION}/etc/version"
 if [ -z "${POD_LOCATION}" ]; then

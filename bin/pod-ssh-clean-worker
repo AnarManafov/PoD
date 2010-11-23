@@ -85,7 +85,7 @@ WAITTIMEOUT=10
 #=============================================================================
 if [ "$CLEAN" != "clean" ]; then
    # a pod-ssh communication pipe (log engine)
-   eval pipe_dir=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.work_dir)
+   eval pipe_dir=$(pod-user-defaults --key server.work_dir)
    pipe="$pipe_dir/.pod_ssh_pipe"
    if [[ ! -p $pipe ]]; then
        echo "$TOOL_NAME error: pod-ssh log engine is not running"
@@ -119,7 +119,7 @@ logMsg()
 #=============================================================================
 get_log_files()
 {
-   eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
+   eval LOG_DIR=$(pod-user-defaults --key server.logfile_dir)
 
    # create a local log dir. for this worker
    DT=$(date "+%Y_%m_%d_%H_%M_%S")

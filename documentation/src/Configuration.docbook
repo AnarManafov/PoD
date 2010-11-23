@@ -340,7 +340,8 @@ gui.accessibility.visual_bell=yes
             PoD provides a possibility for users to execute a custom environment script on workers before PoD processes start.
         </para>
         <para>
-            Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user.worker_env.sh</filename> name and code there all
+            Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user_worker_env.sh</filename> or 
+            <filename>$HOME/.PoD/user_worker_env.sh</filename> name and code there all
             variables and commands user want to export to the workers. PoD will automatically transfer the script to each worker node and 
             source it there.
         </para>

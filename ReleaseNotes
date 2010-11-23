@@ -1,6 +1,9 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.0 (not yet released)
+pod: A multi-user installation possible now.
+pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
+pod: This release fixes a number of minor issues.
 
 ## v2.4 (2010-11-14)
 pod: Implemented Oracle Grid Engine (OGE/SGE) plug-in for PoD. This plug-in can be used via PoD GUI and CLI.

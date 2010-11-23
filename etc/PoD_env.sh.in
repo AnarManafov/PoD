@@ -10,19 +10,36 @@
 ##
 ##         Copyright (c) 2008-2010 GSI GridTeam. All rights reserved.
 ##*************************************************************************/
-
+#=============================================================================
+# ***** create_dir  *****
+#=============================================================================
+create_dir()
+{
+   if [ ! -d "$1" ]; then
+      mkdir -p "$1"
+   fi
+}
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
 # PoD Variables
 export POD_LOCATION=@CMAKE_INSTALL_PREFIX@
 export PATH=$POD_LOCATION/bin:$PATH
 export LD_LIBRARY_PATH=$POD_LOCATION/lib:$LD_LIBRARY_PATH
 @CMAKE_ADDITIONAL_LIB_PATH@
 
+# create local PoD direcories
+create_dir "$HOME/.PoD/log"
+create_dir "$HOME/.PoD/etc"
+create_dir "$HOME/.PoD/wrk"
+
 # create a default configuration file if needed
-if [ ! -s  $POD_LOCATION/etc/PoD.cfg ]; then
-   pod-user-defaults -d -c $POD_LOCATION/etc/PoD.cfg
+POD_CFG=$(pod-user-defaults -p)
+if [ -z "$POD_CFG" ]; then
+   pod-user-defaults -d -c "$HOME/PoD.cfg"
 fi
 
-eval POD_PROOFCFG_FILE=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.proof_cfg_path)
+eval POD_PROOFCFG_FILE=$(pod-user-defaults --key server.proof_cfg_path)
 export POD_PROOFCFG_FILE
 
 # sourcing PoD environment, if installed

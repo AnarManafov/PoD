@@ -45,7 +45,7 @@ if [ -z "$POD_UI_LOG_LOCATION" ]; then
    echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
 fi
 
-EMAIL_JOB_OUTPUT=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key lsf_plugin.email_job_output)
+EMAIL_JOB_OUTPUT=$(pod-user-defaults --key lsf_plugin.email_job_output)
 
 JOB_NAME="$BASHPID[1-$NUM_WRK]"
 OUTPUT=""

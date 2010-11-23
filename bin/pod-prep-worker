@@ -13,10 +13,14 @@
 #*************************************************************************/
 #
 # Usage: pod-prep-worker 
-
-ARC_NAME="$POD_LOCATION/etc/pod-worker.tar"
+#
+# Comment:
+#    The worker package is saved to PoD server working directory.
+#
+eval ARC_DIR=$(pod-user-defaults --key server.work_dir)
+ARC_NAME="$ARC_DIR/pod-worker.tar"
 ARC_NAME_GZ=$ARC_NAME".gz"
-USER_SCRIPT="$POD_LOCATION/etc/user.worker_env.sh"
+USER_SCRIPT=$(pod-user-defaults --userenvscript)
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 #=============================================================================
 # ***** MAIN  *****
@@ -24,6 +28,10 @@ WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 
 echo "preparing PoD worker package..."
 
+if [ ! -d "$ARC_DIR" ]; then
+   mkdir -p "$ARC_DIR"
+fi
+   
 # first delete a previous archive if available
 if [ -f $ARC_NAME ]; then
    rm -rf $ARC_NAME
@@ -32,9 +40,15 @@ if [ -f $ARC_NAME_GZ ]; then
    rm -rf $ARC_NAME_GZ
 fi
 
+POD_CFG=$(pod-user-defaults -p)
+if [ -z "$POD_CFG" ]; then
+   echo "error: can't find PoD user defaults"
+   exit 1
+fi
+
 # check that all needed components are available
 COMPONENTS_ETC=( "$POD_LOCATION/etc/xpd.cf" 
-             "$POD_LOCATION/etc/PoD.cfg"
+             "$POD_CFG"
              "$POD_LOCATION/etc/version"
              "$POD_LOCATION/etc/server_info.cfg" )
 
@@ -63,7 +77,7 @@ do
 done
 
 # add user's script if present
-if [ -r $USER_SCRIPT ]; then
+if [ -r "$USER_SCRIPT" ]; then
    echo "Adding a user defined environment script to worker package..."
    tar --append --file=$ARC_NAME -C $(dirname $USER_SCRIPT) $(basename $USER_SCRIPT)
 fi

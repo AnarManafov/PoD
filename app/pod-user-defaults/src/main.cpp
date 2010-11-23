@@ -26,6 +26,7 @@
 #include "version.h"
 
 using namespace PoD;
+using namespace MiscCommon;
 using namespace std;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
@@ -34,7 +35,7 @@ void printVersion()
 {
     cout
             << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
-            << "PoD configuration file" << " v." << USER_DEFAULTS_CFG_VERSION  << "\n"
+            << "PoD configuration" << " v." << USER_DEFAULTS_CFG_VERSION  << "\n"
             << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
@@ -49,11 +50,12 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     visible.add_options()
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
-    ( "path,p", "Show PoD user defaults config file path")
+    ( "path,p", "Show PoD user defaults config file path" )
     ( "config,c", bpo::value<string>(), "PoD user defaults configuration file" )
     ( "key", bpo::value<string>(), "Get a value for the given key" )
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
+    ( "userenvscript", "Show the path of user's environment script of workers (if present)" )
     ;
 
     // Parsing command-line
@@ -72,23 +74,21 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         return false;
     }
 
-    boost_hlp::option_dependency( vm, "key", "config" );
     boost_hlp::option_dependency( vm, "default", "config" );
     boost_hlp::conflicting_options( vm, "default", "key" );
     boost_hlp::conflicting_options( vm, "force", "key" );
-    
-    if( vm.count("path") )
+
+    if( vm.count( "userenvscript" ) )
     {
-        string pud_file( showCurrentPUDFile() );
-        if(pud_file.empty())
-        {
-            string msg("Error: Can't find PoD user defaults configuration.\n");
-            msg += "Check that either $POD_LOCATION/etc/PoD.cfg or $HOME/.PoD/PoD.cfg exists.";
-            throw runtime_error( msg );
-        }
-        
-        cout << pud_file << endl;
-        return true;
+        CFindCfgFile<std::string> cfg;
+        cfg.SetOrder
+        ( "$HOME/.PoD/user_worker_env.sh" )
+        ( "$POD_LOCATION/etc/user_worker_env.sh" );
+        std::string val;
+        cfg.GetCfg( &val );
+        smart_path( &val );
+        cout << val << endl;
+        return false;
     }
 
     CPoDUserDefaults user_defaults;
@@ -122,15 +122,28 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         return false;
     }
 
-    if( !vm.count( "config" ) )
+    string config_file;
+    if( !vm.count( "config" ) || vm.count( "path" ) )
     {
-        cout << visible << endl;
-        throw runtime_error( "You need to specify a configuration file at least." );
+        config_file = showCurrentPUDFile();
+        if( config_file.empty() )
+        {
+            // Error: Can't find PoD user defaults configuration.
+            // throw an empty message
+            throw runtime_error( "" );
+        }
+        smart_path( &config_file );
+        if( vm.count( "path" ) )
+        {
+            cout << config_file << endl;
+            return true;
+        }
     }
     else
     {
-        user_defaults.init( vm["config"].as<string>() );
+        config_file = vm["config"].as<string>();
     }
+    user_defaults.init( config_file );
 
     if( vm.count( "key" ) )
     {

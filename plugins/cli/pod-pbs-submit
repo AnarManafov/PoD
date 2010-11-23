@@ -46,7 +46,7 @@ if [ -z "$POD_UI_LOG_LOCATION" ]; then
 fi
 
 # LOG
-eval upload_job_log=$(pod-user-defaults -c $POD_UI_LOCATION/etc/PoD.cfg --key pbs_plugin.upload_job_log)
+eval upload_job_log=$(pod-user-defaults --key pbs_plugin.upload_job_log)
 OUTPUT_LOG=""
 if [ "$upload_job_log" = "1" ]; then
    OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"

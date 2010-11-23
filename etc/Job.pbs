@@ -40,7 +40,7 @@ fi
 ###############################################################
 try_shared_home()
 {
-   cp ${POD_UI_LOCATION}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   cp ${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
    ret1=$?
    cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
    ret2=$?
@@ -64,7 +64,7 @@ stagein()
    try_shared_home
 
    if [ -z "$POD_SHARED_HOME" ]; then
-      ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+      ${SCP} ${UI_HOST}:${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
       ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
    fi
 

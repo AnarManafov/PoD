@@ -13,6 +13,7 @@
 #*************************************************************************/
 #
 # PoD environment variables exported to the workers:
+#  POD_SRV_WORKDIR     : PoD server's working directory
 #  POD_UI_LOG_LOCATION : log dir on the PoD UI
 #  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
 #
@@ -96,7 +97,9 @@ if [ ! -s $PLUG_CMD ]; then
 fi
 
 # call the selected plug-in
-eval LOG_DIR=$(pod-user-defaults -c $POD_LOCATION/etc/PoD.cfg --key server.logfile_dir)
+eval POD_SRV_WORKDIR=$(pod-user-defaults --key server.work_dir)
+eval LOG_DIR=$(pod-user-defaults --key server.logfile_dir)
+export POD_SRV_WORKDIR
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
 $PLUG_CMD -q $QUEUE -n $NUM_WRK

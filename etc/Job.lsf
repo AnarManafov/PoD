@@ -28,7 +28,7 @@ UI_WRK_DIR=$POD_UI_LOCATION
 ###############################################################
 try_shared_home()
 {
-   cp ${POD_UI_LOCATION}/etc/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   cp ${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
    ret1=$?
    cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
    ret2=$?
