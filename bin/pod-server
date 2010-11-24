@@ -15,7 +15,7 @@
 #*************************************************************************/
 #
 # Usage:
-#      pod-server start|stop|status
+#      pod-server start|stop|status|getbins
 #
 # Supported OS:
 #    Linux, Mac OS X (tested on 10.6)
@@ -187,7 +187,7 @@ get_bins()
    fi
 
    pushd $(pwd) &> /dev/null
-   mkdir -p $WN_BIN_DIR
+   mkdir -p $WN_BIN_DIR || { echo "error: Can't create $WN_BIN_DIR. Check permissions."; exit 1; }
    cd $WN_BIN_DIR 
    # download all pre-compiled bins
    for index in 0 1
@@ -225,7 +225,7 @@ start()
     regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
     sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
-    mv "$XPD_CFG.temp" $XPD_CFG
+    mv -f "$XPD_CFG.temp" $XPD_CFG
 
     # generate a helper header
     # this helps to keep track of PROOF master's host and port for user's scripts
@@ -311,7 +311,7 @@ status()
 # checking the number of parameters
 # ************************************************************************
 if [ $# -ne 1 ]; then
-    echo "Usage: pod-server start|stop|status"
+    echo "Usage: pod-server start|stop|status|getbins"
     exit 1
 fi
 
@@ -321,7 +321,7 @@ if [ ! -e "$WORK_DIR" ]; then
     exit 1
 fi
 
-# star|stop|status
+# star|stop|status|getbins
 case "$1" in
     start)
         get_bins	
@@ -335,6 +335,10 @@ case "$1" in
     status)
 	status $WORK_DIR
 	;;
+    getbins)
+        get_bins
+        RETVAL=$?
+        ;;
 esac
 
 exit $RETVAL
