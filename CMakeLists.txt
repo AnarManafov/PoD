@@ -117,7 +117,7 @@ SET(POD_BIN_FILES
 SET(POD_CLI_PLUGINS_FILES 
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-lsf-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-pbs-submit
-    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-oge-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-ge-submit
     )
 #
 # "etc" files
@@ -225,7 +225,7 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.oge DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
 # install bin files
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
