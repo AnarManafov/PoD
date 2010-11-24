@@ -24,8 +24,6 @@ if [ -z "$1" ]; then
     cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo" || exit 1
     $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin" || exit 1
     $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin" || exit 1
-    # gsi build needs to be the last, since it modifies bootstrap, so other builds would need to rewrite it
-    $SSH_CMD manafov@$HOST32 "$SCRIPT gsi_bin" || exit 1
 else
     echo ">>> executing on the host: "$(hostname -f)
     case "$1" in
@@ -39,10 +37,6 @@ else
 	       cd PoD
 	       git submodule update --init --recursive || exit 1
 	       popd
-	       ;;
-	"gsi_bin")
-	       echo ">>> Building GSI pkg..."
-	       $POD_SRC/PoD/bin/prep_gsi_bin.sh $POD_SRC/PoD || exit 1
 	       ;;
 	"wrk_bin") 
 	    echo ">>> Building wrk. pkg..."

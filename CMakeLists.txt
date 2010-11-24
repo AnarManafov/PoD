@@ -43,10 +43,6 @@ endif( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 #
 # Options
 #
-# A GSI specific installation option. This type of installation
-# will be removed as soon as GSI will upgrade to modern version of Linux ;) or will 
-# get all required software installed GSI wide.
-option(GSI_BUILD "Build a GSI version" OFF)
 option(BUILD_DOCUMENTATION "Build documentation" OFF)
 # tests
 option(BUILD_TESTS "Build PoD unit tests" OFF)
@@ -134,7 +130,6 @@ SET(POD_ETC_FILES
 #
 # BUILD Sub Modules of PoD
 #
-if( NOT GSI_BUILD )
 
 #
 # search for Boost
@@ -217,32 +212,6 @@ endif(QT4_FOUND)
   if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
     message( FATAL_ERROR " Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
   endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
-
-endif( NOT GSI_BUILD )
-#
-# GSI specific settings
-#
-if (GSI_BUILD)
-    message (STATUS "Add GSI specific settings - YES")
-    set(CMAKE_ADDITIONAL_LIB_PATH "export LD_LIBRARY_PATH=/LSF/lsf/lib:/misc/manafov/Qt/4.4.2_etch32/lib:$GLITE_PROOF_LOCATION/lib:$LD_LIBRARY_PATH" )
-    
-    set(GSI_ADD_BIN
-        ${CMAKE_SOURCE_DIR}/bin/pod-agent
-        ${CMAKE_SOURCE_DIR}/bin/pod-console
-        ${CMAKE_SOURCE_DIR}/bin/pod-user-defaults
-	${CMAKE_SOURCE_DIR}/bin/pod-ssh
-    )
-    set(GSI_ADD_LIB
-        ${CMAKE_SOURCE_DIR}/lib/libglib-2.0.so.0
-        ${CMAKE_SOURCE_DIR}/lib/libgthread-2.0.so.0
-        ${CMAKE_SOURCE_DIR}/lib/libboost_filesystem-gcc-mt-1_33_1.so.1.33.1
-        ${CMAKE_SOURCE_DIR}/lib/libboost_program_options-gcc-mt-1_33_1.so.1.33.1
-        ${CMAKE_SOURCE_DIR}/lib/libboost_thread-gcc-mt-1_33_1.so.1.33.1
-    )
-    install(PROGRAMS ${GSI_ADD_BIN} DESTINATION bin)
-    install(FILES ${GSI_ADD_LIB} DESTINATION lib)
-    install(FILES ${CMAKE_SOURCE_DIR}/plugins/gui/libpod-console-lsf.so DESTINATION plugins/gui )
-endif (GSI_BUILD)
 #
 # configure files
 # 
@@ -306,16 +275,7 @@ set(CPACK_SOURCE_IGNORE_FILES
     "\\\\.svn/"
     "Makefile$")
 
-if(GSI_BUILD)
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-GSI-etch32-bin")
-else(GSI_BUILD)
-  set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-Source")
-endif(GSI_BUILD)
+set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-Source")
 
 include(CPack)
 
-if (GSI_BUILD)
-  message(" *********************************************************")
-  message("This is a GSI specific PoD version and it is ready to be installed. Please execute \"make install\"")
-  message(" *********************************************************")
-endif(GSI_BUILD)

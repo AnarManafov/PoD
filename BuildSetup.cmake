@@ -54,8 +54,3 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #
 #set( BUILD_OGE_PLUGIN OFF CACHE BOOL "Build OGE plug-in" FORCE )
 
-#
-# GSI specific build
-#
-#set( GSI_BUILD ON CACHE BOOL "Build a GSI specific version" FORCE )
-
