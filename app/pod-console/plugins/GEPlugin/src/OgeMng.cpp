@@ -406,7 +406,7 @@ string COgeMng::status2string( int _ogeJobStatus ) const
 //=============================================================================
 int COgeMng::jobStatus( const jobID_t &_id ) const
 {
-    int retval;
+    int retval(DRMAA_PS_UNDETERMINED);
     if( !isValid( _id ) )
         return retval;
 
