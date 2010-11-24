@@ -30,6 +30,8 @@ IF (UNIX)
       $ENV{PBS_PREFIX}/include
       /usr/local/include
       /usr/include
+      /usr/local/include/torque
+      /usr/include/torque
     )
 
     FIND_LIBRARY(PBS_TORQUE_LIB
