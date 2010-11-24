@@ -144,7 +144,7 @@ namespace oge_plug
 
                     COgeMng::jobID_t lastJobID = jobs[0];
                     qDebug( "COgeJobSubmitter::run(): job has been submitted, parentid=%s, numWNs=%d",
-                            lastJobID.c_str(), m_numberOfWrk );
+                            lastJobID.c_str(), (int)m_numberOfWrk );
 
                     emit changeProgress( 90 );
 
