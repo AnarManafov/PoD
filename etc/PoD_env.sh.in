@@ -42,6 +42,10 @@ if [ -z "$POD_CFG" ]; then
    pod-user-defaults -d -c "$LOCAL_POD/PoD.cfg"
 fi
 
+# user defined log dir
+eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
+create_dir "$POD_SRV_LOGDIR"
+
 # make a local version of xpd config file for the first time
 XPD_CFG="$LOCAL_POD/etc/xpd.cf"
 if [ ! -r "$XPD_CFG" ]; then
