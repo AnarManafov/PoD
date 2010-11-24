@@ -46,7 +46,7 @@ if [ -z "$POD_UI_LOG_LOCATION" ]; then
 fi
 
 # LOG
-eval upload_job_log=$(pod-user-defaults --key oge_plugin.upload_job_log)
+eval upload_job_log=$(pod-user-defaults --key ge_plugin.upload_job_log)
 OUTPUT_LOG=""
 if [ "$upload_job_log" = "1" ]; then
    OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
@@ -59,14 +59,14 @@ fi
 # -V          export all environment variables
 # -terse      tersed output, print only the job-id
 # -j yes      merge std out and err to one file
-OGE_OPTION_FILE="$POD_LOCATION/etc/Job.oge.option"
-oge_job_array_param="-t 1-$NUM_WRK"
-job_name="PoD_OGE_Job"
-# OGE option file
-if [ -r $OGE_OPTION_FILE ]; then
-   OGE_USE_OPTION_FILE=" -@ $OGE_OPTION_FILE"
+GE_OPTION_FILE=$(pod-user-defaults --key ge_plugin.options_file)
+ge_job_array_param="-t 1-$NUM_WRK"
+job_name="PoD_GE_Job"
+# GE option file
+if [ -r $GE_OPTION_FILE ]; then
+   GE_USE_OPTION_FILE=" -@ $GE_OPTION_FILE"
 fi
-jobid=$(qsub -j yes -V -N $job_name -terse $oge_job_array_param -q $QUEUE $OUTPUT_LOG $OGE_USE_OPTION_FILE $POD_LOCATION/etc/Job.oge)
+jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $POD_LOCATION/etc/Job.ge)
 # we need to create a logs output dir
 stat=$?
 # extract a job id only, without an array indexes

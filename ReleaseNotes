@@ -3,6 +3,7 @@
 ## v3.0 (not yet released)
 pod: Implemented an install-for-all-users feature.
 pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
+pod: The OGE plug-in was renamed to GE (Grid Engine).
 pod: This release fixes a number of minor issues.
 
 ## v2.4 (2010-11-14)

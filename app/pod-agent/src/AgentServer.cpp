@@ -48,9 +48,9 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
-    
+
     string xpd( m_Data.m_common.m_workDir );
-    smart_append(&xpd, '/');
+    smart_append( &xpd, '/' );
     xpd += g_xpdCFG;
     smart_path( &xpd );
     if( !m_proofStatus.readAdminPath( xpd, adminp_server ) )

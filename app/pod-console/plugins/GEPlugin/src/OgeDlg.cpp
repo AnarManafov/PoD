@@ -38,9 +38,7 @@ using namespace oge_plug;
 Q_DECLARE_METATYPE( oge_plug::SQueueInfo )
 //=============================================================================
 // default Job Script file
-const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.oge";
-// configuration file of the plug-in
-const LPCTSTR g_szOgePluginCfgFileName = "$POD_LOCATION/etc/pod-console_OGE.xml.cfg";
+const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.ge";
 //=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
@@ -92,71 +90,6 @@ COgeDlg::COgeDlg( QWidget *parent ) :
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, g_szOgePluginCfgFileName );
-    }
-    catch( ... )
-    {
-        setAllDefault();
-    }
-
-    // Set the queues list
-    try
-    {
-        COgeMng::queueInfoContainer_t queues;
-        m_JobSubmitter.getQueues( &queues );
-        COgeMng::queueInfoContainer_t::iterator iter = queues.begin();
-        COgeMng::queueInfoContainer_t::iterator iter_end = queues.end();
-        for( ; iter != iter_end; ++iter )
-        {
-            m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
-            // selecting default
-            if( m_queue.empty() )
-            {
-                // if there is no default queue set, then select any queue with the "proof" word in the name
-                if( string::npos != iter->m_name.find( "proof" ) )
-                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
-            }
-            else
-            {
-                if( iter->m_name == m_queue )
-                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
-            }
-        }
-    }
-    catch( const exception &_e )
-    {
-        // TODO: handle it
-    }
-
-    // default queue name
-    m_JobSubmitter.setQueue( m_queue );
-
-    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
-    m_ui.treeJobs->setModel( m_treeModel );
-
-    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
-
-
-    connect( &m_JobSubmitter,
-             SIGNAL( newJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const COgeMng::jobID_t & ) ) );
-    connect( &m_JobSubmitter,
-             SIGNAL( removedJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const COgeMng::jobID_t & ) ) );
-    connect( m_treeModel,
-             SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
-
-    // a context menu of the table view
-    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-             this, SLOT( showContextMenu( const QPoint & ) ) );
-
-    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
-             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
-    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
-             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
 COgeDlg::~COgeDlg()
@@ -164,7 +97,7 @@ COgeDlg::~COgeDlg()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szOgePluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -218,7 +151,7 @@ void COgeDlg::on_btnSubmitClient_clicked()
         if( !QFileInfo( m_ui.edtJobScriptFileName->text() ).exists() )
         {
             QMessageBox::critical( this,
-                                   tr( "PROOFAgent Console" ),
+                                   tr( "PoD Console" ),
                                    tr( "File\n\"%1\"\ndoesn't exist!" ).arg(
                                        m_ui.edtJobScriptFileName->text() ) );
             return;
@@ -248,7 +181,7 @@ void COgeDlg::on_btnBrowseJobScript_clicked()
 {
     const QString dir = QFileInfo( m_ui.edtJobScriptFileName->text() ).absolutePath();
     const QString filename = QFileDialog::getOpenFileName( this, tr( "Select a job script file" ), dir,
-                                                           tr( "OGE script (*.pbs)" ) );
+                                                           tr( "Grid Engine job script (*.ge)" ) );
     if( QFileInfo( filename ).exists() )
     {
         m_JobScript = filename.toAscii().data();
@@ -392,7 +325,7 @@ void COgeDlg::enableTree()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szOgePluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -421,7 +354,7 @@ void COgeDlg::setNumberOfJobs( size_t _count )
 //=============================================================================
 QString COgeDlg::getName() const
 {
-    return QString( "OGE\nJob Manager" );
+    return QString( "Grid Engine\nJob Manager" );
 }
 //=============================================================================
 QWidget* COgeDlg::getWidget()
@@ -478,6 +411,76 @@ int COgeDlg::getJobsCount() const
 void COgeDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
     m_JobSubmitter.setUserDefaults( _ud );
+
+    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
+    smart_append( &m_configFile, '/' );
+    m_configFile += "etc/pod-console_GE.xml.cfg";
+    smart_path( &m_configFile );
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, m_configFile );
+    }
+    catch( ... )
+    {
+        setAllDefault();
+    }
+
+    // Set the queues list
+    try
+    {
+        COgeMng::queueInfoContainer_t queues;
+        m_JobSubmitter.getQueues( &queues );
+        COgeMng::queueInfoContainer_t::iterator iter = queues.begin();
+        COgeMng::queueInfoContainer_t::iterator iter_end = queues.end();
+        for( ; iter != iter_end; ++iter )
+        {
+            m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
+            // selecting default
+            if( m_queue.empty() )
+            {
+                // if there is no default queue set, then select any queue with the "proof" word in the name
+                if( string::npos != iter->m_name.find( "proof" ) )
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+            else
+            {
+                if( iter->m_name == m_queue )
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+        }
+    }
+    catch( const exception &_e )
+    {
+        // TODO: handle it
+    }
+
+    // default queue name
+    m_JobSubmitter.setQueue( m_queue );
+
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
+    m_ui.treeJobs->setModel( m_treeModel );
+
+    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
+
+
+    connect( &m_JobSubmitter,
+             SIGNAL( newJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const COgeMng::jobID_t & ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( removedJob( const COgeMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const COgeMng::jobID_t & ) ) );
+    connect( m_treeModel,
+             SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
+
+    // a context menu of the table view
+    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+             this, SLOT( showContextMenu( const QPoint & ) ) );
+
+    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
+             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
+    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
+             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
 void COgeDlg::setEnvironment( const std::string &_envp )

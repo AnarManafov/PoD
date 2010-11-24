@@ -148,24 +148,24 @@ if( BUILD_PBS_PLUGIN )
 endif( BUILD_PBS_PLUGIN )
 
 #
-# OGE plug-in
+# GE plug-in
 #
-if( BUILD_OGE_PLUGIN )
+if( BUILD_GE_PLUGIN )
   message (STATUS "Looking for SGE/OGE DRMAA API")
   find_package( OGE )
   if (OGE_FOUND)
      message (STATUS "Looking for SGE/OGE DRMAA API - YES")
      message (STATUS "Build SGE/OGE plug-in")
-     add_subdirectory ( plugins/OGEPlugin )
+     add_subdirectory ( plugins/GEPlugin )
      message (STATUS "Build SGE/OGE plug-in - YES")
      if (BUILD_TESTS)
-        add_subdirectory ( plugins/OGEPlugin/tests )
-        message (STATUS "Build tests of oge plug-in")
+        add_subdirectory ( plugins/GEPlugin/tests )
+        message (STATUS "Build tests of grid engine plug-in")
      endif (BUILD_TESTS)
   else (OGE_FOUND)
      message (STATUS "Looking for SGE/OGE DRMAA API - NO") 
   endif (OGE_FOUND)
-endif( BUILD_OGE_PLUGIN )
+endif( BUILD_GE_PLUGIN )
 
 
 #

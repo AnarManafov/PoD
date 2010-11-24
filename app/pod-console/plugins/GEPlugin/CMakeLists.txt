@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2010 GSI GridTeam. All rights reserved.
 #*************************************************************************
-project( pod-console-oge )
+project( pod-console-ge )
 
 set( HDRS_oge
      ./src/OgeMng.h
@@ -50,7 +50,7 @@ QT4_WRAP_UI( GENERATED_UI_HDRS_oge ${UI_FILES_oge} )
 QT4_ADD_RESOURCES( GENERATED_RCS_SRCS_oge  ${UI_SRSC_oge} )
 
 if (CMAKE_GENERATOR STREQUAL "Xcode")
-  add_library(pod-console-oge SHARED
+  add_library(pod-console-ge SHARED
               ${SOURCE_FILES_oge}
               ${HDRS_oge}
               ${MOC_HDRS_oge}
@@ -59,7 +59,7 @@ if (CMAKE_GENERATOR STREQUAL "Xcode")
               ${GENERATED_RCS_SRCS_oge}
               ${GENERATED_UI_HDRS_oge})
 else (CMAKE_GENERATOR STREQUAL "Xcode")
-  add_library(pod-console-oge SHARED
+  add_library(pod-console-ge SHARED
               ${SOURCE_FILES_oge}
               ${GENERATED_MOC_SRCS_oge}
               ${GENERATED_RCS_SRCS_oge}
@@ -73,12 +73,12 @@ include_directories( ${pod-console_SOURCE_DIR}/src ${OGE_INCLUDE_DIR} ${PROJECT_
 
 
 target_link_libraries (
-    pod-console-oge
+    pod-console-ge
     ${OGE_LIBRARIES}
     ${QT_LIBRARIES}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SERIALIZATION_LIBRARY}
 )
 
-install(TARGETS pod-console-oge DESTINATION plugins/gui)
+install(TARGETS pod-console-ge DESTINATION plugins/gui)
 

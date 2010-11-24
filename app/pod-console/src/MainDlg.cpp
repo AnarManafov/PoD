@@ -32,7 +32,6 @@
 using namespace std;
 using namespace MiscCommon;
 //=============================================================================
-const char * const g_szPoDcfg = "$POD_LOCATION/etc/PoD.cfg";
 // this is very expensive call, we therefore using 6 sec. timeout
 const size_t g_UpdateInterval = 6;  // in seconds
 
@@ -110,7 +109,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     // Load PoD user defaults
     try
     {
-        string pathUD( g_szPoDcfg );
+        string pathUD( PoD::showCurrentPUDFile() );
         smart_path( &pathUD );
         user_defaults.init( pathUD );
 

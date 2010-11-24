@@ -33,8 +33,6 @@ using namespace std;
 using namespace oge_plug;
 using namespace MiscCommon;
 //=============================================================================
-const LPCSTR g_OGEOptionFile = "$POD_LOCATION/etc/Job.oge.option";
-//=============================================================================
 ostream &SQueueInfo::print( ostream &_stream ) const
 {
     _stream
@@ -89,6 +87,7 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         smart_append( &m_server_logDir, '/' );
 
         m_upload_log = _ud.getOptions().m_oge.m_uploadJobLog;
+        m_optionsFile = _ud.getOptions().m_oge.m_optionsFile;
     }
     catch( exception &e )
     {
@@ -350,10 +349,10 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
         // send outputs to hell
         nativeSpecification += " -o /dev/null ";
     }
-    // TODO: add -@ if the user's option file is exists: "$POD_LOCATION/etc/Job.oge.options"
-    string options_file( g_OGEOptionFile );
+    // add -@ if the user's option file is exists
+    string options_file( m_optionsFile );
     smart_path( &options_file );
-    if( does_file_exists( g_OGEOptionFile ) )
+    if( does_file_exists( options_file ) )
     {
         nativeSpecification += " -@ ";
         nativeSpecification += options_file;

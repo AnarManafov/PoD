@@ -117,6 +117,7 @@ namespace oge_plug
             QModelIndex m_expandedNode;
             std::string m_logDir;
             bool m_emailJobOutput;
+            std::string m_configFile;
     };
 
 };

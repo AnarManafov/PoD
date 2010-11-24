@@ -108,6 +108,7 @@ namespace oge_plug
             std::string m_server_logDir;
             bool m_upload_log;
             std::string m_envp;
+            std::string m_optionsFile;
     };
 
 };
