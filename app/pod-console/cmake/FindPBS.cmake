@@ -22,6 +22,7 @@
 # Parameters
 # PBS_PREFIX - set this veriable to help the script to find PBS development files
 
+INCLUDE(CheckFunctionExists)
 
 IF (UNIX)
 
@@ -78,6 +79,11 @@ IF (PBS_PBS_LIB)
     
 ENDIF (PBS_PBS_LIB)
 
+IF (PBS_FOUND)
+   SET(CMAKE_REQUIRED_LIBRARIES ${PBS_LIBRARIES})
+   CHECK_FUNCTION_EXISTS( pbse_to_txt HAVE_PBSE_TO_TXT )
+   CHECK_FUNCTION_EXISTS( pbs_strerror HAVE_PBS_STRERROR )
+ENDIF (PBS_FOUND)
 
 MARK_AS_ADVANCED(
   PBS_INCLUDE_DIR

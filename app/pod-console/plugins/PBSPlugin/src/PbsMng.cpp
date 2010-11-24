@@ -59,7 +59,11 @@ class pbs_error: public exception
             stringstream ss;
             if( !_ErrorPrefix.empty() )
                 ss << _ErrorPrefix << " ";
-            ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
+#if defined(HAVE_PBSE_TO_TXT)
+     ss <<  "PBS error [" << m_errno << "]: " << pbse_to_txt( pbs_errno );
+#else
+      ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
+#endif
             m_Msg = ss.str();
         }
         virtual ~pbs_error() throw()

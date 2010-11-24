@@ -70,6 +70,11 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 set(CMAKE_CXX_FLAGS " -Wall")
 
+if(HAVE_PBSE_TO_TXT)
+    add_definitions(-DHAVE_PBSE_TO_TXT)
+endif()
+
+
 include_directories( ${pod-console_SOURCE_DIR}/src ${PBS_INCLUDE_DIR} ${PROJECT_BINARY_DIR} )
 
 
