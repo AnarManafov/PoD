@@ -89,7 +89,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     // creating the idle timer
     m_idleTimer = new QTimer( this );
     connect( m_idleTimer, SIGNAL( timeout() ), this, SLOT( idleTimeout() ) );
-    
+
     string proofCfgFile;
     PoD::CPoDUserDefaults user_defaults;
     // Load PoD user defaults
@@ -98,19 +98,19 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         string pathUD( PoD::showCurrentPUDFile() );
         smart_path( &pathUD );
         user_defaults.init( pathUD );
-        
+
         m_configFile = user_defaults.getOptions().m_server.m_common.m_workDir;
         smart_append( &m_configFile, '/' );
         m_configFile += "etc/pod-console.xml.cfg";
         smart_path( &m_configFile );
-        
+
         proofCfgFile = user_defaults.getValueForKey( "server.proof_cfg_path" );
     }
     catch( exception &e )
     {
         QMessageBox::critical( this,
-                              QString( PROJECT_NAME ),
-                              tr( e.what() ) );
+                               QString( PROJECT_NAME ),
+                               tr( e.what() ) );
         // TODO: implement a graceful quit
         exit( 1 );
     }

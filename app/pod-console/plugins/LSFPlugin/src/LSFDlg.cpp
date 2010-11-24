@@ -34,8 +34,6 @@ using namespace MiscCommon;
 //=============================================================================
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.lsf";
-// configuration file of the plug-in
-const LPCTSTR g_szLSFPluginCfgFileName = "$POD_LOCATION/etc/pod-console_LSF.xml.cfg";
 //=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
@@ -85,39 +83,6 @@ CLSFDlg::CLSFDlg( QWidget *parent ) :
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, g_szLSFPluginCfgFileName );
-    }
-    catch( ... )
-    {
-        setAllDefault();
-    }
-
-    // default queue name
-    m_JobSubmitter.setQueue( m_queue );
-
-    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
-    m_ui.treeJobs->setModel( m_treeModel );
-
-    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
-
-
-    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
-    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
-    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
-
-    // a context menu of the table view
-    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-             this, SLOT( showContextMenu( const QPoint & ) ) );
-
-    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
-             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
-    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
-             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
 CLSFDlg::~CLSFDlg()
@@ -125,7 +90,7 @@ CLSFDlg::~CLSFDlg()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szLSFPluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -387,7 +352,7 @@ void CLSFDlg::enableTree()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szLSFPluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -485,6 +450,45 @@ void CLSFDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
                                QString( PROJECT_NAME ),
                                tr( e.what() ) );
     }
+
+    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
+    smart_append( &m_configFile, '/' );
+    m_configFile += "etc/pod-console_LSF.xml.cfg";
+    smart_path( &m_configFile );
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, m_configFile );
+    }
+    catch( ... )
+    {
+        setAllDefault();
+    }
+
+    // default queue name
+    m_JobSubmitter.setQueue( m_queue );
+
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
+    m_ui.treeJobs->setModel( m_treeModel );
+
+    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
+
+
+    connect( &m_JobSubmitter, SIGNAL( newJob( lsf_jobid_t ) ), m_treeModel, SLOT( addJob( lsf_jobid_t ) ) );
+    connect( &m_JobSubmitter, SIGNAL( removedJob( lsf_jobid_t ) ), m_treeModel, SLOT( removeJob( lsf_jobid_t ) ) );
+    connect( m_treeModel, SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
+
+    // a context menu of the table view
+    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+             this, SLOT( showContextMenu( const QPoint & ) ) );
+
+    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
+             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
+    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
+             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
+
 }
 //=============================================================================
 Q_EXPORT_PLUGIN2( LSFJobManager, CLSFDlg );

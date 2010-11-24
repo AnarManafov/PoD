@@ -39,8 +39,6 @@ Q_DECLARE_METATYPE( pbs_plug::SQueueInfo )
 //=============================================================================
 // default Job Script file
 const LPCTSTR g_szDefaultJobScript = "$POD_LOCATION/etc/Job.pbs";
-// configuration file of the plug-in
-const LPCTSTR g_szPbsPluginCfgFileName = "$POD_LOCATION/etc/pod-console_PBS.xml.cfg";
 //=============================================================================
 // TODO: avoid of code duplications (this two function must be put in MiscCommon)
 // Serialization helpers
@@ -92,71 +90,6 @@ CPbsDlg::CPbsDlg( QWidget *parent ) :
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJobScriptFileName->setCompleter( completer );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, g_szPbsPluginCfgFileName );
-    }
-    catch( ... )
-    {
-        setAllDefault();
-    }
-
-    // Set the queues list
-    try
-    {
-        CPbsMng::queueInfoContainer_t queues;
-        m_JobSubmitter.getQueues( &queues );
-        CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
-        CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
-        for( ; iter != iter_end; ++iter )
-        {
-            m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
-            // selecting default
-            if( m_queue.empty() )
-            {
-                // if there is no default queue set, then select any queue with the "proof" word in the name
-                if( string::npos != iter->m_name.find( "proof" ) )
-                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
-            }
-            else
-            {
-                if( iter->m_name == m_queue )
-                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
-            }
-        }
-    }
-    catch( const exception &_e )
-    {
-        // TODO: handle it
-    }
-
-    // default queue name
-    m_JobSubmitter.setQueue( m_queue );
-
-    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
-    m_ui.treeJobs->setModel( m_treeModel );
-
-    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
-
-
-    connect( &m_JobSubmitter,
-             SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
-    connect( &m_JobSubmitter,
-             SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
-    connect( m_treeModel,
-             SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
-
-    // a context menu of the table view
-    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
-    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-             this, SLOT( showContextMenu( const QPoint & ) ) );
-
-    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
-             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
-    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
-             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
 }
 //=============================================================================
 CPbsDlg::~CPbsDlg()
@@ -164,7 +97,7 @@ CPbsDlg::~CPbsDlg()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szPbsPluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -396,7 +329,7 @@ void CPbsDlg::enableTree()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szPbsPluginCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( ... )
     {
@@ -482,6 +415,77 @@ int CPbsDlg::getJobsCount() const
 void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
     m_JobSubmitter.setUserDefaults( _ud );
+
+    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
+    smart_append( &m_configFile, '/' );
+    m_configFile += "etc/pod-console_PBS.xml.cfg";
+    smart_path( &m_configFile );
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, m_configFile );
+    }
+    catch( ... )
+    {
+        setAllDefault();
+    }
+
+    // Set the queues list
+    try
+    {
+        CPbsMng::queueInfoContainer_t queues;
+        m_JobSubmitter.getQueues( &queues );
+        CPbsMng::queueInfoContainer_t::iterator iter = queues.begin();
+        CPbsMng::queueInfoContainer_t::iterator iter_end = queues.end();
+        for( ; iter != iter_end; ++iter )
+        {
+            m_ui.queuesList->addItem( iter->m_name.c_str(), QVariant::fromValue( *iter ) );
+            // selecting default
+            if( m_queue.empty() )
+            {
+                // if there is no default queue set, then select any queue with the "proof" word in the name
+                if( string::npos != iter->m_name.find( "proof" ) )
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+            else
+            {
+                if( iter->m_name == m_queue )
+                    m_ui.queuesList->setCurrentIndex( distance( queues.begin(), iter ) );
+            }
+        }
+    }
+    catch( const exception &_e )
+    {
+        // TODO: handle it
+    }
+
+    // default queue name
+    m_JobSubmitter.setQueue( m_queue );
+
+    m_treeModel = new CJobInfoItemModel( &m_JobSubmitter, m_updateInterval );
+    m_ui.treeJobs->setModel( m_treeModel );
+
+    connect( m_treeModel, SIGNAL( doneUpdate() ), this, SLOT( enableTree() ) );
+
+
+    connect( &m_JobSubmitter,
+             SIGNAL( newJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( addJob( const CPbsMng::jobID_t & ) ) );
+    connect( &m_JobSubmitter,
+             SIGNAL( removedJob( const CPbsMng::jobID_t & ) ), m_treeModel, SLOT( removeJob( const CPbsMng::jobID_t & ) ) );
+    connect( m_treeModel,
+             SIGNAL( jobsCountUpdated( size_t ) ), this, SLOT( setNumberOfJobs( size_t ) ) );
+
+    // a context menu of the table view
+    m_ui.treeJobs->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( m_ui.treeJobs, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+             this, SLOT( showContextMenu( const QPoint & ) ) );
+
+    connect( m_ui.treeJobs, SIGNAL( expanded( const QModelIndex& ) ),
+             this, SLOT( expandTreeNode( const QModelIndex& ) ) );
+    connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
+             this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
+
 }
 //=============================================================================
 void CPbsDlg::setEnvironment( const std::string &_envp )

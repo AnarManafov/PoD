@@ -70,7 +70,7 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     propertyDict_t::const_iterator iter_end = m_submitRequest.end();
     for( ; iter != iter_end; ++iter )
     {
-        // TODO: investigate whether LSF really needs "char *"! Meantime removing const from our const strings.
+        // TODO: investiate whether LSF really needs "char *"! Meantime removing const from our const strings.
         switch( iter->first )
         {
             case JP_SUB_JOB_NAME:
@@ -115,6 +115,27 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     string ui_loc( "$POD_LOCATION" );
     smart_path( &ui_loc );
     setenv( "POD_UI_LOCATION", ui_loc.c_str(), 1 );
+
+    // exporting POD_SRV_WORKDIR
+    // Load PoD user defaults
+    try
+    {
+        PoD::CPoDUserDefaults user_defaults;
+        string pathUD( PoD::showCurrentPUDFile() );
+        smart_path( &pathUD );
+        user_defaults.init( pathUD );
+
+        string serverWrkDir = _ud.getOptions().m_server.m_common.m_workDir;
+        smart_path( &serverWrkDir );
+        smart_append( &serverWrkDir, '/' );
+
+        setenv( "POD_SRV_WORKDIR", serverWrkDir.c_str(), 1 );
+    }
+    catch( exception &e )
+    {
+        throw;
+    }
+
 
     // FIXME:
     // some time lsb_submit fails with the following message:

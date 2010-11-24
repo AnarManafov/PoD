@@ -81,7 +81,7 @@ class CMainDlg: public QDialog
         int m_CurrentPage;
         PluginVec_t m_plugins;
         QTimer *m_idleTimer;
-    std::string m_configFile;
+        std::string m_configFile;
 };
 
 BOOST_CLASS_VERSION( CMainDlg, 4 )

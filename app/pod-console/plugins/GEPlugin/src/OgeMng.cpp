@@ -85,7 +85,7 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         m_server_logDir = _ud.getValueForKey( "server.logfile_dir" );
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
-        
+
         m_serverWrkDir = _ud.getOptions().m_server.m_common.m_workDir;
         smart_path( &m_serverWrkDir );
         smart_append( &m_serverWrkDir, '/' );
@@ -277,9 +277,9 @@ MiscCommon::StringVector_t COgeMng::getEnvArray() const
         tmp += m_server_logDir;
         env.push_back( tmp );
     }
-    
+
     // set POD_SRV_WORKDIR variable on the worker nodes
-    if( !m_serverWrkDir.empty() ) 
+    if( !m_serverWrkDir.empty() )
     {
         tmp = "POD_SRV_WORKDIR=";
         tmp += m_serverWrkDir;

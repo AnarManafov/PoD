@@ -86,6 +86,10 @@ void CPbsMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
 
+        m_serverWrkDir = _ud.getOptions().m_server.m_common.m_workDir;
+        smart_path( &m_serverWrkDir );
+        smart_append( &m_serverWrkDir, '/' );
+
         m_upload_log = _ud.getOptions().m_pbs.m_uploadJobLog;
     }
     catch( exception &e )
@@ -259,6 +263,11 @@ void CPbsMng::setDefaultPoDAttr( attrl **attrib, const string &_queue,
     // set POD_UI_LOG_LOCATION variable on the worker nodes
     env += "POD_UI_LOG_LOCATION=";
     env += m_server_logDir;
+    // set POD_SRV_WORKDIR variable on the worker nodes
+    env += ',';
+    env += "POD_SRV_WORKDIR=";
+    env += m_serverWrkDir;
+
 
     // export all env. variables of the process to jobs
     // if the home is shared

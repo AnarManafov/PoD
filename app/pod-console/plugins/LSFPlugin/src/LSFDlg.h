@@ -114,6 +114,7 @@ class CLSFDlg: public QWidget, IJobManager
         QModelIndex m_expandedNode;
         std::string m_logDir;
         bool m_emailJobOutput;
+        std::string m_configFile;
 };
 
 BOOST_CLASS_VERSION( CLSFDlg, 1 )
