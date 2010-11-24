@@ -60,9 +60,9 @@ class pbs_error: public exception
             if( !_ErrorPrefix.empty() )
                 ss << _ErrorPrefix << " ";
 #if defined(HAVE_PBSE_TO_TXT)
-     ss <<  "PBS error [" << m_errno << "]: " << pbse_to_txt( pbs_errno );
+            ss <<  "PBS error [" << m_errno << "]: " << pbse_to_txt( pbs_errno );
 #else
-      ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
+            ss <<  "PBS error [" << m_errno << "]: " << pbs_strerror( pbs_errno );
 #endif
             m_Msg = ss.str();
         }
