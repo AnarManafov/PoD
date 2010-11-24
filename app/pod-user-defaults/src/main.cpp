@@ -40,7 +40,8 @@ void printVersion()
 }
 
 // Command line parser
-bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options ) throw( exception )
+bool parseCmdLine( int _Argc, char *_Argv[],
+                  SPoDUserDefaultsOptions_t *_Options, bool *_verbose ) throw( exception )
 {
     if( !_Options )
         throw runtime_error( "Internal error: options' container is empty." );
@@ -56,6 +57,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
     ( "userenvscript", "Show the path of user's environment script of workers (if present)" )
+    ( "verbose,V", "Cause pod-user-defaults to be verbose in case of an error")
     ;
 
     // Parsing command-line
@@ -73,6 +75,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
         printVersion();
         return false;
     }
+    *_verbose = vm.count("verbose");
 
     boost_hlp::option_dependency( vm, "default", "config" );
     boost_hlp::conflicting_options( vm, "default", "key" );
@@ -143,7 +146,21 @@ bool parseCmdLine( int _Argc, char *_Argv[], SPoDUserDefaultsOptions_t *_Options
     {
         config_file = vm["config"].as<string>();
     }
-    user_defaults.init( config_file );
+
+    // Check UD
+    try
+    {
+        user_defaults.init( config_file );
+    }
+    catch( std::exception& _e )
+    {
+        stringstream ss;
+        ss
+                << "PoD user defaults \""
+                << config_file << "\" is illformed: "
+                << _e.what();
+        throw runtime_error( ss.str() );
+    }
 
     if( vm.count( "key" ) )
     {
@@ -157,15 +174,16 @@ int main( int argc, char *argv[] )
 {
     // Command line parser
     SPoDUserDefaultsOptions_t Options;
+    bool verbose(false);
     try
     {
-        if( !parseCmdLine( argc, argv, &Options ) )
+        if( !parseCmdLine( argc, argv, &Options, &verbose ) )
             return 0;
     }
     catch( exception& e )
     {
-        // TODO: Log me!
-        cerr << e.what() << endl;
+        if( verbose )
+            cerr << e.what() << endl;
         return 1;
     }
 

@@ -279,6 +279,6 @@ size_t CJobsContainer::_markAllCompletedJobs( JobsContainer_t * _container, bool
             emit jobChanged( iter->second );
     }
 
-    qDebug( "CJobsContainer::_markAllCompletedJobs: running jobs=%d", (int)run_jobs );
+    qDebug( "CJobsContainer::_markAllCompletedJobs: running jobs=%d", ( int )run_jobs );
     return run_jobs;
 }

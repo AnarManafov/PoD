@@ -5,6 +5,13 @@ pod: Implemented an install-for-all-users feature.
 pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
 pod: The OGE plug-in was renamed to GE (Grid Engine).
 pod: This release fixes a number of minor issues.
+pod-user-defaults: updated user defaults configuration file - v0.7.
+pod-user-defaults: renamed the oge_plugin section to ge_plugin.
+pod-user-defaults: added the ge_plugin.options_file option.
+pod-user-defaults: "pod-user-defaults" learned the "userenvscript" option.
+                   It shows the path of user's environment script of workers (if present).
+pod-user-defaults: "pod-user-defaults" learned the "verbose,V" option.
+                   This option causes "pod-user-defaults" to be verbose in case of an error.
 
 ## v2.4 (2010-11-14)
 pod: Implemented Oracle Grid Engine (OGE/SGE) plug-in for PoD. This plug-in can be used via PoD GUI and CLI.
