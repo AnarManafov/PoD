@@ -18,6 +18,7 @@
 // Misc
 #include "def.h"
 #include "SysHelper.h"
+#include "PoDUserDefaultsOptions.h"
 // LSF plug-in
 #include "LsfMng.h"
 //=============================================================================
@@ -125,7 +126,7 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
         smart_path( &pathUD );
         user_defaults.init( pathUD );
 
-        string serverWrkDir = _ud.getOptions().m_server.m_common.m_workDir;
+        string serverWrkDir = user_defaults.getOptions().m_server.m_common.m_workDir;
         smart_path( &serverWrkDir );
         smart_append( &serverWrkDir, '/' );
 
