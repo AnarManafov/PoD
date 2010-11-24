@@ -42,6 +42,17 @@ if [ -z "$POD_CFG" ]; then
    pod-user-defaults -d -c "$LOCAL_POD/PoD.cfg"
 fi
 
+# testing PoD user defaults, which is provided by the user
+pod-user-defaults -c "$LOCAL_POD/PoD.cfg" --key server.work_dir &> /dev/null
+if (( $? != 0 )) ; then
+   # print the error message
+   echo ""
+   pod-user-defaults -c "$LOCAL_POD/PoD.cfg" -V --key server.work_dir
+   echo "ERROR: Your PoD user defaults can't be used with this version of PoD."
+   echo "If you want to continue to use this version of PoD, you have the following options:"
+   echo "1. Fix your configuration file."
+   echo "2. Recreate the file using: pod-user-defaults -f -d -c \"$LOCAL_POD/PoD.cfg\""
+else
 # user defined log dir
 eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
 create_dir "$POD_SRV_LOGDIR"
@@ -62,4 +73,4 @@ export POD_PROOFCFG_FILE
 if [[ -f $POD_LOCATION/bin/gaw_env.sh ]]; then
     source $POD_LOCATION/bin/gaw_env.sh
 fi
-
+fi
