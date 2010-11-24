@@ -188,7 +188,7 @@ get_bins()
 
    pushd $(pwd) &> /dev/null
    mkdir -p $WN_BIN_DIR || { echo "error: Can't create $WN_BIN_DIR. Check permissions."; exit 1; }
-   cd $WN_BIN_DIR 
+   cd $WN_BIN_DIR || { echo "error: Can't change to $WN_BIN_DIR. Check permissions."; exit 1; }
    # download all pre-compiled bins
    for index in 0 1
    do
