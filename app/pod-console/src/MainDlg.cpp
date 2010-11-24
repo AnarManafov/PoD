@@ -35,7 +35,6 @@ using namespace MiscCommon;
 // this is very expensive call, we therefore using 6 sec. timeout
 const size_t g_UpdateInterval = 6;  // in seconds
 
-const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console.xml.cfg";
 const LPCTSTR g_szPluginDir = "$POD_LOCATION/plugins/gui";
 
 // idle timeout. In ms.
@@ -90,20 +89,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     // creating the idle timer
     m_idleTimer = new QTimer( this );
     connect( m_idleTimer, SIGNAL( timeout() ), this, SLOT( idleTimeout() ) );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, g_szCfgFileName );
-    }
-    catch( ... )
-    {
-        cerr << PROJECT_NAME << " Warning: "
-             << "Can't load configuration from "
-             << g_szCfgFileName
-             << ". PAConsole will use its default settings." << endl;
-    }
-
+    
     string proofCfgFile;
     PoD::CPoDUserDefaults user_defaults;
     // Load PoD user defaults
@@ -112,16 +98,35 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         string pathUD( PoD::showCurrentPUDFile() );
         smart_path( &pathUD );
         user_defaults.init( pathUD );
-
+        
+        m_configFile = user_defaults.getOptions().m_server.m_common.m_workDir;
+        smart_append( &m_configFile, '/' );
+        m_configFile += "etc/pod-console.xml.cfg";
+        smart_path( &m_configFile );
+        
         proofCfgFile = user_defaults.getValueForKey( "server.proof_cfg_path" );
     }
     catch( exception &e )
     {
         QMessageBox::critical( this,
-                               QString( PROJECT_NAME ),
-                               tr( e.what() ) );
+                              QString( PROJECT_NAME ),
+                              tr( e.what() ) );
         // TODO: implement a graceful quit
         exit( 1 );
+    }
+
+
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, m_configFile );
+    }
+    catch( ... )
+    {
+        cerr << PROJECT_NAME << " Warning: "
+             << "Can't load configuration from "
+             << m_configFile
+             << ". PAConsole will use its default settings." << endl;
     }
 
     // loading PAConsole plug-ins
@@ -197,18 +202,18 @@ CMainDlg::~CMainDlg()
     try
     {
         // Saving class to the config file
-        _savecfg( *this, g_szCfgFileName );
+        _savecfg( *this, m_configFile );
     }
     catch( const exception &_e )
     {
         QMessageBox::warning( this, PROJECT_NAME,
-                              "Can't save configuration to\n" + QString( g_szCfgFileName ) +
+                              "Can't save configuration to\n" + QString( m_configFile.c_str() ) +
                               "\n Error: " + QString( _e.what() ) );
     }
     catch( ... )
     {
         QMessageBox::warning( this, PROJECT_NAME,
-                              "Can't save configuration to\n" + QString( g_szCfgFileName ) );
+                              "Can't save configuration to\n" + QString( m_configFile.c_str() ) );
     }
 }
 //=============================================================================

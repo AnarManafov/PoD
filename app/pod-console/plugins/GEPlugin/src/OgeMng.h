@@ -106,6 +106,7 @@ namespace oge_plug
 
         private:
             std::string m_server_logDir;
+        std::string m_serverWrkDir;
             bool m_upload_log;
             std::string m_envp;
             std::string m_optionsFile;
