@@ -18,7 +18,7 @@
 #    The worker package is saved to PoD server working directory.
 #
 eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
-ARC_NAME="$WRK_DIR/pod-worker.tar"
+ARC_NAME="$WRK_DIR/wrk/pod-worker.tar"
 ARC_NAME_GZ=$ARC_NAME".gz"
 USER_SCRIPT=$(pod-user-defaults --userenvscript)
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
