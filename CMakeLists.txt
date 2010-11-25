@@ -215,13 +215,13 @@ endif(QT4_FOUND)
 #
 # configure files
 # 
-configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/PoD_env.sh @ONLY )
+configure_file( ${CMAKE_SOURCE_DIR}/etc/PoD_env.sh.in ${CMAKE_BINARY_DIR}/etc/PoD_env.sh @ONLY )
 #
 # Install
 #
 install(FILES ${POD_ADD_FILES} DESTINATION .)
 install(FILES ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in DESTINATION etc)
-install(PROGRAMS ${CMAKE_BINARY_DIR}/PoD_env.sh DESTINATION .)
+install(PROGRAMS ${CMAKE_BINARY_DIR}/etc/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
