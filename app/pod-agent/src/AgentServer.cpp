@@ -631,9 +631,10 @@ void CAgentServer::createPROOFCfg()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
 
-    ofstream f( m_commonOptions.m_proofCFG.c_str() );
+    string proofCfg( getPROOFCfg() );
+    ofstream f( proofCfg.c_str() );
     if( !f.is_open() )
-        throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
+        throw runtime_error( "can't open " + proofCfg + " for writing." );
 
     // getting local host name
     string host;
@@ -676,9 +677,10 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
 //=============================================================================
 void CAgentServer::updatePROOFCfg()
 {
-    std::ofstream f( m_commonOptions.m_proofCFG.c_str() );
+    string proofCfg( getPROOFCfg() );
+    std::ofstream f( proofCfg.c_str() );
     if( !f.is_open() )
-        throw std::runtime_error( "Can't open the PROOF configuration file: " + m_commonOptions.m_proofCFG );
+        throw std::runtime_error( "Can't open the PROOF configuration file: " + proofCfg );
 
     // a master host
     f << m_masterEntryInPROOFCfg << endl;

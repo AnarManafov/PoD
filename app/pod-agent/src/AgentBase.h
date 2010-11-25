@@ -56,6 +56,7 @@ namespace PROOFAgent
             virtual void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg ) = 0;
             void readServerInfoFile( const std::string &_filename );
             void updateIdle();
+            std::string getPROOFCfg();
 
         protected:
             const PoD::SCommonOptions_t &m_commonOptions;

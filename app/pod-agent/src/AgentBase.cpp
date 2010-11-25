@@ -104,12 +104,20 @@ namespace PROOFAgent
     {
         close( m_fdSignalPipe );
         // deleting proof configuration file
-        if( !m_commonOptions.m_proofCFG.empty() )
-            unlink( m_commonOptions.m_proofCFG.c_str() );
+        string proofCfg( getPROOFCfg() );
+        if( !proofCfg.empty() )
+            unlink( proofCfg.c_str() );
 
         unlink( m_signalPipeName.c_str() );
     }
-
+//=============================================================================
+    string CAgentBase::getPROOFCfg()
+    {
+        string proofCfg( m_commonOptions.m_workDir );
+        smart_append( &proofCfg, '/' );
+        proofCfg += "proof.conf";
+        return proofCfg;
+    }
 //=============================================================================
     void CAgentBase::readServerInfoFile( const string &_filename )
     {

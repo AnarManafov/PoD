@@ -401,9 +401,10 @@ void CAgentClient::createPROOFCfg()
 {
     DebugLog( erOK, "Creating a PROOF configuration file..." );
 
-    ofstream f( m_commonOptions.m_proofCFG.c_str() );
+    string proofCfg( getPROOFCfg() );
+    ofstream f( proofCfg.c_str() );
     if( !f.is_open() )
-        throw runtime_error( "can't open " + m_commonOptions.m_proofCFG + " for writing." );
+        throw runtime_error( "can't open " + proofCfg + " for writing." );
 
     // getting local host name
     string host;

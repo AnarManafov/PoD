@@ -106,9 +106,9 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
 
         proofCfgFile = user_defaults.getOptions().m_server.m_common.m_workDir;
         smart_append( &m_configFile, '/' );
-        proofCfgFile += "proof.conf"
-                    }
-                    catch( exception &e )
+        proofCfgFile += "proof.conf";
+    }
+    catch( exception &e )
     {
         QMessageBox::critical( this,
                                QString( PROJECT_NAME ),
@@ -126,9 +126,9 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     catch( ... )
     {
         cerr << PROJECT_NAME << " Warning: "
-        << "Can't load configuration from "
-        << m_configFile
-        << ". PAConsole will use its default settings." << endl;
+             << "Can't load configuration from "
+             << m_configFile
+             << ". PAConsole will use its default settings." << endl;
     }
 
     // loading PAConsole plug-ins

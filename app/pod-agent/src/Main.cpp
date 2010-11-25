@@ -155,7 +155,6 @@ int main( int argc, char *argv[] )
     PoD::SCommonOptions_t &common = ( Server == Options.m_agentMode ) ?
                                     Options.m_podOptions.m_server.m_common :
                                     Options.m_podOptions.m_worker.m_common;
-    smart_path( &common.m_proofCFG );
     // resolving user's home dir from (~/ or $HOME, if present)
     smart_path( &common.m_workDir );
     // We need to be sure that there is "/" always at the end of the path
