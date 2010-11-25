@@ -337,8 +337,8 @@ fi
 get_default_ROOT $host_arch
 
 # **********************************************************************
-# export the location of the proof.cfg file
-eval POD_PROOFCFG_FILE=$($user_defaults -c $POD_CFG --key worker.proof_cfg_path)
+# export the location of the proof.conf file
+eval POD_PROOFCFG_FILE="$WD/proof.conf"
 export POD_PROOFCFG_FILE
 
 # Using eval to force variable substitution

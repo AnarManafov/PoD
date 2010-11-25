@@ -97,11 +97,6 @@ gui.accessibility.visual_bell=yes
                             </entry>
                         </row>
                         <row>
-                            <entry>server.proof_cfg_path</entry>
-                            <entry>string (default: $POD_LOCATION/etc/proof.conf)</entry>
-                            <entry>A full path to a PROOF configuration file. This file is automatically created and maintained by PoD.</entry>
-                        </row>
-                        <row>
                             <entry>server.agent_shutdown_if_idle_for_sec</entry>
                             <entry>numeric (default: 1800)</entry>
                             <entry>Shut down a server if its idle time is higher than the defined value in seconds.</entry>
@@ -205,11 +200,6 @@ gui.accessibility.visual_bell=yes
                                     </itemizedlist>
                                 </para>
                             </entry>
-                        </row>
-                        <row>
-                            <entry>worker.proof_cfg_path</entry>
-                            <entry>string (default: $POD_LOCATION/proof.conf)</entry>
-                            <entry>A full path to a PROOF configuration file. This file is automatically created and maintained by PoD.</entry>
                         </row>
                         <row>
                             <entry>worker.set_my_rootsys</entry>
@@ -320,7 +310,7 @@ gui.accessibility.visual_bell=yes
                     </thead>
                     <tbody>
                         <row>
-                            <entry>oge_plugin.upload_job_log</entry>
+                            <entry>ge_plugin.upload_job_log</entry>
                             <entry>yes/no (default: no)</entry>
                             <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
                                 Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        

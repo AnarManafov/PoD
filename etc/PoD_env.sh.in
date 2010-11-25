@@ -29,12 +29,10 @@ export LD_LIBRARY_PATH=$POD_LOCATION/lib:$LD_LIBRARY_PATH
 @CMAKE_ADDITIONAL_LIB_PATH@
 
 # local folder
-LOCAL_POD="$HOME/.PoD"
+eval LOCAL_POD="$HOME/.PoD"
 
-# create local PoD direcories
-create_dir "$LOCAL_POD/log"
-create_dir "$LOCAL_POD/etc"
-create_dir "$LOCAL_POD/wrk"
+# create local PoD directories
+create_dir "$LOCAL_POD"
 
 # create a default configuration file if needed
 POD_CFG=$(pod-user-defaults -p)
@@ -42,35 +40,8 @@ if [ -z "$POD_CFG" ]; then
    pod-user-defaults -d -c "$LOCAL_POD/PoD.cfg"
 fi
 
-# testing PoD user defaults, which is provided by the user
-pod-user-defaults -c "$LOCAL_POD/PoD.cfg" --key server.work_dir &> /dev/null
-if (( $? != 0 )) ; then
-   # print the error message
-   echo ""
-   pod-user-defaults -c "$LOCAL_POD/PoD.cfg" -V --key server.work_dir
-   echo "ERROR: Your PoD user defaults can't be used with this version of PoD."
-   echo "If you want to continue to use this version of PoD, you have the following options:"
-   echo "1. Fix your configuration file."
-   echo "2. Recreate the file using: pod-user-defaults -f -d -c \"$LOCAL_POD/PoD.cfg\""
-else
-# user defined log dir
-eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
-create_dir "$POD_SRV_LOGDIR"
-
-# make a local version of xpd config file for the first time
-XPD_CFG="$LOCAL_POD/etc/xpd.cf"
-if [ ! -r "$XPD_CFG" ]; then
-   cp $POD_LOCATION/etc/xpd.cf.in $XPD_CFG
-   _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
-   chmod 777 $_TMP_DIR
-   eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
-fi
-
-eval POD_PROOFCFG_FILE=$(pod-user-defaults --key server.proof_cfg_path)
-export POD_PROOFCFG_FILE
-
-# sourcing PoD environment, if installed
+# sourcing GAW environment, if installed
 if [[ -f $POD_LOCATION/bin/gaw_env.sh ]]; then
-    source $POD_LOCATION/bin/gaw_env.sh
+   source $POD_LOCATION/bin/gaw_env.sh
 fi
-fi
+

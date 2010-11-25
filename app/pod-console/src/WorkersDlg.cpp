@@ -36,16 +36,6 @@ using namespace MiscCommon;
 using namespace boost;
 using namespace boost::program_options;
 //=============================================================================
-void parsePROOFAgentCfgFile( string _cfgFileName, string *_retVal )
-{
-    smart_path( &_cfgFileName );
-
-    PoD::CPoDUserDefaults user_defaults;
-    user_defaults.init( _cfgFileName );
-
-    *_retVal = user_defaults.getValueForKey( "server.proof_cfg_path" );
-}
-//=============================================================================
 CWorkersDlg::CWorkersDlg( QWidget *parent ):
     QWidget( parent )
 {

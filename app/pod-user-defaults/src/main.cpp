@@ -41,7 +41,7 @@ void printVersion()
 
 // Command line parser
 bool parseCmdLine( int _Argc, char *_Argv[],
-                  SPoDUserDefaultsOptions_t *_Options, bool *_verbose ) throw( exception )
+                   SPoDUserDefaultsOptions_t *_Options, bool *_verbose ) throw( exception )
 {
     if( !_Options )
         throw runtime_error( "Internal error: options' container is empty." );
@@ -57,7 +57,7 @@ bool parseCmdLine( int _Argc, char *_Argv[],
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
     ( "userenvscript", "Show the path of user's environment script of workers (if present)" )
-    ( "verbose,V", "Cause pod-user-defaults to be verbose in case of an error")
+    ( "verbose,V", "Cause pod-user-defaults to be verbose in case of an error" )
     ;
 
     // Parsing command-line
@@ -75,7 +75,7 @@ bool parseCmdLine( int _Argc, char *_Argv[],
         printVersion();
         return false;
     }
-    *_verbose = vm.count("verbose");
+    *_verbose = vm.count( "verbose" );
 
     boost_hlp::option_dependency( vm, "default", "config" );
     boost_hlp::conflicting_options( vm, "default", "key" );
@@ -174,7 +174,7 @@ int main( int argc, char *argv[] )
 {
     // Command line parser
     SPoDUserDefaultsOptions_t Options;
-    bool verbose(false);
+    bool verbose( false );
     try
     {
         if( !parseCmdLine( argc, argv, &Options, &verbose ) )
