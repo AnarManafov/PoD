@@ -19,7 +19,7 @@ Installation
         you need to execute one additional step, see <xref linkend="step5"/>. All the rest is the same as with Private Installations.
     </para>
     <para>
-        Be advised, that in both cases PoD will act identically and provide private clusters for each user and not a single cluster for all users.
+        Be advised, that in both cases PoD acts identically and always provides private clusters, one for each user.
         In case of a shared installation, users share only binaries and configurations, but each user get's its own PoD instance and can't disturb other users.
         Each user can tune PoD by using its own PoD user defaults configuration in <filename>$HOME/.PoD/PoD.cfg</filename>.
     </para>
