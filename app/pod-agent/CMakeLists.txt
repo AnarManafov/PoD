@@ -23,12 +23,14 @@ set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 # configure files
 # 
 configure_file( ${PROJECT_SOURCE_DIR}/src/version.h.in ${PROJECT_BINARY_DIR}/src/version.h @ONLY )
-configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
 #
-# Custom targets
+# API Docs
 #
-add_custom_target(pod-agent-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
-    COMMENT "Generating pod-agent API docs")
+if(DOXYGEN_FOUND)
+   configure_file( ${PROJECT_SOURCE_DIR}/Doxyfile.in ${PROJECT_BINARY_DIR}/Doxyfile @ONLY )
+   add_custom_target(pod-agent-api-docs ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+      COMMENT "Generating pod-agent API docs")
+endif(DOXYGEN_FOUND)
 
 set( SOURCE_FILES
     ./src/Main.cpp

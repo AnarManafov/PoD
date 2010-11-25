@@ -62,17 +62,20 @@ option(BUILD_GE_PLUGIN "Build Grid Engine plug-in" ON)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
    set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
+   
 endif(DOXYGEN_FOUND)
 #
 # Custom targets
 #
-add_custom_target( api-docs COMMENT "Generating API docs" )
-add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
+if(DOXYGEN_FOUND)
+   add_custom_target( api-docs COMMENT "Generating API docs" )
+   add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
 
-add_custom_target( upload-api-docs 
-    COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
-    COMMENT "Upload API documentation to PoD's web server")
-add_dependencies( upload-api-docs api-docs )
+   add_custom_target( upload-api-docs 
+       COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
+       COMMENT "Upload API documentation to PoD's web server")
+   add_dependencies( upload-api-docs api-docs )
+endif(DOXYGEN_FOUND)
 #
 # Install directory
 #
