@@ -1,0 +1,59 @@
+<!--
+ Grid Engine plug-in description
+ -->
+<chapter id="OGE_plugin">
+    <title>Grid Engine (GE) plug-in</title>
+    <chapterinfo>
+    </chapterinfo>
+    
+    <sect1 id="OGE_GUI"><title>GUI</title>
+        <para>
+            The <xref linkend="PAConsole_OGE_plug-in"/> shows a screen shot of the Grid Engine plug-in GUI page for pod-console.
+        </para>
+        <para><figure float="0" id="PAConsole_OGE_plug-in">
+            <title>pod-console: GE job manager</title>
+            <screenshot><mediaobject>
+                <imageobject>
+                    <imagedata fileref="PAConsole_OGE_plugin_snapshot.png" format="PNG"/>
+                </imageobject>
+                <textobject>
+                    <phrase></phrase>
+                </textobject>
+            </mediaobject></screenshot>
+        </figure></para>
+        
+        <para>
+            Using the plug-ins GUI (see. <xref linkend="PAConsole_OGE_plug-in"/>) users are able to specify a number of workers and an GE queue.
+            PoD provides a default GE job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
+        </para>
+    </sect1>
+    
+    <sect1 id="OGE_CLI"><title>CLI</title>
+        <para>
+            For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
+            Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
+        </para>
+    </sect1>
+    
+    <sect1 id="OGE_CFG"><title>Configuration</title>
+        <sect2 id="OGE_USER_DEF"><title>GE in PoD User Defaults</title>
+            <para>
+                There are GE plug-in options in the PoD user defaults (see <xref linkend="OGE_CFG_TABLE"/>), which you can use to tune the plug-in.
+            </para>
+        </sect2>
+        <sect2 id="OGE_OPTIONS_FILE"><title>GE Options File</title>
+            <para>
+                PoD also supports an GE option file. If you want to provide some additional Grid Engine options
+                to your PoD jobs submitted to OE cluster, to select some specific resource or something like that,
+                than PoD gives you this possibility via an GE option file.
+                Just create a file <filename>$POD_LOCATION/etc/Job.oge.option</filename>
+                and write valid GE options in it. If the file exists, than PoD will automatically use it while submitting GE jobs.
+                See
+                <ulink url="http://gridengine.sunsource.net/nonav/source/browse/~checkout~/gridengine/doc/htmlman/htmlman1/qsub.html">qsub man page of GE</ulink>
+                for more information on the option file (search for the "-@" option in the man page).
+            </para>
+        </sect2>
+    </sect1>
+    
+</chapter>
+

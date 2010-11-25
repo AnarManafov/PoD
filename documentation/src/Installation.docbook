@@ -5,6 +5,25 @@ Installation
 <chapterinfo>
 </chapterinfo>
     
+    <para>
+        PoD supports Private and Shared installations.
+    </para>
+    <para>
+        A Private Installation - it is when a user installs PoD for individual use to his/her local folder.
+        Any Private Installation can be used other users as well. It's just a matter of file privileges.
+    </para>
+    <para>
+        A Shared Installation - it is when a site administrator installs PoD
+        in some central location, so it can be shared by many users. It makes it easeir for users,
+        since they don't need to install PoD by their own. In case of a shared Installation
+        you need to execute one additional step, see <xref linkend="step5"/>. All the rest is the same as with Private Installations.
+    </para>
+    <para>
+        Be advised, that in both cases PoD will act identically and provide private clusters for each user and not a single cluster for all users.
+        In case of a shared installation, users share only binaries and configurations, but each user get's its own PoD instance and can't disturb other users.
+        Each user can tune PoD by using its own PoD user defaults configuration in <filename>$HOME/.PoD/PoD.cfg</filename>.
+    </para>
+    
 <sect1 id="step1"><title>Step #1: Unpack the source</title>
    <para>
    Unpack <application>PoD</application> tarball:
@@ -43,10 +62,6 @@ Installation
             <entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default Release)</entry>
          </row>
       	 <row>
-            <entry>GSI_BUILD</entry>
-            <entry>Use it only when building GSI specific installation. Possible options are: ON/OFF (default OFF)</entry>        
-         </row>
-      	 <row>
             <entry>BUILD_GLITE_PLUGIN</entry>
             <entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>        
       	 </row>
@@ -59,8 +74,8 @@ Installation
             <entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>        
       	 </row>
       	 <row>
-            <entry>BUILD_OGE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD OGE plug-in. Possible options are: ON/OFF (default ON)</entry>        
+            <entry>BUILD_GE_PLUGIN</entry>
+            <entry>Switch on or off the configuration and build of PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>        
       	 </row>
       </tbody>
       </tgroup>
@@ -117,6 +132,24 @@ Installation
       </para></important>
    </para>
 </sect1>
-  
+
+    <sect1 id="step5"><title>Step #5: PoD shared Installation</title>
+        <para>
+            If you installed PoD in some central location (by changing the default CMAKE_INSTALL_PREFIX, see <xref linkend="step2"/>),
+            than you need to do one simple additional step. 
+        </para>
+        <para>
+            Normally central installations or shared installations are restricted for read-only for users.
+            You therefore need to provide pre-compiled binaries for worker nodes, which are kept in <envar>$POD_LOCATION</envar>, so that other users could simple re-use them.
+            To do that just issue the following command:
+        </para>
+<screen>
+<command>pod-server getbins</command>
+</screen>
+        <para>
+            Next time (TO-DO) we will provide a documentation on how to prepare your own binaries for worker nodes.
+        </para>
+    </sect1>
+
 </chapter>
   

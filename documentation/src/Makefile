@@ -11,7 +11,7 @@ SRC=\
 	LSF_plugin.docbook\
         PBS_plugin.docbook\
         SSH_plugin.docbook\
-        OGE_plugin.docbook\
+        GridEngine_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
@@ -60,7 +60,7 @@ HTML_OUT= \
         LSF_plugin.html\
         PBS_plugin.html\
         SSH_plugin.html\
-        OGE_plugin.html
+        GridEngine_plugin.html
 
 CSS_FILES=docbook.css
 

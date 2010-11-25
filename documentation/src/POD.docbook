@@ -11,7 +11,7 @@
 <!ENTITY LSF_plugin SYSTEM "LSF_plugin.docbook">
 <!ENTITY PBS_plugin SYSTEM "PBS_plugin.docbook">
 <!ENTITY SSH_plugin SYSTEM "SSH_plugin.docbook">
-<!ENTITY OGE_plugin SYSTEM "OGE_plugin.docbook">
+<!ENTITY GridEngine_plugin SYSTEM "GridEngine_plugin.docbook">
 <!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
@@ -103,9 +103,9 @@
     &PBS_plugin;
 
     <!-- 
-     OGE plug-in
+     GE plug-in
      -->
-    &OGE_plugin;
+    &GridEngine_plugin;
     
     <!-- 
      PBS plug-in

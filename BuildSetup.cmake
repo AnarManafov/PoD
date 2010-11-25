@@ -50,7 +50,7 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build PBS plug-in" FORCE )
 
 #
-# SGE/OGE plug-in
+# Grid Engine (SGE/OGE) plug-in
 #
-#set( BUILD_OGE_PLUGIN OFF CACHE BOOL "Build OGE plug-in" FORCE )
+#set( BUILD_GE_PLUGIN OFF CACHE BOOL "Build Grid Engine plug-in" FORCE )
 

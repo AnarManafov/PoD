@@ -86,7 +86,7 @@
                 <emphasis role="bold">PBS plug-in</emphasis>, please, see <xref linkend="PBS_plugin"/>.
             </para>
             <para>
-                <emphasis role="bold">OGE plug-in</emphasis>, please, see <xref linkend="OGE_plugin"/>.
+                <emphasis role="bold">Grid Engine plug-in</emphasis>, please, see <xref linkend="OGE_plugin"/>.
             </para>
             <para>
                 <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
