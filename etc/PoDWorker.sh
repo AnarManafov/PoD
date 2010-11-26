@@ -36,7 +36,7 @@ WD=$(pwd)
 LOCK_FILE="$WD/PoDWorker.lock"
 PID_FILE="$WD/PoDWorker.pid"
 POD_CFG="$WD/PoD.cfg"
-USER_SCRIPT="$WD/user.worker_env.sh"
+USER_SCRIPT="$WD/user_worker_env.sh"
 # bin name:
 # <pakage>-<version>-<OS>-<ARCH>.tar.gz
 BASE_NAME="pod-wrk-bin"
