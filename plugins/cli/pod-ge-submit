@@ -59,7 +59,7 @@ fi
 # -V          export all environment variables
 # -terse      tersed output, print only the job-id
 # -j yes      merge std out and err to one file
-GE_OPTION_FILE=$(pod-user-defaults --key ge_plugin.options_file)
+eval GE_OPTION_FILE=$(pod-user-defaults --key ge_plugin.options_file)
 ge_job_array_param="-t 1-$NUM_WRK"
 job_name="PoD_GE_Job"
 # GE option file
