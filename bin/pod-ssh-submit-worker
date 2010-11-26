@@ -75,7 +75,8 @@ fi
 # ***** VARS *****
 #=============================================================================
 TOOL_NAME="pod-ssh-submit-worker"
-WRK_P="$POD_LOCATION/etc/pod-worker.tar.gz"
+eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
+WRK_P="$WORK_DIR/wrk/pod-worker.tar.gz"
 WRK_S_R="PoDWorker.sh $NWORKERS"
 WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
 TIMEOUT=30
@@ -85,7 +86,7 @@ SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIM
 # ***** POD-SSH NAMED PIPE *****
 #=============================================================================
 # a pod-ssh communication pipe (log engine)
-eval pipe_dir=$(pod-user-defaults --key server.work_dir)
+eval pipe_dir="$WORK_DIR"
 pipe="$pipe_dir/.pod_ssh_pipe"
 if [[ ! -p $pipe ]]; then
     echo "$TOOL_NAME error: pod-ssh log engine is not running"

@@ -90,13 +90,6 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
 //=============================================================================
 int main( int argc, char * argv[] )
 {
-    // PoD user defaults
-    string cfgFile( "$POD_LOCATION/etc/PoD.cfg" );
-    smart_path( &cfgFile );
-    PoD::CPoDUserDefaults user_defaults;
-    user_defaults.init( cfgFile );
-    PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
-
     CLogEngine slog;
     // convert log engine's functor to a free call-back function
     // this is needed to pass the logger further to other objects
@@ -104,6 +97,13 @@ int main( int argc, char * argv[] )
     bpo::variables_map vm;
     try
     {
+        // PoD user defaults
+        string pathUD( PoD::showCurrentPUDFile() );
+        smart_path( &pathUD );
+        PoD::CPoDUserDefaults user_defaults;
+        user_defaults.init( pathUD );
+        PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
+
         if( !parseCmdLine( argc, argv, &vm ) )
             return 0;
         ifstream f( vm["config"].as<string>().c_str() );
