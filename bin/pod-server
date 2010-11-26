@@ -50,6 +50,8 @@ eval XPD_CFG="$WORK_DIR/etc/xpd.cf"
 eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
 eval SERVERINFO_FILE="$WORK_DIR/etc/server_info.cfg"
 eval POD_PROOFCFG_FILE="$WORK_DIR/proof.conf"
+# used by xpd.cf
+export POD_PROOFCFG_FILE
 #######
 # a number of seconds we wait until xpd is started 
 XPD_START_TIMEOUT=3
