@@ -15,7 +15,7 @@
 #*************************************************************************/
 #
 # Usage:
-#      pod-server start|stop|status|getbins
+#      pod-server start|restart|stop|status|getbins
 #
 # Supported OS:
 #    Linux, Mac OS X (tested on 10.6)
@@ -68,8 +68,16 @@ POD_URL=" http://pod.gsi.de/releases/add"
 # ************************************************************************
 xproofd_info()
 {
+   # Every time new xproofd is started it creates <adminpath>/.xproofd.port directory.
+   # In this directory an xrd pid file is located.
+   # There is one problem with the file, is that even when xrootd/xproofd is off already,
+   # the file will be there in anyway. This complicates the algorithm of detecting of xproofd.
+
    # find xproofd pid file
-   adminpath=$(cat ~/.PoD/etc/xpd.cf | grep "server.adminpath" | awk '{print $3}')
+   if [ ! -r "$XPD_CFG" ]; then
+      return 1
+   fi
+   adminpath=$(cat "$XPD_CFG" | grep "server.adminpath" | awk '{print $3}')
    adminpath="$adminpath/PoDServer/"
    if [ ! -d "$adminpath" ]; then
       return 1
@@ -250,14 +258,32 @@ create_helper_header()
 # ************************************************************************
 update_xpd_cfg()
 {
-    # make a local version of xpd config file for the first time
-    if [ ! -r "$XPD_CFG" ]; then
-       cp $POD_LOCATION/etc/xpd.cf.in $XPD_CFG
-       _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
-       chmod 777 $_TMP_DIR
-       eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
-    fi
+    # We renew the xpd conf every time PoD server is restart.
+    # It is needed since otherwise it will be difficult (if ever possible)
+    # to find out, which xproofd was started exactly by this server.
+    # PoD and AliEn integration, for example, require, that several PoD
+    # servers can be started on one machine under the same user account.
+    #
+    # See "xproofd_info" for more info.
 
+    local old_tmp_holder="$WORK_DIR/.xproofd.tmp"
+    local xpd_template="$POD_LOCATION/etc/xpd.cf.in"
+
+    # 1. delete the previous tmp dir
+    if [ -r "$old_tmp_holder" ]; then 
+       local old_tmp=$(cat "$old_tmp_holder")
+       if [ -d "$old_tmp" ]; then
+          rm -rf "$old_tmp"
+       fi
+    fi
+    # 2. copy the template file
+    cp $xpd_template $XPD_CFG
+    # 3. create new tmp folder
+    _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX) ||  { echo "error: Can't create a tmp dir in /tmp/. Check permissions."; exit 1; }
+    echo "$_TMP_DIR" > "$old_tmp_holder"
+    chmod 777 $_TMP_DIR
+    # 4. update configuration
+    eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
     NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
     regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
     regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$agent_host\2/g"
@@ -265,13 +291,10 @@ update_xpd_cfg()
     mv -f "$XPD_CFG.temp" $XPD_CFG
 }
 # ************************************************************************
-# ***** START  *****
+# ***** Internal START  *****
 # ************************************************************************
-start() 
+_start() 
 {
-    # S T O P I N G the server first
-    stop $1
-
     # S T A R T I N G the server
     echo "Starting PoD server..."
     # proof.conf must be presented before xproofd is started
@@ -328,6 +351,31 @@ start()
     return 0
 }
 # ************************************************************************
+# ***** START  *****
+# ************************************************************************
+start() 
+{
+    xproofd_info
+    pod_agent_info
+    if [ -n "$xpd_pid" -a  -n "$agent_pid" ]; then
+       echo "PoD Server is running already."
+       echo "If you observer problems with it, try to restart it."
+       return 0
+    fi 
+    # S T A R T I N G the server
+    _start $1 
+}
+# ************************************************************************
+# ***** RESTART  *****
+# ************************************************************************
+restart() 
+{
+    # S T O P I N G the server first
+    stop $1
+    # S T A R T I N G the server
+    _start $1 
+}
+# ************************************************************************
 # ***** STOP *****
 # ************************************************************************
 wait_and_kill()
@@ -358,14 +406,16 @@ stop()
 
     echo "Stopping PoD server..."
 
-    # kill all proofserv, which are children of our xproofd.
-    # PROOF sometime can't properly clean them and it could give us
-    # some problem next time we start PROOF session
-    for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
-    do
-      echo "killing proofserv: $i"
-      kill -9 $i &>/dev/null
-    done
+    if [ -n "$xpd_pid" ]; then
+       # kill all proofserv, which are children of our xproofd.
+       # PROOF sometime can't properly clean them and it could give us
+       # some problem next time we start PROOF session
+       for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
+       do
+         echo "killing proofserv: $i"
+         kill -9 $i &>/dev/null
+       done
+    fi
 
     # Try to stop the server by first sending a TERM signal
     # And if after 10 sec. it still exists send a non-ignorable kill
@@ -410,6 +460,11 @@ case "$1" in
 	start $WORK_DIR
 	RETVAL=$?
 	;;
+    restart)
+        get_bins
+        restart $WORK_DIR
+        RETVAL=$?
+        ;;
     stop)
 	stop $WORK_DIR
 	RETVAL=$?
@@ -422,7 +477,7 @@ case "$1" in
         RETVAL=$?
         ;;
     *)
-        echo $"Usage: $0 {start|stop|status|getbins}"
+        echo $"Usage: $(basename "$0") {start|restart|stop|status|getbins}"
         exit 1
 esac
 
