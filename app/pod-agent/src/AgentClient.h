@@ -61,6 +61,7 @@ namespace PROOFAgent
             void createPROOFCfg();
             void processAdminConnection( int _serverSock );
             int processProtocolMsgs( int _serverSock, CProtocol * _protocol );
+            void readServerInfoFile( const std::string &_filename );
 
         private:
             PoD::SWorkerOptions_t m_Data;
@@ -69,6 +70,8 @@ namespace PROOFAgent
             uint32_t m_id;
             bool m_isDirect;
             uint32_t m_numberOfPROOFWorkers;
+            unsigned int m_agentServerListenPort;
+            std::string m_agentServerHost;
     };
 
 }

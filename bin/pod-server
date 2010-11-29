@@ -35,8 +35,8 @@ fi
 #######
 XPROOF_PORTS_RANGE_MIN=$(pod-user-defaults --key server.xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$(pod-user-defaults --key server.xproof_ports_range_max)
-PROOFAGENT_PORTS_RANGE_MIN=$(pod-user-defaults --key server.agent_ports_range_min)
-PROOFAGENT_PORTS_RANGE_MAX=$(pod-user-defaults --key server.agent_ports_range_max)
+PROOFagent_portS_RANGE_MIN=$(pod-user-defaults --key server.agent_ports_range_min)
+PROOFagent_portS_RANGE_MAX=$(pod-user-defaults --key server.agent_ports_range_max)
 WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
 if (( $? != 0 )) ; then
    echo "ERROR: Your PoD user defaults can't be used with this version of PoD."
@@ -50,14 +50,11 @@ eval XPD_CFG="$WORK_DIR/etc/xpd.cf"
 eval POD_SRV_LOGDIR=$(pod-user-defaults --key server.logfile_dir)
 eval SERVERINFO_FILE="$WORK_DIR/etc/server_info.cfg"
 eval POD_PROOFCFG_FILE="$WORK_DIR/proof.conf"
+eval POD_agent_pid="$WORK_DIR/pod-agent.pid"
 # used by xpd.cf
 export POD_PROOFCFG_FILE
 #######
-# a number of seconds we wait until xpd is started 
-XPD_START_TIMEOUT=3
 
-SERVER_HOST_NAME=$(hostname -f)
-SERVER_ARCH=$(uname -m  2>&1)
 SERVER_OS=$(uname -s 2>&1)
 
 # getting the version of PoD
@@ -67,58 +64,70 @@ PKG_VERSION=$(cat $POD_LOCATION/etc/version)
 POD_URL=" http://pod.gsi.de/releases/add"
 
 # ************************************************************************
+# ***** detects pid and port of XPROOFD *****
+# ************************************************************************
+xproofd_info()
+{
+   # find xproofd pid file
+   adminpath=$(cat ~/.PoD/etc/xpd.cf | grep "server.adminpath" | awk '{print $3}')
+   adminpath="$adminpath/PoDServer/"
+   if [ ! -d "$adminpath" ]; then
+      return 1
+   fi
+   xpd_port=$(ls -a "$adminpath" | grep xproofd | awk -F. '{print $3}')
+   xpd_pid=$(cat "$adminpath/.xproofd.$xpd_port/xrootd.pid" 2>/dev/null)
+   if [ -n "$xpd_pid" ]; then
+      kill -0 $xpd_pid &>/dev/null
+      if (( $? != 0 )) ; then
+         xpd_pid=""
+      fi
+   fi
+}
+# ************************************************************************
+# ***** detects pid and port of PoD agent *****
+# ************************************************************************
+pod_agent_info()
+{
+   if [ ! -r "$SERVERINFO_FILE" ]; then
+      return 1
+   fi
+   agent_port=$(cat "$SERVERINFO_FILE" | grep "port" | awk -F= '{print $2}')
+   agent_host=$(cat "$SERVERINFO_FILE" | grep "host" | awk -F= '{print $2}')
+   agent_pid=$(cat "$POD_agent_pid" 2>/dev/null)
+   if [ -n "$agent_pid" ]; then
+      kill -0 $agent_pid &>/dev/null
+      if (( $? != 0 )) ; then
+         agent_pid=""
+      fi
+   fi
+}
+# ************************************************************************
 # ***** detects ports for XPROOFD and for the PoD Agent  *****
 # ************************************************************************
 server_status()
 {
 # get a pid of our xpd. We get any xpd running by $UID
-    XPD_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep xproofd | grep -v grep | awk '{print $1}')
-    AGENT_PID=$(ps -w -u$UID -o pid,args | awk '{print $1" "$2}' | grep pod-agent | grep -v grep | awk '{print $1}')
+    xproofd_info
+    pod_agent_info
     
-    if [ -z "$XPD_PID" -a  -z "$AGENT_PID" ]; then
+    if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
        echo "PoD server is NOT running"
        return 1
     fi  
     
-    # change a string separator
-    # on MacOSX we use lsof to get the ports of out processes
-    # on Linux we use netstat
-    if [ "$SERVER_OS" = "Darwin" ]; then
-       O=$IFS IFS=$'\n' NETSTAT_RET=($(lsof -P -n -i 2>/dev/null | grep LISTEN | egrep "xproofd|pod-agent")) IFS=$O;
-    else
-       O=$IFS IFS=$'\n' NETSTAT_RET=($(netstat -n --program --listening -t 2>/dev/null | egrep "xproofd|pod-agent")) IFS=$O;
-    fi
-
-    # look for ports of the server
-    for(( i = 0; i < ${#NETSTAT_RET[@]}; ++i ))
-    do
-       if [ "$SERVER_OS" = "Darwin" ]; then
-	  port=$(echo ${NETSTAT_RET[$i]} | awk '{print $9}' | sed 's/^.*://g')
-       else
-          port=$(echo ${NETSTAT_RET[$i]} | awk '{print $4}' | sed 's/^.*://g') 
-       fi
-       if [ -n "$port" ]; then
-	  if (( ($port >= $XPROOF_PORTS_RANGE_MIN) && ($port <= $XPROOF_PORTS_RANGE_MAX) )); then
-	     XPROOF_PORT=$port
-	  elif (( ($port >= $PROOFAGENT_PORTS_RANGE_MIN) && ($port <= $PROOFAGENT_PORTS_RANGE_MAX) )); then
-	       POD_AGENT_PORT=$port
-	  fi
-       fi
-    done
-
-    if [ -n  "$XPD_PID" ]; then
-       echo "XPROOFD [$XPD_PID] port: "$XPROOF_PORT
+    if [ -n  "$xpd_pid" ]; then
+       echo "XPROOFD [$xpd_pid] port: "$xpd_port
     else
        echo "WARNING: XPROOFD is NOT running."
     fi
-    if [ -n  "$AGENT_PID" ]; then
-       echo "PoD agent [$AGENT_PID] port: "$POD_AGENT_PORT
+    if [ -n  "$agent_pid" ]; then
+       echo "PoD agent [$agent_pid] port: "$agent_port
     else
        echo "WARNING: PoD agent is NOT running."
     fi
 
-    if [ -n  "$XPD_PID" ]; then
-       echo "PROOF connection string: "$SERVER_HOST_NAME:$XPROOF_PORT
+    if [ -n  "$xpd_pid" ]; then
+       echo "PROOF connection string: "$agent_host:$xpd_port
     fi    
 
     return 0
@@ -139,16 +148,6 @@ get_freeport()
 
     echo "Error: Cant find a free socket port in the given range: $1 - $2"
     exit 1
-}
-# ************************************************************************
-# ***** create PoD server info file  *****
-# takes two parameters, pod agent server host name and port number
-# ************************************************************************
-create_agent_server_info_file()
-{
-    echo "[server]" > $SERVERINFO_FILE
-    echo "host=$1" >> $SERVERINFO_FILE
-    echo "port=$2" >> $SERVERINFO_FILE
 }
 # ************************************************************************
 # ***** Get pre-compiled bins for WNs  *****
@@ -232,6 +231,40 @@ create_dir_hierarchy()
    create_dir "$POD_SRV_LOGDIR"
 }
 # ************************************************************************
+# ***** create_helper_header *****
+# ************************************************************************
+create_helper_header()
+{
+    # generate a helper header
+    # this helps to keep track of PROOF master's host and port for user's scripts
+    HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
+    echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
+    echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
+    echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
+    echo "#define POD_MASTER_HOST \"$agent_host\"" >> $HEADER_HELPER
+    echo "#define POD_XPROOF_PORT \"$xpd_port\"" >> $HEADER_HELPER
+    echo "#endif" >> $HEADER_HELPER
+}
+# ************************************************************************
+# ***** update_xpd_cfg  *****
+# ************************************************************************
+update_xpd_cfg()
+{
+    # make a local version of xpd config file for the first time
+    if [ ! -r "$XPD_CFG" ]; then
+       cp $POD_LOCATION/etc/xpd.cf.in $XPD_CFG
+       _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
+       chmod 777 $_TMP_DIR
+       eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
+    fi
+
+    NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
+    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$agent_host\2/g"
+    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
+    mv -f "$XPD_CFG.temp" $XPD_CFG
+}
+# ************************************************************************
 # ***** START  *****
 # ************************************************************************
 start() 
@@ -244,28 +277,9 @@ start()
     # proof.conf must be presented before xproofd is started
     touch $POD_PROOFCFG_FILE
 
-    NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
-    NEW_PROOFAGENT_PORT=$(get_freeport $PROOFAGENT_PORTS_RANGE_MIN $PROOFAGENT_PORTS_RANGE_MAX)
-    echo "trying to use XPROOFD port: "$NEW_XPROOF_PORT
-    echo "trying to use PoD agent port: "$NEW_PROOFAGENT_PORT
-
     # updating XPD configuration file
     echo "updating xproofd configuration file..."
     update_xpd_cfg
-    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$SERVER_HOST_NAME\2/g"
-    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
-    mv -f "$XPD_CFG.temp" $XPD_CFG
-
-    # generate a helper header
-    # this helps to keep track of PROOF master's host and port for user's scripts
-    HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
-    echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
-    echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
-    echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
-    echo "#define POD_MASTER_HOST \"$SERVER_HOST_NAME\"" >> $HEADER_HELPER
-    echo "#define POD_XPROOF_PORT \"$NEW_XPROOF_PORT\"" >> $HEADER_HELPER
-    echo "#endif" >> $HEADER_HELPER
 
     # Start XPROOFD
     ####
@@ -275,13 +289,21 @@ start()
        return 1
     fi
 
-    sleep $XPD_START_TIMEOUT # let XPD to start
+    # wait for xproofd to start
+    WAIT_TIME=5
+    cnt=0
+    while true; do
+       xproofd_info
+       if [ -n "$xpd_pid" ]; then
+          break;
+       fi
+       cnt=$(expr $cnt + 1)
+       if [ $cnt -gt $WAIT_TIME ]; then
+          echo "WARNING: Can't detect whether xproofd has started or not..."
+          break;
+       fi
+    done
 	
-    # setting a port to listen for pod-agent server and server's host name
-    ####
-    echo "creating PoD agent info file..."
-    create_agent_server_info_file $SERVER_HOST_NAME $NEW_PROOFAGENT_PORT
-
     # Start pod-agent
     ####
     echo "starting PoD agent..."
@@ -295,36 +317,68 @@ start()
        return 1
     fi
 
+    # show status
+    echo "------------------------"
+    status
+    echo "------------------------"
+
+    # generate a helper header
+    create_helper_header
+
     return 0
 }
 # ************************************************************************
-# ***** pkill  *****
-# we need this function since Mac OS X doesn't provide pkill yet
+# ***** STOP *****
 # ************************************************************************
-my_pkill()
+wait_and_kill()
 {
-   for X in `ps cx | grep -i $1 | awk {'print $1'}`; do
-      kill -9 $X;
-   done
+    # if after 10 sec. a given process still exists send a non-ignorable kill
+    WAIT_TIME=10
+    cnt=0
+    while $(kill -0 $1 &>/dev/null); do
+       cnt=$(expr $cnt + 1)
+       if [ $cnt -gt $WAIT_TIME ]; then
+          echo "Process \"$1\" doesn't want to stop. Forcing a non-ignorable kill..."
+          kill -9 $1
+          break
+       fi
+       sleep 1
+    done
 }
-
 # ************************************************************************
-# ***** STOP  *****
+# ***** STOP *****
 # ************************************************************************
 stop()
 {
+    xproofd_info
+    pod_agent_info
+    if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
+       return 0
+    fi
+
     echo "Stopping PoD server..."
 
-    #TODO: make it less aggressive    
-    my_pkill xproofd
-    my_pkill proofserv
+    # kill all proofserv, which are children of our xproofd.
+    # PROOF sometime can't properly clean them and it could give us
+    # some problem next time we start PROOF session
+    for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
+    do
+      echo "killing proofserv: $i"
+      kill -9 $i &>/dev/null
+    done
 
-    $POD_LOCATION/bin/pod-agent -d -c "$POD_CFG" --stop
-    
+    # Try to stop the server by first sending a TERM signal
+    # And if after 10 sec. it still exists send a non-ignorable kill
+    echo "Gracefully shut down xproofd ($xpd_pid) and pod-agent ($agent_pid)..."
+    kill $agent_pid $xpd_pid &>/dev/null
+
+    wait_and_kill $agent_pid
+    wait_and_kill $xpd_pid
+   
     return 0
 }
 # ************************************************************************
-# ***** STATUS  *****
+# ***** STATUS *****
 # ************************************************************************
 status()
 {
@@ -335,19 +389,6 @@ status()
        echo ""
        echo 'WARNING: $ROOTSYS is not set.'
     fi
-}
-# ************************************************************************
-# ***** update_xpd_cfg  *****
-# ************************************************************************
-update_xpd_cfg()
-{
-   # make a local version of xpd config file for the first time
-   if [ ! -r "$XPD_CFG" ]; then
-      cp $POD_LOCATION/etc/xpd.cf.in $XPD_CFG
-      _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX)
-      chmod 777 $_TMP_DIR
-      eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
-   fi
 }
 # ************************************************************************
 # ***** MAIN  *****

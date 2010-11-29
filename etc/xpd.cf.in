@@ -33,7 +33,7 @@ fi
 #
 ## logging
 #
-xrd.trace all debug
+#xrd.trace all debug
 #xpd.trace all debug
 #
 ## setting a PROOF temp dir.

@@ -30,7 +30,6 @@
 using namespace std;
 using namespace MiscCommon;
 using namespace PoD;
-namespace po = boost::program_options;
 //=============================================================================
 sig_atomic_t graceful_quit = 0;
 //=============================================================================
@@ -52,7 +51,6 @@ namespace PROOFAgent
      */
     CAgentBase::CAgentBase( const SCommonOptions_t &_common ) :
         m_commonOptions( _common ),
-        m_agentServerListenPort( 0 ),
         m_fdSignalPipe( 0 )
     {
         // Registering signals handlers
@@ -118,34 +116,6 @@ namespace PROOFAgent
         proofCfg += "proof.conf";
         return proofCfg;
     }
-//=============================================================================
-    void CAgentBase::readServerInfoFile( const string &_filename )
-    {
-        po::variables_map keys;
-        po::options_description options(
-            "Agent's server info config" );
-        // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
-        options.add_options()
-        ( "server.host", po::value<string>(), "" )
-        ( "server.port", po::value<unsigned int>(), "" )
-        ;
-
-        ifstream ifs( _filename.c_str() );
-        if( !ifs.is_open() || !ifs.good() )
-        {
-            string msg( "Could not open a server info configuration file: " );
-            msg += _filename;
-            throw runtime_error( msg );
-        }
-        // Parse the config file
-        po::store( po::parse_config_file( ifs, options ), keys );
-        po::notify( keys );
-        if( keys.count( "server.host" ) )
-            m_agentServerHost = keys["server.host"].as<string> ();
-        if( keys.count( "server.port" ) )
-            m_agentServerListenPort = keys["server.port"].as<unsigned int> ();
-    }
-
 //=============================================================================
     void CAgentBase::Start()
     {

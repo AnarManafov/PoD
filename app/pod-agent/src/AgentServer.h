@@ -135,6 +135,7 @@ namespace PROOFAgent
             void setupPROOFWorker( workersMap_t::value_type &_wrk );
             void usePacketForwarding( workersMap_t::value_type &_wrk );
             void sendServerRequest( workersMap_t::value_type &_wrk );
+            void createServerInfoFile();
 
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
@@ -145,6 +146,7 @@ namespace PROOFAgent
             std::string m_masterEntryInPROOFCfg;
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
+            unsigned int m_agentServerListenPort;
     };
 
 }

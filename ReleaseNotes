@@ -2,6 +2,10 @@
 
 ## v3.0 (not yet released)
 pod: Implemented an install-for-all-users feature.
+pod: The PoD server starter script is now much safer and smarter.
+     The scrip cleans only own processes, which makes it possible to start several PoD servers under the same UID
+     (this is important for AliEn integration). The script learned new algorithms, which are used to detect PoD processes and ports.
+     It is also a factor of 3 faster now.
 pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
 pod: The OGE plug-in was renamed to GE (Grid Engine).
 pod: This release fixes a number of minor issues.

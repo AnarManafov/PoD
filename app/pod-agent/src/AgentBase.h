@@ -54,14 +54,11 @@ namespace PROOFAgent
             // used as a cron process for pod
             virtual void monitor() = 0;
             virtual void log( MiscCommon::LOG_SEVERITY _Severity, const std::string &_msg ) = 0;
-            void readServerInfoFile( const std::string &_filename );
             void updateIdle();
             std::string getPROOFCfg();
 
         protected:
             const PoD::SCommonOptions_t &m_commonOptions;
-            unsigned int m_agentServerListenPort;
-            std::string m_agentServerHost;
             CIdleWatch m_idleWatch;
             int m_fdSignalPipe;
             std::string m_signalPipeName;

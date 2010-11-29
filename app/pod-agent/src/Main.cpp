@@ -165,7 +165,7 @@ int main( int argc, char *argv[] )
 
     // pidfile name: proofagent.<instance_name>.pid
     string pidfile_name( common.m_workDir );
-    pidfile_name += "proofagent.pid";
+    pidfile_name += "pod-agent.pid";
 
     // Checking for "status" option
     if( Options.m_Command == SOptions_t::Status )

@@ -44,7 +44,8 @@ struct is_bad_wrk
 CAgentServer::CAgentServer( const SOptions_t &_data ):
     CAgentBase( _data.m_podOptions.m_server.m_common ),
     m_threadPool( _data.m_podOptions.m_server.m_agentThreads, m_signalPipeName ),
-    m_workerMaxID( 0 )
+    m_workerMaxID( 0 ),
+    m_agentServerListenPort( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
     m_serverInfoFile = _data.m_serverInfoFile;
@@ -117,15 +118,27 @@ void CAgentServer::run()
     {
         createPROOFCfg();
 
-        readServerInfoFile( m_serverInfoFile );
+        // find a free port to listen on
+        m_agentServerListenPort = inet::get_free_port( m_Data.m_agentPortsRangeMin, m_Data.m_agentPortsRangeMax );
+        if( 0 == m_agentServerListenPort )
+        {
+            stringstream ss;
+            ss
+                    << "Can't find any free port from the given range: "
+                    << m_Data.m_agentPortsRangeMin << ":" << m_Data.m_agentPortsRangeMax;
+            throw runtime_error( ss.str() );
+        }
 
         inet::CSocketServer server;
         server.Bind( m_agentServerListenPort );
-        server.Listen( 200 ); // TODO: Move this number of queued clients to config
+        // a number of queued clients to config
+        server.Listen( 200 );
         server.setNonBlock(); // Nonblocking server socket
 
         // Add main server's socket to the list of sockets to select
         f_serverSocket = server.getSocket();
+
+        createServerInfoFile();
 
         InfoLog( "Entering into the main \"select\" loop..." );
         while( true )
@@ -140,7 +153,7 @@ void CAgentServer::run()
 
             // ------------------------
             // A Global "select"
-            // ------------------------Ê
+            // ------------------------Â 
             mainSelect( server );
         }
     }
@@ -707,4 +720,24 @@ void CAgentServer::updatePROOFCfg()
 
         f << wrk_iter->second.m_proofCfgEntry << endl;
     }
+}
+//=============================================================================
+void CAgentServer::createServerInfoFile()
+{
+    ofstream f( m_serverInfoFile.c_str() );
+    if( !f.is_open() || !f.good() )
+    {
+        string msg( "Could not open a server info configuration file: " );
+        msg += m_serverInfoFile;
+        throw runtime_error( msg );
+    }
+
+    string srvHost;
+    get_hostname( &srvHost );
+
+    f
+            << "[server]\n"
+            << "host=" << srvHost << "\n"
+            << "port=" << m_agentServerListenPort << "\n"
+            << endl;
 }
