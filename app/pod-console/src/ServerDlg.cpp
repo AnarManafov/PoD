@@ -62,7 +62,7 @@ void CServerDlg::CommandServer( EServerCommands _command )
     switch( _command )
     {
         case srvSTART:
-            params.push_back( "start" );
+            params.push_back( "restart" );
             break;
         case srvSTOP:
             params.push_back( "stop" );
