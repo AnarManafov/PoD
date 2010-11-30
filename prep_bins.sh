@@ -13,7 +13,7 @@ POD_SRC="/misc/manafov/PoD/BinBuilds"
 # ssh host key on lxetch64 is changing very oftn (bug?), we therefore use the following ssh options
 SSH_CMD="ssh -o userknownhostsfile=/dev/null -o stricthostkeychecking=no"
 # hard-codded because of key changing problem (local GSI issue)
-HOST64="lxi020.gsi.de"
+HOST64="lxi021.gsi.de"
 HOST32="lxi009.gsi.de "
 
 if [ -z "$1" ]; then
