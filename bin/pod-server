@@ -419,7 +419,7 @@ stop()
 
     # Try to stop the server by first sending a TERM signal
     # And if after 10 sec. it still exists send a non-ignorable kill
-    echo "Gracefully shut down xproofd ($xpd_pid) and pod-agent ($agent_pid)..."
+    echo "Gracefully shut down PoD server process(es): $xpd_pid $agent_pid"
     kill $agent_pid $xpd_pid &>/dev/null
 
     wait_and_kill $agent_pid
