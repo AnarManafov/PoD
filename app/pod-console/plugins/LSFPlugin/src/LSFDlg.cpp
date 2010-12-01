@@ -152,7 +152,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
     // Checking queue up
     m_queue = m_ui.lsfQueueList->currentText().toAscii().data();
     m_JobSubmitter.setQueue( m_queue );
-    // Checking first that gLitePROOF server is running
+    // Checking first that PoD server is running
     CServerInfo si;
     if( !si.IsRunning( true ) )
     {
@@ -186,7 +186,7 @@ void CLSFDlg::on_btnSubmitClient_clicked()
         if( !m_emailJobOutput )
             m_JobSubmitter.setOutputFiles( m_logDir );
 
-        // submit gLite jobs
+        // submit PoD jobs
         m_JobSubmitter.start();
         m_ui.btnSubmitClient->setEnabled( false );
     }
