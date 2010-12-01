@@ -15,10 +15,13 @@
 ##*************************************************************************/
 
 ######################################################
+# The following variabes are expected to set:
+# $POD_SRV_WORKDIR
+# $POD_UI_LOCATION
+# $POD_UI_LOG_LOCATION
+######################################################
 SCP=/usr/bin/scp
 UI_HOST=${PBS_O_HOST}
-# $POD_UI_LOCATION and $POD_UI_LOG_LOCATION are set by the PBS plug-in
-UI_WRK_DIR=$POD_UI_LOCATION
 # PARENT_PBS_JOBID is just a PBS_JOBID without an "-ARRAY_INDEX" part
 # We consider, that the first digits up to the first non-digit character is a parent index.
 PARENT_PBS_JOBID=$(echo $PBS_JOBID | egrep -o '^[[:digit:]]*')
@@ -65,7 +68,7 @@ stagein()
 
    if [ -z "$POD_SHARED_HOME" ]; then
       ${SCP} ${UI_HOST}:${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
-      ${SCP} ${UI_HOST}:${UI_WRK_DIR}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+      ${SCP} ${UI_HOST}:${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
    fi
 
    echo "Files in node work directory are as follows:"
