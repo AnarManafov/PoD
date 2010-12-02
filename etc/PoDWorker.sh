@@ -263,7 +263,7 @@ logMsg "Current working directory: $WD"
 
 # extract PoD worker package
 logMsg "Content of the worker package:"
-tar -xzvf pod-worker.tar.gz
+tar -xzvf pod-worker
 
 #Exporting PoD location
 export POD_LOCATION=$WD

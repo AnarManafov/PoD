@@ -76,9 +76,10 @@ fi
 #=============================================================================
 TOOL_NAME="pod-ssh-submit-worker"
 eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
-WRK_P="$WORK_DIR/wrk/pod-worker.tar.gz"
-WRK_S_R="PoDWorker.sh $NWORKERS"
-WRK_S_L="$POD_LOCATION/etc/PoDWorker.sh"
+eval WRK_P=$(pod-user-defaults --wrkpkg)
+eval WRK_S_L=$(pod-user-defaults --wrkscript)
+WRK_S_R="$(basename "$WRK_S_L") $NWORKERS"
+
 TIMEOUT=30
 
 SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $SSH_CON_STR $SSHOPT"

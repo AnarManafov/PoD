@@ -117,25 +117,13 @@ lsf_jobid_t CLsfMng::jobSubmit( const std::string &_Cmd )
     smart_path( &ui_loc );
     setenv( "POD_UI_LOCATION", ui_loc.c_str(), 1 );
 
-    // exporting POD_SRV_WORKDIR
-    // Load PoD user defaults
-    try
-    {
-        PoD::CPoDUserDefaults user_defaults;
-        string pathUD( PoD::showCurrentPUDFile() );
-        smart_path( &pathUD );
-        user_defaults.init( pathUD );
-
-        string serverWrkDir = user_defaults.getOptions().m_server.m_common.m_workDir;
-        smart_path( &serverWrkDir );
-        smart_append( &serverWrkDir, '/' );
-
-        setenv( "POD_SRV_WORKDIR", serverWrkDir.c_str(), 1 );
-    }
-    catch( exception &e )
-    {
-        throw;
-    }
+    // set $POD_WRK_PKG and $POD_WRK_SCRIPT variable on the worker nodes
+    string p( PoD::showWrkPackage() );
+    smart_path( &p );
+    setenv( "POD_WRK_PKG", p.c_str(), 1 );
+    p = PoD::showWrkScript();
+    smart_path( &p );
+    setenv( "POD_WRK_SCRIPT", p.c_str(), 1 );
 
 
     // FIXME:

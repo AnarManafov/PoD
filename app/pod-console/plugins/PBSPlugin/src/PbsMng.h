@@ -92,7 +92,6 @@ namespace pbs_plug
 
         private:
             std::string m_server_logDir;
-            std::string m_serverWrkDir;
             std::string m_envp;
             bool m_upload_log;
     };

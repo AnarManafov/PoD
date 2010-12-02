@@ -12,5 +12,5 @@
   Rank = 0; 
   Type = "job"; 
   StdError = "gLitePROOF.err"; 
-  InputSandbox = { "$POD_LOCATION/etc/PoDWorker.sh","$POD_LOCATION/etc/pod-worker.tar.gz" }
+  InputSandbox = { "$POD_WRK_PKG","$POD_WRK_SCRIPT" }
  ]

@@ -56,7 +56,9 @@ bool parseCmdLine( int _Argc, char *_Argv[],
     ( "key", bpo::value<string>(), "Get a value for the given key" )
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
-    ( "userenvscript", "Show the path of user's environment script of workers (if present)" )
+    ( "userenvscript", "Show the full path of user's environment script of workers (if present). The path must be evaluated before use" )
+    ( "wrkpkg", "Show the full path of the worker package. The path must be evaluated before use" )
+    ( "wrkscript", "Show the full path of the worker script. The path must be evaluated before use" )
     ( "verbose,V", "Cause pod-user-defaults to be verbose in case of an error" )
     ;
 
@@ -91,6 +93,16 @@ bool parseCmdLine( int _Argc, char *_Argv[],
         cfg.GetCfg( &val );
         smart_path( &val );
         cout << val << endl;
+        return false;
+    }
+    if( vm.count( "wrkpkg" ) )
+    {
+        cout << showWrkPackage() << endl;
+        return false;
+    }
+    if( vm.count( "wrkscript" ) )
+    {
+        cout << showWrkScript() << endl;
         return false;
     }
 

@@ -86,10 +86,6 @@ void COgeMng::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
         smart_path( &m_server_logDir );
         smart_append( &m_server_logDir, '/' );
 
-        m_serverWrkDir = _ud.getOptions().m_server.m_common.m_workDir;
-        smart_path( &m_serverWrkDir );
-        smart_append( &m_serverWrkDir, '/' );
-
         m_upload_log = _ud.getOptions().m_oge.m_uploadJobLog;
         m_optionsFile = _ud.getOptions().m_oge.m_optionsFile;
     }
@@ -278,13 +274,18 @@ MiscCommon::StringVector_t COgeMng::getEnvArray() const
         env.push_back( tmp );
     }
 
-    // set POD_SRV_WORKDIR variable on the worker nodes
-    if( !m_serverWrkDir.empty() )
-    {
-        tmp = "POD_SRV_WORKDIR=";
-        tmp += m_serverWrkDir;
-        env.push_back( tmp );
-    }
+    // set $POD_WRK_PKG and $POD_WRK_SCRIPT variable on the worker nodes
+    string p( PoD::showWrkPackage() );
+    smart_path( &p );
+    tmp = "POD_WRK_PKG=";
+    tmp += p;
+    env.push_back( tmp );
+
+    p = PoD::showWrkScript();
+    smart_path( &p );
+    tmp = "POD_WRK_SCRIPT=";
+    tmp += p;
+    env.push_back( tmp );
 
 // We don't need to do the following commented code, since,
 // SGE supports environment export, qsub -V.

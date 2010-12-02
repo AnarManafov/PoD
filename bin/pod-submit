@@ -97,9 +97,11 @@ if [ ! -s $PLUG_CMD ]; then
 fi
 
 # call the selected plug-in
-eval POD_SRV_WORKDIR=$(pod-user-defaults --key server.work_dir)
 eval LOG_DIR=$(pod-user-defaults --key server.logfile_dir)
-export POD_SRV_WORKDIR
+eval POD_WRK_PKG=$(pod-user-defaults --wrkpkg)
+eval POD_WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+export POD_WRK_PKG
+export POD_WRK_SCRIPT
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
 $PLUG_CMD -q $QUEUE -n $NUM_WRK

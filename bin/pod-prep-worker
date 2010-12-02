@@ -18,9 +18,9 @@
 #    The worker package is saved to PoD server working directory.
 #
 eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
-ARC_NAME="$WRK_DIR/wrk/pod-worker.tar"
-ARC_NAME_GZ=$ARC_NAME".gz"
-USER_SCRIPT=$(pod-user-defaults --userenvscript)
+eval ARC_NAME=$(pod-user-defaults --wrkpkg)
+eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+eval USER_SCRIPT=$(pod-user-defaults --userenvscript)
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 SERVER_INFO_FILE="$WRK_DIR/etc/server_info.cfg"
 XPD_CFG="$WRK_DIR/etc/xpd.cf"
@@ -34,9 +34,6 @@ echo "preparing PoD worker package..."
 if [ -f $ARC_NAME ]; then
    rm -rf $ARC_NAME
 fi
-if [ -f $ARC_NAME_GZ ]; then
-   rm -rf $ARC_NAME_GZ
-fi
 
 POD_CFG=$(pod-user-defaults -p)
 if [ -z "$POD_CFG" ]; then
@@ -46,11 +43,11 @@ fi
 
 # check that all needed components are available
 COMPONENTS_ETC=( "$XPD_CFG" 
-             "$POD_CFG"
-             "$POD_LOCATION/etc/version"
-             "$SERVER_INFO_FILE" )
+                 "$POD_CFG"
+                 "$POD_LOCATION/etc/version"
+                 "$SERVER_INFO_FILE" )
 
-COMPONENTS=(  "${COMPONENTS_ETC[@]}" )
+COMPONENTS=( "${COMPONENTS_ETC[@]}" )
 
 # create an empty archive first
 tar cvf $ARC_NAME --files-from=/dev/null 
@@ -94,7 +91,12 @@ done
 
 # compress the archive
 gzip -9 $ARC_NAME
-echo "finished successfully: "$ARC_NAME_GZ
+# remove the .gz suffix
+mv "$ARC_NAME.gz" $ARC_NAME
+echo "finished successfully: "$ARC_NAME
+
+# copy worker script to the sandbox directory
+cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox."; exit 1; }
 
 exit 0
 

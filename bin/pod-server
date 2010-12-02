@@ -114,48 +114,48 @@ pod_agent_info()
 # ************************************************************************
 server_status()
 {
-# get a pid of our xpd. We get any xpd running by $UID
-    xproofd_info
-    pod_agent_info
+   # get a pid of our xpd. We get any xpd running by $UID
+   xproofd_info
+   pod_agent_info
     
-    if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
-       echo "PoD server is NOT running"
-       return 1
-    fi  
+   if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
+      echo "PoD server is NOT running"
+      return 1
+   fi  
     
-    if [ -n  "$xpd_pid" ]; then
-       echo "XPROOFD [$xpd_pid] port: "$xpd_port
-    else
-       echo "WARNING: XPROOFD is NOT running."
-    fi
-    if [ -n  "$agent_pid" ]; then
-       echo "PoD agent [$agent_pid] port: "$agent_port
-    else
-       echo "WARNING: PoD agent is NOT running."
-    fi
+   if [ -n  "$xpd_pid" ]; then
+      echo "XPROOFD [$xpd_pid] port: "$xpd_port
+   else
+      echo "WARNING: XPROOFD is NOT running."
+   fi
+   if [ -n  "$agent_pid" ]; then
+      echo "PoD agent [$agent_pid] port: "$agent_port
+   else
+      echo "WARNING: PoD agent is NOT running."
+   fi
 
-    if [ -n  "$xpd_pid" ]; then
-       echo "PROOF connection string: "$agent_host:$xpd_port
-    fi    
+   if [ -n  "$xpd_pid" ]; then
+      echo "PROOF connection string: "$agent_host:$xpd_port
+   fi    
 
-    return 0
+   return 0
 }
 # ************************************************************************
 # ***** returns a free port from a given range  *****
 # ************************************************************************
 get_freeport()
 {
-    for(( i = $1; i < $2; ++i ))
-    do
-       if [ "$SERVER_OS" = "Darwin" ]; then
-          netstat -an -p tcp 2>/dev/null | grep ".$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
-       else
-          netstat -ant 2>/dev/null | grep ":$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
-       fi 
-    done
+   for(( i = $1; i < $2; ++i ))
+   do
+      if [ "$SERVER_OS" = "Darwin" ]; then
+         netstat -an -p tcp 2>/dev/null | grep ".$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
+      else
+         netstat -ant 2>/dev/null | grep ":$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
+      fi 
+   done
 
-    echo "Error: Cant find a free socket port in the given range: $1 - $2"
-    exit 1
+   echo "Error: Cant find a free socket port in the given range: $1 - $2"
+   exit 1
 }
 # ************************************************************************
 # ***** Get pre-compiled bins for WNs  *****
@@ -235,210 +235,212 @@ create_dir()
 create_dir_hierarchy()
 {
    create_dir "$WORK_DIR/etc"
-   create_dir "$WORK_DIR/wrk"
    create_dir "$POD_SRV_LOGDIR"
+   # create workers' sandbox
+   local dir=$(eval dirname $(pod-user-defaults --wrkscript))
+   create_dir "$dir"
 }
 # ************************************************************************
 # ***** create_helper_header *****
 # ************************************************************************
 create_helper_header()
 {
-    # generate a helper header
-    # this helps to keep track of PROOF master's host and port for user's scripts
-    HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
-    echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
-    echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
-    echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
-    echo "#define POD_MASTER_HOST \"$agent_host\"" >> $HEADER_HELPER
-    echo "#define POD_XPROOF_PORT \"$xpd_port\"" >> $HEADER_HELPER
-    echo "#endif" >> $HEADER_HELPER
+   # generate a helper header
+   # this helps to keep track of PROOF master's host and port for user's scripts
+   HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
+   echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
+   echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
+   echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
+   echo "#define POD_MASTER_HOST \"$agent_host\"" >> $HEADER_HELPER
+   echo "#define POD_XPROOF_PORT \"$xpd_port\"" >> $HEADER_HELPER
+   echo "#endif" >> $HEADER_HELPER
 }
 # ************************************************************************
 # ***** update_xpd_cfg  *****
 # ************************************************************************
 update_xpd_cfg()
 {
-    # We renew the xpd conf every time PoD server is restart.
-    # It is needed since otherwise it will be difficult (if ever possible)
-    # to find out, which xproofd was started exactly by this server.
-    # PoD and AliEn integration, for example, require, that several PoD
-    # servers can be started on one machine under the same user account.
-    #
-    # See "xproofd_info" for more info.
+   # We renew the xpd conf every time PoD server is restart.
+   # It is needed since otherwise it will be difficult (if ever possible)
+   # to find out, which xproofd was started exactly by this server.
+   # PoD and AliEn integration, for example, require, that several PoD
+   # servers can be started on one machine under the same user account.
+   #
+   # See "xproofd_info" for more info.
 
-    local old_tmp_holder="$WORK_DIR/.xproofd.tmp"
-    local xpd_template="$POD_LOCATION/etc/xpd.cf.in"
+   local old_tmp_holder="$WORK_DIR/.xproofd.tmp"
+   local xpd_template="$POD_LOCATION/etc/xpd.cf.in"
 
-    # 1. delete the previous tmp dir
-    if [ -r "$old_tmp_holder" ]; then 
-       local old_tmp=$(cat "$old_tmp_holder")
-       if [ -d "$old_tmp" ]; then
-          rm -rf "$old_tmp"
-       fi
-    fi
-    # 2. copy the template file
-    cp $xpd_template $XPD_CFG
-    # 3. create new tmp folder
-    _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX) ||  { echo "error: Can't create a tmp dir in /tmp/. Check permissions."; exit 1; }
-    echo "$_TMP_DIR" > "$old_tmp_holder"
-    chmod 777 $_TMP_DIR
-    # 4. update configuration
-    eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
-    NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
-    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
-    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$agent_host\2/g"
-    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
-    mv -f "$XPD_CFG.temp" $XPD_CFG
+   # 1. delete the previous tmp dir
+   if [ -r "$old_tmp_holder" ]; then 
+      local old_tmp=$(cat "$old_tmp_holder")
+      if [ -d "$old_tmp" ]; then
+         rm -rf "$old_tmp"
+      fi
+   fi
+   # 2. copy the template file
+   cp $xpd_template $XPD_CFG
+   # 3. create new tmp folder
+   _TMP_DIR=$(mktemp -d /tmp/PoD_XXXXXXXXXX) ||  { echo "error: Can't create a tmp dir in /tmp/. Check permissions."; exit 1; }
+   echo "$_TMP_DIR" > "$old_tmp_holder"
+   chmod 777 $_TMP_DIR
+   # 4. update configuration
+   eval sed -i.bup 's%_POD_TMP_DIR%$_TMP_DIR%g' $XPD_CFG 
+   NEW_XPROOF_PORT=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
+   regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$NEW_XPROOF_PORT/g"
+   regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$agent_host\2/g"
+   sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
+   mv -f "$XPD_CFG.temp" $XPD_CFG
 }
 # ************************************************************************
 # ***** Internal START  *****
 # ************************************************************************
 _start() 
 {
-    # S T A R T I N G the server
-    echo "Starting PoD server..."
-    # proof.conf must be presented before xproofd is started
-    touch $POD_PROOFCFG_FILE
+   # S T A R T I N G the server
+   echo "Starting PoD server..."
+   # proof.conf must be presented before xproofd is started
+   touch $POD_PROOFCFG_FILE
 
-    # updating XPD configuration file
-    echo "updating xproofd configuration file..."
-    update_xpd_cfg
+   # updating XPD configuration file
+   echo "updating xproofd configuration file..."
+   update_xpd_cfg
 
-    # Start XPROOFD
-    ####
-    echo "starting xproofd..."
-    xproofd -c $XPD_CFG -b -l $POD_SRV_LOGDIR/xpd.log -n PoDServer
-    if (( $? != 0 )); then
-       return 1
-    fi
+   # Start XPROOFD
+   ####
+   echo "starting xproofd..."
+   xproofd -c $XPD_CFG -b -l $POD_SRV_LOGDIR/xpd.log -n PoDServer
+   if (( $? != 0 )); then
+      return 1
+   fi
 
-    # wait for xproofd to start
-    WAIT_TIME=5
-    cnt=0
-    while true; do
-       xproofd_info
-       if [ -n "$xpd_pid" ]; then
-          break;
-       fi
-       cnt=$(expr $cnt + 1)
-       if [ $cnt -gt $WAIT_TIME ]; then
-          echo "WARNING: Can't detect whether xproofd has started or not..."
-          break;
-       fi
-    done
+   # wait for xproofd to start
+   WAIT_TIME=5
+   cnt=0
+   while true; do
+      xproofd_info
+      if [ -n "$xpd_pid" ]; then
+         break;
+      fi
+      cnt=$(expr $cnt + 1)
+      if [ $cnt -gt $WAIT_TIME ]; then
+         echo "WARNING: Can't detect whether xproofd has started or not..."
+         break;
+      fi
+   done
 	
-    # Start pod-agent
-    ####
-    echo "starting PoD agent..."
-    $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --serverinfo "$SERVERINFO_FILE" --start
+   # Start pod-agent
+   ####
+   echo "starting PoD agent..."
+   $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --serverinfo "$SERVERINFO_FILE" --start
 
-    # Prepare the worker package
-    ####
-    $POD_LOCATION/bin/pod-prep-worker
-    if (( $? != 0 )); then
-       echo "Error: Can't start PoD server. Please check pod-agent.server.log and xpd.log for more information."
-       return 1
-    fi
+   # Prepare the worker package
+   ####
+   $POD_LOCATION/bin/pod-prep-worker
+   if (( $? != 0 )); then
+      echo "Error: Can't start PoD server. Please check pod-agent.server.log and xpd.log for more information."
+      return 1
+   fi
 
-    # show status
-    echo "------------------------"
-    status
-    echo "------------------------"
+   # show status
+   echo "------------------------"
+   status
+   echo "------------------------"
 
-    # generate a helper header
-    create_helper_header
+   # generate a helper header
+   create_helper_header
 
-    return 0
+   return 0
 }
 # ************************************************************************
 # ***** START  *****
 # ************************************************************************
 start() 
 {
-    xproofd_info
-    pod_agent_info
-    if [ -n "$xpd_pid" -a  -n "$agent_pid" ]; then
-       echo "PoD Server is running already."
-       echo "If you observer problems with it, try to restart it."
-       return 0
-    fi 
-    # S T A R T I N G the server
-    _start $1 
+   xproofd_info
+   pod_agent_info
+   if [ -n "$xpd_pid" -a  -n "$agent_pid" ]; then
+      echo "PoD Server is running already."
+      echo "If you observer problems with it, try to restart it."
+      return 0
+   fi 
+   # S T A R T I N G the server
+   _start $1 
 }
 # ************************************************************************
 # ***** RESTART  *****
 # ************************************************************************
 restart() 
 {
-    # S T O P I N G the server first
-    stop $1
-    # S T A R T I N G the server
-    _start $1 
+   # S T O P I N G the server first
+   stop $1
+   # S T A R T I N G the server
+   _start $1 
 }
 # ************************************************************************
 # ***** STOP *****
 # ************************************************************************
 wait_and_kill()
 {
-    # if after 10 sec. a given process still exists send a non-ignorable kill
-    WAIT_TIME=10
-    cnt=0
-    while $(kill -0 $1 &>/dev/null); do
-       cnt=$(expr $cnt + 1)
-       if [ $cnt -gt $WAIT_TIME ]; then
-          echo "Process \"$1\" doesn't want to stop. Forcing a non-ignorable kill..."
-          kill -9 $1
-          break
-       fi
-       sleep 1
-    done
+   # if after 10 sec. a given process still exists send a non-ignorable kill
+   WAIT_TIME=10
+   cnt=0
+   while $(kill -0 $1 &>/dev/null); do
+      cnt=$(expr $cnt + 1)
+      if [ $cnt -gt $WAIT_TIME ]; then
+         echo "Process \"$1\" doesn't want to stop. Forcing a non-ignorable kill..."
+         kill -9 $1
+         break
+      fi
+      sleep 1
+   done
 }
 # ************************************************************************
 # ***** STOP *****
 # ************************************************************************
 stop()
 {
-    xproofd_info
-    pod_agent_info
-    if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
-       return 0
-    fi
+   xproofd_info
+   pod_agent_info
+   if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
+      return 0
+   fi
 
-    echo "Stopping PoD server..."
+   echo "Stopping PoD server..."
 
-    if [ -n "$xpd_pid" ]; then
-       # kill all proofserv, which are children of our xproofd.
-       # PROOF sometime can't properly clean them and it could give us
-       # some problem next time we start PROOF session
-       for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
-       do
-         echo "killing proofserv: $i"
-         kill -9 $i &>/dev/null
-       done
-    fi
+   if [ -n "$xpd_pid" ]; then
+      # kill all proofserv, which are children of our xproofd.
+      # PROOF sometime can't properly clean them and it could give us
+      # some problem next time we start PROOF session
+      for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
+      do
+        echo "killing proofserv: $i"
+        kill -9 $i &>/dev/null
+      done
+   fi
 
-    # Try to stop the server by first sending a TERM signal
-    # And if after 10 sec. it still exists send a non-ignorable kill
-    echo "Gracefully shut down PoD server process(es): $xpd_pid $agent_pid"
-    kill $agent_pid $xpd_pid &>/dev/null
+   # Try to stop the server by first sending a TERM signal
+   # And if after 10 sec. it still exists send a non-ignorable kill
+   echo "Gracefully shut down PoD server process(es): $xpd_pid $agent_pid"
+   kill $agent_pid $xpd_pid &>/dev/null
 
-    wait_and_kill $agent_pid
-    wait_and_kill $xpd_pid
+   wait_and_kill $agent_pid
+   wait_and_kill $xpd_pid
    
-    return 0
+   return 0
 }
 # ************************************************************************
 # ***** STATUS *****
 # ************************************************************************
 status()
 {
-    server_status
+   server_status
     
-    # check that ROOTSYS is set
-    if [ -z $ROOTSYS ]; then
-       echo ""
-       echo 'WARNING: $ROOTSYS is not set.'
-    fi
+   # check that ROOTSYS is set
+   if [ -z $ROOTSYS ]; then
+      echo ""
+      echo 'WARNING: $ROOTSYS is not set.'
+   fi
 }
 # ************************************************************************
 # ***** MAIN  *****
@@ -449,8 +451,8 @@ create_dir_hierarchy
 
 # work_dir must be a valid dir
 if [ ! -e "$WORK_DIR" ]; then
-    echo "error: working director: \"$WORK_DIR\" doesn't exist!"
-    exit 1
+   echo "error: working director: \"$WORK_DIR\" doesn't exist!"
+   exit 1
 fi
 
 # star|stop|status|getbins

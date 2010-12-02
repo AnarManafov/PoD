@@ -15,10 +15,12 @@
 ##*************************************************************************/
 
 ######################################################
-# The following variabes are expected to set:
-# $POD_SRV_WORKDIR
+# The following variables are expected to set:
+# $POD_WRK_PKG
+# $POD_WRK_SCRIPT
 # $POD_UI_LOCATION
 # $POD_UI_LOG_LOCATION
+WRK_SCRIPT=$(basename "$POD_WRK_SCRIPT")
 ######################################################
 SCP=/usr/bin/scp
 UI_HOST=${PBS_O_HOST}
@@ -32,7 +34,7 @@ UI_LOG_DIR=$POD_UI_LOG_LOCATION/$PARENT_PBS_JOBID
 # in PBS Pro we have $PBS_ARRAY_INDEX
 ARRAYID=$PBS_ARRAYID
 if [ -z  $ARRAYID ]; then
- ARRAYID=$PBS_ARRAY_INDEX
+   ARRAYID=$PBS_ARRAY_INDEX
 fi
 
 ###############################################################
@@ -43,9 +45,9 @@ fi
 ###############################################################
 try_shared_home()
 {
-   cp ${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
+   cp ${POD_WRK_PKG} ${WRK_DIR}/
    ret1=$?
-   cp ${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+   cp ${POD_WRK_SCRIPT} ${WRK_DIR}/
    ret2=$?
    
    if (( $ret1 == 0 && $ret2 == 0 )); then
@@ -67,8 +69,8 @@ stagein()
    try_shared_home
 
    if [ -z "$POD_SHARED_HOME" ]; then
-      ${SCP} ${UI_HOST}:${POD_SRV_WORKDIR}/wrk/pod-worker.tar.gz ${WRK_DIR}/pod-worker.tar.gz
-      ${SCP} ${UI_HOST}:${POD_UI_LOCATION}/etc/PoDWorker.sh ${WRK_DIR}/PoDWorker.sh
+      ${SCP} ${UI_HOST}:${POD_WRK_PKG} ${WRK_DIR}/
+      ${SCP} ${UI_HOST}:${POD_WRK_SCRIPT} ${WRK_DIR}/
    fi
 
    echo "Files in node work directory are as follows:"
@@ -130,7 +132,7 @@ stagein
 # PoDWorker will use its own settings
 #
 ###############################################################
-$WRK_DIR/PoDWorker.sh
+$WRK_DIR/$WRK_SCRIPT
 ###############################################################
 #
 # get all logs
@@ -143,7 +145,7 @@ stageout
 #
 ###############################################################
 if [[ -d $WRK_DIR ]]; then
-	rm -rf $WRK_DIR
+   rm -rf $WRK_DIR
 fi
 
 exit 0
