@@ -435,7 +435,7 @@ int CLSFDlg::getJobsCount() const
     return m_AllJobsCount;
 }
 //=============================================================================
-void CLSF::setCfgDir( const std::string &_dir )
+void CLSFDlg::setCfgDir( const std::string &_dir )
 {
     m_configFile = _dir;
     m_configFile += "pod-console_LSF.xml.cfg";
