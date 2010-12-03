@@ -90,6 +90,10 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     m_idleTimer = new QTimer( this );
     connect( m_idleTimer, SIGNAL( timeout() ), this, SLOT( idleTimeout() ) );
 
+    // configuration directory
+    string cfgDir( "$HOME/etc/" );
+    smart_path( &cfgDir );
+
     string proofCfgFile;
     PoD::CPoDUserDefaults user_defaults;
     // Load PoD user defaults
@@ -99,10 +103,8 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         smart_path( &pathUD );
         user_defaults.init( pathUD );
 
-        m_configFile = user_defaults.getOptions().m_server.m_common.m_workDir;
-        smart_append( &m_configFile, '/' );
-        m_configFile += "etc/pod-console.xml.cfg";
-        smart_path( &m_configFile );
+        m_configFile = cfgDir;
+        m_configFile += "pod-console.xml.cfg";
 
         proofCfgFile = user_defaults.getOptions().m_server.m_common.m_workDir;
         smart_append( &m_configFile, '/' );
@@ -145,6 +147,8 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     PluginVec_t::const_iterator iter_end = m_plugins.end();
     for( ; iter != iter_end; ++iter )
     {
+        // set the directory where plug-ins must store their configuration
+        ( *iter )->setCfgDir( cfgDir );
         // setting user defaults for each plug-in
         ( *iter )->setUserDefaults( user_defaults );
 

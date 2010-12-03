@@ -43,6 +43,7 @@ class CLSFDlg: public QWidget, IJobManager
         void startUpdTimer( int _JobStatusUpdInterval );
         void startUpdTimer( int _JobStatusUpdInterval, bool _hideMode );
         int getJobsCount() const;
+        void setCfgDir( const std::string &_dir );
         void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
 
         void setAllDefault();

@@ -408,14 +408,10 @@ int COgeDlg::getJobsCount() const
     return m_AllJobsCount;
 }
 //=============================================================================
-void COgeDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+void COgeDlg::setCfgDir( const std::string &_dir )
 {
-    m_JobSubmitter.setUserDefaults( _ud );
-
-    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
-    smart_append( &m_configFile, '/' );
-    m_configFile += "etc/pod-console_GE.xml.cfg";
-    smart_path( &m_configFile );
+    m_configFile = _dir;
+    m_configFile += "pod-console_GE.xml.cfg";
 
     try
     {
@@ -481,6 +477,11 @@ void COgeDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
              this, SLOT( expandTreeNode( const QModelIndex& ) ) );
     connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
              this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
+}
+//=============================================================================
+void COgeDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+{
+    m_JobSubmitter.setUserDefaults( _ud );
 }
 //=============================================================================
 void COgeDlg::setEnvironment( const std::string &_envp )

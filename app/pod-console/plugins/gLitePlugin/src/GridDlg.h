@@ -38,6 +38,7 @@ class CGridDlg: public QWidget, IJobManager
         QString getName() const;
         QWidget *getWidget();
         QIcon getIcon();
+        void setCfgDir( const std::string &_dir );
         void startUpdTimer( int _JobStatusUpdInterval );
         int getJobsCount() const;
 

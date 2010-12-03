@@ -435,6 +435,12 @@ int CLSFDlg::getJobsCount() const
     return m_AllJobsCount;
 }
 //=============================================================================
+void CLSF::setCfgDir( const std::string &_dir )
+{
+    m_configFile = _dir;
+    m_configFile += "pod-console_LSF.xml.cfg";
+}
+//=============================================================================
 void CLSFDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
 {
     try
@@ -450,11 +456,6 @@ void CLSFDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
                                QString( PROJECT_NAME ),
                                tr( e.what() ) );
     }
-
-    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
-    smart_append( &m_configFile, '/' );
-    m_configFile += "etc/pod-console_LSF.xml.cfg";
-    smart_path( &m_configFile );
 
     try
     {

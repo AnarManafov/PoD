@@ -412,14 +412,10 @@ int CPbsDlg::getJobsCount() const
     return m_AllJobsCount;
 }
 //=============================================================================
-void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+void CPbsDlg::setCfgDir( const std::string &_dir )
 {
-    m_JobSubmitter.setUserDefaults( _ud );
-
-    m_configFile = _ud.getOptions().m_server.m_common.m_workDir;
-    smart_append( &m_configFile, '/' );
-    m_configFile += "etc/pod-console_PBS.xml.cfg";
-    smart_path( &m_configFile );
+    m_configFile = _dir;
+    m_configFile += "pod-console_PBS.xml.cfg";
 
     try
     {
@@ -485,7 +481,11 @@ void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
              this, SLOT( expandTreeNode( const QModelIndex& ) ) );
     connect( m_ui.treeJobs, SIGNAL( collapsed( const QModelIndex& ) ),
              this, SLOT( collapseTreeNode( const QModelIndex& ) ) );
-
+}
+//=============================================================================
+void CPbsDlg::setUserDefaults( const PoD::CPoDUserDefaults &_ud )
+{
+    m_JobSubmitter.setUserDefaults( _ud );
 }
 //=============================================================================
 void CPbsDlg::setEnvironment( const std::string &_envp )

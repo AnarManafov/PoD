@@ -45,6 +45,7 @@ namespace oge_plug
             void startUpdTimer( int _JobStatusUpdInterval );
             void startUpdTimer( int _JobStatusUpdInterval, bool _hideMode );
             int getJobsCount() const;
+            void setCfgDir( const std::string &_dir );
             void setUserDefaults( const PoD::CPoDUserDefaults &_ud );
             void setEnvironment( const std::string &_envp );
 

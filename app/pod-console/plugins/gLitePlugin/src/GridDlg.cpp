@@ -35,8 +35,6 @@ using namespace glite_api_wrapper;
 //=============================================================================
 // default JDL file
 const LPCTSTR g_szDefaultJDL = "$POD_LOCATION/etc/gLitePROOF.jdl";
-// configuration file of the plug-in
-const LPCTSTR g_szCfgFileName = "$POD_LOCATION/etc/pod-console-gLite.xml.cfg";
 //=============================================================================
 typedef glite_api_wrapper::CJobManager::delivered_output_t gaw_path_type;
 //=============================================================================
@@ -100,16 +98,6 @@ CGridDlg::CGridDlg( QWidget *parent ) :
     QCompleter *completer = new QCompleter( this );
     completer->setModel( new QDirModel( completer ) );
     m_ui.edtJDLFileName->setCompleter( completer );
-
-    try
-    {
-        // Loading class from the config file
-        _loadcfg( *this, g_szCfgFileName );
-    }
-    catch( ... )
-    {
-        setAllDefault();
-    }
 }
 //=============================================================================
 CGridDlg::~CGridDlg()
@@ -121,6 +109,22 @@ CGridDlg::~CGridDlg()
     }
     catch( ... )
     {
+    }
+}
+//=============================================================================
+void CGridDlg::setCfgDir( const std::string &_dir )
+{
+// configuration file of the plug-in
+    string cfg( _dir );
+    cfg += "pod-console-gLite.xml.cfg";
+    try
+    {
+        // Loading class from the config file
+        _loadcfg( *this, cfg );
+    }
+    catch( ... )
+    {
+        setAllDefault();
     }
 }
 //=============================================================================
