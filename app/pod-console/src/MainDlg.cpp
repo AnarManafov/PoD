@@ -91,7 +91,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
     connect( m_idleTimer, SIGNAL( timeout() ), this, SLOT( idleTimeout() ) );
 
     // configuration directory
-    string cfgDir( "$HOME/etc/" );
+    string cfgDir( "$HOME/.PoD/etc/" );
     smart_path( &cfgDir );
 
     string proofCfgFile;
