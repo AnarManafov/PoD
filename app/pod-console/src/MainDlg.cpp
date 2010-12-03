@@ -107,7 +107,7 @@ CMainDlg::CMainDlg( QDialog *_Parent ):
         m_configFile += "pod-console.xml.cfg";
 
         proofCfgFile = user_defaults.getOptions().m_server.m_common.m_workDir;
-        smart_append( &m_configFile, '/' );
+        smart_append( &proofCfgFile, '/' );
         proofCfgFile += "proof.conf";
     }
     catch( exception &e )
