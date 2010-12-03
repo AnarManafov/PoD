@@ -479,7 +479,7 @@ case "$1" in
         RETVAL=$?
         ;;
     *)
-        echo $"Usage: $(basename "$0") {start|restart|stop|status|getbins}"
+        echo "Usage: $(basename "$0") {start|restart|stop|status|getbins}"
         exit 1
 esac
 
