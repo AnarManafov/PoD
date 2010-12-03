@@ -32,6 +32,7 @@ eval LOCAL_POD="$HOME/.PoD"
 
 # create local PoD directories
 create_dir "$LOCAL_POD"
+create_dir "$LOCAL_POD/etc"
 
 # create a default configuration file if needed
 POD_CFG=$(pod-user-defaults -p)
