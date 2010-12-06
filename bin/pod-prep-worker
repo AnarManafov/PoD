@@ -97,6 +97,7 @@ echo "finished successfully: "$ARC_NAME
 
 # copy worker script to the sandbox directory
 cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox."; exit 1; }
+chmod u+w "$WRK_SCRIPT"
 
 exit 0
 
