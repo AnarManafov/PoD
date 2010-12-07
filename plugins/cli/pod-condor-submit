@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2010-11-10
+#
+#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
+# LOG
+#eval upload_job_log=$(pod-user-defaults --key ge_plugin.upload_job_log)
+#OUTPUT_LOG=""
+#if [ "$upload_job_log" = "1" ]; then
+#   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
+#else
+#   OUTPUT_LOG=" -o /dev/null"
+#fi
+
+# create a job description files
+eval wrk_dir=$(pod-user-defaults --key server.work_dir)
+TEMPLATE="$POD_LOCATION/Job.condor"
+POD_JDL="$wrk_dir/Job.condor"
+cat $TEMPLATE > $POD_JDL
+
+# add number of jobs
+echo "queue $NUM_WRK" >> $POD_JDL
+
+# submit PoD jobs
+jobid=$(condor_submit $POD_JDL | grep "submitted to cluster"| cut -d " " -f 6 | cut -d "." -f 1)
+# we need to create a logs output dir
+if (( ${PIPESTATUS[0]} == 0 )); then
+   echo "Job ID: $jobid"
+   if [ "$upload_job_log" = "1" ]; then
+      mkdir -p  $POD_UI_LOG_LOCATION/$jobid
+   fi
+else
+   echo "Error submitting job. $jobid"
+fi
+

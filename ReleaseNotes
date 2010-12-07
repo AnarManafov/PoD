@@ -1,7 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v3.0 (not yet released)
+## v3.1 (not yet released)
 pod: Implemented an install-for-all-users feature.
+pod: Implemented a Condor plug-in for PoD. The plug-in can be used via PoD CLI. 
 pod: The PoD server starter script is now much safer and smarter.
      The scrip cleans only own processes, which makes it possible to start several PoD servers under the same UID
      (this is important for AliEn integration). The script learned new algorithms, which are used to detect PoD processes and ports.
@@ -19,7 +20,7 @@ pod-user-defaults: "pod-user-defaults" learned the "verbose,V" option.
                    This option causes "pod-user-defaults" to be verbose in case of an error.
 
 ## v2.4 (2010-11-14)
-pod: Implemented Oracle Grid Engine (OGE/SGE) plug-in for PoD. This plug-in can be used via PoD GUI and CLI.
+pod: Implemented an Oracle Grid Engine (OGE/SGE) plug-in for PoD. This plug-in can be used via PoD GUI and CLI.
 pod: Fixed a typo/bug, which prevented PoD worker to download pre-compiled binaries of pod-agent for x86 machines.
 pod: Now the PoD pre-compiled worker packages naming is automated and unified.
 pod: Added "pod-check-update" command.

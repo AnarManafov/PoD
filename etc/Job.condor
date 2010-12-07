@@ -1,0 +1,23 @@
+universe=vanilla
+
+executable=$ENV(POD_WRK_SCRIPT)
+transfer_input_files=$ENV(POD_WRK_PKG)
+
+# Environment of PoD workers
+environment=POD_UI_LOG_LOCATION=$ENV(POD_UI_LOG_LOCATION);POD_UI_LOCATION=$ENV(POD_UI_LOCATION)
+# Copy env. to workers
+getenv = True
+
+# for CERN
+# An AFS directory does not give Condor the user's AFS ACLs.
+initialdir=$ENV(POD_UI_LOG_LOCATION)
+
+Output        = PoD.$(Cluster)-$(Process).out
+Error         = PoD.$(Cluster)-$(Process).err
+Log           = PoD.$(Cluster)-$(Process).log
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+
+
+Requirements = (regexp("pcuwtwin04",Machine)||regexp("pcuwtwin05",Machine))&&(Arch == "X86_64") && (OpSys == "LINUX") && (Disk >=DiskUsage) && ((Memory * 1024) >= ImageSize) && (HasFileTransfer)
