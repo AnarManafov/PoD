@@ -91,6 +91,15 @@ clean_up()
 	rm -rf $proof_dir
     fi
 
+    # delete the content of the worker package
+    # this is needed in case of condor RMS, for example
+    # otherwise condor will transfer all files back
+    # TODO: delete the rest of files as well
+    to_delete=$(tar -ztf pod-worker)
+    if (( $? == 0 )) ; then
+       rm -vf $to_delete
+    fi
+
     # remove lock file
     rm -f $LOCK_FILE
     rm -f $PID_FILE

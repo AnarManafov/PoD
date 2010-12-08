@@ -1,7 +1,13 @@
 universe=vanilla
 
+# PoD worker script
 executable=$ENV(POD_WRK_SCRIPT)
+
+# PoD worker package
 transfer_input_files=$ENV(POD_WRK_PKG)
+
+# Don't send annoying email notifications
+Notification = Never
 
 # Environment of PoD workers
 environment=POD_UI_LOG_LOCATION=$ENV(POD_UI_LOG_LOCATION);POD_UI_LOCATION=$ENV(POD_UI_LOCATION)
@@ -11,15 +17,15 @@ getenv = True
 # PoD Log directory
 initialdir=$ENV(POD_UI_LOG_LOCATION)
 
+# stdout and stderr of PoD jobs
 Output        = PoD.$(Cluster)-$(Process).out
 Error         = PoD.$(Cluster)-$(Process).err
 Log           = PoD.$(Cluster)-$(Process).log
 
+# we want to transfer files
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 
 # PoD/PROOF log files
-transfer_output_remaps = "proof_log.tgz=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/proof_log.$(Process).tgz;
-xpd.log=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/xpd.$(Process).log;
-pod-agent.client.log=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/pod-agent.client.$(Process).log"
+transfer_output_remaps = "proof_log.tgz=$(Cluster)/proof_log.$(Process).tgz;xpd.log=$(Cluster)/xpd.$(Process).log;pod-agent.client.log=$(Cluster)/pod-agent.client.$(Process).log"
 
