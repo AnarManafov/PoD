@@ -8,8 +8,7 @@ environment=POD_UI_LOG_LOCATION=$ENV(POD_UI_LOG_LOCATION);POD_UI_LOCATION=$ENV(P
 # Copy env. to workers
 getenv = True
 
-# for CERN
-# An AFS directory does not give Condor the user's AFS ACLs.
+# PoD Log directory
 initialdir=$ENV(POD_UI_LOG_LOCATION)
 
 Output        = PoD.$(Cluster)-$(Process).out
@@ -18,4 +17,9 @@ Log           = PoD.$(Cluster)-$(Process).log
 
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
+
+# PoD/PROOF log files
+transfer_output_remaps = "proof_log.tgz=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/proof_log.$(Process).tgz;
+xpd.log=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/xpd.$(Process).log;
+pod-agent.client.log=$ENV(POD_UI_LOG_LOCATION)/$(Cluster)/pod-agent.client.$(Process).log"
 
