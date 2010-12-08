@@ -45,8 +45,8 @@ if [ -z "$POD_UI_LOG_LOCATION" ]; then
 fi
 
 # LOG
-#eval upload_job_log=$(pod-user-defaults --key ge_plugin.upload_job_log)
-#OUTPUT_LOG=""
+eval upload_job_log=$(pod-user-defaults --key condor_plugin.upload_job_log)
+OUTPUT_LOG=""
 #if [ "$upload_job_log" = "1" ]; then
 #   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
 #else
@@ -55,9 +55,15 @@ fi
 
 # create a job description files
 eval wrk_dir=$(pod-user-defaults --key server.work_dir)
+eval options_file=$(pod-user-defaults --key condor_plugin.options_file)
 TEMPLATE="$POD_LOCATION/Job.condor"
 POD_JDL="$wrk_dir/Job.condor"
 cat $TEMPLATE > $POD_JDL
+
+# add user's options
+if [ -r $options_file ]; then
+   cat $options_file >> $POD_JDL
+fi
 
 # add number of jobs
 echo "queue $NUM_WRK" >> $POD_JDL

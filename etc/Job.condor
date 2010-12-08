@@ -19,5 +19,3 @@ Log           = PoD.$(Cluster)-$(Process).log
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 
-
-Requirements = (regexp("pcuwtwin04",Machine)||regexp("pcuwtwin05",Machine))&&(Arch == "X86_64") && (OpSys == "LINUX") && (Disk >=DiskUsage) && ((Memory * 1024) >= ImageSize) && (HasFileTransfer)
