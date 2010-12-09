@@ -28,7 +28,7 @@ Condor plug-in description
         <sect2 id="Condor_OPTIONS_FILE"><title>Condor Options File</title>
             <para>
                 To configure additional requirements for PoD jobs on Condor, please 
-                see the <sgmltag class="attribute">condor_plugin.options_file</sgmltag> option in <xref linkend="Condor_CFG_TABLE"/> for more information.
+                see the <xref linkend="condor_plugin.options_file"/> option for more information.
             </para>
         </sect2>
     </sect1>

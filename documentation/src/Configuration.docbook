@@ -12,7 +12,7 @@
     </para>
     
     
-    <sect1 id="PoD_CFG"><title>PoD user defaults configuration</title>
+    <sect1 id="PoD_CFG" xreflabel="PoD user defaults configuration"><title>PoD user defaults configuration</title>
         <para>
             Since PoD v2.1.1 a user defaults configuration file is supported. This is the configuration entry point of PoD.
             All modules configure themselves according to that file. It must be located either in the <filename class="directory">$HOME/.PoD/</filename> directory
@@ -317,14 +317,14 @@ gui.accessibility.visual_bell=yes
                                 Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.
                             </entry>
                         </row>
-                        <row>
+                        <row id="ge_plugin.options_file" xreflabel="ge_plugin.options_file">
                             <entry>ge_plugin.options_file</entry>
                             <entry>string (default: $POD_LOCATION/etc/Job.ge.option)</entry>
                             <entry>
                                 PoD also supports an GE option file. If you want to provide some additional Grid Engine options
                                 to your PoD jobs submitted to OE cluster, to select some specific resource or something like that,
                                 than PoD gives you this possibility via an GE option file.
-                                Just create a file and set its path in ge_plugin.options_file. Write valid GE options in it.
+                                Just create a file and set its path in <xref linkend="ge_plugin.options_file"/>. Write valid GE options in it.
                                 PoD will automatically use it (if exists) while submitting GE jobs.
                                 See
                                 <ulink url="http://gridengine.sunsource.net/nonav/source/browse/~checkout~/gridengine/doc/htmlman/htmlman1/qsub.html">qsub man page of GE</ulink>
@@ -354,14 +354,14 @@ gui.accessibility.visual_bell=yes
                                 <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
                                     Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
                             </row>
-                            <row>
+                            <row id="condor_plugin.options_file" xreflabel="condor_plugin.options_file">
                                 <entry>condor_plugin.options_file</entry>
                                 <entry>string (default: $POD_LOCATION/etc/Job.condor.option)</entry>
                                 <entry>
                                     PoD is shipped with a default Condor job description file, which is used to
                                     submit PoD jobs. If users need to use additional settings or requirements, in order to tune
                                     PoD job submission, these settings can be provided via a file specified by the
-                                    condor_plugin.options_file option.
+                                    <xref linkend="condor_plugin.options_file"/> option.
                                     Settings from this file will be added to the default PoD job description file.
                                     The options file should in the format of standard condor description files.</entry>  
                             </row>

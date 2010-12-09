@@ -16,6 +16,22 @@
       	</para>
     </sect1>
     
+    <sect1 id="PoDonAFS">
+        <title>PoD on AFS</title>
+        <para>
+            Since AFS doesn't support pipes you need to change the PoD server working
+            directory in <xref linkend="PoD_CFG"/>, so that a new
+            directory will not reside on AFS anymore. Something like that should work:
+<screen>
+[server]
+#
+# PoD working directory
+#
+work_dir=/tmp/manafov/
+</screen>
+        </para>
+    </sect1>
+    
     <sect1 id="WARNING_file_is_not_readable_by_condor">
         <title>WARNING: File /afs/.../pod-worker is not readable by condor</title>
         <para>
