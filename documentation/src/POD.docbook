@@ -12,6 +12,7 @@
 <!ENTITY PBS_plugin SYSTEM "PBS_plugin.docbook">
 <!ENTITY SSH_plugin SYSTEM "SSH_plugin.docbook">
 <!ENTITY GridEngine_plugin SYSTEM "GridEngine_plugin.docbook">
+<!ENTITY Condor_plugin SYSTEM "Condor_plugin.docbook">
 <!ENTITY Cmd_line_interface SYSTEM "Cmd_line_interface.docbook">
 <!ENTITY How_to_test SYSTEM "How_to_test.docbook">
 <!ENTITY Known_Issues SYSTEM "Known_Issues.docbook">
@@ -21,7 +22,7 @@
 
 <book id="POD" lang="en">
     <bookinfo>
-        <title>"PROOF on Demand" (PoD) - v3.0</title> 
+        <title>"PROOF on Demand" (PoD) - v3.1</title> 
         <authorgroup>
             <author>
                 <firstname>Anar</firstname>
@@ -31,7 +32,7 @@
                 </affiliation>
             </author>
         </authorgroup>
-        <edition>"PROOF on Demand" v3.0</edition>
+        <edition>"PROOF on Demand" v3.1</edition>
         <copyright>
             <year>2007</year>
             <year>2008</year>
@@ -108,9 +109,14 @@
     &GridEngine_plugin;
     
     <!-- 
-     PBS plug-in
+     SSH plug-in
      -->
     &SSH_plugin;
+    
+    <!-- 
+     Condor plug-in
+     -->
+    &Condor_plugin;
     
     <!-- 
      How to test

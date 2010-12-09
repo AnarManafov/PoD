@@ -30,8 +30,10 @@
                 <command>pod-server</command>
                 <group choice="req">
                     <arg>start</arg>
+                    <arg>restart</arg>
                     <arg>stop</arg>
                     <arg>status</arg>
+                    <arg>getbins</arg>
                 </group>
             </cmdsynopsis>
         </refsynopsisdiv>
@@ -51,9 +53,15 @@
                 <varlistentry>
                     <term><option>start</option></term>
                     <listitem>
-                        <para>Start/Restart PoD server.</para>
+                        <para>Start PoD server.</para>
                     </listitem>
                 </varlistentry>
+                <varlistentry>
+                    <term><option>restart</option></term>
+                    <listitem>
+                        <para>Restart PoD server.</para>
+                    </listitem>
+                </varlistentry>                
                 <varlistentry>
                     <term><option>stop</option></term>
                     <listitem>
@@ -66,6 +74,14 @@
                         <para>Request the status of PoD server. It will show which processes are running, under which PIDs and which TCP ports are used.</para>
                     </listitem>
                 </varlistentry>
+                <varlistentry>
+                    <term><option>getbins</option></term>
+                    <listitem>
+                        <para>Force PoD server to download workers pre-compiled binaries from the PoD repository.
+                            The binaries than saved to <filename class="directory">$POD_LOCATION/bin/wn_bins</filename> directory.
+                        </para>
+                    </listitem>
+                </varlistentry>                
             </variablelist>
         </refsect1>
     </refentry>
@@ -202,7 +218,7 @@
             <para>
                 The <command>pod-user-defaults</command> command can be used to retrieve values from the PoD user defaults configuration file for any given keys.
                 The PoD user defaults configuration "<filename>PoD.cfg</filename>" is a general PoD settings file, where user can tune PoD for a specific environment.
-                The file usually can be found in <filename class="directory"><envar>$POD_LOCATION</envar>/etc</filename>.
+                The file usually can be found in <filename class="directory"><envar>$HOME</envar>/.PoD/etc</filename> or in <filename class="directory"><envar>$POD_LOCATION</envar>/etc</filename>.
             </para>
         </refsect1>
         <refsect1>
@@ -297,7 +313,7 @@
                 <command>pod-submit</command>
                 <arg><option>-h</option></arg>
                 <arg><option>-l</option></arg>
-                <arg><option>-r <replaceable>lsf|pbs|oge</replaceable></option></arg>
+                <arg><option>-r <replaceable>lsf|pbs|ge|condor</replaceable></option></arg>
                 <arg><option>-q <replaceable>queue</replaceable></option></arg>
                 <arg><option>-n <replaceable>X</replaceable></option></arg>
             </cmdsynopsis>
@@ -310,7 +326,8 @@
                 <itemizedlist>
                     <listitem><para>LSF (Load Sharing Facility),</para></listitem>
                     <listitem><para>PBS Pro/OpenPBS/Torque (Portable Batch System),</para></listitem>
-                    <listitem><para>OGE (Oracle/Sun Grid Engine).</para></listitem>
+                    <listitem><para>Grid Engine (Oracle/Sun Grid Engine),</para></listitem>
+                    <listitem><para>Condor.</para></listitem>                    
                 </itemizedlist>
             </para>
             <para>
@@ -342,9 +359,9 @@
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>-r <replaceable>lsf|pbs|oge</replaceable></option></term>
+                    <term><option>-r <replaceable>lsf|pbs|ge|condor</replaceable></option></term>
                     <listitem>
-                        <para>A name of the resource management system to use (supported: lsf, pbs, oge).</para>
+                        <para>A name of the resource management system to use (supported: lsf, pbs, ge, condor).</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>

@@ -1,0 +1,52 @@
+<!--
+Condor plug-in description
+ -->
+<chapter id="Condor_plugin">
+    <title>Condor plug-in</title>
+    <chapterinfo>
+    </chapterinfo>
+    
+    <sect1 id="Condor_GUI"><title>GUI</title>
+        <para>
+            This plug-in doesn't support GUI yet.
+        </para>
+    </sect1>
+    
+    <sect1 id="Condor_CLI"><title>CLI</title>
+        <para>
+            For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
+            Meet the CLI documentation and check out the <xref linkend="pod_submit"/> reference for further information.
+        </para>
+    </sect1>
+    
+    <sect1 id="Condor_CFG"><title>Configuration</title>
+        <sect2 id="Condor_USER_DEF"><title>Condor in PoD User Defaults</title>
+            <para>
+                There are Condor plug-in options in the PoD user defaults (see <xref linkend="Condor_CFG_TABLE"/>), which you can use to tune the plug-in.
+            </para>
+        </sect2>
+        <sect2 id="Condor_OPTIONS_FILE"><title>Condor Options File</title>
+            <para>
+                To configure additional requirements for PoD jobs on Condor, please 
+                see the <sgmltag class="attribute">condor_plugin.options_file</sgmltag> option in <xref linkend="Condor_CFG_TABLE"/> for more information.
+            </para>
+        </sect2>
+    </sect1>
+    <sect1 id="Condor_AFS"><title>Condor and AFS</title>
+        <para>
+            If your home is on AFS, than you need to give permissions to Condor to access
+            some of your PoD directories. Namely, Condor needs to have full access to the following folders:
+            <filename class="directory">$HOME/.PoD/wrk</filename> and <filename class="directory">$HOME/.PoD/log</filename>. The last path is the default path for PoD logs.
+            If you changed this path in PoD user defaults settings and a new log directory is also on AFS, than you need to open it accordingly.
+        </para>
+        <para>
+            You can do that by issuing the following commands:
+<screen>
+<command>fs setacl -dir $HOME/.PoD/wrk -acl system:anyuser rlidwk</command>
+<command>fs setacl -dir $HOME/.PoD/log -acl system:anyuser rlidwk</command>
+</screen>
+        </para>
+    </sect1>
+    
+</chapter>
+

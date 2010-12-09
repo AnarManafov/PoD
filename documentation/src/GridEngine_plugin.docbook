@@ -46,11 +46,7 @@
                 PoD also supports an GE option file. If you want to provide some additional Grid Engine options
                 to your PoD jobs submitted to OE cluster, to select some specific resource or something like that,
                 than PoD gives you this possibility via an GE option file.
-                Just create a file <filename>$POD_LOCATION/etc/Job.oge.option</filename>
-                and write valid GE options in it. If the file exists, than PoD will automatically use it while submitting GE jobs.
-                See
-                <ulink url="http://gridengine.sunsource.net/nonav/source/browse/~checkout~/gridengine/doc/htmlman/htmlman1/qsub.html">qsub man page of GE</ulink>
-                for more information on the option file (search for the "-@" option in the man page).
+                See the <sgmltag class="attribute">ge_plugin.options_file</sgmltag> option in <xref linkend="OGE_CFG_TABLE"/> for more information.
             </para>
         </sect2>
     </sect1>

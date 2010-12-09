@@ -28,8 +28,7 @@
 <command>pod-console&amp;</command>
 </screen>
                 The <xref linkend="pod_console_Server"/> shows a screen shot of pod-console's Server page. Currently PoD
-                requires two services: xrootd and pod-agent (+ oldb, a part of xrootd, if you want to use pool workers.
-                Pool workers are not officially supported).
+                requires two services: xproofd and pod-agent.
                 
                 <para><figure float="0" id="pod_console_Server">
                     <title>pod-console: Server page</title>
@@ -69,7 +68,7 @@
         <title>Job Manager</title>
         <para>
             The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
-            remoute hosts.
+            remote hosts.
             Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
             That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
             It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
@@ -90,6 +89,9 @@
             </para>
             <para>
                 <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
+            </para>
+            <para>
+                <emphasis role="bold">Condor plug-in</emphasis>, please, see <xref linkend="Condor_plugin"/>.
             </para>
         </para>
     </sect1>

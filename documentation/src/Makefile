@@ -12,6 +12,7 @@ SRC=\
         PBS_plugin.docbook\
         SSH_plugin.docbook\
         GridEngine_plugin.docbook\
+        Condor_plugin.docbook\
 	How_to_test.docbook\
 	Known_Issues.docbook\
 	Support.docbook\
@@ -60,7 +61,8 @@ HTML_OUT= \
         LSF_plugin.html\
         PBS_plugin.html\
         SSH_plugin.html\
-        GridEngine_plugin.html
+        GridEngine_plugin.html\
+        Condor_plugin.html
 
 CSS_FILES=docbook.css
 

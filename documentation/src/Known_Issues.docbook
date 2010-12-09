@@ -16,14 +16,11 @@
       	</para>
     </sect1>
     
-    <sect1 id="globus_config.h_is_missing">
-        <title>globus_config.h is missing</title>
-      	<para>
-            Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
-            (see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah - gLite Bug #31180</ulink>).
-            gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
-            to let GAW to use gLite API.       	 
-      	</para>
+    <sect1 id="WARNING_file_is_not_readable_by_condor">
+        <title>WARNING: File /afs/.../pod-worker is not readable by condor</title>
+        <para>
+            See  <xref linkend="Condor_AFS"/>
+        </para>
     </sect1>
     
     <sect1 id="MaxSlavesPerNode">
@@ -124,5 +121,15 @@ libtool: link: `/opt/globus/lib/libglobus_ftp_control_gcc32dbg.la' is not a vali
             One of the solutions would be to just get these headers from somewhere.
         </para>
     </sect1>
-    
+
+    <sect1 id="globus_config.h_is_missing">
+        <title>globus_config.h is missing</title>
+      	<para>
+            Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
+            (see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah - gLite Bug #31180</ulink>).
+            gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
+            to let GAW to use gLite API.       	 
+      	</para>
+    </sect1>
+
 </chapter>
