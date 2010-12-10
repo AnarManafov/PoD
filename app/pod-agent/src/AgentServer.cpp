@@ -65,6 +65,15 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
 CAgentServer::~CAgentServer()
 {
     deleteServerInfoFile();
+
+    // Stop PoD server
+    // This will stop all other server's processes as well
+    if( fork() == 0 )
+    {
+        string cmd( "$POD_LOCATION/bin/pod-server" );
+        smart_path( &cmd );
+        execl( "/bin/sh", "-c", cmd.c_str(), "stop", NULL );
+    }
 }
 //=============================================================================
 void CAgentServer::monitor()
