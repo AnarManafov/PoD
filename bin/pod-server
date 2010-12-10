@@ -314,11 +314,12 @@ _start()
    echo "starting xproofd..."
    xproofd -c $XPD_CFG -b -l $POD_SRV_LOGDIR/xpd.log -n PoDServer
    if (( $? != 0 )); then
+      echo "Error: can't start xproofd."
       return 1
    fi
 
    # wait for xproofd to start
-   WAIT_TIME=5
+   WAIT_TIME=10
    cnt=0
    while true; do
       xproofd_info
@@ -336,6 +337,28 @@ _start()
    ####
    echo "starting PoD agent..."
    $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --serverinfo "$SERVERINFO_FILE" --start
+      if (( $? != 0 )); then
+      echo "Error: can't start pod-agent."
+      return 1
+   fi
+
+   # wait for pod-agent to start
+   # We need to be sure, that agent is started, since it creates a server info file,
+   # which is than used by pod-prep-worker
+   WAIT_TIME=10
+   cnt=0
+   while true; do
+      if [ -f "$SERVERINFO_FILE" ]; then
+         break;
+      fi
+      cnt=$(expr $cnt + 1)
+      if [ $cnt -gt $WAIT_TIME ]; then
+         echo "WARNING: Can't detect whether pod-agent has started or not..."
+         break;
+      fi
+     # sleep 1
+   done
+
 
    # Prepare the worker package
    ####
