@@ -30,6 +30,7 @@
 #include "config.h"
 #include "worker.h"
 #include "logEngine.h"
+#include "Process.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -113,6 +114,24 @@ int main( int argc, char * argv[] )
             msg += vm["config"].as<string>();
             msg += "\"";
             throw runtime_error( msg );
+        }
+
+        // Check that PoD server is running
+        if( vm.count( "submit" ) )
+        {
+            try
+            {
+                string cmd( "$POD_LOCATION/bin/pod-server" );
+                smart_path( &cmd );
+                StringVector_t params;
+                params.push_back( "status_with_code" );
+                string output;
+                do_execv( cmd, params, 2, &output );
+            }
+            catch( exception &e )
+            {
+                throw runtime_error( "PoD server is NOT running. Please, start PoD server first." );
+            }
         }
 
         // Collect workers list
