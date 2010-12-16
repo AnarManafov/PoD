@@ -26,6 +26,10 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
 
         void printInfo( std::ostream &_stream ) const;
         void runTask( ETaskType _param );
+        bool IsLastTaskSuccess() const
+        {
+            return m_bSuccess;
+        }
 
     private:
         void submit();
@@ -36,5 +40,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
     private:
         configRecord_t m_rec;
         log_func_t m_log;
+        bool m_bSuccess;
 };
 #endif

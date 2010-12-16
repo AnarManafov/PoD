@@ -170,11 +170,32 @@ int main( int argc, char * argv[] )
             threadPool.pushTask( *iter, task_type );
         }
         threadPool.stop( true );
+
+        // Check the status of all tasks
+        iter = workers.begin();
+        iter_end = workers.end();
+        size_t g( 0 );
+        size_t b( 0 );
+        for( ; iter != iter_end; ++iter )
+        {
+            if( iter->IsLastTaskSuccess() )
+                ++g;
+            else
+                ++b;
+        }
+        ostringstream msg;
+        msg
+                << "\n*******************\n"
+                << "Successfully processed tasks: " << g << '\n'
+                << "Failed tasks: " << b << '\n'
+                << "*******************\n";
+        slog( msg.str() );
     }
     catch( exception& e )
     {
         slog( e.what() + string( "\n" ) );
         return 1;
     }
+
     return 0;
 }

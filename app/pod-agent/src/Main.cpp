@@ -1,7 +1,7 @@
 /************************************************************************/
 /**
  * @file Main.cpp
- * @brief Implementation of the "Main" function
+ * @brief Implementation of the "Main" function/Users/anar/Documents/workspace/PoD/app/pod-ssh/src/worker.cpp
  * @author Anar Manafov A.Manafov@gsi.de
  */ /*
 

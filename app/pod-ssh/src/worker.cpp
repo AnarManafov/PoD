@@ -20,7 +20,8 @@ const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec, log_func_t _log ):
     m_rec( _rec ),
-    m_log( _log )
+    m_log( _log ),
+    m_bSuccess( false )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -60,6 +61,7 @@ void CWorker::runTask( ETaskType _param )
 //=============================================================================
 void CWorker::submit()
 {
+    m_bSuccess = false;
     string cmd( "$POD_LOCATION/bin/pod-ssh-submit-worker" );
     smart_path( &cmd );
     StringVector_t params;
@@ -87,10 +89,12 @@ void CWorker::submit()
         ss << "Cmnd Output: " << outPut << "\n";
         log( ss.str() );
     }
+    m_bSuccess = true;
 }
 //=============================================================================
 void CWorker::clean()
 {
+    m_bSuccess = false;
     string cmd( "$POD_LOCATION/bin/pod-ssh-clean-worker" );
     smart_path( &cmd );
     StringVector_t params;
@@ -115,10 +119,12 @@ void CWorker::clean()
         ss << "Cmnd Output: " << outPut << "\n";
         log( ss.str() );
     }
+    m_bSuccess = true;
 }
 //=============================================================================
 void CWorker::status()
 {
+    m_bSuccess = false;
     string cmd( "$POD_LOCATION/bin/pod-ssh-status-worker" );
     smart_path( &cmd );
     StringVector_t params;
@@ -143,6 +149,7 @@ void CWorker::status()
         ss << "Cmnd Output: " << outPut << "\n";
         log( ss.str() );
     }
+    m_bSuccess = true;
 }
 //=============================================================================
 void CWorker::log( const std::string &_msg )

@@ -112,10 +112,13 @@ logMsg()
 # this part is executed locally
 logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
 
-$SSH_CMD "test -d $RDIR" 2>&1 | logMsgPipe
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
+$SSH_CMD "test -d $RDIR || exit 5" 2>&1 | logMsgPipe
+ret=${PIPESTATUS[0]}
+if (( $ret == 5 )); then
    logMsg "Worker status: CLEAN"
    exit 0
+elif (( $ret != 0 )); then
+   exit 1
 fi
 
 
