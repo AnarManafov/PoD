@@ -18,15 +18,26 @@
 #include <sys/stat.h>
 // BOOST
 
-// FIX: silence a warning until BOOST fixes it
+// FIX: silence a warning until BOOST fix it
 // boost/thread/pthread/condition_variable.hpp:53:19: warning: unused variable 'res' [-Wunused-variable]
+// clang
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #endif
+// gcc
+#if defined(__GNUG__)
+// push doesn't work for gcc 4.2 
+//#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 #include <boost/thread/thread.hpp>
 #ifdef __clang__
 #pragma clang diagnostic pop
+#endif
+#if defined(__GNUG__)
+//#pragma GCC diagnostic pop
+#pragma GCC diagnostic warning "-Wunused-variable"
 #endif
 
 #include <boost/bind.hpp>
