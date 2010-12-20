@@ -17,7 +17,18 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 // BOOST
+
+// FIX: silence a warning until BOOST fixes it
+// boost/thread/pthread/condition_variable.hpp:53:19: warning: unused variable 'res' [-Wunused-variable]
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 #include <boost/thread/thread.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+
 #include <boost/bind.hpp>
 // STD
 #include <csignal>
