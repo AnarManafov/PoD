@@ -19,7 +19,19 @@
 #define BOOST_TEST_DYN_LINK
 #define BOOST_AUTO_TEST_MAIN    // Boost 1.33
 #define BOOST_TEST_MAIN
+
+// FIX: silence a warning until BOOST fix it
+// boost/test/floating_point_comparison.hpp:251:25: warning: unused variable 'check_is_close' [-Wunused-variable]
+// boost/test/floating_point_comparison.hpp:273:25: warning: unused variable 'check_is_small' [-Wunused-variable]
+// clang
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 #include <boost/test/auto_unit_test.hpp>
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
 // pod-agent
 #include "version.h"
