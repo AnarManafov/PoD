@@ -319,7 +319,7 @@ _start()
    fi
 
    # wait for xproofd to start
-   WAIT_TIME=10
+   local WAIT_TIME=50
    cnt=0
    while true; do
       xproofd_info
@@ -345,7 +345,6 @@ _start()
    # wait for pod-agent to start
    # We need to be sure, that agent is started, since it creates a server info file,
    # which is than used by pod-prep-worker
-   WAIT_TIME=10
    cnt=0
    while true; do
       if [ -f "$SERVERINFO_FILE" ]; then
