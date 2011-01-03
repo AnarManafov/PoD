@@ -33,10 +33,11 @@
 # current working dir
 WD=$(pwd)
 #
-LOCK_FILE="$WD/PoDWorker.lock"
-PID_FILE="$WD/PoDWorker.pid"
-POD_CFG="$WD/PoD.cfg"
-USER_SCRIPT="$WD/user_worker_env.sh"
+eval LOCK_FILE="$WD/PoDWorker.lock"
+eval PID_FILE="$WD/PoDWorker.pid"
+eval POD_CFG="$WD/PoD.cfg"
+eval USER_SCRIPT="$WD/user_worker_env.sh"
+eval XPD_CFG="$WD/xpd.cf"
 # bin name:
 # <pakage>-<version>-<OS>-<ARCH>.tar.gz
 BASE_NAME="pod-wrk-bin"
@@ -54,6 +55,51 @@ logMsg()
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
     echo -e "***\t[$(date '+%a, %d %b %Y %T %z')]\t$1"
 }
+# ************************************************************************
+# ***** wait_and_kill *****
+# ************************************************************************
+wait_and_kill()
+{
+   # if after 10 sec. a given process still exists send a non-ignorable kill
+   WAIT_TIME=10
+   cnt=0
+   while $(kill -0 $1 &>/dev/null); do
+      cnt=$(expr $cnt + 1)
+      if [ $cnt -gt $WAIT_TIME ]; then
+         logMsg "Process \"$1\" doesn't want to stop. Forcing a non-ignorable kill..."
+         kill -9 $1
+         break
+      fi
+      sleep 1
+   done
+}
+# ************************************************************************
+# ***** detects pid and port of XPROOFD *****
+# ************************************************************************
+xproofd_info()
+{
+   # Every time new xproofd is started it creates <adminpath>/.xproofd.port directory.
+   # In this directory an xrd pid file is located.
+   # There is one problem with the file, is that even when xrootd/xproofd is off already,
+   # the file will be there in anyway. This complicates the algorithm of detecting of xproofd.
+
+   # find xproofd pid file
+   if [ ! -r "$XPD_CFG" ]; then
+      return 1
+   fi
+   adminpath=$(cat "$XPD_CFG" | grep "worker.adminpath" | awk '{print $3}')
+   if [ ! -d "$adminpath" ]; then
+      return 1
+   fi
+   xpd_port=$(ls -a "$adminpath" | grep xproofd | awk -F. '{print $3}')
+   xpd_pid=$(cat "$adminpath/.xproofd.$xpd_port/xrootd.pid" 2>/dev/null)
+   if [ -n "$xpd_pid" ]; then
+      kill -0 $xpd_pid &>/dev/null
+      if (( $? != 0 )) ; then
+         xpd_pid=""
+      fi
+   fi
+}
 #=============================================================================
 # ***** clean_up *****
 #=============================================================================
@@ -61,24 +107,27 @@ logMsg()
 clean_up()
 {
     logMsg "Starting the cleaning procedure..."
-    # Try to kill pod-agent by first sending a TERM signal
-    # And if after 10 sec. it still exists send a non-ignorable kill
-    WAIT_TIME=10
-    kill $PODAGENT_PID &>/dev/null
-    cnt=0
-    while $(kill -0 $PODAGENT_PID &>/dev/null); do
-       cnt=$(expr $cnt + 1)
-       if [ $cnt -gt $WAIT_TIME ]; then
-          kill -9 $PODAGENT_PID
-          break
-       fi
-       sleep 1
-    done
 
-    # force kill of xproofd and proof processes
-    # pod-agent will shutdown automatically if there will be no xproofd 
-    pkill -9 -U $UID xproofd
-    pkill -9 -U $UID proofserv
+    # shut down PROOF
+    xproofd_info
+    if [ -n "$xpd_pid" ]; then
+       # kill all proofserv, which are children of our xproofd.
+       # PROOF sometime can't properly clean them and it could give us
+       # some problem next time we start PROOF session
+       for i in `ps -ef| awk '$3 == '$xpd_pid' { print $2 }'`
+       do
+         logMsg "killing proofserv: $i"
+         kill -9 $i &>/dev/null
+       done
+    fi
+
+    # Try to stop the server by first sending a TERM signal
+    # And if after 10 sec. it still exists send a non-ignorable kill
+    logMsg "Gracefully shut down PoD worker process(es): $xpd_pid $PODAGENT_PID"
+    kill $PODAGENT_PID $xpd_pid &>/dev/null
+
+    wait_and_kill $PODAGENT_PID
+    wait_and_kill $xpd_pid
     
     # archive and remove the local proof directory
     proof_dir="$WD/proof"
