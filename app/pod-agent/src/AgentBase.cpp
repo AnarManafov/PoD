@@ -27,7 +27,7 @@
 #endif
 // gcc
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
-// push doesn't work for gcc 4.2 
+// push doesn't work for gcc 4.2
 //#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
