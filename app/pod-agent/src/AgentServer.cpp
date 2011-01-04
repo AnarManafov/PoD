@@ -64,6 +64,9 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
 //=============================================================================
 CAgentServer::~CAgentServer()
 {
+    // Shut down all WNs in admin. channel
+    shutdownWNs();
+    
     deleteServerInfoFile();
 
     // Stop PoD server
@@ -749,4 +752,28 @@ void CAgentServer::createServerInfoFile()
             << "host=" << srvHost << "\n"
             << "port=" << m_agentServerListenPort << "\n"
             << endl;
+}
+//=============================================================================
+void CAgentServer::shutdownWNs()
+{
+    InfoLog("Sending a shut down signal to all WNs in admin. channel.");
+    workersMap_t::iterator wrk_iter = m_adminConnections.begin();
+    workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
+    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+    {
+        if( wrk_iter->first <= 0 )
+            continue;
+        
+        try
+        {
+            // send shut down signal
+            wrk_iter->second.m_requests.push( cmdSHUTDOWN );
+            sendServerRequest( *wrk_iter );
+        }
+        catch( exception & e )
+        {
+            WarningLog( 0, e.what() );
+            continue;
+        }
+    }
 }

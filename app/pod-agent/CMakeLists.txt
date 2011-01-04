@@ -44,6 +44,21 @@ set( SOURCE_FILES
     ./src/ProtocolCommands.cpp
     ./src/ProofStatusFile.cpp
 )
+set( SRC_HDRS
+     ./src/Agent.h
+     ./src/AgentClient.h
+     ./src/IdleWatch.h
+     ./src/Options.h
+     ./src/PROOFAgent.h
+     ./src/Protocol.h
+     ./src/ThreadPool.h
+     ./src/AgentBase.h
+     ./src/AgentServer.h
+     ./src/Node.h
+     ./src/PARes.h
+     ./src/ProofStatusFile.h
+     ./src/ProtocolCommands.h
+)
 
 set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
 if(local_boost_version VERSION_GREATER "1.33.1")
@@ -63,7 +78,11 @@ include_directories(
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-add_executable(pod-agent ${SOURCE_FILES})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-agent ${SOURCE_FILES} ${SRC_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-agent ${SOURCE_FILES})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-agent

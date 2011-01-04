@@ -136,7 +136,8 @@ namespace PROOFAgent
             void usePacketForwarding( workersMap_t::value_type &_wrk );
             void sendServerRequest( workersMap_t::value_type &_wrk );
             void createServerInfoFile();
-
+            void shutdownWNs();
+        
         private:
             MiscCommon::INet::Socket_t f_serverSocket;
             Sockets_type m_socksToSelect;
