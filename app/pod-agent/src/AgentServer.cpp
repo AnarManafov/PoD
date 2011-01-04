@@ -113,7 +113,7 @@ void CAgentServer::monitor()
 
         if( graceful_quit )
         {
-            // wake up (from "select") the main thread, so that it can update it self
+            // wake up (from 'select') the main thread, so that it can update it self
             if( write( m_fdSignalPipe, "1", 1 ) < 0 )
                 FaultLog( erError, "Can't signal to the main thread via a named pipe: " + errno2str() );
 
@@ -152,7 +152,7 @@ void CAgentServer::run()
 
         createServerInfoFile();
 
-        InfoLog( "Entering into the main \"select\" loop..." );
+        InfoLog( "Entering into the main 'select' loop..." );
         while( true )
         {
             // Checking whether signal has arrived
@@ -164,7 +164,7 @@ void CAgentServer::run()
             }
 
             // ------------------------
-            // A Global "select"
+            // A Global 'select'
             // ------------------------ 
             mainSelect( server );
         }
@@ -263,7 +263,13 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
     if( retval < 0 )
     {
-        FaultLog( erError, "Server socket got error while calling \"select\": " + errno2str() );
+        if( EINTR == errno )
+        {
+            InfoLog( "The main 'select' routine was interrupted by a signal." );
+            return;
+        }
+
+        FaultLog( erError, "Server socket got error while calling 'select': " + errno2str() );
         return;
     }
 
@@ -640,7 +646,7 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
         new CNode( _wrk.first, localPROOFclient.detach(),
                    strPROOFCfgString, m_Data.m_common.m_agentNodeReadBuffer ) );
     node->disable();
-    // add new worker's sockets to the main "select"
+    // add new worker's sockets to the main 'select'
     m_socksToSelect.push_back( node );
     // Update proof.cfg according to a current number of active workers
     updatePROOFCfg();
