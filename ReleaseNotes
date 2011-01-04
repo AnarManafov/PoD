@@ -12,10 +12,10 @@ pod: The PoD worker script cleans now precisely only own processes. It makes it 
 pod: The "pod-server" command learned the "restart" and "getbins" options.
 pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
 pod: The OGE plug-in was renamed to GE (Grid Engine).
-pod: This release fixes a number of minor issues.
 pod: Stop all processes of PoD server, when pod-agent server detects idle timeout. In older versions, only pod-agent was stopped.
-pod: SSH plug-in: Warn user that PoD server is running, before "submit" is executed.
+pod: SSH plug-in: Warn users that PoD server is running, before "submit" is executed.
 pod: SSH plug-in: Better error handling in case of "status" and "clean".
+pod: This release also fixes a number of minor issues.
 pod-user-defaults: updated user defaults configuration file - v0.7.
 pod-user-defaults: renamed the oge_plugin section to ge_plugin.
 pod-user-defaults: added the ge_plugin.options_file option.
