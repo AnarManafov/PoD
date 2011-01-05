@@ -102,7 +102,7 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
             //    break;
         case cmdGET_HOST_INFO:
             {
-                InfoLog( "The server requests host information." );
+                InfoLog( "Server requests host information." );
                 SHostInfoCmd h;
                 get_cuser_name( &h.m_username );
                 get_hostname( &h.m_host );
@@ -155,7 +155,7 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
             }
             break;
         case cmdSHUTDOWN:
-            InfoLog( "Shutting down, by the server's request..." );
+            InfoLog( "Server requests to shut down..." );
             graceful_quit = true;
             throw runtime_error( "stop admin channel." );
         default:
