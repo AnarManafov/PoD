@@ -1,4 +1,5 @@
 # The following part of the file will be added to Job.condor file
 # You can change/add any condor job description key here, according to your needs and requirements.
 
-Requirements = (regexp("pcuwtwin04",Machine)||regexp("pcuwtwin05",Machine))&&(Arch == "X86_64") && (OpSys == "LINUX") && (Disk >=DiskUsage) && ((Memory * 1024) >= ImageSize) && (HasFileTransfer)
+#Requirements = (regexp("pcuwtwin04",Machine)||regexp("pcuwtwin05",Machine))&&(Arch == "X86_64") && (OpSys == "LINUX") && (Disk >=DiskUsage) && ((Memory * 1024) >= ImageSize) && (HasFileTransfer)
+Requirements = (OpSys == "LINUX") && (Disk >=DiskUsage) && ((Memory * 1024) >= ImageSize) && (HasFileTransfer)
