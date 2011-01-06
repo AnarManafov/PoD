@@ -69,9 +69,6 @@ stagein()
 ###############################################################
 stageout()
 {
-   # we need to define lib path to ensure that we use proper libraries
-   export PATH=$WRK_DIR:$PATH 
-   export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
    eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key ge_plugin.upload_job_log)
 
    if [ "$upload_job_log" = "1" ]; then
