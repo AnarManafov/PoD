@@ -69,16 +69,19 @@ stagein()
 ###############################################################
 stageout()
 {
- eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key ge_plugin.upload_job_log)
+   # we need to define lib path to ensure that we use proper libraries
+   export PATH=$WRK_DIR:$PATH 
+   export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
+   eval upload_job_log=$($WRK_DIR/pod-user-defaults -c $WRK_DIR/PoD.cfg --key ge_plugin.upload_job_log)
 
- if [ "$upload_job_log" = "1" ]; then
-    echo "Staging the log files out..."
-    echo "log dir: "$UI_LOG_DIR
+   if [ "$upload_job_log" = "1" ]; then
+      echo "Staging the log files out..."
+      echo "log dir: "$UI_LOG_DIR
 
-    cp $WRK_DIR/proof_log.tgz $UI_LOG_DIR/proof_log.$SGE_TASK_ID.tgz
-    cp $WRK_DIR/xpd.log $UI_LOG_DIR/xpd.$SGE_TASK_ID.log
-    cp $WRK_DIR/pod-agent.client.log $UI_LOG_DIR/pod-agent.client.$SGE_TASK_ID.log 
-fi
+      cp $WRK_DIR/proof_log.tgz $UI_LOG_DIR/proof_log.$SGE_TASK_ID.tgz
+      cp $WRK_DIR/xpd.log $UI_LOG_DIR/xpd.$SGE_TASK_ID.log
+      cp $WRK_DIR/pod-agent.client.log $UI_LOG_DIR/pod-agent.client.$SGE_TASK_ID.log 
+   fi
 }
 
 echo "Starting PoD worker on the host: $HOSTNAME"
@@ -94,6 +97,10 @@ if [ -z $WRK_DIR ]; then
 fi
 echo "working directory: " $WRK_DIR
 cd $WRK_DIR || exit 1
+# global variables
+# we need to define lib path to ensure that we use proper libraries
+export PATH=$WRK_DIR:$PATH 
+export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
 ###############################################################
 #
 # input files.

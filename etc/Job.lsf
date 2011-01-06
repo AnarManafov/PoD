@@ -71,10 +71,6 @@ stagein()
 ###############################################################
 stageout()
 {
-   # global variables
-   # we need to define lib path to ensure that we use proper libraries
-   export PATH=$WRK_DIR:$PATH 
-   export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
    user_defaults="$WRK_DIR/pod-user-defaults"
    pod_cfg=$WRK_DIR/PoD.cfg
    #
@@ -108,6 +104,10 @@ if [ -z $WRK_DIR ]; then
 fi
 echo "working directory: " $WRK_DIR
 cd $WRK_DIR || exit 1
+# global variables
+# we need to define lib path to ensure that we use proper libraries
+export PATH=$WRK_DIR:$PATH 
+export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
 ###############################################################
 #
 # input files.
