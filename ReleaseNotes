@@ -1,6 +1,6 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v3.1 (not yet released)
+## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.
 pod: Implemented a Condor plug-in for PoD. The plug-in supports only PoD CLI, so far. 
 pod: The PoD server starter script is now much safer and smarter.
@@ -9,11 +9,11 @@ pod: The PoD server starter script is now much safer and smarter.
      It is also a factor of 3 faster now.
 pod: The PoD worker script cleans now precisely only own processes. It makes it possible to start several different PoD workers under
      the same user ID (this is important for AliEn integration).
-pod: The "pod-server" command learned the "restart" and "getbins" options.
-pod: User's environment script name changed: from "user.worker_env.sh" to "user_worker_env.sh".
+pod: The "pod-server" command learned "restart" and "getbins" options.
+pod: User's environment script name changed from "user.worker_env.sh" to "user_worker_env.sh".
 pod: The OGE plug-in was renamed to GE (Grid Engine).
 pod: Stop all processes of PoD server, when pod-agent server detects idle timeout. In older versions, only pod-agent was stopped.
-pod: SSH plug-in: Warn users that PoD server is running, before "submit" is executed.
+pod: SSH plug-in: Warn users that PoD server is not running, before "submit" is executed.
 pod: SSH plug-in: Better error handling in case of "status" and "clean".
 pod: This release also fixes a number of minor issues.
 pod-user-defaults: updated user defaults configuration file - v0.7.
