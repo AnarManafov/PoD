@@ -1,6 +1,9 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v3.3 (not yet released)
+## v3.4 (not yet released)
+pod: Starting with version 3.4, PoD changes a bit its version numbering scheme.
+     It reflects the fact that PoD is both a production system and a research project.
+     PoD now uses odd minor version numbers to denote development releases and even minor version numbers to denote stable releases.
 
 ## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.
