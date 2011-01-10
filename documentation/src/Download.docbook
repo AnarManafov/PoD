@@ -6,8 +6,39 @@ Download
 <chapterinfo>
    <publisher><publishername>$LastChangedBy$</publishername></publisher>
 </chapterinfo>
+<sect1><title>Download location</title>
 <para>
    Please, use PoD's <ulink url="http://pod.gsi.de/download.html">Download</ulink> page to
       get the latest version.
 </para>
+</sect1>
+
+<sect1><title>PoD Version Number Scheme</title>
+   <para>
+      PoD version has a form of MAJOR.MINOR(.PATCH), where:
+      <itemizedlist>
+                <listitem>
+                <para>
+                      MAJOR - the major number is increased when there are significant jumps in functionality.
+                </para>
+                </listitem>
+                <listitem>
+                <para>
+                      MINOR - the minor number is incremented when only minor features or significant fixes have been added.
+                </para>
+                </listitem>
+                <listitem>
+                <para>
+                      PATCH - represents a number of commits (patches) to a current major.minor pair.
+                </para>
+                </listitem>
+      </itemizedlist>
+   </para>
+   <note><para>
+   Starting with version 3.4, PoD changes its version numbering.
+     It reflects the fact that PoD is both a production system and a research project.
+     PoD now uses odd minor version numbers to denote development releases and even minor version numbers to denote stable releases.
+   </para></note>
+
+</sect1>
 </chapter>
