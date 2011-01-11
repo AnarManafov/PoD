@@ -14,7 +14,7 @@ POD_SRC="/misc/manafov/PoD/BinBuilds"
 SSH_CMD="ssh -o userknownhostsfile=/dev/null -o stricthostkeychecking=no"
 # hard-codded because of key changing problem (local GSI issue)
 HOST64="lxi021.gsi.de"
-HOST32="lxi009.gsi.de "
+HOST32="lxi027.gsi.de "
 
 if [ -z "$1" ]; then
     # executing locally
