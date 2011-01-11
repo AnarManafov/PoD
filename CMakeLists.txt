@@ -185,6 +185,8 @@ endif(QT4_FOUND)
 
   add_subdirectory( app/MiscCommon )
 
+  add_subdirectory( app/pod-info )
+
   if(BUILD_pod_agent)
     message(STATUS "Build pod-agent - YES")
     add_subdirectory ( app/pod-agent )

@@ -4,7 +4,9 @@
 pod: Starting with version 3.4, PoD changes a bit its version numbering scheme.
      It reflects the fact that PoD is both a production system and a research project.
      PoD now uses odd minor version numbers to denote development releases and even minor version numbers to denote stable releases.
-     (see User's Manual for more details, section 3.2 "PoD Version Number Scheme")
+     (see User's Manual for more details, section 3.2 "PoD Version Number Scheme").
+pod: fixed [Bug 3]: pod-agent doesn't stop PoD server on Linux when idle is detected.
+pod: fixed [Bug 4]: In some cases PoD server could forget to shut down xproof processes.
 
 ## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.
