@@ -388,7 +388,14 @@ start()
       echo "PoD Server is running already."
       echo "If you observer problems with it, try to restart it."
       return 0
-   fi 
+   fi
+
+       
+   if [ -n "$xpd_pid" -o  -n "$agent_pid" ]; then
+      restart $1
+      return 1
+   fi
+
    # S T A R T I N G the server
    _start $1 
 }
