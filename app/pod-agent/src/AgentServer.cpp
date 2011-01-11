@@ -75,7 +75,7 @@ CAgentServer::~CAgentServer()
     {
         string cmd( "$POD_LOCATION/bin/pod-server" );
         smart_path( &cmd );
-        execl( "/bin/sh", "-c", cmd.c_str(), "stop", NULL );
+        execl( "/bin/bash", "-c", cmd.c_str(), "stop", NULL );
     }
 }
 //=============================================================================
