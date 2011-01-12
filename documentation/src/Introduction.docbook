@@ -87,10 +87,7 @@
                     <listitem><para>Condor,</para></listitem>
                     <listitem><para>gLite.</para></listitem>
                 </itemizedlist>
-                <para>
-                    In future versions more plug-ins will be implemented (AliEn, Condor and some more).
-                </para>
-            </listitem>
+             </listitem>
             
         </itemizedlist>
         

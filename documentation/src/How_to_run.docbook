@@ -69,7 +69,7 @@
         <para>
             The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
             remote hosts.
-            Starting from version 2.0.7 the PoD project supports plug-ins. Submitting a remote jobs is done via a job manager plug-ins.
+            Starting from version 2.0.7 the PoD project supports plug-ins. To submit remote jobs job manager plug-ins are used.
             That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
             It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
         </para>
