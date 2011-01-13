@@ -73,9 +73,17 @@ CAgentServer::~CAgentServer()
     // This will stop all other server's processes as well
     if( fork() == 0 )
     {
-        string cmd( "$POD_LOCATION/bin/pod-server" );
+        // invoking a new bash process can in some case overwrite env. vars
+        // To be shure that our env is there, we call PoD_env.sh
+        string cmd_env( "$POD_LOCATION/PoD_env.sh" );
+        smart_path( &cmd_env );
+        string cmd( "$POD_LOCATION/bin/pod-server stop" );
         smart_path( &cmd );
-        execl( "/bin/bash", "-c", cmd.c_str(), "stop", NULL );
+        string arg("source ");
+        arg += cmd_env;
+        arg += " ; ";
+        arg += cmd; 
+        execl( "/bin/bash", "bash", "-c", arg.c_str(), NULL );
     }
 }
 //=============================================================================
