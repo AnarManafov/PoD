@@ -56,6 +56,6 @@ bool CEnvironment::checkForLocalServer()
     smart_path( &userPoD );
     userPoD += "etc/server_info.cfg";
     m_isLocalServer = does_file_exists( userPoD );
-    
+
     return m_isLocalServer;
 }

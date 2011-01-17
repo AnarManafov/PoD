@@ -7,10 +7,20 @@
 //
 #ifndef SERVER_H
 #define SERVER_H
-
-class CServer
+//=============================================================================
+//STD
+#include <string>
+//=============================================================================
+namespace pod_info
 {
-    
-};
+    class CServer
+    {
+        public:
+            CServer( const std::string &_host, int _port );
 
+        private:
+            std::string m_host;
+            int m_port;
+    };
+}
 #endif
