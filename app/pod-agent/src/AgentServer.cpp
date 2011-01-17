@@ -79,10 +79,10 @@ CAgentServer::~CAgentServer()
         smart_path( &cmd_env );
         string cmd( "$POD_LOCATION/bin/pod-server stop" );
         smart_path( &cmd );
-        string arg("source ");
+        string arg( "source " );
         arg += cmd_env;
         arg += " ; ";
-        arg += cmd; 
+        arg += cmd;
         execl( "/bin/bash", "bash", "-c", arg.c_str(), NULL );
     }
 }

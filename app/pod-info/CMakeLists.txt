@@ -34,16 +34,15 @@ endif(DOXYGEN_FOUND)
 
 set( SOURCE_FILES
     ./src/main.cpp
+    ./src/Environment.cpp
+    ./src/Server.cpp
 )
-#set( SRC_HDRS
-#)
+set( SRC_HDRS
+    ./src/Environment.h
+    ./src/Server.h
+)
 
-#set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
-#if(local_boost_version VERSION_GREATER "1.33.1")
-#  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
-#endif(local_boost_version VERSION_GREATER "1.33.1")
-
-#set(Boost_libs_for_pod_info ${Boost_THREAD_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_libs})
+set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY})
 
 
 #
@@ -51,8 +50,8 @@ set( SOURCE_FILES
 #
 include_directories( 
     ${PROJECT_BINARY_DIR}/src 
-    ${MiscCommon_LOCATION} )
-   # ${Boost_INCLUDE_DIRS} )
+    ${MiscCommon_LOCATION}
+    ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -62,10 +61,10 @@ else (CMAKE_GENERATOR STREQUAL "Xcode")
     add_executable(pod-info-new ${SOURCE_FILES})
 endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
-#target_link_libraries (
-#    pod-info-new
-#    ${Boost_libs_for_pod_info}
-#)
+target_link_libraries (
+    pod-info-new
+    ${Boost_libs_for_pod_info}
+)
 
 install(TARGETS pod-info-new DESTINATION bin)
 

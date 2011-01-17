@@ -185,11 +185,11 @@ endif(QT4_FOUND)
 
   add_subdirectory( app/MiscCommon )
 
-  add_subdirectory( app/pod-info )
-
   if(BUILD_pod_agent)
     message(STATUS "Build pod-agent - YES")
     add_subdirectory ( app/pod-agent )
+    message(STATUS "Build pod-info - YES")
+    add_subdirectory( app/pod-info )
   else(BUILD_pod_agent)
     message(STATUS "Build pod-agent - NO")
   endif(BUILD_pod_agent)
