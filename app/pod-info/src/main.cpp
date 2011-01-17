@@ -76,10 +76,10 @@ string printVersion( const CEnvironment &_env, const string &_srvVer )
             << "PoD location: " << _env.PoDPath() << "\n"
             << "Local Version: " << _env.version() << "\n";
 
-    if( _env.isLocalServer() )
-        ss << "Server Version: " << _env.version();
-    else
-        ss << "Server Version: " << "getting a remoute server info is not implemented yet";
+//    if( _env.isLocalServer() )
+//        ss << "Server Version: " << _env.version();
+//    else
+//        ss << "Server Version: " << "getting a remoute server info is not implemented yet";
 
     return ( ss.str() );
 }

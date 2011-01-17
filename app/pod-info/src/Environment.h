@@ -29,6 +29,14 @@ class CEnvironment
         {
             return m_isLocalServer;
         }
+        std::string serverHost() const
+        {
+            return m_srvHost;
+        }
+        unsigned int serverPort() const
+        {
+            return m_srvPort;
+        }
 
     private:
         void getLocalVersion();
@@ -38,6 +46,8 @@ class CEnvironment
         std::string m_PoDPath;
         std::string m_localVer;
         bool m_isLocalServer;
+        std::string m_srvHost;
+        unsigned int m_srvPort;
 };
 
 #endif

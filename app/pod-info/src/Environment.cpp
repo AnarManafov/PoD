@@ -7,6 +7,10 @@
 //
 //=============================================================================
 #include "Environment.h"
+// BOOST
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
 // STD
 #include <sstream>
 #include <stdexcept>
@@ -17,8 +21,11 @@
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
+namespace bpo = boost::program_options;
 //=============================================================================
-CEnvironment::CEnvironment(): m_isLocalServer( false )
+CEnvironment::CEnvironment():
+    m_isLocalServer( false ),
+    m_srvPort( 0 )
 {
 
 }
@@ -55,7 +62,31 @@ bool CEnvironment::checkForLocalServer()
     string userPoD( "~/.PoD/" );
     smart_path( &userPoD );
     userPoD += "etc/server_info.cfg";
-    m_isLocalServer = does_file_exists( userPoD );
+    ifstream f( userPoD.c_str() );
+    if( !f.is_open() )
+    {
+        m_isLocalServer = false;
+        return false;
+    }
+
+    // read server info file
+    bpo::variables_map keys;
+    bpo::options_description options(
+        "Agent's server info config" );
+    options.add_options()
+    ( "server.host", bpo::value<string>(), "" )
+    ( "server.port", bpo::value<unsigned int>(), "" )
+    ;
+
+    // Parse the config file
+    bpo::store( bpo::parse_config_file( f, options ), keys );
+    bpo::notify( keys );
+    if( keys.count( "server.host" ) )
+        m_srvHost = keys["server.host"].as<string> ();
+    if( keys.count( "server.port" ) )
+        m_srvPort = keys["server.port"].as<unsigned int> ();
+
+    m_isLocalServer = true;
 
     return m_isLocalServer;
 }
