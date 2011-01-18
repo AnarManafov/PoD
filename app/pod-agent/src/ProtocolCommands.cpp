@@ -89,6 +89,30 @@ void SHostInfoCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
         m_host.push_back( c );
     }
 
+    for( ; iter != iter_end; ++iter, ++idx )
+    {
+        char c( *iter );
+        if( '\0' == c )
+        {
+            ++iter;
+            ++idx;
+            break;
+        }
+        m_version.push_back( c );
+    }
+
+    for( ; iter != iter_end; ++iter, ++idx )
+    {
+        char c( *iter );
+        if( '\0' == c )
+        {
+            ++iter;
+            ++idx;
+            break;
+        }
+        m_PoDPath.push_back( c );
+    }
+
     if( _data.size() < size() )
         throw std::runtime_error( "Protocol message data is too short" );
 
@@ -101,6 +125,10 @@ void SHostInfoCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
     std::copy( m_username.begin(), m_username.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
     std::copy( m_host.begin(), m_host.end(), std::back_inserter( *_data ) );
+    _data->push_back( '\0' );
+    std::copy( m_version.begin(), m_version.end(), std::back_inserter( *_data ) );
+    _data->push_back( '\0' );
+    std::copy( m_PoDPath.begin(), m_PoDPath.end(), std::back_inserter( *_data ) );
     _data->push_back( '\0' );
 
     _data->push_back( m_proofPort & 0xFF );

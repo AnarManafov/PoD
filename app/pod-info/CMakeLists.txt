@@ -36,21 +36,25 @@ set( SOURCE_FILES
     ./src/main.cpp
     ./src/Environment.cpp
     ./src/Server.cpp
+    ${PROTOCOL_FILES_LOCATION}/Protocol.cpp
+    ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
     ./src/Server.h
+    ${PROTOCOL_FILES_LOCATION}/Protocol.h
+    ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.h
 )
 
 set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY})
-
 
 #
 ##  executable
 #
 include_directories( 
-    ${PROJECT_BINARY_DIR}/src 
+    ${PROJECT_BINARY_DIR}/src
     ${MiscCommon_LOCATION}
+    ${PROTOCOL_FILES_LOCATION}
     ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")

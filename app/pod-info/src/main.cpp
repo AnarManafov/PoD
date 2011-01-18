@@ -22,6 +22,7 @@
 // pod-info
 #include "version.h"
 #include "Environment.h"
+#include "Server.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
@@ -69,17 +70,21 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     return true;
 }
 //=============================================================================
-string printVersion( const CEnvironment &_env, const string &_srvVer )
+string printVersion( const CEnvironment &_env, const pod_info::CServer &_srv )
 {
+    PROOFAgent::SHostInfoCmd srvHostInfo;
+    _srv.getSrvHostInfo( &srvHostInfo );
+
     ostringstream ss;
     ss
             << "PoD location: " << _env.PoDPath() << "\n"
             << "Local Version: " << _env.version() << "\n";
 
-//    if( _env.isLocalServer() )
-//        ss << "Server Version: " << _env.version();
-//    else
-//        ss << "Server Version: " << "getting a remoute server info is not implemented yet";
+    ss
+            << "Server PoD location: "
+            << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
+            << srvHostInfo.m_PoDPath << "\n"
+            << "Server Version: " << srvHostInfo.m_version;
 
     return ( ss.str() );
 }
@@ -95,10 +100,28 @@ int main( int argc, char *argv[] )
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
+        string srvHost;
+        unsigned int srvPort( 0 );
+        // try to connect to PoD server
+        if( env.isLocalServer() )
+        {
+            srvHost = env.serverHost();
+            srvPort = env.serverPort();
+        }
+        else
+        {
+            // TODO: Not implemented yet
+        }
+        
+        if( 0 == srvPort)
+            throw runtime_error( "Can't connect to PoD server. Please check that the server is running." );
+        
+        pod_info::CServer srv( srvHost, srvPort );
+
         // Show version information
         if( options.m_version )
         {
-            cout << printVersion( env, "" ) << endl;
+            cout << printVersion( env, srv ) << endl;
             return 0;
         }
     }

@@ -29,16 +29,22 @@ const uint16_t g_protocolVersion = 2;
 // v3
 // added: cmdGET_WRK_NUM
 //
+// v4
+// added: cmdUIConnect
+// added: cmdUIConnectionReady
 namespace PROOFAgent
 {
 //=============================================================================
     enum ECmdType
     {
-        // > > > > > protocol v2 < < < < <
         cmdUNKNOWN = -1,
 
         cmdVERSION = 1,
         //   cmdVERSION_BAD = cmdVERSION + 1, // NOT Implemented yet
+
+        // these command are used for PoD UI communication
+        cmdUIConnect = 5,
+        cmdUIConnectionReady = cmdUIConnect + 1,
 
         cmdHOST_INFO = 10,
         cmdGET_HOST_INFO = cmdHOST_INFO + 1,
@@ -56,7 +62,6 @@ namespace PROOFAgent
 
         // cmdKillPROOFSERV =  // NOT Implemented yet
 
-        // > > > > > protocol v3 < < < < <
         cmdGET_WRK_NUM = 50, // request a number of PROOF workers, which pod wn want to spawn
         cmdWRK_NUM = cmdGET_WRK_NUM + 1 // answer with number of PROOF wns
     };
@@ -114,6 +119,8 @@ namespace PROOFAgent
             size_t size( m_username.size() + 1 );
             size += m_host.size() + 1;
             size += sizeof( m_proofPort );
+            size += m_version.size() + 1;
+            size += m_PoDPath.size() + 1;
             return size;
         }
         void normalizeToLocal();
@@ -129,11 +136,16 @@ namespace PROOFAgent
 
         std::string m_username;
         std::string m_host;
+        std::string m_version;
+        std::string m_PoDPath;
         uint16_t m_proofPort;
     };
     inline std::ostream &operator<< ( std::ostream &_stream, const SHostInfoCmd &val )
     {
-        return _stream << val.m_username << ":" << val.m_host << ":" << val.m_proofPort;
+        _stream
+                << val.m_username << ":" << val.m_host << ":" << val.m_proofPort
+                << ":" << val.m_version << ":" << val.m_PoDPath;
+        return _stream;
     }
 //=============================================================================
     struct SIdCmd: public SBasicCmd<SIdCmd>
@@ -160,8 +172,6 @@ namespace PROOFAgent
     {
         return _stream << _val.m_id;
     }
-//=============================================================================
-
 }
 
 #endif /* PROTOCOLMESSAGES_H_ */

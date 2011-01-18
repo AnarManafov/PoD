@@ -10,17 +10,33 @@
 //=============================================================================
 //STD
 #include <string>
+// MiscCommon
+#include "INet.h"
+// pod-agent
+#include "Protocol.h"
+#include "ProtocolCommands.h"
+//=============================================================================
+namespace inet = MiscCommon::INet;
 //=============================================================================
 namespace pod_info
 {
     class CServer
     {
+            enum Requests { Req_Host_Info };
         public:
-            CServer( const std::string &_host, int _port );
+            CServer( const std::string &_host, unsigned int _port );
+            void getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const;
+
+        private:
+            void processAdminConnection( MiscCommon::BYTEVector_t *_data,
+                                         int _serverSock, CServer::Requests _req ) const;
+            int processProtocolMsgs( MiscCommon::BYTEVector_t *_data, int _serverSock,
+                                     PROOFAgent::CProtocol * _protocol,
+                                     CServer::Requests _req ) const;
 
         private:
             std::string m_host;
-            int m_port;
+            unsigned int m_port;
     };
 }
 #endif

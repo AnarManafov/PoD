@@ -21,6 +21,8 @@
 #include "ErrorCode.h"
 #include "INet.h"
 #include "SysHelper.h"
+//  pod-agent
+#include "version.h"
 //=============================================================================
 using namespace std;
 using namespace PROOFAgent;
@@ -440,6 +442,11 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                 ss << "[get a number of PROOF workers]";
                 _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_WRK_NUM ) );
                 break;
+            case cmdUIConnectionReady:
+                // server is ready to accept UI requests
+                ss << "[server is ready to accept UI requests]";
+                _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUIConnectionReady ) );
+                break;
             default:
                 ss << "[NO COMMAND]";
                 WarningLog( 0, "unexpected command has been found in the server requests queue." );
@@ -460,7 +467,9 @@ void CAgentServer::processAdminConnection( workersMap_t::value_type &_wrk )
         case CProtocol::stDISCONNECT:
             {
                 stringstream ss;
-                ss << "Worker " << _wrk.second.string() << " has just dropped the connection";
+                ss
+                        << "Client "
+                        << _wrk.second.string() << " has just dropped the connection";
                 InfoLog( ss.str() );
                 close( _wrk.first );
                 _wrk.first = -1;
@@ -498,7 +507,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                     ss
                             << "Shutting the worker down: "
                             << _wrk.second.string()
-                            << ". It has incompatible protocol version.";
+                            << ". Incompatible protocol version.";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
                     break;
@@ -511,6 +520,47 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 _wrk.second.m_requests.push( cmdGET_WRK_NUM );
                 // request client's host information
                 _wrk.second.m_requests.push( cmdGET_HOST_INFO );
+            }
+            break;
+        case cmdUIConnect:
+            {
+                // This command indicates, that a PoD UI is trying to connect
+                SVersionCmd v;
+                v.convertFromData( data );
+                // so far we require all versions to be the same
+                if( v.m_version != CProtocol::version() )
+                {
+                    stringstream ss;
+                    ss
+                            << "Shutting the UI connection down: "
+                            << _wrk.second.string()
+                            << ". Incompatible protocol version.";
+                    InfoLog( ss.str() );
+                    _wrk.second.m_requests.push( cmdSHUTDOWN );
+                    break;
+                }
+                // Server is ready to answer UI requests
+                _wrk.second.m_requests.push( cmdUIConnectionReady );
+                stringstream ss_msg;
+                ss_msg
+                        << "Accepting the connetion from PoD UI: "
+                        << _wrk.second.string();
+                InfoLog( ss_msg.str() );
+            }
+            break;
+        case cmdGET_HOST_INFO:
+            {
+                InfoLog( "Client requests host information." );
+                SHostInfoCmd h;
+                get_cuser_name( &h.m_username );
+                get_hostname( &h.m_host );
+                h.m_version = PROJECT_VERSION_STRING;
+                h.m_PoDPath = "$POD_LOCATION";
+                smart_path( &h.m_PoDPath );
+                h.m_proofPort = 0;
+                BYTEVector_t data_to_send;
+                h.convertToData( &data_to_send );
+                _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
             }
             break;
         case cmdID:
