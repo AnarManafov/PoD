@@ -31,11 +31,14 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 struct SOptions
 {
-    SOptions(): m_version( false )
+    SOptions(): 
+    m_version( false ),
+    m_connectionString(false)
     {
     }
 
     bool m_version;
+    bool m_connectionString;
 };
 //=============================================================================
 // Command line parser
@@ -49,6 +52,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     visible.add_options()
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
+    ( "connection_string,c", "Show PROOF connection string" )
     ;
 
     // Parsing command-line
@@ -66,11 +70,16 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
         _options->m_version = true;
         return true;
     }
+    if( vm.count( "connection_string" ) )
+    {
+        _options->m_connectionString = true;
+        return true;
+    }
 
     return true;
 }
 //=============================================================================
-string printVersion( const CEnvironment &_env, const pod_info::CServer &_srv )
+string version( const CEnvironment &_env, const pod_info::CServer &_srv )
 {
     PROOFAgent::SHostInfoCmd srvHostInfo;
     _srv.getSrvHostInfo( &srvHostInfo );
@@ -86,6 +95,19 @@ string printVersion( const CEnvironment &_env, const pod_info::CServer &_srv )
             << srvHostInfo.m_PoDPath << "\n"
             << "Server Version: " << srvHostInfo.m_version;
 
+    return ( ss.str() );
+}
+//=============================================================================
+string connectionString( const pod_info::CServer &_srv )
+{
+    PROOFAgent::SHostInfoCmd srvHostInfo;
+    _srv.getSrvHostInfo( &srvHostInfo );
+    
+    ostringstream ss;
+    ss
+    << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
+    << srvHostInfo.m_proofPort;
+    
     return ( ss.str() );
 }
 //=============================================================================
@@ -121,9 +143,17 @@ int main( int argc, char *argv[] )
         // Show version information
         if( options.m_version )
         {
-            cout << printVersion( env, srv ) << endl;
+            cout << version( env, srv ) << endl;
             return 0;
         }
+        
+        // Show connection string
+        if( options.m_connectionString )
+        {
+            cout << connectionString( srv ) << endl;
+            return 0;
+        }
+
     }
     catch( exception& e )
     {

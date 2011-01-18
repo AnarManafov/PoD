@@ -148,6 +148,7 @@ namespace PROOFAgent
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
             unsigned int m_agentServerListenPort;
+            unsigned int m_proofPort;
     };
 
 }

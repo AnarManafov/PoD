@@ -55,7 +55,7 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
     ( "stop", "Stop agent daemon" )
     ( "status", "Query current status of agent daemon" )
     ( "serverinfo", bpo::value<string>()->default_value( "$POD_LOCATION/etc/server_info.cfg" ), "A server info file name" )
-    ( "proofport", bpo::value<unsigned int>(), "A PROOF (xproof) port. Used only by agents in a worker mode" )
+    ( "proofport", bpo::value<unsigned int>(), "A PROOF (xproof) port." )
     // This parameter is mostly used by SSH plug-in to allow
     // spawning several PROOF workers in one PoD session on a single worker node.
     // The parameter can only be used by pod-agent workers and only when in
@@ -122,11 +122,13 @@ bool ParseCmdLine( int _Argc, char *_Argv[], SOptions_t *_Options ) throw( excep
 
     if( vm.count( "proofport" ) )
         _Options->m_proofPort = vm["proofport"].as<unsigned int>();
+    else
+        throw runtime_error( "The \"proofport\" parameter is missing." );
 
     if( vm.count( "workers" ) )
     {
         if( Client != _Options->m_agentMode )
-            throw runtime_error( "The \"workers\" parametr can only be used by pod-aget workers." );
+            throw runtime_error( "The \"workers\" parameter can only be used by pod-aget workers." );
 
         // TODO: set some protection on the number of workers
         _Options->m_numberOfPROOFWorkers = vm["workers"].as<unsigned int>();

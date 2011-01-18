@@ -50,6 +50,7 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
     m_agentServerListenPort( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
+    m_proofPort = _data.m_proofPort;
     m_serverInfoFile = _data.m_serverInfoFile;
 
     string xpd( m_Data.m_common.m_workDir );
@@ -557,7 +558,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 h.m_version = PROJECT_VERSION_STRING;
                 h.m_PoDPath = "$POD_LOCATION";
                 smart_path( &h.m_PoDPath );
-                h.m_proofPort = 0;
+                h.m_proofPort = m_proofPort;
                 BYTEVector_t data_to_send;
                 h.convertToData( &data_to_send );
                 _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
