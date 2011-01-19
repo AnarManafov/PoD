@@ -22,54 +22,34 @@
 // pod-agetn
 #include "Protocol.h"
 //=============================================================================
-const uint16_t g_protocolVersion = 2;
+const uint16_t g_protocolCommandsVersion = 5;
 //=============================================================================
-// Protocol versions
-// v2
-// - init version
-//
-// v3
-// added: cmdGET_WRK_NUM
-//
-// v4
-// added: cmdUIConnect
-// added: cmdUIConnectionReady
-// added: cmdGET_WNs_LIST
-// added: cmdWNs_LIST
 namespace PROOFAgent
 {
 //=============================================================================
     enum ECmdType
     {
+        // ----------- VERSION 5 --------------------
         cmdUNKNOWN = -1,
 
         cmdVERSION = 1,
-        //   cmdVERSION_BAD = cmdVERSION + 1, // NOT Implemented yet
-
-        // these command are used for PoD UI communication
-        cmdUI_CONNECT = 5,
-        cmdUI_CONNECT_READY = cmdUI_CONNECT + 1,
-
-        cmdHOST_INFO = 10,
-        cmdGET_HOST_INFO = cmdHOST_INFO + 1,
-
-        cmdUSE_PACKETFORWARDING_PROOF = 20,
-        cmdUSE_DIRECT_PROOF = cmdUSE_PACKETFORWARDING_PROOF + 1,
-
-        cmdSHUTDOWN = 30,
-        // cmdRESTART = cmdSHUTDOWN + 1 // NOT Implemented yet
-        // cmdIDLE_SHUTDOWN = cmdSHUTDOWN + 2, // NOT Implemented yet
-
-        cmdGET_ID = 40,
-        cmdID = cmdGET_ID + 1,
-        cmdSET_ID = cmdGET_ID + 2,
-
-        // cmdKillPROOFSERV =  // NOT Implemented yet
-
-        cmdGET_WRK_NUM = 50, // request a number of PROOF workers, which pod wn want to spawn
-        cmdWRK_NUM = cmdGET_WRK_NUM + 1, // answer with number of PROOF wns,
-        cmdGET_WNs_LIST = cmdGET_WRK_NUM + 2, // request a list of available workers
-        cmdWNs_LIST = cmdGET_WRK_NUM + 3, // return a list of available workers
+        cmdUI_CONNECT, // these command are used for PoD UI communication
+        cmdUI_CONNECT_READY,// these command are used for PoD UI communication
+        cmdHOST_INFO,
+        cmdGET_HOST_INFO,
+        cmdUSE_PACKETFORWARDING_PROOF,
+        cmdUSE_DIRECT_PROOF,
+        cmdSHUTDOWN,
+        cmdGET_ID,
+        cmdID,
+        cmdSET_ID,
+        cmdGET_WRK_NUM, // request a number of PROOF workers, which pod wn want to spawn
+        cmdWRK_NUM, // answer with number of PROOF wns,
+        cmdGET_WNs_LIST, // request a list of available workers
+        cmdWNs_LIST // return a list of available workers
+        
+        // ----------- VERSION 6 --------------------
+        
     };
 //=============================================================================
     template<class _Owner>
@@ -92,7 +72,7 @@ namespace PROOFAgent
 //=============================================================================
     struct SVersionCmd: public SBasicCmd<SVersionCmd>
     {
-        SVersionCmd(): m_version( g_protocolVersion )
+        SVersionCmd(): m_version( g_protocolCommandsVersion )
         {
         }
         void normalizeToLocal();

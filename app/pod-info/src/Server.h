@@ -26,7 +26,7 @@ namespace pod_info
         public:
             CServer( const std::string &_host, unsigned int _port );
             void getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const;
-            void getListOfWNs( MiscCommon::StringVector_t *_container ) const;
+            void getListOfWNs( PROOFAgent::SWnListCmd *_lst ) const;
 
         private:
             void processAdminConnection( MiscCommon::BYTEVector_t *_data,

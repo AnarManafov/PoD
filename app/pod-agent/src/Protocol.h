@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2011 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #ifndef PROTOCOL_H_
 #define PROTOCOL_H_
@@ -25,7 +25,6 @@
 namespace PROOFAgent
 {
 //=============================================================================
-// protocol ver2
 // a very simple protocol
 // | <POD_CMD> (10) char | CMD (2) uint16_t | LEN (4) uint32_t | DATA (LEN) unsigned char |
     struct SMessageHeader
@@ -79,13 +78,8 @@ namespace PROOFAgent
             void writeSimpleCmd( int _socket, uint16_t _cmd ) const;
             SMessageHeader getMsg( MiscCommon::BYTEVector_t *_data ) const;
             bool checkoutNextMsg();
-            static uint16_t version()
-            {
-                return m_ver;
-            }
 
         private:
-            static uint16_t m_ver;
             MiscCommon::BYTEVector_t m_buffer;
 
             SMessageHeader m_msgHeader;

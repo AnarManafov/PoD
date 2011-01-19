@@ -32,16 +32,14 @@ void CServer::getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const
     _srvHostInfo->convertFromData( data );
 }
 //=============================================================================
-void CServer::getListOfWNs( MiscCommon::StringVector_t *_container ) const
+void CServer::getListOfWNs( PROOFAgent::SWnListCmd *_lst ) const
 {
     inet::CSocketClient m_socket;
     m_socket.connect( m_port, m_host );
     BYTEVector_t data;
     processAdminConnection( &data, m_socket.getSocket(), Req_WNs_List );
 
-    SWnListCmd lst;
-    lst.convertFromData( data );
-    _container->swap( lst.m_container );
+    _lst->convertFromData( data );
 }
 //=============================================================================
 void CServer::processAdminConnection( BYTEVector_t *_data,
@@ -49,7 +47,6 @@ void CServer::processAdminConnection( BYTEVector_t *_data,
 {
     CProtocol protocol;
     SVersionCmd v;
-    v.m_version = CProtocol::version();
     BYTEVector_t ver;
     v.convertToData( &ver );
     protocol.write( _serverSock, static_cast<uint16_t>( cmdUI_CONNECT ), ver );

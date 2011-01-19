@@ -139,7 +139,7 @@ string connectionString( const pod_info::CServer &_srv )
 //=============================================================================
 string listWNs( const pod_info::CServer &_srv )
 {
-    StringVector_t lst;
+    PROOFAgent::SWnListCmd lst;
     try
     {
         _srv.getListOfWNs( &lst );
@@ -153,7 +153,7 @@ string listWNs( const pod_info::CServer &_srv )
     }
     stringstream ss;
     std::ostream_iterator< std::string > output( ss, "\n" );
-    std::copy( lst.begin(), lst.end(), output );
+    std::copy( lst.m_container.begin(), lst.m_container.end(), output );
     return ( ss.str() );
 }
 //=============================================================================

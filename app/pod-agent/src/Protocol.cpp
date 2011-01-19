@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2011 GSI GridTeam. All rights reserved.
 *************************************************************************/
 #include "Protocol.h"
 // API
@@ -27,9 +27,6 @@ using namespace MiscCommon::INet;
 //=============================================================================
 const size_t HEADER_SIZE = sizeof( SMessageHeader );
 const ssize_t MAX_MSG_SIZE = 256;
-//=============================================================================
-// CURRENT PROTOCOL VERSION
-uint16_t CProtocol::m_ver = 4;
 //=============================================================================
 //=============================================================================
 //=============================================================================

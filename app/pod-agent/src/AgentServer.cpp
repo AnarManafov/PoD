@@ -451,13 +451,20 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
             case cmdWNs_LIST:
                 {
                     ss << "[sending a list of available workers]";
-                    StringVector_t lst;
+                    SWnListCmd lst;
+                    string tmp;
                     // proof workers
                     Sockets_type::const_iterator iter = m_socksToSelect.begin();
                     Sockets_type::const_iterator iter_end = m_socksToSelect.end();
                     for( ; iter != iter_end; ++iter )
                     {
-                        lst.push_back(( *iter )->getPROOFCfgEntry() );
+                        tmp = ( *iter )->getPROOFCfgEntry();
+                        // extract only the comment part
+                        size_t pos1 = tmp.find('#');
+                        size_t pos2 = tmp.find('\n', pos1);
+                        if( string::npos != pos1 && string::npos != pos2 )
+                            tmp = tmp.substr(pos1, pos2 - pos1 - 1);
+                        lst.m_container.push_back( tmp );
                     }
 
                     // a directly connected workers
@@ -471,11 +478,16 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                         if( wrk_iter->second.m_proofCfgEntry.empty() )
                             continue;
 
-                        lst.push_back( wrk_iter->second.m_proofCfgEntry );
+                        tmp = wrk_iter->second.m_proofCfgEntry;
+                        // extract only the comment part
+                        size_t pos1 = tmp.find('#');
+                        size_t pos2 = tmp.find('\n', pos1);
+                        if( string::npos != pos1 && string::npos != pos2 )
+                            tmp = tmp.substr(pos1, pos2 - pos1 - 1);
+                        lst.m_container.push_back( tmp );
                     }
-                    SWnListCmd l;
                     BYTEVector_t data_to_send;
-                    l.convertToData( &data_to_send );
+                    lst.convertToData( &data_to_send );
                     _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdWNs_LIST ), data_to_send );
                 }
                 break;
@@ -533,14 +545,14 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 SVersionCmd v;
                 v.convertFromData( data );
                 // so far we require all versions to be the same
-                if( v.m_version != CProtocol::version() )
+                if( v.m_version != g_protocolCommandsVersion )
                 {
                     stringstream ss;
                     ss
                             << "Shutting the worker down: "
                             << _wrk.second.string()
                             << ". The client has an incompatible protocol version ( srv. "
-                            << CProtocol::version() << " vs. clnt. "
+                            << g_protocolCommandsVersion << " vs. clnt. "
                             << v.m_version << ")";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
@@ -562,14 +574,14 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 SVersionCmd v;
                 v.convertFromData( data );
                 // so far we require all versions to be the same
-                if( v.m_version != CProtocol::version() )
+                if( v.m_version != g_protocolCommandsVersion )
                 {
                     stringstream ss;
                     ss
                             << "Shutting the UI connection down: "
                             << _wrk.second.string()
                             << ". The client has an incompatible protocol version ( srv. "
-                            << CProtocol::version() << " vs. clnt. "
+                            << g_protocolCommandsVersion << " vs. clnt. "
                             << v.m_version << ")";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
@@ -790,7 +802,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
     {
         ss
                 << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n"
-                << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100" << endl;
+                << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100";
     }
     else
     {
@@ -798,7 +810,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
         {
             ss
                     << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
-                    << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100" << endl;
+                    << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100";
         }
     }
     return ss.str();
@@ -820,7 +832,7 @@ void CAgentServer::updatePROOFCfg()
     Sockets_type::const_iterator iter_end = m_socksToSelect.end();
     for( ; iter != iter_end; ++iter )
     {
-        f << ( *iter )->getPROOFCfgEntry() << endl;
+        f << ( *iter )->getPROOFCfgEntry() << "\n";
     }
 
     // a directly connected workers
@@ -834,8 +846,10 @@ void CAgentServer::updatePROOFCfg()
         if( wrk_iter->second.m_proofCfgEntry.empty() )
             continue;
 
-        f << wrk_iter->second.m_proofCfgEntry << endl;
+        f << wrk_iter->second.m_proofCfgEntry << "\n";
     }
+    
+    f.flush();
 }
 //=============================================================================
 void CAgentServer::createServerInfoFile()
