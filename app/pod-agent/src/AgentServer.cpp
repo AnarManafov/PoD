@@ -452,19 +452,20 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                 {
                     ss << "[sending a list of available workers]";
                     SWnListCmd lst;
-                    string tmp;
+                    string full;
+                    string element;
                     // proof workers
                     Sockets_type::const_iterator iter = m_socksToSelect.begin();
                     Sockets_type::const_iterator iter_end = m_socksToSelect.end();
                     for( ; iter != iter_end; ++iter )
                     {
-                        tmp = ( *iter )->getPROOFCfgEntry();
+                        full = ( *iter )->getPROOFCfgEntry();
                         // extract only the comment part
-                        size_t pos1 = tmp.find('#');
-                        size_t pos2 = tmp.find('\n', pos1);
+                        size_t pos1 = full.find( '#' );
+                        size_t pos2 = full.find( '\n', pos1 );
                         if( string::npos != pos1 && string::npos != pos2 )
-                            tmp = tmp.substr(pos1, pos2 - pos1 - 1);
-                        lst.m_container.push_back( tmp );
+                            element = full.substr( pos1 + 1, pos2 - pos1 - 1 );
+                        lst.m_container.push_back( element );
                     }
 
                     // a directly connected workers
@@ -478,13 +479,17 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                         if( wrk_iter->second.m_proofCfgEntry.empty() )
                             continue;
 
-                        tmp = wrk_iter->second.m_proofCfgEntry;
+                        full = wrk_iter->second.m_proofCfgEntry;
                         // extract only the comment part
-                        size_t pos1 = tmp.find('#');
-                        size_t pos2 = tmp.find('\n', pos1);
-                        if( string::npos != pos1 && string::npos != pos2 )
-                            tmp = tmp.substr(pos1, pos2 - pos1 - 1);
-                        lst.m_container.push_back( tmp );
+                        size_t pos1( 0 );
+                        while( string::npos != (pos1 = full.find( '#', pos1 )) )
+                        {
+                            size_t pos2 = full.find( '\n', pos1 );
+                            if( string::npos != pos1 && string::npos != pos2 )
+                                element = full.substr( pos1 + 1, pos2 - pos1 - 1 );
+                            lst.m_container.push_back( element );
+                            ++pos1;
+                        }
                     }
                     BYTEVector_t data_to_send;
                     lst.convertToData( &data_to_send );
@@ -808,6 +813,9 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
     {
         for( size_t i = 0; i < _numberOfPROOFWorkers; ++i )
         {
+            if( 0 != i ) // separate multiple entries
+                ss << "\n";
+
             ss
                     << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
                     << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100";
@@ -848,7 +856,7 @@ void CAgentServer::updatePROOFCfg()
 
         f << wrk_iter->second.m_proofCfgEntry << "\n";
     }
-    
+
     f.flush();
 }
 //=============================================================================

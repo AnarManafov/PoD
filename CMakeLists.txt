@@ -106,7 +106,6 @@ SET(POD_ADD_FILES
 #
 SET(POD_BIN_FILES 
     ${CMAKE_SOURCE_DIR}/bin/pod-server
-    ${CMAKE_SOURCE_DIR}/bin/pod-info
     ${CMAKE_SOURCE_DIR}/bin/pod-check-update
     ${CMAKE_SOURCE_DIR}/bin/pod-prep-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-submit

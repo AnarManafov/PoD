@@ -47,9 +47,9 @@ namespace PROOFAgent
         cmdWRK_NUM, // answer with number of PROOF wns,
         cmdGET_WNs_LIST, // request a list of available workers
         cmdWNs_LIST // return a list of available workers
-        
+
         // ----------- VERSION 6 --------------------
-        
+
     };
 //=============================================================================
     template<class _Owner>

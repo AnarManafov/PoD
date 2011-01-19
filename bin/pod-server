@@ -244,21 +244,6 @@ create_dir_hierarchy()
    create_dir "$dir"
 }
 # ************************************************************************
-# ***** create_helper_header *****
-# ************************************************************************
-create_helper_header()
-{
-   # generate a helper header
-   # this helps to keep track of PROOF master's host and port for user's scripts
-   HEADER_HELPER="$WORK_DIR/etc/pod-master.h"
-   echo "#ifndef _POD_MASTER_H_" > $HEADER_HELPER
-   echo "#define _POD_MASTER_H_" >> $HEADER_HELPER
-   echo "#define POD_LOCATION \"$POD_LOCATION\"" >> $HEADER_HELPER
-   echo "#define POD_MASTER_HOST \"$agent_host\"" >> $HEADER_HELPER
-   echo "#define POD_XPROOF_PORT \"$xpd_port\"" >> $HEADER_HELPER
-   echo "#endif" >> $HEADER_HELPER
-}
-# ************************************************************************
 # ***** update_xpd_cfg  *****
 # ************************************************************************
 update_xpd_cfg()
@@ -371,9 +356,6 @@ _start()
    echo "------------------------"
    status
    echo "------------------------"
-
-   # generate a helper header
-   create_helper_header
 
    return 0
 }

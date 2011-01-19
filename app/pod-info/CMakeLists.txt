@@ -12,7 +12,7 @@
 #
 #        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************
-project( pod-info-new )
+project( pod-info )
 
 #
 # Where to lookup modules
@@ -60,17 +60,17 @@ include_directories(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 if (CMAKE_GENERATOR STREQUAL "Xcode")
-    add_executable(pod-info-new ${SOURCE_FILES} ${SRC_HDRS})
+    add_executable(pod-info ${SOURCE_FILES} ${SRC_HDRS})
 else (CMAKE_GENERATOR STREQUAL "Xcode")
-    add_executable(pod-info-new ${SOURCE_FILES})
+    add_executable(pod-info ${SOURCE_FILES})
 endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
-    pod-info-new
+    pod-info
     ${Boost_libs_for_pod_info}
 )
 
-install(TARGETS pod-info-new DESTINATION bin)
+install(TARGETS pod-info DESTINATION bin)
 
 #
 ## Unit tests

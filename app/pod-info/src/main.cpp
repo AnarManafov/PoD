@@ -34,13 +34,15 @@ struct SOptions
     SOptions():
         m_version( false ),
         m_connectionString( false ),
-        m_listWNs( false )
+        m_listWNs( false ),
+        m_countWNs( false )
     {
     }
 
     bool m_version;
     bool m_connectionString;
     bool m_listWNs;
+    bool m_countWNs;
 };
 //=============================================================================
 // Command line parser
@@ -56,6 +58,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     ( "version,v", "Version information" )
     ( "connection_string,c", "Show PROOF connection string" )
     ( "list,l", "List all available PROOF workers" )
+    ( "number,n", "Report a number of currently available PROOF workers")
     ;
 
     // Parsing command-line
@@ -79,6 +82,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
 
     if( vm.count( "list" ) )
         _options->m_listWNs = true;
+    
+     if(vm.count("number"))
+         _options->m_countWNs = true;
 
     return true;
 }
@@ -157,6 +163,23 @@ string listWNs( const pod_info::CServer &_srv )
     return ( ss.str() );
 }
 //=============================================================================
+size_t countWNs( const pod_info::CServer &_srv )
+{
+    PROOFAgent::SWnListCmd lst;
+    try
+    {
+        _srv.getListOfWNs( &lst );
+    }
+    catch( exception &_e )
+    {
+        string msg;
+        msg += "Can't connect to PoD server. Please check that the server is running.\n";
+        msg += _e.what();
+        throw runtime_error( msg );
+    }
+    return ( lst.m_container.size() );
+}
+//=============================================================================
 int main( int argc, char *argv[] )
 {
     CEnvironment env;
@@ -196,13 +219,18 @@ int main( int argc, char *argv[] )
             cout << connectionString( srv ) << endl;
         }
 
+        // Report a number of available WNs
+        if( options.m_countWNs )
+        {
+            cout << countWNs( srv ) << endl;
+        }
+        
         // Show list of workers
         if( options.m_listWNs )
         {
-            cout << listWNs( srv ) << endl;
+            cout << listWNs( srv );
+            cout.flush();
         }
-
-
     }
     catch( exception& e )
     {
