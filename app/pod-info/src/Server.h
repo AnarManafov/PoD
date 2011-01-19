@@ -22,10 +22,11 @@ namespace pod_info
 {
     class CServer
     {
-            enum Requests { Req_Host_Info };
+            enum Requests { Req_Host_Info, Req_WNs_List };
         public:
             CServer( const std::string &_host, unsigned int _port );
             void getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const;
+            void getListOfWNs( MiscCommon::StringVector_t *_container ) const;
 
         private:
             void processAdminConnection( MiscCommon::BYTEVector_t *_data,

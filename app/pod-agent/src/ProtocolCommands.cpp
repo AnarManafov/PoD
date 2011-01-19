@@ -16,9 +16,11 @@
 // STD
 #include <stdint.h>
 #include <stdexcept>
+
 // MiscCommon
 #include "INet.h"
 //=============================================================================
+using namespace std;
 using namespace PROOFAgent;
 namespace inet = MiscCommon::INet;
 
@@ -164,4 +166,49 @@ void SIdCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
     _data->push_back(( m_id >> 8 ) & 0xFF );
     _data->push_back(( m_id >> 16 ) & 0xFF );
     _data->push_back(( m_id >> 24 ) & 0xFF );
+}
+//=============================================================================
+//=============================================================================
+//=============================================================================
+void SWnListCmd::normalizeToLocal()
+{
+}
+//=============================================================================
+void SWnListCmd::normalizeToRemote()
+{
+}
+//=============================================================================
+void SWnListCmd::_convertFromData( const MiscCommon::BYTEVector_t &_data )
+{
+    m_container.clear();
+
+    size_t idx( 0 );
+    MiscCommon::BYTEVector_t::const_iterator iter = _data.begin();
+    MiscCommon::BYTEVector_t::const_iterator iter_end = _data.end();
+    string tmp_str;
+    for( ; iter != iter_end; ++iter, ++idx )
+    {
+        char c( *iter );
+        if( '\0' == c )
+        {
+            m_container.push_back( tmp_str );
+            tmp_str.clear();
+            continue;
+        }
+        tmp_str.push_back( c );
+    }
+
+    if( _data.size() < size() )
+        throw std::runtime_error( "Protocol message data is too short" );
+}
+//=============================================================================
+void SWnListCmd::_convertToData( MiscCommon::BYTEVector_t *_data ) const
+{
+    MiscCommon::StringVector_t::const_iterator iter = m_container.begin();
+    MiscCommon::StringVector_t::const_iterator iter_end = m_container.end();
+    for( ; iter != iter_end; ++iter )
+    {
+        std::copy( iter->begin(), iter->end(), std::back_inserter( *_data ) );
+        _data->push_back( '\0' );
+    }
 }

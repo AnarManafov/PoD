@@ -31,14 +31,16 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 struct SOptions
 {
-    SOptions(): 
-    m_version( false ),
-    m_connectionString(false)
+    SOptions():
+        m_version( false ),
+        m_connectionString( false ),
+        m_listWNs( false )
     {
     }
 
     bool m_version;
     bool m_connectionString;
+    bool m_listWNs;
 };
 //=============================================================================
 // Command line parser
@@ -53,6 +55,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
     ( "connection_string,c", "Show PROOF connection string" )
+    ( "list,l", "List all available PROOF workers" )
     ;
 
     // Parsing command-line
@@ -70,44 +73,87 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
         _options->m_version = true;
         return true;
     }
+
     if( vm.count( "connection_string" ) )
-    {
         _options->m_connectionString = true;
-        return true;
-    }
+
+    if( vm.count( "list" ) )
+        _options->m_listWNs = true;
 
     return true;
 }
 //=============================================================================
 string version( const CEnvironment &_env, const pod_info::CServer &_srv )
 {
+    bool noServer( false );
     PROOFAgent::SHostInfoCmd srvHostInfo;
-    _srv.getSrvHostInfo( &srvHostInfo );
-
+    try
+    {
+        _srv.getSrvHostInfo( &srvHostInfo );
+    }
+    catch( ... )
+    {
+        noServer = true;
+    }
     ostringstream ss;
     ss
             << "PoD location: " << _env.PoDPath() << "\n"
             << "Local Version: " << _env.version() << "\n";
 
-    ss
-            << "Server PoD location: "
-            << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
-            << srvHostInfo.m_PoDPath << "\n"
-            << "Server Version: " << srvHostInfo.m_version;
-
+    if( noServer )
+    {
+        ss << "PoD server is NOT found, probably is not running.";
+    }
+    else
+    {
+        ss
+                << "Server PoD location: "
+                << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
+                << srvHostInfo.m_PoDPath << "\n"
+                << "Server Version: " << srvHostInfo.m_version;
+    }
     return ( ss.str() );
 }
 //=============================================================================
 string connectionString( const pod_info::CServer &_srv )
 {
     PROOFAgent::SHostInfoCmd srvHostInfo;
-    _srv.getSrvHostInfo( &srvHostInfo );
-    
+    try
+    {
+        _srv.getSrvHostInfo( &srvHostInfo );
+    }
+    catch( exception &_e )
+    {
+        string msg;
+        msg += "Can't connect to PoD server. Please check that the server is running.\n";
+        msg += _e.what();
+        throw runtime_error( msg );
+    }
     ostringstream ss;
     ss
-    << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
-    << srvHostInfo.m_proofPort;
-    
+            << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
+            << srvHostInfo.m_proofPort;
+
+    return ( ss.str() );
+}
+//=============================================================================
+string listWNs( const pod_info::CServer &_srv )
+{
+    StringVector_t lst;
+    try
+    {
+        _srv.getListOfWNs( &lst );
+    }
+    catch( exception &_e )
+    {
+        string msg;
+        msg += "Can't connect to PoD server. Please check that the server is running.\n";
+        msg += _e.what();
+        throw runtime_error( msg );
+    }
+    stringstream ss;
+    std::ostream_iterator< std::string > output( ss, "\n" );
+    std::copy( lst.begin(), lst.end(), output );
     return ( ss.str() );
 }
 //=============================================================================
@@ -134,10 +180,7 @@ int main( int argc, char *argv[] )
         {
             // TODO: Not implemented yet
         }
-        
-        if( 0 == srvPort)
-            throw runtime_error( "Can't connect to PoD server. Please check that the server is running." );
-        
+
         pod_info::CServer srv( srvHost, srvPort );
 
         // Show version information
@@ -146,13 +189,19 @@ int main( int argc, char *argv[] )
             cout << version( env, srv ) << endl;
             return 0;
         }
-        
+
         // Show connection string
         if( options.m_connectionString )
         {
             cout << connectionString( srv ) << endl;
-            return 0;
         }
+
+        // Show list of workers
+        if( options.m_listWNs )
+        {
+            cout << listWNs( srv ) << endl;
+        }
+
 
     }
     catch( exception& e )

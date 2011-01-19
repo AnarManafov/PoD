@@ -32,6 +32,18 @@ void CServer::getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const
     _srvHostInfo->convertFromData( data );
 }
 //=============================================================================
+void CServer::getListOfWNs( MiscCommon::StringVector_t *_container ) const
+{
+    inet::CSocketClient m_socket;
+    m_socket.connect( m_port, m_host );
+    BYTEVector_t data;
+    processAdminConnection( &data, m_socket.getSocket(), Req_WNs_List );
+
+    SWnListCmd lst;
+    lst.convertFromData( data );
+    _container->swap( lst.m_container );
+}
+//=============================================================================
 void CServer::processAdminConnection( BYTEVector_t *_data,
                                       int _serverSock, CServer::Requests _req ) const
 {
@@ -40,7 +52,7 @@ void CServer::processAdminConnection( BYTEVector_t *_data,
     v.m_version = CProtocol::version();
     BYTEVector_t ver;
     v.convertToData( &ver );
-    protocol.write( _serverSock, static_cast<uint16_t>( cmdUIConnect ), ver );
+    protocol.write( _serverSock, static_cast<uint16_t>( cmdUI_CONNECT ), ver );
     bool bProcessNoMore( false );
     while( !bProcessNoMore )
     {
@@ -71,17 +83,21 @@ int CServer::processProtocolMsgs( BYTEVector_t *_data, int _serverSock,
     SMessageHeader header = _protocol->getMsg( &data );
     switch( static_cast<ECmdType>( header.m_cmd ) )
     {
-        case cmdUIConnectionReady:
+        case cmdUI_CONNECT_READY:
             {
                 switch( _req )
                 {
                     case Req_Host_Info:
                         _protocol->writeSimpleCmd( _serverSock, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
                         break;
+                    case Req_WNs_List:
+                        _protocol->writeSimpleCmd( _serverSock, static_cast<uint16_t>( cmdGET_WNs_LIST ) );
+                        break;
                 }
             }
             break;
         case cmdHOST_INFO:
+        case cmdWNs_LIST:
             _data->swap( data );
             return 1;
         case cmdSHUTDOWN:

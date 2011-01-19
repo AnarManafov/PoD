@@ -126,4 +126,22 @@ BOOST_AUTO_TEST_CASE( test_SIdCmd_BadData )
     SIdCmd b;
     BOOST_CHECK_THROW( b.convertFromData( data ), runtime_error );
 }
+//=============================================================================
+BOOST_AUTO_TEST_CASE( test_SWnListCmd )
+{
+    SWnListCmd a;
+    a.m_container.push_back( "test1" );
+    a.m_container.push_back( "test dsfg" );
+    a.m_container.push_back( "sdg t43454 35" );
+    a.m_container.push_back( "test2" );
+    a.m_container.push_back( "test4 dfgd rt test5" );
+
+    MiscCommon::BYTEVector_t data;
+    a.convertToData( &data );
+
+    SWnListCmd b;
+    b.convertFromData( data );
+
+    BOOST_CHECK_EQUAL( a, b );
+}
 BOOST_AUTO_TEST_SUITE_END();

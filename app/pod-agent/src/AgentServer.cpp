@@ -443,10 +443,41 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                 ss << "[get a number of PROOF workers]";
                 _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdGET_WRK_NUM ) );
                 break;
-            case cmdUIConnectionReady:
+            case cmdUI_CONNECT_READY:
                 // server is ready to accept UI requests
                 ss << "[server is ready to accept UI requests]";
-                _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUIConnectionReady ) );
+                _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUI_CONNECT_READY ) );
+                break;
+            case cmdWNs_LIST:
+                {
+                    ss << "[sending a list of available workers]";
+                    StringVector_t lst;
+                    // proof workers
+                    Sockets_type::const_iterator iter = m_socksToSelect.begin();
+                    Sockets_type::const_iterator iter_end = m_socksToSelect.end();
+                    for( ; iter != iter_end; ++iter )
+                    {
+                        lst.push_back(( *iter )->getPROOFCfgEntry() );
+                    }
+
+                    // a directly connected workers
+                    workersMap_t::iterator wrk_iter = m_adminConnections.begin();
+                    workersMap_t::iterator wrk_iter_end = m_adminConnections.end();
+                    for( ; wrk_iter != wrk_iter_end; ++wrk_iter )
+                    {
+                        if( 0 >= wrk_iter->first )
+                            continue;
+
+                        if( wrk_iter->second.m_proofCfgEntry.empty() )
+                            continue;
+
+                        lst.push_back( wrk_iter->second.m_proofCfgEntry );
+                    }
+                    SWnListCmd l;
+                    BYTEVector_t data_to_send;
+                    l.convertToData( &data_to_send );
+                    _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdWNs_LIST ), data_to_send );
+                }
                 break;
             default:
                 ss << "[NO COMMAND]";
@@ -508,7 +539,9 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                     ss
                             << "Shutting the worker down: "
                             << _wrk.second.string()
-                            << ". Incompatible protocol version.";
+                            << ". The client has an incompatible protocol version ( srv. "
+                            << CProtocol::version() << " vs. clnt. "
+                            << v.m_version << ")";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
                     break;
@@ -523,7 +556,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 _wrk.second.m_requests.push( cmdGET_HOST_INFO );
             }
             break;
-        case cmdUIConnect:
+        case cmdUI_CONNECT:
             {
                 // This command indicates, that a PoD UI is trying to connect
                 SVersionCmd v;
@@ -535,13 +568,15 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                     ss
                             << "Shutting the UI connection down: "
                             << _wrk.second.string()
-                            << ". Incompatible protocol version.";
+                            << ". The client has an incompatible protocol version ( srv. "
+                            << CProtocol::version() << " vs. clnt. "
+                            << v.m_version << ")";
                     InfoLog( ss.str() );
                     _wrk.second.m_requests.push( cmdSHUTDOWN );
                     break;
                 }
                 // Server is ready to answer UI requests
-                _wrk.second.m_requests.push( cmdUIConnectionReady );
+                _wrk.second.m_requests.push( cmdUI_CONNECT_READY );
                 stringstream ss_msg;
                 ss_msg
                         << "Accepting the connetion from PoD UI: "
@@ -602,6 +637,10 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
 
                 setupPROOFWorker( _wrk );
             }
+            break;
+        case cmdGET_WNs_LIST:
+            InfoLog( "Client requests a list of available workers." );
+            _wrk.second.m_requests.push( cmdWNs_LIST );
             break;
         default:
             WarningLog( 0, "Unexpected message in the admin channel" );
