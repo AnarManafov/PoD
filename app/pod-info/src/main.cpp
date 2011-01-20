@@ -36,7 +36,8 @@ struct SOptions
         m_connectionString( false ),
         m_listWNs( false ),
         m_countWNs( false ),
-        m_status(false)
+        m_status( false ),
+        m_debug( false )
     {
     }
     bool operator== ( const SOptions &_val )
@@ -45,7 +46,8 @@ struct SOptions
                  m_connectionString == _val.m_connectionString &&
                  m_listWNs == _val.m_listWNs &&
                  m_countWNs == _val.m_countWNs &&
-                 m_status == _val.m_status );
+                 m_status == _val.m_status &&
+                 m_debug == _val.m_debug );
     }
 
     bool m_version;
@@ -53,6 +55,7 @@ struct SOptions
     bool m_listWNs;
     bool m_countWNs;
     bool m_status;
+    bool m_debug;
 };
 //=============================================================================
 // Command line parser
@@ -66,6 +69,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     visible.add_options()
     ( "help,h", "Produce help message" )
     ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information" )
+    ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages" )
     ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string" )
     ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers" )
     ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers" )
@@ -107,7 +111,7 @@ string version( const CEnvironment &_env, const pod_info::CServer &_srv )
 
     if( noServer )
     {
-        ss << "PoD server is NOT found, probably is not running.";
+        ss << "PoD server is NOT found.";
     }
     else
     {
@@ -120,7 +124,8 @@ string version( const CEnvironment &_env, const pod_info::CServer &_srv )
     return ( ss.str() );
 }
 //=============================================================================
-size_t listWNs( string *_output, const pod_info::CServer &_srv )
+size_t listWNs( string *_output, const pod_info::CServer &_srv,
+                const SOptions &_opt )
 {
     PROOFAgent::SWnListCmd lst;
     try
@@ -130,8 +135,9 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv )
     catch( exception &_e )
     {
         string msg;
-        msg += "Can't connect to PoD server. Please check that the server is running.\n";
-        msg += _e.what();
+        msg += "PoD server is NOT found.\n";
+        if( _opt.m_debug )
+            msg += _e.what();
         throw runtime_error( msg );
     }
     if( _output )
@@ -144,7 +150,8 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv )
     return ( lst.m_container.size() );
 }
 //=============================================================================
-void srvPoDStatus( string *_status, string *_con_string, const pod_info::CServer &_srv )
+void srvPoDStatus( string *_status, string *_con_string,
+                   const pod_info::CServer &_srv, const SOptions &_opt )
 {
     PROOFAgent::SHostInfoCmd srvHostInfo;
     try
@@ -154,29 +161,30 @@ void srvPoDStatus( string *_status, string *_con_string, const pod_info::CServer
     catch( exception &_e )
     {
         string msg;
-        msg += "Can't connect to PoD server. Please check that the server is running.\n";
-        msg += _e.what();
+        msg += "PoD server is NOT found.\n";
+        if( _opt.m_debug )
+            msg += _e.what();
         throw runtime_error( msg );
     }
 
-    if( _status)
-    {
-    ostringstream ss;
-    ss 
-    << "XPROOFD [" << srvHostInfo.m_xpdPid <<"] port: " << srvHostInfo.m_xpdPort
-    << "\nPoD agent [" << srvHostInfo.m_agentPid << "] port: " << srvHostInfo.m_agentPort;
-        *_status = ss.str();
-    }
-    
-    if( _con_string)
+    if( _status )
     {
         ostringstream ss;
         ss
-        << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
-        << srvHostInfo.m_xpdPort;
+                << "XPROOFD [" << srvHostInfo.m_xpdPid << "] port: " << srvHostInfo.m_xpdPort
+                << "\nPoD agent [" << srvHostInfo.m_agentPid << "] port: " << srvHostInfo.m_agentPort;
+        *_status = ss.str();
+    }
+
+    if( _con_string )
+    {
+        ostringstream ss;
+        ss
+                << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
+                << srvHostInfo.m_xpdPort;
         *_con_string = ss.str();
     }
-    
+
 }
 //=============================================================================
 int main( int argc, char *argv[] )
@@ -211,13 +219,13 @@ int main( int argc, char *argv[] )
             cout << version( env, srv ) << endl;
             return 0;
         }
-        
+
         // PoD Server status
         if( options.m_status || options.m_connectionString )
         {
             string status;
             string con_string;
-            srvPoDStatus (&status, &con_string, srv);
+            srvPoDStatus( &status, &con_string, srv, options );
             if( options.m_status )
             {
                 cout << status << endl;
@@ -232,7 +240,7 @@ int main( int argc, char *argv[] )
         if( options.m_countWNs || options.m_listWNs )
         {
             string lst;
-            size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv );
+            size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv, options );
 
             if( options.m_countWNs )
             {
