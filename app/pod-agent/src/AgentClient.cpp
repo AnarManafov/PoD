@@ -39,7 +39,6 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
 {
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
-    m_proofPort = _data.m_proofPort;
     m_numberOfPROOFWorkers = _data.m_numberOfPROOFWorkers;
 
     string xpd( g_xpdCFG );
@@ -48,8 +47,13 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
     {
         string msg( "Can't find xproofd config: " );
         msg += xpd;
-        WarningLog( 0, msg );
+        FaultLog( 0, msg );
     }
+    m_xpdPort = m_proofStatus.xpdPort();
+    m_xpdPid = m_proofStatus.xpdPid();
+    stringstream ss;
+    ss << "Detected xpd [" << m_xpdPid << "] on port " << m_xpdPort;
+    InfoLog( ss.str() );
 }
 
 //=============================================================================
@@ -105,7 +109,7 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
                 SHostInfoCmd h;
                 get_cuser_name( &h.m_username );
                 get_hostname( &h.m_host );
-                h.m_proofPort = m_proofPort;
+                h.m_xpdPort = m_xpdPort;
                 BYTEVector_t data_to_send;
                 h.convertToData( &data_to_send );
                 _protocol->write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
@@ -234,7 +238,7 @@ void CAgentClient::run()
                 waitForServerToConnect( client.getSocket() );
 
                 // now we need to connect to a local PROOF worker
-                MiscCommon::INet::Socket_t proof_socket = connectToLocalPROOF( m_proofPort );
+                MiscCommon::INet::Socket_t proof_socket = connectToLocalPROOF( m_xpdPort );
                 CNode node( client.detach(), proof_socket,
                             "", m_Data.m_common.m_agentNodeReadBuffer );
 
@@ -260,7 +264,7 @@ void CAgentClient::monitor()
     while( true )
     {
         // TODO: we need to check real PROOF port here (from cfg)
-        if( !IsPROOFReady( m_proofPort ) )
+        if( !IsPROOFReady() )
         {
             FaultLog( erError, "Can't connect to PROOF service." );
             graceful_quit = 1;

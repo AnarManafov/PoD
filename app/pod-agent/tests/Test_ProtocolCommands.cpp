@@ -74,7 +74,10 @@ BOOST_AUTO_TEST_CASE( test_SHostInfoCmd )
     SHostInfoCmd a;
     a.m_username = "testuser";
     a.m_host = "test.host.de";
-    a.m_proofPort = 129;
+    a.m_xpdPort = 129;
+    a.m_xpdPid = 198442;
+    a.m_agentPort = 224;
+    a.m_agentPid = 12442;
     MiscCommon::BYTEVector_t data;
     a.convertToData( &data );
 
@@ -89,7 +92,10 @@ BOOST_AUTO_TEST_CASE( test_SHostInfoCmd_BadData )
     SHostInfoCmd a;
     a.m_username = "testuser";
     a.m_host = "test.host.de";
-    a.m_proofPort = 129;
+    a.m_xpdPort = 129;
+    a.m_xpdPid = 198442;
+    a.m_agentPort = 224;
+    a.m_agentPid = 12442;
     MiscCommon::BYTEVector_t data;
     a.convertToData( &data );
 

@@ -29,7 +29,7 @@ namespace PROOFAgent
     struct SWorkerInfo
     {
         SWorkerInfo( const std::string &_infoString ):
-            m_proofPort( 0 ),
+            m_xpdPort( 0 ),
             m_removeMe( false ),
             m_id( 0 ),
             m_numberOfPROOFWorkers( 1 ),
@@ -42,7 +42,7 @@ namespace PROOFAgent
             if( 0 != m_id )
             {
                 ss
-                        << m_user << "@" << m_host << ":" << m_proofPort
+                        << m_user << "@" << m_host << ":" << m_xpdPort
                         << "[id:" << m_id << "]";
             }
             else
@@ -55,7 +55,7 @@ namespace PROOFAgent
         CProtocol m_protocol;
         std::string m_host;
         std::string m_user;
-        uint16_t m_proofPort;
+        uint16_t m_xpdPort;
         std::string m_proofCfgEntry;
         bool m_removeMe;
         uint32_t m_id;
@@ -148,7 +148,6 @@ namespace PROOFAgent
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
             unsigned int m_agentServerListenPort;
-            unsigned int m_proofPort;
     };
 
 }

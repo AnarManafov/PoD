@@ -85,9 +85,18 @@ namespace PROOFAgent
             {
                 return m_status;
             }
+            uint16_t xpdPort() const
+            {
+                return m_xpdPort;
+            }
+            pid_t xpdPid() const
+            {
+                return m_xpdPid;
+            }
 
         private:
             uint16_t m_xpdPort;
+            pid_t m_xpdPid;
             boost::filesystem::path m_adminPath;
             ProofStatusContainer_t m_status;
             PathVector_t m_files;

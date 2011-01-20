@@ -50,7 +50,6 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
     m_agentServerListenPort( 0 )
 {
     m_Data = _data.m_podOptions.m_server;
-    m_proofPort = _data.m_proofPort;
     m_serverInfoFile = _data.m_serverInfoFile;
 
     string xpd( m_Data.m_common.m_workDir );
@@ -61,8 +60,13 @@ CAgentServer::CAgentServer( const SOptions_t &_data ):
     {
         string msg( "Can't find xproofd config: " );
         msg += xpd;
-        WarningLog( 0, msg );
+        FaultLog( 0, msg );
     }
+    m_xpdPort = m_proofStatus.xpdPort();
+    m_xpdPid = m_proofStatus.xpdPid();
+    stringstream ss;
+    ss << "Detected xpd [" << m_xpdPid << "] on port " << m_xpdPort;
+    InfoLog( ss.str() );
 }
 //=============================================================================
 CAgentServer::~CAgentServer()
@@ -94,8 +98,7 @@ void CAgentServer::monitor()
 {
     while( true )
     {
-        // TODO: we need to check real PROOF port here (from cfg)
-        if( !IsPROOFReady( 0 ) || graceful_quit )
+        if( !IsPROOFReady() || graceful_quit )
         {
             FaultLog( erError, "Can't connect to PROOF service." );
             graceful_quit = 1;
@@ -610,7 +613,10 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 h.m_version = PROJECT_VERSION_STRING;
                 h.m_PoDPath = "$POD_LOCATION";
                 smart_path( &h.m_PoDPath );
-                h.m_proofPort = m_proofPort;
+                h.m_xpdPort = m_xpdPort;
+                h.m_xpdPid = m_xpdPid;
+                h.m_agentPort = m_agentServerListenPort;
+                h.m_agentPid = getpid();
                 BYTEVector_t data_to_send;
                 h.convertToData( &data_to_send );
                 _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );
@@ -646,7 +652,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 h.convertFromData( data );
                 _wrk.second.m_host = h.m_host;
                 _wrk.second.m_user = h.m_username;
-                _wrk.second.m_proofPort = h.m_proofPort;
+                _wrk.second.m_xpdPort = h.m_xpdPort;
 
                 stringstream ss;
                 ss << "Server received client's host info: " << h;
@@ -685,7 +691,7 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
     try
     {
         inet::CSocketClient c;
-        c.connect( _wrk.second.m_proofPort, _wrk.second.m_host );
+        c.connect( _wrk.second.m_xpdPort, _wrk.second.m_host );
     }
     catch( ... )  // we got a problem to connect to a worker
     {
@@ -711,7 +717,7 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
 
     // Update proof.cfg with active workers
     _wrk.second.m_proofCfgEntry =
-        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_proofPort,
+        createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_xpdPort,
                                    _wrk.second.m_host, false,
                                    _wrk.second.m_numberOfPROOFWorkers );
     // Update proof.cfg according to a current number of active workers

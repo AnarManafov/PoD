@@ -473,9 +473,9 @@ fi
 logMsg "starting pod-agent..."
 # start pod-agent
 if [ -n "$1" ]; then
-   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET --workers $1 &
+   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --workers $1 &
 else
-   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --proofport $POD_XPROOF_PORT_TOSET &
+   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg &
 fi
 # wait for pod-agent's process
 PODAGENT_PID=$!

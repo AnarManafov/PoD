@@ -42,7 +42,9 @@ struct SFind
         _T m_sign;
 };
 //=============================================================================
-CProofStatusFile::CProofStatusFile(): m_xpdPort( 0 )
+CProofStatusFile::CProofStatusFile():
+    m_xpdPort( 0 ),
+    m_xpdPid( 0 )
 {
 }
 //=============================================================================
@@ -114,6 +116,18 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
         ss << *itrs;
     }
     ss >> m_xpdPort;
+
+    // check for xpd pid
+    stringstream xpd_pid_file;
+    xpd_pid_file
+            << m_adminPath.string()
+            << "/.xproofd." << m_xpdPort
+            << "/xrootd.pid";
+
+    ifstream f_pid( xpd_pid_file.str().c_str() );
+    if( !f_pid.is_open() )
+        return true;
+    f_pid >> m_xpdPid;
 
     return true;
 }

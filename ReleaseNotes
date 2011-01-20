@@ -8,8 +8,11 @@ pod: Starting with version 3.4, PoD changes a bit its version numbering scheme.
 pod: fixed [Bug 3]: pod-agent doesn't stop PoD server on Linux when idle is detected.
 pod: fixed [Bug 4]: In some cases PoD server could forget to shut down xproof processes.
 pod: The "pod-info" command has been rewritten from scratch.
-     Now it works as a client of pod-agent and can be used from remote machine. See User's manual for more information.
+     Now it works as a client of pod-agent and can be used to request information from a remote PoD server. 
+     This is the first step to disentangle PoD UI and PoD Server. See User's manual for more information.
 pod: PoD doesn't generate a helper header anymore, since the "pod-info" command can be used from remote (to PoD server) hosts as well.
+pod-agent: the "proofport" option has been removed. Agents now detect xproof ports automatically.
+pod-agent: The admin. protocol has been upgraded to version 5.
 
 ## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.

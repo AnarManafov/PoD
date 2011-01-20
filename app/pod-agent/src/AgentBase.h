@@ -46,7 +46,7 @@ namespace PROOFAgent
         public:
             void Start();
             virtual EAgentMode_t GetMode() const = 0;
-            bool IsPROOFReady( unsigned short _Port ) const;
+            bool IsPROOFReady() const;
 
         protected:
             virtual void run() = 0;
@@ -63,6 +63,8 @@ namespace PROOFAgent
             int m_fdSignalPipe;
             std::string m_signalPipeName;
             CProofStatusFile m_proofStatus;
+            unsigned int m_xpdPort;
+            pid_t m_xpdPid;
     };
 
 }

@@ -152,24 +152,14 @@ namespace PROOFAgent
     }
 
 //=============================================================================
-    bool CAgentBase::IsPROOFReady( unsigned short _Port ) const
+    bool CAgentBase::IsPROOFReady() const
     {
         // #1  - Check whether xproofd process exists
-        try
-        {
-            vectorPid_t pids = getprocbyname( "xproofd", true );
-            if( pids.empty() )
-                return false;
-        }
-        catch( ... )
-        {
+        if( !IsProcessExist( m_xpdPid ) )
             return false;
-        }
 
         // #2 - Check whether PROOF port is in use
-        if( 0 == _Port )
-            return true;
-        if( 0 != MiscCommon::INet::get_free_port( _Port ) )
+        if( 0 != MiscCommon::INet::get_free_port( m_xpdPort ) )
             return false; // PROOF port is not in use, that means we can't connect to it
         // TODO: Implement more checks of xproofd here
         return true;

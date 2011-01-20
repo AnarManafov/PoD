@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE( test_create_checkMsg_cmdHOST_INFO )
     SHostInfoCmd a;
     a.m_username = "testuser";
     a.m_host = "test.host.de";
-    a.m_proofPort = 129;
+    a.m_xpdPort = 129;
     a.m_version = "5.05.05daf";
     a.m_PoDPath = "/opt/local/trara/sdf";
 

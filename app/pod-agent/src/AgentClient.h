@@ -66,7 +66,6 @@ namespace PROOFAgent
         private:
             PoD::SWorkerOptions_t m_Data;
             std::string m_serverInfoFile;
-            unsigned int m_proofPort;
             uint32_t m_id;
             bool m_isDirect;
             uint32_t m_numberOfPROOFWorkers;

@@ -34,8 +34,6 @@ namespace PROOFAgent
             m_bDaemonize( false ),
             m_bValidate( false ),
             m_agentMode( Server ),
-            m_serverInfoFile( "$POD_LOCATION/etc/server_info.cfg" ),
-            m_proofPort( 0 ),
             m_numberOfPROOFWorkers( 1 )
         {}
 
@@ -45,7 +43,6 @@ namespace PROOFAgent
         bool m_bValidate;
         EAgentMode_t m_agentMode;       //!< A mode of PROOFAgent, defined by ::EAgentMode_t.
         std::string m_serverInfoFile;
-        unsigned int m_proofPort;
         unsigned int m_numberOfPROOFWorkers;
 
         PoD::SPoDUserDefaultsOptions_t m_podOptions;

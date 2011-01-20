@@ -97,14 +97,21 @@ namespace PROOFAgent
 //=============================================================================
     struct SHostInfoCmd: public SBasicCmd<SHostInfoCmd>
     {
-        SHostInfoCmd(): m_proofPort( 0 )
+        SHostInfoCmd():
+            m_xpdPort( 0 ),
+            m_xpdPid( 0 ),
+            m_agentPort( 0 ),
+            m_agentPid( 0 )
         {
         }
         size_t size() const
         {
             size_t size( m_username.size() + 1 );
             size += m_host.size() + 1;
-            size += sizeof( m_proofPort );
+            size += sizeof( m_xpdPort );
+            size += sizeof( m_xpdPid );
+            size += sizeof( m_agentPort );
+            size += sizeof( m_agentPid );
             size += m_version.size() + 1;
             size += m_PoDPath.size() + 1;
             return size;
@@ -119,20 +126,28 @@ namespace PROOFAgent
                      m_host == val.m_host &&
                      m_version == val.m_version &&
                      m_PoDPath == val.m_PoDPath &&
-                     m_proofPort == val.m_proofPort );
+                     m_xpdPort == val.m_xpdPort &&
+                     m_xpdPid == val.m_xpdPid &&
+                     m_agentPort == val.m_agentPort &&
+                     m_agentPid == val.m_agentPid );
         }
 
         std::string m_username;
         std::string m_host;
         std::string m_version;
         std::string m_PoDPath;
-        uint16_t m_proofPort;
+        uint16_t m_xpdPort;
+        uint32_t m_xpdPid;
+        uint16_t m_agentPort;
+        uint32_t m_agentPid;
     };
     inline std::ostream &operator<< ( std::ostream &_stream, const SHostInfoCmd &val )
     {
         _stream
-                << val.m_username << ":" << val.m_host << ":" << val.m_proofPort
-                << ":" << val.m_version << ":" << val.m_PoDPath;
+                << val.m_username << ":" << val.m_host
+                << ": [" << val.m_xpdPid << "] " << val.m_xpdPort
+                << ":" << val.m_version << ":" << val.m_PoDPath
+                << "; agent [" << val.m_agentPid << "] on port " << val.m_agentPort;
         return _stream;
     }
 //=============================================================================
