@@ -10,7 +10,7 @@
                             2010-01-05
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 *************************************************************************/
 #ifndef PROOFSTATUSFILE_H_
 #define PROOFSTATUSFILE_H_

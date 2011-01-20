@@ -10,7 +10,7 @@
                             2009-12-07
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2011 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2011 GSI, Scientific Computing devision. All rights reserved.
 *************************************************************************/
 #ifndef PROTOCOL_H_
 #define PROTOCOL_H_

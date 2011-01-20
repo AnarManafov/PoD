@@ -10,7 +10,7 @@
                             2009-10-02
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+        Copyright (c) 2009-2011 GSI, Scientific Computing devision. All rights reserved.
 *************************************************************************/
 #include "AgentServer.h"
 // API
