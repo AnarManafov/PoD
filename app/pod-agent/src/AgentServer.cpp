@@ -482,7 +482,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                         full = wrk_iter->second.m_proofCfgEntry;
                         // extract only the comment part
                         size_t pos1( 0 );
-                        while( string::npos != (pos1 = full.find( '#', pos1 )) )
+                        while( string::npos != ( pos1 = full.find( '#', pos1 ) ) )
                         {
                             size_t pos2 = full.find( '\n', pos1 );
                             if( string::npos != pos1 && string::npos != pos2 )

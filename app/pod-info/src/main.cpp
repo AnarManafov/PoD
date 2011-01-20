@@ -38,6 +38,13 @@ struct SOptions
         m_countWNs( false )
     {
     }
+    bool operator== ( const SOptions &_val )
+    {
+        return ( m_version == _val.m_version &&
+                 m_connectionString == _val.m_connectionString &&
+                 m_listWNs == _val.m_listWNs &&
+                 m_countWNs == _val.m_countWNs );
+    }
 
     bool m_version;
     bool m_connectionString;
@@ -55,10 +62,10 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     bpo::options_description visible( "Options" );
     visible.add_options()
     ( "help,h", "Produce help message" )
-    ( "version,v", "Version information" )
-    ( "connection_string,c", "Show PROOF connection string" )
-    ( "list,l", "List all available PROOF workers" )
-    ( "number,n", "Report a number of currently available PROOF workers")
+    ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information" )
+    ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string" )
+    ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers" )
+    ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers" )
     ;
 
     // Parsing command-line
@@ -66,25 +73,13 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
     bpo::notify( vm );
 
-    if( vm.count( "help" ) || vm.empty() )
+    // we need an empty struct to check the case when user don't provide any argument
+    SOptions s;
+    if( vm.count( "help" ) || ( s == *_options ) )
     {
         cout << visible << endl;
         return false;
     }
-    if( vm.count( "version" ) )
-    {
-        _options->m_version = true;
-        return true;
-    }
-
-    if( vm.count( "connection_string" ) )
-        _options->m_connectionString = true;
-
-    if( vm.count( "list" ) )
-        _options->m_listWNs = true;
-    
-     if(vm.count("number"))
-         _options->m_countWNs = true;
 
     return true;
 }
@@ -143,7 +138,7 @@ string connectionString( const pod_info::CServer &_srv )
     return ( ss.str() );
 }
 //=============================================================================
-string listWNs( const pod_info::CServer &_srv )
+size_t listWNs( string *_output, const pod_info::CServer &_srv )
 {
     PROOFAgent::SWnListCmd lst;
     try
@@ -157,25 +152,12 @@ string listWNs( const pod_info::CServer &_srv )
         msg += _e.what();
         throw runtime_error( msg );
     }
-    stringstream ss;
-    std::ostream_iterator< std::string > output( ss, "\n" );
-    std::copy( lst.m_container.begin(), lst.m_container.end(), output );
-    return ( ss.str() );
-}
-//=============================================================================
-size_t countWNs( const pod_info::CServer &_srv )
-{
-    PROOFAgent::SWnListCmd lst;
-    try
+    if( _output )
     {
-        _srv.getListOfWNs( &lst );
-    }
-    catch( exception &_e )
-    {
-        string msg;
-        msg += "Can't connect to PoD server. Please check that the server is running.\n";
-        msg += _e.what();
-        throw runtime_error( msg );
+        stringstream ss;
+        std::ostream_iterator< std::string > output( ss, "\n" );
+        std::copy( lst.m_container.begin(), lst.m_container.end(), output );
+        *_output = ss.str();
     }
     return ( lst.m_container.size() );
 }
@@ -219,17 +201,21 @@ int main( int argc, char *argv[] )
             cout << connectionString( srv ) << endl;
         }
 
-        // Report a number of available WNs
-        if( options.m_countWNs )
+        // list of and a number of available WNs
+        if( options.m_countWNs || options.m_listWNs )
         {
-            cout << countWNs( srv ) << endl;
-        }
-        
-        // Show list of workers
-        if( options.m_listWNs )
-        {
-            cout << listWNs( srv );
-            cout.flush();
+            string lst;
+            size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv );
+
+            if( options.m_countWNs )
+            {
+                cout << n << endl;
+            }
+            if( options.m_listWNs )
+            {
+                cout << lst;
+                cout.flush();
+            }
         }
     }
     catch( exception& e )
