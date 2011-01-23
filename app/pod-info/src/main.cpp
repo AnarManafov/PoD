@@ -330,6 +330,7 @@ int main( int argc, char *argv[] )
         if( options.m_version )
         {
             cout << version( env, srv ) << endl;
+            killTunnel();
             return 0;
         }
 
