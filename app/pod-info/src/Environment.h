@@ -17,6 +17,7 @@ class CEnvironment
 
     public:
         void init();
+        void checkRemoteServer( const std::string &_cfg );
         std::string version() const
         {
             return m_localVer;
@@ -41,6 +42,7 @@ class CEnvironment
     private:
         void getLocalVersion();
         bool checkForLocalServer();
+        void readServerInfoCfg( std::ifstream &_f );
 
     private:
         std::string m_PoDPath;

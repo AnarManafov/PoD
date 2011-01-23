@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-ssh-tunnel
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2011-01-22
+#
+#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+A private PoD command line utility, which is used to retrieve a remote PoD server connection information.
+   Copyright (C) 2011 GSI, Scientific Computing group.
+
+Usage: pod-srv-info [OPTION]
+     -l login@host.fqdn 	SSH connection string.
+     -p port                    The PoD server port.
+     -o open.domain.org         The name of a third party machine open to the outside world
+                                and from which direct connections to the server are possible.
+     -d 			Enable debug output.
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+POD_PORT=""
+SSH_CON_STR=""
+OPEN_DOMAIN=""
+DEBUG=""
+while getopts ":l:o:p:dh" opt; do
+  case $opt in
+  p)
+    POD_PORT="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  o)
+    OPEN_DOMAIN="$OPTARG"
+    ;;
+  d)
+    DEBUG="YES"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
+TOOL_NAME="pod-ssh-tunnel"
+TIMEOUT=30
+
+SSH_CMD_BATCH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
+SSH_CMD="ssh  -o ConnectTimeout=$TIMEOUT $SSH_CON_STR $SSHOPT"
+WAITTIMEOUT=10
+eval SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
+eval PID_FILE="~/.PoD/etc/server_tunnel.pid"
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+# TODO: map port should be taking from a sequence in order to allow several users to run  on the same machine with
+# the same remote PoD ports
+MAP_PORT=$POD_PORT
+
+# additional protection, in case pid file is there
+PID=$(cat $PID_FILE 2>/dev/null)
+kill -9 $PID 2>/dev/null
+rm -f $PID_FILE
+
+if [ "$SSH_CON_STR" = "$OPEN_DOMAIN" ]; then
+   # My ssh tunnel attempts to establish the connection to the public domain name,
+   # which uses the public IP (the same one I'm SSHing into).
+   # The PoD server I'm trying to reach is not bound to that adapter!
+   # We need to use localhost on the public domain to connect to the server
+   ssh -N -L $MAP_PORT:localhost:$POD_PORT $OPEN_DOMAIN &
+   PID=$!
+else
+   ssh -N -L $MAP_PORT:$SSH_CON_STR:$POD_PORT $OPEN_DOMAIN &
+   PID=$!
+fi
+
+if [ -n "$PID" ]; then
+   echo "$PID" > $PID_FILE
+fi
+
+exit 0
+

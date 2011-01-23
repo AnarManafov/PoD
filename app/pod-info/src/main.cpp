@@ -19,6 +19,8 @@
 #include <boost/program_options/parsers.hpp>
 // MiscCommon
 #include "BOOSTHelper.h"
+#include "Process.h"
+#include "SysHelper.h"
 // pod-info
 #include "version.h"
 #include "Environment.h"
@@ -28,6 +30,9 @@ using namespace MiscCommon;
 using namespace std;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
+//=============================================================================
+LPCTSTR g_remote_server_info_cfg = "~/.PoD/etc/remote_server_info.cfg";
+LPCTSTR g_ssh_tunnel_pid = "~/.PoD/etc/server_tunnel.pid";
 //=============================================================================
 struct SOptions
 {
@@ -47,7 +52,9 @@ struct SOptions
                  m_listWNs == _val.m_listWNs &&
                  m_countWNs == _val.m_countWNs &&
                  m_status == _val.m_status &&
-                 m_debug == _val.m_debug );
+                 m_debug == _val.m_debug &&
+                 m_sshConnectionStr == _val.m_sshConnectionStr &&
+                 m_sshArgs == _val.m_sshArgs );
     }
 
     bool m_version;
@@ -56,6 +63,8 @@ struct SOptions
     bool m_countWNs;
     bool m_status;
     bool m_debug;
+    string m_sshConnectionStr;
+    string m_sshArgs;
 };
 //=============================================================================
 // Command line parser
@@ -68,18 +77,34 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     bpo::options_description visible( "Options" );
     visible.add_options()
     ( "help,h", "Produce help message" )
-    ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information" )
-    ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages" )
-    ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string" )
-    ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers" )
-    ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers" )
-    ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server" )
+    ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information." )
+    ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages." )
+    ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string." )
+    ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers." )
+    ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
+    ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
+    ( "ssh", bpo::value<string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
+    ( "ssh_opt", bpo::value<string>(), "Additinal options, which will be used in SSH commands." )
+    // TODO:
+    // implement:
+    // 1. force passwordless authentication
     ;
 
     // Parsing command-line
     bpo::variables_map vm;
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
     bpo::notify( vm );
+
+    boost_hlp::option_dependency( vm, "ssh_opt", "ssh" );
+
+    if( vm.count( "ssh" ) )
+    {
+        _options->m_sshConnectionStr = vm["ssh"].as<string>();
+    }
+    if( vm.count( "ssh_opt" ) )
+    {
+        _options->m_sshArgs = vm["ssh_opt"].as<string>();
+    }
 
     // we need an empty struct to check the case when user don't provide any argument
     SOptions s;
@@ -187,6 +212,29 @@ void srvPoDStatus( string *_status, string *_con_string,
 
 }
 //=============================================================================
+pid_t tunnelPid()
+{
+    string name( g_ssh_tunnel_pid );
+    smart_path( &name );
+    ifstream f( name.c_str() );
+    if( !f.is_open() )
+        return 0;
+    pid_t tunnel_pid;
+    f >> tunnel_pid;
+    return tunnel_pid;
+}
+//=============================================================================
+void killTunnel()
+{
+    pid_t pid = tunnelPid();
+    if( 0 != pid )
+        kill( pid, SIGKILL );
+
+    string name( g_ssh_tunnel_pid );
+    smart_path( &name );
+    unlink( name.c_str() );
+}
+//=============================================================================
 int main( int argc, char *argv[] )
 {
     CEnvironment env;
@@ -198,20 +246,85 @@ int main( int argc, char *argv[] )
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
-        string srvHost;
-        unsigned int srvPort( 0 );
-        // try to connect to PoD server
-        if( env.isLocalServer() )
+        string srvHost( env.serverHost() );
+        // use SSH to retrieve server_info.cfg
+        if( !options.m_sshConnectionStr.empty() )
         {
-            srvHost = env.serverHost();
-            srvPort = env.serverPort();
-        }
-        else
-        {
-            // TODO: Not implemented yet
+            string outfile( g_remote_server_info_cfg );
+            smart_path( &outfile );
+
+            // delete first the remote srv info file
+            unlink( outfile.c_str() );
+            StringVector_t arg;
+            arg.push_back( "-l " + options.m_sshConnectionStr );
+            arg.push_back( "-f " + outfile );
+            if( options.m_debug )
+                arg.push_back( "-d" );
+            string cmd( "$POD_LOCATION/bin/private/pod-srv-info" );
+            smart_path( &cmd );
+            string stdout;
+            do_execv( cmd, arg, 60, NULL );
+            if( !does_file_exists( outfile ) )
+            {
+                stringstream ss;
+                ss << "Remote PoD server is NOT running.";
+                throw runtime_error( ss.str() );
+            }
+
+            env.checkRemoteServer( outfile );
+
+            // delete tunnel's file
+            killTunnel();
+            // create an ssh tunnel on PoD Server port
+            switch( fork() )
+            {
+                case - 1:
+                    // Unable to fork
+                    throw std::runtime_error( "Unable to create an SSH tunnel." );
+                case 0:
+                    {
+                        // create SSH Tunnel
+
+                        string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
+                        smart_path( &cmd );
+                        string l_arg( "-l" );
+                        l_arg += options.m_sshConnectionStr;
+                        stringstream p_arg;
+                        p_arg << "-p" << env.serverPort();
+                        string o_arg( "-o" );
+                        o_arg += options.m_sshConnectionStr;
+
+                        execl( cmd.c_str(), "pod-ssh-tunnel",
+                               l_arg.c_str(), p_arg.str().c_str(), o_arg.c_str(), NULL );
+                        exit( 1 );
+                    }
+            }
+            // wait for tunnel to start
+            short count( 0 );
+            const short max_try( 50 );
+            pid_t pid( 0 );
+            while( 0 == pid || !IsProcessExist( pid ) ||
+                   0 != MiscCommon::INet::get_free_port( env.serverPort() ) )
+            {
+                ++count;
+                usleep( 500000 ); // delays for 0.5 seconds
+                pid = tunnelPid();
+                if( count >= max_try )
+                    throw runtime_error( "Can't setup an SSH tunnel." );
+            }
+            // wait a bit more to be sure that ssh handled its job
+            //  sleep(1);
+            // we tunnel the connection to PoD server
+            srvHost = "localhost";
         }
 
-        pod_info::CServer srv( srvHost, srvPort );
+        if( options.m_debug )
+        {
+            cout
+                    << "connecting to PoD server: "
+                    << srvHost << ":" << env.serverPort() << endl;
+        }
+        pod_info::CServer srv( srvHost, env.serverPort() );
 
         // Show version information
         if( options.m_version )
@@ -255,9 +368,10 @@ int main( int argc, char *argv[] )
     }
     catch( exception& e )
     {
-        cerr << PROJECT_NAME << ": error: " << e.what() << endl;
+        killTunnel();
+        cerr << PROJECT_NAME << ": " << e.what() << endl;
         return 1;
     }
-
+    killTunnel();
     return 0;
 }

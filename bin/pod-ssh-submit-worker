@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-06-10
 #
-#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
 #=============================================================================
@@ -20,7 +20,7 @@ usage() {
 PoD command line utility, which is used to submit a PoD worker via ssh. It's used by pod-ssh utility.
    Copyright (C) 2010 GSI, Scientific Computing group.
 
-Usage: pod-info [OPTION]
+Usage: pod-ssh-submit-worker [OPTION]
      -i id			ID of the worker.
      -l ssh login@host.fqdn 	SSH connection string.
      -w dir      		Remote working directory.

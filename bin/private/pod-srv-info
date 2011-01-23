@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-srv-info
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2011-01-22
+#
+#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+A private PoD command line utility, which is used to retrieve a remote PoD server connection information.
+   Copyright (C) 2011 GSI, Scientific Computing group.
+
+Usage: pod-srv-info [OPTION]
+     -l login@host.fqdn 	SSH connection string.
+     -o SSH_Opt			Additinal SSH parameters.
+     -f path			Output file location.
+     -d 			Enable debug output.
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+FILE_PATH=""
+SSH_CON_STR=""
+SSHOPT=""
+DEBUG=""
+while getopts ":l:o:f:dh" opt; do
+  case $opt in
+  f)
+    FILE_PATH="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  d)
+    DEBUG="YES"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
+TOOL_NAME="pod-srv-info"
+TIMEOUT=30
+
+#SSH_CMD_BATCH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
+#SSH_CMD="ssh  -o ConnectTimeout=$TIMEOUT $SSH_CON_STR $SSHOPT"
+WAITTIMEOUT=10
+SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+
+if [ -z "$DEBUG" ]; then
+   rsync -aq -e "ssh -o StrictHostKeyChecking=no $SSHOPT" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH &> /dev/null
+else
+   rsync -aq -e "ssh -o StrictHostKeyChecking=no $SSHOPT" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH
+fi
+
+exit 0
+

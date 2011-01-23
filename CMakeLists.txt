@@ -111,7 +111,11 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-submit
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-submit-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-ssh-clean-worker
-    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-status-worker 
+    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-status-worker
+    )
+SET(POD_BIN_PRIVATE_FILES
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-srv-info
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-tunnel
     )
 #
 # "plugins" files
@@ -237,6 +241,7 @@ install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor.option DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
 # install bin files
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
+install(PROGRAMS ${POD_BIN_PRIVATE_FILES} DESTINATION bin/private)
 # install etc files
 install(FILES ${POD_ETC_FILES} DESTINATION etc)
 # install CLI plug-ins
