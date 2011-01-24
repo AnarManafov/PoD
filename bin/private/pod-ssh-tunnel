@@ -26,6 +26,7 @@ Usage: pod-srv-info [OPTION]
      -o open.domain.org         The name of a third party machine open to the outside world
                                 and from which direct connections to the server are possible.
      -d 			Enable debug output.
+     -b				Enable batch mode.
      -h          		Show summary of options.
 
 Report bugs to http://pod.gsi.de
@@ -38,7 +39,8 @@ POD_PORT=""
 SSH_CON_STR=""
 OPEN_DOMAIN=""
 DEBUG=""
-while getopts ":l:o:p:dh" opt; do
+BATCH_MODE=""
+while getopts ":l:o:p:dbh" opt; do
   case $opt in
   p)
     POD_PORT="$OPTARG"
@@ -51,6 +53,9 @@ while getopts ":l:o:p:dh" opt; do
     ;;
   d)
     DEBUG="YES"
+    ;;
+  b)
+    BATCH_MODE="YES"
     ;;
   h) 
     usage
@@ -73,9 +78,12 @@ fi
 TOOL_NAME="pod-ssh-tunnel"
 TIMEOUT=30
 
-SSH_CMD_BATCH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
-SSH_CMD="ssh  -o ConnectTimeout=$TIMEOUT $SSH_CON_STR $SSHOPT"
-WAITTIMEOUT=10
+if [ -n "$BATCH_MODE" ]; then
+    SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no"
+else
+    SSH_CMD="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT"
+fi
+
 eval SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
 eval PID_FILE="~/.PoD/etc/server_tunnel.pid"
 #=============================================================================
@@ -90,15 +98,15 @@ PID=$(cat $PID_FILE 2>/dev/null)
 kill -9 $PID 2>/dev/null
 rm -f $PID_FILE
 
-if [ "$SSH_CON_STR" = "$OPEN_DOMAIN" ]; then
+if [ -z "$OPEN_DOMAIN" ]; then
    # My ssh tunnel attempts to establish the connection to the public domain name,
    # which uses the public IP (the same one I'm SSHing into).
    # The PoD server I'm trying to reach is not bound to that adapter!
    # We need to use localhost on the public domain to connect to the server
-   ssh -N -L $MAP_PORT:localhost:$POD_PORT $OPEN_DOMAIN &
+   $SSH_CMD -N -L $MAP_PORT:localhost:$POD_PORT $OPEN_DOMAIN &
    PID=$!
 else
-   ssh -N -L $MAP_PORT:$SSH_CON_STR:$POD_PORT $OPEN_DOMAIN &
+   $SSH_CMD -N -L $MAP_PORT:$SSH_CON_STR:$POD_PORT $OPEN_DOMAIN &
    PID=$!
 fi
 

@@ -42,7 +42,8 @@ struct SOptions
         m_listWNs( false ),
         m_countWNs( false ),
         m_status( false ),
-        m_debug( false )
+        m_debug( false ),
+        m_batchMode( false )
     {
     }
     bool operator== ( const SOptions &_val )
@@ -54,7 +55,9 @@ struct SOptions
                  m_status == _val.m_status &&
                  m_debug == _val.m_debug &&
                  m_sshConnectionStr == _val.m_sshConnectionStr &&
-                 m_sshArgs == _val.m_sshArgs );
+                 m_sshArgs == _val.m_sshArgs &&
+                 m_batchMode == _val.m_batchMode &&
+                 m_openDomain == _val.m_openDomain );
     }
 
     bool m_version;
@@ -65,6 +68,8 @@ struct SOptions
     bool m_debug;
     string m_sshConnectionStr;
     string m_sshArgs;
+    string m_openDomain;
+    bool m_batchMode;
 };
 //=============================================================================
 // Command line parser
@@ -85,9 +90,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
     ( "ssh", bpo::value<string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
     ( "ssh_opt", bpo::value<string>(), "Additinal options, which will be used in SSH commands." )
-    // TODO:
-    // implement:
-    // 1. force passwordless authentication
+    ( "ssh_open_domain", bpo::value<string>(), "The name of a third party machine open to the outside world"
+                                               " and from which direct connections to the server are possible." )
+    ( "batch,b", bpo::bool_switch( &( _options->m_batchMode ) ), "Enable the batch mode." )
     ;
 
     // Parsing command-line
@@ -104,6 +109,10 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     if( vm.count( "ssh_opt" ) )
     {
         _options->m_sshArgs = vm["ssh_opt"].as<string>();
+    }
+    if( vm.count( "ssh_open_domain" ) )
+    {
+        _options->m_openDomain = vm["ssh_open_domain"].as<string>();
     }
 
     // we need an empty struct to check the case when user don't provide any argument
@@ -260,6 +269,8 @@ int main( int argc, char *argv[] )
             arg.push_back( "-f " + outfile );
             if( options.m_debug )
                 arg.push_back( "-d" );
+            if( options.m_batchMode )
+                arg.push_back( "-b" );
             string cmd( "$POD_LOCATION/bin/private/pod-srv-info" );
             smart_path( &cmd );
             string stdout;
@@ -284,7 +295,6 @@ int main( int argc, char *argv[] )
                 case 0:
                     {
                         // create SSH Tunnel
-
                         string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
                         smart_path( &cmd );
                         string l_arg( "-l" );
@@ -292,28 +302,31 @@ int main( int argc, char *argv[] )
                         stringstream p_arg;
                         p_arg << "-p" << env.serverPort();
                         string o_arg( "-o" );
-                        o_arg += options.m_sshConnectionStr;
+                        o_arg += options.m_openDomain;
+
+                        string sBatch;
+                        if( options.m_batchMode )
+                            sBatch = "-b";
 
                         execl( cmd.c_str(), "pod-ssh-tunnel",
-                               l_arg.c_str(), p_arg.str().c_str(), o_arg.c_str(), NULL );
+                               l_arg.c_str(), p_arg.str().c_str(),
+                               o_arg.c_str(), sBatch.c_str(), NULL );
                         exit( 1 );
                     }
             }
             // wait for tunnel to start
             short count( 0 );
             const short max_try( 50 );
-            pid_t pid( 0 );
+            pid_t pid( tunnelPid() );
             while( 0 == pid || !IsProcessExist( pid ) ||
                    0 != MiscCommon::INet::get_free_port( env.serverPort() ) )
             {
                 ++count;
-                usleep( 500000 ); // delays for 0.5 seconds
                 pid = tunnelPid();
                 if( count >= max_try )
                     throw runtime_error( "Can't setup an SSH tunnel." );
+                usleep( 50000 ); // delays for 0.05 seconds
             }
-            // wait a bit more to be sure that ssh handled its job
-            //  sleep(1);
             // we tunnel the connection to PoD server
             srvHost = "localhost";
         }

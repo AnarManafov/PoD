@@ -25,6 +25,7 @@ Usage: pod-srv-info [OPTION]
      -o SSH_Opt			Additinal SSH parameters.
      -f path			Output file location.
      -d 			Enable debug output.
+     -b				Enable batch mode.
      -h          		Show summary of options.
 
 Report bugs to http://pod.gsi.de
@@ -37,7 +38,8 @@ FILE_PATH=""
 SSH_CON_STR=""
 SSHOPT=""
 DEBUG=""
-while getopts ":l:o:f:dh" opt; do
+BATCH_MODE=""
+while getopts ":l:o:f:dbh" opt; do
   case $opt in
   f)
     FILE_PATH="$OPTARG"
@@ -50,6 +52,9 @@ while getopts ":l:o:f:dh" opt; do
     ;;
   d)
     DEBUG="YES"
+    ;;
+  b)
+    BATCH_MODE="YES"
     ;;
   h) 
     usage
@@ -72,18 +77,21 @@ fi
 TOOL_NAME="pod-srv-info"
 TIMEOUT=30
 
-#SSH_CMD_BATCH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
-#SSH_CMD="ssh  -o ConnectTimeout=$TIMEOUT $SSH_CON_STR $SSHOPT"
-WAITTIMEOUT=10
+if [ -n "$BATCH_MODE" ]; then
+    SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $SSHOPT"
+else
+    SSH_CMD="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT $SSHOPT"
+fi
+
 SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
 #=============================================================================
 # ***** MAIN *****
 #=============================================================================
 
 if [ -z "$DEBUG" ]; then
-   rsync -aq -e "ssh -o StrictHostKeyChecking=no $SSHOPT" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH &> /dev/null
+   rsync -aq -e "$SSH_CMD" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH &> /dev/null
 else
-   rsync -aq -e "ssh -o StrictHostKeyChecking=no $SSHOPT" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH
+   rsync -aq -e "$SSH_CMD" $SSH_CON_STR:$SRV_CFG_FILE $FILE_PATH
 fi
 
 exit 0
