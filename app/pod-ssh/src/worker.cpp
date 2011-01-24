@@ -62,7 +62,7 @@ void CWorker::runTask( ETaskType _param )
 void CWorker::submit()
 {
     m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/pod-ssh-submit-worker" );
+    string cmd( "$POD_LOCATION/bin/private/pod-ssh-submit-worker" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( "-i" + m_rec->m_id );
@@ -95,7 +95,7 @@ void CWorker::submit()
 void CWorker::clean()
 {
     m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/pod-ssh-clean-worker" );
+    string cmd( "$POD_LOCATION/bin/private/pod-ssh-clean-worker" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( "-i" + m_rec->m_id );
@@ -125,7 +125,7 @@ void CWorker::clean()
 void CWorker::status()
 {
     m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/pod-ssh-status-worker" );
+    string cmd( "$POD_LOCATION/bin/private/pod-ssh-status-worker" );
     smart_path( &cmd );
     StringVector_t params;
     params.push_back( "-i" + m_rec->m_id );

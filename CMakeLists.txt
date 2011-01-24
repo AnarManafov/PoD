@@ -69,7 +69,7 @@ endif(DOXYGEN_FOUND)
 #
 if(DOXYGEN_FOUND)
    add_custom_target( api-docs COMMENT "Generating API docs" )
-   add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs )
+   add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs pod-info-api-docs )
 
    add_custom_target( upload-api-docs 
        COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
@@ -109,11 +109,12 @@ SET(POD_BIN_FILES
     ${CMAKE_SOURCE_DIR}/bin/pod-check-update
     ${CMAKE_SOURCE_DIR}/bin/pod-prep-worker
     ${CMAKE_SOURCE_DIR}/bin/pod-submit
-    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-submit-worker
-    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-clean-worker
-    ${CMAKE_SOURCE_DIR}/bin/pod-ssh-status-worker
     )
+
 SET(POD_BIN_PRIVATE_FILES
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-submit-worker
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-clean-worker
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-status-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-srv-info
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-tunnel
     )
