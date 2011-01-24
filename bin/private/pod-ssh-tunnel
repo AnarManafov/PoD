@@ -103,7 +103,7 @@ if [ -z "$OPEN_DOMAIN" ]; then
    # which uses the public IP (the same one I'm SSHing into).
    # The PoD server I'm trying to reach is not bound to that adapter!
    # We need to use localhost on the public domain to connect to the server
-   $SSH_CMD -N -L $MAP_PORT:localhost:$POD_PORT $OPEN_DOMAIN &
+   $SSH_CMD -N -L $MAP_PORT:localhost:$POD_PORT $SSH_CON_STR &
    PID=$!
 else
    $SSH_CMD -N -L $MAP_PORT:$SSH_CON_STR:$POD_PORT $OPEN_DOMAIN &
