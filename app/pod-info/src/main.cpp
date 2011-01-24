@@ -89,9 +89,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( excepti
     ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
     ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
     ( "ssh", bpo::value<string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
-    ( "ssh_opt", bpo::value<string>(), "Additinal options, which will be used in SSH commands." )
+    ( "ssh_opt", bpo::value<string>(), "Additional options, which will be used in SSH commands." )
     ( "ssh_open_domain", bpo::value<string>(), "The name of a third party machine open to the outside world"
-                                               " and from which direct connections to the server are possible." )
+      " and from which direct connections to the server are possible." )
     ( "batch,b", bpo::bool_switch( &( _options->m_batchMode ) ), "Enable the batch mode." )
     ;
 
