@@ -178,32 +178,20 @@
     </sect1>
     
     
-    <sect1 id="A_helper_header">
-        <title>A helper header</title>
+    <sect1 id="PROOF_Connection_String">
+        <title>PROOF Connection String</title>
         <para>
-            Since version 2.1.1 PoD generates a helper header <filename>$POD_LOCATION/etc/pod-master.h</filename>.
-            This is a C++ header file, which contains a definition for a current PoD server settings, such as server host name, xproof port number and so on. A user can include this header to a proof script of his/her analysis, and use constants from the header in a PROOF connection string. Every time when PoD automated port mapping choose a different port for xproof, the helper header will be updated.
-            This will help always get a proper settings of a current master host and PROOF's port name.
+        PROOF connection string - is an URL which is used as a parameter to the TProof::Open method. This URL actually
+        contains an address of PROOF master, its host and port. 
         </para>
         <para>
-            For an example analysis, please see <xref linkend="How_to_test"/>.
-        </para>
-        <para>
-            The following is an example of the helper header:
-<screen>
-#ifndef _POD_MASTER_H_
-#define _POD_MASTER_H_
-#define POD_LOCATION "/misc/manafov/PoD_Test/PoDv2.0.10/PoD_Package"
-#define POD_MASTER_HOST "lxb333.gsi.de"
-#define POD_XPROOF_PORT "21001"
-#define POD_XROOTD_PORT "20000"
-#endif	
-</screen>
-        </para>
-        <para>
-            Another solution is to use the <xref linkend="pod-info"/> command, which can output a current connection string.
-            Fined a useful example of the command usage on the <xref linkend="How_to_test"/>.
-        </para>
+            Every time PoD is restarted it uses its automatic port mapping machinery to assign TCP ports to xproofd and other daemons.
+            That means, a PROOF master port can always be a different one.
+	    In order always get the actual port and even the whole PROOF connection string the <xref linkend="pod-info"/> can be used.
+            </para>
+            <para>
+               For an example analysis, please see <xref linkend="How_to_test"/>.
+            </para>
     </sect1>      
     
     

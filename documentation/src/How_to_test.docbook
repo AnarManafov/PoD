@@ -52,7 +52,6 @@ So, the test could look like:
 <prompt>root[] </prompt><command>runProof("event(nevt=1000000)", gSystem->GetFromPipe("pod-info -c"))</command>
 </screen>
 
-        You can also use the PoD helper header to generate the connection URL, please see <xref linkend="A_helper_header"/>, .
         </para>
 		   	</para>
 		</sect1>
