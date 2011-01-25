@@ -152,6 +152,17 @@
                 which workers is available. Please see the Options section to find out all kinds of information <command>pod-info</command> can retrieve and show.
             </para>
             <para>
+            By default <command>pod-info</command> tries to find and connect to a local PoD server.
+            A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id and
+             <command>pod-info</command>. It could be the same machine or environment with a shared home file system.
+            </para>
+	    <para>
+            When you want to retrieve information about a remote PoD server, than you need to use the <option>--ssh</option> option.
+            Using this options you can specify an ssh connection string, where a remote PoD server is running.
+            The <command>pod-info</command> command will first try to find the running PoD server on that host and process a user request.
+            In <xref linkend="pod-info_examples"/> you will find more some use cases.
+            </para>
+            <para>
                 The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
             </para>
         </refsect1>
@@ -239,12 +250,12 @@
                 </varlistentry>
             </variablelist>
         </refsect1>
-        <refsect1><title>Examples</title>
+        <refsect1 id="pod-info_examples"><title>Examples</title>
            <para>
            Get PoD version:
            </para>
 <screen>
-<command>pod-info <replaceable></></command>
+<command>pod-info <replaceable>-v</replaceable></command>
 </screen>
         </refsect1>
 
