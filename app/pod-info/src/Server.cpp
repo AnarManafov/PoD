@@ -19,11 +19,14 @@ CServer::CServer( const string &_host, unsigned int _port ):
     m_host( _host ),
     m_port( _port )
 {
-
 }
 //=============================================================================
 void CServer::getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const
 {
+    if( 0 == m_port || m_host.empty() )
+    {
+        throw runtime_error( "Wrong server url." );
+    }
     inet::CSocketClient m_socket;
     m_socket.connect( m_port, m_host );
     BYTEVector_t data;
@@ -34,6 +37,10 @@ void CServer::getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const
 //=============================================================================
 void CServer::getListOfWNs( PROOFAgent::SWnListCmd *_lst ) const
 {
+    if( 0 == m_port || m_host.empty() )
+    {
+        throw runtime_error( "Wrong server url." );
+    }
     inet::CSocketClient m_socket;
     m_socket.connect( m_port, m_host );
     BYTEVector_t data;
