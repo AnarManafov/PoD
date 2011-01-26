@@ -148,25 +148,26 @@
             <title>Description</title>
             <para>
                 One can use <command>pod-info</command> to retrieve different kinds of information about and from PoD.
-                For example <command>pod-info</command> could help to find out whether PoD server running or not, how many PROOF workers already online and
-                which workers is available. Please see the Options section to find out all kinds of information <command>pod-info</command> can retrieve and show.
+                For example <command>pod-info</command> could help to find out whether PoD server running or not, how many PROOF workers are already online and
+                which exactly. Please see <xref linkend="pod-info_options"/> to find out all kinds of information <command>pod-info</command> can retrieve and show.
             </para>
             <para>
             By default <command>pod-info</command> tries to find and connect to a local PoD server.
-            A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id and
-             <command>pod-info</command>. It could be the same machine or environment with a shared home file system.
+            A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id.
+            It could be the same machine or different machines but with a shared home file system.
             </para>
 	    <para>
             When you want to retrieve information about a remote PoD server, than you need to use the <option>--ssh</option> option.
-            Using this options you can specify an ssh connection string, where a remote PoD server is running.
-            The <command>pod-info</command> command will first try to find the running PoD server on that host and process a user request.
-            In <xref linkend="pod-info_examples"/> you will find more some use cases.
+            Using this option you can specify an ssh connection string, where a remote PoD server is running.
+            The <command>pod-info</command> command will first try to find the running PoD server on that host and than process user requests
+            on that server.
+            In <xref linkend="pod-info_examples"/> you will find some use cases.
             </para>
             <para>
                 The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
             </para>
         </refsect1>
-        <refsect1>
+        <refsect1 id="pod-info_options">
             <title>Options</title>
             <variablelist>
                 <varlistentry>
@@ -193,7 +194,8 @@
                         <para>Enable the batch mode. For example, in case when the <option>--ssh</option> option also used, than there will
                          be no password prompts or any interaction with a user. The utility will try to use SSH public key authentication and will fail if it's not working.</para>
                         <para>
-                         The batch mode is very useful, when <command>pod-info</command> is used in a ROOT/PROOF script to retrieve a connection string.
+                         The batch mode is very useful, when <command>pod-info</command> is used in a ROOT/PROOF script to retrieve a connection string
+                         (see <xref linkend="pod-info_connection_string"/>).
                          In this case you want <command>pod-info</command> to return either a PROOF connection string or an empty string
                          in case of an error and no prompts of any kind.
 		        </para>
@@ -202,7 +204,7 @@
                 <varlistentry>
                     <term><option>-c, --connection_string</option></term>
                     <listitem>
-                        <para>Show a PROOF connection string, which should be passed to the TProof::Open method as an argument.</para>
+                        <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument.</para>
                     </listitem>
                 </varlistentry> 
                 <varlistentry>
@@ -251,12 +253,87 @@
             </variablelist>
         </refsect1>
         <refsect1 id="pod-info_examples"><title>Examples</title>
-           <para>
-           Get PoD version:
-           </para>
+
+<example><title>PoD version information</title>
+<para>
 <screen>
 <command>pod-info <replaceable>-v</replaceable></command>
 </screen>
+           Get PoD version from a remote PoD server on the machine <replaceable>server.fqdn</replaceable>
+           (it could be also on a shared home file system there):
+<screen>
+<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-v</option></command>
+</screen>
+	   </para>
+</example>
+
+<example><title>available PROOF workers</title>
+<para>
+a number of workers:
+<screen>
+<command>pod-info <option>-n</option></command>
+</screen>
+the same from the remote PoD server:
+<screen>
+<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-n</option></command>
+</screen>
+a list of workers:
+<screen>
+<command>pod-info <option>-l</option></command>
+</screen>
+or all together:
+<screen>
+<command>pod-info <option>-nl</option></command>
+</screen>
+</para>
+</example>
+
+
+<example id="pod-info_connection_string"><title>PROOF connection string</title>
+<para>
+<screen>
+<command>pod-info <option>-c</option></command>
+</screen>
+the same from the remote PoD server:
+<screen>
+<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option></command>
+</screen>
+
+use this command in a ROOT script or your analysis code directly:
+<programlisting>
+TProof::Open(gSystem->GetFromPipe(""<command>pod-info <option>-c</option></command>"));
+</programlisting>
+
+with a remote PoD server:
+<programlisting>
+TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option>  <option>-b</option></command>"));
+</programlisting>
+note, that we use the <option>-b</option> option, because we can't have any prompt in out ROOT script and
+therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failer, users may want to check:
+<programlisting>
+std::string url(gSystem->GetFromPipe("<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option>  <option>-b</option></command>"));
+if( url.empty() )
+{
+   // PoD server is not running
+   // print out an error message...
+   return 1;
+}
+TProof::Open( url.c_str() );
+</programlisting>
+</para>
+</example>
+
+<example><title>PoD server status</title>
+<para>
+<screen>
+<command>pod-info <option>-s</option></command>
+</screen>
+the same from the remote PoD server:
+<screen>
+<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-s</option></command>
+</screen>
+</para>
+</example>
         </refsect1>
 
     </refentry>
