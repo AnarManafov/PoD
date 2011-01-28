@@ -283,6 +283,9 @@ int main( int argc, char *argv[] )
             }
 
             env.checkRemoteServer( outfile );
+            // now we can delete the remote server file
+            // we can't reuse it in next sessions, since the PoD port could change
+            unlink( outfile.c_str() );
 
             // delete tunnel's file
             killTunnel();
