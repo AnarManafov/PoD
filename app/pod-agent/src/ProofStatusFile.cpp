@@ -126,7 +126,13 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
 
     ifstream f_pid( xpd_pid_file.str().c_str() );
     if( !f_pid.is_open() )
-        return true;
+    {
+        string smsg;
+        smsg = "Can't open xpd's pid file: ";
+        smsg += xpd_pid_file.str();
+        
+        throw runtime_error(smsg);
+    }    
     f_pid >> m_xpdPid;
 
     return true;

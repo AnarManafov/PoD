@@ -21,6 +21,9 @@
 #include "BOOSTHelper.h"
 #include "Process.h"
 #include "SysHelper.h"
+#include "PoDUserDefaultsOptions.h"
+// pod-agent
+#include "ProofStatusFile.h"
 // pod-info
 #include "version.h"
 #include "Environment.h"
@@ -28,11 +31,16 @@
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
+namespace pod_agent = PROOFAgent;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 LPCTSTR g_remote_server_info_cfg = "~/.PoD/etc/remote_server_info.cfg";
 LPCTSTR g_ssh_tunnel_pid = "~/.PoD/etc/server_tunnel.pid";
+// will be concatenated with (m_Data.m_common.m_workDir + "/")
+LPCTSTR g_xpdCFG = "etc/xpd.cf";
+// 0 - success, 1 - an error, 2 - server is partially running
+int g_exitCode = 0;
 //=============================================================================
 struct SOptions
 {
@@ -184,6 +192,32 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv,
     return ( lst.m_container.size() );
 }
 //=============================================================================
+// check the local xpd
+pid_t getLocalXPDPid()
+{
+    try
+    {
+        // PoD user defaults
+        string pathUD( PoD::showCurrentPUDFile() );
+        smart_path( &pathUD );
+        PoD::CPoDUserDefaults user_defaults;
+        user_defaults.init( pathUD );
+        PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
+
+        string xpd( cfg.m_server.m_common.m_workDir );
+        smart_append( &xpd, '/' );
+        xpd += g_xpdCFG;
+        smart_path( &xpd );
+        pod_agent::CProofStatusFile proofStatus;
+        if( proofStatus.readAdminPath( xpd, adminp_server ) )
+            return proofStatus.xpdPid();
+    }
+    catch( ... )
+    {
+    }
+    return 0;
+}
+//=============================================================================
 void srvPoDStatus( string *_status, string *_con_string,
                    const pod_info::CServer &_srv, const SOptions &_opt )
 {
@@ -195,9 +229,28 @@ void srvPoDStatus( string *_status, string *_con_string,
     catch( exception &_e )
     {
         string msg;
+        if( _status && _opt.m_sshConnectionStr.empty() )
+        {
+            // if we are here, that means there is no neither
+            // a remote or a local pod-agent found.
+            // Let us check now, whether there is no local xpd processes left
+            pid_t xpd_pid( getLocalXPDPid() );
+            if( IsProcessExist( xpd_pid ) )
+            {
+                stringstream ss;
+                ss << "PoD server is NOT running.\n"
+                   << "WARNING: There is a local XPROOFD [" << xpd_pid << "] process detected as a part of PoD server.\n"
+                   << "Please, either restart PoD server or stop it explicitly: \"pod-server stop\".";
+                msg += ss.str();
+                g_exitCode = 2;
+                throw runtime_error( msg );
+            }
+        }
+
         msg += "PoD server is NOT found.\n";
         if( _opt.m_debug )
             msg += _e.what();
+
         throw runtime_error( msg );
     }
 
@@ -387,8 +440,8 @@ int main( int argc, char *argv[] )
     {
         killTunnel();
         cerr << PROJECT_NAME << ": " << e.what() << endl;
-        return 1;
+        return g_exitCode;
     }
     killTunnel();
-    return 0;
+    return g_exitCode;
 }

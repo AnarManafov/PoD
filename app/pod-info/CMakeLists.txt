@@ -38,15 +38,22 @@ set( SOURCE_FILES
     ./src/Server.cpp
     ${PROTOCOL_FILES_LOCATION}/Protocol.cpp
     ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.cpp
+    ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
     ./src/Server.h
     ${PROTOCOL_FILES_LOCATION}/Protocol.h
     ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.h
+    ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.h
 )
 
-set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY})
+set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
+if(local_boost_version VERSION_GREATER "1.33.1")
+  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
+endif(local_boost_version VERSION_GREATER "1.33.1")
+
+set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_libs})
 
 #
 ##  executable
