@@ -394,6 +394,16 @@ if (( $? != 0 )) ; then
    clean_up 1
 fi
 
+UD_TEST=$($user_defaults -c $POD_CFG -V --key worker.work_dir)
+if (( $? != 0 )) ; then
+   logMsg "ERROR: Your PoD user defaults on the server can't be used with the version of PoD on workers."
+   logMsg "If you want to continue to use this version of PoD, you have the following options:"
+   logMsg "1. Fix your configuration file."
+   logMsg "2. Recreate the file using: pod-user-defaults -f -d -c \"$(pod-user-defaults -p)\""
+   clean_up 1
+fi
+
+
 # Use a default ROOT distr. if needed
 get_default_ROOT $host_arch
 

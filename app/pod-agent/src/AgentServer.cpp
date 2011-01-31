@@ -808,15 +808,27 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
                                                 bool _usePF,
                                                 unsigned int _numberOfPROOFWorkers )
 {
+    string entryTmpl( m_Data.m_proofCfgEntryPattern );
+    stringstream ss_port;
+    ss_port << _Port;
+
     stringstream ss;
     if( _usePF )
     {
         ss
-                << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n"
-                << "worker " << _UsrName << "@localhost port="  << _Port << " perf=100";
+                << "#worker " << _UsrName << "@" << _RealWrkHost << " (packet forwarder: localhost:" << _Port << ")\n";
+
+        replace<string>( &entryTmpl, "%user%", _UsrName );
+        replace<string>( &entryTmpl, "%host%", "localhost" );
+        replace<string>( &entryTmpl, "%port%", ss_port.str() );
+        ss << entryTmpl;
     }
     else
     {
+        replace<string>( &entryTmpl, "%user%", _UsrName );
+        replace<string>( &entryTmpl, "%host%", _RealWrkHost );
+        replace<string>( &entryTmpl, "%port%", ss_port.str() );
+
         for( size_t i = 0; i < _numberOfPROOFWorkers; ++i )
         {
             if( 0 != i ) // separate multiple entries
@@ -824,7 +836,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
 
             ss
                     << "#worker " << _UsrName << "@" << _RealWrkHost << ":" << _Port << " (direct connection)\n"
-                    << "worker " << _UsrName << "@" << _RealWrkHost << " port="  << _Port << " perf=100";
+                    << entryTmpl;
         }
     }
     return ss.str();

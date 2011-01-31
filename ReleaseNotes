@@ -13,6 +13,8 @@ pod: The "pod-info" command has been rewritten from scratch.
 pod: PoD doesn't generate a helper header anymore, since the "pod-info" command can be used from remote (to PoD server) hosts as well.
 pod-agent: the "proofport" option has been removed. Agents now detect xproof ports automatically.
 pod-agent: The admin. protocol has been upgraded to version 5.
+pod-user-defaults: added "server.proof_cfg_entry_pattern" option.
+                   This patter can be used to customize entries in proof.cfg.
 
 ## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.
