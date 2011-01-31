@@ -72,7 +72,9 @@ xproofd_info()
    # In this directory an xrd pid file is located.
    # There is one problem with the file, is that even when xrootd/xproofd is off already,
    # the file will be there in anyway. This complicates the algorithm of detecting of xproofd.
-
+	
+   xpd_pid=""
+   xpd_port=""
    # find xproofd pid file
    if [ ! -r "$XPD_CFG" ]; then
       return 1
@@ -96,6 +98,9 @@ xproofd_info()
 # ************************************************************************
 pod_agent_info()
 {
+   agent_port=""
+   agent_host=""
+   agent_pid=""
    if [ ! -r "$SERVERINFO_FILE" ]; then
       return 1
    fi
@@ -372,7 +377,6 @@ start()
       return 0
    fi
 
-       
    if [ -n "$xpd_pid" -o  -n "$agent_pid" ]; then
       restart $1
       return 1
