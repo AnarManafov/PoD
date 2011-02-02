@@ -28,6 +28,7 @@
 #include "version.h"
 #include "Environment.h"
 #include "Server.h"
+#include "Options.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
@@ -37,102 +38,9 @@ namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 LPCTSTR g_remote_server_info_cfg = "~/.PoD/etc/remote_server_info.cfg";
 LPCTSTR g_ssh_tunnel_pid = "~/.PoD/etc/server_tunnel.pid";
-// will be concatenated with (m_Data.m_common.m_workDir + "/")
 LPCTSTR g_xpdCFG = "etc/xpd.cf";
 // 0 - success, 1 - an error, 2 - server is partially running
 int g_exitCode = 0;
-//=============================================================================
-struct SOptions
-{
-    SOptions():
-        m_version( false ),
-        m_connectionString( false ),
-        m_listWNs( false ),
-        m_countWNs( false ),
-        m_status( false ),
-        m_debug( false ),
-        m_batchMode( false )
-    {
-    }
-    bool operator== ( const SOptions &_val )
-    {
-        return ( m_version == _val.m_version &&
-                 m_connectionString == _val.m_connectionString &&
-                 m_listWNs == _val.m_listWNs &&
-                 m_countWNs == _val.m_countWNs &&
-                 m_status == _val.m_status &&
-                 m_debug == _val.m_debug &&
-                 m_sshConnectionStr == _val.m_sshConnectionStr &&
-                 m_sshArgs == _val.m_sshArgs &&
-                 m_batchMode == _val.m_batchMode &&
-                 m_openDomain == _val.m_openDomain );
-    }
-
-    bool m_version;
-    bool m_connectionString;
-    bool m_listWNs;
-    bool m_countWNs;
-    bool m_status;
-    bool m_debug;
-    string m_sshConnectionStr;
-    string m_sshArgs;
-    string m_openDomain;
-    bool m_batchMode;
-};
-//=============================================================================
-// Command line parser
-bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( exception )
-{
-    if( !_options )
-        throw runtime_error( "Internal error: options' container is empty." );
-
-    // Generic options
-    bpo::options_description visible( "Options" );
-    visible.add_options()
-    ( "help,h", "Produce help message" )
-    ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information." )
-    ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages." )
-    ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string." )
-    ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers." )
-    ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
-    ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
-    ( "ssh", bpo::value<string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
-    ( "ssh_opt", bpo::value<string>(), "Additional options, which will be used in SSH commands." )
-    ( "ssh_open_domain", bpo::value<string>(), "The name of a third party machine open to the outside world"
-      " and from which direct connections to the server are possible." )
-    ( "batch,b", bpo::bool_switch( &( _options->m_batchMode ) ), "Enable the batch mode." )
-    ;
-
-    // Parsing command-line
-    bpo::variables_map vm;
-    bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
-    bpo::notify( vm );
-
-    boost_hlp::option_dependency( vm, "ssh_opt", "ssh" );
-
-    if( vm.count( "ssh" ) )
-    {
-        _options->m_sshConnectionStr = vm["ssh"].as<string>();
-    }
-    if( vm.count( "ssh_opt" ) )
-    {
-        _options->m_sshArgs = vm["ssh_opt"].as<string>();
-    }
-    if( vm.count( "ssh_open_domain" ) )
-    {
-        _options->m_openDomain = vm["ssh_open_domain"].as<string>();
-    }
-
-    // we need an empty struct to check the case when user don't provide any argument
-    SOptions s;
-    if( vm.count( "help" ) || ( s == *_options ) )
-    {
-        cout << visible << endl;
-        return false;
-    }
-
-    return true;
-}
 //=============================================================================
 string version( const CEnvironment &_env, const pod_info::CServer &_srv )
 {
