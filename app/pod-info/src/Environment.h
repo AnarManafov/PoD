@@ -70,6 +70,15 @@ class CEnvironment
             ret += "server_tunnel.pid";
             return ret;
         }
+        std::string getXpdCfgFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "etc/xpd.cf";
+            return ret;
+        }
 
     private:
         void getLocalVersion();

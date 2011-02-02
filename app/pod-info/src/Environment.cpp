@@ -23,7 +23,9 @@ using namespace std;
 using namespace MiscCommon;
 namespace bpo = boost::program_options;
 //=============================================================================
-CEnvironment::CEnvironment(): m_srvPort( 0 ), m_ud( NULL )
+CEnvironment::CEnvironment():
+    m_srvPort( 0 ),
+    m_ud( NULL )
 {
 
 }

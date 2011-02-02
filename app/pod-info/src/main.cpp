@@ -36,7 +36,6 @@ namespace pod_agent = PROOFAgent;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
-LPCTSTR g_xpdCFG = "etc/xpd.cf";
 // 0 - success, 1 - an error, 2 - server is partially running
 int g_exitCode = 0;
 enum EPoDServerType
@@ -108,23 +107,12 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv,
 }
 //=============================================================================
 // check the local xpd
-pid_t getLocalXPDPid()
+pid_t getLocalXPDPid( const CEnvironment &_env )
 {
     try
     {
-        // PoD user defaults
-        string pathUD( PoD::showCurrentPUDFile() );
-        smart_path( &pathUD );
-        PoD::CPoDUserDefaults user_defaults;
-        user_defaults.init( pathUD );
-        PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
-
-        string xpd( cfg.m_server.m_common.m_workDir );
-        smart_append( &xpd, '/' );
-        xpd += g_xpdCFG;
-        smart_path( &xpd );
         pod_agent::CProofStatusFile proofStatus;
-        if( proofStatus.readAdminPath( xpd, adminp_server ) )
+        if( proofStatus.readAdminPath( _env.getXpdCfgFile(), adminp_server ) )
             return proofStatus.xpdPid();
     }
     catch( ... )
@@ -134,7 +122,8 @@ pid_t getLocalXPDPid()
 }
 //=============================================================================
 void srvPoDStatus( string *_status, string *_con_string,
-                   const pod_info::CServer &_srv, const SOptions &_opt )
+                   const pod_info::CServer &_srv, const SOptions &_opt,
+                   const CEnvironment &_env )
 {
     PROOFAgent::SHostInfoCmd srvHostInfo;
     try
@@ -149,7 +138,7 @@ void srvPoDStatus( string *_status, string *_con_string,
             // if we are here, that means there is no neither
             // a remote or a local pod-agent found.
             // Let us check now, whether there is no local xpd processes left
-            pid_t xpd_pid( getLocalXPDPid() );
+            pid_t xpd_pid( getLocalXPDPid( _env ) );
             if( IsProcessExist( xpd_pid ) )
             {
                 stringstream ss;
@@ -208,6 +197,78 @@ void killTunnel( const CEnvironment &_env )
     unlink( _env.getTunnelPidFile().c_str() );
 }
 //=============================================================================
+void createSSHTunnel( const CEnvironment &_env, const SOptions &_opt )
+{
+    // delete tunnel's file
+    killTunnel( _env );
+    // create an ssh tunnel on PoD Server port
+    switch( fork() )
+    {
+        case - 1:
+            // Unable to fork
+            throw std::runtime_error( "Unable to create an SSH tunnel." );
+        case 0:
+            {
+                // create SSH Tunnel
+                string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
+                smart_path( &cmd );
+                string l_arg( "-l" );
+                l_arg += _opt.m_sshConnectionStr;
+                stringstream p_arg;
+                p_arg << "-p" << _env.serverPort();
+                string o_arg( "-o" );
+                o_arg += _opt.m_openDomain;
+
+                string sBatch;
+                if( _opt.m_batchMode )
+                    sBatch = "-b";
+
+                execl( cmd.c_str(), "pod-ssh-tunnel",
+                       l_arg.c_str(), p_arg.str().c_str(),
+                       o_arg.c_str(), sBatch.c_str(), NULL );
+                exit( 1 );
+            }
+    }
+    // wait for tunnel to start
+    short count( 0 );
+    const short max_try( 50 );
+    pid_t pid( tunnelPid( _env ) );
+    while( 0 == pid || !IsProcessExist( pid ) ||
+           0 != MiscCommon::INet::get_free_port( _env.serverPort() ) )
+    {
+        ++count;
+        pid = tunnelPid( _env );
+        if( count >= max_try )
+            throw runtime_error( "Can't setup an SSH tunnel." );
+        usleep( 50000 ); // delays for 0.05 seconds
+    }
+}
+//=============================================================================
+void retrieveRemoteServerInfo( const SOptions &_opt,
+                               const string &_destinationFile )
+{
+    // delete first the remote srv info file
+    unlink( _destinationFile.c_str() );
+
+    StringVector_t arg;
+    arg.push_back( "-l " + _opt.m_sshConnectionStr );
+    arg.push_back( "-f " + _destinationFile );
+    if( _opt.m_debug )
+        arg.push_back( "-d" );
+    if( _opt.m_batchMode )
+        arg.push_back( "-b" );
+    string cmd( "$POD_LOCATION/bin/private/pod-srv-info" );
+    smart_path( &cmd );
+    string stdout;
+    do_execv( cmd, arg, 60, NULL );
+    if( !does_file_exists( _destinationFile ) )
+    {
+        stringstream ss;
+        ss << "Remote PoD server is NOT running.";
+        throw runtime_error( ss.str() );
+    }
+}
+//=============================================================================
 int main( int argc, char *argv[] )
 {
     CEnvironment env;
@@ -231,76 +292,15 @@ int main( int argc, char *argv[] )
         if( SrvType_Remote == srvType )
         {
             string outfile( env.remoteSrvInfoFile() );
-
-            // delete first the remote srv info file
-            unlink( outfile.c_str() );
-            StringVector_t arg;
-            arg.push_back( "-l " + options.m_sshConnectionStr );
-            arg.push_back( "-f " + outfile );
-            if( options.m_debug )
-                arg.push_back( "-d" );
-            if( options.m_batchMode )
-                arg.push_back( "-b" );
-            string cmd( "$POD_LOCATION/bin/private/pod-srv-info" );
-            smart_path( &cmd );
-            string stdout;
-            do_execv( cmd, arg, 60, NULL );
-            if( !does_file_exists( outfile ) )
-            {
-                stringstream ss;
-                ss << "Remote PoD server is NOT running.";
-                throw runtime_error( ss.str() );
-            }
-
+            retrieveRemoteServerInfo( options, outfile );
             env.processServerInfoCfg( &outfile );
             // now we can delete the remote server file
             // we can't reuse it in next sessions, since the PoD port could change
             unlink( outfile.c_str() );
 
-            // delete tunnel's file
-            killTunnel( env );
-            // create an ssh tunnel on PoD Server port
-            switch( fork() )
-            {
-                case - 1:
-                    // Unable to fork
-                    throw std::runtime_error( "Unable to create an SSH tunnel." );
-                case 0:
-                    {
-                        // create SSH Tunnel
-                        string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
-                        smart_path( &cmd );
-                        string l_arg( "-l" );
-                        l_arg += options.m_sshConnectionStr;
-                        stringstream p_arg;
-                        p_arg << "-p" << env.serverPort();
-                        string o_arg( "-o" );
-                        o_arg += options.m_openDomain;
-
-                        string sBatch;
-                        if( options.m_batchMode )
-                            sBatch = "-b";
-
-                        execl( cmd.c_str(), "pod-ssh-tunnel",
-                               l_arg.c_str(), p_arg.str().c_str(),
-                               o_arg.c_str(), sBatch.c_str(), NULL );
-                        exit( 1 );
-                    }
-            }
-            // wait for tunnel to start
-            short count( 0 );
-            const short max_try( 50 );
-            pid_t pid( tunnelPid( env ) );
-            while( 0 == pid || !IsProcessExist( pid ) ||
-                   0 != MiscCommon::INet::get_free_port( env.serverPort() ) )
-            {
-                ++count;
-                pid = tunnelPid( env );
-                if( count >= max_try )
-                    throw runtime_error( "Can't setup an SSH tunnel." );
-                usleep( 50000 ); // delays for 0.05 seconds
-            }
             // we tunnel the connection to PoD server
+            createSSHTunnel( env, options );
+            // if we tunnel pod-agent's port, than we need to connect to a localhost
             srvHost = "localhost";
         }
         else
@@ -330,7 +330,7 @@ int main( int argc, char *argv[] )
         {
             string status;
             string con_string;
-            srvPoDStatus( &status, &con_string, srv, options );
+            srvPoDStatus( &status, &con_string, srv, options, env );
             if( options.m_status )
             {
                 cout << status << endl;
