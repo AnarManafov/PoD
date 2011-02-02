@@ -36,11 +36,18 @@ namespace pod_agent = PROOFAgent;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
-LPCTSTR g_remote_server_info_cfg = "~/.PoD/etc/remote_server_info.cfg";
-LPCTSTR g_ssh_tunnel_pid = "~/.PoD/etc/server_tunnel.pid";
 LPCTSTR g_xpdCFG = "etc/xpd.cf";
 // 0 - success, 1 - an error, 2 - server is partially running
 int g_exitCode = 0;
+enum EPoDServerType
+{
+    // PoD Server can't be found
+    SrvType_Unknown,
+    // a local PoD server.
+    SrvType_Local,
+    // a remote PoD server
+    SrvType_Remote
+};
 //=============================================================================
 string version( const CEnvironment &_env, const pod_info::CServer &_srv )
 {
@@ -182,11 +189,9 @@ void srvPoDStatus( string *_status, string *_con_string,
 
 }
 //=============================================================================
-pid_t tunnelPid()
+pid_t tunnelPid( const CEnvironment &_env )
 {
-    string name( g_ssh_tunnel_pid );
-    smart_path( &name );
-    ifstream f( name.c_str() );
+    ifstream f( _env.getTunnelPidFile().c_str() );
     if( !f.is_open() )
         return 0;
     pid_t tunnel_pid;
@@ -194,20 +199,20 @@ pid_t tunnelPid()
     return tunnel_pid;
 }
 //=============================================================================
-void killTunnel()
+void killTunnel( const CEnvironment &_env )
 {
-    pid_t pid = tunnelPid();
+    pid_t pid = tunnelPid( _env );
     if( 0 != pid )
         kill( pid, SIGKILL );
 
-    string name( g_ssh_tunnel_pid );
-    smart_path( &name );
-    unlink( name.c_str() );
+    unlink( _env.getTunnelPidFile().c_str() );
 }
 //=============================================================================
 int main( int argc, char *argv[] )
 {
     CEnvironment env;
+    EPoDServerType srvType( SrvType_Unknown );
+
     try
     {
         env.init();
@@ -216,12 +221,16 @@ int main( int argc, char *argv[] )
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
+        // Check PoD server's Type
+        srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
+
+        // if the type of the server is remote, than we need to get a remote
+        // server info file
         string srvHost( env.serverHost() );
         // use SSH to retrieve server_info.cfg
-        if( !options.m_sshConnectionStr.empty() )
+        if( SrvType_Remote == srvType )
         {
-            string outfile( g_remote_server_info_cfg );
-            smart_path( &outfile );
+            string outfile( env.remoteSrvInfoFile() );
 
             // delete first the remote srv info file
             unlink( outfile.c_str() );
@@ -243,13 +252,13 @@ int main( int argc, char *argv[] )
                 throw runtime_error( ss.str() );
             }
 
-            env.checkRemoteServer( outfile );
+            env.processServerInfoCfg( &outfile );
             // now we can delete the remote server file
             // we can't reuse it in next sessions, since the PoD port could change
             unlink( outfile.c_str() );
 
             // delete tunnel's file
-            killTunnel();
+            killTunnel( env );
             // create an ssh tunnel on PoD Server port
             switch( fork() )
             {
@@ -281,18 +290,23 @@ int main( int argc, char *argv[] )
             // wait for tunnel to start
             short count( 0 );
             const short max_try( 50 );
-            pid_t pid( tunnelPid() );
+            pid_t pid( tunnelPid( env ) );
             while( 0 == pid || !IsProcessExist( pid ) ||
                    0 != MiscCommon::INet::get_free_port( env.serverPort() ) )
             {
                 ++count;
-                pid = tunnelPid();
+                pid = tunnelPid( env );
                 if( count >= max_try )
                     throw runtime_error( "Can't setup an SSH tunnel." );
                 usleep( 50000 ); // delays for 0.05 seconds
             }
             // we tunnel the connection to PoD server
             srvHost = "localhost";
+        }
+        else
+        {
+            // process a local server-info
+            env.processServerInfoCfg();
         }
 
         if( options.m_debug )
@@ -307,7 +321,7 @@ int main( int argc, char *argv[] )
         if( options.m_version )
         {
             cout << version( env, srv ) << endl;
-            killTunnel();
+            killTunnel( env );
             return 0;
         }
 
@@ -346,10 +360,10 @@ int main( int argc, char *argv[] )
     }
     catch( exception& e )
     {
-        killTunnel();
+        killTunnel( env );
         cerr << PROJECT_NAME << ": " << e.what() << endl;
         return g_exitCode;
     }
-    killTunnel();
+    killTunnel( env );
     return g_exitCode;
 }

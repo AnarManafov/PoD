@@ -8,16 +8,21 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 //=============================================================================
+// STD
 #include <string>
+// MiscCommon
+#include "PoDUserDefaultsOptions.h"
 //=============================================================================
 class CEnvironment
 {
     public:
         CEnvironment();
+        ~CEnvironment();
 
     public:
         void init();
-        void checkRemoteServer( const std::string &_cfg );
+        bool processServerInfoCfg( const std::string *_cfg = NULL );
+
         std::string version() const
         {
             return m_localVer;
@@ -25,10 +30,6 @@ class CEnvironment
         std::string PoDPath() const
         {
             return m_PoDPath;
-        }
-        bool isLocalServer() const
-        {
-            return m_isLocalServer;
         }
         std::string serverHost() const
         {
@@ -38,18 +39,48 @@ class CEnvironment
         {
             return m_srvPort;
         }
+        const PoD::SPoDUserDefaultsOptions_t getUD() const
+        {
+            return *m_ud;
+        }
+        std::string localSrvInfoFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "etc/server_info.cfg";
+            return ret;
+        }
+        std::string remoteSrvInfoFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "etc/remote_server_info.cfg";
+            return ret;
+        }
+        std::string getTunnelPidFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "server_tunnel.pid";
+            return ret;
+        }
 
     private:
         void getLocalVersion();
-        bool checkForLocalServer();
-        void readServerInfoCfg( std::ifstream &_f );
 
     private:
         std::string m_PoDPath;
         std::string m_localVer;
-        bool m_isLocalServer;
         std::string m_srvHost;
         unsigned int m_srvPort;
+        PoD::SPoDUserDefaultsOptions_t *m_ud;
+        std::string m_wrkDir;
 };
 
 #endif

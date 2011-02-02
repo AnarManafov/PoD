@@ -23,12 +23,16 @@ using namespace std;
 using namespace MiscCommon;
 namespace bpo = boost::program_options;
 //=============================================================================
-CEnvironment::CEnvironment():
-    m_isLocalServer( false ),
-    m_srvPort( 0 )
+CEnvironment::CEnvironment(): m_srvPort( 0 ), m_ud( NULL )
 {
 
 }
+//=============================================================================
+CEnvironment::~CEnvironment()
+{
+    delete m_ud;
+}
+
 //=============================================================================
 void CEnvironment::init()
 {
@@ -41,8 +45,23 @@ void CEnvironment::init()
     smart_path( &m_PoDPath );
     smart_append( &m_PoDPath, '/' );
 
+    // Read PoD User defaults
+    string pathUD( PoD::showCurrentPUDFile() );
+    smart_path( &pathUD );
+    PoD::CPoDUserDefaults user_defaults;
+    user_defaults.init( pathUD );
+    m_ud = new PoD::SPoDUserDefaultsOptions_t( user_defaults.getOptions() );
+
+    if( !m_ud )
+        throw runtime_error( "PoD user defaults is not found." );
+
+
+    m_wrkDir = m_ud->m_server.m_common.m_workDir;
+    smart_path( & m_wrkDir );
+    smart_append( &m_wrkDir, '/' );
+
+
     getLocalVersion();
-    checkForLocalServer();
 }
 //=============================================================================
 void CEnvironment::getLocalVersion()
@@ -57,8 +76,18 @@ void CEnvironment::getLocalVersion()
     f >> m_localVer;
 }
 //=============================================================================
-void CEnvironment::readServerInfoCfg( ifstream &_f )
+bool CEnvironment::processServerInfoCfg( const std::string *_cfg )
 {
+    string filename( localSrvInfoFile() );
+    if( NULL != _cfg )
+        filename = *_cfg;
+
+    ifstream f( filename.c_str() );
+    if( !f.is_open() )
+    {
+        return false;
+    }
+
     // read server info file
     bpo::variables_map keys;
     bpo::options_description options(
@@ -69,43 +98,12 @@ void CEnvironment::readServerInfoCfg( ifstream &_f )
     ;
 
     // Parse the config file
-    bpo::store( bpo::parse_config_file( _f, options ), keys );
+    bpo::store( bpo::parse_config_file( f, options ), keys );
     bpo::notify( keys );
     if( keys.count( "server.host" ) )
         m_srvHost = keys["server.host"].as<string> ();
     if( keys.count( "server.port" ) )
         m_srvPort = keys["server.port"].as<unsigned int> ();
-}
-//=============================================================================
-bool CEnvironment::checkForLocalServer()
-{
-    string cfg( "~/.PoD/etc/server_info.cfg" );
-    smart_path( &cfg );
-    ifstream f( cfg.c_str() );
-    if( !f.is_open() )
-    {
-        m_isLocalServer = false;
-        return false;
-    }
 
-    readServerInfoCfg( f );
-
-    m_isLocalServer = true;
-
-    return m_isLocalServer;
-}
-//=============================================================================
-void CEnvironment::checkRemoteServer( const std::string &_cfg )
-{
-    string cfg( _cfg );
-    smart_path( &cfg );
-    ifstream f( cfg.c_str() );
-    if( !f.is_open() )
-    {
-        throw runtime_error( "Can't open remote PoD server's configuration file." );
-    }
-
-    readServerInfoCfg( f );
-
-    m_isLocalServer = false;
+    return true;
 }

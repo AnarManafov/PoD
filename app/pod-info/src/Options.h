@@ -42,7 +42,8 @@ struct SOptions
                  m_sshConnectionStr == _val.m_sshConnectionStr &&
                  m_sshArgs == _val.m_sshArgs &&
                  m_batchMode == _val.m_batchMode &&
-                 m_openDomain == _val.m_openDomain );
+                 m_openDomain == _val.m_openDomain &&
+                 m_remotePath == _val.m_remotePath );
     }
 
     bool m_version;
@@ -55,6 +56,7 @@ struct SOptions
     std::string m_sshArgs;
     std::string m_openDomain;
     bool m_batchMode;
+    std::string m_remotePath;
 };
 //=============================================================================
 // Command line parser
@@ -73,7 +75,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers." )
     ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
     ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
-    ( "ssh", bpo::value<std::string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
+    ( "remote", bpo::value<std::string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
+    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands." )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible." )
@@ -85,19 +88,21 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
     bpo::notify( vm );
 
-    boost_hlp::option_dependency( vm, "ssh_opt", "ssh" );
+    boost_hlp::option_dependency( vm, "ssh_opt", "remote" );
 
-    if( vm.count( "ssh" ) )
+    if( vm.count( "remote" ) )
     {
-        _options->m_sshConnectionStr = vm["ssh"].as<std::string>();
-    }
-    if( vm.count( "ssh_opt" ) )
-    {
-        _options->m_sshArgs = vm["ssh_opt"].as<std::string>();
-    }
-    if( vm.count( "ssh_open_domain" ) )
-    {
-        _options->m_openDomain = vm["ssh_open_domain"].as<std::string>();
+        _options->m_sshConnectionStr = vm["remote"].as<std::string>();
+        _options->m_remotePath = ( vm.count( "remote_path" ) ) ?
+                                 vm["remote_path"].as<std::string>() : "~/.PoD/";
+        if( vm.count( "ssh_opt" ) )
+        {
+            _options->m_sshArgs = vm["ssh_opt"].as<std::string>();
+        }
+        if( vm.count( "ssh_open_domain" ) )
+        {
+            _options->m_openDomain = vm["ssh_open_domain"].as<std::string>();
+        }
     }
 
     // we need an empty struct to check the case when user don't provide any argument
