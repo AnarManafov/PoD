@@ -1,0 +1,18 @@
+
+## server_info.cfg
+
+location: <server.work_dir>/etc/server_info.cfg
+comment: a server info file. Always created at start up by pod-agent server and contains information about it.
+
+
+## remote_server_info.cfg
+
+location: <server.work_dir>/etc/remote_server_info.cfg
+comment: a server info file from a remote PoD server. the file is delivered and used by the pod-info command so far.
+
+
+## server_tunnel.pid
+
+location: <server.work_dir>/server_tunnel.pid
+comment: a pid file of an ssh tunnel created by the pod-info command.
+
