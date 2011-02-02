@@ -291,6 +291,10 @@ int main( int argc, char *argv[] )
         // use SSH to retrieve server_info.cfg
         if( SrvType_Remote == srvType )
         {
+            if( options.m_debug )
+            {
+                cout << "Trying to connect to a remote PoD server" << endl;
+            }
             string outfile( env.remoteSrvInfoFile() );
             retrieveRemoteServerInfo( options, outfile );
             env.processServerInfoCfg( &outfile );
@@ -305,6 +309,10 @@ int main( int argc, char *argv[] )
         }
         else
         {
+            if( options.m_debug )
+            {
+                cout << "Trying to connect to a local PoD server" << endl;
+            }
             // process a local server-info
             env.processServerInfoCfg();
         }
