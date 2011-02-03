@@ -24,3 +24,8 @@ comment:
 1. it is a tar-zipped file, contains the files for PoD workers.
 2. it is always created in PoD user's home in order, since some plug-ins can only use a shared home file system to send data to workers.
 3. can be created be pod-prep-worker and always recreated when a user restart PoD server.
+
+## pod-agent.pid
+
+location: <server.work_dir>/pod-agent.pid
+comment: a pid file of pod-agent

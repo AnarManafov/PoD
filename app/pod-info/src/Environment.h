@@ -79,6 +79,15 @@ class CEnvironment
             ret += "etc/xpd.cf";
             return ret;
         }
+        std::string getAgentPidFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "pod-agent.pid";
+            return ret;
+        }
 
     private:
         void getLocalVersion();

@@ -22,22 +22,18 @@
 #include "Process.h"
 #include "SysHelper.h"
 #include "PoDUserDefaultsOptions.h"
-// pod-agent
-#include "ProofStatusFile.h"
 // pod-info
 #include "version.h"
 #include "Environment.h"
 #include "Server.h"
 #include "Options.h"
+#include "SrvInfo.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
-namespace pod_agent = PROOFAgent;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
-// 0 - success, 1 - an error, 2 - server is partially running
-int g_exitCode = 0;
 enum EPoDServerType
 {
     // PoD Server can't be found
@@ -104,78 +100,6 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv,
         *_output = ss.str();
     }
     return ( lst.m_container.size() );
-}
-//=============================================================================
-// check the local xpd
-pid_t getLocalXPDPid( const CEnvironment &_env )
-{
-    try
-    {
-        pod_agent::CProofStatusFile proofStatus;
-        if( proofStatus.readAdminPath( _env.getXpdCfgFile(), adminp_server ) )
-            return proofStatus.xpdPid();
-    }
-    catch( ... )
-    {
-    }
-    return 0;
-}
-//=============================================================================
-void srvPoDStatus( string *_status, string *_con_string,
-                   const pod_info::CServer &_srv, const SOptions &_opt,
-                   const CEnvironment &_env )
-{
-    PROOFAgent::SHostInfoCmd srvHostInfo;
-    try
-    {
-        _srv.getSrvHostInfo( &srvHostInfo );
-    }
-    catch( exception &_e )
-    {
-        string msg;
-        if( _status && _opt.m_sshConnectionStr.empty() )
-        {
-            // if we are here, that means there is no neither
-            // a remote or a local pod-agent found.
-            // Let us check now, whether there is no local xpd processes left
-            pid_t xpd_pid( getLocalXPDPid( _env ) );
-            if( IsProcessExist( xpd_pid ) )
-            {
-                stringstream ss;
-                ss << "PoD server is NOT running.\n"
-                   << "WARNING: There is a local XPROOFD [" << xpd_pid << "] process detected as a part of PoD server.\n"
-                   << "Please, either restart PoD server or stop it explicitly: \"pod-server stop\".";
-                msg += ss.str();
-                g_exitCode = 2;
-                throw runtime_error( msg );
-            }
-        }
-
-        msg += "PoD server is NOT found.\n";
-        if( _opt.m_debug )
-            msg += _e.what();
-
-        throw runtime_error( msg );
-    }
-
-    if( _status )
-    {
-        ostringstream ss;
-        ss
-                << "XPROOFD [" << srvHostInfo.m_xpdPid << "] port: " << srvHostInfo.m_xpdPort
-                << "\nPoD agent [" << srvHostInfo.m_agentPid << "] port: " << srvHostInfo.m_agentPort;
-        *_status = ss.str();
-    }
-
-    if( _con_string )
-    {
-        ostringstream ss;
-        ss
-                << srvHostInfo.m_username << "@" << srvHostInfo.m_host << ":"
-                << srvHostInfo.m_xpdPort;
-        *_con_string = ss.str();
-    }
-
 }
 //=============================================================================
 pid_t tunnelPid( const CEnvironment &_env )
@@ -301,7 +225,7 @@ int main( int argc, char *argv[] )
         {
             if( options.m_debug )
             {
-                cout << "Trying to connect to a remote PoD server" << endl;
+                cout << "Trying: remote PoD server" << endl;
             }
             string outfile( env.remoteSrvInfoFile() );
             retrieveRemoteServerInfo( options, outfile );
@@ -320,7 +244,7 @@ int main( int argc, char *argv[] )
             if( options.m_debug )
             {
                 cout
-                        << "Trying to connect to a local PoD server"
+                        << "Trying: local PoD server"
                         << "Server Info: " << env.localSrvInfoFile() << endl;
             }
             // process a local server-info
@@ -331,17 +255,10 @@ int main( int argc, char *argv[] )
             srvHost = env.serverHost();
         }
 
-        if( options.m_debug )
-        {
-            cout
-                    << "connecting to PoD server: "
-                    << srvHost << ":" << env.serverPort() << endl;
-        }
-        pod_info::CServer srv( srvHost, env.serverPort() );
-
         // Show version information
         if( options.m_version )
         {
+            pod_info::CServer srv( srvHost, env.serverPort() );
             cout << version( env, srv ) << endl;
             killTunnel( env );
             return 0;
@@ -350,22 +267,36 @@ int main( int argc, char *argv[] )
         // PoD Server status
         if( options.m_status || options.m_connectionString )
         {
-            string status;
-            string con_string;
-            srvPoDStatus( &status, &con_string, srv, options, env );
+            CSrvInfo srvInfo( &env );
+            if( srvType == SrvType_Local )
+            {
+                srvInfo.getInfo();
+            }
+            else
+            {
+                pod_info::CServer srv( srvHost, env.serverPort() );
+                srvInfo.getInfo( &srv );
+            }
+
             if( options.m_status )
             {
-                cout << status << endl;
+                srvInfo.printInfo( cout );
+                if( srvInfo.getStatus() != CSrvInfo::srvStatus_OK )
+                {
+                    killTunnel( env );
+                    return srvInfo.getStatus();
+                }
             }
             if( options.m_connectionString )
             {
-                cout << con_string << endl;
+                srvInfo.printConnectionString( cout );
             }
         }
 
         // list of and a number of available WNs
         if( options.m_countWNs || options.m_listWNs )
         {
+            pod_info::CServer srv( srvHost, env.serverPort() );
             string lst;
             size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv, options );
 
@@ -384,8 +315,8 @@ int main( int argc, char *argv[] )
     {
         killTunnel( env );
         cerr << PROJECT_NAME << ": " << e.what() << endl;
-        return g_exitCode;
+        return 1;
     }
     killTunnel( env );
-    return g_exitCode;
+    return 0;
 }

@@ -1,0 +1,167 @@
+//
+//  SrvInfo.cpp
+//  PoD
+//
+//  Created by Anar Manafov on 03.02.11.
+//  Copyright 2011 GSI. All rights reserved.
+//
+//=============================================================================
+#include "SrvInfo.h"
+// pod-agent
+#include "ProofStatusFile.h"
+#include "ProtocolCommands.h"
+// MiscCommon
+#include "Process.h"
+// pod-info
+#include "Environment.h"
+#include "Server.h"
+//=============================================================================
+using namespace std;
+using namespace MiscCommon;
+namespace pod_agent = PROOFAgent;
+//=============================================================================
+CSrvInfo::CSrvInfo( const CEnvironment *_env ):
+    m_xpdPid( 0 ),
+    m_agentPid( 0 ),
+    m_xpdPort( 0 ),
+    m_agentPort( 0 ),
+    m_env( _env )
+{
+}
+//=============================================================================
+void CSrvInfo::localXPDInfo()
+{
+    try
+    {
+        // Obtain information about a local xpd process
+        pod_agent::CProofStatusFile proofStatus;
+        if( proofStatus.readAdminPath( m_env->getXpdCfgFile(), adminp_server ) )
+        {
+            m_xpdPid = proofStatus.xpdPid();
+            m_xpdPort = proofStatus.xpdPort();
+            if( !IsProcessExist( m_xpdPid ) )
+            {
+                m_xpdPid = 0;
+                m_xpdPort = 0;
+                return;
+            }
+        }
+    }
+    catch( ... )
+    {
+    }
+}
+//=============================================================================
+void CSrvInfo::localAgentInfo()
+{
+    ifstream f( m_env->getAgentPidFile().c_str() );
+    if( !f.is_open() )
+    {
+        m_agentPid = 0;
+        m_agentPort = 0;
+        return;
+    }
+
+    f >> m_agentPid;
+    if( !IsProcessExist( m_agentPid ) )
+    {
+        m_agentPid = 0;
+        m_agentPort = 0;
+    }
+    m_agentPort = m_env->serverPort();
+
+}
+//=============================================================================
+void CSrvInfo::remoteCombinedInfo( pod_info::CServer *_agentServer )
+{
+    pod_agent::SHostInfoCmd srvHostInfo;
+    try
+    {
+        _agentServer->getSrvHostInfo( &srvHostInfo );
+    }
+    catch( exception &_e )
+    {
+        m_xpdPid = 0;
+        m_xpdPort = 0;
+        m_agentPid = 0;
+        m_agentPort = 0;
+        return;
+    }
+
+    m_xpdPid = srvHostInfo.m_xpdPid;
+    m_xpdPort = srvHostInfo.m_xpdPort;
+    m_agentPid = srvHostInfo.m_agentPid;
+    m_agentPort = srvHostInfo.m_agentPort;
+    m_serverUsername = srvHostInfo.m_username;
+}
+//=============================================================================
+void CSrvInfo::getInfo( pod_info::CServer * _agentServer )
+{
+    if( NULL == _agentServer )
+    {
+        localXPDInfo();
+        localAgentInfo();
+        get_cuser_name( &m_serverUsername );
+    }
+    else
+    {
+        remoteCombinedInfo( _agentServer );
+    }
+}
+//=============================================================================
+void CSrvInfo::printAgent( ostream &_stream ) const
+{
+    if( m_agentPid )
+    {
+        _stream << "PoD agent [" << m_agentPid << "] port: " << m_agentPort << endl;
+    }
+    else
+    {
+        _stream << "PoD agent is NOT running." << endl;
+    }
+}
+//=============================================================================
+void CSrvInfo::printXpd( ostream &_stream ) const
+{
+    if( m_xpdPid )
+    {
+        _stream << "XPROOFD [" << m_xpdPid << "] port: " << m_xpdPort << endl;
+    }
+    else
+    {
+        _stream << "XPROOFD is NOT running." << endl;
+    }
+}
+//=============================================================================
+void CSrvInfo::printInfo( ostream &_stream ) const
+{
+    switch( getStatus() )
+    {
+        case srvStatus_Down:
+            _stream << "PoD server is NOT running." << endl;
+            break;
+        case srvStatus_NeedRestart:
+            {
+                printXpd( _stream );
+                printAgent( _stream );
+                _stream
+                        << "WARNING: PoD agent is NOT running.\n"
+                        << "WARNING: PoD server needs to be restarted." << endl;
+            }
+            break;
+        case srvStatus_OK:
+            {
+                printXpd( _stream );
+                printAgent( _stream );
+            }
+            break;
+    }
+}
+//=============================================================================
+void CSrvInfo::printConnectionString( ostream &_stream ) const
+{
+    if( getStatus() == srvStatus_OK )
+    {
+        _stream << m_serverUsername << "@" << m_env->serverHost() << ":" << m_xpdPort << endl;
+    }
+}
