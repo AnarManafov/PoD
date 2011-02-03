@@ -55,6 +55,8 @@ eval POD_agent_pid="$WORK_DIR/pod-agent.pid"
 export POD_PROOFCFG_FILE
 #######
 
+cmd_pod_info="pod-info"
+
 SERVER_OS=$(uname -s 2>&1)
 
 # getting the version of PoD
@@ -119,32 +121,11 @@ pod_agent_info()
 # ************************************************************************
 server_status()
 {
-   # get a pid of our xpd. We get any xpd running by $UID
-   xproofd_info
-   pod_agent_info
-    
-   if [ -z "$xpd_pid" -a  -z "$agent_pid" ]; then
-      echo "PoD server is NOT running"
-      return 1
-   fi
-       
-   if [ -n  "$xpd_pid" ]; then
-      echo "XPROOFD [$xpd_pid] port: "$xpd_port
-   else
-      echo "WARNING: XPROOFD is NOT running."
-      echo "WARNING: PoD server needs to be restarted."
-   fi
-   if [ -n  "$agent_pid" ]; then
-      echo "PoD agent [$agent_pid] port: "$agent_port
-   else
-      echo "WARNING: PoD agent is NOT running."
-      echo "WARNING: PoD server needs to be restarted."
-   fi
-
-   if [ -n  "$xpd_pid" -a  -n  "$agent_pid" ]; then
-      echo "PROOF connection string: "$agent_host:$xpd_port
+   $cmd_pod_info -s
+   if (( $? == 0 )); then
+      echo "PROOF connection string: $($cmd_pod_info -c)"
       return 0
-   fi    
+   fi
 
    return 1
 }
@@ -472,7 +453,7 @@ status()
 # ************************************************************************
 # ***** STATUS with error code *****
 # ************************************************************************
-status()
+status_err()
 {
    server_status
    return $?
@@ -511,7 +492,7 @@ case "$1" in
 	;;
 # internal parameter
     status_with_code)
-        status $WORK_DIR
+        status_err $WORK_DIR
         RETVAL=$?
         ;;
     getbins)
