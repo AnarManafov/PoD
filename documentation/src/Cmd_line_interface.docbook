@@ -137,7 +137,8 @@
                     <arg><option>-n, --number</option></arg>
                     <arg><option>-s, --status</option></arg>
 		 <group choice="opt_ssh">
-                    <arg><option>--ssh <replaceable>arg</replaceable></option></arg>
+                    <arg><option>--remote <replaceable>arg</replaceable></option></arg>
+                    <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
 		    <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
                     <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
                  </group>
@@ -157,7 +158,7 @@
             It could be the same machine or different machines but with a shared home file system.
             </para>
 	    <para>
-            When you want to retrieve information about a remote PoD server, than you need to use the <option>--ssh</option> option.
+            When you want to retrieve information about a remote PoD server, than you need to use the <option>--remote</option> option.
             Using this option you can specify an ssh connection string, where a remote PoD server is running.
             The <command>pod-info</command> command will first try to find the running PoD server on that host and than process user requests
             on that server.
@@ -191,7 +192,7 @@
                 <varlistentry>
                     <term><option>-b, --batch</option></term>
                     <listitem>
-                        <para>Enable the batch mode. For example, in case when the <option>--ssh</option> option also used, than there will
+                        <para>Enable the batch mode. For example, in case when the <option>--remote</option> option also used, than there will
                          be no password prompts or any interaction with a user. The utility will try to use SSH public key authentication and will fail if it's not working.</para>
                         <para>
                          The batch mode is very useful, when <command>pod-info</command> is used in a ROOT/PROOF script to retrieve a connection string
@@ -226,9 +227,16 @@
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>--ssh <replaceable>arg</replaceable></option></term>
+                    <term><option>--remote <replaceable>arg</replaceable></option></term>
                     <listitem>
-                        <para>An SSH connection string. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
+                        <para>An connection string in form of user@host.fqdn. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--remote_path <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>A working directory of the remote PoD server. It is very important either to write an explicit
+                              path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -262,7 +270,7 @@
            Get PoD version from a remote PoD server on the machine <replaceable>server.fqdn</replaceable>
            (it could be also on a shared home file system there):
 <screen>
-<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-v</option></command>
+<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-v</option></command>
 </screen>
 	   </para>
 </example>
@@ -275,7 +283,7 @@ a number of workers:
 </screen>
 the same from the remote PoD server:
 <screen>
-<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-n</option></command>
+<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-n</option></command>
 </screen>
 a list of workers:
 <screen>
@@ -296,8 +304,13 @@ or all together:
 </screen>
 the same from the remote PoD server:
 <screen>
-<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option></command>
+<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option></command>
 </screen>
+or if the remote server has a non-default working folder:
+<screen>
+<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>--remote_path <replaceable>"~/pod/work_dir/"</replaceable></option> <option>-c</option></command>
+</screen>
+
 
 use this command in a ROOT script or your analysis code directly:
 <programlisting>
@@ -306,12 +319,12 @@ TProof::Open(gSystem->GetFromPipe(""<command>pod-info <option>-c</option></comma
 
 with a remote PoD server:
 <programlisting>
-TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option>  <option>-b</option></command>"));
+TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
 </programlisting>
 note, that we use the <option>-b</option> option, because we can't have any prompt in out ROOT script and
 therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failer, users may want to check:
 <programlisting>
-std::string url(gSystem->GetFromPipe("<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-c</option>  <option>-b</option></command>"));
+std::string url(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
 if( url.empty() )
 {
    // PoD server is not running
@@ -330,7 +343,7 @@ TProof::Open( url.c_str() );
 </screen>
 the same from the remote PoD server:
 <screen>
-<command>pod-info <option>--ssh <replaceable>user@server.fqdn</replaceable></option> <option>-s</option></command>
+<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-s</option></command>
 </screen>
 </para>
 </example>

@@ -16,3 +16,11 @@ comment: a server info file from a remote PoD server. the file is delivered and 
 location: <server.work_dir>/server_tunnel.pid
 comment: a pid file of an ssh tunnel created by the pod-info command.
 
+
+## pod-worker
+
+location: ~/.PoD/wrk/pod-worker
+comment: 
+1. it is a tar-zipped file, contains the files for PoD workers.
+2. it is always created in PoD user's home in order, since some plug-ins can only use a shared home file system to send data to workers.
+3. can be created be pod-prep-worker and always recreated when a user restart PoD server.
