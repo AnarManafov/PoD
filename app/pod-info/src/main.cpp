@@ -311,10 +311,16 @@ int main( int argc, char *argv[] )
         {
             if( options.m_debug )
             {
-                cout << "Trying to connect to a local PoD server" << endl;
+                cout 
+                << "Trying to connect to a local PoD server"
+                << "Server Info: " << env.localSrvInfoFile() << endl;
             }
             // process a local server-info
-            env.processServerInfoCfg();
+            if( !env.processServerInfoCfg() )
+            {
+                throw runtime_error("Can't process server info: " + env.localSrvInfoFile());
+            }
+            srvHost = env.serverHost();
         }
 
         if( options.m_debug )

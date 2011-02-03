@@ -57,11 +57,9 @@ void CEnvironment::init()
     if( !m_ud )
         throw runtime_error( "PoD user defaults is not found." );
 
-
     m_wrkDir = m_ud->m_server.m_common.m_workDir;
-    smart_path( & m_wrkDir );
+    smart_path( &m_wrkDir );
     smart_append( &m_wrkDir, '/' );
-
 
     getLocalVersion();
 }
