@@ -76,7 +76,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
     ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
     ( "remote", bpo::value<std::string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
-    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server. (default: ~/.PoD/)" )
+    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server."
+      " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands." )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible." )
@@ -95,6 +96,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         _options->m_sshConnectionStr = vm["remote"].as<std::string>();
         _options->m_remotePath = ( vm.count( "remote_path" ) ) ?
                                  vm["remote_path"].as<std::string>() : "~/.PoD/";
+        MiscCommon::smart_append( &_options->m_remotePath, '/' );
+
         if( vm.count( "ssh_opt" ) )
         {
             _options->m_sshArgs = vm["ssh_opt"].as<std::string>();

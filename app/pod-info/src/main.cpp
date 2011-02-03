@@ -212,6 +212,10 @@ void createSSHTunnel( const CEnvironment &_env, const SOptions &_opt )
                 // create SSH Tunnel
                 string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
                 smart_path( &cmd );
+
+                string pid_arg( "-f" );
+                pid_arg += _env.getTunnelPidFile();
+
                 string l_arg( "-l" );
                 l_arg += _opt.m_sshConnectionStr;
                 stringstream p_arg;
@@ -224,6 +228,7 @@ void createSSHTunnel( const CEnvironment &_env, const SOptions &_opt )
                     sBatch = "-b";
 
                 execl( cmd.c_str(), "pod-ssh-tunnel",
+                       pid_arg.c_str(),
                        l_arg.c_str(), p_arg.str().c_str(),
                        o_arg.c_str(), sBatch.c_str(), NULL );
                 exit( 1 );
@@ -251,13 +256,16 @@ void retrieveRemoteServerInfo( const SOptions &_opt,
     unlink( _destinationFile.c_str() );
 
     StringVector_t arg;
+    string sourceFile( _opt.m_remotePath );
+    sourceFile += "etc/server_info.cfg";
+    arg.push_back( "-s" + sourceFile );
     arg.push_back( "-l " + _opt.m_sshConnectionStr );
     arg.push_back( "-f " + _destinationFile );
     if( _opt.m_debug )
         arg.push_back( "-d" );
     if( _opt.m_batchMode )
         arg.push_back( "-b" );
-    string cmd( "$POD_LOCATION/bin/private/pod-srv-info" );
+    string cmd( "$POD_LOCATION/bin/private/pod-remote-srv-info" );
     smart_path( &cmd );
     string stdout;
     do_execv( cmd, arg, 60, NULL );
@@ -311,14 +319,14 @@ int main( int argc, char *argv[] )
         {
             if( options.m_debug )
             {
-                cout 
-                << "Trying to connect to a local PoD server"
-                << "Server Info: " << env.localSrvInfoFile() << endl;
+                cout
+                        << "Trying to connect to a local PoD server"
+                        << "Server Info: " << env.localSrvInfoFile() << endl;
             }
             // process a local server-info
             if( !env.processServerInfoCfg() )
             {
-                throw runtime_error("Can't process server info: " + env.localSrvInfoFile());
+                throw runtime_error( "Can't process server info: " + env.localSrvInfoFile() );
             }
             srvHost = env.serverHost();
         }

@@ -25,6 +25,7 @@ Usage: pod-srv-info [OPTION]
      -p port                    The PoD server port.
      -o open.domain.org         The name of a third party machine open to the outside world
                                 and from which direct connections to the server are possible.
+     -f pid_file                The full path of the tunnel pid file.
      -d 			Enable debug output.
      -b				Enable batch mode.
      -h          		Show summary of options.
@@ -40,8 +41,12 @@ SSH_CON_STR=""
 OPEN_DOMAIN=""
 DEBUG=""
 BATCH_MODE=""
-while getopts ":l:o:p:dbh" opt; do
+PID_FILE=""
+while getopts ":l:o:p:f:dbh" opt; do
   case $opt in
+  f)
+    PID_FILE="$OPTARG"
+    ;;
   p)
     POD_PORT="$OPTARG"
     ;;
@@ -83,9 +88,6 @@ if [ -n "$BATCH_MODE" ]; then
 else
     SSH_CMD="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT"
 fi
-
-eval SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
-eval PID_FILE="~/.PoD/etc/server_tunnel.pid"
 #=============================================================================
 # ***** MAIN *****
 #=============================================================================

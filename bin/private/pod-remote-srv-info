@@ -23,7 +23,8 @@ A private PoD command line utility, which is used to retrieve a remote PoD serve
 Usage: pod-srv-info [OPTION]
      -l login@host.fqdn 	SSH connection string.
      -o SSH_Opt			Additinal SSH parameters.
-     -f path			Output file location.
+     -f path			Destination file path.
+     -s file                    Source file path.
      -d 			Enable debug output.
      -b				Enable batch mode.
      -h          		Show summary of options.
@@ -39,8 +40,12 @@ SSH_CON_STR=""
 SSHOPT=""
 DEBUG=""
 BATCH_MODE=""
-while getopts ":l:o:f:dbh" opt; do
+SRV_CFG_FILE=""
+while getopts ":l:o:f:s:dbh" opt; do
   case $opt in
+  s)
+    SRV_CFG_FILE="$OPTARG"
+    ;;
   f)
     FILE_PATH="$OPTARG"
     ;;
@@ -74,7 +79,6 @@ fi
 #=============================================================================
 # ***** VARS *****
 #=============================================================================
-TOOL_NAME="pod-srv-info"
 TIMEOUT=30
 
 if [ -n "$BATCH_MODE" ]; then
@@ -82,8 +86,6 @@ if [ -n "$BATCH_MODE" ]; then
 else
     SSH_CMD="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT $SSHOPT"
 fi
-
-SRV_CFG_FILE="~/.PoD/etc/server_info.cfg"
 #=============================================================================
 # ***** MAIN *****
 #=============================================================================
