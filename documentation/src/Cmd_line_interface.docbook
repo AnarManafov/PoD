@@ -322,7 +322,7 @@ with a remote PoD server:
 TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
 </programlisting>
 note, that we use the <option>-b</option> option, because we can't have any prompt in out ROOT script and
-therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failer, users may want to check:
+therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failure, users may want to check:
 <programlisting>
 std::string url(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
 if( url.empty() )
