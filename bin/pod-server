@@ -284,6 +284,15 @@ update_xpd_cfg()
    regexp_server_host="s/\(if[[:space:]]\).*\([[:space:]]#SERVERHOST DONT EDIT THIS LINE\)/\1$agent_host\2/g"
    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" -e "$regexp_server_host" $XPD_CFG > "$XPD_CFG.temp"
    mv -f "$XPD_CFG.temp" $XPD_CFG
+
+   # TODO:
+   # Check if the file in 
+   # $HOME/.PoD/user_xpd.cf
+   # $POD_LOCATION/etc/user_xpd.cf.sh
+   eval USER_XPD="$HOME/.PoD/user_xpd.cf"
+   if [ -r "$USER_XPD" ]; then
+      cat "$USER_XPD" >> "$XPD_CFG"
+   fi
 }
 # ************************************************************************
 # ***** Internal START  *****
