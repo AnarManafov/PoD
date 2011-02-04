@@ -11,6 +11,8 @@ pod: The "pod-info" command has been rewritten from scratch.
      Now it works as a client of pod-agent and can be used to request information from a remote PoD server. 
      This is the first step to disentangle PoD UI and PoD Server. See User's manual for more information.
 pod: PoD doesn't generate a helper header anymore, since the "pod-info" command can be used from remote (to PoD server) hosts as well.
+pod: The "pod-server" command calls now the new "pod-info" to find out the status of PoD processes and ports, instead of implementing this in BASH.
+     The "pod-server" is also got a speed up improvements.
 pod-agent: the "proofport" option has been removed. Agents now detect xproof ports automatically.
 pod-agent: The admin. protocol has been upgraded to version 5.
 pod-user-defaults: added "server.proof_cfg_entry_pattern" option.
