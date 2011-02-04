@@ -214,6 +214,28 @@ int main( int argc, char *argv[] )
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
+        // Short info about locals
+        if( options.m_xpdPid )
+        {
+            CSrvInfo srvInfo( &env );
+            srvInfo.getInfo();
+            if( 0 == srvInfo.xpdPid() )
+                return 1;
+
+            cout << srvInfo.xpdPid() << endl;
+            return 0;
+        }
+        if( options.m_agentPid )
+        {
+            CSrvInfo srvInfo( &env );
+            srvInfo.getInfo();
+            if( 0 == srvInfo.agentPid() )
+                return 1;
+
+            cout << srvInfo.agentPid() << endl;
+            return 0;
+        }
+
         // Check PoD server's Type
         srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
 
@@ -250,7 +272,14 @@ int main( int argc, char *argv[] )
             // process a local server-info
             if( !env.processServerInfoCfg() )
             {
-                throw runtime_error( "Can't process server info: " + env.localSrvInfoFile() );
+                string msg;
+                msg += "PoD server is NOT running.";
+                if( options.m_debug )
+                {
+                    msg += "\nCan't process server info: ";
+                    msg += env.localSrvInfoFile();
+                }
+                throw runtime_error( msg );
             }
             srvHost = env.serverHost();
         }

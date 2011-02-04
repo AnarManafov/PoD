@@ -28,7 +28,9 @@ struct SOptions
         m_countWNs( false ),
         m_status( false ),
         m_debug( false ),
-        m_batchMode( false )
+        m_batchMode( false ),
+        m_xpdPid( false ),
+        m_agentPid( false )
     {
     }
     bool operator== ( const SOptions &_val )
@@ -43,7 +45,9 @@ struct SOptions
                  m_sshArgs == _val.m_sshArgs &&
                  m_batchMode == _val.m_batchMode &&
                  m_openDomain == _val.m_openDomain &&
-                 m_remotePath == _val.m_remotePath );
+                 m_remotePath == _val.m_remotePath &&
+                 m_xpdPid == _val.m_xpdPid &&
+                 m_agentPid == _val.m_agentPid );
     }
 
     bool m_version;
@@ -57,6 +61,8 @@ struct SOptions
     std::string m_openDomain;
     bool m_batchMode;
     std::string m_remotePath;
+    bool m_xpdPid;
+    bool m_agentPid;
 };
 //=============================================================================
 // Command line parser
@@ -82,6 +88,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible." )
     ( "batch,b", bpo::bool_switch( &( _options->m_batchMode ) ), "Enable the batch mode." )
+    ( "xpdPid", bpo::bool_switch( &( _options->m_xpdPid ) ), "Show the process ID of a local xproofd." )
+    ( "agentPid", bpo::bool_switch( &( _options->m_agentPid ) ), "Show the process ID of a local pod-agent server." )
     ;
 
     // Parsing command-line
