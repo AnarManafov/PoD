@@ -118,6 +118,10 @@ bool CProofStatusFile::readAdminPath( const string &_xpdCFGFileName,
     ss >> m_xpdPort;
 
     // check for xpd pid
+// Every time new xproofd is started it creates <adminpath>/.xproofd.port directory.
+// In this directory an xrd pid file is located.
+// There is one problem with the file, is that even when xrootd/xproofd is off already,
+// the file will be there in anyway. This complicates the algorithm of detecting of xproofd.
     stringstream xpd_pid_file;
     xpd_pid_file
             << m_adminPath.string()
