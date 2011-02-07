@@ -343,7 +343,6 @@ check_arch
 
 # **********************************************************************
 # ***** try to use pre-compiled bins from PoD Server *****
-logMsg "PoD server runs on $SERVER_OS-$SERVER_ARCH"
 logMsg "PoD worker runs on $OS-$wn_host_arch"
 # check first whether we can use binaries from the PoD server directly.
 # Using these bins is more preferable, than using generic bins from the worker package.

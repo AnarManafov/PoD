@@ -283,7 +283,6 @@ _start()
      # sleep 1
    done
 
-
    # Prepare the worker package
    ####
    $POD_LOCATION/bin/pod-prep-worker
