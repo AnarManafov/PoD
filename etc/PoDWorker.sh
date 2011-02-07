@@ -53,7 +53,7 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo -e "***\t[$(date '+%a, %d %b %Y %T %z')]\t$1"
+   echo -e "***\t[$(date '+%a, %d %b %Y %T %z')]\t$1"
 }
 # ************************************************************************
 # ***** wait_and_kill *****
@@ -133,11 +133,11 @@ clean_up()
     proof_dir="$WD/proof"
    
     if [ -e "$proof_dir" ]; then
-	# making an archive of proof logs
-	# it will be transfered to a user
-	tar -czPf proof_log.tgz $proof_dir
-	logMsg "$proof_dir exists and will be deleted..."
-	rm -rf $proof_dir
+       # making an archive of proof logs
+       # it will be transfered to a user
+       tar -czPf proof_log.tgz $proof_dir
+       logMsg "$proof_dir exists and will be deleted..."
+       rm -rf $proof_dir
     fi
 
     # delete the content of the worker package
