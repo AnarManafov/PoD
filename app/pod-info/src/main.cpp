@@ -270,7 +270,8 @@ int main( int argc, char *argv[] )
                         << "Server Info: " << env.localSrvInfoFile() << endl;
             }
             // process a local server-info
-            if( !env.processServerInfoCfg() )
+            // if --version, than we don't throw
+            if( !env.processServerInfoCfg() && !options.m_version )
             {
                 string msg;
                 msg += "PoD server is NOT running.";
