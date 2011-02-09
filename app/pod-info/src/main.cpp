@@ -241,7 +241,7 @@ int main( int argc, char *argv[] )
 
         // if the type of the server is remote, than we need to get a remote
         // server info file
-        string srvHost( env.serverHost() );
+        string srvHost;
         // use SSH to retrieve server_info.cfg
         if( SrvType_Remote == srvType )
         {
@@ -298,7 +298,11 @@ int main( int argc, char *argv[] )
         if( options.m_status || options.m_connectionString )
         {
             CSrvInfo srvInfo( &env );
-            if( srvType == SrvType_Local )
+            string localHostName;
+            get_hostname( &localHostName );
+            // If we run locally it could mean, we run on a shared file system as well.
+            // We therefore need to check, whether we run on the same machine as the server
+            if( srvType == SrvType_Local && localHostName == srvHost )
             {
                 srvInfo.getInfo();
             }
