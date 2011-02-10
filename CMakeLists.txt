@@ -249,8 +249,7 @@ install(FILES ${POD_ETC_FILES} DESTINATION etc)
 install(PROGRAMS ${POD_CLI_PLUGINS_FILES} DESTINATION plugins/cli)
 # install User's manual files
 if( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
-  install(FILES ${CMAKE_SOURCE_DIR}/documentation/index.html DESTINATION doc)
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/documentation/html_help DESTINATION doc)
+  install(FILES ${CMAKE_SOURCE_DIR}/documentation/html_help/PoD.pdf DESTINATION doc)
 endif( EXISTS  ${CMAKE_SOURCE_DIR}/documentation/html_help )
 # tests runner
 if( BUILD_TESTS )
@@ -271,6 +270,11 @@ set(CPACK_SOURCE_IGNORE_FILES
     "PoD_env.sh$"
     "etc/xpd.cf$"
     "documentation/Diagrams"
+    "documentation/html_help/.*\\\\.html$"
+    "documentation/html_help/.*\\\\.png$"
+    "documentation/html_help/.*\\\\.css$"
+    "documentation/html_help/.*\\\\.ps$"
+    "documentation/api-docs"
     "app/pod-agent/doc"
     "app/pod-console/doc"
     "Logo"
