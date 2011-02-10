@@ -34,7 +34,7 @@
                     <title>pod-console: Server page</title>
                     <screenshot><mediaobject>
                         <imageobject>
-                            <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG"/>
+                            <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG" depth="10cm" scalefit="1"/>
                         </imageobject>
                         <textobject>
                             <phrase></phrase>
@@ -128,7 +128,7 @@
                     <title>pod-console: Workers</title>
                     <screenshot><mediaobject>
                         <imageobject>
-                            <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG"/>
+                            <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG" depth="10cm" scalefit="1"/>
                         </imageobject>
                         <textobject>
                             <phrase></phrase>
@@ -167,7 +167,7 @@
                 <title>pod-console: Preferences</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PAConsole_Preferences.png" format="PNG"/>
+                        <imagedata fileref="PAConsole_Preferences.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase></phrase>
@@ -239,7 +239,7 @@
             If something goes wrong, something doesn't work as expected, please, check the log files first.
             <table id="POD_LOG_FILES">
                 <title>PoD log files</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>Name</entry>

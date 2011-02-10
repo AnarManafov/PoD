@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+
+<book id="POD" lang="en">
+    <bookinfo>
+        <title>"PROOF on Demand" (PoD) - v3.4</title> 
+        <authorgroup>
+            <author>
+                <firstname>Anar</firstname>
+                <surname>Manafov</surname>
+                <affiliation>
+                    <address><email>A.Manafov@gsi.de</email></address>
+                    <orgname>GSI, Scientific Computing devision</orgname>
+                </affiliation>
+            </author>
+        </authorgroup>
+
+        <edition>"PROOF on Demand" v3.4</edition>
+        <copyright>
+            <year>2007</year>
+            <year>2008</year>
+            <year>2009</year>
+            <year>2010</year>
+            <year>2011</year>
+            <holder>GSI Helmholtzzentrum für Schwerionenforschung GmbH</holder>
+            <holder>Scientific Computing devision</holder>
+        </copyright>
+        <!---releaseinfo>
+         $Revision$
+         </releaseinfo>
+         <pubdate>
+         $Date$
+         </pubdate>
+         <publisher>
+         <publishername>$LastChangedBy$</publishername>
+         </publisher-->
+        
+    </bookinfo>
+
+
+    <xi:include href="Introduction.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Requirements.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Download.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Installation.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Configuration.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="QuickStart.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="How_to_run.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="gLite_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="LSF_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="PBS_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="GridEngine_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="SSH_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Condor_plugin.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="How_to_test.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Cmd_line_interface.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Known_Issues.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    <xi:include href="Support.xml" parse="xml"
+      xmlns:xi="http://www.w3.org/2001/XInclude" />
+    
+</book>

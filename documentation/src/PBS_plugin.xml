@@ -14,7 +14,7 @@
             <title>pod-console: PBS job manager</title>
             <screenshot><mediaobject>
                 <imageobject>
-                    <imagedata fileref="PAConsole_PBS_plugin_snapshot.png" format="PNG"/>
+                    <imagedata fileref="PAConsole_PBS_plugin_snapshot.png" format="PNG" depth="10cm" scalefit="1"/>
                 </imageobject>
                 <textobject>
                     <phrase></phrase>

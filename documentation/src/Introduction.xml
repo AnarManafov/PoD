@@ -23,7 +23,7 @@
                 <title>A generic schema of PoD</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PoD_Components.png" format="PNG"/>
+                        <imagedata fileref="PoD_Components.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase>phrase</phrase>

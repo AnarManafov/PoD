@@ -607,7 +607,7 @@ the same from the remote PoD server:
             <para>
                 <table id="POD_SSH_CFG_TABLE">
                     <title>PoD's ssh plug-in configuration fields</title>
-                    <tgroup cols="1">
+                    <tgroup cols="5">
                         <thead>
                             <row>
                                 <entry>1</entry>

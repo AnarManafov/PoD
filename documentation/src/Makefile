@@ -1,26 +1,26 @@
 
 SRC=\
-	POD.docbook\
-	Introduction.docbook\
-	Requirements.docbook\
-	Installation.docbook\
-	Configuration.docbook\
-	Download.docbook\
-	How_to_run.docbook\
-	gLite_plugin.docbook\
-	LSF_plugin.docbook\
-        PBS_plugin.docbook\
-        SSH_plugin.docbook\
-        GridEngine_plugin.docbook\
-        Condor_plugin.docbook\
-	How_to_test.docbook\
-	Known_Issues.docbook\
-	Support.docbook\
-        Cmd_line_interface.docbook\
-        QuickStart.docbook
+	POD.xml\
+	Introduction.xml\
+	Requirements.xml\
+	Installation.xml\
+	Configuration.xml\
+	Download.xml\
+	How_to_run.xml\
+	gLite_plugin.xml\
+	LSF_plugin.xml\
+        PBS_plugin.xml\
+        SSH_plugin.xml\
+        GridEngine_plugin.xml\
+        Condor_plugin.xml\
+	How_to_test.xml\
+	Known_Issues.xml\
+	Support.xml\
+        Cmd_line_interface.xml\
+        QuickStart.xml
 
 
-DOCBOOK=POD.docbook
+DOCBOOK=PoD.xml
 
 HTML_OUT_DIR=../html_help
 
@@ -46,7 +46,7 @@ IMGS= \
 IMG_DIR = img
 
 HTML_OUT= \
-        POD.html\
+        PoD.html\
 	Configuration.html\
 	How_to_run.html\
 	Introduction.html\
@@ -66,36 +66,62 @@ HTML_OUT= \
 
 CSS_FILES=docbook.css
 
-XMLTO=xmlto
+# stylesheet processor
+XSLTPROC       = xsltproc
+XSLTPROC_FLAGS = --nonet --xinclude
 
-XMLTO_PARAM=-vv -o $(HTML_OUT_DIR) xhtml -m config.xsl
-XMLTO_PARAM_NOCHUNKS=-o $(HTML_OUT_DIR) xhtml-nochunks -m config.xsl
+# FOP (for pdf)
+FOP=fop
+POD_PDF=PoD.pdf
 
-all: gen_html
+# file to log print output to
+LOGFILE = print.log
+
+
+all: gen_html gen_pdf
 
 $(HTML_OUT_DIR):
 	@echo "Creating output directory for html doc [$(HTML_OUT_DIR)]..."
 	@mkdir $(HTML_OUT_DIR)
 
+$(PRINT_OUT_DIR):
+	@echo "Creating output directory for pdf,ps docs [$(PRINT_OUT_DIR)]..."
+	@mkdir $(PRINT_OUT_DIR)
+
 $(HTML_OUT_DIR)/%.css:
 	@echo "Using custom CSS..."
 	@cp $(CSS_FILES) $(HTML_OUT_DIR)/
 
-$(HTML_OUT_DIR)/%.html: $(SRC)
+# chunked html, on a chapter-by-chapter basis
+html-docs: $(SRC)
 	@echo "Generating html doc..."
-	$(XMLTO) $(XMLTO_PARAM) $(DOCBOOK)
-	$(XMLTO) $(XMLTO_PARAM_NOCHUNKS) $(DOCBOOK)
+	$(XSLTPROC) $(XSLTPROC_FLAGS) -o $(HTML_OUT_DIR)/ config.xsl $(XSL_HTML_CHUNK_STYLE) $(DOCBOOK)
+
+# Print formats
+# pdf and postscript
+#FOP
+#http://www.sagehill.net/docbookxsl/InstallingAnFO.html
+#needed a hyphenation pattern http://offo.sourceforge.net/
+print-docs:
+	@echo "Generating PDF file: $(HTML_OUT_DIR)/$(POD_PDF) (please be patient)...";
+	$(XSLTPROC) $(XSLTPROC_FLAGS) -o $(HTML_OUT_DIR)/index.fo config_print.xsl $(DOCBOOK) && \
+        (cd $(HTML_OUT_DIR) && \
+         $(FOP) index.fo $(POD_PDF) &> $(LOGFILE) < /dev/null && \
+         echo "Generating PS file: $(HTML_OUT_DIR)/PoD.ps ..." && \
+         pdftops $(POD_PDF) && \
+         rm -f *.log *.aux *.fo *.out)
+
 
 $(HTML_OUT_DIR)/%.png:
 	@echo "Copying images..."
 	@cp ${addprefix $(IMG_DIR)/, $(IMGS)} $(HTML_OUT_DIR)/
 
-html_files: ${addprefix $(HTML_OUT_DIR)/, $(HTML_OUT)}
 css_files: ${addprefix $(HTML_OUT_DIR)/, $(CSS_FILES)}
 img_files: ${addprefix $(HTML_OUT_DIR)/, $(IMGS)}
 
-gen_html: $(HTML_OUT_DIR) css_files img_files html_files
+gen_html: $(HTML_OUT_DIR) css_files img_files html-docs
 
+gen_pdf:  $(HTML_OUT_DIR) img_files print-docs
 
 clean:
 	@-rm -rf $(HTML_OUT_DIR)

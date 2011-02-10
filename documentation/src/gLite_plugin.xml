@@ -26,7 +26,7 @@
                 <title>pod-console: Grid page</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PAConsole_Grid0.png" format="PNG"/>
+                        <imagedata fileref="PAConsole_Grid0.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase></phrase>
@@ -45,7 +45,7 @@
                 <title>pod-console: Submitting 5 workers</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PAConsole_Grid1.png" format="PNG"/>
+                        <imagedata fileref="PAConsole_Grid1.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase></phrase>
@@ -73,7 +73,7 @@
                 <title>pod-console: Monitoring of several jobs</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PAConsole_Grid3.png" format="PNG"/>
+                        <imagedata fileref="PAConsole_Grid3.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase></phrase>
@@ -89,7 +89,7 @@
                     <title>pod-console: Context menu</title>
                     <screenshot><mediaobject>
                         <imageobject>
-                            <imagedata fileref="PAConsole_Grid2.png" format="PNG"/>
+                            <imagedata fileref="PAConsole_Grid2.png" format="PNG" depth="10cm" scalefit="1"/>
                         </imageobject>
                         <textobject>
                             <phrase></phrase>
@@ -101,7 +101,7 @@
                 <title>pod-console: Logging Information</title>
                 <screenshot><mediaobject>
                     <imageobject>
-                        <imagedata fileref="PAConsole_LogInfo.png" format="PNG"/>
+                        <imagedata fileref="PAConsole_LogInfo.png" format="PNG" depth="10cm" scalefit="1"/>
                     </imageobject>
                     <textobject>
                         <phrase></phrase>

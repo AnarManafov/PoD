@@ -56,7 +56,7 @@ gui.accessibility.visual_bell=yes
         
         <para>
             <table id="POD_SERVER_CFG_TABLE"><title>PoD server configuration</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>key</entry>
@@ -161,7 +161,7 @@ gui.accessibility.visual_bell=yes
         
         <para>
             <table id="POD_WORKER_CFG_TABLE"><title>PoD worker configuration</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>key</entry>
@@ -248,7 +248,7 @@ gui.accessibility.visual_bell=yes
         
         <para>
             <table id="LSF_CFG_TABLE"><title>LSF plug-in configuration</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>key</entry>
@@ -277,7 +277,7 @@ gui.accessibility.visual_bell=yes
         <para>
             <table id="PBS_CFG_TABLE">
                 <title>PBS plug-in configuration</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>key</entry>
@@ -300,7 +300,7 @@ gui.accessibility.visual_bell=yes
         <para>
             <table id="OGE_CFG_TABLE">
                 <title>Grid Engine plug-in configuration</title>
-                <tgroup cols="2">
+                <tgroup cols="3">
                     <thead>
                         <row>
                             <entry>key</entry>
@@ -339,7 +339,7 @@ gui.accessibility.visual_bell=yes
             <para>
                 <table id="Condor_CFG_TABLE">
                     <title>Condor plug-in configuration</title>
-                    <tgroup cols="2">
+                    <tgroup cols="3">
                         <thead>
                             <row>
                                 <entry>key</entry>
