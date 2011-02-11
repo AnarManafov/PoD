@@ -1,6 +1,6 @@
 
 SRC=\
-	POD.xml\
+	PoD.xml\
 	Introduction.xml\
 	Requirements.xml\
 	Installation.xml\
