@@ -7,7 +7,7 @@
     <para>
         As it was mentioned above <application>PoD</application> consists of several modules, each module respects PoD user defaults settings.
         PoD is shipped with predefined configuration values, which should work in most use cases.
-        However by changing PoD user defaults values, you can fine tune <application>PoD</application> for a specific environment and needs.
+        However by changing PoD user defaults values, you can fine-tune <application>PoD</application> for a specific environment and needs.
         Recommended only for advanced users.
     </para>
     
@@ -20,7 +20,7 @@
         </para>
         <tip><para>
             Every time users sources PoD's environment script, the script checks whether the configuration file is exists and creates it if it's missing.
-            Also the <xref linkend="pod-user-defaults"/> command can be used to create the default configuration file at anytime.
+            Also the <xref linkend="pod-user-defaults"/> command can be used to create the default configuration file.
         </para></tip>
         <para>
             The <filename>PoD.cfg</filename> is a simple INI-like configuration file. Configuration file syntax is line based:
@@ -380,8 +380,8 @@ gui.accessibility.visual_bell=yes
         </para>
         <para>
             Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user_worker_env.sh</filename> or 
-            <filename>$HOME/.PoD/user_worker_env.sh</filename> name and code there all
-            variables and commands user want to export to the workers. PoD will automatically transfer the script to each worker node and 
+            <filename>$HOME/.PoD/user_worker_env.sh</filename> name and to code there all
+            variables and commands to export to the workers. PoD will automatically transfer the script to each worker node and 
             source it there.
         </para>
         <para>
@@ -423,9 +423,7 @@ source /etc/profile_extr
         </para>
         <para>
             PoD is only meant to help to setup a PROOF cluster on the fly using a remote worker nodes. A data access is not
-            a part of PoD's responsibility. Since PoD uses xproofd daemon, it is possible
-            to start PoD cluster on a cluster where xrootd is running already for data management.
-        </para>      
+            a part of its responsibility.</para>
     </sect1>
     
 </chapter>

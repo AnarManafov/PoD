@@ -59,7 +59,7 @@
             At the end, check that you shut you PoD server down - <xref linkend="How_to_shut_down_PoD"/>.
         </para>
         <para>
-            Detailed description of the command and of the configuration file can be found in the <xref linkend="pod-ssh"/> reference manual.
+            Detailed descriptions of the command and of the configuration file can be found in the <xref linkend="pod-ssh"/> reference manual.
         </para>
     </sect1>
     

@@ -24,7 +24,7 @@
         are described in the <filename>pod_ssh.cfg</filename> configuration file. In the examle we will use only CLI. Note, that PoD also provides GUI.
     </para>
     <para>
-        Detailed description of the commands and of the configuration file can be found in the <xref linkend="Cmd_line_interface"/>.
+        Detailed descriptions of the commands and of the configuration file can be found in the <xref linkend="Cmd_line_interface"/>.
     </para>
 
     <para>

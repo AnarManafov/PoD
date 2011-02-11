@@ -10,11 +10,11 @@ Installation
     </para>
     <para>
         A Private Installation - it is when a user installs PoD for individual use to his/her local folder.
-        Any Private Installation can be used other by users as well. It's just a matter of file privileges.
+        Any Private Installation can be used by other users as well. It's just a matter of file privileges.
     </para>
     <para>
         A Shared Installation - it is when a site administrator installs PoD
-        in some central location, so it can be shared by many users. It makes it easeir for users,
+        in some central location, so it can be shared by many users. This type of installation may be convenient for some users,
         since they don't need to install PoD by their own. In case of a shared Installation
         you need to execute one additional step, see <xref linkend="step5"/>. All the rest is the same as with Private Installations.
     </para>
@@ -126,7 +126,7 @@ Installation
       Simplify it by sourcing the script in your bash profile.
    </para>
    <para>
-      Now the installation is done.
+      Now the installation is done. But if you were preparing a shared installation, then please see the <xref linkend="step5"/> as well. 
       <important><para>
        	If there were problems during the installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
       </para></important>
@@ -136,7 +136,7 @@ Installation
     <sect1 id="step5"><title>Step #5: PoD shared Installation</title>
         <para>
             If you installed PoD in some central location (by changing the default CMAKE_INSTALL_PREFIX, see <xref linkend="step2"/>),
-            than you need to do one simple additional step. 
+            than you need to make one simple additional step. 
         </para>
         <para>
             Normally central installations or shared installations are restricted for read-only for users.
