@@ -17,6 +17,17 @@
 # Comment:
 #    The worker package is saved to PoD server working directory.
 #
+#=============================================================================
+# ***** vars  *****
+#=============================================================================
+echo "preparing PoD worker package..."
+
+POD_CFG=$(pod-user-defaults -p)
+if [ -z "$POD_CFG" ]; then
+   echo "error: can't find PoD user defaults"
+   exit 1
+fi
+
 eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
 eval ARC_NAME=$(pod-user-defaults --wrkpkg)
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
@@ -24,22 +35,9 @@ eval USER_SCRIPT=$(pod-user-defaults --userenvscript)
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 SERVER_INFO_FILE="$WRK_DIR/etc/server_info.cfg"
 XPD_CFG="$WRK_DIR/etc/xpd.cf"
-#=============================================================================
-# ***** MAIN  *****
-#=============================================================================
 
-echo "preparing PoD worker package..."
-   
-# first delete a previous archive if available
-if [ -f $ARC_NAME ]; then
-   rm -rf $ARC_NAME
-fi
-
-POD_CFG=$(pod-user-defaults -p)
-if [ -z "$POD_CFG" ]; then
-   echo "error: can't find PoD user defaults"
-   exit 1
-fi
+CACHE_DIR="$WRK_DIR/tmp/wpkg_cache"
+mkdir -p "$CACHE_DIR"
 
 # check that all needed components are available
 COMPONENTS_ETC=( "$XPD_CFG" 
@@ -48,6 +46,65 @@ COMPONENTS_ETC=( "$XPD_CFG"
                  "$SERVER_INFO_FILE" )
 
 COMPONENTS=( "${COMPONENTS_ETC[@]}" )
+
+# add user's script if present
+if [ -r "$USER_SCRIPT" ]; then
+   echo "select a user defined environment script to be added to worker package..."
+   COMPONENTS=( "${COMPONENTS[@]}" "$USER_SCRIPT" )
+fi
+
+# add all pre-compiled bins
+echo "selecting pre-compiled bins to be added to worker package..."
+for i in ${WN_BINS[@]} 
+do
+   COMPONENTS=( "${COMPONENTS[@]}" "$i" )
+done
+
+# check that all components are exists
+for i in "${COMPONENTS[@]}"
+do
+   if [ ! -r "$i" ]; then
+      echo "Failed to create the package. There is a missing component: \"$i\"" >&2
+      exit 1
+   fi
+done
+#=============================================================================
+# ***** is there a need to recreate the package  *****
+#=============================================================================
+need_update()
+{
+   local pkg_time=0
+   if [ -f $ARC_NAME ]; then
+      # the last modified time of <file> as timestamp format
+      pkg_time=$(stat -f "%m" -t "%s" "$ARC_NAME") 2>/dev/null
+   fi
+
+   for i in "${COMPONENTS[@]}"
+   do
+      local ts=$(stat -f "%m" -t "%s" "$i")
+      if (( $ts > $pkg_time )); then
+         # if timestamp is different, than compare to a cached file
+         d=$(diff $i "$CACHE_DIR/$(basename $i)" 2>/dev/null)
+         if (( 0 != $? )); then
+            echo "PoD worker package will be repacked because \"$i\" was updated"
+            return 1 
+         fi
+      fi
+   done
+   
+   return 0
+}
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+need_update
+if (( 0 == $? )); then
+   echo "PoD worker package is up-to-dat."
+   echo "PoD worker package: "$ARC_NAME
+   exit 0
+else
+   rm -rf $ARC_NAME
+fi
 
 # create an empty archive first
 tar cvf $ARC_NAME --files-from=/dev/null 
@@ -59,6 +116,8 @@ do
       tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
       RET_VAL=$?
       if [ "X$RET_VAL" = "X0" ]; then
+         # copy the file to cache
+         cp $i $CACHE_DIR/
 	 continue
       else
 	 echo "failed. Exit code: $RET_VAL" >&2
@@ -71,32 +130,15 @@ do
    fi
 done
 
-# add user's script if present
-if [ -r "$USER_SCRIPT" ]; then
-   echo "Adding a user defined environment script to worker package..."
-   tar --append --file=$ARC_NAME -C $(dirname $USER_SCRIPT) $(basename $USER_SCRIPT)
-fi
-
-# add all pre-compiled bins
-echo "Adding pre-compiled bins to worker package..."
-for i in ${WN_BINS[@]} 
-do
-   tar --append --file=$ARC_NAME -C $(dirname $i) $(basename $i)
-   RET_VAL=$?
-   if [ "X$RET_VAL" != "X0" ]; then
-      echo "failed. Exit code: $RET_VAL" >&2
-      exit 1
-   fi
-done
 
 # compress the archive
 gzip -9 $ARC_NAME
 # remove the .gz suffix
 mv "$ARC_NAME.gz" $ARC_NAME
-echo "finished successfully: "$ARC_NAME
+echo "PoD worker package: "$ARC_NAME
 
 # copy worker script to the sandbox directory
-cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox."; exit 1; }
+cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }
 chmod u+w "$WRK_SCRIPT"
 
 exit 0
