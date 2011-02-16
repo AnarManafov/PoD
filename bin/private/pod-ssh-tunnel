@@ -17,10 +17,10 @@
 #=============================================================================
 usage() {
     cat <<EOF
-A private PoD command line utility, which is used to retrieve a remote PoD server connection information.
+A private PoD command line utility, which is used to set up an SSH tunnel.
    Copyright (C) 2011 GSI, Scientific Computing group.
 
-Usage: pod-srv-info [OPTION]
+Usage: pod-ssh-tunnel [OPTION]
      -l login@host.fqdn 	SSH connection string.
      -p port                    The PoD server port.
      -o open.domain.org         The name of a third party machine open to the outside world
