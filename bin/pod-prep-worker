@@ -78,18 +78,19 @@ need_update()
    if [ -f $ARC_NAME ]; then
       # the last modified time of <file> as timestamp format
       if [ "$_os" = "Darwin" ]; then
-         pkg_time=$(stat --format='%Z' "$ARC_NAME") 2>/dev/null
+         pkg_time=$(stat -f "%m" -t "%s" "$ARC_NAME") 2>/dev/nul         
       else
-         pkg_time=$(stat -f "%m" -t "%s" "$ARC_NAME") 2>/dev/nul
+         pkg_time=$(stat --format='%Z' "$ARC_NAME") 2>/dev/null
       fi
    fi
 
    for i in "${COMPONENTS[@]}"
    do
+      local ts=0
       if [ "$_os" = "Darwin" ]; then
-         local ts=$(stat --format='%Z' "$i") 2>/dev/null
+         ts=$(stat -f "%m" -t "%s" "$i") 2>/dev/nul
       else
-         local ts=$(stat -f "%m" -t "%s" "$i") 2>/dev/nul
+         ts=$(stat --format='%Z' "$i") 2>/dev/null
       fi
  
       if (( $ts > $pkg_time )); then
