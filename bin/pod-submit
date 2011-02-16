@@ -104,5 +104,13 @@ export POD_WRK_PKG
 export POD_WRK_SCRIPT
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
+
+# repack the worker package if needed
+$POD_LOCATION/bin/pod-prep-worker &>/dev/null
+if (( $? != 0 )); then
+   echo "Error: Can't create PoD worker package.\n"
+   echo "Check the errors by executing: pod-prep-worker"
+fi
+# execute the selected plug-in
 $PLUG_CMD -q $QUEUE -n $NUM_WRK
 

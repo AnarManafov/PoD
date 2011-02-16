@@ -89,6 +89,41 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     return true;
 }
 //=============================================================================
+void repackPkg( string *_cmdOutput )
+{
+    // re-create the worker package if needed
+    string out;
+    try
+    {
+        // invoking a new bash process can in some case overwrite env. vars
+        // To be shure that our env is there, we call PoD_env.sh
+        string cmd_env( "$POD_LOCATION/PoD_env.sh" );
+        smart_path( &cmd_env );
+        string cmd( "$POD_LOCATION/bin/pod-prep-worker" );
+        smart_path( &cmd );
+        string arg( "source " );
+        arg += cmd_env;
+        arg += " ; ";
+        arg += cmd;
+//       execl( "/bin/bash", "bash", "-c", arg.c_str(), NULL );
+
+        StringVector_t params;
+        //     params.push_back( "bash" );
+        params.push_back( "-c" );
+        params.push_back( arg );
+        // 10 sec time-out for this command
+        do_execv( "/bin/bash", params, 10, &out );
+    }
+    catch( exception &e )
+    {
+        string msg( "Can't create PoD worker package: " );
+        msg += out;
+        throw runtime_error( msg );
+    }
+    if( _cmdOutput )
+        *_cmdOutput = out;
+}
+//=============================================================================
 int main( int argc, char * argv[] )
 {
     CLogEngine slog;
@@ -116,6 +151,9 @@ int main( int argc, char * argv[] )
             throw runtime_error( msg );
         }
 
+        // Collect workers list
+        slog.start( cfg.m_server.m_common.m_workDir );
+
         // Check that PoD server is running
         if( vm.count( "submit" ) )
         {
@@ -132,10 +170,22 @@ int main( int argc, char * argv[] )
             {
                 throw runtime_error( "PoD server is NOT running. Please, start PoD server first." );
             }
+
+            // re-pack PoD worker package if needed
+            string cmdOutput;
+            repackPkg( &cmdOutput );
+            stringstream ss( cmdOutput );
+            // send the output line by line to the log
+            StringVector_t vec;
+            std::copy( custom_istream_iterator<std::string>( ss ),
+                       custom_istream_iterator<std::string>(),
+                       std::back_inserter( vec ) );
+            StringVector_t::const_iterator iter = vec.begin();
+            StringVector_t::const_iterator iter_end = vec.end();
+            for( ; iter != iter_end; ++iter )
+                slog( *iter + '\n' );
         }
 
-        // Collect workers list
-        slog.start( cfg.m_server.m_common.m_workDir );
         typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
         workersList_t workers;

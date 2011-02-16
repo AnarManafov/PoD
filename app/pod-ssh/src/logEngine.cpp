@@ -87,7 +87,7 @@ void CLogEngine::operator()( const string &_msg, const string &_id ) const
     }
 
     // write to a pipe is an atomic operation,
-    // according to POSIX we just need to be shorte than PIPE_BUF
+    // according to POSIX we just need to be shorter than PIPE_BUF
     string out( _id );
     out += "\t[";
     out += timestr;
