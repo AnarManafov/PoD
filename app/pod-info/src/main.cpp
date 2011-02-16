@@ -28,6 +28,7 @@
 #include "Server.h"
 #include "Options.h"
 #include "SrvInfo.h"
+#include "SSHTunnel.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
@@ -102,77 +103,6 @@ size_t listWNs( string *_output, const pod_info::CServer &_srv,
     return ( lst.m_container.size() );
 }
 //=============================================================================
-pid_t tunnelPid( const CEnvironment &_env )
-{
-    ifstream f( _env.getTunnelPidFile().c_str() );
-    if( !f.is_open() )
-        return 0;
-    pid_t tunnel_pid;
-    f >> tunnel_pid;
-    return tunnel_pid;
-}
-//=============================================================================
-void killTunnel( const CEnvironment &_env )
-{
-    pid_t pid = tunnelPid( _env );
-    if( 0 != pid )
-        kill( pid, SIGKILL );
-
-    unlink( _env.getTunnelPidFile().c_str() );
-}
-//=============================================================================
-void createSSHTunnel( const CEnvironment &_env, const SOptions &_opt )
-{
-    // delete tunnel's file
-    killTunnel( _env );
-    // create an ssh tunnel on PoD Server port
-    switch( fork() )
-    {
-        case - 1:
-            // Unable to fork
-            throw std::runtime_error( "Unable to create an SSH tunnel." );
-        case 0:
-            {
-                // create SSH Tunnel
-                string cmd( "$POD_LOCATION/bin/private/pod-ssh-tunnel" );
-                smart_path( &cmd );
-
-                string pid_arg( "-f" );
-                pid_arg += _env.getTunnelPidFile();
-
-                string l_arg( "-l" );
-                l_arg += _opt.m_sshConnectionStr;
-                stringstream p_arg;
-                p_arg << "-p" << _env.serverPort();
-                string o_arg( "-o" );
-                o_arg += _opt.m_openDomain;
-
-                string sBatch;
-                if( _opt.m_batchMode )
-                    sBatch = "-b";
-
-                execl( cmd.c_str(), "pod-ssh-tunnel",
-                       pid_arg.c_str(),
-                       l_arg.c_str(), p_arg.str().c_str(),
-                       o_arg.c_str(), sBatch.c_str(), NULL );
-                exit( 1 );
-            }
-    }
-    // wait for tunnel to start
-    short count( 0 );
-    const short max_try( 50 );
-    pid_t pid( tunnelPid( _env ) );
-    while( 0 == pid || !IsProcessExist( pid ) ||
-           0 != MiscCommon::INet::get_free_port( _env.serverPort() ) )
-    {
-        ++count;
-        pid = tunnelPid( _env );
-        if( count >= max_try )
-            throw runtime_error( "Can't setup an SSH tunnel." );
-        usleep( 50000 ); // delays for 0.05 seconds
-    }
-}
-//=============================================================================
 void retrieveRemoteServerInfo( const SOptions &_opt,
                                const string &_destinationFile )
 {
@@ -213,6 +143,9 @@ int main( int argc, char *argv[] )
         SOptions options;
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
+
+        // An SSH tunnel object
+        CSSHTunnel sshTunnel;
 
         // Short info about locals
         if( options.m_xpdPid )
@@ -257,7 +190,8 @@ int main( int argc, char *argv[] )
             unlink( outfile.c_str() );
 
             // we tunnel the connection to PoD server
-            createSSHTunnel( env, options );
+            sshTunnel.setPidFile( env.getTunnelPidFile() );
+            sshTunnel.create( env, options );
             // if we tunnel pod-agent's port, than we need to connect to a localhost
             srvHost = "localhost";
         }
@@ -290,7 +224,6 @@ int main( int argc, char *argv[] )
         {
             pod_info::CServer srv( srvHost, env.serverPort() );
             cout << version( env, srv ) << endl;
-            killTunnel( env );
             return 0;
         }
 
@@ -317,7 +250,6 @@ int main( int argc, char *argv[] )
                 srvInfo.printInfo( cout );
                 if( srvInfo.getStatus() != CSrvInfo::srvStatus_OK )
                 {
-                    killTunnel( env );
                     return srvInfo.getStatus();
                 }
             }
@@ -347,10 +279,8 @@ int main( int argc, char *argv[] )
     }
     catch( exception& e )
     {
-        killTunnel( env );
         cerr << PROJECT_NAME << ": " << e.what() << endl;
         return 1;
     }
-    killTunnel( env );
     return 0;
 }

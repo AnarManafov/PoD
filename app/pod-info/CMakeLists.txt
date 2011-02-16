@@ -37,6 +37,7 @@ set( SOURCE_FILES
     ./src/Environment.cpp
     ./src/Server.cpp
     ./src/SrvInfo.cpp
+    ./src/SSHTunnel.cpp
     ${PROTOCOL_FILES_LOCATION}/Protocol.cpp
     ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.cpp
     ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.cpp
@@ -46,6 +47,7 @@ set( SRC_HDRS
     ./src/Server.h
     ./src/SrvInfo.h
     ./src/Options.h
+    ./src/SSHTunnel.h
     ${PROTOCOL_FILES_LOCATION}/Protocol.h
     ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.h
     ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.h
