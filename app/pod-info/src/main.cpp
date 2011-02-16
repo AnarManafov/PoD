@@ -203,8 +203,9 @@ int main( int argc, char *argv[] )
                         << "Trying: local PoD server"
                         << "Server Info: " << env.localSrvInfoFile() << endl;
             }
-            // process a local server-info
-            // if --version, than we don't throw
+            // Process a local server-info.
+            // If "--version" is given, than we don't throw,
+            // because we need a version info in anyway, even without any server
             if( !env.processServerInfoCfg() && !options.m_version )
             {
                 string msg;
