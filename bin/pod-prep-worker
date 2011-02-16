@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-01-28
 #
-#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
 # Usage: pod-prep-worker 
@@ -73,20 +73,25 @@ done
 #=============================================================================
 need_update()
 {
+   local _os=$(uname -s 2>&1)
    local pkg_time=0
    if [ -f $ARC_NAME ]; then
       # the last modified time of <file> as timestamp format
-        local _os=$(uname -s 2>&1)
-        if [ "$_os" = "Darwin" ]; then
-           pkg_time=$(stat --format='%Z' "$ARC_NAME") 2>/dev/null
-        else
-           pkg_time=$(stat -f "%m" -t "%s" "$ARC_NAME") 2>/dev/null
-        fi
+      if [ "$_os" = "Darwin" ]; then
+         pkg_time=$(stat --format='%Z' "$ARC_NAME") 2>/dev/null
+      else
+         pkg_time=$(stat -f "%m" -t "%s" "$ARC_NAME") 2>/dev/nul
+      fi
    fi
 
    for i in "${COMPONENTS[@]}"
    do
-      local ts=$(stat -f "%m" -t "%s" "$i")
+      if [ "$_os" = "Darwin" ]; then
+         local ts=$(stat --format='%Z' "$i") 2>/dev/null
+      else
+         local ts=$(stat -f "%m" -t "%s" "$i") 2>/dev/nul
+      fi
+ 
       if (( $ts > $pkg_time )); then
          # if timestamp is different, than compare to a cached file
          d=$(diff $i "$CACHE_DIR/$(basename $i)" 2>/dev/null)
