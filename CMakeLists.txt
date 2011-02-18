@@ -291,7 +291,8 @@ set(CPACK_SOURCE_IGNORE_FILES
     "cmake_install"
     "CPack"
     "\\\\.svn/"
-    "Makefile$")
+    "Makefile$"
+    "PoDFiles.txt$")
 
 set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-Source")
 
