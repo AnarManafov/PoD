@@ -140,6 +140,13 @@ int main( int argc, char * argv[] )
         user_defaults.init( pathUD );
         PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
 
+        // a number of threads in the thread-pool
+        // default is 4 and the maximum is 50.
+        // These are just magic number. We want to revise them later on...
+        size_t nThreads( cfg.m_server.m_agentThreads );
+        if( nThreads <= 4 || nThreads > 50 )
+            nThreads = 4;
+
         if( !parseCmdLine( argc, argv, &vm ) )
             return 0;
         ifstream f( vm["config"].as<string>().c_str() );
@@ -208,6 +215,9 @@ int main( int argc, char * argv[] )
 
         // some controle information
         ostringstream ss;
+        ss << "There are " << nThreads << " threads in the tread-pool.\n";
+        slog( ss.str() );
+        ss.str( "" );
         ss << "Number of PoD workers: " << workers.size() << "\n";
         slog( ss.str() );
         ss.str( "" );
@@ -221,7 +231,7 @@ int main( int argc, char * argv[] )
         slog( "Workers list:\n" );
 
         // start thread-pool and push tasks into it
-        CThreadPool<CWorker, ETaskType> threadPool( 4 );
+        CThreadPool<CWorker, ETaskType> threadPool( nThreads );
         ETaskType task_type( task_submit );
         if( vm.count( "clean" ) )
             task_type = task_clean;
