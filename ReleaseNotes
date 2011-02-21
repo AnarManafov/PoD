@@ -20,6 +20,9 @@ pod: The PoD worker package is updated automatically if any of its component is 
      But the job re-submission is still required.
 pod-agent: the "proofport" option has been removed. Agents now detect xproof ports automatically.
 pod-agent: The admin. protocol has been upgraded to version 5.
+pod-ssh: if a user doesn't request a specific number of PROOF workers for some of the worker nodes,
+         than pod-ssh will setup PROOF workers on that worker node according to a number of CPU cores.
+         That means, that the last parameter in the pod-ssh configuration file is not required anymore and can be left empty.
 pod-user-defaults: added "server.proof_cfg_entry_pattern" option.
                    This patter can be used to customize entries in proof.cfg.
 

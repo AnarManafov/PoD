@@ -40,6 +40,12 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
     m_Data = _data.m_podOptions.m_worker;
     m_serverInfoFile = _data.m_serverInfoFile;
     m_numberOfPROOFWorkers = _data.m_numberOfPROOFWorkers;
+    // if m_numberOfPROOFWorkers is 0, than user wants us to decide
+    // automatically on how many workers to create.
+    if( 0 == m_numberOfPROOFWorkers )
+    {
+        m_numberOfPROOFWorkers = getNCores();
+    }
 
     string xpd( g_xpdCFG );
     smart_path( &xpd );
@@ -427,7 +433,6 @@ void CAgentClient::mainSelect( CNode *_node )
 
     }
 }
-
 //=============================================================================
 void CAgentClient::createPROOFCfg()
 {

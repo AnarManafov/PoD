@@ -63,9 +63,12 @@ struct SConfigRecord
 
         if( ++iter == _end )
             return 5;
-        std::stringstream ss;
-        ss << *iter;
-        ss >> m_nWorkers;
+        if( !iter->empty() )
+        {
+            std::stringstream ss;
+            ss << *iter;
+            ss >> m_nWorkers;
+        }
 
         return 0;
     }

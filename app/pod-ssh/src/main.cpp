@@ -195,6 +195,7 @@ int main( int argc, char * argv[] )
 
         typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
+        bool dynWrk( false );
         workersList_t workers;
         {
             CConfig config;
@@ -209,6 +210,9 @@ int main( int argc, char * argv[] )
                 CWorker wrk( rec, log_fun_ptr );
                 workers.push_back( wrk );
 
+                if( 0 == rec->m_nWorkers )
+                    dynWrk = true; // user wants us to dynamicly decide on how many PROOF workers to create
+
                 wrkCount += rec->m_nWorkers;
             }
         }
@@ -221,7 +225,10 @@ int main( int argc, char * argv[] )
         ss << "Number of PoD workers: " << workers.size() << "\n";
         slog( ss.str() );
         ss.str( "" );
-        ss << "Number of PROOF workers: " << wrkCount << "\n";
+        if( dynWrk )
+            ss << "Number of PROOF workers: on some workers is dynamic, according to a number of CPU cores\n";
+        else
+            ss << "Number of PROOF workers: " << wrkCount << "\n";
         slog( ss.str() );
 
         // it's a dry run - configuration check only
