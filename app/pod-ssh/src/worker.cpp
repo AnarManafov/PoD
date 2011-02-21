@@ -37,11 +37,11 @@ CWorker::~CWorker()
 void CWorker::printInfo( ostream &_stream ) const
 {
     _stream << "[" << m_rec->m_id << "] with ";
-    if (0 == m_rec->m_nWorkers)
+    if( 0 == m_rec->m_nWorkers )
         _stream << "a dynamic number of";
     else
         _stream << m_rec->m_nWorkers;
-    
+
     _stream << " workers at "
             << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
