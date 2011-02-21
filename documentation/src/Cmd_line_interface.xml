@@ -619,11 +619,14 @@ the same from the remote PoD server:
                         </thead>
                         <tbody>		
                             <row>
-                                <entry>id (must be a unique string)</entry>
+                                <entry>id (must be any unique string).
+                                <para>This id string is used just to distinguish different PoD workers in SSH plug-in.</para></entry>
                                 <entry>a host name with or without a login, in a form: login@host.fqdn</entry>
                                 <entry>additional ssh params (could be empty)</entry>
-                                <entry>remote working dir</entry>
-                                <entry>number of workers</entry>
+                                <entry>a remote working directory</entry>
+                                <entry>a desired number of PROOF workers (could be empty). 
+                                       <para>If this parameter is empty,
+                                       than PoD will spawn as many PROOF workers on that host as CPU cores.</para></entry>
                             </row>
                         </tbody>
                     </tgroup>
@@ -634,7 +637,7 @@ the same from the remote PoD server:
 r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4
 # this is a comment
 r2, user@lxi001.gsi.de,,/home/user/pod,16
-125, user2@host, , /tmp/test,8
+125, user2@host, , /tmp/test,
 </screen>
             </para>
         </refsect1>
