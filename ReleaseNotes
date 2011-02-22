@@ -1,30 +1,29 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.4 (not yet released)
-pod: Starting with version 3.4, PoD changes a bit its version numbering scheme.
+pod: Starting with version 3.4, PoD go its version numbering scheme a bit changed.
      It reflects the fact that PoD is both a production system and a research project.
      PoD now uses odd minor version numbers to denote development releases and even minor version numbers to denote stable releases.
      (see User's Manual for more details, section 3.2 "PoD Version Number Scheme").
 pod: fixed [Bug 3]: pod-agent doesn't stop PoD server on Linux when idle is detected.
 pod: fixed [Bug 4]: In some cases PoD server could forget to shut down xproof processes.
 pod: The "pod-info" command has been rewritten from scratch.
-     Now it works as a client of pod-agent and can be used to request information from a remote PoD server. 
+     Now it works as a client for "pod-agent" and can be used to request information from remote PoD servers. 
      This is the first step to disentangle PoD UI and PoD Server. See User's manual for more information.
 pod: PoD doesn't generate a helper header anymore, since the "pod-info" command can be used from remote (to PoD server) hosts as well.
 pod: The "pod-server" command calls now the new "pod-info" to find out the status of PoD processes and ports, instead of implementing this in BASH.
-     The "pod-server" is also got a speed up improvements.
-pod: The "pod-prep-worker" command checks now timestamps and diffs of the components and skips the package making if the package is up-to-date.
+     The "pod-server" is also got significant speed up improvements.
+pod: The "pod-prep-worker" command checks now timestamps and diffs of the components and doesn't repack the package if the package is up-to-date.
 pod: The PoD worker package is updated automatically if any of its component is updated.
      The package status is now checked automatically before submitting PoD jobs in PoD CLI and PoD SSH.
      It means, users don't need explicitly call the "pod-prep-worker" command or restart PoD server if configuration has been changed.
-     But the job re-submission is still required.
-pod-agent: the "proofport" option has been removed. Agents now detect xproof ports automatically.
+     But a PoD job re-submission is still required.
+pod-agent: The "proofport" option has been removed. Agents are now able to detect xproofd ports automatically.
 pod-agent: The admin. protocol has been upgraded to version 5.
-pod-ssh: if a user doesn't request a specific number of PROOF workers for some of the worker nodes,
-         than pod-ssh will setup PROOF workers on that worker node according to a number of CPU cores.
-         That means, that the last parameter in the pod-ssh configuration file is not required anymore and can be left empty.
-pod-user-defaults: added "server.proof_cfg_entry_pattern" option.
-                   This patter can be used to customize entries in proof.cfg.
+pod-ssh: If a user doesn't request a specific number of PROOF workers for some of the worker nodes,
+         than "pod-ssh" will setup PROOF workers on that worker node according to a number of CPU cores.
+         That means, that the last parameter in the "pod-ssh" configuration file is not required anymore and can be left empty.
+pod-user-defaults: Added the "server.proof_cfg_entry_pattern" option. This patter can be used to customize entries in proof.cfg.
 
 ## v3.1 (2011-01-07)
 pod: Now PoD supports shared installations.
