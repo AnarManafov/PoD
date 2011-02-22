@@ -61,7 +61,7 @@ stagein()
       exit 1
    fi
 
-   echo "Files in node work directory are as follows:"
+   echo "Files in the work. directory are as follows:"
    ls -l
 }
 ###############################################################

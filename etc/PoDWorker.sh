@@ -348,7 +348,7 @@ logMsg "PoD worker runs on $OS-$wn_host_arch"
 # Using these bins is more preferable, than using generic bins from the worker package.
 need_bin_pkgs="TRUE"
 if [ -n "$POD_SHARED_HOME" ]; then
-   logMsg "A shared home file system detected."
+   logMsg "A shared home file system is detected."
    logMsg "Let's try to use PoD binaries directly from the server."
    
    # check binary
