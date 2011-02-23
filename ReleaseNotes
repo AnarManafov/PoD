@@ -21,7 +21,7 @@ pod: The PoD worker package is updated automatically if any of its component is 
 pod-agent: The "proofport" option has been removed. Agents are now able to detect xproofd ports automatically.
 pod-agent: The admin. protocol has been upgraded to version 5.
 pod-ssh: If a user doesn't request a specific number of PROOF workers for some of the worker nodes,
-         than "pod-ssh" will setup PROOF workers on that worker node according to a number of CPU cores.
+         then "pod-ssh" will setup PROOF workers on that worker node according to a number of CPU cores.
          That means, that the last parameter in the "pod-ssh" configuration file is not required anymore and can be left empty.
 pod-user-defaults: Added the "server.proof_cfg_entry_pattern" option. This patter can be used to customize entries in proof.cfg.
 
@@ -62,7 +62,7 @@ pod: WNs don't download pre-compiled bins from the PoD central repository anymor
 pod: PoD tries to automatically detect whether PoD's server is installed on a shared home file system, which is also
      mounted on WNs.  
 pod: PoD WNs now tries to use binaries from PoD UI, if a shared home file system is detected.
-     It speeds up the start up time of PoD jobs. If this try fails, than PoD WN will use
+     It speeds up the start up time of PoD jobs. If this try fails, then PoD WN will use
      pre-compiled bins, which come with PoD's worker package.
 pod: PoD UI/Server supports Mac OS X. So far only CLI and only the SSH plug-in are working and have been tested.
 pod: All CLI plug-ins are now in separate files. This makes it much easer to extend PoD with new plug-ins and to support old ones.
@@ -128,7 +128,7 @@ pod-user-defaults: updated build system. Now can be build as a part of PoD or in
 pod-user-defaults: updated user defaults configuration file - v0.4
 pod-user-defaults: new option <pbs_plugin.shared_home>, default is "no".
                    The parameter specifies whether a shared home files system is used.
-                   If "no" is set, than PoD will use the scp command to stagin/out needed files.
+                   If "no" is set, then PoD will use the scp command to stagin/out needed files.
 pod-user-defaults: new option <pbs_plugin.upload_job_log>, default if "no".
                    The parameter specifies whether to upload jobs log files from workers
                    when PoD jobs are completed. Jobs log files include a full log of PROOF,
@@ -146,9 +146,9 @@ pod-agent: the log file name now is "pod-agent.<instance_name>.log".
 pod-console: lock-on-idle time is 30 minutes now (instead of 15 min.).
 pod-user-defaults: updated user defaults configuration file - v0.3
 pod-user-defaults: new option <server.packet_forwarding>, default is "auto".
-                   if workers are behind a firewall than PoD will use its packet forwarding (PF) algorithms
+                   if workers are behind a firewall then PoD will use its packet forwarding (PF) algorithms
                    to maintain the PROOF traffic between server and workers.
-                   By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
+                   By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set then PoD
                    will decide on the fly whether to use PF for each worker individually based on the possibility
                    to directly connect to worker.
 
