@@ -129,6 +129,7 @@ do
       if [ "X$RET_VAL" = "X0" ]; then
          # copy the file to cache
          cp $i $CACHE_DIR/
+         chmod u+w "$CACHE_DIR/$(basename $i)"
 	 continue
       else
 	 echo "failed. Exit code: $RET_VAL" >&2
