@@ -10,7 +10,7 @@
 #                           2010-01-19
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************
 project( PoD )
 
@@ -69,7 +69,13 @@ endif(DOXYGEN_FOUND)
 #
 if(DOXYGEN_FOUND)
    add_custom_target( api-docs COMMENT "Generating API docs" )
-   add_dependencies( api-docs MiscCommon-api-docs pod-ssh-api-docs pod-agent-api-docs pod-console-api-docs pod-info-api-docs )
+   add_dependencies( api-docs
+                     MiscCommon-api-docs
+                     pod-ssh-api-docs
+                     pod-agent-api-docs
+                     pod-console-api-docs
+                     pod-info-api-docs
+                     pod-remote-api-docs )
 
    add_custom_target( upload-api-docs 
        COMMAND rsync -avz -e ssh  ${DOC_OUTPUT_DIR} podwww@lxi001.gsi.de:~/web-docs/doc
@@ -195,6 +201,8 @@ endif(QT4_FOUND)
      set( PROTOCOL_FILES_LOCATION "${PROJECT_SOURCE_DIR}/app/pod-agent/src")
     message(STATUS "Build pod-info - YES")
     add_subdirectory( app/pod-info )
+    message(STATUS "Build pod-remote - YES")
+    add_subdirectory( app/pod-remote )    
   else(BUILD_pod_agent)
     message(STATUS "Build pod-agent - NO")
   endif(BUILD_pod_agent)
