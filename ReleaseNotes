@@ -1,7 +1,7 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.6 (not yet released)
-pod: reorganize the source project by introducing some shared libs, in order to make the code to be more flexible, reusable
+pod: Reorganize the source project by introducing some shared libs, in order to make the code to be more flexible, reusable
      and to reduce the size of executables.
 
 ## v3.4 (2011-02-23)
