@@ -16,10 +16,11 @@ project( pod-aget-tests )
 
 include_directories(${pod-agent_SOURCE_DIR}/src)
 #=============================================================================
-add_executable(pod-agent_test_ProtocolCommands Test_ProtocolCommands.cpp  ${pod-agent_SOURCE_DIR}/src/ProtocolCommands.cpp)
+add_executable(pod-agent_test_ProtocolCommands Test_ProtocolCommands.cpp)
 
 target_link_libraries (
     pod-agent_test_ProtocolCommands
+    pod_protocol
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
