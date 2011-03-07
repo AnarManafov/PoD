@@ -23,6 +23,7 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 #
 # take the version string from git and write it to a version file
 # or take it from the version file if git is unavailable (a package distribution)
+set( POD_VERSION_FILE ${CMAKE_BINARY_DIR}/version )
 if( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 
   execute_process(COMMAND git describe --abbrev=4 HEAD
@@ -31,11 +32,11 @@ if( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
   # remove leading "v"
   string(REGEX REPLACE "^v(.*)" "\\1" POD_VERSION ${POD_VERSION})
-  execute_process( COMMAND bash -c "echo \"${POD_VERSION}\" > ${CMAKE_SOURCE_DIR}/etc/version" )
+  execute_process( COMMAND bash -c "echo \"${POD_VERSION}\" > ${POD_VERSION_FILE}" )
 
 else( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 
-  execute_process(COMMAND cat ${CMAKE_SOURCE_DIR}/etc/version
+  execute_process(COMMAND cat ${POD_VERSION_FILE}
                   OUTPUT_VARIABLE POD_VERSION
                   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -145,7 +146,7 @@ SET(POD_CLI_PLUGINS_FILES
 SET(POD_ETC_FILES
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF.jdl
      ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
-     ${CMAKE_SOURCE_DIR}/etc/version
+     ${POD_VERSION_FILE}
    )
 #
 # BUILD Sub Modules of PoD
