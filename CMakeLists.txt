@@ -23,7 +23,8 @@ cmake_minimum_required( VERSION 2.6.2 FATAL_ERROR )
 #
 # take the version string from git and write it to a version file
 # or take it from the version file if git is unavailable (a package distribution)
-set( POD_VERSION_FILE ${CMAKE_BINARY_DIR}/version )
+# Keep the version file in the source directory to satisfy the source package.
+set( POD_VERSION_FILE ${CMAKE_SOURCE_DIR}/etc/version )
 if( EXISTS "${CMAKE_SOURCE_DIR}/.git" )
 
   execute_process(COMMAND git describe --abbrev=4 HEAD
