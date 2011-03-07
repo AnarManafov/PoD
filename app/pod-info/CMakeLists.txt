@@ -38,9 +38,6 @@ set( SOURCE_FILES
     ./src/Server.cpp
     ./src/SrvInfo.cpp
     ./src/SSHTunnel.cpp
-    ${PROTOCOL_FILES_LOCATION}/Protocol.cpp
-    ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.cpp
-    ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
@@ -48,17 +45,7 @@ set( SRC_HDRS
     ./src/SrvInfo.h
     ./src/Options.h
     ./src/SSHTunnel.h
-    ${PROTOCOL_FILES_LOCATION}/Protocol.h
-    ${PROTOCOL_FILES_LOCATION}/ProtocolCommands.h
-    ${PROTOCOL_FILES_LOCATION}/ProofStatusFile.h
 )
-
-set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
-if(local_boost_version VERSION_GREATER "1.33.1")
-  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
-endif(local_boost_version VERSION_GREATER "1.33.1")
-
-set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_libs})
 
 #
 ##  executable
@@ -66,7 +53,6 @@ set(Boost_libs_for_pod_info ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_
 include_directories( 
     ${PROJECT_BINARY_DIR}/src
     ${MiscCommon_LOCATION}
-    ${PROTOCOL_FILES_LOCATION}
     ${Boost_INCLUDE_DIRS} )
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -79,7 +65,9 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-info
-    ${Boost_libs_for_pod_info}
+    pod_protocol
+    proof_status_file
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
 install(TARGETS pod-info DESTINATION bin)

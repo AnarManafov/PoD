@@ -100,6 +100,12 @@ set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}; ${CMAKE_SOURCE_DIR}/cmake")
 # MiscCommon location
 #
 set(MiscCommon_LOCATION ${CMAKE_SOURCE_DIR}/app/MiscCommon)
+set(MiscCommon_LOCATION
+    ${MiscCommon_LOCATION}
+    ${MiscCommon_LOCATION}/pod_protocol
+    ${MiscCommon_LOCATION}/pipe_log_engine
+    ${MiscCommon_LOCATION}/proof_status_file
+)
 #
 # "additional" files
 #
@@ -198,7 +204,6 @@ endif(QT4_FOUND)
   if(BUILD_pod_agent)
     message(STATUS "Build pod-agent - YES")
     add_subdirectory ( app/pod-agent )
-     set( PROTOCOL_FILES_LOCATION "${PROJECT_SOURCE_DIR}/app/pod-agent/src")
     message(STATUS "Build pod-info - YES")
     add_subdirectory( app/pod-info )
     message(STATUS "Build pod-remote - YES")

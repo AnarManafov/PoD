@@ -40,9 +40,6 @@ set( SOURCE_FILES
     ./src/ThreadPool.cpp
     ./src/PROOFAgent.cpp
     ./src/Node.cpp
-    ./src/Protocol.cpp
-    ./src/ProtocolCommands.cpp
-    ./src/ProofStatusFile.cpp
 )
 set( SRC_HDRS
      ./src/Agent.h
@@ -50,14 +47,11 @@ set( SRC_HDRS
      ./src/IdleWatch.h
      ./src/Options.h
      ./src/PROOFAgent.h
-     ./src/Protocol.h
      ./src/ThreadPool.h
      ./src/AgentBase.h
      ./src/AgentServer.h
      ./src/Node.h
      ./src/PARes.h
-     ./src/ProofStatusFile.h
-     ./src/ProtocolCommands.h
 )
 
 set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
@@ -74,7 +68,8 @@ set(Boost_libs_for_agent ${Boost_THREAD_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY
 include_directories( 
     ${PROJECT_BINARY_DIR}/src 
     ${MiscCommon_LOCATION}
-    ${Boost_INCLUDE_DIRS} )
+    ${Boost_INCLUDE_DIRS}
+)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -86,6 +81,8 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-agent
+    pod_protocol
+    proof_status_file
     ${Boost_libs_for_agent}
 )
 
