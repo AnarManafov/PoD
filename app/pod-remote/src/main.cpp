@@ -117,8 +117,8 @@ void retrieveRemoteServerInfo( const SOptions &_opt,
     arg.push_back( "-f " + _destinationFile );
     if( _opt.m_debug )
         arg.push_back( "-d" );
-    if( _opt.m_batchMode )
-        arg.push_back( "-b" );
+//    if( _opt.m_batchMode )
+//        arg.push_back( "-b" );
     string cmd( "$POD_LOCATION/bin/private/pod-remote-srv-info" );
     smart_path( &cmd );
     string stdout;
@@ -146,28 +146,6 @@ int main( int argc, char *argv[] )
 
         // An SSH tunnel object
         CSSHTunnel sshTunnel;
-
-        // Short info about locals
-        if( options.m_xpdPid )
-        {
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
-            if( 0 == srvInfo.xpdPid() )
-                return 1;
-
-            cout << srvInfo.xpdPid() << endl;
-            return 0;
-        }
-        if( options.m_agentPid )
-        {
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
-            if( 0 == srvInfo.agentPid() )
-                return 1;
-
-            cout << srvInfo.agentPid() << endl;
-            return 0;
-        }
 
         // Check PoD server's Type
         srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
@@ -228,55 +206,55 @@ int main( int argc, char *argv[] )
             return 0;
         }
 
-        // PoD Server status
-        if( options.m_status || options.m_connectionString )
-        {
-            CSrvInfo srvInfo( &env );
-            string localHostName;
-            get_hostname( &localHostName );
-            // If we run locally it could mean, we run on a shared file system as well.
-            // We therefore need to check, whether we run on the same machine as the server
-            if( srvType == SrvType_Local && localHostName == srvHost )
-            {
-                srvInfo.getInfo();
-            }
-            else
-            {
-                pod_info::CServer srv( srvHost, env.serverPort() );
-                srvInfo.getInfo( &srv );
-            }
-
-            if( options.m_status )
-            {
-                srvInfo.printInfo( cout );
-                if( srvInfo.getStatus() != CSrvInfo::srvStatus_OK )
-                {
-                    return srvInfo.getStatus();
-                }
-            }
-            if( options.m_connectionString )
-            {
-                srvInfo.printConnectionString( cout );
-            }
-        }
-
-        // list of and a number of available WNs
-        if( options.m_countWNs || options.m_listWNs )
-        {
-            pod_info::CServer srv( srvHost, env.serverPort() );
-            string lst;
-            size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv, options );
-
-            if( options.m_countWNs )
-            {
-                cout << n << endl;
-            }
-            if( options.m_listWNs )
-            {
-                cout << lst;
-                cout.flush();
-            }
-        }
+//        // PoD Server status
+//        if( options.m_status || options.m_connectionString )
+//        {
+//            CSrvInfo srvInfo( &env );
+//            string localHostName;
+//            get_hostname( &localHostName );
+//            // If we run locally it could mean, we run on a shared file system as well.
+//            // We therefore need to check, whether we run on the same machine as the server
+//            if( srvType == SrvType_Local && localHostName == srvHost )
+//            {
+//                srvInfo.getInfo();
+//            }
+//            else
+//            {
+//                pod_info::CServer srv( srvHost, env.serverPort() );
+//                srvInfo.getInfo( &srv );
+//            }
+//
+//            if( options.m_status )
+//            {
+//                srvInfo.printInfo( cout );
+//                if( srvInfo.getStatus() != CSrvInfo::srvStatus_OK )
+//                {
+//                    return srvInfo.getStatus();
+//                }
+//            }
+//            if( options.m_connectionString )
+//            {
+//                srvInfo.printConnectionString( cout );
+//            }
+//        }
+//
+//        // list of and a number of available WNs
+//        if( options.m_countWNs || options.m_listWNs )
+//        {
+//            pod_info::CServer srv( srvHost, env.serverPort() );
+//            string lst;
+//            size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv, options );
+//
+//            if( options.m_countWNs )
+//            {
+//                cout << n << endl;
+//            }
+//            if( options.m_listWNs )
+//            {
+//                cout << lst;
+//                cout.flush();
+//            }
+//        }
     }
     catch( exception& e )
     {

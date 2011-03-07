@@ -28,8 +28,8 @@ CLogEngine::~CLogEngine()
 void CLogEngine::start( const string &_wrkDir )
 {
     m_stopLogEngine = 0;
-    // create a named pipe (our signal pipe)
-    // it's use to collect outputs from the threads and called shell scripts...
+    // create a named pipe
+    // it's used to collect outputs from the threads and called shell scripts...
     m_pipeName = _wrkDir;
     smart_path( &m_pipeName );
     smart_append( &m_pipeName, '/' );

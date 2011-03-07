@@ -79,8 +79,8 @@ void CSSHTunnel::create( const CEnvironment &_env, const SOptions &_opt )
                 o_arg += _opt.m_openDomain;
 
                 string sBatch;
-                if( _opt.m_batchMode )
-                    sBatch = "-b";
+//                if( _opt.m_batchMode )
+//                    sBatch = "-b";
 
                 execl( cmd.c_str(), "pod-ssh-tunnel",
                        pid_arg.c_str(),
