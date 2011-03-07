@@ -22,6 +22,22 @@ fi
 
 }
 
+# TODO: pass POD_LOCATION as an argument to the script
+eval POD_LOCATION=../$1
+if [ -z "${LD_LIBRARY_PATH}" ]; then
+   LD_LIBRARY_PATH=$POD_LOCATION/lib; export LD_LIBRARY_PATH
+else
+   LD_LIBRARY_PATH=$POD_LOCATION/lib:$LD_LIBRARY_PATH; export LD_LIBRARY_PATH
+fi
+
+# Mac OS X
+if [ -z "${DYLD_LIBRARY_PATH}" ]; then
+   DYLD_LIBRARY_PATH=$POD_LOCATION/lib; export DYLD_LIBRARY_PATH   # Mac OS X
+else
+   DYLD_LIBRARY_PATH=$POD_LOCATION/lib:$DYLD_LIBRARY_PATH; export DYLD_LIBRARY_PATH
+fi
+
+
 pushd $(pwd)
 cd $1
 
