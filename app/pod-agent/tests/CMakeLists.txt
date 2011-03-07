@@ -28,14 +28,13 @@ install(TARGETS pod-agent_test_ProtocolCommands DESTINATION tests)
 #=============================================================================
 set( SRC_PROTOCOL
     Test_Protocol.cpp
-    ${pod-agent_SOURCE_DIR}/src/Protocol.cpp
-    ${pod-agent_SOURCE_DIR}/src/ProtocolCommands.cpp
 )
 
 add_executable(pod-agent_test_Protocol ${SRC_PROTOCOL})
 
 target_link_libraries (
     pod-agent_test_Protocol 
+    pod_protocol
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 )
 
@@ -49,13 +48,13 @@ configure_file( ${PROJECT_SOURCE_DIR}/xpd.cf.in ${PROJECT_BINARY_DIR}/xpd.cf @ON
 
 set( SRC_PROTOCOL
     Test_ProofStatusFile.cpp
-    ${pod-agent_SOURCE_DIR}/src/ProofStatusFile.cpp
 )
 
 add_executable(pod-agent_test_ProofStatusFile ${SRC_PROTOCOL})
 
 target_link_libraries (
     pod-agent_test_ProofStatusFile
+    proof_status_file
     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
     ${Boost_filesystem_libs} 
 )
