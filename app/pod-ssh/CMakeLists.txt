@@ -38,12 +38,12 @@ endif(DOXYGEN_FOUND)
 set( SOURCE_FILES
     ./src/main.cpp
     ./src/config.cpp
-    ./src/worker.cpp
-    ./src/logEngine.cpp )
+    ./src/worker.cpp )
 
 include_directories(
     ${PROJECT_BINARY_DIR}/src
     ${MiscCommon_LOCATION}
+    ${MiscCommon_LOCATION}/pipe_log_engine
     ${Boost_INCLUDE_DIRS} )
 
 #
@@ -53,6 +53,7 @@ add_executable(pod-ssh ${SOURCE_FILES})
 
 target_link_libraries (
     pod-ssh
+    pipe_log_engine
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_THREAD_LIBRARY}
 )
