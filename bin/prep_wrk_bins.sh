@@ -58,8 +58,8 @@ PKG_VERSION=$(cat $POD_SRC/etc/version)
 cp -v "$POD_INST/bin/pod-agent" $POD_AGENT_BIN_DIR/ || exit 1
 cp -v "$POD_INST/bin/pod-user-defaults" $POD_AGENT_BIN_DIR/ || exit 1
 # Copy needed PoD libs
-cp -v "$POD_INST/lib/libpod_protocol.*" $POD_AGENT_BIN_DIR/ || exit 1
-cp -v "$POD_INST/lib/libproof_status_file.*" $POD_AGENT_BIN_DIR/ || exit 1
+cp -v "$POD_INST/lib/libpod_protocol.so" $POD_AGENT_BIN_DIR/ || exit 1
+cp -v "$POD_INST/lib/libproof_status_file.so" $POD_AGENT_BIN_DIR/ || exit 1
 
 # Copy external libs
 cp -v $LIBS_PATH/* $POD_AGENT_BIN_DIR/ || exit 1
