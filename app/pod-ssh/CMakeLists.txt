@@ -38,7 +38,15 @@ endif(DOXYGEN_FOUND)
 set( SOURCE_FILES
     ./src/main.cpp
     ./src/config.cpp
-    ./src/worker.cpp )
+    ./src/worker.cpp
+)
+set( SRC_HDRS
+     ./src/config.h
+     ./src/local_types.h
+     ./src/threadPool.h
+     ./src/worker.h
+)
+
 
 include_directories(
     ${PROJECT_BINARY_DIR}/src
@@ -49,7 +57,11 @@ include_directories(
 #
 # pod-ssh executable
 #
-add_executable(pod-ssh ${SOURCE_FILES})
+if (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-ssh ${SOURCE_FILES} ${SRC_HDRS})
+else (CMAKE_GENERATOR STREQUAL "Xcode")
+    add_executable(pod-ssh ${SOURCE_FILES})
+endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-ssh
