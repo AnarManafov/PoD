@@ -75,35 +75,3 @@ void CEnvironment::getLocalVersion()
                              " You may want to reinstall PoD to repair the installation." );
     f >> m_localVer;
 }
-//=============================================================================
-bool CEnvironment::processServerInfoCfg( const std::string *_cfg )
-{
-    string filename( localSrvInfoFile() );
-    if( NULL != _cfg )
-        filename = *_cfg;
-
-    ifstream f( filename.c_str() );
-    if( !f.is_open() )
-    {
-        return false;
-    }
-
-    // read server info file
-    bpo::variables_map keys;
-    bpo::options_description options(
-        "Agent's server info config" );
-    options.add_options()
-    ( "server.host", bpo::value<string>(), "" )
-    ( "server.port", bpo::value<unsigned int>(), "" )
-    ;
-
-    // Parse the config file
-    bpo::store( bpo::parse_config_file( f, options ), keys );
-    bpo::notify( keys );
-    if( keys.count( "server.host" ) )
-        m_srvHost = keys["server.host"].as<string> ();
-    if( keys.count( "server.port" ) )
-        m_srvPort = keys["server.port"].as<unsigned int> ();
-
-    return true;
-}

@@ -41,6 +41,15 @@ struct SOptions
                  m_openDomain == _val.m_openDomain &&
                  m_remotePath == _val.m_remotePath );
     }
+    /// this functionextract a PoD Location from the stored connection string
+    std::string extractPoDLocation()
+    {
+        std::string::size_type pos = m_sshConnectionStr.find( ":" );
+        if( std::string::npos == pos )
+            return "";
+
+        return m_sshConnectionStr.substr( pos + 1 );
+    }
 
     bool m_version;
     bool m_debug;
@@ -65,8 +74,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "help,h", "Produce help message" )
     ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information." )
     ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages." )
-    ( "remote", bpo::value<std::string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server." )
-    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server."
+    ( "remote", bpo::value<std::string>(), "A connection string including a remote PoD location." )
+    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server, if not a default one."
       " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands." )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
@@ -87,10 +96,17 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     boost_hlp::option_dependency( vm, "ssh_opt", "remote" );
     boost_hlp::option_dependency( vm, "remote_path", "remote" );
     boost_hlp::option_dependency( vm, "ssh_open_domain", "remote" );
+    boost_hlp::conflicting_options( vm, "start", "stop" );
+    boost_hlp::conflicting_options( vm, "start", "restart" );
+    boost_hlp::conflicting_options( vm, "restart", "stop" );
 
     if( vm.count( "remote" ) )
     {
         _options->m_sshConnectionStr = vm["remote"].as<std::string>();
+        // check that the given url contains a PoD location
+        if( _options->extractPoDLocation().empty() )
+            throw std::runtime_error( "Bad PoD Location path in the remote url." );
+
         _options->m_remotePath = ( vm.count( "remote_path" ) ) ?
                                  vm["remote_path"].as<std::string>() : "~/.PoD/";
         MiscCommon::smart_append( &_options->m_remotePath, '/' );

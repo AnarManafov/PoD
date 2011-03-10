@@ -21,7 +21,6 @@ class CEnvironment
 
     public:
         void init();
-        bool processServerInfoCfg( const std::string *_cfg = NULL );
 
         std::string version() const
         {
@@ -86,6 +85,15 @@ class CEnvironment
 
             std::string ret( m_wrkDir );
             ret += "pod-agent.pid";
+            return ret;
+        }
+        std::string getlogEnginePipeName() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += ".pod_remote_pipe";
             return ret;
         }
 
