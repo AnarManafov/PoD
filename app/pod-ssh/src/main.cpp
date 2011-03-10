@@ -161,7 +161,7 @@ int main( int argc, char * argv[] )
         }
 
         // Collect workers list
-        string pipeName(cfg.m_server.m_common.m_workDir);
+        string pipeName( cfg.m_server.m_common.m_workDir );
         smart_append( &pipeName, '/' );
         pipeName += g_pipeName;
         slog.start( pipeName );
