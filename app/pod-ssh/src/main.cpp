@@ -37,6 +37,8 @@ using namespace MiscCommon;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
+const LPCSTR g_pipeName = ".pod_ssh_pipe";
+//=============================================================================
 void printVersion()
 {
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
@@ -159,7 +161,10 @@ int main( int argc, char * argv[] )
         }
 
         // Collect workers list
-        slog.start( cfg.m_server.m_common.m_workDir );
+        string pipeName(cfg.m_server.m_common.m_workDir);
+        smart_append( &pipeName, '/' );
+        pipeName += g_pipeName;
+        slog.start( pipeName );
 
         // Check that PoD server is running
         if( vm.count( "submit" ) )
