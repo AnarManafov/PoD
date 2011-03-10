@@ -65,6 +65,15 @@ int main( int argc, char *argv[] )
 
         if( options.m_start )
         {
+            // 1. Start a remote pod-server
+            //
+            // TODO: user needs to have root env. initialized (for example in PoD_env.sh)
+            // or we have to give this possibility via a custom env script...
+            //
+            // 2. Check the ports for proof and pod-agent
+            //
+            // 3. Create SSH tunnels on proof and pod-agent ports
+            //
             stringstream ss;
             ss
                     << "Starting a remote PoD server on "
@@ -72,8 +81,6 @@ int main( int argc, char *argv[] )
             slog( ss.str() );
 
         }
-
-//        slog( "Start --\n" );
 
 //        // An SSH tunnel object
 //        CSSHTunnel sshTunnel;
