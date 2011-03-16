@@ -65,14 +65,22 @@ int main( int argc, char *argv[] )
 
         if( options.m_start )
         {
+            // We allow so far to start only one remote PoD server at time.
+            //
+            // The following is to be done on the remote machine:
+            //
             // 1. Start a remote pod-server
             //
-            // TODO: user needs to have root env. initialized (for example in PoD_env.sh)
+            // TODO: user needs to have a ROOT env. initialized (for example in PoD_env.sh)
             // or we have to give this possibility via a custom env script...
+            // xproofd and ROOT libs must be in the $PATH
             //
             // 2. Check the ports for proof and pod-agent
             //
             // 3. Create SSH tunnels on proof and pod-agent ports
+            //
+            // 4. Configure the local env. to work with the remote server,
+            // pod-info must not see the difference.
             //
             stringstream ss;
             ss
