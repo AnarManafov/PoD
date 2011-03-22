@@ -92,7 +92,7 @@ void CSSHTunnel::create( const CEnvironment &_env, const SOptions &_opt )
     }
     // wait for tunnel to start
     short count( 0 );
-    const short max_try( 50 );
+    const short max_try( 600 ); // force to wait for about 30 secs
     pid();
     while( 0 == m_pid || !IsProcessExist( m_pid ) ||
            0 != MiscCommon::INet::get_free_port( _env.serverPort() ) )
