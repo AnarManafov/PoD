@@ -218,8 +218,8 @@ update_xpd_cfg()
    # to the generated xpd.cf.
    eval USER_XPD="$HOME/.PoD/"
    eval CENTRAL_XPD="$POD_LOCATION/etc"
-   cat $CENTRAL_XPD/user_xpd.cf* >> "$XPD_CFG"
-   cat $USER_XPD/user_xpd.cf* >> "$XPD_CFG"
+   cat $CENTRAL_XPD/user_xpd.cf* >> "$XPD_CFG" 2>/dev/null
+   cat $USER_XPD/user_xpd.cf* >> "$XPD_CFG" 2>/dev/null
 }
 # ************************************************************************
 # ***** Internal START  *****

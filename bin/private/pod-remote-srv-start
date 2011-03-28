@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-srv-info
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2011-03-24
+#
+#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+A private PoD command line utility, which is used to start a remote PoD server.
+   Copyright (C) 2011 GSI, Scientific Computing group.
+
+Usage: pod-srv-info [OPTION]
+     -l login@host.fqdn 	SSH connection string.
+     -o SSH_Opt			Additinal SSH parameters.
+     -p path			The PoD location path on the given remote server.
+     -i                         Switches for remote executions. FOR INTERNAL USE ONLY!
+     -d 			Enable debug output.
+     -b				Enable batch mode.
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+REMOTE_POD_LOCATION=""
+SSH_CON_STR=""
+SSHOPT=""
+DEBUG=""
+BATCH_MODE=""
+REMOTE=""
+while getopts ":l:o:p:idbh" opt; do
+  case $opt in
+  p)
+    REMOTE_POD_LOCATION="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  i)
+    REMOTE="YES"
+    ;;
+  d)
+    DEBUG="YES"
+    ;;
+  b)
+    BATCH_MODE="YES"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
+TIMEOUT=30
+
+if [ -n "$BATCH_MODE" ]; then
+    SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no $SSHOPT"
+else
+    SSH_CMD="ssh -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT $SSHOPT"
+fi
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+
+#=============================================================================
+# ***** remote part *****
+#=============================================================================
+# a special case, executed on the remote host
+if [ -n "$REMOTE" ]; then
+
+fi
+
+exit 0
+
