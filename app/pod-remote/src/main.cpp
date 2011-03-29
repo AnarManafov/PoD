@@ -42,6 +42,93 @@ void version()
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 //=============================================================================
+// The main idea with this method is to create a couple of pipes
+// that can be used to redirect the stdin and stdout of the
+// remote shell process (telnet, rsh, ssh, ...whatever) to this
+// program so they can be read and written to by read() and write().
+//
+// This is accomplished by first setting creating the pipe, then
+// forking this process into 2 processes, then having the "child"
+// fork replace his stdin, stdout pipes with the newly created ones,
+// and finally having the child "exec" itself into the remote
+// shell program. Since the remote shell will inherit its stdin
+// and stdout streams from the fork, it will use the pipes we setup
+// for that purpose.
+//#include <unistd.h>
+//#include <fcntl.h>
+//#include <sys/types.h>
+//#include <sys/errno.h>
+//#include <time.h>
+//
+//#define _DBG_ cout<<__FILE__<<":"<<__LINE__<<" "
+//#define _DBG__ _DBG_<<endl;
+//
+//int main(int narg, char *argv[])
+//{
+//    //char *const args[]={"ls",NULL};
+//    //execv("/bin/sh", args);
+//    //return 0;
+//    
+//    // Create 2 pipes
+//    int fdA[2];
+//    int fdB[2];
+//    pipe(fdA);
+//    pipe(fdB);
+//    
+//    // The following splits us into 2 identical processes except there
+//    // is a parent child relationship between the two. The "child" will
+//    // have pid==0 while the parent will not.
+//    pid_t pid = fork();
+//    
+//    // Make fdB[0] non-blocking so we can read from it without getting stuck
+//    fcntl(fdB[0], F_SETFL, O_NONBLOCK);
+//    
+//    if(pid==0){
+//        // The child replaces his stdin with fdA and his stdout with fdB
+//        close(fdA[1]); // This will never be used by this fork
+//        close(fdB[0]); // This will never be used by this fork
+//        
+//        dup2(fdA[0], STDIN_FILENO);
+//        dup2(fdB[1], STDOUT_FILENO);
+//        close(fdA[0]); // close one of the file descriptors (stdin  is still open)
+//        close(fdB[1]); // close one of the file descriptors (stdout is still open)
+//        
+//        
+//        // Now, exec this fork into a shell process. The first argument of execl
+//        // is the actual program to run. The second argument starts the "argv"
+//        // list passed into the program which usually contains the name of the
+//        // program as invoked in the shell as the 0-th argument.
+//        char *const args[]={NULL};
+//        execl("/usr/bin/ssh", "ssh", "-T", "manafov@lxg0527", 0);
+//    }else{
+//        close(fdA[0]); // This will never be used by this fork
+//        close(fdB[1]); // This will never be used by this fork
+//        
+//        // Write a command to the remote shell
+//        const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
+//        _DBG_<<"write():"<<write(fdA[1], cmd, strlen(cmd))<<endl;
+//        
+//        const char *cmd2 = "pod-server start\n";
+//        _DBG_<<"write():"<<write(fdA[1], cmd2, strlen(cmd2))<<endl;
+//        
+//        // Read response. For this example, we keep reading for at least
+//        // 10 seconds before quitting. Draw a line of "=" signs for each
+//        // successful read to indicate where the system breaks it up
+//        // (I think always ar newlines).
+//        time_t start_time = ti	me(NULL);
+//        do{
+//            char buff[8192];
+//            bzero(buff, 8192);
+//            int rv = read(fdB[0], buff, 8192);
+//            if(rv>0){
+//                // cout<<"====================================================="<<endl;
+//                cout<<buff;
+//            }
+//        }while((time(NULL)-start_time) < 10);
+//    }
+//    
+//    return 0;
+//}
 int main( int argc, char *argv[] )
 {
     CLogEngine slog;
@@ -89,61 +176,6 @@ int main( int argc, char *argv[] )
             slog( ss.str() );
 
         }
-
-//        // An SSH tunnel object
-//        CSSHTunnel sshTunnel;
-//
-//        // Check PoD server's Type
-//        srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
-//
-//        // if the type of the server is remote, than we need to get a remote
-//        // server info file
-//        string srvHost;
-//        // use SSH to retrieve server_info.cfg
-//        if( SrvType_Remote == srvType )
-//        {
-//            if( options.m_debug )
-//            {
-//                cout << "Trying: remote PoD server" << endl;
-//            }
-//            string outfile( env.remoteSrvInfoFile() );
-//            retrieveRemoteServerInfo( options, outfile );
-//            env.processServerInfoCfg( &outfile );
-//            // now we can delete the remote server file
-//            // we can't reuse it in next sessions, since the PoD port could change
-//            unlink( outfile.c_str() );
-//
-//            // we tunnel the connection to PoD server
-//            sshTunnel.setPidFile( env.getTunnelPidFile() );
-//            sshTunnel.create( env, options );
-//            // if we tunnel pod-agent's port, than we need to connect to a localhost
-//            srvHost = "localhost";
-//        }
-//        else
-//        {
-//            if( options.m_debug )
-//            {
-//                cout
-//                        << "Trying: local PoD server"
-//                        << "Server Info: " << env.localSrvInfoFile() << endl;
-//            }
-//            // Process a local server-info.
-//            // If "--version" is given, than we don't throw,
-//            // because we need a version info in anyway, even without any server
-//            if( !env.processServerInfoCfg() && !options.m_version )
-//            {
-//                string msg;
-//                msg += "PoD server is NOT running.";
-//                if( options.m_debug )
-//                {
-//                    msg += "\nCan't process server info: ";
-//                    msg += env.localSrvInfoFile();
-//                }
-//                throw runtime_error( msg );
-//            }
-//            srvHost = env.serverHost();
-//        }
-
     }
     catch( exception& e )
     {
