@@ -176,6 +176,10 @@ if(Boost_FOUND)
   endif( BUILD_TESTS)
   
   find_package( Boost 1.33.1 REQUIRED COMPONENTS  ${Boost_Components} )
+  # force to use the version 2 of the filesystem library, since
+  # we must support boost 1.33.1.
+  # TODO: implement support of the version 3
+  add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
 else(Boost_FOUND)
     set(BUILD_pod_agent OFF)
     set(BUILD_pod_console OFF)
