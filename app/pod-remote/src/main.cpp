@@ -42,6 +42,21 @@ void version()
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 //=============================================================================
+void monitor( pid_t _pid, int _pipe_fd )
+{
+//    cout << "Monitor thread" << endl;
+//    //if (!IsProcessExist(_pid))
+//    int stat;
+//    if( _pid == ::waitpid( _pid, &stat, WNOHANG ) )
+//    {
+//        cout << "DEBUG!!!!!!" << endl;
+//        const char *cmd = "exit\n";
+//        write( _pipe_fd, cmd, strlen( cmd ) );
+//        return;
+//    }
+//    sleep( 2 );
+}
+//=============================================================================
 // The main idea with this method is to create a couple of pipes
 // that can be used to redirect the stdin and stdout of the
 // remote shell process (telnet, rsh, ssh, ...whatever) to this
@@ -54,81 +69,6 @@ void version()
 // shell program. Since the remote shell will inherit its stdin
 // and stdout streams from the fork, it will use the pipes we setup
 // for that purpose.
-//#include <unistd.h>
-//#include <fcntl.h>
-//#include <sys/types.h>
-//#include <sys/errno.h>
-//#include <time.h>
-//
-//#define _DBG_ cout<<__FILE__<<":"<<__LINE__<<" "
-//#define _DBG__ _DBG_<<endl;
-//
-//int main(int narg, char *argv[])
-//{
-//    //char *const args[]={"ls",NULL};
-//    //execv("/bin/sh", args);
-//    //return 0;
-//    
-//    // Create 2 pipes
-//    int fdA[2];
-//    int fdB[2];
-//    pipe(fdA);
-//    pipe(fdB);
-//    
-//    // The following splits us into 2 identical processes except there
-//    // is a parent child relationship between the two. The "child" will
-//    // have pid==0 while the parent will not.
-//    pid_t pid = fork();
-//    
-//    // Make fdB[0] non-blocking so we can read from it without getting stuck
-//    fcntl(fdB[0], F_SETFL, O_NONBLOCK);
-//    
-//    if(pid==0){
-//        // The child replaces his stdin with fdA and his stdout with fdB
-//        close(fdA[1]); // This will never be used by this fork
-//        close(fdB[0]); // This will never be used by this fork
-//        
-//        dup2(fdA[0], STDIN_FILENO);
-//        dup2(fdB[1], STDOUT_FILENO);
-//        close(fdA[0]); // close one of the file descriptors (stdin  is still open)
-//        close(fdB[1]); // close one of the file descriptors (stdout is still open)
-//        
-//        
-//        // Now, exec this fork into a shell process. The first argument of execl
-//        // is the actual program to run. The second argument starts the "argv"
-//        // list passed into the program which usually contains the name of the
-//        // program as invoked in the shell as the 0-th argument.
-//        char *const args[]={NULL};
-//        execl("/usr/bin/ssh", "ssh", "-T", "manafov@lxg0527", 0);
-//    }else{
-//        close(fdA[0]); // This will never be used by this fork
-//        close(fdB[1]); // This will never be used by this fork
-//        
-//        // Write a command to the remote shell
-//        const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
-//        _DBG_<<"write():"<<write(fdA[1], cmd, strlen(cmd))<<endl;
-//        
-//        const char *cmd2 = "pod-server start\n";
-//        _DBG_<<"write():"<<write(fdA[1], cmd2, strlen(cmd2))<<endl;
-//        
-//        // Read response. For this example, we keep reading for at least
-//        // 10 seconds before quitting. Draw a line of "=" signs for each
-//        // successful read to indicate where the system breaks it up
-//        // (I think always ar newlines).
-//        time_t start_time = ti	me(NULL);
-//        do{
-//            char buff[8192];
-//            bzero(buff, 8192);
-//            int rv = read(fdB[0], buff, 8192);
-//            if(rv>0){
-//                // cout<<"====================================================="<<endl;
-//                cout<<buff;
-//            }
-//        }while((time(NULL)-start_time) < 10);
-//    }
-//    
-//    return 0;
-//}
 int main( int argc, char *argv[] )
 {
     CLogEngine slog;
@@ -149,6 +89,52 @@ int main( int argc, char *argv[] )
 
         env.init();
         slog.start( env.getlogEnginePipeName() );
+
+        // Create two pipes, which later will be used for stdout/in redirections
+        int pipe1[2];
+        int pipe2[2];
+        pipe( pipe1 );
+        pipe( pipe2 );
+
+        // fork a child process
+        pid_t pid = fork();
+
+        // Make pipe2[0] non-blocking so we can read from it without getting stuck
+        fcntl( pipe2[0], F_SETFL, O_NONBLOCK );
+
+        if( pid == 0 )
+        {
+            // The child replaces his stdin with pipe1 and his stdout with fdB
+            close( pipe1[1] ); // This will never be used by this fork
+            close( pipe2[0] ); // This will never be used by this fork
+
+            dup2( pipe1[0], STDIN_FILENO );
+            dup2( pipe2[1], STDOUT_FILENO );
+            close( pipe1[0] ); // close one of the file descriptors (stdin  is still open)
+            close( pipe2[1] ); // close one of the file descriptors (stdout is still open)
+
+
+            // Now, exec this child into a shell process.
+            slog( "child: " + options.cleanConnectionString() + '\n' );
+            execl( "/usr/bin/ssh", "ssh", "-T", options.cleanConnectionString().c_str(), NULL );
+            // we must never come to this point
+            exit( 1 );
+        }
+        else
+        {
+            stringstream sspid;
+            sspid << "forking a child process pid = " << pid << '\n';
+            slog( sspid.str() );
+            close( pipe1[0] ); // This will never be used by this fork
+            close( pipe2[1] ); // This will never be used by this fork
+
+            // Write a command to the remote shell
+            const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
+            write( pipe1[1], cmd, strlen( cmd ) );
+
+            const char *cmd2 = "exit\n";
+            write( pipe1[1], cmd2, strlen( cmd2 ) );
+        }
 
         if( options.m_start )
         {
@@ -174,8 +160,58 @@ int main( int argc, char *argv[] )
                     << "Starting a remote PoD server on "
                     << options.m_sshConnectionStr << '\n';
             slog( ss.str() );
-
         }
+
+        // start the monitoring
+        //boost::thread monitorThread( boost::bind( monitor, pid, pipe2[1] ) );
+
+        // Main select loop
+        string remote_output;
+        while( true )
+        {
+            fd_set readset;
+            FD_ZERO( &readset );
+            FD_SET( pipe2[0], &readset );
+            int retval = ::select( pipe2[0] + 1, &readset, NULL, NULL, NULL );
+
+            if( EBADF == errno )
+                break;
+
+            if( retval < 0 )
+            {
+                cerr << "Problem in the log engine: " << errno2str() << endl;
+                break;
+            }
+
+            if( FD_ISSET( pipe2[0], &readset ) )
+            {
+                const int read_size = 64;
+                char buf[read_size];
+                while( true )
+                {
+                    int numread = read( pipe2[0], buf, read_size );
+                    if( 0 == numread )
+                        return 0;
+
+                    if( numread > 0 )
+                    {
+                        for( int i = 0; i < numread; ++i )
+                        {
+                            remote_output += buf[i];
+                            if( '\n' == buf[i] )
+                            {
+                                slog( "remote end reports: " + remote_output );
+                                remote_output.clear();
+                            }
+                        }
+                    }
+                    else
+                        break;
+                }
+                cout.flush();
+            }
+        }
+
     }
     catch( exception& e )
     {
