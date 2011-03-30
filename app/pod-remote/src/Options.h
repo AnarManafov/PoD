@@ -30,19 +30,6 @@ struct SOptions
         m_executor( false )
     {
     }
-    bool operator== ( const SOptions &_val )
-    {
-        return ( m_version == _val.m_version &&
-                 m_debug == _val.m_debug &&
-                 m_start == _val.m_start &&
-                 m_stop == _val.m_stop &&
-                 m_restart == _val.m_restart &&
-                 m_executor == _val.m_executor &&
-                 m_sshConnectionStr == _val.m_sshConnectionStr &&
-                 m_sshArgs == _val.m_sshArgs &&
-                 m_openDomain == _val.m_openDomain &&
-                 m_remotePath == _val.m_remotePath );
-    }
     /// this function extracts a PoD Location from the stored connection string
     std::string remotePoDLocation()
     {
@@ -157,9 +144,16 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         }
     }
 
-    // we need an empty struct to check the case when user don't provide any argument
-    SOptions s;
-    if( vm.count( "help" ) || ( s == *_options ) )
+    // if there are no arguments is given, produce a help message 
+    bpo::variables_map::const_iterator iter = vm.begin();
+    bpo::variables_map::const_iterator iter_end = vm.end();
+    bool show_help(true);
+    for(; iter != iter_end; ++iter)
+    {
+     if ( !iter->second.defaulted())
+         show_help = false;
+    }
+    if( vm.count( "help" ) || show_help )
     {
         std::cout << visible << std::endl;
         return false;
