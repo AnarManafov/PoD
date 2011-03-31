@@ -93,8 +93,7 @@ int main( int argc, char *argv[] )
         }
 
         env.init();
-        slog.start( env.getlogEnginePipeName() );
-
+        
         if( options.m_executor )
         {
             try
@@ -104,10 +103,15 @@ int main( int argc, char *argv[] )
             }
             catch( const exception &_e )
             {
-                slog( _e.what() + '\n' );
+                // Server must send its logs to a stdout,
+                // so that Client will catch them
+                cout << _e.what() << endl;
             }
             return 0;
         }
+
+        // Start the log engine only on clients
+        slog.start( env.getlogEnginePipeName() );
 
         // the fork stuff we need only if user wants to send a command to a remote server
         if( !options.m_start && !options.m_stop && !options.m_restart )
