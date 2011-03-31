@@ -22,6 +22,7 @@
 #include "Process.h"
 #include "SysHelper.h"
 #include "PoDUserDefaultsOptions.h"
+#include "INet.h"
 // pod-info
 #include "version.h"
 #include "Environment.h"
@@ -33,6 +34,7 @@
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
+namespace inet = MiscCommon::INet;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
@@ -93,8 +95,11 @@ int main( int argc, char *argv[] )
         // Create two pipes, which later will be used for stdout/in redirections
         int pipe1[2];
         int pipe2[2];
-        pipe( pipe1 );
-        pipe( pipe2 );
+        if ( -1 == pipe( pipe1 ) )
+            cerr << "Error: Can't create a communication pipe" << endl;
+        
+        if( -1 == pipe( pipe2 ) )
+                        cerr << "Error: Can't create a communication pipe" << endl;
 
         // fork a child process
         pid_t pid = fork();
@@ -130,10 +135,10 @@ int main( int argc, char *argv[] )
 
             // Write a command to the remote shell
             const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
-            write( pipe1[1], cmd, strlen( cmd ) );
+            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>(cmd), strlen( cmd ), 0 );
 
             const char *cmd2 = "exit\n";
-            write( pipe1[1], cmd2, strlen( cmd2 ) );
+            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>(cmd2), strlen( cmd2 ), 0 );
         }
 
         if( options.m_start )
