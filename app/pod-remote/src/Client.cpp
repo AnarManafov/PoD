@@ -6,7 +6,9 @@
 //  Copyright 2011 GSI. All rights reserved.
 //
 //=============================================================================
-#include "Server.h"
+#include "Client.h"
+// STD
+#include <stdexcept>
 // MiscCommon
 #include "def.h"
 //=============================================================================
@@ -15,28 +17,31 @@ using namespace std;
 using namespace PROOFAgent;
 using namespace MiscCommon;
 //=============================================================================
-CServer::CServer( int _fdIn, int _fdOut ):
+CClient::CClient( int _fdIn, int _fdOut ):
     m_fdIn( _fdIn ),
     m_fdOut( _fdOut )
 {
 }
 //=============================================================================
-void CServer::getSrvHostInfo() const
+void CClient::getSrvHostInfo( SHostInfoCmd *_srvHostInfo ) const
 {
     BYTEVector_t data;
     processAdminConnection( &data, Req_Host_Info );
-    SHostInfoCmd srvHostInfo;
-    srvHostInfo.convertFromData( data );
-}
 
+    _srvHostInfo->convertFromData( data );
+}
 //=============================================================================
-void CServer::processAdminConnection( BYTEVector_t *_data, CServer::Requests _req ) const
+void CClient::processAdminConnection( BYTEVector_t *_data, CClient::Requests _req ) const
 {
     CProtocol protocol;
 //    SVersionCmd v;
 //    BYTEVector_t ver;
 //    v.convertToData( &ver );
 //    protocol.write( m_fd, static_cast<uint16_t>( cmdUI_CONNECT ), ver );
+
+    // TEST
+    protocol.writeSimpleCmd( m_fdOut, static_cast<uint16_t>( cmdSHUTDOWN ) );
+    
     bool bProcessNoMore( false );
     while( !bProcessNoMore )
     {
@@ -60,8 +65,8 @@ void CServer::processAdminConnection( BYTEVector_t *_data, CServer::Requests _re
     }
 }
 //=============================================================================
-int CServer::processProtocolMsgs( BYTEVector_t *_data,
-                                  CProtocol * _protocol, CServer::Requests _req ) const
+int CClient::processProtocolMsgs( BYTEVector_t *_data,
+                                  CProtocol * _protocol, CClient::Requests _req ) const
 {
     BYTEVector_t data;
     SMessageHeader header = _protocol->getMsg( &data );
@@ -72,7 +77,10 @@ int CServer::processProtocolMsgs( BYTEVector_t *_data,
                 switch( _req )
                 {
                     case Req_Host_Info:
-                        _protocol->writeSimpleCmd( m_fdOut, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
+                        //   _protocol->writeSimpleCmd( m_fd, static_cast<uint16_t>( cmdGET_HOST_INFO ) );
+                        break;
+                    case Req_ShutDown:
+                        _protocol->writeSimpleCmd( m_fdOut, static_cast<uint16_t>( cmdSHUTDOWN ) );
                         break;
                 }
             }

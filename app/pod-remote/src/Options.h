@@ -74,7 +74,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information" )
     ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages" )
     ;
-
+    // Connection options
     bpo::options_description connection_options( "Connection options" );
     connection_options.add_options()
     ( "remote", bpo::value<std::string>(), "A connection string including a remote PoD location" )
@@ -84,30 +84,29 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
     ;
-
+    // Commands
     bpo::options_description commands_options( "Commands options" );
     commands_options.add_options()
     ( "start", bpo::bool_switch( &( _options->m_start ) ), "Start remote PoD server" )
     ( "stop", bpo::bool_switch( &( _options->m_stop ) ), "Stop remote PoD server" )
     ( "restart", bpo::bool_switch( &( _options->m_start ) ), "Restart remote PoD server" )
     ;
-
     // Options for internal use only
     bpo::options_description backend_options( "Backend options" );
     backend_options.add_options()
-    ( "executor", bpo::bool_switch( &( _options->m_start ) ), "Switch pod-remote to the executor mode" )
+    ( "executor", bpo::bool_switch( &( _options->m_executor ) ), "Switch pod-remote to the executor mode" )
     ;
-    
+
     // Declare an options description instance which will include
     // all the options
-    bpo::options_description all("Allowed options");
-    all.add(general_options).add(connection_options).add(commands_options).add(backend_options);
+    bpo::options_description all( "Allowed options" );
+    all.add( general_options ).add( connection_options ).add( commands_options ).add( backend_options );
 
     // Declare an options description instance which will be shown
     // to the user
-    bpo::options_description visible("Allowed options");
-    visible.add(general_options).add(connection_options).add(commands_options);
-    
+    bpo::options_description visible( "Allowed options" );
+    visible.add( general_options ).add( connection_options ).add( commands_options );
+
     // Parsing command-line
     bpo::variables_map vm;
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( all ).run(), vm );
@@ -144,14 +143,14 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         }
     }
 
-    // if there are no arguments is given, produce a help message 
+    // if there are no arguments is given, produce a help message
     bpo::variables_map::const_iterator iter = vm.begin();
     bpo::variables_map::const_iterator iter_end = vm.end();
-    bool show_help(true);
-    for(; iter != iter_end; ++iter)
+    bool show_help( true );
+    for( ; iter != iter_end; ++iter )
     {
-     if ( !iter->second.defaulted())
-         show_help = false;
+        if( !iter->second.defaulted() )
+            show_help = false;
     }
     if( vm.count( "help" ) || show_help )
     {

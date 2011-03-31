@@ -36,13 +36,13 @@ set( SOURCE_FILES
     ./src/main.cpp
     ./src/Environment.cpp
     ./src/Server.cpp
-    ./src/SrvInfo.cpp
+    ./src/Client.cpp
     ./src/SSHTunnel.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
     ./src/Server.h
-    ./src/SrvInfo.h
+    ./src/Client.h
     ./src/Options.h
     ./src/SSHTunnel.h
 )

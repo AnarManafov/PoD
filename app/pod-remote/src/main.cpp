@@ -28,12 +28,15 @@
 #include "Environment.h"
 #include "Server.h"
 #include "Options.h"
-#include "SrvInfo.h"
 #include "SSHTunnel.h"
 #include "logEngine.h"
+#include "Client.h"
+#include "Server.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
+using namespace pod_remote;
+using namespace PROOFAgent;
 namespace inet = MiscCommon::INet;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
@@ -92,14 +95,40 @@ int main( int argc, char *argv[] )
         env.init();
         slog.start( env.getlogEnginePipeName() );
 
+        if( options.m_executor )
+        {
+            try
+            {
+                CServer srv( STDIN_FILENO, STDOUT_FILENO );
+                srv.getSrvHostInfo();
+            }
+            catch( const exception &_e )
+            {
+                slog( _e.what() + '\n' );
+            }
+            return 0;
+        }
+
+        // the fork stuff we need only if user wants to send a command to a remote server
+        if( !options.m_start && !options.m_stop && !options.m_restart )
+        {
+            slog( "There is nothing to do.\n" );
+            return 0;
+        }
+
+        if( options.cleanConnectionString().empty() )
+        {
+            slog( "Please provide a connection URL.\n" );
+            return 1;
+        }
         // Create two pipes, which later will be used for stdout/in redirections
         int pipe1[2];
         int pipe2[2];
-        if ( -1 == pipe( pipe1 ) )
+        if( -1 == pipe( pipe1 ) )
             cerr << "Error: Can't create a communication pipe" << endl;
-        
+
         if( -1 == pipe( pipe2 ) )
-                        cerr << "Error: Can't create a communication pipe" << endl;
+            cerr << "Error: Can't create a communication pipe" << endl;
 
         // fork a child process
         pid_t pid = fork();
@@ -118,10 +147,10 @@ int main( int argc, char *argv[] )
             close( pipe1[0] ); // close one of the file descriptors (stdin  is still open)
             close( pipe2[1] ); // close one of the file descriptors (stdout is still open)
 
-
             // Now, exec this child into a shell process.
             slog( "child: " + options.cleanConnectionString() + '\n' );
-            execl( "/usr/bin/ssh", "ssh", "-T", options.cleanConnectionString().c_str(), NULL );
+            execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
+                   options.cleanConnectionString().c_str(), NULL );
             // we must never come to this point
             exit( 1 );
         }
@@ -134,11 +163,12 @@ int main( int argc, char *argv[] )
             close( pipe2[1] ); // This will never be used by this fork
 
             // Write a command to the remote shell
-            const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
-            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>(cmd), strlen( cmd ), 0 );
+            //const char *cmd = ". rootlogin 527-06b-xrd; source pod_setup new\n";
+            const char *cmd = "source ~/Development/ROOT/root/bin/thisroot.sh; source /Users/anar/PoD/3.5.26.gfb749/PoD_env.sh\n";
+            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
 
-            const char *cmd2 = "exit\n";
-            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>(cmd2), strlen( cmd2 ), 0 );
+            const char *cmd2 = "pod-remote --executor\n";
+            inet::sendall( pipe1[1], reinterpret_cast<const unsigned char*>( cmd2 ), strlen( cmd2 ), 0 );
         }
 
         if( options.m_start )
@@ -165,57 +195,68 @@ int main( int argc, char *argv[] )
                     << "Starting a remote PoD server on "
                     << options.m_sshConnectionStr << '\n';
             slog( ss.str() );
+
+            try
+            {
+                CClient cl( pipe2[0], pipe1[1] );
+                SHostInfoCmd srvHostInfo;
+                cl.getSrvHostInfo( &srvHostInfo );
+            }
+            catch( const exception &_e )
+            {
+                slog( _e.what() + '\n' );
+            }
         }
 
         // start the monitoring
         //boost::thread monitorThread( boost::bind( monitor, pid, pipe2[1] ) );
 
         // Main select loop
-        string remote_output;
-        while( true )
-        {
-            fd_set readset;
-            FD_ZERO( &readset );
-            FD_SET( pipe2[0], &readset );
-            int retval = ::select( pipe2[0] + 1, &readset, NULL, NULL, NULL );
-
-            if( EBADF == errno )
-                break;
-
-            if( retval < 0 )
-            {
-                cerr << "Problem in the log engine: " << errno2str() << endl;
-                break;
-            }
-
-            if( FD_ISSET( pipe2[0], &readset ) )
-            {
-                const int read_size = 64;
-                char buf[read_size];
-                while( true )
-                {
-                    int numread = read( pipe2[0], buf, read_size );
-                    if( 0 == numread )
-                        return 0;
-
-                    if( numread > 0 )
-                    {
-                        for( int i = 0; i < numread; ++i )
-                        {
-                            remote_output += buf[i];
-                            if( '\n' == buf[i] )
-                            {
-                                slog( "remote end reports: " + remote_output );
-                                remote_output.clear();
-                            }
-                        }
-                    }
-                    else
-                        break;
-                }
-                cout.flush();
-            }
-        }
+//        string remote_output;
+//        while( true )
+//        {
+//            fd_set readset;
+//            FD_ZERO( &readset );
+//            FD_SET( pipe2[0], &readset );
+//            int retval = ::select( pipe2[0] + 1, &readset, NULL, NULL, NULL );
+//
+//            if( EBADF == errno )
+//                break;
+//
+//            if( retval < 0 )
+//            {
+//                cerr << "Problem in the log engine: " << errno2str() << endl;
+//                break;
+//            }
+//
+//            if( FD_ISSET( pipe2[0], &readset ) )
+//            {
+//                const int read_size = 64;
+//                char buf[read_size];
+//                while( true )
+//                {
+//                    int numread = read( pipe2[0], buf, read_size );
+//                    if( 0 == numread )
+//                        return 0;
+//
+//                    if( numread > 0 )
+//                    {
+//                        for( int i = 0; i < numread; ++i )
+//                        {
+//                            remote_output += buf[i];
+//                            if( '\n' == buf[i] )
+//                            {
+//                                slog( "remote end reports: " + remote_output );
+//                                remote_output.clear();
+//                            }
+//                        }
+//                    }
+//                    else
+//                        break;
+//                }
+//                cout.flush();
+//            }
+//        }
 
     }
     catch( exception& e )

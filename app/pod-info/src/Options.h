@@ -68,12 +68,12 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     connection_options.add_options()
     ( "remote", bpo::value<std::string>(), "An SSH connection string. Directs pod-info to use SSH to detect a remote PoD server" )
     ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server"
-     " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
+      " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
-     " and from which direct connections to the server are possible" )
+      " and from which direct connections to the server are possible" )
     ;
-    // Information options    
+    // Information options
     bpo::options_description information_options( "Information options" );
     information_options.add_options()
     ( "connection_string,c", bpo::bool_switch( &( _options->m_connectionString ) ), "Show PROOF connection string." )
@@ -87,7 +87,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     // to the user
     bpo::options_description visible( "Allowed options" );
     visible.add( general_options ).add( connection_options ).add( information_options );
-    
+
     // Parsing command-line
     bpo::variables_map vm;
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
