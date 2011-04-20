@@ -110,10 +110,11 @@ int main( int argc, char *argv[] )
             return 0;
         }
 
-        // Start the log engine only on clients
+        // Start the log engine only on clients (local instances)
         slog.start( env.getlogEnginePipeName() );
 
-        // the fork stuff we need only if user wants to send a command to a remote server
+        // the fork stuff we need only if user wants to send a command
+        // to a remote server
         if( !options.m_start && !options.m_stop && !options.m_restart )
         {
             slog( "There is nothing to do.\n" );
