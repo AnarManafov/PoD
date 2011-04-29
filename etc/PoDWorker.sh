@@ -234,10 +234,14 @@ get_freeport()
 check_arch()
 {
    OS=$(uname -s 2>&1)
-   if [ "$OS" != "Linux" ]; then
-      logMsg "Error: PoD doesn't support this operating system. Exiting..."
-      clean_up 1
-   fi
+   case "$OS" in
+      "Linux"|"Darwin")
+         ;;
+      *)
+         logMsg "Error: PoD doesn't support this operating system. Exiting..."
+         clean_up 1
+         ;;
+   esac
 
    wn_host_arch=$(uname -m  2>&1)
    case "$wn_host_arch" in
@@ -263,12 +267,21 @@ get_default_ROOT()
 {
    # define default ROOT packages
    # will be used on WNs if a user doesn't provide own ROOT
-   case "$1" in
-      x86)
-         ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
-      amd64)
-         ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
-   esac
+   if [ "$OS" == "Linux" ]; then
+      case "$1" in
+         x86)
+            ROOT_ARC="root_v5.26.00.Linux-slc5-gcc4.3.tar.gz" ;;
+         amd64)
+            ROOT_ARC="root_v5.26.00.Linux-slc5_amd64-gcc4.3.tar.gz" ;;
+      esac
+   elif  [ "$OS" == "Darwin" ]; then
+      case "$1" in
+         x86)
+            ROOT_ARC="" ;;
+         amd64)
+            ROOT_ARC="root_v5.28.00c.macosx106-x86_64-gcc-4.2.tar.gz" ;;
+      esac   
+   fi
 
    local set_my_rootsys=$($user_defaults -c $POD_CFG --key worker.set_my_rootsys)
    if (( $set_my_rootsys == 0 )); then
