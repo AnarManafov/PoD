@@ -114,6 +114,13 @@ get_bins()
       NEED_DOWNLOAD="TRUE"
    fi
 
+   # Check a mac bin independently, since we provide only 64bit version so-far
+   FILE_NAME="pod-wrk-bin-$PKG_VERSION-Darwin-amd64.tar.gz"
+   if [ ! -r "$WN_BIN_DIR/$FILE_NAME" ]; then
+      NEED_DOWNLOAD="TRUE"
+   fi
+
+
    if [ -z "$NEED_DOWNLOAD" ]; then
       return 0
    fi
@@ -154,6 +161,16 @@ get_bins()
          exit 1
       fi
    done
+
+   # download a mac bin independently, since we provide only 64bit version so-far
+   FILE_NAME="pod-wrk-bin-$PKG_VERSION-Darwin-amd64.tar.gz"
+   $CMD_URL ${POD_URL}/$PKG_VERSION/$FILE_NAME
+   if (( $? != 0 )); then
+      echo "Error: Can't download pre-compiled binaries for WNs."
+      echo "Please check availability of ${POD_URL}/$PKG_VERSION/$FILE_NAME"
+      exit 1
+   fi
+
    popd &> /dev/null
 }
 #=============================================================================

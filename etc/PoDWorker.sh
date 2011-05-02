@@ -426,11 +426,11 @@ export POD_PROOFCFG_FILE
 
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
-eval sed -i 's%_G_WRK_DIR%$WD%g' ./xpd.cf
+eval sed -i.bup 's%_G_WRK_DIR%$WD%g' $XPD_CFG
 # populating the tmp dir.
 _TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
 chmod 777 $_TMP_DIR
-eval sed -i 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' ./xpd.cf
+eval sed -i.bup 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' $XPD_CFG
 
 # creating an empty proof.conf, so that xproof will be happy
 touch $POD_PROOFCFG_FILE
