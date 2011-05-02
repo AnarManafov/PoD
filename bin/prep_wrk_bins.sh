@@ -67,6 +67,7 @@ case "$OS" in
    ;;
 
    "Darwin")
+      host_arch=amd64
       LIBS_PATH=$LIBS_PATH_DARWIN_AMD64
    ;;
 
