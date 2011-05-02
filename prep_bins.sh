@@ -23,9 +23,9 @@ if [ -z "$1" ]; then
     SCRIPT="/misc/manafov/tmp/prep_bins.sh"
     
     # Linux
- #   cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo" || exit 1
- #   $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin" || exit 1
- #   $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin" || exit 1
+    cat ./prep_bins.sh | $SSH_CMD manafov@$HOST32 "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo" || exit 1
+    $SSH_CMD manafov@$HOST32 "$SCRIPT wrk_bin" || exit 1
+    $SSH_CMD manafov@$HOST64 "$SCRIPT wrk_bin" || exit 1
     # MacOSX
     SCRIPT="/Users/anar/tmp/prep_bins.sh"
     cat ./prep_bins.sh | $SSH_CMD anar@demac012.gsi.de "cat > $SCRIPT; chmod 755 $SCRIPT; $SCRIPT get_repo_mac" || exit 1
