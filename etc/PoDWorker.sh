@@ -261,8 +261,10 @@ get_default_ROOT()
    fi
    
    export PATH=$ROOTSYS/bin:$PATH
-   export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
-   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH
+#   export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
+#   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH
+
+   source $ROOTSYS/bin/thisroot.sh
 
    # check binary
    xproofd -h > /dev/null 2>&1
@@ -347,8 +349,14 @@ if [ -n need_bin_pkgs ]; then
    # un-tar without creating a sub-directory
    tar --strip-components=1 -xzf $WN_BIN_ARC || clean_up 1
 
-   export PATH=$WD:$PATH 
-   export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
+   export PATH=$WD:$PATH
+   if [ "$OS" == "Linux" ]; then
+      export LD_LIBRARY_PATH=$WD:$LD_LIBRARY_PATH
+   fi
+   if [ "$OS" == "Darwin" ]; then
+      export DYLD_LIBRARY_PATH=$WD:$DYLD_LIBRARY_PATH
+   fi
+
 
    # Transmitting an executable through the InputSandbox does not preserve execute permissions
    chmod +x $WD/pod-agent
