@@ -183,7 +183,7 @@ get_freeport()
 }
 #=============================================================================
 # ***** check_arch *****
-# so far we support only Linux (amd64 and x86)
+# so far we support only Linux (amd64 and x86) and MacOSX (tested on 10.6)
 #=============================================================================
 check_arch()
 {
@@ -374,7 +374,6 @@ if (( $? != 0 )) ; then
    clean_up 1
 fi
 
-
 # Use a default ROOT distr. if needed
 get_default_ROOT $host_arch
 
@@ -398,7 +397,7 @@ touch $POD_PROOFCFG_FILE
 XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_max)
 
-# we try for 5 times to detect/start xpd
+# we try for 10 times to detect/start xpd
 # it is needed in case when several PoD workers are started in the same time on one machine
 COUNT=0
 MAX_COUNT=10
@@ -410,8 +409,7 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
 
     logMsg "trying to use XPROOF port: "$POD_XPROOF_PORT_TOSET
   
-    # updating XPD configuration file. Needed even if another scrip has already started an xproofd process,
-    # since we might want to use port's info somewhere else.
+    # updating XPD configuration file.
     regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
     sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
     mv $WD/xpd.cf.temp $WD/xpd.cf
