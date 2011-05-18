@@ -84,6 +84,40 @@ if(DOXYGEN_FOUND)
        COMMENT "Upload API documentation to PoD's web server")
    add_dependencies( upload-api-docs api-docs )
 endif(DOXYGEN_FOUND)
+# a wn bin package custom target
+# Because of $<TARGET_FILE:tgt> it works only in cmake 2.8.4
+if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
+   if( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+     set(TRG_ARCH i386)
+   else( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+     set(TRG_ARCH amd64)
+   endif( CMAKE_SIZEOF_VOID_P EQUAL 4 )
+   
+   set( WN_PKG_NAME "pod-wrk-bin-${POD_VERSION}-${CMAKE_SYSTEM_NAME}-${TRG_ARCH}" )
+   set( WN_PKG_DIR "${CMAKE_BINARY_DIR}/pod-wrk-bin" )
+
+   if(APPLE)
+     set( lib_cmd "bash" )
+     set( lib_cmd_args "-c"; "otool -L ${WN_PKG_DIR}/pod-agent  | grep boost | awk '{ system( \"cp \" $1 \" ${WN_PKG_DIR}\") }'" )
+   elseif(UNIX)
+     set( lib_cmd "bash" )
+     set( lib_cmd "-c"; "ldd ${WN_PKG_DIR}/pod-agent | grep boost | awk '{ system( \"cp \" $1 \" ${WN_PKG_DIR}\") }'" )
+   endif(APPLE)
+   
+   add_custom_target( wn_bin
+                      COMMAND -mkdir -p ${WN_PKG_DIR}
+                      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod-agent> "${WN_PKG_DIR}"
+                      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod-user-defaults> "${WN_PKG_DIR}"
+		      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod_protocol> "${WN_PKG_DIR}"
+                      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:proof_status_file> "${WN_PKG_DIR}"
+                      COMMAND ${lib_cmd} ${lib_cmd_args}
+                      COMMAND ${CMAKE_COMMAND} -E tar czf "${WN_PKG_NAME}.tar.gz" "${WN_PKG_DIR}"
+                      COMMENT "Generate a WN binary package" 
+                      VERBATIM )
+   add_dependencies( wn_bin
+                     pod-agent
+                     pod-user-defaults )
+endif(${CMAKE_VERSION} VERSION_GREATER 2.8.3)
 #
 # Install directory
 #
@@ -282,9 +316,6 @@ SET(CPACK_GENERATOR "TGZ")
 set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
-    "bin/prep_gsi_bin.sh"
-    "bin/prep_wrk_bins.sh"
-    "prep_bins.sh"
     "inst_tmp"
     "PoD_env.sh$"
     "etc/xpd.cf$"
