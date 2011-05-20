@@ -95,6 +95,8 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
    
    set( WN_PKG_NAME "pod-wrk-bin-${POD_VERSION}-${CMAKE_SYSTEM_NAME}-${TRG_ARCH}" )
    set( WN_PKG_DIR "${CMAKE_BINARY_DIR}/pod-wrk-bin" )
+   set( WN_PKG_NAME_ARCH "${WN_PKG_NAME}.tar.gz" )
+   set( WN_PKG_REMOTE_DIR "/u/podwww/web-docs/releases/add/${POD_VERSION}" )
 
    if(APPLE)
      set( lib_cmd "bash" )
@@ -111,7 +113,9 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
 		      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod_protocol> "${WN_PKG_DIR}"
                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:proof_status_file> "${WN_PKG_DIR}"
                       COMMAND ${lib_cmd} ${lib_cmd_args}
-                      COMMAND ${CMAKE_COMMAND} -E tar czf "${WN_PKG_NAME}.tar.gz" "${WN_PKG_DIR}"
+                      COMMAND ${CMAKE_COMMAND} -E tar czf ${WN_PKG_NAME_ARCH} "${WN_PKG_DIR}"
+		      COMMAND ssh podwww@lxi001 "mkdir -p ${WN_PKG_REMOTE_DIR} && chmod go+xr ${WN_PKG_REMOTE_DIR}"                      
+                      COMMAND scp -p ${WN_PKG_NAME_ARCH} podwww@lxi001:${WN_PKG_REMOTE_DIR} 
                       COMMENT "Generate a WN binary package" 
                       VERBATIM )
    add_dependencies( wn_bin
