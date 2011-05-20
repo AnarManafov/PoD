@@ -103,7 +103,7 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
      set( lib_cmd_args "-c"; "otool -L ${WN_PKG_DIR}/pod-agent  | grep boost | awk '{ system( \"cp \" $1 \" ${WN_PKG_DIR}\") }'" )
    elseif(UNIX)
      set( lib_cmd "bash" )
-     set( lib_cmd_args "-c"; "ldd ${WN_PKG_DIR}/pod-agent | grep boost | awk '{ system( \"cp \" $1 \" ${WN_PKG_DIR}\") }'" )
+     set( lib_cmd_args "-c"; "ldd ${WN_PKG_DIR}/pod-agent | grep boost | awk '{ system( \"cp \" $3 \" ${WN_PKG_DIR}\") }'" )
    endif(APPLE)
    
    add_custom_target( wn_bin
