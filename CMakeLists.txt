@@ -88,7 +88,7 @@ endif(DOXYGEN_FOUND)
 # Because of $<TARGET_FILE:tgt> it works only in cmake 2.8.4
 if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
    if( CMAKE_SIZEOF_VOID_P EQUAL 4 )
-     set(TRG_ARCH i386)
+     set(TRG_ARCH x86)
    else( CMAKE_SIZEOF_VOID_P EQUAL 4 )
      set(TRG_ARCH amd64)
    endif( CMAKE_SIZEOF_VOID_P EQUAL 4 )
