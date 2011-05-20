@@ -114,13 +114,20 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:proof_status_file> "${WN_PKG_DIR}"
                       COMMAND ${lib_cmd} ${lib_cmd_args}
                       COMMAND ${CMAKE_COMMAND} -E tar czf ${WN_PKG_NAME_ARCH} "${WN_PKG_DIR}"
-		      COMMAND ssh podwww@lxi001 "mkdir -p ${WN_PKG_REMOTE_DIR} && chmod go+xr ${WN_PKG_REMOTE_DIR}"                      
-                      COMMAND scp -p ${WN_PKG_NAME_ARCH} podwww@lxi001:${WN_PKG_REMOTE_DIR} 
-                      COMMENT "Generate a WN binary package" 
+                      COMMENT "Generate WN binary package" 
                       VERBATIM )
    add_dependencies( wn_bin
                      pod-agent
                      pod-user-defaults )
+
+   add_custom_target( wn_bin_upload
+		      COMMAND ssh podwww@lxi001 "mkdir -p ${WN_PKG_REMOTE_DIR} && chmod go+xr ${WN_PKG_REMOTE_DIR}"                      
+                      COMMAND scp -p ${WN_PKG_NAME_ARCH} podwww@lxi001:${WN_PKG_REMOTE_DIR} 
+                      COMMENT "Uploading WN binary package to PoD repository" 
+                      VERBATIM )
+   add_dependencies( wn_bin_upload
+                     wn_bin )
+
 endif(${CMAKE_VERSION} VERSION_GREATER 2.8.3)
 #
 # Install directory
