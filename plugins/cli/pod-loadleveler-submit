@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# * @author Simon Heisterkamp heisterkamp@nbi.dk
+# *//*
+#
+#        created by:        Anar Manafov and Simon Heisterkamp
+#                           2011-05-25
+#
+#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+LL_SUBMIT=llsubmit
+eval LL_JOBFILE=$POD_LOCATION/etc/Job.loadleveler
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+QUEUE="proof"
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
+# LOG
+eval upload_job_log=$(pod-user-defaults --key ge_plugin.upload_job_log)
+OUTPUT_LOG=""
+if [ "$upload_job_log" = "1" ]; then
+   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
+else
+   OUTPUT_LOG=" -o /dev/null"
+fi
+
+# We assume, that shared home file system is used.
+
+# The job file for LL resource management system is always recreated on the fly
+
+# create a local log dir. for this worker
+#<<<<<<<<<
+DT=$(date "+%Y_%m_%d_%H_%M_%S")
+LOG_DIR="$POD_UI_LOG_LOCATION/loadleveler/$DT"
+mkdir -p $LOG_DIR
+
+echo "#!/bin/sh" > $LL_JOBFILE
+echo "# @ job_type = parallel" >> $LL_JOBFILE
+echo "# @ job_name = PoD_worker" >> $LL_JOBFILE
+echo '# @ error   = $(job_name).$(Host).$(Cluster).$(Process).err' >> $LL_JOBFILE
+echo '# @ output  = $(job_name).$(Host).$(Cluster).$(Process).out' >> $LL_JOBFILE
+echo "# @ class = $QUEUE" >> $LL_JOBFILE
+echo "# @ notification  = never" >> $LL_JOBFILE
+
+# TODO: create an additional option file, so that users could tune this parameter
+echo "# @ resources = ConsumableCpus(1) ConsumableMemory(1gb)" >> $LL_JOBFILE
+
+echo "# @ initialdir = $LOG_DIR" >> $LL_JOBFILE
+echo "# @ environment = COPY_ALL" >> $LL_JOBFILE
+echo "# @ queue" >> $LL_JOBFILE
+
+echo "workdir=/tmp/PoDmain_\$RANDOM" >> $LL_JOBFILE
+echo "echo \"working in \$workdir\"" >> $LL_JOBFILE
+echo "mkdir -p \$workdir || exit 1" >> $LL_JOBFILE
+echo "cd \$workdir || exit 1" >> $LL_JOBFILE
+echo "cp $POD_WRK_PKG ." >> $LL_JOBFILE
+echo "$POD_WRK_SCRIPT" >> $LL_JOBFILE
+#<<<<<<<<<
+
+# In LoadLeveler we can't use an array job submission, we therefore 
+# use a loop to submit PoD workers
+jobids=()
+for(( i = 0; i < $NUM_WRK; ++i ))
+do
+   jobid=$($LL_SUBMIT $LL_JOBFILE | cut -f4 -d" ")
+   # collect all ids one by one
+   jobids[${#jobids[*]}]=$jobid
+done
+
+echo "Job ID:"
+printf "%s " "${jobids[@]}"
+echo
+

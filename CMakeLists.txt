@@ -187,6 +187,7 @@ SET(POD_CLI_PLUGINS_FILES
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-pbs-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-ge-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-condor-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-loadleveler-submit
     )
 #
 # "etc" files
