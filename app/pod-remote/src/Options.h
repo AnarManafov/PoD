@@ -31,7 +31,7 @@ struct SOptions
     {
     }
     /// this function extracts a PoD Location from the stored connection string
-    std::string remotePoDLocation()
+    const std::string remotePoDLocation() const
     {
         std::string::size_type pos = m_sshConnectionStr.find( ":" );
         if( std::string::npos == pos )
@@ -40,13 +40,13 @@ struct SOptions
         return m_sshConnectionStr.substr( pos + 1 );
     }
     /// this function extracts an ssh connection string without the PoD location part
-    std::string cleanConnectionString()
+    const std::string cleanConnectionString() const
     {
         std::string::size_type pos = m_sshConnectionStr.find( ":" );
         if( std::string::npos == pos )
             return m_sshConnectionStr;
 
-        return m_sshConnectionStr.substr( pos );
+        return m_sshConnectionStr.substr( 0, pos );
     }
 
     bool m_version;
@@ -59,6 +59,7 @@ struct SOptions
     std::string m_sshArgs;
     std::string m_openDomain;
     std::string m_remotePath;
+    std::string m_envScript;
 };
 //=============================================================================
 // Command line parser
@@ -78,11 +79,12 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     bpo::options_description connection_options( "Connection options" );
     connection_options.add_options()
     ( "remote", bpo::value<std::string>(), "A connection string including a remote PoD location" )
-    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server, if not a default one"
+    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server, if not the default one"
       " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
+    ( "env", bpo::value<std::string>(), "A full path to environment script, which will be sourced on the remote end.")
     ;
     // Commands
     bpo::options_description commands_options( "Commands options" );
@@ -141,6 +143,9 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         {
             _options->m_openDomain = vm["ssh_open_domain"].as<std::string>();
         }
+        
+        _options->m_envScript = vm["env"].as<std::string>();
+        MiscCommon::smart_path( &_options->m_envScript );
     }
 
     // if there are no arguments is given, produce a help message
