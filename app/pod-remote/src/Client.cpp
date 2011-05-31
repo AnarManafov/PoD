@@ -41,7 +41,7 @@ void CClient::processAdminConnection( BYTEVector_t *_data, CClient::Requests _re
 
     // TEST
     protocol.writeSimpleCmd( m_fdOut, static_cast<uint16_t>( cmdSHUTDOWN ) );
-    
+
     bool bProcessNoMore( false );
     while( !bProcessNoMore )
     {

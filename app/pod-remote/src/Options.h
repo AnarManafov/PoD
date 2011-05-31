@@ -84,7 +84,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
-    ( "env", bpo::value<std::string>(), "A full path to environment script, which will be sourced on the remote end.")
+    ( "env", bpo::value<std::string>(), "A full path to environment script, which will be sourced on the remote end." )
     ;
     // Commands
     bpo::options_description commands_options( "Commands options" );
@@ -143,7 +143,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         {
             _options->m_openDomain = vm["ssh_open_domain"].as<std::string>();
         }
-        
+
         _options->m_envScript = vm["env"].as<std::string>();
         MiscCommon::smart_path( &_options->m_envScript );
     }

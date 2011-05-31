@@ -122,6 +122,7 @@ int main( int argc, char *argv[] )
         if( options.cleanConnectionString().empty() )
             throw runtime_error( "Please provide a connection URL.\n" );
         // Create two pipes, which later will be used for stdout/in redirections
+        // TODO: close all handles at the end
         int stdin_pipe[2];
         int stdout_pipe[2];
         int stderr_pipe[2];

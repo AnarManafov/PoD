@@ -9,6 +9,7 @@ pod: Users now able to add custom settings to xpd configuration file, which is g
 pod: PoD WN has bin ported to MacOSX (10.6).
 pod: Now each PoD WN starts its own xproofd daemon,
      in this case we can control and handle each PoD worker individually (this is important for AliEn integration).
+pod: The "pod-info" command can be used now to retrieve port numbers of xpd and pod-agent.
 
 ## v3.4 (2011-02-23)
 pod: Starting with version 3.4, PoD go its version numbering scheme a bit changed.

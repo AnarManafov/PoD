@@ -30,7 +30,9 @@ struct SOptions
         m_debug( false ),
         m_batchMode( false ),
         m_xpdPid( false ),
-        m_agentPid( false )
+        m_xpdPort( false ),
+        m_agentPid( false ),
+        m_agentPort( false )
     {
     }
 
@@ -46,7 +48,9 @@ struct SOptions
     bool m_batchMode;
     std::string m_remotePath;
     bool m_xpdPid;
+    bool m_xpdPort;
     bool m_agentPid;
+    bool m_agentPort;
 };
 //=============================================================================
 // Command line parser
@@ -80,8 +84,10 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "list,l", bpo::bool_switch( &( _options->m_listWNs ) ), "List all available PROOF workers." )
     ( "number,n", bpo::bool_switch( &( _options->m_countWNs ) ), "Report a number of currently available PROOF workers." )
     ( "status,s", bpo::bool_switch( &( _options->m_status ) ), "Show status of PoD server." )
-    ( "xpdPid", bpo::bool_switch( &( _options->m_xpdPid ) ), "Show the process ID of a local xproofd" )
-    ( "agentPid", bpo::bool_switch( &( _options->m_agentPid ) ), "Show the process ID of a local pod-agent server" )
+    ( "xpdPid", bpo::bool_switch( &( _options->m_xpdPid ) ), "Show the process ID of the local xproofd" )
+    ( "xpdPort", bpo::bool_switch( &( _options->m_xpdPort ) ), "Show the port number of the local xproofd" )
+    ( "agentPid", bpo::bool_switch( &( _options->m_agentPid ) ), "Show the process ID of the local pod-agent server" )
+    ( "agentPort", bpo::bool_switch( &( _options->m_agentPort ) ), "Show the port number of the local pod-agent server" )
     ;
     // Declare an options description instance which will be shown
     // to the user

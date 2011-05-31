@@ -158,6 +158,16 @@ int main( int argc, char *argv[] )
             cout << srvInfo.xpdPid() << endl;
             return 0;
         }
+        if( options.m_xpdPort )
+        {
+            CSrvInfo srvInfo( &env );
+            srvInfo.getInfo();
+            if( 0 == srvInfo.xpdPort() )
+                return 1;
+
+            cout << srvInfo.xpdPort() << endl;
+            return 0;
+        }
         if( options.m_agentPid )
         {
             CSrvInfo srvInfo( &env );
@@ -166,6 +176,19 @@ int main( int argc, char *argv[] )
                 return 1;
 
             cout << srvInfo.agentPid() << endl;
+            return 0;
+        }
+        if( options.m_agentPort )
+        {
+            if( !env.processServerInfoCfg() )
+                return 1;
+
+            CSrvInfo srvInfo( &env );
+            srvInfo.getInfo();
+            if( 0 == srvInfo.agentPort() )
+                return 1;
+
+            cout << srvInfo.agentPort() << endl;
             return 0;
         }
 
