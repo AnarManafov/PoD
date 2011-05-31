@@ -206,8 +206,13 @@ int main( int argc, char *argv[] )
                            pod_env_cmd.size(), 0 );
             //
             // start pod-remote on the remote-end
-            const char *cmd2 = "pod-remote --executor || exit 1\n";
+            const char *cmd2 = "pod-server start || exit 1\n";
             inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd2 ), strlen( cmd2 ), 0 );
+
+            // start pod-remote on the remote-end
+            const char *cmd3 = "pod-info --agentPort && { echo \"OK\"; } || { echo \"NoT OK\"; }; pod-server stop; exit 1\n";
+            inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd3 ), strlen( cmd3 ), 0 );
+
         }
 
         if( options.m_start )
@@ -250,7 +255,6 @@ int main( int argc, char *argv[] )
             fd_set readset;
             FD_ZERO( &readset );
             FD_SET( stdout_pipe[0], &readset );
-            FD_ZERO( &readset );
             FD_SET( stderr_pipe[0], &readset );
             int fd_max = stdout_pipe[0] > stderr_pipe[0] ? stdout_pipe[0] : stderr_pipe[0];
             int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
