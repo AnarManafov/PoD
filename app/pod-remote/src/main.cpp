@@ -221,7 +221,7 @@ int main( int argc, char *argv[] )
                 CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
                 stringstream ss;
-                ss << "DEBUG: agentPort = " << msg_num.getNumber() << "\n";
+                ss << "DEBUG: agentPort = " << msg_num.get() << "\n";
                 slog( ss.str() );
             }
             // check for xproofd port on the remote server
@@ -233,7 +233,7 @@ int main( int argc, char *argv[] )
                 CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
                 stringstream ss;
-                ss << "DEBUG: xpdPort = " << msg_num.getNumber() << "\n";
+                ss << "DEBUG: xpdPort = " << msg_num.get() << "\n";
                 slog( ss.str() );
             }
         }

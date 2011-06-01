@@ -39,8 +39,28 @@ bool SMessageParserNumber::operator()( const string &_buf )
     return true;
 }
 //=============================================================================
-int SMessageParserNumber::getNumber()
+const int SMessageParserNumber::get() const
 {
     return m_num;
+}
+//=============================================================================
+// SMessageParserString
+//=============================================================================
+#include <iostream>
+bool SMessageParserString::operator()( const string &_buf )
+{
+    size_t pos = _buf.find( g_message_OK );
+    if( pos == string::npos )
+        return false;
+
+    m_str = _buf;
+    m_str.erase( pos );
+    
+    return true;
+}
+//=============================================================================
+const string SMessageParserString::get() const
+{
+    return m_str;
 }
 //=============================================================================

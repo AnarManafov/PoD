@@ -33,6 +33,8 @@ namespace pod_remote
 
             void parse( T &_external_parser, T2 &_log )
             {
+                const int read_size = 64;
+                char buf[read_size];
                 std::string err_out;
                 std::string std_out;
                 while( true )
@@ -58,8 +60,6 @@ namespace pod_remote
                     // receive error stream
                     if( FD_ISSET( m_fErr, &readset ) )
                     {
-                        const int read_size = 64;
-                        char buf[read_size];
                         while( true )
                         {
                             int numread = read( m_fErr, buf, read_size );
@@ -82,11 +82,9 @@ namespace pod_remote
                                 break;
                         }
                     }
-                    // receive error stream
+                    // receive stdout stream
                     if( FD_ISSET( m_fOut, &readset ) )
                     {
-                        const int read_size = 64;
-                        char buf[read_size];
                         while( true )
                         {
                             int numread = read( m_fOut, buf, read_size );
@@ -131,10 +129,19 @@ namespace pod_remote
             }
 
             bool operator()( const std::string &_buf );
-            int getNumber();
+            const int get() const;
 
         private:
             int m_num;
+    };
+//=============================================================================
+    struct SMessageParserString
+    {
+        bool operator()( const std::string &_buf );
+        const std::string get() const;
+        
+    private:
+        std::string m_str;
     };
 
 }
