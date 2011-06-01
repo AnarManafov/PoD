@@ -27,166 +27,23 @@
 // pod-info
 #include "version.h"
 #include "Environment.h"
-#include "Server.h"
 #include "Options.h"
 #include "SSHTunnel.h"
 #include "logEngine.h"
-#include "Client.h"
-#include "Server.h"
+#include "MessageParser.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
 using namespace pod_remote;
-using namespace PROOFAgent;
 namespace inet = MiscCommon::INet;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
-//=============================================================================
-LPCSTR g_message_OK = "<pod-remote:OK>";
 //=============================================================================
 void version()
 {
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
-//=============================================================================
-
-template<class T, class T2>
-class CMessageParser
-{
-    public:
-        CMessageParser(int _fOut, int _fErr):
-            m_fOut( _fOut ),
-            m_fErr( _fErr )
-        {
-        }
-
-        void parse( T &_external_parser, T2 &_log )
-        {
-            string err_out;
-            string std_out;
-            while( true )
-            {
-                fd_set readset;
-                FD_ZERO( &readset );
-                FD_SET( m_fOut, &readset );
-                FD_SET( m_fErr, &readset );
-                int fd_max = m_fOut > m_fErr ? m_fOut : m_fErr;
-                int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
-
-                if( EBADF == errno )
-                    break;
-
-                if( retval < 0 )
-                {
-                    cerr << "Problem in the log engine: " << errno2str() << endl;
-                    break;
-                }
-
-                // receive error stream
-                if( FD_ISSET( m_fErr, &readset ) )
-                {
-                    const int read_size = 64;
-                    char buf[read_size];
-                    while( true )
-                    {
-                        int numread = read( m_fErr, buf, read_size );
-                        if( 0 == numread )
-                            break;
-
-                        if( numread > 0 )
-                        {
-                            for( int i = 0; i < numread; ++i )
-                            {
-                                err_out += buf[i];
-                                if( '\n' == buf[i] )
-                                {
-                                    _log( "remote end reports: " + err_out );
-                                    err_out.clear();
-                                }
-                            }
-                        }
-                        else
-                            break;
-                    }
-                }
-                // receive error stream
-                if( FD_ISSET( m_fOut, &readset ) )
-                {
-                    const int read_size = 64;
-                    char buf[read_size];
-                    while( true )
-                    {
-                        int numread = read( m_fOut, buf, read_size );
-                        if( 0 == numread )
-                            break;
-
-                        if( numread > 0 )
-                        {
-                            for( int i = 0; i < numread; ++i )
-                            {
-                                std_out += buf[i];
-                                if( '\n' == buf[i] )
-                                {
-                                    // call the external parser
-                                    if( _external_parser( std_out ) )
-                                        return;
-                                }
-                            }
-                        }
-                        else
-                            break;
-                    }
-                }
-
-            }
-        }
-
-    private:
-        int m_fOut;
-        int m_fErr;
-};
-
-struct SMessageParserOK
-{
-    bool operator()( const string &_buf )
-    {
-        return ( _buf.find( g_message_OK ) != string::npos );
-    }
-};
-
-
-struct SMessageParserNumber
-{
-    SMessageParserNumber(): m_num( 0 )
-    {
-
-    }
-
-    bool operator()( const string &_buf )
-    {
-        size_t pos = _buf.find( g_message_OK );
-        if( pos == string::npos )
-            return false;
-
-        string b(_buf);
-        b.erase(pos);
-        m_num = 0;
-        stringstream ss;
-        ss << b;
-        ss >> m_num;
-
-        return true;
-    }
-
-    int getNumber()
-    {
-        return m_num;
-    }
-
-    int m_num;
-};
-
 //=============================================================================
 // The main idea with this method is to create a couple of pipes
 // that can be used to redirect the stdin and stdout of the
@@ -219,22 +76,6 @@ int main( int argc, char *argv[] )
         }
 
         env.init();
-
-        if( options.m_executor )
-        {
-            try
-            {
-                CServer srv( STDIN_FILENO, STDOUT_FILENO );
-                srv.getSrvHostInfo();
-            }
-            catch( const exception &_e )
-            {
-                // Server must send its logs to a stdout,
-                // so that Client will catch them
-                cout << _e.what() << endl;
-            }
-            return 0;
-        }
 
         // Start the log engine only on clients (local instances)
         slog.start( env.getlogEnginePipeName() );
@@ -349,7 +190,7 @@ int main( int argc, char *argv[] )
             //
             // 4. Configure the local env. to work with the remote server,
             // pod-info must not see the difference.
-            // 
+            //
             // 5. Create a config file, where information about the remote server
             // will be collected. This file late will be used by other commands.
             //
@@ -377,7 +218,7 @@ int main( int argc, char *argv[] )
                 inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
 
                 SMessageParserNumber msg_num;
-                CMessageParser<SMessageParserNumber, CLogEngine> msg(stdout_pipe[0], stderr_pipe[0]);
+                CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
                 stringstream ss;
                 ss << "DEBUG: agentPort = " << msg_num.getNumber() << "\n";
@@ -387,9 +228,9 @@ int main( int argc, char *argv[] )
             {
                 const char *cmd = "pod-info --xpdPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
                 inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
-                
+
                 SMessageParserNumber msg_num;
-                CMessageParser<SMessageParserNumber, CLogEngine> msg(stdout_pipe[0], stderr_pipe[0]);
+                CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
                 stringstream ss;
                 ss << "DEBUG: xpdPort = " << msg_num.getNumber() << "\n";

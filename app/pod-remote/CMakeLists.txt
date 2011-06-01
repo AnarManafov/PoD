@@ -35,14 +35,12 @@ endif(DOXYGEN_FOUND)
 set( SOURCE_FILES
     ./src/main.cpp
     ./src/Environment.cpp
-    ./src/Server.cpp
-    ./src/Client.cpp
+    ./src/MessageParser.cpp
     ./src/SSHTunnel.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
-    ./src/Server.h
-    ./src/Client.h
+    ./src/MessageParser.h
     ./src/Options.h
     ./src/SSHTunnel.h
 )
