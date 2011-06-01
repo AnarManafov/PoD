@@ -51,7 +51,7 @@ void version()
 }
 //=============================================================================
 
-template<class T>
+template<class T, class T2>
 class CMessageParser
 {
     public:
@@ -61,7 +61,7 @@ class CMessageParser
         {
         }
 
-        void parse( T &_external_parser )
+        void parse( T &_external_parser, T2 &_log )
         {
             string err_out;
             string std_out;
@@ -92,7 +92,7 @@ class CMessageParser
                     {
                         int numread = read( m_fErr, buf, read_size );
                         if( 0 == numread )
-                            return;
+                            break;
 
                         if( numread > 0 )
                         {
@@ -101,15 +101,14 @@ class CMessageParser
                                 err_out += buf[i];
                                 if( '\n' == buf[i] )
                                 {
-                                    //  slog( "remote end reports: " + err_out );
-                                    //  err_out.clear();
+                                    _log( "remote end reports: " + err_out );
+                                    err_out.clear();
                                 }
                             }
                         }
                         else
                             break;
                     }
-                    cout.flush();
                 }
                 // receive error stream
                 if( FD_ISSET( m_fOut, &readset ) )
@@ -120,7 +119,7 @@ class CMessageParser
                     {
                         int numread = read( m_fOut, buf, read_size );
                         if( 0 == numread )
-                            return;
+                            break;
 
                         if( numread > 0 )
                         {
@@ -138,7 +137,6 @@ class CMessageParser
                         else
                             break;
                     }
-                    cout.flush();
                 }
 
             }
@@ -351,6 +349,9 @@ int main( int argc, char *argv[] )
             //
             // 4. Configure the local env. to work with the remote server,
             // pod-info must not see the difference.
+            // 
+            // 5. Create a config file, where information about the remote server
+            // will be collected. This file late will be used by other commands.
             //
             stringstream ss;
             ss
@@ -365,21 +366,33 @@ int main( int argc, char *argv[] )
                 inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
 
                 SMessageParserOK msg_ok;
-                CMessageParser<SMessageParserOK> msg( stdout_pipe[0], stderr_pipe[0] );
-                msg.parse( msg_ok );
+                CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
+                msg.parse( msg_ok, slog );
             }
             slog( "Remote PoD server is strated\n" );
             slog( "Checking service ports...\n" );
-            // start pod-remote on the remote-end
+            // check for pod-agent port on the remote server
             {
                 const char *cmd = "pod-info --agentPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
                 inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
 
                 SMessageParserNumber msg_num;
-                CMessageParser<SMessageParserNumber> msg(stdout_pipe[0], stderr_pipe[0]);
-                msg.parse( msg_num );
+                CMessageParser<SMessageParserNumber, CLogEngine> msg(stdout_pipe[0], stderr_pipe[0]);
+                msg.parse( msg_num, slog );
                 stringstream ss;
                 ss << "DEBUG: agentPort = " << msg_num.getNumber() << "\n";
+                slog( ss.str() );
+            }
+            // check for xproofd port on the remote server
+            {
+                const char *cmd = "pod-info --xpdPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
+                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
+                
+                SMessageParserNumber msg_num;
+                CMessageParser<SMessageParserNumber, CLogEngine> msg(stdout_pipe[0], stderr_pipe[0]);
+                msg.parse( msg_num, slog );
+                stringstream ss;
+                ss << "DEBUG: xpdPort = " << msg_num.getNumber() << "\n";
                 slog( ss.str() );
             }
         }
