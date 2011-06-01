@@ -95,9 +95,9 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ;
     // Options for internal use only
     bpo::options_description backend_options( "Backend options" );
-    backend_options.add_options()
-    ( "executor", bpo::bool_switch( &( _options->m_executor ) ), "Switch pod-remote to the executor mode" )
-    ;
+//    backend_options.add_options()
+//    ( "executor", bpo::bool_switch( &( _options->m_executor ) ), "Switch pod-remote to the executor mode" )
+//    ;
 
     // Declare an options description instance which will include
     // all the options

@@ -42,26 +42,153 @@ namespace inet = MiscCommon::INet;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
+LPCSTR g_message_OK = "<pod-remote:OK>";
+//=============================================================================
 void version()
 {
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 //=============================================================================
-void monitor( pid_t _pid, int _pipe_fd )
+
+template<class T>
+class CMessageParser
 {
-//    cout << "Monitor thread" << endl;
-//    //if (!IsProcessExist(_pid))
-//    int stat;
-//    if( _pid == ::waitpid( _pid, &stat, WNOHANG ) )
-//    {
-//        cout << "DEBUG!!!!!!" << endl;
-//        const char *cmd = "exit\n";
-//        write( _pipe_fd, cmd, strlen( cmd ) );
-//        return;
-//    }
-//    sleep( 2 );
-}
+    public:
+        CMessageParser(int _fOut, int _fErr):
+            m_fOut( _fOut ),
+            m_fErr( _fErr )
+        {
+        }
+
+        void parse( T &_external_parser )
+        {
+            string err_out;
+            string std_out;
+            while( true )
+            {
+                fd_set readset;
+                FD_ZERO( &readset );
+                FD_SET( m_fOut, &readset );
+                FD_SET( m_fErr, &readset );
+                int fd_max = m_fOut > m_fErr ? m_fOut : m_fErr;
+                int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
+
+                if( EBADF == errno )
+                    break;
+
+                if( retval < 0 )
+                {
+                    cerr << "Problem in the log engine: " << errno2str() << endl;
+                    break;
+                }
+
+                // receive error stream
+                if( FD_ISSET( m_fErr, &readset ) )
+                {
+                    const int read_size = 64;
+                    char buf[read_size];
+                    while( true )
+                    {
+                        int numread = read( m_fErr, buf, read_size );
+                        if( 0 == numread )
+                            return;
+
+                        if( numread > 0 )
+                        {
+                            for( int i = 0; i < numread; ++i )
+                            {
+                                err_out += buf[i];
+                                if( '\n' == buf[i] )
+                                {
+                                    //  slog( "remote end reports: " + err_out );
+                                    //  err_out.clear();
+                                }
+                            }
+                        }
+                        else
+                            break;
+                    }
+                    cout.flush();
+                }
+                // receive error stream
+                if( FD_ISSET( m_fOut, &readset ) )
+                {
+                    const int read_size = 64;
+                    char buf[read_size];
+                    while( true )
+                    {
+                        int numread = read( m_fOut, buf, read_size );
+                        if( 0 == numread )
+                            return;
+
+                        if( numread > 0 )
+                        {
+                            for( int i = 0; i < numread; ++i )
+                            {
+                                std_out += buf[i];
+                                if( '\n' == buf[i] )
+                                {
+                                    // call the external parser
+                                    if( _external_parser( std_out ) )
+                                        return;
+                                }
+                            }
+                        }
+                        else
+                            break;
+                    }
+                    cout.flush();
+                }
+
+            }
+        }
+
+    private:
+        int m_fOut;
+        int m_fErr;
+};
+
+struct SMessageParserOK
+{
+    bool operator()( const string &_buf )
+    {
+        return ( _buf.find( g_message_OK ) != string::npos );
+    }
+};
+
+
+struct SMessageParserNumber
+{
+    SMessageParserNumber(): m_num( 0 )
+    {
+
+    }
+
+    bool operator()( const string &_buf )
+    {
+        size_t pos = _buf.find( g_message_OK );
+        if( pos == string::npos )
+            return false;
+
+        string b(_buf);
+        b.erase(pos);
+        m_num = 0;
+        stringstream ss;
+        ss << b;
+        ss >> m_num;
+
+        return true;
+    }
+
+    int getNumber()
+    {
+        return m_num;
+    }
+
+    int m_num;
+};
+
 //=============================================================================
 // The main idea with this method is to create a couple of pipes
 // that can be used to redirect the stdin and stdout of the
@@ -204,15 +331,6 @@ int main( int argc, char *argv[] )
             inet::sendall( stdin_pipe[1],
                            reinterpret_cast<const unsigned char*>( pod_env_cmd.c_str() ),
                            pod_env_cmd.size(), 0 );
-            //
-            // start pod-remote on the remote-end
-            const char *cmd2 = "pod-server start || exit 1\n";
-            inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd2 ), strlen( cmd2 ), 0 );
-
-            // start pod-remote on the remote-end
-            const char *cmd3 = "pod-info --agentPort && { echo \"OK\"; } || { echo \"NoT OK\"; }; pod-server stop; exit 1\n";
-            inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd3 ), strlen( cmd3 ), 0 );
-
         }
 
         if( options.m_start )
@@ -223,7 +341,7 @@ int main( int argc, char *argv[] )
             //
             // 1. Start a remote pod-server
             //
-            // TODO: user needs to have a ROOT env. initialized (for example in PoD_env.sh)
+            // TODO: user needs to have a ROOT env. initialized  (for example in PoD_env.sh)
             // or we have to give this possibility via a custom env script...
             // xproofd and ROOT libs must be in the $PATH
             //
@@ -236,70 +354,33 @@ int main( int argc, char *argv[] )
             //
             stringstream ss;
             ss
-                    << "Starting a remote PoD server on "
+                    << "Starting the remote PoD server on "
                     << options.m_sshConnectionStr << '\n';
             slog( ss.str() );
 
-            //   CClient cl( stdout_pipe[0], stdin_pipe[1] );
-            //   SHostInfoCmd srvHostInfo;
-            //   cl.getSrvHostInfo( &srvHostInfo );
-        }
-
-        // start the monitoring
-        //boost::thread monitorThread( boost::bind( monitor, pid, pipe2[1] ) );
-
-        // Main select loop
-        string remote_output;
-        while( true )
-        {
-            fd_set readset;
-            FD_ZERO( &readset );
-            FD_SET( stdout_pipe[0], &readset );
-            FD_SET( stderr_pipe[0], &readset );
-            int fd_max = stdout_pipe[0] > stderr_pipe[0] ? stdout_pipe[0] : stderr_pipe[0];
-            int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
-
-            if( EBADF == errno )
-                break;
-
-            if( retval < 0 )
+            //
+            // start pod-remote on the remote-end
             {
-                cerr << "Problem in the log engine: " << errno2str() << endl;
-                break;
+                const char *cmd = "pod-server start && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
+                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
+
+                SMessageParserOK msg_ok;
+                CMessageParser<SMessageParserOK> msg( stdout_pipe[0], stderr_pipe[0] );
+                msg.parse( msg_ok );
             }
-
-            int fdToRead = 0;
-            if( FD_ISSET( stdout_pipe[0], &readset ) )
-                fdToRead = stdout_pipe[0];
-            if( FD_ISSET( stderr_pipe[0], &readset ) )
-                fdToRead = stderr_pipe[0];
-
-            if( fdToRead > 0 )
+            slog( "Remote PoD server is strated\n" );
+            slog( "Checking service ports...\n" );
+            // start pod-remote on the remote-end
             {
-                const int read_size = 64;
-                char buf[read_size];
-                while( true )
-                {
-                    int numread = read( fdToRead, buf, read_size );
-                    if( 0 == numread )
-                        return 0;
+                const char *cmd = "pod-info --agentPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
+                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
 
-                    if( numread > 0 )
-                    {
-                        for( int i = 0; i < numread; ++i )
-                        {
-                            remote_output += buf[i];
-                            if( '\n' == buf[i] )
-                            {
-                                slog( "remote end reports: " + remote_output );
-                                remote_output.clear();
-                            }
-                        }
-                    }
-                    else
-                        break;
-                }
-                cout.flush();
+                SMessageParserNumber msg_num;
+                CMessageParser<SMessageParserNumber> msg(stdout_pipe[0], stderr_pipe[0]);
+                msg.parse( msg_num );
+                stringstream ss;
+                ss << "DEBUG: agentPort = " << msg_num.getNumber() << "\n";
+                slog( ss.str() );
             }
         }
 
