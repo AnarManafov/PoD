@@ -145,8 +145,8 @@ void CSrvInfo::printInfo( ostream &_stream ) const
                 printXpd( _stream );
                 printAgent( _stream );
                 _stream
-                        << "WARNING: PoD agent is NOT running.\n"
-                        << "WARNING: PoD server needs to be restarted." << endl;
+                        << "WARNING: Missing services detected. Please, restart PoD server."
+                        << endl;
             }
             break;
         case srvStatus_OK:

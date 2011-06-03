@@ -137,11 +137,11 @@ namespace pod_remote
 //=============================================================================
     struct SMessageParserString
     {
-        bool operator()( const std::string &_buf );
-        const std::string get() const;
-        
-    private:
-        std::string m_str;
+            bool operator()( const std::string &_buf );
+            const std::string get() const;
+
+        private:
+            std::string m_str;
     };
 
 }

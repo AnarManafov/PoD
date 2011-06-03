@@ -55,7 +55,7 @@ bool SMessageParserString::operator()( const string &_buf )
 
     m_str = _buf;
     m_str.erase( pos );
-    
+
     return true;
 }
 //=============================================================================
