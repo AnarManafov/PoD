@@ -169,7 +169,7 @@ clean_up()
 # ***** returns a free port from a given range  *****
 get_freeport()
 {
-   for(( i = $1; i < $2; ++i ))
+   for(( i = $1; i <= $2; ++i ))
    do
       if [ "$OS" = "Darwin" ]; then
          netstat -an -p tcp 2>/dev/null | grep ".$i " | egrep -i "listen|time_wait" &>/dev/null || { echo $i; exit 0; }
