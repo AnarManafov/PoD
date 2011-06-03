@@ -21,7 +21,8 @@ using namespace MiscCommon;
 //=============================================================================
 CSSHTunnel::~CSSHTunnel()
 {
-    killTunnel();
+    if( m_needToKill )
+        killTunnel();
 }
 //=============================================================================
 void CSSHTunnel::setPidFile( const string &_filename )
@@ -52,7 +53,8 @@ void CSSHTunnel::killTunnel()
     unlink( m_pidFile.c_str() );
 }
 //=============================================================================
-void CSSHTunnel::create( const CEnvironment &_env, const SOptions &_opt )
+void CSSHTunnel::create( const string &_connectionStr,
+                         size_t _port, const string &_openDomain = "" )
 {
     // delete tunnel's file
     killTunnel();
@@ -72,11 +74,11 @@ void CSSHTunnel::create( const CEnvironment &_env, const SOptions &_opt )
                 pid_arg += m_pidFile;
 
                 string l_arg( "-l" );
-                l_arg += _opt.m_sshConnectionStr;
+                l_arg += _connectionStr;
                 stringstream p_arg;
-                p_arg << "-p" << _env.serverPort();
+                p_arg << "-p" << _port;
                 string o_arg( "-o" );
-                o_arg += _opt.m_openDomain;
+                o_arg += _openDomain;
 
                 string sBatch;
 //                if( _opt.m_batchMode )
@@ -95,7 +97,7 @@ void CSSHTunnel::create( const CEnvironment &_env, const SOptions &_opt )
     const short max_try( 600 ); // force to wait for about 30 secs
     pid();
     while( 0 == m_pid || !IsProcessExist( m_pid ) ||
-           0 != MiscCommon::INet::get_free_port( _env.serverPort() ) )
+           0 != MiscCommon::INet::get_free_port( _port ) )
     {
         ++count;
         pid();

@@ -58,7 +58,6 @@ struct SOptions
     std::string m_sshConnectionStr;
     std::string m_sshArgs;
     std::string m_openDomain;
-    std::string m_remotePath;
     std::string m_envScript;
 };
 //=============================================================================
@@ -79,8 +78,6 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     bpo::options_description connection_options( "Connection options" );
     connection_options.add_options()
     ( "remote", bpo::value<std::string>(), "A connection string including a remote PoD location" )
-    ( "remote_path", bpo::value<std::string>(), "A working directory of the remote PoD server, if not the default one"
-      " It is very important either to write an explicit path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)" )
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
@@ -130,10 +127,6 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         // check that the given url contains a PoD location
         //if( _options->remotePoDLocation().empty() )
         //    throw std::runtime_error( "Bad PoD Location path in the remote url." );
-
-        _options->m_remotePath = ( vm.count( "remote_path" ) ) ?
-                                 vm["remote_path"].as<std::string>() : "~/.PoD/";
-        MiscCommon::smart_append( &_options->m_remotePath, '/' );
 
         if( vm.count( "ssh_opt" ) )
         {

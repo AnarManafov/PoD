@@ -60,13 +60,22 @@ class CEnvironment
             ret += "etc/remote_server_info.cfg";
             return ret;
         }
-        std::string getTunnelPidFile() const
+        std::string getTunnelPidFileXpd() const
         {
             if( m_wrkDir.empty() )
                 return( "" );
 
             std::string ret( m_wrkDir );
-            ret += "server_tunnel.pid";
+            ret += "rmt_srv_tunnel_xpd.pid";
+            return ret;
+        }
+        std::string getTunnelPidFileAgent() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "rmt_srv_tunnel_agent.pid";
             return ret;
         }
         std::string getXpdCfgFile() const

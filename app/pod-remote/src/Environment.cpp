@@ -34,7 +34,6 @@ CEnvironment::~CEnvironment()
 {
     delete m_ud;
 }
-
 //=============================================================================
 void CEnvironment::init()
 {

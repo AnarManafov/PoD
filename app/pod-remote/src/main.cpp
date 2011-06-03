@@ -44,6 +44,16 @@ void version()
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
+void send_cmd( int _handle, const string &_cmd )
+{
+    stringstream cmd;
+    cmd << _cmd
+        << " && { echo \"" << g_message_OK << "\"; } || { pod-server stop; exit 1; }; \n";
+
+    inet::sendall( _handle,
+                   reinterpret_cast<const unsigned char*>( cmd.str().c_str() ),
+                   cmd.str().size(), 0 );
+}
 //=============================================================================
 // The main idea with this method is to create a couple of pipes
 // that can be used to redirect the stdin and stdout of the
@@ -200,11 +210,12 @@ int main( int argc, char *argv[] )
                     << options.m_sshConnectionStr << '\n';
             slog( ss.str() );
 
+            size_t agentPort( 0 );
+            size_t xpdPort( 0 );
             //
             // start pod-remote on the remote-end
             {
-                const char *cmd = "pod-server start && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
-                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
+                send_cmd( stdin_pipe[1], "pod-server start" );
 
                 SMessageParserOK msg_ok;
                 CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
@@ -214,28 +225,43 @@ int main( int argc, char *argv[] )
             slog( "Checking service ports...\n" );
             // check for pod-agent port on the remote server
             {
-                const char *cmd = "pod-info --agentPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
-                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
+                send_cmd( stdin_pipe[1], "pod-info --agentPort" );
 
                 SMessageParserNumber msg_num;
                 CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
-                stringstream ss;
-                ss << "DEBUG: agentPort = " << msg_num.get() << "\n";
-                slog( ss.str() );
+                agentPort = msg_num.get();
             }
             // check for xproofd port on the remote server
             {
-                const char *cmd = "pod-info --xpdPort && { echo \"<pod-remote:OK>\"; } || { pod-server stop; exit 1; }; \n";
-                inet::sendall( stdin_pipe[1], reinterpret_cast<const unsigned char*>( cmd ), strlen( cmd ), 0 );
+                send_cmd( stdin_pipe[1], "pod-info --xpdPort" );
 
                 SMessageParserNumber msg_num;
                 CMessageParser<SMessageParserNumber, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_num, slog );
-                stringstream ss;
-                ss << "DEBUG: xpdPort = " << msg_num.get() << "\n";
-                slog( ss.str() );
+                xpdPort = msg_num.get();
             }
+            if( 0 == agentPort || 0 == xpdPort )
+                throw runtime_error( "Can't detect remote ports."
+                                     " Please try to start PoD server again." );
+
+            // Start SSH tunnel
+            
+            //TODO: 
+            // 1. Add a local port as a parameter to pod-ssh-tunnel script
+            // 2. Move SSHTunnel to MiscCommon as a separate library
+            
+            CSSHTunnel sshTunnelAgent;
+            sshTunnelAgent.deattach();
+            sshTunnelAgent.setPidFile( env.getTunnelPidFileAgent() );
+            sshTunnelAgent.create( options.cleanConnectionString(),
+                                   agentPort, options.m_openDomain );
+
+            CSSHTunnel sshTunnelXpd;
+            sshTunnelXpd.deattach();
+            sshTunnelXpd.setPidFile( env.getTunnelPidFileAgent() );
+            sshTunnelXpd.create( options.cleanConnectionString(),
+                                 xpdPort, options.m_openDomain );
         }
 
     }

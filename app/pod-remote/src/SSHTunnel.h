@@ -19,14 +19,20 @@
 class CSSHTunnel
 {
     public:
-        CSSHTunnel(): m_pid( 0 )
+        CSSHTunnel(): m_pid( 0 ), m_needToKill( true )
         {
         }
         ~CSSHTunnel();
     public:
         void setPidFile( const std::string &_filename );
-        void create( const CEnvironment &_env, const SOptions &_opt );
+        void create( const std::string &_connectionStr,
+                     size_t _port, const std::string &_openDomain );
         pid_t pid();
+        // the tunnel will be not closed when object is deleted
+        void deattach()
+        {
+            m_needToKill = false;
+        }
 
     private:
         void killTunnel();
@@ -34,6 +40,7 @@ class CSSHTunnel
     private:
         std::string m_pidFile;
         pid_t m_pid;
+        bool m_needToKill;
 };
 //=============================================================================
 #endif
