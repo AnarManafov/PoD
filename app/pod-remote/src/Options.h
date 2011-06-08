@@ -162,6 +162,13 @@ struct SPoDRemoteOptions
     std::string m_connectionString;
     std::string m_PoDLocation;
     std::string m_env;
+    size_t m_localAgentPort;
+    size_t m_localXpdPort;
+
+    SPoDRemoteOptions():
+        m_localAgentPort( 0 ),
+        m_localXpdPort( 0 )
+    {}
 
     void load( const std::string &_filename )
     {
@@ -171,9 +178,18 @@ struct SPoDRemoteOptions
 
         read_ini( _filename, pt );
 
-        m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
-        m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
-        m_env = pt.get<std::string>( "pod-remote.env" );
+        try
+        {
+            m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
+            m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
+            m_env = pt.get<std::string>( "pod-remote.env" );
+            m_localAgentPort = pt.get<size_t>( "pod-remote.localAgentPort" );
+            m_localXpdPort = pt.get<size_t>( "pod-remote.localXpdPort" );
+        }
+        catch( ... )
+        {
+            //ignore missing nodes
+        }
     }
     void save( const std::string &_filename )
     {
@@ -184,6 +200,8 @@ struct SPoDRemoteOptions
         pt.put( "pod-remote.connectionString", m_connectionString );
         pt.put( "pod-remote.PoDLocation", m_PoDLocation );
         pt.put( "pod-remote.env", m_env );
+        pt.put( "pod-remote.localAgentPort", m_localAgentPort );
+        pt.put( "pod-remote.localXpdPort", m_localXpdPort );
 
         // Write the property tree to the XML file.
         write_ini( _filename, pt );

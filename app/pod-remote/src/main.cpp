@@ -16,6 +16,12 @@
 #include <stdexcept>
 #include <fstream>
 // MiscCommon
+
+//HACK: Keep BOOSTHelper.h too silence the warning:
+// /opt/local/include/boost/thread/pthread/condition_variable.hpp: In member function ‘void boost::condition_variable::wait(boost::unique_lock<boost::mutex>&)’:
+// /opt/local/include/boost/thread/pthread/condition_variable.hpp:53: warning: unused variable ‘res’
+// Remove it as soon as BOOST is fixed
+#include "BOOSTHelper.h"
 #include "Process.h"
 #include "SysHelper.h"
 #include "INet.h"
@@ -296,6 +302,8 @@ int main( int argc, char *argv[] )
             opt_file.m_connectionString = options.cleanConnectionString();
             opt_file.m_PoDLocation = options.remotePoDLocation();
             opt_file.m_env = options.m_envScript;
+            opt_file.m_localAgentPort = agentPortListen;
+            opt_file.m_localXpdPort = xpdPortListen;
             opt_file.save( env.remoteCfgFile() );
         }
         else if( options.m_stop )
