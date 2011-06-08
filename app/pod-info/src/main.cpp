@@ -210,15 +210,15 @@ int main( int argc, char *argv[] )
 
             // we tunnel the connection to PoD server
             size_t agentPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
-                                                         env.getUD().m_server.m_agentPortsRangeMax );            
+                                                          env.getUD().m_server.m_agentPortsRangeMax );
             if( 0 == agentPortListen )
             {
                 throw runtime_error( "Can't find any free port to tunnel PoD services" );
             }
             sshTunnel.setPidFile( env.getTunnelPidFile() );
             sshTunnel.create( options.m_sshConnectionStr, agentPortListen,
-                                  env.serverPort(), options.m_openDomain );
-            
+                              env.serverPort(), options.m_openDomain );
+
             // if we tunnel pod-agent's port, than we need to connect to a localhost
             srvHost = "localhost";
         }

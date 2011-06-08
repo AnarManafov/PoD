@@ -16,16 +16,15 @@
 #include <stdexcept>
 #include <fstream>
 // MiscCommon
-#include "BOOSTHelper.h"
 #include "Process.h"
 #include "SysHelper.h"
 #include "INet.h"
-// pod-info
+#include "logEngine.h"
+#include "SSHTunnel.h"
+// pod-remote
 #include "version.h"
 #include "Environment.h"
 #include "Options.h"
-#include "SSHTunnel.h"
-#include "logEngine.h"
 #include "MessageParser.h"
 //=============================================================================
 using namespace MiscCommon;
@@ -266,10 +265,6 @@ int main( int argc, char *argv[] )
                                      " Please try to start PoD server again." );
 
             // Start SSH tunnel
-
-            //TODO:
-            // 1. Add a local port as a parameter to pod-ssh-tunnel script
-            // 2. Move SSHTunnel to MiscCommon as a separate library
 
             // find a free port to listen on
             size_t agentPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
