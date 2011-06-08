@@ -13,6 +13,9 @@
 // BOOST
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
+// BOOST
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 // MiscCommon
 #include "BOOSTHelper.h"
 //=============================================================================
@@ -26,8 +29,7 @@ struct SOptions
         m_debug( false ),
         m_start( false ),
         m_stop( false ),
-        m_restart( false ),
-        m_executor( false )
+        m_restart( false )
     {
     }
     /// this function extracts a PoD Location from the stored connection string
@@ -54,7 +56,6 @@ struct SOptions
     bool m_start;
     bool m_stop;
     bool m_restart;
-    bool m_executor;
     std::string m_sshConnectionStr;
     std::string m_sshArgs;
     std::string m_openDomain;
@@ -88,7 +89,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     commands_options.add_options()
     ( "start", bpo::bool_switch( &( _options->m_start ) ), "Start remote PoD server" )
     ( "stop", bpo::bool_switch( &( _options->m_stop ) ), "Stop remote PoD server" )
-    ( "restart", bpo::bool_switch( &( _options->m_start ) ), "Restart remote PoD server" )
+    ( "restart", bpo::bool_switch( &( _options->m_restart ) ), "Restart remote PoD server" )
     ;
     // Options for internal use only
     bpo::options_description backend_options( "Backend options" );
@@ -111,9 +112,6 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( all ).run(), vm );
     bpo::notify( vm );
 
-    boost_hlp::option_dependency( vm, "start", "remote" );
-    boost_hlp::option_dependency( vm, "stop", "remote" );
-    boost_hlp::option_dependency( vm, "restart", "remote" );
     boost_hlp::option_dependency( vm, "ssh_opt", "remote" );
     boost_hlp::option_dependency( vm, "remote_path", "remote" );
     boost_hlp::option_dependency( vm, "ssh_open_domain", "remote" );
@@ -158,5 +156,39 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
 
     return true;
 }
+//=============================================================================
+struct SPoDRemoteOptions
+{
+    std::string m_connectionString;
+    std::string m_PoDLocation;
+    std::string m_env;
+
+    void load( const std::string &_filename )
+    {
+        // Create an empty property tree object
+        using boost::property_tree::ptree;
+        ptree pt;
+
+        read_ini( _filename, pt );
+
+        m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
+        m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
+        m_env = pt.get<std::string>( "pod-remote.env" );
+    }
+    void save( const std::string &_filename )
+    {
+        // Create an empty property tree object
+        using boost::property_tree::ptree;
+        ptree pt;
+
+        pt.put( "pod-remote.connectionString", m_connectionString );
+        pt.put( "pod-remote.PoDLocation", m_PoDLocation );
+        pt.put( "pod-remote.env", m_env );
+
+        // Write the property tree to the XML file.
+        write_ini( _filename, pt );
+    }
+};
+
 
 #endif

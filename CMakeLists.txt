@@ -154,6 +154,7 @@ set(MiscCommon_LOCATION
     ${MiscCommon_LOCATION}/pod_protocol
     ${MiscCommon_LOCATION}/pipe_log_engine
     ${MiscCommon_LOCATION}/proof_status_file
+    ${MiscCommon_LOCATION}/SSHTunnel
 )
 #
 # "additional" files
@@ -177,7 +178,6 @@ SET(POD_BIN_PRIVATE_FILES
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-clean-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-status-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-remote-srv-info
-    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-tunnel
     )
 #
 # "plugins" files

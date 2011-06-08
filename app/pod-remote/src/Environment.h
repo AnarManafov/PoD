@@ -105,6 +105,15 @@ class CEnvironment
             ret += ".pod_remote_pipe";
             return ret;
         }
+        std::string remoteCfgFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "etc/pod-remote.cfg";
+            return ret;
+        }
 
     private:
         void getLocalVersion();

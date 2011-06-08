@@ -52,7 +52,7 @@ namespace pod_remote
                     if( retval < 0 )
                     {
                         std::stringstream ss;
-                        ss << "Problem in the log engine: " << MiscCommon::errno2str();
+                        ss << "Communication error: " << MiscCommon::errno2str();
                         _log( ss.str() );
                         break;
                     }
@@ -64,7 +64,7 @@ namespace pod_remote
                         {
                             int numread = read( m_fErr, buf, read_size );
                             if( 0 == numread )
-                                break;
+                                return;
 
                             if( numread > 0 )
                             {
@@ -89,7 +89,7 @@ namespace pod_remote
                         {
                             int numread = read( m_fOut, buf, read_size );
                             if( 0 == numread )
-                                break;
+                                return;
 
                             if( numread > 0 )
                             {

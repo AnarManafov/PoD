@@ -36,13 +36,11 @@ set( SOURCE_FILES
     ./src/main.cpp
     ./src/Environment.cpp
     ./src/MessageParser.cpp
-    ./src/SSHTunnel.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
     ./src/MessageParser.h
     ./src/Options.h
-    ./src/SSHTunnel.h
 )
 
 #
@@ -63,9 +61,9 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 
 target_link_libraries (
     pod-remote
-    pod_protocol
     pipe_log_engine
     proof_status_file
+    SSHTunnel
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 

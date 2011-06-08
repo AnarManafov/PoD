@@ -46,7 +46,6 @@ const int SMessageParserNumber::get() const
 //=============================================================================
 // SMessageParserString
 //=============================================================================
-#include <iostream>
 bool SMessageParserString::operator()( const string &_buf )
 {
     size_t pos = _buf.find( g_message_OK );

@@ -37,14 +37,12 @@ set( SOURCE_FILES
     ./src/Environment.cpp
     ./src/Server.cpp
     ./src/SrvInfo.cpp
-    ./src/SSHTunnel.cpp
 )
 set( SRC_HDRS
     ./src/Environment.h
     ./src/Server.h
     ./src/SrvInfo.h
     ./src/Options.h
-    ./src/SSHTunnel.h
 )
 
 #
@@ -67,6 +65,7 @@ target_link_libraries (
     pod-info
     pod_protocol
     proof_status_file
+    SSHTunnel
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
