@@ -18,7 +18,14 @@ LPCSTR g_message_OK = "<pod-remote:OK>";
 //=============================================================================
 bool SMessageParserOK::operator()( const string &_buf )
 {
-    return ( _buf.find( g_message_OK ) != string::npos );
+    m_ok = ( _buf.find( g_message_OK ) != string::npos );
+
+    return m_ok;
+}
+//=============================================================================
+const bool SMessageParserOK::get() const
+{
+    return m_ok;
 }
 //=============================================================================
 // SMessageParserNumber

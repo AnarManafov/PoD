@@ -56,6 +56,7 @@ struct SOptions
     bool m_start;
     bool m_stop;
     bool m_restart;
+    std::string m_command;
     std::string m_sshConnectionStr;
     std::string m_sshArgs;
     std::string m_openDomain;
@@ -90,6 +91,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "start", bpo::bool_switch( &( _options->m_start ) ), "Start remote PoD server" )
     ( "stop", bpo::bool_switch( &( _options->m_stop ) ), "Stop remote PoD server" )
     ( "restart", bpo::bool_switch( &( _options->m_restart ) ), "Restart remote PoD server" )
+    ( "command", bpo::value<std::string>(), "Execute arbitrary command" )
     ;
     // Options for internal use only
     bpo::options_description backend_options( "Backend options" );
@@ -118,6 +120,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "restart" );
     boost_hlp::conflicting_options( vm, "restart", "stop" );
+    boost_hlp::conflicting_options( vm, "command", "stop" );
 
     if( vm.count( "remote" ) )
     {
@@ -138,6 +141,9 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         _options->m_envScript = vm["env"].as<std::string>();
         MiscCommon::smart_path( &_options->m_envScript );
     }
+
+    if( vm.count( "command" ) )
+        _options->m_command = vm["command"].as<std::string>();
 
     // if there are no arguments is given, produce a help message
     bpo::variables_map::const_iterator iter = vm.begin();

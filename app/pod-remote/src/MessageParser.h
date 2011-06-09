@@ -73,7 +73,7 @@ namespace pod_remote
                                     err_out += buf[i];
                                     if( '\n' == buf[i] )
                                     {
-                                        _log( "remote end reports: " + err_out );
+                                        _log( "remote end complains: " + err_out );
                                         err_out.clear();
                                     }
                                 }
@@ -119,7 +119,15 @@ namespace pod_remote
 //=============================================================================
     struct SMessageParserOK
     {
-        bool operator()( const std::string &_buf );
+            SMessageParserOK(): m_ok( false )
+            {
+            }
+            const bool get() const;
+
+            bool operator()( const std::string &_buf );
+
+        private:
+            bool m_ok;
     };
 //=============================================================================
     struct SMessageParserNumber

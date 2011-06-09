@@ -159,7 +159,7 @@ int main( int argc, char *argv[] )
     smart_append<string>( &common.m_logFileDir, '/' );
 
 
-    // pidfile name: proofagent.<instance_name>.pid
+    // pidfile name
     string pidfile_name( common.m_workDir );
     pidfile_name += "pod-agent.pid";
 

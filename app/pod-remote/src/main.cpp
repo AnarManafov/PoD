@@ -38,6 +38,13 @@ using namespace std;
 using namespace pod_remote;
 namespace inet = MiscCommon::INet;
 //=============================================================================
+sig_atomic_t graceful_quit = 0;
+//=============================================================================
+void signal_handler( int _SignalNumber )
+{
+    graceful_quit = 1;
+}
+//=============================================================================
 void version()
 {
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
@@ -58,6 +65,46 @@ void send_cmd( int _handle, const string &_cmd, bool _stopSrvIfFailed = true )
     inet::sendall( _handle,
                    reinterpret_cast<const unsigned char*>( cmd.str().c_str() ),
                    cmd.str().size(), 0 );
+}
+//=============================================================================
+void monitor( int _fdIn, int _fdOut, int _fdErr )
+{
+    // Registering signals handlers
+    struct sigaction sa;
+    sigemptyset( &sa.sa_mask );
+    sa.sa_flags = 0;
+
+    // Register the handler for SIGINT.
+    sa.sa_handler = signal_handler;
+    sigaction( SIGINT, &sa, 0 );
+    // Register the handler for SIGTERM
+    sa.sa_handler = signal_handler;
+    sigaction( SIGTERM, &sa, 0 );
+
+    try
+    {
+        CLogEngine NullLog;
+        while( true )
+        {
+            send_cmd( _fdIn, "pod-server status_with_code", false );
+
+            SMessageParserOK msg_ok;
+            CMessageParser<SMessageParserOK, CLogEngine> msg( _fdOut, _fdErr );
+            msg.parse( msg_ok, NullLog );
+            if( !msg_ok.get() || graceful_quit )
+            {
+                if( msg_ok.get() )
+                    send_cmd( _fdIn, "pod-server stop" );
+
+                return;
+            }
+            // Check every 30 seconds
+            sleep( 30 );
+        }
+    }
+    catch( ... )
+    {
+    }
 }
 //=============================================================================
 // The main idea with this method is to create a couple of pipes
@@ -95,6 +142,46 @@ int main( int argc, char *argv[] )
         }
 
         env.init();
+        // Start the log engine only on clients (local instances)
+        slog.start( env.getlogEnginePipeName() );
+
+        if( options.m_start || options.m_restart || options.m_stop )
+        {
+            // TODO: make wait for the process here to check for errors
+            const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( env.podRemotePiDFile() );
+            if( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
+            {
+                stringstream ss;
+                ss
+                        << PROJECT_NAME << ": stopping ("
+                        << pid_to_kill
+                        << ")...";
+                slog( ss.str() );
+
+                // TODO: Maybe we need more validations of the process before
+                // sending a signal. We don't want to kill someone else.
+                kill( pid_to_kill, SIGTERM );
+
+                // Waiting for the process to finish
+                size_t iter( 0 );
+                const size_t max_iter = 30;
+                while( iter <= max_iter )
+                {
+                    if( !IsProcessExist( pid_to_kill ) )
+                    {
+                        cout << endl;
+                        break;
+                    }
+                    sleep( 1 ); // sleeping for 1 second
+                    ++iter;
+                }
+                if( IsProcessExist( pid_to_kill ) )
+                    throw runtime_error( "FAILED to close the process." );
+            }
+
+            if( options.m_stop )
+                return 0; // don't need to do anything else
+        }
 
         // Do we need to use the prevues server if there was any...
         if( does_file_exists( env.remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
@@ -107,12 +194,10 @@ int main( int argc, char *argv[] )
             options.m_envScript = opt_file.m_env;
         }
 
-        // Start the log engine only on clients (local instances)
-        slog.start( env.getlogEnginePipeName() );
-
         // the fork stuff we need only if user wants to send a command
         // to a remote server
-        if( !options.m_start && !options.m_stop && !options.m_restart )
+        if( !options.m_start && !options.m_stop && !options.m_restart &&
+            options.m_command.empty() )
             throw runtime_error( "There is nothing to do.\n" );
 
         if( options.cleanConnectionString().empty() )
@@ -200,7 +285,18 @@ int main( int argc, char *argv[] )
             msg.parse( msg_ok, slog );
         }
 
-        if( options.m_start || options.m_restart )
+        if( !options.m_command.empty() )
+        {
+            send_cmd( stdin_pipe[1], options.m_command );
+            SMessageParserString msg_string;
+            CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
+            msg.parse( msg_string, slog );
+            stringstream ss_cmd_resp;
+            ss_cmd_resp << "remote end reports: "
+            << msg_string.get() << '\n';
+            slog( ss_cmd_resp.str() );
+        }
+        else if( options.m_start || options.m_restart )
         {
             // We allow so far to start only one remote PoD server at time.
             //
@@ -284,12 +380,14 @@ int main( int argc, char *argv[] )
             }
 
             CSSHTunnel sshTunnelAgent;
+            // the current process needs to leave the tunnels open
             sshTunnelAgent.deattach();
             sshTunnelAgent.setPidFile( env.getTunnelPidFileAgent() );
             sshTunnelAgent.create( options.cleanConnectionString(), agentPortListen,
                                    agentPort, options.m_openDomain );
 
             CSSHTunnel sshTunnelXpd;
+            // the current process needs to leave the tunnels open
             sshTunnelXpd.deattach();
             sshTunnelXpd.setPidFile( env.getTunnelPidFileXpd() );
             sshTunnelXpd.create( options.cleanConnectionString(), xpdPortListen,
@@ -305,29 +403,44 @@ int main( int argc, char *argv[] )
             opt_file.m_localAgentPort = agentPortListen;
             opt_file.m_localXpdPort = xpdPortListen;
             opt_file.save( env.remoteCfgFile() );
+
+            // daemonize the process
+
+            // Stop the Log Engine
+            slog.stop();
+
+            // process ID and Session ID
+            pid_t pid_d;
+            pid_t sid;
+
+            // Fork off the parent process
+            pid_d = ::fork();
+            if( pid_d < 0 )
+                throw runtime_error( "Can't start pod-remote daemon" );
+
+            // If we got a good PID, then we can exit the parent process.
+            if( pid_d > 0 )
+                return 0;
+
+            // Change the file mode mask
+            ::umask( 0 );
+
+            // Create a new SID for the child process
+            sid = ::setsid();
+            if( sid < 0 )
+                throw runtime_error( "internal error: setsid has failed" );
+
+            // create the pod-remote pid file
+            CPIDFile pidfile( env.podRemotePiDFile(), ::getpid() );
+
+            // attache to the SSH tunnels, so that we can close them when needed
+            sshTunnelAgent.attach();
+            sshTunnelXpd.attach();
+
+            // start the monitoring
+            monitor( stdin_pipe[1], stdout_pipe[0], stderr_pipe[0] );
         }
-        else if( options.m_stop )
-        {
-            stringstream ss;
-            ss
-                    << "Stopping the remote PoD server on "
-                    << options.m_sshConnectionStr << '\n';
-            slog( ss.str() );
 
-            {
-                send_cmd( stdin_pipe[1], "pod-server stop" );
-
-                SMessageParserOK msg_ok;
-                CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
-                msg.parse( msg_ok, slog );
-            }
-
-            slog( "Clossing SSH tunnels...\n" );
-            CSSHTunnel sshTunnelAgent;
-            sshTunnelAgent.setPidFile( env.getTunnelPidFileAgent() );
-            CSSHTunnel sshTunnelXpd;
-            sshTunnelXpd.setPidFile( env.getTunnelPidFileXpd() );
-        }
         // close the SSH terminal
         if( pid > 0 )
             kill( pid, SIGKILL );

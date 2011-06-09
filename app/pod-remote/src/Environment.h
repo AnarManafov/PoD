@@ -78,6 +78,15 @@ class CEnvironment
             ret += "rmt_srv_tunnel_agent.pid";
             return ret;
         }
+        std::string podRemotePiDFile() const
+        {
+            if( m_wrkDir.empty() )
+                return( "" );
+
+            std::string ret( m_wrkDir );
+            ret += "pod-remote.pid";
+            return ret;
+        }
         std::string getXpdCfgFile() const
         {
             if( m_wrkDir.empty() )

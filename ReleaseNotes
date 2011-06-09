@@ -11,6 +11,8 @@ pod: Now each PoD WN starts its own xproofd daemon,
      in this case we can control and handle each PoD worker individually (this is important for AliEn integration).
 pod: The "pod-info" command can be used now to retrieve port numbers of xpd and pod-agent.
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
+     The command can also be used to execute arbitrary commands on the remote PoD server.
+     To build "pod-remote" the boost 1.41.0 (or higher) is required.
 
 ## v3.4 (2011-02-23)
 pod: Starting with version 3.4, PoD go its version numbering scheme a bit changed.
