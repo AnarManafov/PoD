@@ -155,6 +155,7 @@ set(MiscCommon_LOCATION
     ${MiscCommon_LOCATION}/pipe_log_engine
     ${MiscCommon_LOCATION}/proof_status_file
     ${MiscCommon_LOCATION}/SSHTunnel
+    ${MiscCommon_LOCATION}/pod_sys_files
 )
 #
 # "additional" files

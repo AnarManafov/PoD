@@ -18,7 +18,8 @@
 // MiscCommon
 
 //HACK: Keep BOOSTHelper.h too silence the warning:
-// /opt/local/include/boost/thread/pthread/condition_variable.hpp: In member function ‘void boost::condition_variable::wait(boost::unique_lock<boost::mutex>&)’:
+// /opt/local/include/boost/thread/pthread/condition_variable.hpp:
+//    In member function ‘void boost::condition_variable::wait(boost::unique_lock<boost::mutex>&)’:
 // /opt/local/include/boost/thread/pthread/condition_variable.hpp:53: warning: unused variable ‘res’
 // Remove it as soon as BOOST is fixed
 #include "BOOSTHelper.h"
@@ -29,7 +30,7 @@
 #include "SSHTunnel.h"
 // pod-remote
 #include "version.h"
-#include "Environment.h"
+#include "PoDSysFiles.h"
 #include "Options.h"
 #include "MessageParser.h"
 //=============================================================================
@@ -143,12 +144,12 @@ int main( int argc, char *argv[] )
 
         env.init();
         // Start the log engine only on clients (local instances)
-        slog.start( env.getlogEnginePipeName() );
+        slog.start( env.pipe_log_enginePipeFile() );
 
         if( options.m_start || options.m_restart || options.m_stop )
         {
             // TODO: make wait for the process here to check for errors
-            const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( env.podRemotePiDFile() );
+            const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( env.pod_remotePidFile() );
             if( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
             {
                 stringstream ss;
@@ -184,10 +185,10 @@ int main( int argc, char *argv[] )
         }
 
         // Do we need to use the prevues server if there was any...
-        if( does_file_exists( env.remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
+        if( does_file_exists( env.pod_remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
         {
             SPoDRemoteOptions opt_file;
-            opt_file.load( env.remoteCfgFile() );
+            opt_file.load( env.pod_remoteCfgFile() );
             options.m_sshConnectionStr = opt_file.m_connectionString;
             options.m_sshConnectionStr += ':';
             options.m_sshConnectionStr += opt_file.m_PoDLocation;
@@ -382,14 +383,14 @@ int main( int argc, char *argv[] )
             CSSHTunnel sshTunnelAgent;
             // the current process needs to leave the tunnels open
             sshTunnelAgent.deattach();
-            sshTunnelAgent.setPidFile( env.getTunnelPidFileAgent() );
+            sshTunnelAgent.setPidFile( env.tunnelAgentPidFile() );
             sshTunnelAgent.create( options.cleanConnectionString(), agentPortListen,
                                    agentPort, options.m_openDomain );
 
             CSSHTunnel sshTunnelXpd;
             // the current process needs to leave the tunnels open
             sshTunnelXpd.deattach();
-            sshTunnelXpd.setPidFile( env.getTunnelPidFileXpd() );
+            sshTunnelXpd.setPidFile( env.tunnelXpdPidFile() );
             sshTunnelXpd.create( options.cleanConnectionString(), xpdPortListen,
                                  xpdPort, options.m_openDomain );
 
@@ -402,7 +403,7 @@ int main( int argc, char *argv[] )
             opt_file.m_env = options.m_envScript;
             opt_file.m_localAgentPort = agentPortListen;
             opt_file.m_localXpdPort = xpdPortListen;
-            opt_file.save( env.remoteCfgFile() );
+            opt_file.save( env.pod_remoteCfgFile() );
 
             // daemonize the process
 
@@ -431,7 +432,7 @@ int main( int argc, char *argv[] )
                 throw runtime_error( "internal error: setsid has failed" );
 
             // create the pod-remote pid file
-            CPIDFile pidfile( env.podRemotePiDFile(), ::getpid() );
+            CPIDFile pidfile( env.pod_remotePidFile(), ::getpid() );
 
             // attache to the SSH tunnels, so that we can close them when needed
             sshTunnelAgent.attach();

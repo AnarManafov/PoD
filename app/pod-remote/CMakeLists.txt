@@ -34,11 +34,9 @@ endif(DOXYGEN_FOUND)
 
 set( SOURCE_FILES
     ./src/main.cpp
-    ./src/Environment.cpp
     ./src/MessageParser.cpp
 )
 set( SRC_HDRS
-    ./src/Environment.h
     ./src/MessageParser.h
     ./src/Options.h
 )
@@ -64,6 +62,7 @@ target_link_libraries (
     pipe_log_engine
     proof_status_file
     SSHTunnel
+    pod_sys_files
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 
