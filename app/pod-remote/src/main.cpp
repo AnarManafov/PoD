@@ -293,7 +293,7 @@ int main( int argc, char *argv[] )
             msg.parse( msg_string, slog );
             stringstream ss_cmd_resp;
             ss_cmd_resp << "remote end reports: "
-            << msg_string.get() << '\n';
+                        << msg_string.get() << '\n';
             slog( ss_cmd_resp.str() );
         }
         else if( options.m_start || options.m_restart )
