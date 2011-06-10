@@ -229,6 +229,11 @@ if(Boost_FOUND)
   # we must support boost 1.33.1.
   # TODO: implement support of the version 3
   add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
+  
+  # pod-remote uses boost property tree and needs at least boost 1.41.0
+  if(local_boost_version VERSION_GREATER "1.40")
+     add_definitions(-DBOOST_PROPERTY_TREE)
+  endif(local_boost_version VERSION_GREATER "1.40")
 else(Boost_FOUND)
     set(BUILD_pod_agent OFF)
     set(BUILD_pod_console OFF)

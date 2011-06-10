@@ -29,6 +29,7 @@ class CSrvInfo
         void getInfo( pod_info::CServer * _agentServer = NULL );
         void printInfo( std::ostream &_stream ) const;
         void printConnectionString( std::ostream &_stream ) const;
+        bool processServerInfoCfg( const std::string *_cfg = NULL );
         ESrvStatus getStatus() const
         {
             if( 0 == m_agentPid && 0 == m_xpdPid )
@@ -54,6 +55,14 @@ class CSrvInfo
         {
             return m_agentPort;
         }
+        std::string serverHost() const
+        {
+            return m_srvHost;
+        }
+        unsigned int serverPort() const
+        {
+            return m_srvPort;
+        }
 
     private:
         void localXPDInfo();
@@ -69,6 +78,8 @@ class CSrvInfo
         uint16_t m_agentPort;
         const CEnvironment *m_env;
         std::string m_serverUsername;
+        std::string m_srvHost;
+        unsigned int m_srvPort;
 };
 
 #endif

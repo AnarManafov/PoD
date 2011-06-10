@@ -13,9 +13,6 @@
 // BOOST
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
-// BOOST
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/ini_parser.hpp>
 // MiscCommon
 #include "BOOSTHelper.h"
 //=============================================================================
@@ -162,57 +159,5 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
 
     return true;
 }
-//=============================================================================
-struct SPoDRemoteOptions
-{
-    std::string m_connectionString;
-    std::string m_PoDLocation;
-    std::string m_env;
-    size_t m_localAgentPort;
-    size_t m_localXpdPort;
-
-    SPoDRemoteOptions():
-        m_localAgentPort( 0 ),
-        m_localXpdPort( 0 )
-    {}
-
-    void load( const std::string &_filename )
-    {
-        // Create an empty property tree object
-        using boost::property_tree::ptree;
-        ptree pt;
-
-        read_ini( _filename, pt );
-
-        try
-        {
-            m_connectionString = pt.get<std::string>( "pod-remote.connectionString" );
-            m_PoDLocation = pt.get<std::string>( "pod-remote.PoDLocation" );
-            m_env = pt.get<std::string>( "pod-remote.env" );
-            m_localAgentPort = pt.get<size_t>( "pod-remote.localAgentPort" );
-            m_localXpdPort = pt.get<size_t>( "pod-remote.localXpdPort" );
-        }
-        catch( ... )
-        {
-            //ignore missing nodes
-        }
-    }
-    void save( const std::string &_filename )
-    {
-        // Create an empty property tree object
-        using boost::property_tree::ptree;
-        ptree pt;
-
-        pt.put( "pod-remote.connectionString", m_connectionString );
-        pt.put( "pod-remote.PoDLocation", m_PoDLocation );
-        pt.put( "pod-remote.env", m_env );
-        pt.put( "pod-remote.localAgentPort", m_localAgentPort );
-        pt.put( "pod-remote.localXpdPort", m_localXpdPort );
-
-        // Write the property tree to the XML file.
-        write_ini( _filename, pt );
-    }
-};
-
 
 #endif

@@ -7,25 +7,31 @@
 //
 //=============================================================================
 #include "SrvInfo.h"
+// BOOST
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
 // pod-agent
 #include "ProofStatusFile.h"
 #include "ProtocolCommands.h"
 // MiscCommon
 #include "Process.h"
+#include "PoDSysFiles.h"
 // pod-info
-#include "Environment.h"
 #include "Server.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
 namespace pod_agent = PROOFAgent;
+namespace bpo = boost::program_options;
 //=============================================================================
 CSrvInfo::CSrvInfo( const CEnvironment *_env ):
     m_xpdPid( 0 ),
     m_agentPid( 0 ),
     m_xpdPort( 0 ),
     m_agentPort( 0 ),
-    m_env( _env )
+    m_env( _env ),
+    m_srvPort( 0 )
 {
 }
 //=============================================================================
@@ -35,7 +41,7 @@ void CSrvInfo::localXPDInfo()
     {
         // Obtain information about a local xpd process
         pod_agent::CProofStatusFile proofStatus;
-        if( proofStatus.readAdminPath( m_env->getXpdCfgFile(), adminp_server ) )
+        if( proofStatus.readAdminPath( m_env->xpdCfgFile(), adminp_server ) )
         {
             m_xpdPid = proofStatus.xpdPid();
             m_xpdPort = proofStatus.xpdPort();
@@ -54,7 +60,7 @@ void CSrvInfo::localXPDInfo()
 //=============================================================================
 void CSrvInfo::localAgentInfo()
 {
-    ifstream f( m_env->getAgentPidFile().c_str() );
+    ifstream f( m_env->agentPidFile().c_str() );
     if( !f.is_open() )
     {
         m_agentPid = 0;
@@ -68,7 +74,7 @@ void CSrvInfo::localAgentInfo()
         m_agentPid = 0;
         m_agentPort = 0;
     }
-    m_agentPort = m_env->serverPort();
+    m_agentPort = m_srvPort;
 
 }
 //=============================================================================
@@ -162,6 +168,39 @@ void CSrvInfo::printConnectionString( ostream &_stream ) const
 {
     if( getStatus() == srvStatus_OK )
     {
-        _stream << m_serverUsername << "@" << m_env->serverHost() << ":" << m_xpdPort << endl;
+        _stream << m_serverUsername << "@" << m_srvHost << ":" << m_xpdPort << endl;
     }
 }
+//=============================================================================
+bool CSrvInfo::processServerInfoCfg( const string *_cfg )
+{
+    string filename( m_env->srvInfoFile() );
+    if( NULL != _cfg )
+        filename = *_cfg;
+
+    ifstream f( filename.c_str() );
+    if( !f.is_open() )
+    {
+        return false;
+    }
+
+    // read server info file
+    bpo::variables_map keys;
+    bpo::options_description options(
+        "Agent's server info config" );
+    options.add_options()
+    ( "server.host", bpo::value<string>(), "" )
+    ( "server.port", bpo::value<unsigned int>(), "" )
+    ;
+
+    // Parse the config file
+    bpo::store( bpo::parse_config_file( f, options ), keys );
+    bpo::notify( keys );
+    if( keys.count( "server.host" ) )
+        m_srvHost = keys["server.host"].as<string> ();
+    if( keys.count( "server.port" ) )
+        m_srvPort = keys["server.port"].as<unsigned int> ();
+
+    return true;
+}
+

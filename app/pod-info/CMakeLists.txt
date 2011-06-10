@@ -34,12 +34,10 @@ endif(DOXYGEN_FOUND)
 
 set( SOURCE_FILES
     ./src/main.cpp
-    ./src/Environment.cpp
     ./src/Server.cpp
     ./src/SrvInfo.cpp
 )
 set( SRC_HDRS
-    ./src/Environment.h
     ./src/Server.h
     ./src/SrvInfo.h
     ./src/Options.h
@@ -66,6 +64,7 @@ target_link_libraries (
     pod_protocol
     proof_status_file
     SSHTunnel
+    pod_sys_files
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
 )
 

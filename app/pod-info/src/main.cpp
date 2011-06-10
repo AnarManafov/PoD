@@ -18,9 +18,10 @@
 #include "BOOSTHelper.h"
 #include "Process.h"
 #include "SysHelper.h"
+#include "PoDSysFiles.h"
+#include "PoDUserDefaultsOptions.h"
 // pod-info
 #include "version.h"
-#include "Environment.h"
 #include "Server.h"
 #include "Options.h"
 #include "SrvInfo.h"
@@ -38,7 +39,9 @@ enum EPoDServerType
     // a local PoD server.
     SrvType_Local,
     // a remote PoD server
-    SrvType_Remote
+    SrvType_Remote,
+    // a remote PoD server, start by pod-remote
+    SrvType_RemoteManual
 };
 //=============================================================================
 string version( const CEnvironment &_env, const pod_info::CServer &_srv )
@@ -143,11 +146,12 @@ int main( int argc, char *argv[] )
         // An SSH tunnel object
         CSSHTunnel sshTunnel;
 
+        CSrvInfo srvInfo( &env );
+        srvInfo.getInfo();
+
         // Short info about locals
         if( options.m_xpdPid )
         {
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
             if( 0 == srvInfo.xpdPid() )
                 return 1;
 
@@ -156,8 +160,6 @@ int main( int argc, char *argv[] )
         }
         if( options.m_xpdPort )
         {
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
             if( 0 == srvInfo.xpdPort() )
                 return 1;
 
@@ -166,8 +168,6 @@ int main( int argc, char *argv[] )
         }
         if( options.m_agentPid )
         {
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
             if( 0 == srvInfo.agentPid() )
                 return 1;
 
@@ -176,11 +176,9 @@ int main( int argc, char *argv[] )
         }
         if( options.m_agentPort )
         {
-            if( !env.processServerInfoCfg() )
+            if( !srvInfo.processServerInfoCfg() )
                 return 1;
 
-            CSrvInfo srvInfo( &env );
-            srvInfo.getInfo();
             if( 0 == srvInfo.agentPort() )
                 return 1;
 
@@ -188,69 +186,89 @@ int main( int argc, char *argv[] )
             return 0;
         }
 
+        string srvHost;
+        size_t agentPort( 0 );
+
         // Check PoD server's Type
         srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
 
         // if the type of the server is remote, than we need to get a remote
         // server info file
-        string srvHost;
         // use SSH to retrieve server_info.cfg
         if( SrvType_Remote == srvType )
         {
             if( options.m_debug )
             {
-                cout << "Trying: remote PoD server" << endl;
+                cout << "Type: remote PoD server" << endl;
             }
-            string outfile( env.remoteSrvInfoFile() );
+            string outfile( env.srvInfoFileRemote() );
             retrieveRemoteServerInfo( options, outfile );
-            env.processServerInfoCfg( &outfile );
+            srvInfo.processServerInfoCfg( &outfile );
             // now we can delete the remote server file
             // we can't reuse it in next sessions, since the PoD port could change
             unlink( outfile.c_str() );
 
             // we tunnel the connection to PoD server
-            size_t agentPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
-                                                          env.getUD().m_server.m_agentPortsRangeMax );
-            if( 0 == agentPortListen )
+            agentPort = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
+                                             env.getUD().m_server.m_agentPortsRangeMax );
+            if( 0 == agentPort )
             {
                 throw runtime_error( "Can't find any free port to tunnel PoD services" );
             }
-            sshTunnel.setPidFile( env.getTunnelPidFile() );
-            sshTunnel.create( options.m_sshConnectionStr, agentPortListen,
-                              env.serverPort(), options.m_openDomain );
+            // TODO: Be careful, tunnelAgentPidFile can be busy by pod-remote
+            // check before using it.
+            sshTunnel.setPidFile( env.tunnelAgentPidFile() );
+            sshTunnel.create( options.m_sshConnectionStr, agentPort,
+                              srvInfo.serverPort(), options.m_openDomain );
 
             // if we tunnel pod-agent's port, than we need to connect to a localhost
             srvHost = "localhost";
         }
         else
         {
+            // Check for pod-remote daemons
+#if defined (BOOST_PROPERTY_TREE)
+            pid_t podRemotePid = CPIDFile::GetPIDFromFile( env.pod_remotePidFile() );
+            if( podRemotePid > 0 && IsProcessExist( podRemotePid ) )
+            {
+                srvType = SrvType_RemoteManual;
+                srvHost = "localhost";
+                PoD::SPoDRemoteOptions opt_file;
+                opt_file.load( env.pod_remoteCfgFile() );
+                agentPort = opt_file.m_localAgentPort;
+            }
+#endif
+
             if( options.m_debug )
             {
                 cout
-                        << "Trying: local PoD server"
-                        << "Server Info: " << env.localSrvInfoFile() << endl;
+                        << "Type: "
+                        << (( SrvType_Local == srvType ) ?
+                            "local PoD server" : "remote PoD server managed by pod-remote" )
+                        << endl;
             }
             // Process a local server-info.
             // If "--version" is given, than we don't throw,
             // because we need a version info in anyway, even without any server
-            if( !env.processServerInfoCfg() && !options.m_version )
+            if( !srvInfo.processServerInfoCfg() && !options.m_version )
             {
                 string msg;
                 msg += "PoD server is NOT running.";
                 if( options.m_debug )
                 {
                     msg += "\nCan't process server info: ";
-                    msg += env.localSrvInfoFile();
+                    msg += env.srvInfoFile();
                 }
                 throw runtime_error( msg );
             }
-            srvHost = env.serverHost();
+            srvHost = srvInfo.serverHost();
+            agentPort = srvInfo.serverPort();
         }
 
         // Show version information
         if( options.m_version )
         {
-            pod_info::CServer srv( srvHost, env.serverPort() );
+            pod_info::CServer srv( srvHost, agentPort );
             cout << version( env, srv ) << endl;
             return 0;
         }
@@ -258,7 +276,6 @@ int main( int argc, char *argv[] )
         // PoD Server status
         if( options.m_status || options.m_connectionString )
         {
-            CSrvInfo srvInfo( &env );
             string localHostName;
             get_hostname( &localHostName );
             // If we run locally it could mean, we run on a shared file system as well.
@@ -269,7 +286,7 @@ int main( int argc, char *argv[] )
             }
             else
             {
-                pod_info::CServer srv( srvHost, env.serverPort() );
+                pod_info::CServer srv( srvHost, agentPort );
                 srvInfo.getInfo( &srv );
             }
 
@@ -290,7 +307,7 @@ int main( int argc, char *argv[] )
         // list of and a number of available WNs
         if( options.m_countWNs || options.m_listWNs )
         {
-            pod_info::CServer srv( srvHost, env.serverPort() );
+            pod_info::CServer srv( srvHost, agentPort );
             string lst;
             size_t n = listWNs(( options.m_listWNs ? &lst : NULL ), srv, options );
 

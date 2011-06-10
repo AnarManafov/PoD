@@ -28,6 +28,7 @@
 #include "INet.h"
 #include "logEngine.h"
 #include "SSHTunnel.h"
+#include "PoDUserDefaultsOptions.h"
 // pod-remote
 #include "version.h"
 #include "PoDSysFiles.h"
@@ -129,9 +130,9 @@ int main( int argc, char *argv[] )
     int stdin_pipe[2];
     int stdout_pipe[2];
     int stderr_pipe[2];
+    SOptions options;
     try
     {
-        SOptions options;
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
@@ -141,7 +142,15 @@ int main( int argc, char *argv[] )
             version();
             return 0;
         }
+    }
+    catch( exception& e )
+    {
+        cerr << PROJECT_NAME << ": " << e.what() << endl;
+        return 1;
+    }
 
+    try
+    {
         env.init();
         // Start the log engine only on clients (local instances)
         slog.start( env.pipe_log_enginePipeFile() );
@@ -187,7 +196,7 @@ int main( int argc, char *argv[] )
         // Do we need to use the prevues server if there was any...
         if( does_file_exists( env.pod_remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
         {
-            SPoDRemoteOptions opt_file;
+            PoD::SPoDRemoteOptions opt_file;
             opt_file.load( env.pod_remoteCfgFile() );
             options.m_sshConnectionStr = opt_file.m_connectionString;
             options.m_sshConnectionStr += ':';
@@ -397,7 +406,7 @@ int main( int argc, char *argv[] )
             // Store information about the new remote server
             // 1. write server_info.cfg, so that local services can connect to it
             // 2. write remote_server_info.cfg for other pod-remote calls
-            SPoDRemoteOptions opt_file;
+            PoD::SPoDRemoteOptions opt_file;
             opt_file.m_connectionString = options.cleanConnectionString();
             opt_file.m_PoDLocation = options.remotePoDLocation();
             opt_file.m_env = options.m_envScript;
