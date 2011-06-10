@@ -41,7 +41,7 @@ enum EPoDServerType
     // a remote PoD server
     SrvType_Remote,
     // a remote PoD server, start by pod-remote
-    SrvType_RemoteManual
+    SrvType_RemoteManaged
 };
 //=============================================================================
 string version( const CEnvironment &_env, const pod_info::CServer &_srv )
@@ -192,15 +192,12 @@ int main( int argc, char *argv[] )
         // Check PoD server's Type
         srvType = ( options.m_sshConnectionStr.empty() ) ? SrvType_Local : SrvType_Remote;
 
+        // >>> REMOTE SERVER <<<
         // if the type of the server is remote, than we need to get a remote
         // server info file
         // use SSH to retrieve server_info.cfg
         if( SrvType_Remote == srvType )
         {
-            if( options.m_debug )
-            {
-                cout << "Type: remote PoD server" << endl;
-            }
             string outfile( env.srvInfoFileRemote() );
             retrieveRemoteServerInfo( options, outfile );
             srvInfo.processServerInfoCfg( &outfile );
@@ -226,43 +223,61 @@ int main( int argc, char *argv[] )
         }
         else
         {
+            // >>> REMOTE MANAGED SERVER <<<
             // Check for pod-remote daemons
 #if defined (BOOST_PROPERTY_TREE)
             pid_t podRemotePid = CPIDFile::GetPIDFromFile( env.pod_remotePidFile() );
             if( podRemotePid > 0 && IsProcessExist( podRemotePid ) )
             {
-                srvType = SrvType_RemoteManual;
+                srvType = SrvType_RemoteManaged;
                 srvHost = "localhost";
                 PoD::SPoDRemoteOptions opt_file;
                 opt_file.load( env.pod_remoteCfgFile() );
                 agentPort = opt_file.m_localAgentPort;
             }
 #endif
-
-            if( options.m_debug )
+            // >>> LOCAL SERVER <<<
+            if( SrvType_Local == srvType )
             {
-                cout
-                        << "Type: "
-                        << (( SrvType_Local == srvType ) ?
-                            "local PoD server" : "remote PoD server managed by pod-remote" )
-                        << endl;
-            }
-            // Process a local server-info.
-            // If "--version" is given, than we don't throw,
-            // because we need a version info in anyway, even without any server
-            if( !srvInfo.processServerInfoCfg() && !options.m_version )
-            {
-                string msg;
-                msg += "PoD server is NOT running.";
-                if( options.m_debug )
+                // Process a local server-info.
+                // If "--version" is given, than we don't throw,
+                // because we need a version info in anyway, even without any server
+                if( !srvInfo.processServerInfoCfg() && !options.m_version )
                 {
-                    msg += "\nCan't process server info: ";
-                    msg += env.srvInfoFile();
+                    string msg;
+                    msg += "PoD server is NOT running.";
+                    if( options.m_debug )
+                    {
+                        msg += "\nCan't process server info: ";
+                        msg += env.srvInfoFile();
+                    }
+                    throw runtime_error( msg );
                 }
-                throw runtime_error( msg );
+                srvHost = srvInfo.serverHost();
+                agentPort = srvInfo.serverPort();
             }
-            srvHost = srvInfo.serverHost();
-            agentPort = srvInfo.serverPort();
+        }
+
+        // Print type of the server - only in debug mode
+        if( options.m_debug )
+        {
+            cout << "PoD Server Type: ";
+            switch( srvType )
+            {
+                case SrvType_Local:
+                    cout << "local";
+                    break;
+                case SrvType_Remote:
+                    cout << "remote";
+                    break;
+                case SrvType_RemoteManaged:
+                    cout << "remote (managed by pod-remote)";
+                    break;
+                default:
+                    cout << "unknown";
+                    break;
+            }
+            cout << endl;
         }
 
         // Show version information
