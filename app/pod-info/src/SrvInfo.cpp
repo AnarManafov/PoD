@@ -31,8 +31,7 @@ CSrvInfo::CSrvInfo( const CEnvironment *_env ):
     m_xpdPort( 0 ),
     m_agentPort( 0 ),
     m_env( _env ),
-    m_srvHost("localhost"),
-    m_srvPort( 0 )
+    m_srvHost("localhost")
 {
 }
 //=============================================================================
@@ -75,8 +74,6 @@ void CSrvInfo::localAgentInfo()
         m_agentPid = 0;
         m_agentPort = 0;
     }
-    m_agentPort = m_srvPort;
-
 }
 //=============================================================================
 void CSrvInfo::remoteCombinedInfo( pod_info::CServer *_agentServer )
@@ -181,9 +178,7 @@ bool CSrvInfo::processServerInfoCfg( const string *_cfg )
 
     ifstream f( filename.c_str() );
     if( !f.is_open() )
-    {
         return false;
-    }
 
     // read server info file
     bpo::variables_map keys;
@@ -200,7 +195,7 @@ bool CSrvInfo::processServerInfoCfg( const string *_cfg )
     if( keys.count( "server.host" ) )
         m_srvHost = keys["server.host"].as<string> ();
     if( keys.count( "server.port" ) )
-        m_srvPort = keys["server.port"].as<unsigned int> ();
+        m_agentPort = keys["server.port"].as<unsigned int> ();
 
     return true;
 }

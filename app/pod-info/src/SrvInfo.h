@@ -59,10 +59,6 @@ class CSrvInfo
         {
             return m_srvHost;
         }
-        unsigned int serverPort() const
-        {
-            return m_srvPort;
-        }
 
     private:
         void localXPDInfo();
@@ -79,7 +75,6 @@ class CSrvInfo
         const CEnvironment *m_env;
         std::string m_serverUsername;
         std::string m_srvHost;
-        unsigned int m_srvPort;
 };
 
 #endif

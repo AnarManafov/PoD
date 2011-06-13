@@ -216,7 +216,7 @@ int main( int argc, char *argv[] )
             // check before using it.
             sshTunnel.setPidFile( env.tunnelAgentPidFile() );
             sshTunnel.create( options.m_sshConnectionStr, agentPort,
-                              srvInfo.serverPort(), options.m_openDomain );
+                              srvInfo.agentPort(), options.m_openDomain );
 
             // if we tunnel pod-agent's port, than we need to connect to a localhost
             srvHost = "localhost";
@@ -254,7 +254,7 @@ int main( int argc, char *argv[] )
                     throw runtime_error( msg );
                 }
                 srvHost = srvInfo.serverHost();
-                agentPort = srvInfo.serverPort();
+                agentPort = srvInfo.agentPort();
             }
         }
 
