@@ -297,7 +297,8 @@ int main( int argc, char *argv[] )
 
         if( !options.m_command.empty() )
         {
-            send_cmd( stdin_pipe[1], options.m_command );
+            // don't stop PoD server if a command failed here
+            send_cmd( stdin_pipe[1], options.m_command, true );
             SMessageParserString msg_string;
             CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
             msg.parse( msg_string, slog );
@@ -352,7 +353,6 @@ int main( int argc, char *argv[] )
                 CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_ok, slog );
             }
-            slog( "Remote PoD server is strated\n" );
             slog( "Checking service ports...\n" );
             // check for pod-agent port on the remote server
             {
@@ -375,6 +375,11 @@ int main( int argc, char *argv[] )
             if( 0 == agentPort || 0 == xpdPort )
                 throw runtime_error( "Can't detect remote ports."
                                      " Please try to start PoD server again." );
+            
+            stringstream ssPorts;
+            ssPorts << "remote PoD ports are as follows: "
+            << agentPort << "(PoD agent), " << xpdPort << "(xpd)" << "\n";
+            slog(ssPorts.str());
 
             // Start SSH tunnel
 
