@@ -120,7 +120,7 @@ int main( int argc, char *argv[] )
     struct sigaction sa;
     sigemptyset( &sa.sa_mask );
     sa.sa_flags = 0;
-    
+
     // Register the handler for SIGINT.
     sa.sa_handler = signal_handler;
     sigaction( SIGINT, &sa, 0 );
@@ -130,7 +130,7 @@ int main( int argc, char *argv[] )
     // Pipe is closed - remote-end hanged
     sa.sa_handler = signal_handler_hungup;
     sigaction( SIGPIPE, &sa, 0 );
-    
+
     CLogEngine slog;
     CEnvironment env;
 
@@ -384,11 +384,11 @@ int main( int argc, char *argv[] )
             if( 0 == agentPort || 0 == xpdPort )
                 throw runtime_error( "Can't detect remote ports."
                                      " Please try to start PoD server again." );
-            
+
             stringstream ssPorts;
             ssPorts << "remote PoD ports are as follows: "
-            << agentPort << "(PoD agent), " << xpdPort << "(xpd)" << "\n";
-            slog(ssPorts.str());
+                    << agentPort << "(PoD agent), " << xpdPort << "(xpd)" << "\n";
+            slog( ssPorts.str() );
 
             // Start SSH tunnel
 

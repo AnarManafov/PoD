@@ -31,7 +31,7 @@ CSrvInfo::CSrvInfo( const CEnvironment *_env ):
     m_xpdPort( 0 ),
     m_agentPort( 0 ),
     m_env( _env ),
-    m_srvHost("localhost")
+    m_srvHost( "localhost" )
 {
 }
 //=============================================================================

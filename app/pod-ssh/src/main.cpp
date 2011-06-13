@@ -149,8 +149,16 @@ int main( int argc, char * argv[] )
         if( nThreads <= 4 || nThreads > 50 )
             nThreads = 4;
 
-        if( !parseCmdLine( argc, argv, &vm ) )
-            return 0;
+        try
+        {
+            if( !parseCmdLine( argc, argv, &vm ) )
+                return 0;
+        }
+        catch( exception& e )
+        {
+            cerr << PROJECT_NAME << ": " << e.what() << endl;
+            return 1;
+        }
         ifstream f( vm["config"].as<string>().c_str() );
         if( !f.is_open() )
         {
