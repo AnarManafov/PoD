@@ -47,6 +47,11 @@ void signal_handler( int _SignalNumber )
     graceful_quit = 1;
 }
 //=============================================================================
+void signal_handler_hungup( int _SignalNumber )
+{
+    cerr << PROJECT_NAME << "fatal: The remote end hung up unexpectedly" << endl;
+}
+//=============================================================================
 void version()
 {
     cout << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
@@ -71,18 +76,6 @@ void send_cmd( int _handle, const string &_cmd, bool _stopSrvIfFailed = true )
 //=============================================================================
 void monitor( int _fdIn, int _fdOut, int _fdErr )
 {
-    // Registering signals handlers
-    struct sigaction sa;
-    sigemptyset( &sa.sa_mask );
-    sa.sa_flags = 0;
-
-    // Register the handler for SIGINT.
-    sa.sa_handler = signal_handler;
-    sigaction( SIGINT, &sa, 0 );
-    // Register the handler for SIGTERM
-    sa.sa_handler = signal_handler;
-    sigaction( SIGTERM, &sa, 0 );
-
     try
     {
         CLogEngine NullLog;
@@ -123,6 +116,21 @@ void monitor( int _fdIn, int _fdOut, int _fdErr )
 // for that purpose.
 int main( int argc, char *argv[] )
 {
+    // Registering signals handlers
+    struct sigaction sa;
+    sigemptyset( &sa.sa_mask );
+    sa.sa_flags = 0;
+    
+    // Register the handler for SIGINT.
+    sa.sa_handler = signal_handler;
+    sigaction( SIGINT, &sa, 0 );
+    // Register the handler for SIGTERM
+    sa.sa_handler = signal_handler;
+    sigaction( SIGTERM, &sa, 0 );
+    // Pipe is closed - remote-end hanged
+    sa.sa_handler = signal_handler_hungup;
+    sigaction( SIGPIPE, &sa, 0 );
+    
     CLogEngine slog;
     CEnvironment env;
 
@@ -349,9 +357,10 @@ int main( int argc, char *argv[] )
             {
                 send_cmd( stdin_pipe[1], "pod-server start" );
 
-                SMessageParserOK msg_ok;
-                CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
-                msg.parse( msg_ok, slog );
+                SMessageParserString msg_string;
+                CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
+                msg.parse( msg_string, slog );
+                slog( msg_string.get() );
             }
             slog( "Checking service ports...\n" );
             // check for pod-agent port on the remote server
