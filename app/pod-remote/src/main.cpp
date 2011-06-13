@@ -298,7 +298,7 @@ int main( int argc, char *argv[] )
         if( !options.m_command.empty() )
         {
             // don't stop PoD server if a command failed here
-            send_cmd( stdin_pipe[1], options.m_command, true );
+            send_cmd( stdin_pipe[1], options.m_command, false );
             SMessageParserString msg_string;
             CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
             msg.parse( msg_string, slog );
