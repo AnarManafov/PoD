@@ -131,9 +131,6 @@ int main( int argc, char *argv[] )
     sa.sa_handler = signal_handler_hungup;
     sigaction( SIGPIPE, &sa, 0 );
 
-    CLogEngine slog;
-    CEnvironment env;
-
     pid_t pid( 0 );
     int stdin_pipe[2];
     int stdout_pipe[2];
@@ -156,6 +153,9 @@ int main( int argc, char *argv[] )
         cerr << PROJECT_NAME << ": " << e.what() << endl;
         return 1;
     }
+
+    CLogEngine slog( options.m_debug );
+    CEnvironment env;
 
     try
     {
@@ -351,7 +351,7 @@ int main( int argc, char *argv[] )
                 SMessageParserString msg_string;
                 CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_string, slog );
-                slog( msg_string.get() );
+                slog.debug_msg( msg_string.get() );
             }
             else
             {
@@ -360,7 +360,7 @@ int main( int argc, char *argv[] )
                 SMessageParserString msg_string;
                 CMessageParser<SMessageParserString, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
                 msg.parse( msg_string, slog );
-                slog( msg_string.get() );
+                slog.debug_msg( msg_string.get() );
             }
             slog( "Checking service ports...\n" );
             // check for pod-agent port on the remote server
@@ -388,7 +388,7 @@ int main( int argc, char *argv[] )
             stringstream ssPorts;
             ssPorts << "remote PoD ports are as follows: "
                     << agentPort << "(PoD agent), " << xpdPort << "(xpd)" << "\n";
-            slog( ssPorts.str() );
+            slog.debug_msg( ssPorts.str() );
 
             // Start SSH tunnel
 

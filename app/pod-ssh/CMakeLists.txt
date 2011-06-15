@@ -66,6 +66,7 @@ endif (CMAKE_GENERATOR STREQUAL "Xcode")
 target_link_libraries (
     pod-ssh
     pipe_log_engine
+    pod_sys_files
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_THREAD_LIBRARY}
 )

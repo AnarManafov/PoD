@@ -159,5 +159,5 @@ void CWorker::status()
 //=============================================================================
 void CWorker::log( const std::string &_msg )
 {
-    m_log( _msg, m_rec->m_id );
+    m_log( _msg, m_rec->m_id, false );
 }

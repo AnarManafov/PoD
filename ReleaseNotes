@@ -13,7 +13,8 @@ pod: The "pod-info" command can be used now to retrieve port numbers of xpd and 
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
      The command can also be used to execute arbitrary commands on the remote PoD server.
      To build "pod-remote" the boost 1.41.0 (or higher) is required.
-     Also ROOT must be 5.31.01+ (see bug-fix: http://root.cern.ch/viewvc?view=rev&revision=39580 in the Revision 39580).
+     There could be problems with PROOF via SSH tunnel, see bug-fix: http://root.cern.ch/viewvc?view=rev&revision=39580 in the Revision 39580.
+pod: The "pod-ssh" command now remembers the "--config" value if once entered. There is no need to write it again if the same when executing pod-ssh next time.
 
 ## v3.4 (2011-02-23)
 pod: Starting with version 3.4, PoD go its version numbering scheme a bit changed.

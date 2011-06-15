@@ -10,7 +10,7 @@
 #define LOCAL_TYPES_H
 #include <boost/function.hpp>
 
-typedef boost::function < void ( const std::string&, const std::string& ) > log_func_t;
+typedef boost::function < void ( const std::string&, const std::string&, bool ) > log_func_t;
 
 #endif
 

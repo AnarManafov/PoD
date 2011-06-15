@@ -25,6 +25,7 @@
 #include "BOOSTHelper.h"
 #include "SysHelper.h"
 #include "PoDUserDefaultsOptions.h"
+#include "PoDSysFiles.h"
 // pod-ssh
 #include "version.h"
 #include "config.h"
@@ -77,12 +78,6 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
         return false;
     }
 
-    if( !vm.count( "config" ) )
-    {
-        cout << visible << endl;
-        throw runtime_error( "You need to specify a configuration file at least." );
-    }
-
     boost_hlp::conflicting_options( vm, "submit", "clean" );
     boost_hlp::conflicting_options( vm, "status", "clean" );
     boost_hlp::conflicting_options( vm, "status", "submit" );
@@ -129,23 +124,18 @@ void repackPkg( string *_cmdOutput )
 int main( int argc, char * argv[] )
 {
     CLogEngine slog;
+    CEnvironment env;
+    env.init();
     // convert log engine's functor to a free call-back function
     // this is needed to pass the logger further to other objects
-    log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2 );
+    log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2, _3 );
     bpo::variables_map vm;
     try
     {
-        // PoD user defaults
-        string pathUD( PoD::showCurrentPUDFile() );
-        smart_path( &pathUD );
-        PoD::CPoDUserDefaults user_defaults;
-        user_defaults.init( pathUD );
-        PoD::SPoDUserDefaultsOptions_t cfg( user_defaults.getOptions() );
-
         // a number of threads in the thread-pool
         // default is 4 and the maximum is 50.
-        // These are just magic number. We want to revise them later on...
-        size_t nThreads( cfg.m_server.m_agentThreads );
+        // These are just magic numbers. We want to revise them later on...
+        size_t nThreads( env.getUD().m_server.m_agentThreads );
         if( nThreads <= 4 || nThreads > 50 )
             nThreads = 4;
 
@@ -159,7 +149,22 @@ int main( int argc, char * argv[] )
             cerr << PROJECT_NAME << ": " << e.what() << endl;
             return 1;
         }
-        ifstream f( vm["config"].as<string>().c_str() );
+
+
+        string configFile;
+        if( !vm.count( "config" ) )
+        {
+            PoD::SPoDSSHOptions opt_file;
+            opt_file.load( env.pod_sshCfgFile() );
+            configFile = opt_file.m_config;
+        }
+        else
+        {
+            configFile = vm["config"].as<string>();
+            smart_path( &configFile );
+        }
+
+        ifstream f( configFile.c_str() );
         if( !f.is_open() )
         {
             string msg( "can't open configuration file \"" );
@@ -169,7 +174,7 @@ int main( int argc, char * argv[] )
         }
 
         // Collect workers list
-        string pipeName( cfg.m_server.m_common.m_workDir );
+        string pipeName( env.getUD().m_server.m_common.m_workDir );
         smart_append( &pipeName, '/' );
         pipeName += g_pipeName;
         slog.start( pipeName );
@@ -289,12 +294,17 @@ int main( int argc, char * argv[] )
                 << "Failed tasks: " << b << '\n'
                 << "*******************\n";
         slog( msg.str() );
+
+        PoD::SPoDSSHOptions opt_file;
+        opt_file.m_config = configFile;
+        opt_file.save( env.pod_sshCfgFile() );
     }
     catch( exception& e )
     {
         slog( e.what() + string( "\n" ) );
         return 1;
     }
+
 
     return 0;
 }
