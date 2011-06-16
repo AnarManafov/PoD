@@ -161,9 +161,11 @@ int main( int argc, char * argv[] )
         string configFile;
         if( !vm.count( "config" ) )
         {
+#if defined (BOOST_PROPERTY_TREE)            
             PoD::SPoDSSHOptions opt_file;
             opt_file.load( env.pod_sshCfgFile() );
             configFile = opt_file.m_config;
+#endif
         }
         else
         {
@@ -298,10 +300,11 @@ int main( int argc, char * argv[] )
                 << "Failed tasks: " << b << '\n'
                 << "*******************\n";
         slog( msg.str() );
-
+#if defined (BOOST_PROPERTY_TREE)
         PoD::SPoDSSHOptions opt_file;
         opt_file.m_config = configFile;
         opt_file.save( env.pod_sshCfgFile() );
+#endif
     }
     catch( exception& e )
     {
