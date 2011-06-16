@@ -124,7 +124,7 @@ void repackPkg( string *_cmdOutput )
 int main( int argc, char * argv[] )
 {
     CLogEngine slog;
-    CEnvironment env;
+    CPoDEnvironment env;
     env.init();
 
     // Collect workers list
@@ -161,7 +161,7 @@ int main( int argc, char * argv[] )
         string configFile;
         if( !vm.count( "config" ) )
         {
-#if defined (BOOST_PROPERTY_TREE)            
+#if defined (BOOST_PROPERTY_TREE)
             PoD::SPoDSSHOptions opt_file;
             opt_file.load( env.pod_sshCfgFile() );
             configFile = opt_file.m_config;

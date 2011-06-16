@@ -25,7 +25,7 @@ using namespace MiscCommon;
 namespace pod_agent = PROOFAgent;
 namespace bpo = boost::program_options;
 //=============================================================================
-CSrvInfo::CSrvInfo( const CEnvironment *_env ):
+CSrvInfo::CSrvInfo( const CPoDEnvironment *_env ):
     m_xpdPid( 0 ),
     m_agentPid( 0 ),
     m_xpdPort( 0 ),

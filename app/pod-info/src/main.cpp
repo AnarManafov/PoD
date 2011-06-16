@@ -132,7 +132,7 @@ void retrieveRemoteServerInfo( const SOptions &_opt,
 //=============================================================================
 int main( int argc, char *argv[] )
 {
-    CEnvironment env;
+    CPoDEnvironment env;
     EPoDServerType srvType( SrvType_Unknown );
 
     try

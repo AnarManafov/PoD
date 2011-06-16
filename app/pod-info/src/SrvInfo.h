@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <iostream>
 //=============================================================================
-class CEnvironment;
+class CPoDEnvironment;
 namespace pod_info
 {
     class CServer;
@@ -23,7 +23,7 @@ class CSrvInfo
         enum ESrvStatus {srvStatus_OK, srvStatus_Down, srvStatus_NeedRestart };
 
     public:
-        CSrvInfo( const CEnvironment *_env );
+        CSrvInfo( const CPoDEnvironment *_env );
 
     public:
         void getInfo( pod_info::CServer * _agentServer = NULL );
@@ -72,7 +72,7 @@ class CSrvInfo
         pid_t m_agentPid;
         uint16_t m_xpdPort;
         uint16_t m_agentPort;
-        const CEnvironment *m_env;
+        const CPoDEnvironment *m_env;
         std::string m_serverUsername;
         std::string m_srvHost;
 };
