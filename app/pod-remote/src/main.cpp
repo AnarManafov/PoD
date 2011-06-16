@@ -155,7 +155,7 @@ int main( int argc, char *argv[] )
     }
 
     CLogEngine slog( options.m_debug );
-    CEnvironment env;
+    CPoDEnvironment env;
 
     try
     {
