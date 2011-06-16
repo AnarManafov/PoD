@@ -113,7 +113,7 @@ bool parseCmdLine( int _Argc, char *_Argv[],
         cout << "Generating a default PoD configuration file..." << endl;
 
         string filename( vm["config"].as<string>() );
-        if( MiscCommon::does_file_exists( filename ) && !vm.count( "force" ) )
+        if( MiscCommon::file_exists( filename ) && !vm.count( "force" ) )
             throw runtime_error( "Error: Destination file exists. Please use -f options to overwrite it." );
 
         ofstream f( filename.c_str() );

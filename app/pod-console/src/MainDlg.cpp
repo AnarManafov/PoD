@@ -45,7 +45,7 @@ template<class T>
 void _loadcfg( T &_s, string _FileName )
 {
     smart_path( &_FileName );
-    if( _FileName.empty() || !does_file_exists( _FileName ) )
+    if( _FileName.empty() || !file_exists( _FileName ) )
         throw exception();
 
     ifstream f( _FileName.c_str() );

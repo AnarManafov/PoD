@@ -122,7 +122,7 @@ void retrieveRemoteServerInfo( const SOptions &_opt,
     smart_path( &cmd );
     string stdout;
     do_execv( cmd, arg, 60, NULL );
-    if( !does_file_exists( _destinationFile ) )
+    if( !file_exists( _destinationFile ) )
     {
         stringstream ss;
         ss << "Remote PoD server is NOT running.";

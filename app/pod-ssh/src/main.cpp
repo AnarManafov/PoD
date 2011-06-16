@@ -126,6 +126,13 @@ int main( int argc, char * argv[] )
     CLogEngine slog;
     CEnvironment env;
     env.init();
+
+    // Collect workers list
+    string pipeName( env.getUD().m_server.m_common.m_workDir );
+    smart_append( &pipeName, '/' );
+    pipeName += g_pipeName;
+    slog.start( pipeName );
+
     // convert log engine's functor to a free call-back function
     // this is needed to pass the logger further to other objects
     log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2, _3 );
@@ -164,6 +171,9 @@ int main( int argc, char * argv[] )
             smart_path( &configFile );
         }
 
+        if( !file_exists( configFile ) )
+            throw runtime_error( "PoD SSH config file doesn't exist: " + configFile );
+
         ifstream f( configFile.c_str() );
         if( !f.is_open() )
         {
@@ -172,12 +182,6 @@ int main( int argc, char * argv[] )
             msg += "\"";
             throw runtime_error( msg );
         }
-
-        // Collect workers list
-        string pipeName( env.getUD().m_server.m_common.m_workDir );
-        smart_append( &pipeName, '/' );
-        pipeName += g_pipeName;
-        slog.start( pipeName );
 
         // Check that PoD server is running
         if( vm.count( "submit" ) )

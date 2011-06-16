@@ -202,7 +202,7 @@ int main( int argc, char *argv[] )
         }
 
         // Do we need to use the prevues server if there was any...
-        if( does_file_exists( env.pod_remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
+        if( file_exists( env.pod_remoteCfgFile() ) && options.m_sshConnectionStr.empty() )
         {
             PoD::SPoDRemoteOptions opt_file;
             opt_file.load( env.pod_remoteCfgFile() );
