@@ -88,7 +88,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "start", bpo::bool_switch( &( _options->m_start ) ), "Start remote PoD server" )
     ( "stop", bpo::bool_switch( &( _options->m_stop ) ), "Stop remote PoD server" )
     ( "restart", bpo::bool_switch( &( _options->m_restart ) ), "Restart remote PoD server" )
-    ( "command", bpo::value<std::string>(), "Execute arbitrary command" )
+    ( "command", bpo::value<std::string>(), "Execute arbitrary commands" )
     ;
     // Options for internal use only
     bpo::options_description backend_options( "Backend options" );

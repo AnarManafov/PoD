@@ -8,16 +8,16 @@
     <sect1 id="User_workspace_requirements">
         <title>User interface</title>
         <para>
-            PoD UI/Server/WN run on Linux and Mac OS X. On Mac we support only PoD CLI so-far.
+            PoD UI/Server/WN run on Linux and Mac OS X.
         </para>
         <para>
             <itemizedlist><title>General requirements: </title>
                 <listitem>Incoming connection on pod-agent's port (configurable)</listitem>
-                <listitem>ROOT 5.25.04 or higher (xrootd enabled)</listitem>
-                <listitem>Qt 4.4.2 or higher (optional. There will be no PoD GUI, if Qt is missing)</listitem>
-                <listitem>BOOST 1.33.1 or higher </listitem>		
-                <listitem>cmake 2.6.2 or higher</listitem>
-                <listitem>shell: BASH</listitem>
+                <listitem><ulink url="http://root.cern.ch">ROOT</ulink> 5.25.04 or higher (xrootd enabled)</listitem>
+                <listitem><ulink url="http://qt.nokia.com/products/">Qt</ulink> 4.4.2 or higher (optional. There will be no PoD GUI, if Qt is missing)</listitem>
+                <listitem><ulink url="http://www.boost.org/">BOOST</ulink> 1.33.1 or higher (to use <xref linkend="pod-remote"/>, BOOST 1.41.0 or higher is requared) </listitem>		
+                <listitem><ulink url="http://www.cmake.org/">cmake</ulink> 2.6.2 or higher</listitem>
+                <listitem>shell: <ulink url="http://en.wikipedia.org/wiki/Bash_(Unix_shell)">BASH</ulink></listitem>
             </itemizedlist>
             <itemizedlist><title>Additional requirements for gLite plug-in:</title>
                 <listitem>gLite UI 3.2</listitem>

@@ -48,7 +48,7 @@
                 and used TCP ports. For user convenience the <command>pod-server</command> command with
                 the <option>status</option> option prints also a PROOF connection string (master_host:xproofd_port),
                 which can be used as an argument to <literal>TProof::Open</literal> in PROOF analysis scripts. However it is recommended to use <xref linkend="pod-info"/>
-                in order to retrive the current connection string.
+                in order to retrieve the current connection string.
                 </para>
             </para>
         </refsect1>
@@ -242,7 +242,7 @@
                 <varlistentry>
                     <term><option>--remote <replaceable>arg</replaceable></option></term>
                     <listitem>
-                        <para>An connection string in form of user@host.fqdn. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
+                        <para>A connection string in form of user@host.fqdn. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -609,7 +609,7 @@ the same from the remote PoD server:
                 The <command>pod-ssh</command> command takes PoD's ssh plug-in configuration file as input.
                 The configuration file is a comma-separated values (CSV) file.
                 Fields are normally separated by commas. If you want to put a comma in a field, you need to put quotes around it. Also 3 escape sequences are supported.
-            </para>
+            </para>          
             <para>
                 <table id="POD_SSH_CFG_TABLE">
                     <title>PoD's ssh plug-in configuration fields</title>
@@ -628,7 +628,7 @@ the same from the remote PoD server:
                                 <entry>id (must be any unique string).
                                 <para>This id string is used just to distinguish different PoD workers in SSH plug-in.</para></entry>
                                 <entry>a host name with or without a login, in a form: login@host.fqdn</entry>
-                                <entry>additional ssh params (could be empty)</entry>
+                                <entry>additional SSH params (could be empty)</entry>
                                 <entry>a remote working directory</entry>
                                 <entry>a desired number of PROOF workers (could be empty). 
                                        <para>If this parameter is empty,
@@ -645,6 +645,14 @@ r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4
 r2, user@lxi001.gsi.de,,/home/user/pod,16
 125, user2@host, , /tmp/test,
 </screen>
+            </para>
+            <para>
+                The <command>pod-ssh</command> command remembers last entered config-file pathname and next time you want to use <command>pod-ssh</command> with
+                the same config file, you can just call <command>pod-ssh</command> without providing the <option>--config</option> option.
+                The command will always use the latest given setting.
+            </para>
+            <para>
+                The <command>pod-ssh</command> utility exits 0 on success, and >0 if an error occurs.    
             </para>
         </refsect1>
         <refsect1>
@@ -710,83 +718,88 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
         </refmeta>
         <refnamediv>
             <refname>pod-remote</refname>
-            <refpurpose>Shows information about PoD and PROOF workers.</refpurpose>
+            <refpurpose>Using the command users can start/stop/restart remote PoD servers.
+                The utility can also be used to execute arbitrary commands on the remote PoD server, such as PoD job submissions.</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
                 <command>pod-remote</command>
-                <arg choice="plain"><synopfragmentref linkend="general">general options
+                <arg choice="plain"><synopfragmentref linkend="pod_remote_options_general">general options
                 </synopfragmentref></arg>
-                <arg choice="plain"><synopfragmentref linkend="information">information options
+                <arg choice="plain"><synopfragmentref linkend="pod_remote_options_connection">connection options
                 </synopfragmentref></arg>
-                <arg choice="plain"><synopfragmentref linkend="connection">connection options
+                <arg choice="plain"><synopfragmentref linkend="pod_remote_options_commands">commands
                 </synopfragmentref></arg>
             </cmdsynopsis>
             <sbr/>
-            <synopfragment id="general">
+            <synopfragment id="pod_remote_options_general">
                 <arg><option>-h, --help</option></arg>
                 <arg><option>-v, --version</option></arg>
                 <arg><option>-d, --debug</option></arg>
-                <arg><option>-b, --batch</option></arg>
             </synopfragment>
             <sbr/>
-            <synopfragment id="information">
-                <group>
-                    <arg><option>-c, --connection_string</option></arg>
-                    <arg><option>-l, --list</option></arg>
-                    <arg><option>-n, --number</option></arg>
-                    <arg><option>-s, --status</option></arg>
-                    <arg><option>--xpdPid</option></arg>
-                    <arg><option>--xpdPort</option></arg>
-                    <arg><option>--agentPid</option></arg>
-                    <arg><option>--agentPort</option></arg>                    
-                </group>
-            </synopfragment>
-            <sbr/>
-            <synopfragment id="connection">
+            <synopfragment id="pod_remote_options_connection" xreflabel="connection options">
                 <arg><option>--remote <replaceable>arg</replaceable></option></arg>
-                <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
                 <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
                 <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
+                <arg><option>--env <replaceable>arg</replaceable></option></arg>                
+            </synopfragment>
+            <sbr/>
+            <synopfragment id="pod_remote_options_commands">
+                <group>
+                    <arg><option>--start</option></arg>
+                    <arg><option>--stop</option></arg>
+                    <arg><option>--restart</option></arg>
+                    <arg><option>--command <replaceable>cmd</replaceable></option></arg>                    
+                </group>
             </synopfragment>
             
         </refsynopsisdiv>
         <refsect1>
             <title>Description</title>
             <para>
-                One can use <command>pod-info</command> to retrieve different kinds of information about and from PoD.
-                For example <command>pod-info</command> could help to find out whether PoD server running or not, how many PROOF workers are already online and
-                which exactly. Please see <xref linkend="pod-info_options"/> to find out all kinds of information <command>pod-info</command> can retrieve and show.
+                In order to use <command>pod-remote</command> <ulink url="http://www.boost.org/">BOOST</ulink> 1.41.0 (or higher) is required.
             </para>
             <para>
-                By default <command>pod-info</command> tries to find and connect to a local PoD server.
-                A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id.
-                It could be the same machine or different machines but with a shared home file system.
+                The <command>pod-remote</command> command offers a possibility to fully control remote PoD servers.
+                A PROOF cluster created using <command>pod-remote</command> is accessed via SSH tunnels, which are automatically
+                managed by <command>pod-remote</command>.
             </para>
             <para>
-                When you want to retrieve information about a remote PoD server, than you need to use the <option>--remote</option> option.
-                Using this option you can specify an ssh connection string, where a remote PoD server is running.
-                The <command>pod-info</command> command will first try to find the running PoD server on that host and than process user requests
-                on that server.
-                In <xref linkend="pod-info_examples"/> you will find some use cases.
+                Using <command>pod-remote</command> it is possible to start/restart/stop remote PoD servers.
+                It is also possible to submit PoD jobs from remote PoD servers in order to set remote PROOF clusters up.
+            </para>
+            <para>    
+                Most importantly,
+                <command>pod-remote</command> automatically creates and handles SSH tunnels for remote PoD servers,
+                so that these servers can be used only via SSH connection - outside of a firewall. Tunnels stay alive until remote server is
+                alive or you restart/stop pod-remote. The pod-remote command creates a background daemon, which regularly checks the status
+                of the remote PoD server and manages tunnels.
+                Another important feature of <command>pod-remote</command> is its integration into PoD, see <xref linkend="pod-remote_examples"/>.
             </para>
             <para>
-                The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+                The <command>pod-remote</command> command remembers all <xref linkend="pod_remote_options_connection"/> values and next time you want to use <command>pod-remote</command>
+                with the same server, you can omit these arguments and just call: <command>pod-remote <option>--start<replaceable>/stop/restart</replaceable></option></command>
+                without <option>--remote</option> and <option>--env</option>. The command will always use the latest given settings.
+                If you want to change the server, just provide new arguments values.
+            </para>
+            <para>
+                The <command>pod-remote</command> utility exits 0 on success, and >0 if an error occurs.    
             </para>
         </refsect1>
-        <refsect1 id="pod-info_options">
+        <refsect1 id="pod-remote_options">
             <title>Options</title>
             <variablelist>
                 <varlistentry>
                     <term><option>-h, --help</option></term>
                     <listitem>
-                        <para>Show summary of options.</para>
+                        <para>Produce help message.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
                     <term><option>-v, --version</option></term>
                     <listitem>
-                        <para>Print version information.</para>
+                        <para>Version information.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -796,67 +809,23 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>-b, --batch</option></term>
-                    <listitem>
-                        <para>Enable the batch mode. For example, in case when the <option>--remote</option> option also used, than there will
-                            be no password prompts or any interaction with a user. The utility will try to use SSH public key authentication and will fail if it's not working.</para>
-                        <para>
-                            The batch mode is very useful, when <command>pod-info</command> is used in a ROOT/PROOF script to retrieve a connection string
-                            (see <xref linkend="pod-info_connection_string"/>).
-                            In this case you want <command>pod-info</command> to return either a PROOF connection string or an empty string
-                            in case of an error and no prompts of any kind.
-                        </para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>-c, --connection_string</option></term>
-                    <listitem>
-                        <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument.</para>
-                    </listitem>
-                </varlistentry> 
-                <varlistentry>
-                    <term><option>-l, --list</option></term>
-                    <listitem>
-                        <para>List all available PROOF workers.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>-n, --number</option></term>
-                    <listitem>
-                        <para>Report a number of currently available PROOF workers.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>-s, --status</option></term>
-                    <listitem>
-                        <para>Show PoD server status.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
                     <term><option>--remote <replaceable>arg</replaceable></option></term>
                     <listitem>
-                        <para>An connection string in form of user@host.fqdn. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>--remote_path <replaceable>arg</replaceable></option></term>
-                    <listitem>
-                        <para>A working directory of the remote PoD server. It is very important either to write an explicit
-                            path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)</para>
+                        <para>A connection string including a remote PoD location. For example: loginname@serverhostname:/PoD/location/pathname</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
                     <term><option>--ssh_opt <replaceable>arg</replaceable></option></term>
                     <listitem>
                         <para>If needed, users can provide additional SSH options,
-                            which will be used by <command>pod-info</command> in all SSH communications.</para>
+                            which will be used by <command>pod-remote</command> in all SSH communications.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
                     <term><option>--ssh_open_domain <replaceable>arg</replaceable></option></term>
                     <listitem>
                         <note><para>
-                            The <option>--ssh_open_domain</option> is in development. So far <command>pod-info</command> can only work with remote PoD servers
+                            The <option>--ssh_open_domain</option> is in development. So far <command>pod-remote</command> can only work with remote PoD servers
                             which are at least directly accessible via SSH.
                         </para></note>
                         <para> The name of a third party machine open to the outside world and from which direct
@@ -864,97 +833,116 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                             The optional argument, can be used when PoD server machine is not directly accessible from outside via SSH.</para>
                     </listitem>
                 </varlistentry>
+                <varlistentry>
+                    <term><option>--env <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>A full path to a local environment script, which will be executed on the remote-end
+                            before PoD starts the server. This is needed in order to get working environment on the remote host before PoD server can be started.
+                            In most of the case you would need to source proper ROOT environment.
+                            You can, of course, also set some other env. variables in the script, if needed.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--start</option></term>
+                    <listitem>
+                        <para>Start remote PoD server.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--stop</option></term>
+                    <listitem>
+                        <para>Stop remote PoD server.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--restart</option></term>
+                    <listitem>
+                        <para>Restart remote PoD server.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--command</option></term>
+                    <listitem>
+                        <para>Execute arbitrary commands.</para>
+                    </listitem>
+                </varlistentry>
             </variablelist>
         </refsect1>
-        <refsect1 id="pod-info_examples"><title>Examples</title>
+        <refsect1 id="pod-remote_examples"><title>Examples</title>
             
-            <example><title>PoD version information</title>
+            <example><title>Using remote PoD server</title>
                 <para>
-                    <screen>
-                        <command>pod-info <replaceable>-v</replaceable></command>
-                    </screen>
-                    Get PoD version from a remote PoD server on the machine <replaceable>server.fqdn</replaceable>
-                    (it could be also on a shared home file system there):
-                    <screen>
-                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-v</option></command>
-                    </screen>
+                    Let's say, I have two machines A and B.
                 </para>
-            </example>
-            
-            <example><title>available PROOF workers</title>
+                <literallayout>
+                    A - is my laptop, for example.
+                    B (host: lxg0527) - is a machine standing somewhere at my work place. From this machine I can submit jobs to my batch system (LSF, for example)
+                    or use it as a server for PoD SSH plug-in.
+                </literallayout>
                 <para>
-                    a number of workers:
-                    <screen>
-                        <command>pod-info <option>-n</option></command>
-                    </screen>
-                    the same from the remote PoD server:
-                    <screen>
-                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-n</option></command>
-                    </screen>
-                    a list of workers:
-                    <screen>
-                        <command>pod-info <option>-l</option></command>
-                    </screen>
-                    or all together:
-                    <screen>
-                        <command>pod-info <option>-nl</option></command>
-                    </screen>
+                    On both machines I have PoD installed.
                 </para>
-            </example>
-            
-            
-            <example id="pod-info_connection_string"><title>PROOF connection string</title>
                 <para>
-                    <screen>
-                        <command>pod-info <option>-c</option></command>
-                    </screen>
-                    the same from the remote PoD server:
-                    <screen>
-                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option></command>
-                    </screen>
-                    or if the remote server has a non-default working folder:
-                    <screen>
-                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>--remote_path <replaceable>"~/pod/work_dir/"</replaceable></option> <option>-c</option></command>
-                    </screen>
-                    
-                    
-                    use this command in a ROOT script or your analysis code directly:
-                    <programlisting>
-                        TProof::Open(gSystem->GetFromPipe(""<command>pod-info <option>-c</option></command>"));
-                    </programlisting>
-                    
-                    with a remote PoD server:
-                    <programlisting>
-                        TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
-                    </programlisting>
-                    note, that we use the <option>-b</option> option, because we can't have any prompt in out ROOT script and
-                    therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failure, users may want to check:
-                    <programlisting>
-                        std::string url(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
-                        if( url.empty() )
-                        {
-                        // PoD server is not running
-                        // print out an error message...
-                        return 1;
-                        }
-                        TProof::Open( url.c_str() );
-                    </programlisting>
+                    All the following commands I issue from my laptop (machine A).
                 </para>
-            </example>
-            
-            <example><title>PoD server status</title>
                 <para>
-                    <screen>
-                        <command>pod-info <option>-s</option></command>
-                    </screen>
-                    the same from the remote PoD server:
-                    <screen>
-                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-s</option></command>
-                    </screen>
+                    Start the remote PoD server:
+<screen>
+<command>pod-remote <option>--start</option> <option>--remote <replaceable>manafov@lxg0527.gsi.de:/misc/manafov/PoD/3.5.75.gbecd4</replaceable></option> <option>--env</option> <replaceable>../GSI_env_5_27.sh</replaceable></command>
+</screen>
+                    The command above starts a remote PoD server on the host <systemitem class="fqdomainname">lxg0527.gsi.de</systemitem>
+                    under the user <systemitem class="username">manafov</systemitem> and uses PoD installed in the <filename class="directory">/misc/manafov/PoD/3.5.75.gbecd4</filename> directory.
+                    To initialize the proper environment on the remote host the <filename>../GSI_env_5_27.sh</filename> script is used.
+                    <para>     
+                        If everything is OK and remote server is started, <command>pod-remote</command> will create and manage special SSH tunnels from machine A to B.
+                        So, the whole PoD communication and PROOF requests will go via these tunnels.
+                    </para>
+                    <para>
+                        To set our remote PROOF cluster up, now we need to submit
+                        PoD jobs from the remote Server (in case of RMS plug-ins):
+<screen>
+<command>pod-remote <option>--command <replaceable>"pod-submit -r lsf -n 50 -q my_lsf_queue"</replaceable></option></command>
+</screen>
+                        or in case of the SSH plug-in
+<screen>
+<command>pod-remote <option>--command <replaceable>"pod-ssh -c --submit"</replaceable></option></command>
+</screen> 
+                        
+                        Using <option>--command</option>, you can execute any command vie SSH on the remote server.
+                    </para>
+                    <para>
+                        Now, you can just use <xref linkend="pod-info"/> as usual, as if everything would run locally:
+<screen>
+<command>pod-info <option>-s</option></command>
+<command>pod-info <option>-c</option></command>
+<command>pod-info <option>-n</option></command>
+...
+</screen>
+                        The <command>pod-info</command> automatically detects that there is a pod-remote-managed server
+                        and will gather the information directly from it via the SSH tunnels.
+                        It means, of course, that to connect from your local machine
+                        to your remote PoD/PROOF cluster you need just to use:
+<programlisting>
+<code language="cpp">TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>-c</option></command>"));</code>
+</programlisting>
+                    </para>
+                    To stop the remote PoD server use:
+<screen>
+<command>pod-remote <option>--stop</option></command>
+</screen>
+                    To start the same server again use the following command.
+                    Note missing <option>--remote</option>. You don't need it.
+                    The command remembers your last valid settings.
+<screen>
+<command>pod-remote <option>--start</option></command>
+</screen>
+                    To restart the server:
+<screen>
+<command>pod-remote <option>--restart</option></command>
+</screen>
                 </para>
             </example>
         </refsect1>
-        
     </refentry>    
 </chapter>
 

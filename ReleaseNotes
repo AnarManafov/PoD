@@ -2,7 +2,7 @@
 
 ## v3.6 (not yet released)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
-     The command can also be used to execute arbitrary commands on the remote PoD server.
+     The command can also be used to execute arbitrary commands on the remote PoD server, such as PoD job submissions.
      To build "pod-remote" the boost 1.41.0 (or higher) is required.
      There could be problems with PROOF via SSH tunnel, see bug-fix: http://root.cern.ch/viewvc?view=rev&revision=39580 in the Revision 39580.
 pod: Implemented an LoadLeveler (IBM Tivoli Workload Scheduler) plug-in. This plug-in can be only used via PoD CLI.
