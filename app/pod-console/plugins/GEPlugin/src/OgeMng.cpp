@@ -365,7 +365,7 @@ string COgeMng::getDefaultNativeSpecification( const string &_queue, size_t _nJo
     // add -@ if the user's option file is exists
     string options_file( m_optionsFile );
     smart_path( &options_file );
-    if( does_file_exists( options_file ) )
+    if( file_exists( options_file ) )
     {
         nativeSpecification += " -@ ";
         nativeSpecification += options_file;
