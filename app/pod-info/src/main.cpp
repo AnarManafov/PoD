@@ -44,7 +44,7 @@ enum EPoDServerType
     SrvType_RemoteManaged
 };
 //=============================================================================
-string version( const CEnvironment &_env, const pod_info::CServer &_srv )
+string version( const CPoDEnvironment &_env, const pod_info::CServer &_srv )
 {
     bool noServer( false );
     PROOFAgent::SHostInfoCmd srvHostInfo;

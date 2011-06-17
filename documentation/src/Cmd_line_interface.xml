@@ -23,7 +23,7 @@
         </refmeta>
         <refnamediv>
             <refname>pod-server</refname>
-            <refpurpose>Manage PoD server</refpurpose>
+            <refpurpose>Manages PoD server</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
@@ -33,6 +33,7 @@
                     <arg>restart</arg>
                     <arg>stop</arg>
                     <arg>status</arg>
+                    <arg>status_with_code</arg>
                     <arg>getbins</arg>
                 </group>
             </cmdsynopsis>
@@ -40,11 +41,15 @@
         <refsect1>
             <title>Description</title>
             <para>
-                Using this command users can start/stop PoD server. PoD server currently includes two daemons, namely xproofd and pod-agent.
+                Using this command users can start/stop/restart PoD server and force to download pre-compiled PoD WN binaries from the central PoD repository.
+                PoD server currently works with two daemons, namely xproofd and pod-agent.
+                <para>
                 When the <option>status</option> argument is used, <command>pod-server</command> will show running processes including their process IDs
                 and used TCP ports. For user convenience the <command>pod-server</command> command with
                 the <option>status</option> option prints also a PROOF connection string (master_host:xproofd_port),
-                which can be used as an argument to <literal>TProof::Open</literal> in PROOF analysis scripts.
+                which can be used as an argument to <literal>TProof::Open</literal> in PROOF analysis scripts. However it is recommended to use <xref linkend="pod-info"/>
+                in order to retrive the current connection string.
+                </para>
             </para>
         </refsect1>
         <refsect1>
@@ -71,7 +76,15 @@
                 <varlistentry>
                     <term><option>status</option></term>
                     <listitem>
-                        <para>Request the status of PoD server. It will show which processes are running, under which PIDs and which TCP ports are used.</para>
+                        <para>Request the status information. It will show which processes are running, under which PIDs and which TCP ports are used.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>status_with_code</option></term>
+                    <listitem>
+                        <para>This option is exactly the same as <option>status</option>.
+                            The only difference is that when the option is used the <command>pod-server</command>
+                            utility exits 0 if PoD server is running, and >0 if it doesn't.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -88,26 +101,6 @@
     
     <!-- ......................................................................... -->
     <!-- pod-info -->
-    
-    <!--  
-      h [ help ]               Produce help message
-      v [ version ]            Version information.
-      d [ debug ]              Show debug messages.
-      c [ connection_string ]  Show PROOF connection string.
-      l [ list ]               List all available PROOF workers.
-      n [ number ]             Report a number of currently available PROOF 
-                                  workers.
-      s [ status ]             Show status of PoD server.
-      ssh arg                   An SSH connection string. Directs pod-info to use
-                                  SSH to detect a remote PoD server.
-      ssh_opt arg               Additional options, which will be used in SSH 
-                                  commands.
-      ssh_open_domain arg       The name of a third party machine open to the 
-                                  outside world and from which direct connections 
-            :if expand("%") == ""|browse confirm w|else|confirm w|endif
-                      to the server are possible.
-      b [ batch ]              Enable the batch mode.
-     -->
     <!-- ......................................................................... -->
     
     <refentry id="pod-info">
@@ -122,28 +115,46 @@
         </refmeta>
         <refnamediv>
             <refname>pod-info</refname>
-            <refpurpose>Show information about PoD and PROOF workers.</refpurpose>
+            <refpurpose>Shows information about PoD and PROOF workers.</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
                 <command>pod-info</command>
-                <group choice="opt">
-                    <arg><option>-h, --help</option></arg>
-                    <arg><option>-v, --version</option></arg>
-                    <arg><option>-d, --debug</option></arg>
-                    <arg><option>-b, --batch</option></arg>
+                <arg choice="plain"><synopfragmentref linkend="general">general options
+                </synopfragmentref></arg>
+                <arg choice="plain"><synopfragmentref linkend="information">information options
+                </synopfragmentref></arg>
+                <arg choice="plain"><synopfragmentref linkend="connection">connection options
+                </synopfragmentref></arg>
+            </cmdsynopsis>
+            <sbr/>
+            <synopfragment id="general">
+                <arg><option>-h, --help</option></arg>
+                <arg><option>-v, --version</option></arg>
+                <arg><option>-d, --debug</option></arg>
+                <arg><option>-b, --batch</option></arg>
+            </synopfragment>
+            <sbr/>
+            <synopfragment id="information">
+                <group>
                     <arg><option>-c, --connection_string</option></arg>
                     <arg><option>-l, --list</option></arg>
                     <arg><option>-n, --number</option></arg>
                     <arg><option>-s, --status</option></arg>
-		 <group choice="opt_ssh">
-                    <arg><option>--remote <replaceable>arg</replaceable></option></arg>
-                    <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
-		    <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
-                    <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
-                 </group>
+                    <arg><option>--xpdPid</option></arg>
+                    <arg><option>--xpdPort</option></arg>
+                    <arg><option>--agentPid</option></arg>
+                    <arg><option>--agentPort</option></arg>                    
                 </group>
-            </cmdsynopsis>
+            </synopfragment>
+            <sbr/>
+            <synopfragment id="connection">
+                <arg><option>--remote <replaceable>arg</replaceable></option></arg>
+                <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
+                <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
+                <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
+            </synopfragment>
+            
         </refsynopsisdiv>
         <refsect1>
             <title>Description</title>
@@ -156,9 +167,11 @@
             By default <command>pod-info</command> tries to find and connect to a local PoD server.
             A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id.
             It could be the same machine or different machines but with a shared home file system.
+            If none of local PoD servers are detected, <command>pod-info</command> will check for any PoD server managed by the <xref linkend="pod-remote"/> command
+            and will connect to the server if found.
             </para>
 	    <para>
-            When you want to retrieve information about a remote PoD server, than you need to use the <option>--remote</option> option.
+            When you want to retrieve information about remote PoD servers, than you need to use the <option>--remote</option> option.
             Using this option you can specify an ssh connection string, where a remote PoD server is running.
             The <command>pod-info</command> command will first try to find the running PoD server on that host and than process user requests
             on that server.
@@ -174,13 +187,13 @@
                 <varlistentry>
                     <term><option>-h, --help</option></term>
                     <listitem>
-                        <para>Show summary of options.</para>
+                        <para>Produce help message.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
                     <term><option>-v, --version</option></term>
                     <listitem>
-                        <para>Print version information.</para>
+                        <para>Version information.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -205,7 +218,7 @@
                 <varlistentry>
                     <term><option>-c, --connection_string</option></term>
                     <listitem>
-                        <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument.</para>
+                        <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument (see <xref linkend="pod-info_connection_string"/>).</para>
                     </listitem>
                 </varlistentry> 
                 <varlistentry>
@@ -478,14 +491,14 @@ the same from the remote PoD server:
         </refmeta>
         <refnamediv>
             <refname>pod-submit</refname>
-            <refpurpose>Submit PoD jobs using a defined resource management system.</refpurpose>
+            <refpurpose>Submits PoD jobs using a defined resource management system.</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
                 <command>pod-submit</command>
                 <arg><option>-h</option></arg>
                 <arg><option>-l</option></arg>
-                <arg><option>-r <replaceable>lsf|pbs|ge|condor</replaceable></option></arg>
+                <arg><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs</replaceable></option></arg>
                 <arg><option>-q <replaceable>queue</replaceable></option></arg>
                 <arg><option>-n <replaceable>X</replaceable></option></arg>
             </cmdsynopsis>
@@ -499,7 +512,8 @@ the same from the remote PoD server:
                     <listitem><para>LSF (Load Sharing Facility),</para></listitem>
                     <listitem><para>PBS Pro/OpenPBS/Torque (Portable Batch System),</para></listitem>
                     <listitem><para>Grid Engine (Oracle/Sun Grid Engine),</para></listitem>
-                    <listitem><para>Condor.</para></listitem>                    
+                    <listitem><para>Condor,</para></listitem>
+                    <listitem><para>LoadLeveler (IBM Tivoli Workload Scheduler LoadLeveler).</para></listitem>
                 </itemizedlist>
             </para>
             <para>
@@ -531,9 +545,9 @@ the same from the remote PoD server:
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>-r <replaceable>lsf|pbs|ge|condor</replaceable></option></term>
+                    <term><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs</replaceable></option></term>
                     <listitem>
-                        <para>A name of the resource management system to use (supported: lsf, pbs, ge, condor).</para>
+                        <para>A name of the resource management system to use.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -554,14 +568,6 @@ the same from the remote PoD server:
     
     <!-- ......................................................................... -->
     <!-- pod-ssh -->
-    <!--
-     "help,h",     Produce help message
-     "version,v"   Version information
-     "config,c",   PoD's ssh plug-in configuration file. A workers description file
-     "submit",     Submit workers
-     "clean",      Clean all workers
-     "status",     Request status of the workers
-     -->
     <!-- ......................................................................... -->
     
     <refentry id="pod-ssh">
@@ -576,7 +582,7 @@ the same from the remote PoD server:
         </refmeta>
         <refnamediv>
             <refname>pod-ssh</refname>
-            <refpurpose>Submits/Cleans PoD workers using an ssh connection.</refpurpose>
+            <refpurpose>Submits, retrieves statuses and cleans PoD workers using SSH connections.</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
@@ -688,5 +694,267 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
         </refsect1>
     </refentry>
     
+    <!-- ......................................................................... -->
+    <!-- pod-remote -->
+    <!-- ......................................................................... -->
+    
+    <refentry id="pod-remote">
+        <refentryinfo>
+            <title>pod-remote</title>
+            <date>2011-06-16</date>
+            <productname>pod-remote vXXX</productname>
+        </refentryinfo>
+        <refmeta>
+            <refentrytitle>pod-remote</refentrytitle>
+            <manvolnum>1</manvolnum>
+        </refmeta>
+        <refnamediv>
+            <refname>pod-remote</refname>
+            <refpurpose>Shows information about PoD and PROOF workers.</refpurpose>
+        </refnamediv>
+        <refsynopsisdiv>
+            <cmdsynopsis>
+                <command>pod-remote</command>
+                <arg choice="plain"><synopfragmentref linkend="general">general options
+                </synopfragmentref></arg>
+                <arg choice="plain"><synopfragmentref linkend="information">information options
+                </synopfragmentref></arg>
+                <arg choice="plain"><synopfragmentref linkend="connection">connection options
+                </synopfragmentref></arg>
+            </cmdsynopsis>
+            <sbr/>
+            <synopfragment id="general">
+                <arg><option>-h, --help</option></arg>
+                <arg><option>-v, --version</option></arg>
+                <arg><option>-d, --debug</option></arg>
+                <arg><option>-b, --batch</option></arg>
+            </synopfragment>
+            <sbr/>
+            <synopfragment id="information">
+                <group>
+                    <arg><option>-c, --connection_string</option></arg>
+                    <arg><option>-l, --list</option></arg>
+                    <arg><option>-n, --number</option></arg>
+                    <arg><option>-s, --status</option></arg>
+                    <arg><option>--xpdPid</option></arg>
+                    <arg><option>--xpdPort</option></arg>
+                    <arg><option>--agentPid</option></arg>
+                    <arg><option>--agentPort</option></arg>                    
+                </group>
+            </synopfragment>
+            <sbr/>
+            <synopfragment id="connection">
+                <arg><option>--remote <replaceable>arg</replaceable></option></arg>
+                <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
+                <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
+                <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
+            </synopfragment>
+            
+        </refsynopsisdiv>
+        <refsect1>
+            <title>Description</title>
+            <para>
+                One can use <command>pod-info</command> to retrieve different kinds of information about and from PoD.
+                For example <command>pod-info</command> could help to find out whether PoD server running or not, how many PROOF workers are already online and
+                which exactly. Please see <xref linkend="pod-info_options"/> to find out all kinds of information <command>pod-info</command> can retrieve and show.
+            </para>
+            <para>
+                By default <command>pod-info</command> tries to find and connect to a local PoD server.
+                A PoD server considered to be a local one if the <command>pod-info</command> and the PoD server run under the same user id.
+                It could be the same machine or different machines but with a shared home file system.
+            </para>
+            <para>
+                When you want to retrieve information about a remote PoD server, than you need to use the <option>--remote</option> option.
+                Using this option you can specify an ssh connection string, where a remote PoD server is running.
+                The <command>pod-info</command> command will first try to find the running PoD server on that host and than process user requests
+                on that server.
+                In <xref linkend="pod-info_examples"/> you will find some use cases.
+            </para>
+            <para>
+                The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+            </para>
+        </refsect1>
+        <refsect1 id="pod-info_options">
+            <title>Options</title>
+            <variablelist>
+                <varlistentry>
+                    <term><option>-h, --help</option></term>
+                    <listitem>
+                        <para>Show summary of options.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-v, --version</option></term>
+                    <listitem>
+                        <para>Print version information.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-d, --debug</option></term>
+                    <listitem>
+                        <para>Show debug messages. This option enables a debug mode and helps in some cases to understand what is going wrong.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-b, --batch</option></term>
+                    <listitem>
+                        <para>Enable the batch mode. For example, in case when the <option>--remote</option> option also used, than there will
+                            be no password prompts or any interaction with a user. The utility will try to use SSH public key authentication and will fail if it's not working.</para>
+                        <para>
+                            The batch mode is very useful, when <command>pod-info</command> is used in a ROOT/PROOF script to retrieve a connection string
+                            (see <xref linkend="pod-info_connection_string"/>).
+                            In this case you want <command>pod-info</command> to return either a PROOF connection string or an empty string
+                            in case of an error and no prompts of any kind.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-c, --connection_string</option></term>
+                    <listitem>
+                        <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument.</para>
+                    </listitem>
+                </varlistentry> 
+                <varlistentry>
+                    <term><option>-l, --list</option></term>
+                    <listitem>
+                        <para>List all available PROOF workers.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-n, --number</option></term>
+                    <listitem>
+                        <para>Report a number of currently available PROOF workers.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-s, --status</option></term>
+                    <listitem>
+                        <para>Show PoD server status.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--remote <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>An connection string in form of user@host.fqdn. Directs <command>pod-info</command> to use SSH to detect and connect to a remote PoD server.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--remote_path <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>A working directory of the remote PoD server. It is very important either to write an explicit
+                            path or use quotes, so that shell will not substitute local variable in the remote path. (default: ~/.PoD/)</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--ssh_opt <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>If needed, users can provide additional SSH options,
+                            which will be used by <command>pod-info</command> in all SSH communications.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--ssh_open_domain <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <note><para>
+                            The <option>--ssh_open_domain</option> is in development. So far <command>pod-info</command> can only work with remote PoD servers
+                            which are at least directly accessible via SSH.
+                        </para></note>
+                        <para> The name of a third party machine open to the outside world and from which direct
+                            connections to the server are possible.
+                            The optional argument, can be used when PoD server machine is not directly accessible from outside via SSH.</para>
+                    </listitem>
+                </varlistentry>
+            </variablelist>
+        </refsect1>
+        <refsect1 id="pod-info_examples"><title>Examples</title>
+            
+            <example><title>PoD version information</title>
+                <para>
+                    <screen>
+                        <command>pod-info <replaceable>-v</replaceable></command>
+                    </screen>
+                    Get PoD version from a remote PoD server on the machine <replaceable>server.fqdn</replaceable>
+                    (it could be also on a shared home file system there):
+                    <screen>
+                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-v</option></command>
+                    </screen>
+                </para>
+            </example>
+            
+            <example><title>available PROOF workers</title>
+                <para>
+                    a number of workers:
+                    <screen>
+                        <command>pod-info <option>-n</option></command>
+                    </screen>
+                    the same from the remote PoD server:
+                    <screen>
+                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-n</option></command>
+                    </screen>
+                    a list of workers:
+                    <screen>
+                        <command>pod-info <option>-l</option></command>
+                    </screen>
+                    or all together:
+                    <screen>
+                        <command>pod-info <option>-nl</option></command>
+                    </screen>
+                </para>
+            </example>
+            
+            
+            <example id="pod-info_connection_string"><title>PROOF connection string</title>
+                <para>
+                    <screen>
+                        <command>pod-info <option>-c</option></command>
+                    </screen>
+                    the same from the remote PoD server:
+                    <screen>
+                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option></command>
+                    </screen>
+                    or if the remote server has a non-default working folder:
+                    <screen>
+                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>--remote_path <replaceable>"~/pod/work_dir/"</replaceable></option> <option>-c</option></command>
+                    </screen>
+                    
+                    
+                    use this command in a ROOT script or your analysis code directly:
+                    <programlisting>
+                        TProof::Open(gSystem->GetFromPipe(""<command>pod-info <option>-c</option></command>"));
+                    </programlisting>
+                    
+                    with a remote PoD server:
+                    <programlisting>
+                        TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
+                    </programlisting>
+                    note, that we use the <option>-b</option> option, because we can't have any prompt in out ROOT script and
+                    therefore the call to <command>pod-info</command> must be silent. Since it will return an empty string in case of failure, users may want to check:
+                    <programlisting>
+                        std::string url(gSystem->GetFromPipe("<command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-c</option> <option>-b</option></command>"));
+                        if( url.empty() )
+                        {
+                        // PoD server is not running
+                        // print out an error message...
+                        return 1;
+                        }
+                        TProof::Open( url.c_str() );
+                    </programlisting>
+                </para>
+            </example>
+            
+            <example><title>PoD server status</title>
+                <para>
+                    <screen>
+                        <command>pod-info <option>-s</option></command>
+                    </screen>
+                    the same from the remote PoD server:
+                    <screen>
+                        <command>pod-info <option>--remote <replaceable>user@server.fqdn</replaceable></option> <option>-s</option></command>
+                    </screen>
+                </para>
+            </example>
+        </refsect1>
+        
+    </refentry>    
 </chapter>
 

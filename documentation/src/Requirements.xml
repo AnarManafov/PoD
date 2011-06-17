@@ -8,7 +8,7 @@
     <sect1 id="User_workspace_requirements">
         <title>User interface</title>
         <para>
-            PoD UI/Server runs on Linux and Mac OS X. On Mac we support only PoD CLI so-far.
+            PoD UI/Server/WN run on Linux and Mac OS X. On Mac we support only PoD CLI so-far.
         </para>
         <para>
             <itemizedlist><title>General requirements: </title>
