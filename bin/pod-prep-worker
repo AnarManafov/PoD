@@ -49,7 +49,7 @@ COMPONENTS=( "${COMPONENTS_ETC[@]}" )
 
 # add user's script if present
 if [ -r "$USER_SCRIPT" ]; then
-   echo "select a user defined environment script to be added to worker package..."
+   echo "select user defined environment script to be added to worker package..."
    COMPONENTS=( "${COMPONENTS[@]}" "$USER_SCRIPT" )
 fi
 
