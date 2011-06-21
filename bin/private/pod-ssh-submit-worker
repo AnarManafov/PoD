@@ -26,6 +26,7 @@ Usage: pod-ssh-submit-worker [OPTION]
      -w dir      		Remote working directory.
      -n X        		Desired number or PROOF workers.
      -o SSH_Opt			Additinal SSH parameters.
+     -d				Verbose mode. Causes pod-ssh-submit-worker to print debugging messages about its progress.
      -h          		Show summary of options.
 
 Report bugs to http://pod.gsi.de
@@ -39,7 +40,8 @@ SSH_CON_STR=""
 RDIR=""
 NWORKERS=1
 SSHOPT=""
-while getopts ":i:l:w:n:o:h" opt; do
+DEBUG=""
+while getopts ":i:l:w:n:o:dh" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -56,6 +58,9 @@ while getopts ":i:l:w:n:o:h" opt; do
   o)
     SSHOPT="$OPTARG"
     ;;
+  d)
+    DEBUG="YES"
+    ;;
   h) 
     usage
     exit 0
@@ -71,6 +76,7 @@ if [ -z "$SSH_CON_STR" ]; then
    usage
    exit 1
 fi
+
 #=============================================================================
 # ***** VARS *****
 #=============================================================================
@@ -80,9 +86,8 @@ eval WRK_P=$(pod-user-defaults --wrkpkg)
 eval WRK_S_L=$(pod-user-defaults --wrkscript)
 WRK_S_R="$(basename "$WRK_S_L") $NWORKERS"
 
-TIMEOUT=30
-
-SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -n -f -q $SSH_CON_STR $SSHOPT"
+SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"
+SSH_CMD="ssh $SSH_OPT_INT  -n -f -q $SSH_CON_STR $SSHOPT"
 #=============================================================================
 # ***** POD-SSH NAMED PIPE *****
 #=============================================================================
@@ -112,7 +117,9 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+   if [ -n "$DEBUG" ]; then
+      echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+   fi
 }
 #=============================================================================
 # ***** MAIN *****
@@ -127,7 +134,7 @@ fi
 
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
-rsync -aq -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
+rsync -aq -e "ssh $SSH_OPT_INT $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
 if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to send worker's package"
     exit 1

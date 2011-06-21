@@ -60,6 +60,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     // TODO: we need to be able to clean only selected worker(s)
     // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
+    ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress." )
     ;
 
     // Parsing command-line
@@ -123,22 +124,28 @@ void repackPkg( string *_cmdOutput )
 //=============================================================================
 int main( int argc, char * argv[] )
 {
-    CLogEngine slog;
-    CPoDEnvironment env;
-    env.init();
-
-    // Collect workers list
-    string pipeName( env.getUD().m_server.m_common.m_workDir );
-    smart_append( &pipeName, '/' );
-    pipeName += g_pipeName;
-    slog.start( pipeName );
-
-    // convert log engine's functor to a free call-back function
-    // this is needed to pass the logger further to other objects
-    log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2, _3 );
     bpo::variables_map vm;
     try
     {
+        if( !parseCmdLine( argc, argv, &vm ) )
+            return 0;
+    }
+    catch( exception& e )
+    {
+        cerr << PROJECT_NAME << ": " << e.what() << endl;
+        return 1;
+    }
+
+    CLogEngine slog( vm.count( "debug" ) );
+    try
+    {
+        // convert log engine's functor to a free call-back function
+        // this is needed to pass the logger further to other objects
+        log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2, _3 );
+
+        CPoDEnvironment env;
+        env.init();
+
         // a number of threads in the thread-pool
         // default is 4 and the maximum is 50.
         // These are just magic numbers. We want to revise them later on...
@@ -146,16 +153,11 @@ int main( int argc, char * argv[] )
         if( nThreads <= 4 || nThreads > 50 )
             nThreads = 4;
 
-        try
-        {
-            if( !parseCmdLine( argc, argv, &vm ) )
-                return 0;
-        }
-        catch( exception& e )
-        {
-            cerr << PROJECT_NAME << ": " << e.what() << endl;
-            return 1;
-        }
+        // Collect workers list
+        string pipeName( env.getUD().m_server.m_common.m_workDir );
+        smart_append( &pipeName, '/' );
+        pipeName += g_pipeName;
+        slog.start( pipeName );
 
 
         string configFile;
@@ -214,24 +216,24 @@ int main( int argc, char * argv[] )
             StringVector_t::const_iterator iter = vec.begin();
             StringVector_t::const_iterator iter_end = vec.end();
             for( ; iter != iter_end; ++iter )
-                slog( *iter + '\n' );
+                slog.debug_msg( *iter + '\n' );
         }
 
         typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
         bool dynWrk( false );
+
         workersList_t workers;
         {
             CConfig config;
             config.readFrom( f );
-
             configRecords_t recs( config.getRecords() );
             configRecords_t::const_iterator iter = recs.begin();
             configRecords_t::const_iterator iter_end = recs.end();
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-                CWorker wrk( rec, log_fun_ptr );
+                CWorker wrk( rec, log_fun_ptr, vm.count( "debug" ) );
                 workers.push_back( wrk );
 
                 if( 0 == rec->m_nWorkers )
@@ -244,28 +246,32 @@ int main( int argc, char * argv[] )
         // some controle information
         ostringstream ss;
         ss << "There are " << nThreads << " threads in the tread-pool.\n";
-        slog( ss.str() );
+        slog.debug_msg( ss.str() );
         ss.str( "" );
         ss << "Number of PoD workers: " << workers.size() << "\n";
-        slog( ss.str() );
+        slog.debug_msg( ss.str() );
         ss.str( "" );
         if( dynWrk )
             ss << "Number of PROOF workers: on some workers is dynamic, according to a number of CPU cores\n";
         else
             ss << "Number of PROOF workers: " << wrkCount << "\n";
-        slog( ss.str() );
+        slog.debug_msg( ss.str() );
 
         // it's a dry run - configuration check only
         if( !vm.count( "submit" ) && !vm.count( "clean" ) && !vm.count( "status" ) )
-            throw runtime_error( "It's a configuration check only. Specify submit/clean options to actually execute." );
+            throw runtime_error( "Running in dry mode. It's a configuration check only mode." );
 
-        slog( "Workers list:\n" );
+        slog.debug_msg( "Workers list:\n" );
 
         // start thread-pool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( nThreads );
         ETaskType task_type( task_submit );
         if( vm.count( "clean" ) )
+        {
             task_type = task_clean;
+            if( !vm.count( "debug" ) )
+                slog( "Cleaning PoD workers...\n" );
+        }
         else if( vm.count( "status" ) )
             task_type = task_status;
 
@@ -276,7 +282,7 @@ int main( int argc, char * argv[] )
             ostringstream ss;
             iter->printInfo( ss );
             ss << "\n";
-            slog( ss.str().c_str() );
+            slog.debug_msg( ss.str().c_str() );
             threadPool.pushTask( *iter, task_type );
         }
         threadPool.stop( true );
@@ -299,7 +305,21 @@ int main( int argc, char * argv[] )
                 << "Successfully processed tasks: " << g << '\n'
                 << "Failed tasks: " << b << '\n'
                 << "*******************\n";
-        slog( msg.str() );
+        slog.debug_msg( msg.str() );
+
+        if( vm.count( "submit" ) && !vm.count( "debug" ) )
+        {
+            ostringstream s_msg;
+            s_msg
+                    << "Successfully submitted " << g
+                    << " out of " << workers.size() << " PoD workers" << '\n';
+            slog( s_msg.str() );
+        }
+
+        if( b > 0 && !vm.count( "debug" ) )
+            slog( "WARNING: some tasks have failed. Please use the \"--debug\""
+                  " option to print debugging messages.\n" );
+
 #if defined (BOOST_PROPERTY_TREE)
         PoD::SPoDSSHOptions opt_file;
         opt_file.m_config = configFile;

@@ -18,10 +18,11 @@ using namespace MiscCommon;
 //=============================================================================
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
-CWorker::CWorker( configRecord_t _rec, log_func_t _log ):
+CWorker::CWorker( configRecord_t _rec, log_func_t _log, bool _debug ):
     m_rec( _rec ),
     m_log( _log ),
-    m_bSuccess( false )
+    m_bSuccess( false ),
+    m_debug( _debug )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -48,100 +49,48 @@ void CWorker::printInfo( ostream &_stream ) const
 //=============================================================================
 void CWorker::runTask( ETaskType _param )
 {
+    StringVector_t params;
+    params.push_back( "-i" + m_rec->m_id );
+    params.push_back( "-l" + m_rec->m_addr );
+    params.push_back( "-w" + m_rec->m_wrkDir );
+    if( !m_rec->m_sshOptions.empty() )
+        params.push_back( "-o" + m_rec->m_sshOptions );
+    if( m_debug )
+        params.push_back( "-d" );
+
+    string cmd;
     switch( _param )
     {
         case task_submit:
-            submit();
-            break;
+            {
+                stringstream ss;
+                ss << "-n" << m_rec->m_nWorkers;
+                params.push_back( ss.str() );
+                cmd = "$POD_LOCATION/bin/private/pod-ssh-submit-worker";
+                break;
+            }
         case task_clean:
-            clean();
+            cmd = "$POD_LOCATION/bin/private/pod-ssh-clean-worker";
             break;
         case task_status:
-            status();
+            cmd = "$POD_LOCATION/bin/private/pod-ssh-status-worker";
             break;
         default:
             return;
     }
+
+    smart_path( &cmd );
+    exec_command( cmd, params );
 }
 //=============================================================================
-void CWorker::submit()
+void CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
 {
     m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/private/pod-ssh-submit-worker" );
-    smart_path( &cmd );
-    StringVector_t params;
-    params.push_back( "-i" + m_rec->m_id );
-    params.push_back( "-l" + m_rec->m_addr );
-    params.push_back( "-w" + m_rec->m_wrkDir );
-    stringstream ss;
-    ss << "-n" << m_rec->m_nWorkers;
-    params.push_back( ss.str() );
-    params.push_back( "-o" + m_rec->m_sshOptions );
 
     string outPut;
     try
     {
-        do_execv( cmd, params, g_cmdTimeout, &outPut );
-    }
-    catch( exception &e )
-    {
-        log( "Failed to process the task.\n" );
-        return;
-    }
-    if( !outPut.empty() )
-    {
-        ostringstream ss;
-        ss << "Cmnd Output: " << outPut << "\n";
-        log( ss.str() );
-    }
-    m_bSuccess = true;
-}
-//=============================================================================
-void CWorker::clean()
-{
-    m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/private/pod-ssh-clean-worker" );
-    smart_path( &cmd );
-    StringVector_t params;
-    params.push_back( "-i" + m_rec->m_id );
-    params.push_back( "-l" + m_rec->m_addr );
-    params.push_back( "-w" + m_rec->m_wrkDir );
-    params.push_back( "-o" + m_rec->m_sshOptions );
-
-    string outPut;
-    try
-    {
-        do_execv( cmd, params, g_cmdTimeout, &outPut );
-    }
-    catch( exception &e )
-    {
-        log( "Failed to process the task.\n" );
-        return;
-    }
-    if( !outPut.empty() )
-    {
-        ostringstream ss;
-        ss << "Cmnd Output: " << outPut << "\n";
-        log( ss.str() );
-    }
-    m_bSuccess = true;
-}
-//=============================================================================
-void CWorker::status()
-{
-    m_bSuccess = false;
-    string cmd( "$POD_LOCATION/bin/private/pod-ssh-status-worker" );
-    smart_path( &cmd );
-    StringVector_t params;
-    params.push_back( "-i" + m_rec->m_id );
-    params.push_back( "-l" + m_rec->m_addr );
-    params.push_back( "-w" + m_rec->m_wrkDir );
-    params.push_back( "-o" + m_rec->m_sshOptions );
-
-    string outPut;
-    try
-    {
-        do_execv( cmd, params, g_cmdTimeout, &outPut );
+        do_execv( _cmd, _params, g_cmdTimeout, &outPut );
     }
     catch( exception &e )
     {
@@ -159,5 +108,5 @@ void CWorker::status()
 //=============================================================================
 void CWorker::log( const std::string &_msg )
 {
-    m_log( _msg, m_rec->m_id, false );
+    m_log( _msg, m_rec->m_id, true );
 }

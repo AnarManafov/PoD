@@ -13,8 +13,10 @@ pod: Users now able to add custom settings to xpd configuration file, which is g
 pod: PoD WN has bin ported to MacOSX (10.6).
 pod: Now each PoD WN starts its own xproofd daemon,
      in this case we can control and handle each PoD worker individually (this is important for AliEn integration).
-pod: The "pod-info" command can be used now to retrieve port numbers of xpd and pod-agent.
-pod: The "pod-ssh" command now remembers the "--config" value if once entered. There is no need to write it again if the same when executing pod-ssh next time.
+pod_info: The "pod-info" command can be used now to retrieve port numbers of xpd and pod-agent.
+pod_ssh: The "pod-ssh" command now remembers the "--config" value if once entered. There is no need to write it again if the same when executing pod-ssh next time.
+pod_ssh: The command learned "--debug/-d" option. Verbose mode. Causes pod-ssh to print debugging messages about its progress. 
+pod_ssh: The command has now a cleaner output. Most of the output messages are switched off and can be switched on via the "--debug" option.
 pod: Updated Users's Manual.
 
 ## v3.4 (2011-02-23)

@@ -11,6 +11,8 @@
 //=============================================================================
 // std
 #include <iosfwd>
+// MiscCommon
+#include "def.h"
 // pod-ssh
 #include "config.h"
 #include "threadPool.h"
@@ -21,7 +23,7 @@ enum ETaskType {task_submit, task_clean, task_status};
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
-        CWorker( configRecord_t _rec, log_func_t _log );
+        CWorker( configRecord_t _rec, log_func_t _log, bool _debug );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
@@ -32,14 +34,14 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
         }
 
     private:
-        void submit();
-        void clean();
-        void status();
+        void exec_command( const std::string &_cmd,
+                           const MiscCommon::StringVector_t &_params );
         void log( const std::string &_msg );
 
     private:
         configRecord_t m_rec;
         log_func_t m_log;
         bool m_bSuccess;
+        bool m_debug;
 };
 #endif

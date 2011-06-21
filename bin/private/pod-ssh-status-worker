@@ -25,6 +25,7 @@ Usage: pod-ssh-status-worker [OPTION]
      -l ssh login@host.fqdn 	SSH connection string.
      -w dir      		Remote working directory.
      -o SSH_Opt			Additinal SSH parameters.
+     -d				Verbose mode. Causes pod-ssh-status-worker to print debugging messages about its progress.
      -h          		Show summary of options.
 
 Report bugs to http://pod.gsi.de
@@ -37,7 +38,8 @@ WORKER_ID=""
 SSH_CON_STR=""
 RDIR=""
 SSHOPT=""
-while getopts ":i:l:w:o:c:h" opt; do
+DEBUG=""
+while getopts ":i:l:w:o:c:dh" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -50,6 +52,9 @@ while getopts ":i:l:w:o:c:h" opt; do
     ;;
   o)
     SSHOPT="$OPTARG"
+    ;;
+  d)
+    DEBUG="YES"
     ;;
   h) 
     usage
@@ -71,9 +76,9 @@ fi
 #=============================================================================
 TOOL_NAME="pod-ssh-status-worker"
 WRK_PID=PoDWorker.pid
-TIMEOUT=10
 
-SSH_CMD="ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectTimeout=$TIMEOUT -o PasswordAuthentication=no -q $SSH_CON_STR $SSHOPT"
+SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"
+SSH_CMD="ssh $SSH_OPT_INT -q $SSH_CON_STR $SSHOPT"
 #=============================================================================
 # ***** POD-SSH NAMED PIPE *****
 #=============================================================================
@@ -104,7 +109,22 @@ logMsg()
 # *    www, dd mmm yyyy hh:mm:ss +zzzz
 #
 # Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
-    echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+   if [ -n "$DEBUG" ]; then
+      echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+   fi
+}
+printStatus()
+{
+# date format
+#RFC-2822:
+# *    www, dd mmm yyyy hh:mm:ss +zzzz
+#
+# Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
+   if [ -n "$DEBUG" ]; then
+      echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\tPoD worker status: $1" > $pipe
+   else
+      echo -e "PoD worker \"$WORKER_ID\": $1" > $pipe
+   fi
 }
 #=============================================================================
 # ***** local part *****
@@ -115,7 +135,7 @@ logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, sshopt: $SSHOPT)"
 $SSH_CMD "test -d $RDIR || exit 5" 2>&1 | logMsgPipe
 ret=${PIPESTATUS[0]}
 if (( $ret == 5 )); then
-   logMsg "Worker status: CLEAN"
+   printStatus "CLEAN"
    exit 0
 elif (( $ret != 0 )); then
    exit 1
@@ -133,13 +153,13 @@ if (( $ret == 1 )); then
 fi
 
 if (( $ret == 5 )); then
-   logMsg "Worker status: DONE"
+   printStatus "DONE"
    exit 0
 elif (( $ret == 4 )); then
-   logMsg "Worker status: RUN"
+   printStatus "RUN"
    exit 0
 fi
 
-logMsg "Worker status: UNKNOWN"
+printStatus "UNKNOWN"
 exit 0
 
