@@ -253,7 +253,7 @@ int main( int argc, char *argv[] )
             close( stderr_pipe[1] ); // close one of the file descriptors (stdout is still open)
 
             // Now, exec this child into a shell process.
-            slog( "child: " + options.cleanConnectionString() + '\n' );
+            slog.debug_msg( "child: " + options.cleanConnectionString() + '\n' );
             execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
                    options.cleanConnectionString().c_str(), NULL );
             // we must never come to this point
@@ -263,7 +263,7 @@ int main( int argc, char *argv[] )
         {
             stringstream sspid;
             sspid << "forking a child process with pid = " << pid << '\n';
-            slog( sspid.str() );
+            slog.debug_msg( sspid.str() );
             close( stdin_pipe[0] ); // This will never be used by this fork
             close( stdout_pipe[1] ); // This will never be used by this fork
             close( stderr_pipe[1] ); // This will never be used by this fork
@@ -279,13 +279,13 @@ int main( int argc, char *argv[] )
 
                 string env(( istreambuf_iterator<char>( f ) ),
                            istreambuf_iterator<char>() );
-                slog( "Executing custom environment script...\n" );
+                slog.debug_msg( "Executing custom environment script...\n" );
                 inet::sendall( stdin_pipe[1],
                                reinterpret_cast<const unsigned char*>( env.c_str() ),
                                env.size(), 0 );
             }
 
-            slog( "Executing PoD environment script...\n" );
+            slog.debug_msg( "Executing PoD environment script...\n" );
             //
             // source PoD environment script
             string pod_env_script( options.remotePoDLocation() );
@@ -313,7 +313,7 @@ int main( int argc, char *argv[] )
             stringstream ss_cmd_resp;
             ss_cmd_resp << "remote end reports: "
                         << msg_string.get() << '\n';
-            slog( ss_cmd_resp.str() );
+            slog.debug_msg( ss_cmd_resp.str() );
         }
         else if( options.m_start || options.m_restart )
         {
@@ -339,7 +339,7 @@ int main( int argc, char *argv[] )
             //
             stringstream ss;
             ss
-                    << "Starting the remote PoD server on "
+                    << "Starting remote PoD server on "
                     << options.m_sshConnectionStr << '\n';
             slog( ss.str() );
 
@@ -362,7 +362,7 @@ int main( int argc, char *argv[] )
                 msg.parse( msg_string, slog );
                 slog.debug_msg( msg_string.get() );
             }
-            slog( "Checking service ports...\n" );
+            slog.debug_msg( "Checking service ports...\n" );
             // check for pod-agent port on the remote server
             {
                 send_cmd( stdin_pipe[1], "pod-info --agentPort" );
@@ -428,6 +428,7 @@ int main( int argc, char *argv[] )
             opt_file.m_localXpdPort = xpdPortListen;
             opt_file.save( env.pod_remoteCfgFile() );
 
+            slog( "Server is started. Use \"pod-info -sd\" to check the status of the server.\n" );
             // daemonize the process
 
             // Stop the Log Engine

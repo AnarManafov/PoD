@@ -274,6 +274,10 @@ int main( int argc, char * argv[] )
         }
         else if( vm.count( "status" ) )
             task_type = task_status;
+        else if( vm.count( "submit" ) && !vm.count( "debug" ) )
+        {
+            slog( "Submitting PoD workers...\n" );
+        }
 
         workersList_t::iterator iter = workers.begin();
         workersList_t::iterator iter_end = workers.end();
