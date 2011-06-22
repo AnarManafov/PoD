@@ -4,7 +4,13 @@
 <chapter id="How_to_run">
     <title>How to run</title>
     <chapterinfo>
-    </chapterinfo>           
+    </chapterinfo>
+    <note><title>Prefer CLI over GUI</title>
+        <para>PoD provides both, GUI and CLI. Never the less, it is very much
+        recommended to use CLI over GUI. Recently PoD has gotten a number of new features
+        and at the moment only the CLI reflects the latest changes.
+        The GUI is following new development and soon will be also heavily redesigned.
+    </para></note>
     <sect1 id="Environment">
         <title>Environment</title>
         <para>
@@ -20,6 +26,15 @@
     
     <sect1 id="Server">
         <title>Server</title>
+        <sect2>
+            <title>CLI</title>
+            <para>
+                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+<screen>
+<command>pod-server <parameter class='command'>start</parameter></command>
+</screen>
+            </para>
+        </sect2>
         <sect2>
             <title>GUI</title>
             <para>
@@ -50,16 +65,6 @@
             <para>
                 The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
                 been pressed and PoD services are up - PoD Server is up and running.
-            </para>
-        </sect2>
-        
-        <sect2>
-            <title>CLI</title>
-            <para>
-                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
-<screen>
-<command>pod-server <parameter class='command'>start</parameter></command>
-</screen>
             </para>
         </sect2>
     </sect1>
@@ -120,6 +125,29 @@
             
         </sect2>
         <sect2>
+            <title>CLI</title>
+            <para>
+                Use the <xref linkend="pod-info"/> command to find out a number
+<screen>
+<command>pod-info <parameter class='command'>-n</parameter></command>
+</screen>
+                or a list
+<screen>
+<command>pod-info <parameter class='command'>-l</parameter></command>
+</screen>
+                of available PROOF workers.
+            </para>
+            <para>
+                Using <command>pod-info <parameter class='command'>-l</parameter></command> you can also check, whether a direct connection (preferable) or
+                a packet forwarded connection is used to connect PROOF server to workers. PoD y default automatically chooses the type of connections.
+            </para>
+            <para>
+                If PoD server can't directly connect to its workers on xpd port, then the packet forwarded connection is used. With this type of connection,
+                some PROOF functions will be limited. For example, workers can't be used as parallel sub-mergers, since a direct connection between workers will be required.
+                We therefore recommend to open an xpd port range (PoD user defaults: worker.xproof_ports_range_(min/max)) for incoming connections on the worker nodes. This will help PoD to set up the most efficient type of connection.
+            </para>
+        </sect2>
+        <sect2>
             <title>GUI</title>
             <para>
                 A list of accepted workers could be checked on Workers page of pod-console
@@ -135,20 +163,6 @@
                         </textobject>
                     </mediaobject></screenshot>
                 </figure></para>
-            </para>
-        </sect2>      
-        <sect2>
-            <title>CLI</title>
-            <para>
-                Use the <xref linkend="pod-info"/> command to find out a number
-<screen>
-<command>pod-info <parameter class='command'>-n</parameter></command>
-</screen>
-                or a list
-<screen>
-<command>pod-info <parameter class='command'>-l</parameter></command>
-</screen>
-                of available PROOF workers.
             </para>
         </sect2>
         

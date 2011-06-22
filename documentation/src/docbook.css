@@ -300,7 +300,7 @@
         line-height: 1.2;
         display: block;
         margin: 1pc 4% 0pc 4%;
-        padding: 0.5pc 0.5pc 0.5pc 0.5pc;
+        padding: 0.5pc 0.5pc 0.5pc 0.5pc;    
     }
 
     p.blurb img
@@ -443,6 +443,8 @@
         .screen
         {
             border: 1px solid #DCDCDC;
+            background-color: #EFF5FB;
+
         }
 
         td .programlisting,
@@ -460,6 +462,7 @@
         p.blurb
         {
             border: 1px solid #DCDCDC;
+            background-color: #F7F2E0;
         }
 
     /* Table of contents */
@@ -516,6 +519,7 @@
         pre.synopsis
         {
             border: 1px solid gray;
+             background-color: #EFF5FB;
         }
 
         .programlisting,

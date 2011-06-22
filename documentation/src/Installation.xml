@@ -106,9 +106,9 @@ Installation
 <command>make install</command>
 </screen>
       <note><para>
-         Please note, that by default <application>PoD</application> will be installed in <envar>$HOME</envar>/PoD/vX.Y.Z, where X.Y.Z is a version of
+         Please note, that by default <application>PoD</application> will be installed in <envar>$HOME</envar>/PoD/X.Y.Z, where X.Y.Z is a version of
          <application>PoD</application>.
-         However a user can change this behavior by setting the install prefix path in a bootstrap script <filename>$POD_LOCATION/BuildSetup.cmake</filename>.
+         However users can change this behavior by setting the install prefix path in the bootstrap script <filename>BuildSetup.cmake</filename>.
          Just uncomment the setting of CMAKE_INSTALL_PREFIX variable and change dummy MY_PATH_HERE to a desired path.
       </para></note>
    </para>

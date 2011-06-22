@@ -422,7 +422,7 @@ source /etc/profile_extr
             In most of use cases it is not needed to modify the configuration.
         </para>
         <para>
-            PoD is only meant to help to setup a PROOF cluster on the fly using a remote worker nodes. A data access is not
+            PoD is only meant to help to setup a PROOF cluster on the fly using remote worker nodes. A data access is not
             a part of its responsibility.</para>
     </sect1>
     

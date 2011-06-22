@@ -45,6 +45,10 @@
             <itemizedlist><title>General requirements: </title>
                 <listitem>Outgoing connection for a port in a range (configurable).
                     This is needed by pod-agent worker to be able to connect to a server</listitem>
+                <listitem><ulink url="http://root.cern.ch">ROOT</ulink> 5.25.04 or higher (xrootd enabled).
+                    A ROOT installation on worker nodes is not strictly required, but is recommended. If available, it will significantly speed up the start up time of the PoD workers.
+                    If there is no ROOT on WNs, PoD will download and use its default ROOT version for every worker node, which can increase the start up time of the workers and the network traffic.
+                </listitem>                
                 <listitem>shell: BASH</listitem>
             </itemizedlist>
             <itemizedlist><title>Additional requirements for gLite plug-in: </title>
