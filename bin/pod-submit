@@ -9,13 +9,19 @@
 #        created by:        Anar Manafov
 #                           2010-01-28
 #
-#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 #
+# PoD environment variables used by the script:
+#    POD_RMS_DEFAULT_QUEUE   : the name of the RMS queue,
+#                              which PoD should use if the -q parameter is not provided.
+#			       If empty or not set, PoD will use "proof" as a queue name.
+# 
+#
 # PoD environment variables exported to the workers:
-#  POD_SRV_WORKDIR     : PoD server's working directory
-#  POD_UI_LOG_LOCATION : log dir on the PoD UI
-#  POD_UI_LOCATION     : $POD_LOCATION of the PoD UI
+#    POD_SRV_WORKDIR       : PoD server's working directory
+#    POD_UI_LOG_LOCATION   : log dir on the PoD UI
+#    POD_UI_LOCATION       : $POD_LOCATION of the PoD UI
 #
 PLUG_DIR="$POD_LOCATION/plugins/cli"
 #=============================================================================
@@ -23,8 +29,8 @@ PLUG_DIR="$POD_LOCATION/plugins/cli"
 #=============================================================================
 usage() {
     cat <<EOF
-PoD command line utility, which can be used to manually submit PoD jobs using LSF.
-   Copyright (C) 2010 GSI, Scientific Computing group.
+PoD command line utility, which can be used to manually submit PoD jobs using a supported RMS.
+   Copyright (C) 2010-2011 GSI, Scientific Computing devision. All rights reserved..
 
 Usage: pod-info [OPTION]
      -l          Show all available RMS plug-ins.
@@ -57,7 +63,13 @@ list_plugins()
 # ***** MAIN  *****
 #=============================================================================
 RMS=""
-QUEUE="proof"
+
+if [ -n "$POD_RMS_DEFAULT_QUEUE" ]; then
+   QUEUE="$POD_RMS_DEFAULT_QUEUE"
+else
+   QUEUE="proof"
+fi
+
 NUM_WRK=10
 while getopts "hlq:n:r:" opt; do
    case $opt in
@@ -108,8 +120,8 @@ export POD_UI_LOCATION=$POD_LOCATION
 # repack the worker package if needed
 $POD_LOCATION/bin/pod-prep-worker &>/dev/null
 if (( $? != 0 )); then
-   echo "Error: Can't create PoD worker package.\n"
-   echo "Check the errors by executing: pod-prep-worker"
+   echo "Error: Can't create PoD worker package."
+   echo "Check errors by executing: pod-prep-worker"
 fi
 # execute the selected plug-in
 $PLUG_CMD -q $QUEUE -n $NUM_WRK
