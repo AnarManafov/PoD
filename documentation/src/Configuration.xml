@@ -48,10 +48,10 @@ visual_bell=yes
                         is equivalent to
 <screen>
 gui.accessibility.visual_bell=yes
-</screen>      
+</screen>
                     </para>
                 </listitem>
-            </itemizedlist> 
+            </itemizedlist>
         </para>
         
         <para>
@@ -61,7 +61,7 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>key</entry>
                             <entry>value</entry>
-                            <entry>Description</entry>        
+                            <entry>Description</entry>
                         </row>
                     </thead>
                     <tbody>
@@ -113,22 +113,22 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>server.xproof_ports_range_(min/max)</entry>
                             <entry>numeric (default: 21001/22000)</entry>
-                            <entry><para>Recommended for advanced users only.</para> 
-                                PoD's automatic port mapping algorithms use this range to dynamically assign ports 
+                            <entry><para>Recommended for advanced users only.</para>
+                                PoD's automatic port mapping algorithms use this range to dynamically assign ports
                                 to xproof plug-in of xrootd when restarting a PoD server.
-                                In multi-user/core environment, when there are many PoD processes on the 
-                                same physical machine, the automatic port mapping prevents different PoD process of 
+                                In multi-user/core environment, when there are many PoD processes on the
+                                same physical machine, the automatic port mapping prevents different PoD process of
                                 different users to disturb each other.
                             </entry>
                         </row>
                         <row>
                             <entry>server.agent_ports_range_(min/max)</entry>
                             <entry>numeric (default: 22001/23000)</entry>
-                            <entry><para>Recommended for advanced users only.</para> 
-                                PoD's automatic port mapping algorithms use this range to dynamically assign ports 
+                            <entry><para>Recommended for advanced users only.</para>
+                                PoD's automatic port mapping algorithms use this range to dynamically assign ports
                                 to <application>pod-agent</application> when restarting a PoD server.
-                                In multi-user/core environment, when there are many PoD processes on the 
-                                same physical machine, the automatic port mapping prevents different PoD process of 
+                                In multi-user/core environment, when there are many PoD processes on the
+                                same physical machine, the automatic port mapping prevents different PoD process of
                                 different users to disturb each other.
                             </entry>
                         </row>
@@ -148,7 +148,7 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>server.packet_forwarding</entry>
                             <entry> yes/no/auto (default: auto)</entry>
-                            <entry>If workers are behind a firewall than PoD will use its packet-forwarding (PF) algorithms 
+                            <entry>If workers are behind a firewall than PoD will use its packet-forwarding (PF) algorithms
                                 to maintain the PROOF traffic between server and workers.
                                 By setting this key to "yes" you force PoD to use PF in any case. If "auto" is set than PoD
                                 will decide on the fly whether to use PF for each worker individually based on the possibility
@@ -166,7 +166,7 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>key</entry>
                             <entry>value</entry>
-                            <entry>Description</entry>        
+                            <entry>Description</entry>
                         </row>
                     </thead>
                     <tbody>
@@ -227,11 +227,11 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>worker.xproof_ports_range_(min/max)</entry>
                             <entry>numeric (default: 21001/22000)</entry>
-                            <entry><para>Recommended for advanced users only.</para> 
-                                PoD's automatic port mapping algorithms use this range to dynamically assign ports 
+                            <entry><para>Recommended for advanced users only.</para>
+                                PoD's automatic port mapping algorithms use this range to dynamically assign ports
                                 to xproof plug-in of xrootd when starting a PoD worker.
-                                In multi-user/core environment, when there are many PoD processes on the 
-                                same physical machine, the automatic port mapping prevents different PoD process of 
+                                In multi-user/core environment, when there are many PoD processes on the
+                                same physical machine, the automatic port mapping prevents different PoD process of
                                 different users to disturb each other.
                             </entry>
                         </row>
@@ -253,7 +253,7 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>key</entry>
                             <entry>value</entry>
-                            <entry>Description</entry>        
+                            <entry>Description</entry>
                         </row>
                     </thead>
                     <tbody>
@@ -266,8 +266,8 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>lsf_plugin.upload_job_log</entry>
                             <entry>yes/no (default: no)</entry>
-                            <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
-                                Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
+                            <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                                Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>
                         </row>
                     </tbody>
                 </tgroup>
@@ -282,15 +282,15 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>key</entry>
                             <entry>value</entry>
-                            <entry>Description</entry>        
+                            <entry>Description</entry>
                         </row>
                     </thead>
                     <tbody>
                         <row>
                             <entry>pbs_plugin.upload_job_log</entry>
                             <entry>yes/no (default: no)</entry>
-                            <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
-                                Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
+                            <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                                Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>
                         </row>
                     </tbody>
                 </tgroup>
@@ -305,7 +305,7 @@ gui.accessibility.visual_bell=yes
                         <row>
                             <entry>key</entry>
                             <entry>value</entry>
-                            <entry>Description</entry>        
+                            <entry>Description</entry>
                         </row>
                     </thead>
                     <tbody>
@@ -313,7 +313,7 @@ gui.accessibility.visual_bell=yes
                             <entry>ge_plugin.upload_job_log</entry>
                             <entry>yes/no (default: no)</entry>
                             <entry>
-                                The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
+                                The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
                                 Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.
                             </entry>
                         </row>
@@ -329,12 +329,12 @@ gui.accessibility.visual_bell=yes
                                 See
                                 <ulink url="http://gridengine.sunsource.net/nonav/source/browse/~checkout~/gridengine/doc/htmlman/htmlman1/qsub.html">qsub man page of GE</ulink>
                                 for more information on the option file (search for the "-@" option in the man page).
-                            </entry>  
-                        </row>                        
+                            </entry>
+                        </row>
                     </tbody>
                 </tgroup>
             </table>
-        </para>    
+        </para>
 
             <para>
                 <table id="Condor_CFG_TABLE">
@@ -344,15 +344,15 @@ gui.accessibility.visual_bell=yes
                             <row>
                                 <entry>key</entry>
                                 <entry>value</entry>
-                                <entry>Description</entry>        
+                                <entry>Description</entry>
                             </row>
                         </thead>
                         <tbody>
                             <row>
                                 <entry>condor_plugin.upload_job_log</entry>
                                 <entry>yes/no (default: no)</entry>
-                                <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed. 
-                                    Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>        
+                                <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
+                                    Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>
                             </row>
                             <row id="condor_plugin.options_file" xreflabel="condor_plugin.options_file">
                                 <entry>condor_plugin.options_file</entry>
@@ -363,7 +363,7 @@ gui.accessibility.visual_bell=yes
                                     PoD job submission, these settings can be provided via a file specified by the
                                     <xref linkend="condor_plugin.options_file"/> option.
                                     Settings from this file will be added to the default PoD job description file.
-                                    The options file should in the format of standard condor description files.</entry>  
+                                    The options file should in the format of standard condor description files.</entry>
                             </row>
                         </tbody>
                     </tgroup>
@@ -379,9 +379,9 @@ gui.accessibility.visual_bell=yes
             PoD provides a possibility for users to execute a custom environment script on workers before PoD processes start.
         </para>
         <para>
-            Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user_worker_env.sh</filename> or 
+            Users need to create a shell script file with the <filename>$POD_LOCATION/etc/user_worker_env.sh</filename> or
             <filename>$HOME/.PoD/user_worker_env.sh</filename> name and to code there all
-            variables and commands to export to the workers. PoD will automatically transfer the script to each worker node and 
+            variables and commands to export to the workers. PoD will automatically transfer the script to each worker node and
             source it there.
         </para>
         <para>
@@ -389,9 +389,9 @@ gui.accessibility.visual_bell=yes
 <programlisting>
 #! /usr/bin/env bash
 
-export ROOTSYS=/usr/local/pub/debian4.0/x86_64/gcc411-21/rootmgr/526-00
-export PATH=$ROOTSYS/bin:$PATH
-export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH
+source /usr/local/pub/debian4.0/x86_64/gcc411-21/526-00/bin/thisroot.sh
+
+export LD_LIBRARY_PATH=$MYLIBS/lib:$LD_LIBRARY_PATH
 export MYVAR="some vallue :)"
 
 # I need also my special profile there
@@ -400,7 +400,7 @@ source /etc/profile_extr
         </para>
         <para>
             Be advised, that you need to recreate PoD worker package every time, when you modify the user script or if you removed it.
-            To recreate the package, just call: <command>pod-prep-worker</command> 
+            To recreate the package, just call: <command>pod-prep-worker</command>
         </para>
     </sect1>
     

@@ -1,10 +1,10 @@
-<!-- 
-Installation 
+<!--
+Installation
 -->
 <chapter id="Installation"><title>Installation</title>
 <chapterinfo>
 </chapterinfo>
-    
+
     <para>
         PoD supports Private and Shared installations.
     </para>
@@ -49,33 +49,33 @@ Installation
       <thead>
          <row>
             <entry>Variable</entry>
-            <entry>Description</entry>        
+            <entry>Description</entry>
       	 </row>
       </thead>
       <tbody>
          <row>
             <entry>CMAKE_INSTALL_PREFIX</entry>
             <entry>Install path prefix, prepended onto install directories.(default $HOME/PoD/[PoD_Version])</entry>
-         </row>     
+         </row>
          <row>
             <entry>CMAKE_BUILD_TYPE</entry>
             <entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default Release)</entry>
          </row>
       	 <row>
             <entry>BUILD_GLITE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>        
+            <entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_LSF_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>        
+            <entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_PBS_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>        
+            <entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_GE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>        
+            <entry>Switch on or off the configuration and build of PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       </tbody>
       </tgroup>
@@ -92,7 +92,7 @@ Installation
    
     <tip><para>
        If for some reason, for example a missing dependency, configuration failed, after fixing the issue before starting the <command>cmake</command> command
-       it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the 
+       it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the
        source configuration is restarted.
     </para></tip>
 </sect1>
@@ -126,7 +126,7 @@ Installation
       Simplify it by sourcing the script in your bash profile.
    </para>
    <para>
-      Now the installation is done. But if you were preparing a shared installation, then please see the <xref linkend="step5"/> as well. 
+      Now the installation is done. But if you were preparing a shared installation, then please see the <xref linkend="step5"/> as well.
       <important><para>
        	If there were problems during the installation, please see <xref linkend="Support"/> or <xref linkend="Known_Issues"/>.
       </para></important>
@@ -136,7 +136,7 @@ Installation
     <sect1 id="step5"><title>Step #5: PoD shared Installation</title>
         <para>
             If you installed PoD in some central location (by changing the default CMAKE_INSTALL_PREFIX, see <xref linkend="step2"/>),
-            than you need to make one simple additional step. 
+            than you need to make one simple additional step.
         </para>
         <para>
             Normally central installations or shared installations are restricted for read-only for users.
@@ -152,4 +152,3 @@ Installation
     </sect1>
 
 </chapter>
-  

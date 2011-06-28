@@ -1,15 +1,15 @@
-<!-- 
- Command-line interface 
+<!--
+ Command-line interface
  -->
 <chapter id="Cmd_line_interface">
     <title>Command-line interface</title>
     <chapterinfo>
     </chapterinfo>
-    
-    
+
     <!-- ......................................................................... -->
     <!-- pod-server -->
     <!-- ......................................................................... -->
+    
     
     <refentry id="pod-server">
         <refentryinfo>
@@ -66,7 +66,7 @@
                     <listitem>
                         <para>Restart PoD server.</para>
                     </listitem>
-                </varlistentry>                
+                </varlistentry>
                 <varlistentry>
                     <term><option>stop</option></term>
                     <listitem>
@@ -94,7 +94,7 @@
                             The binaries than saved to <filename class="directory">$POD_LOCATION/bin/wn_bins</filename> directory.
                         </para>
                     </listitem>
-                </varlistentry>                
+                </varlistentry>
             </variablelist>
         </refsect1>
     </refentry>
@@ -144,13 +144,13 @@
                     <arg><option>--xpdPid</option></arg>
                     <arg><option>--xpdPort</option></arg>
                     <arg><option>--agentPid</option></arg>
-                    <arg><option>--agentPort</option></arg>                    
+                    <arg><option>--agentPort</option></arg>
                 </group>
             </synopfragment>
             <sbr/>
             <synopfragment id="connection">
                 <arg><option>--remote <replaceable>arg</replaceable></option></arg>
-                <arg><option>--remote_path <replaceable>arg</replaceable></option></arg> 
+                <arg><option>--remote_path <replaceable>arg</replaceable></option></arg>
                 <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
                 <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
             </synopfragment>
@@ -178,7 +178,7 @@
             In <xref linkend="pod-info_examples"/> you will find some use cases.
             </para>
             <para>
-                The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.    
+                The <command>pod-info</command> utility exits 0 on success, and >0 if an error occurs.
             </para>
         </refsect1>
         <refsect1 id="pod-info_options">
@@ -220,7 +220,7 @@
                     <listitem>
                         <para>Show a PROOF connection string, which could be passed to the TProof::Open method as an argument (see <xref linkend="pod-info_connection_string"/>).</para>
                     </listitem>
-                </varlistentry> 
+                </varlistentry>
                 <varlistentry>
                     <term><option>-l, --list</option></term>
                     <listitem>
@@ -517,8 +517,8 @@ the same from the remote PoD server:
                 </itemizedlist>
             </para>
             <para>
-            Use <command>pod-submit <option>-l</option></command> to find out the 
-            list of avaliable and supported CLI plug-ins.
+            Use <command>pod-submit <option>-l</option></command> to find out the
+            list of available and supported CLI plug-ins.
             <note><para>
                 The pod-submit can't be used to submit SSH jobs.
                 In order to use PoD SSH plug-in, please check the
@@ -526,7 +526,11 @@ the same from the remote PoD server:
             </para></note>
             </para>
             <para>
-                The <command>pod-submit</command> utility exits 0 on success, and >0 if an error occurs.    
+                The <envar>$POD_RMS_DEFAULT_QUEUE</envar> environment variable can be used to define a default RMS queue.
+                If no "-q" option is provided to "pod-submit", then the value of this variable is used.
+            </para>
+            <para>
+                The <command>pod-submit</command> utility exits 0 on success, and >0 if an error occurs.
             </para>
         </refsect1>
         <refsect1>
@@ -553,13 +557,13 @@ the same from the remote PoD server:
                 <varlistentry>
                     <term><option>-q <replaceable>queue</replaceable></option></term>
                     <listitem>
-                        <para>Submit the jobs to specified <option>queue</option>.</para>
+                        <para>Submit the jobs to specified <option>queue</option>. (default: "proof" if the value of <envar>$POD_RMS_DEFAULT_QUEUE</envar> is empty )</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
                     <term><option>-n <replaceable>X</replaceable></option></term>
                     <listitem>
-                        <para>Specify a desired number or PROOF workers, where the <option>X</option> option defines the number of workers.</para>
+                        <para>Specify a desired number or PROOF workers, where the <option>X</option> option defines the number of workers. (default: 10)</para>
                     </listitem>
                 </varlistentry>
             </variablelist>
@@ -609,7 +613,7 @@ the same from the remote PoD server:
                 The <command>pod-ssh</command> command takes PoD's ssh plug-in configuration file as input.
                 The configuration file is a comma-separated values (CSV) file.
                 Fields are normally separated by commas. If you want to put a comma in a field, you need to put quotes around it. Also 3 escape sequences are supported.
-            </para>          
+            </para>
             <para>
                 <table id="POD_SSH_CFG_TABLE">
                     <title>PoD's ssh plug-in configuration fields</title>
@@ -621,7 +625,7 @@ the same from the remote PoD server:
                                 <entry>3</entry>
                                 <entry>4</entry>
                                 <entry>5</entry>
-                            </row>      
+                            </row>
                         </thead>
                         <tbody>		
                             <row>
@@ -630,7 +634,7 @@ the same from the remote PoD server:
                                 <entry>a host name with or without a login, in a form: login@host.fqdn</entry>
                                 <entry>additional SSH params (could be empty)</entry>
                                 <entry>a remote working directory</entry>
-                                <entry>a desired number of PROOF workers (could be empty). 
+                                <entry>a desired number of PROOF workers (could be empty).
                                        <para>If this parameter is empty,
                                        than PoD will spawn as many PROOF workers on that host as CPU cores.</para></entry>
                             </row>
@@ -652,7 +656,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 The command will always use the latest given setting.
             </para>
             <para>
-                The <command>pod-ssh</command> utility exits 0 on success, and >0 if an error occurs.    
+                The <command>pod-ssh</command> utility exits 0 on success, and >0 if an error occurs.
             </para>
         </refsect1>
         <refsect1>
@@ -742,7 +746,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 <arg><option>--remote <replaceable>arg</replaceable></option></arg>
                 <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
                 <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
-                <arg><option>--env <replaceable>arg</replaceable></option></arg>                
+                <arg><option>--env <replaceable>arg</replaceable></option></arg>
             </synopfragment>
             <sbr/>
             <synopfragment id="pod_remote_options_commands">
@@ -750,7 +754,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     <arg><option>--start</option></arg>
                     <arg><option>--stop</option></arg>
                     <arg><option>--restart</option></arg>
-                    <arg><option>--command <replaceable>cmd</replaceable></option></arg>                    
+                    <arg><option>--command <replaceable>cmd</replaceable></option></arg>
                 </group>
             </synopfragment>
             
@@ -769,7 +773,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 Using <command>pod-remote</command> it is possible to start/restart/stop remote PoD servers.
                 It is also possible to submit PoD jobs from remote PoD servers in order to set remote PROOF clusters up.
             </para>
-            <para>    
+            <para>
                 Most importantly,
                 <command>pod-remote</command> automatically creates and handles SSH tunnels for remote PoD servers,
                 so that these servers can be used only via SSH connection - outside of a firewall. Tunnels stay alive until remote server is
@@ -784,7 +788,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 If you want to change the server, just provide new arguments values.
             </para>
             <para>
-                The <command>pod-remote</command> utility exits 0 on success, and >0 if an error occurs.    
+                The <command>pod-remote</command> utility exits 0 on success, and >0 if an error occurs.
             </para>
         </refsect1>
         <refsect1 id="pod-remote_options">
@@ -893,7 +897,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     The command above starts a remote PoD server on the host <systemitem class="fqdomainname">lxg0527.gsi.de</systemitem>
                     under the user <systemitem class="username">manafov</systemitem> and uses PoD installed in the <filename class="directory">/misc/manafov/PoD/3.5.75.gbecd4</filename> directory.
                     To initialize the proper environment on the remote host the <filename>../GSI_env_5_27.sh</filename> script is used.
-                    <para>     
+                    <para>
                         If everything is OK and remote server is started, <command>pod-remote</command> will create and manage special SSH tunnels from machine A to B.
                         So, the whole PoD communication and PROOF requests will go via these tunnels.
                     </para>
@@ -906,7 +910,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                         or in case of the SSH plug-in
 <screen>
 <command>pod-remote <option>--command <replaceable>"pod-ssh -c --submit"</replaceable></option></command>
-</screen> 
+</screen>
                         
                         Using <option>--command</option>, you can execute any command vie SSH on the remote server.
                     </para>
@@ -943,6 +947,6 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 </para>
             </example>
         </refsect1>
-    </refentry>    
+    </refentry>
 </chapter>
 

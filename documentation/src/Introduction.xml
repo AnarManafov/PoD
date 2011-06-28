@@ -1,5 +1,5 @@
-<!-- 
- Introduction 
+<!--
+ Introduction
  -->
 <chapter id="Introduction">
     <title>Introduction</title>
@@ -8,7 +8,7 @@
     <sect1 id="PROOF-on-Demand"><title>PROOF on Demand</title>
         <para>
             <emphasis role="bold">PROOF on Demand (PoD)</emphasis> is a tool-set  (see <xref linkend="fig_PoD"/>)
-            developed at <ulink url="http://www.gsi.de">GSI</ulink>, which sets up a 
+            developed at <ulink url="http://www.gsi.de">GSI</ulink>, which sets up a
             <ulink url="http://root.cern.ch/drupal/category/package-context/proof">PROOF</ulink> cluster on any resource management system.
             PoD is a user oriented product with an easy to use GUI and a command-line interface. It is fully automated.
             No administrative privileges or special knowledge is required to use it. PoD gives users, who don't have a centrally-administrated
@@ -47,7 +47,7 @@
             <listitem><para><emphasis role="bold">GUI &amp; Command-line</emphasis></para>
                 <para>
                     PoD provides a simple and intuitive graphics user interface in order to simplify access to its functionality.
-                    For user’s convenience there is also a command line interface, it helps to manage a PoD cluster remotely or use it in a batch mode.
+                    For user's convenience there is also a command line interface, it helps to manage a PoD cluster remotely or use it in a batch mode.
                 </para>
             </listitem>
             

@@ -34,7 +34,7 @@
 <screen>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 <command>pod-info <parameter class='command'>-l</parameter></command>
-</screen> 
+</screen>
             <note><para>
                 With SSH it is very often a case, when PoD can't start workers, because xproof/root is not in the PATH on worker nodes.
                 This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
@@ -49,7 +49,7 @@
 <command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
 </screen>
             <important><para>
-                The cleaning of the workers is very important in order to keep the remote environment safe and clean. 
+                The cleaning of the workers is very important in order to keep the remote environment safe and clean.
                 Also the cleaning procedure will deliver log files from the workers and place them in
                 <filename class="directory">$POD_LOCATION/log</filename> directory. Unfortunately SSH plug-in can't automatically decide
                 when to clean the workers, you therefor is responsible to do it.

@@ -24,7 +24,7 @@
         
         <para>
             Using the plug-ins GUI (see. <xref linkend="PAConsole_OGE_plug-in"/>) users are able to specify a number of workers and an GE queue.
-            PoD provides a default GE job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
+            PoD provides a default GE job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks.
         </para>
     </sect1>
     
@@ -50,6 +50,5 @@
             </para>
         </sect2>
     </sect1>
-    
 </chapter>
 

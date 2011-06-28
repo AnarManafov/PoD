@@ -1,5 +1,5 @@
-<!-- 
- Known Issues 
+<!--
+ Known Issues
  -->
 <chapter id="Known_Issues">
     <title>Known Issues</title>
@@ -63,7 +63,7 @@ In TPacketizer the default value is 4.
 In TPacketizerAdaptive and TPacketizerProgressive it is 2.
 </programlisting>
 	      	</para>
-      	</blockquote> 
+      	</blockquote>
       	<note><para>
             From other source of information, it looks like the default number of workers reading remotely from one file
             node (worker machine) is not "2", but a number of CPU cores of the master node.
@@ -122,7 +122,7 @@ libtool: link: `/opt/globus/lib/libglobus_ftp_control_gcc32dbg.la' is not a vali
 <command>cd $GLOBUS_LOCATION</command>
 <command>mkdir -p /opt/globus</command>
 <command>cp -rv lib /opt/globus/</command>
-</screen>   
+</screen>
         </para>
     </sect1>
     
@@ -141,10 +141,10 @@ libtool: link: `/opt/globus/lib/libglobus_ftp_control_gcc32dbg.la' is not a vali
     <sect1 id="globus_config.h_is_missing">
         <title>globus_config.h is missing</title>
       	<para>
-            Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h" 
+            Since long time gLite UI_TAR installation (I suspect gLite UI as well) is missing "globus_config.h"
             (see <ulink url="https://savannah.cern.ch/bugs/?31180">CERN Savannah - gLite Bug #31180</ulink>).
             gLite API is referencing to this file, but is not providing it. Users therefore should find it some where,
-            to let GAW to use gLite API.       	 
+            to let GAW to use gLite API.
       	</para>
     </sect1>
 

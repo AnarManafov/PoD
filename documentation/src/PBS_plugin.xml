@@ -24,7 +24,7 @@
         
         <para>
             Using the plug-ins GUI (see. <xref linkend="PAConsole_PBS_plug-in"/>) users are able to specify a number of workers and an PBS queue.
-            PoD provides a default PBS job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks. 
+            PoD provides a default PBS job script. Advanced users a free to change it in order to tune PoD for a specific environment or tasks.
         </para>
     </sect1>
     

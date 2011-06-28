@@ -15,7 +15,7 @@
                 <listitem>Incoming connection on pod-agent's port (configurable)</listitem>
                 <listitem><ulink url="http://root.cern.ch">ROOT</ulink> 5.25.04 or higher (xrootd enabled)</listitem>
                 <listitem><ulink url="http://qt.nokia.com/products/">Qt</ulink> 4.4.2 or higher (optional. There will be no PoD GUI, if Qt is missing)</listitem>
-                <listitem><ulink url="http://www.boost.org/">BOOST</ulink> 1.33.1 or higher (to use <xref linkend="pod-remote"/>, BOOST 1.41.0 or higher is requared) </listitem>		
+                <listitem><ulink url="http://www.boost.org/">BOOST</ulink> 1.33.1 or higher (to use <xref linkend="pod-remote"/>, BOOST 1.41.0 or higher is required) </listitem>		
                 <listitem><ulink url="http://www.cmake.org/">cmake</ulink> 2.6.2 or higher</listitem>
                 <listitem>shell: <ulink url="http://en.wikipedia.org/wiki/Bash_(Unix_shell)">BASH</ulink></listitem>
             </itemizedlist>
@@ -24,7 +24,7 @@
             </itemizedlist>
             <itemizedlist><title>Additional requirements for LSF plug-in:</title>
                 <listitem>LSF 6.x API (headers and libraries).
-                    <footnote id="RMS_API"><para>There will be no PoD job manager plug-ins' GUI if resource management system's API is missing. Then 
+                    <footnote id="RMS_API"><para>There will be no PoD job manager plug-ins' GUI if resource management system's API is missing. Then
                         only PoD command line interface can be used to submit PoD jobs to an according resource management system.</para></footnote></listitem>
             </itemizedlist>
             <itemizedlist><title>Additional requirements for PBS plug-in:</title>
@@ -40,7 +40,7 @@
     </sect1>
     
     <sect1 id="Workers_workspace_requirements">
-        <title>Workers</title>      
+        <title>Workers</title>
         <para>
             <itemizedlist><title>General requirements: </title>
                 <listitem>Outgoing connection for a port in a range (configurable).
@@ -48,7 +48,7 @@
                 <listitem><ulink url="http://root.cern.ch">ROOT</ulink> 5.25.04 or higher (xrootd enabled).
                     A ROOT installation on worker nodes is not strictly required, but is recommended. If available, it will significantly speed up the start up time of the PoD workers.
                     If there is no ROOT on WNs, PoD will download and use its default ROOT version for every worker node, which can increase the start up time of the workers and the network traffic.
-                </listitem>                
+                </listitem>
                 <listitem>shell: BASH</listitem>
             </itemizedlist>
             <itemizedlist><title>Additional requirements for gLite plug-in: </title>
@@ -56,5 +56,5 @@
                 <listitem>gLite WNs (at least v3.0)</listitem>
             </itemizedlist>
         </para>
-    </sect1>   
+    </sect1>
 </chapter>

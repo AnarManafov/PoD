@@ -21,11 +21,19 @@
 <command>source PoD_env.sh</command>
 </screen>
             Also don't forget, before starting PoD the ROOT should be in the PATH as well.
-        </para>    
+        </para>
     </sect1>
     
     <sect1 id="Server">
         <title>Server</title>
+        <note><title>local and remote PoD servers</title>
+            <para>
+            There are two ways you can use PoD: as a local server and a remote one.
+            On how to use a remote PoD server please check the <xref linkend="pod-remote"/> command.
+            </para>
+            <para>
+            Further in this chapter are the instructions on how to use a local PoD server.
+        </para></note>
         <sect2>
             <title>CLI</title>
             <para>
@@ -72,11 +80,11 @@
     <sect1 id="JobManager">
         <title>Job Manager</title>
         <para>
-            The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on 
+            The next step is to submit remote PoD workers using PoD's job manager. These PoD workers will automatically setup your PROOF workers on
             remote hosts.
             Starting from version 2.0.7 the PoD project supports plug-ins. To submit remote jobs job manager plug-ins are used.
             That means PoD could be used on different resources like Grid, Cloud, RMS or just simple machines with only an ssh access on them.
-            It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time. 
+            It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time.
         </para>
         <para>
             How to submit PoD jobs using:
@@ -114,7 +122,7 @@
                 It is not required to wait until all requested workers will be connected. Users could start analysis after
                 reasonable number of workers are on-line, even after the first connected worker one could start the analysis.
                 When other workers arrive, the ROOT (PROOF) session must be restarted in order to reconnect to the newly
-                arrived workers.                 
+                arrived workers.
             </para>
             <tip><para>
                 PoD supports reconnection. That means if your analysis has a bug or a root session crashed you don't
@@ -151,7 +159,7 @@
             <title>GUI</title>
             <para>
                 A list of accepted workers could be checked on Workers page of pod-console
-                (see the <xref linkend="pod_console_Workers"/>).        
+                (see the <xref linkend="pod_console_Workers"/>).
                 <para><figure float="0" id="pod_console_Workers">
                     <title>pod-console: Workers</title>
                     <screenshot><mediaobject>
@@ -188,7 +196,7 @@
                     </textobject>
                 </mediaobject></screenshot>
             </figure></para>
-        </para>  
+        </para>
     </sect1>
     
     
@@ -196,7 +204,7 @@
         <title>PROOF Connection String</title>
         <para>
         PROOF connection string - is an URL which is used as a parameter to the TProof::Open method. This URL actually
-        contains an address of PROOF master, its host and port. 
+        contains an address of PROOF master, its host and port.
         </para>
         <para>
             Every time PoD is restarted it uses its automatic port mapping machinery to assign TCP ports to xproofd and other daemons.
@@ -206,19 +214,19 @@
             <para>
                For an example analysis, please see <xref linkend="How_to_test"/>.
             </para>
-    </sect1>      
+    </sect1>
     
     
     <sect1 id="Analysis">
         <title>Analysis</title>
         <para>
             Now when your remote PROOF workers (PoD workers) are on-line, you can process you ROOT/PROOF
-            analysis normally, if it would be a usual PROOF session.      
+            analysis normally, if it would be a usual PROOF session.
         </para>
         <para>
             For an example analysis, please see <xref linkend="How_to_test"/>.
         </para>
-    </sect1> 
+    </sect1>
     
     <sect1 id="How_to_shut_down_PoD">
         <title>How to shut down PoD</title>
@@ -259,7 +267,7 @@
                             <entry>Name</entry>
                             <entry>Location</entry>
                             <entry>Description</entry>
-                        </row>      
+                        </row>
                     </thead>
                     <tbody>		
                         <row>

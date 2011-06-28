@@ -10,7 +10,7 @@
         <title>Environment</title>
         <para>
             You need to have a valid VOMS proxy, before starting POD with the gLite plug-in.
-        </para>      
+        </para>
     </sect1>
     
     <sect1 id="Grid_workers">
@@ -32,12 +32,12 @@
                         <phrase></phrase>
                     </textobject>
                 </mediaobject></screenshot>
-            </figure></para>     
+            </figure></para>
             To submit workers users have to specify a JDL file (the default <filename>gLitePROOF.jdl</filename> could be used
             or a custom one). A WMProxy endpoint should be selected. If pod-console shows no Endpoints, that would probably mean you
             don't have any predefined endpoints on your gLite UI and POD will use the one which is defined in the GAW
             configuration file. If several endpoints found, than you can chose which one GAW should use to submit POD jobs.
-            pod-console uses an automatic endpoint recognition system provided by GAW.      
+            pod-console uses an automatic endpoint recognition system provided by GAW.
             At the last users may want to specify a number of workers they desire to use. POD uses a parametric job submission,
             which means that only one job will be send to WMS, but there it will be spread according to defined number of
             workers.
@@ -67,7 +67,7 @@
                 </menuchoice>.
                 It is useful in case when user wants to add more workers on the fly. The job will be submitted with the currently
                 selected jdl file, that means users can submit several jobs with different jdl files. It is useful when user wants
-                to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example. 
+                to use several different Grid sites and wants explicitly specify requirements for these sites and jobs, for example.
             </para>
             <para><figure float="0" id="PAConsole_Grid3">
                 <title>pod-console: Monitoring of several jobs</title>
@@ -79,7 +79,7 @@
                         <phrase></phrase>
                     </textobject>
                 </mediaobject></screenshot>
-            </figure></para>        
+            </figure></para>
             
             <para>
                 Using a context menu shown on the <xref linkend="PAConsole_Grid2"/> users are able to copy gLite job ID,
@@ -130,7 +130,7 @@
                     in terms that WMProxy endpoints are configured for your VO, then GAW will find the best match and
                     will use it, and you therefore could just keep the <varname>wmp_endpoint</varname> value empty or
                     you could remove this key from the configuration file at all. Otherwise GAW will use the value from
-                    the configuration file.      
+                    the configuration file.
                 </para>
             </tip>
             All other settings may be changed to adjust PoD according to personal needs.
@@ -150,7 +150,7 @@
         <para>
             It is allowed to modify JDL files or create a custom one in order to tune job requirements for
             a specific site or a resource.
-            The file in anyway must be inherited from <filename>gLitePROOF.jdl</filename>.       
+            The file in anyway must be inherited from <filename>gLitePROOF.jdl</filename>.
         </para>
         <important><para>
             If you want to use a custom JDL file, be advised that
@@ -159,6 +159,5 @@
             StdError, InputSandbox. Otherwise PoD functionality could be broken.
         </para></important>
         
-    </sect1>    
-        
+    </sect1>
 </chapter>

@@ -1,16 +1,16 @@
-<!-- 
-Test 
+<!--
+Test
 -->
 	<chapter id="How_to_test">
    <title>How to test</title>
    	<chapterinfo>
    	</chapterinfo>
    	<sect1 id="simple_test">
-   	<title>Simple test</title>    
+   	<title>Simple test</title>
    		<para>
     		The simplest way to test your dynamic PROOF cluster is just to run some simple analysis on it or
         use <ulink url="http://root.cern.ch/drupal/content/tutorials#runproof">PROOF's tutorial</ulink>.
-        If you use PROOF's tutorial, you have to start from the second step - from the runProof.C macro, since PoD will 
+        If you use PROOF's tutorial, you have to start from the second step - from the runProof.C macro, since PoD will
         setup a PROOF cluster for you and you therefore don't need to execute the getProof.C macro.
         </para>
     		<para>
@@ -56,4 +56,3 @@ So, the test could look like:
 		   	</para>
 		</sect1>
 	</chapter>
-  

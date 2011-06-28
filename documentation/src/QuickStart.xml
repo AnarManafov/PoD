@@ -21,7 +21,7 @@
     
     <para>
         The following is the example to illustrate the Quick Start. We use PoD with SSH plug-in (<xref linkend="SSH_plugin"/>) to setup our PROOF cluster on the bunch of the machines, which
-        are described in the <filename>pod_ssh.cfg</filename> configuration file. In the examle we will use only CLI. Note, that PoD also provides GUI.
+        are described in the <filename>pod_ssh.cfg</filename> configuration file. In the example we will use only CLI. Note, that PoD also provides GUI.
     </para>
     <para>
         Detailed descriptions of the commands and of the configuration file can be found in the <xref linkend="Cmd_line_interface"/>.
