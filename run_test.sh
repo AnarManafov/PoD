@@ -14,7 +14,7 @@ exec_test() {
 
 if [ -e $1 ]; then
 	echo ">>> Processing $1"
-	./$1 $2 || clean_up
+	./$1 $2 --log_level=all|| clean_up
 	echo
 else
 	echo "WARNING: can't find $1"
