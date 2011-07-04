@@ -327,7 +327,7 @@ or if the remote server has a non-default working folder:
 
 use this command in a ROOT script or your analysis code directly:
 <programlisting>
-TProof::Open(gSystem->GetFromPipe(""<command>pod-info <option>-c</option></command>"));
+TProof::Open(gSystem->GetFromPipe("<command>pod-info <option>-c</option></command>"));
 </programlisting>
 
 with a remote PoD server:
@@ -366,13 +366,6 @@ the same from the remote PoD server:
     
     <!-- ......................................................................... -->
     <!-- pod-user-defaults -->
-    <!--
-     "help,h",     produce help message
-     "version,v"   version information
-     "config,c",   PoD user-defaults configuration file
-     "key",        get a value for the given key
-     
-     -->
     <!-- ......................................................................... -->
     
     <refentry id="pod-user-defaults">

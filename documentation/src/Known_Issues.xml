@@ -81,7 +81,7 @@ proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)100 );
     </sect1>
     
     
-    <sect1 id="kb_general"><title>Grid Issues</title>
+    <sect1 id="kb_grid"><title>Grid Issues</title>
         
         <sect2 id="ClassAdsNamespace">
             <title>ClassAds and Namespace</title>
