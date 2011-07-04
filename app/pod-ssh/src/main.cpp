@@ -60,7 +60,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     // TODO: we need to be able to clean only selected worker(s)
     // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
-    ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress." )
+    ( "logs", "Download all log files from the worker nodes. Can be used only together with the clean option" )
+    ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress" )
     ;
 
     // Parsing command-line
@@ -82,6 +83,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     boost_hlp::conflicting_options( vm, "submit", "clean" );
     boost_hlp::conflicting_options( vm, "status", "clean" );
     boost_hlp::conflicting_options( vm, "status", "submit" );
+    boost_hlp::option_dependency( vm, "logs", "clean" );
 
     _vm->swap( vm );
     return true;
@@ -233,7 +235,8 @@ int main( int argc, char * argv[] )
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-                CWorker wrk( rec, log_fun_ptr, vm.count( "debug" ) );
+                CWorker wrk( rec, log_fun_ptr,
+                             vm.count( "debug" ), vm.count( "logs" ) );
                 workers.push_back( wrk );
 
                 if( 0 == rec->m_nWorkers )

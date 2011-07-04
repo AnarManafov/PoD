@@ -18,11 +18,13 @@ using namespace MiscCommon;
 //=============================================================================
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
-CWorker::CWorker( configRecord_t _rec, log_func_t _log, bool _debug ):
+CWorker::CWorker( configRecord_t _rec, log_func_t _log,
+                  bool _debug, bool _needLogs ):
     m_rec( _rec ),
     m_log( _log ),
     m_bSuccess( false ),
-    m_debug( _debug )
+    m_debug( _debug ),
+    m_NeedLogs( _needLogs )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -70,8 +72,13 @@ void CWorker::runTask( ETaskType _param )
                 break;
             }
         case task_clean:
-            cmd = "$POD_LOCATION/bin/private/pod-ssh-clean-worker";
-            break;
+            {
+                if( m_NeedLogs )
+                    params.push_back( "-m" );
+
+                cmd = "$POD_LOCATION/bin/private/pod-ssh-clean-worker";
+                break;
+            }
         case task_status:
             cmd = "$POD_LOCATION/bin/private/pod-ssh-status-worker";
             break;

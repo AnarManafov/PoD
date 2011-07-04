@@ -26,6 +26,7 @@ Usage: pod-ssh-clean-worker [OPTION]
      -w dir      		Remote working directory.
      -o SSH_Opt			Additinal SSH parameters.
      -c arg			Start a remote cleanning (internal argument).
+     -m                         Download all log files from the worker nodes.
      -d				Verbose mode. Causes pod-ssh-clean-worker to print debugging messages about its progress.
      -h          		Show summary of options.
 
@@ -41,7 +42,8 @@ RDIR=""
 SSHOPT=""
 CLEAN=""
 DEBUG=""
-while getopts ":i:l:w:o:c:dh" opt; do
+NEED_LOGS=""
+while getopts ":i:l:w:o:c:dmh" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -60,6 +62,9 @@ while getopts ":i:l:w:o:c:dh" opt; do
     ;;
   d)
     DEBUG="YES"
+    ;;
+  m)
+    NEED_LOGS="YES"
     ;;
   h) 
     usage
@@ -126,6 +131,11 @@ logMsg()
 #=============================================================================
 get_log_files()
 {
+   if [ -z "$NEED_LOGS" ]; then
+      return 0
+   fi
+
+   logMsg "$TOOL_NAME: retrieving worker's log files..."
    eval LOG_DIR=$(pod-user-defaults --key server.logfile_dir)
 
    # create a local log dir. for this worker
@@ -218,9 +228,7 @@ if (( ${PIPESTATUS[0]} != 0 )); then
    logMsg "$TOOL_NAME warning: failed to retrieve remote log files."
 fi
 
-logMsg "$TOOL_NAME: retrieving worker's log files..."
 get_log_files
-
 
 logMsg "$TOOL_NAME: Removing the remote working dir..."
 # remove the working directory

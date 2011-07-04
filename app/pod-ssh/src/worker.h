@@ -23,7 +23,8 @@ enum ETaskType {task_submit, task_clean, task_status};
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
-        CWorker( configRecord_t _rec, log_func_t _log, bool _debug );
+        CWorker( configRecord_t _rec, log_func_t _log,
+                 bool _debug, bool _needLogs );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
@@ -43,5 +44,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
         log_func_t m_log;
         bool m_bSuccess;
         bool m_debug;
+        bool m_NeedLogs;
 };
 #endif
