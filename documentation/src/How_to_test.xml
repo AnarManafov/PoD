@@ -1,58 +1,30 @@
 <!--
-Test
--->
-	<chapter id="How_to_test">
-   <title>How to test</title>
+ Test
+ -->
+<chapter id="How_to_test">
+    <title>How to test</title>
    	<chapterinfo>
    	</chapterinfo>
    	<sect1 id="simple_test">
-   	<title>Simple test</title>
+        <title>Simple test</title>
    		<para>
     		The simplest way to test your dynamic PROOF cluster is just to run some simple analysis on it or
-        use <ulink url="http://root.cern.ch/drupal/content/tutorials#runproof">PROOF's tutorial</ulink>.
-        If you use PROOF's tutorial, you have to start from the second step - from the runProof.C macro, since PoD will
-        setup a PROOF cluster for you and you therefore don't need to execute the getProof.C macro.
+            use <ulink url="http://root.cern.ch/drupal/content/new-benchmark-framework-tproofbench">the new benchmark framework: TProofBench</ulink>.
         </para>
-    		<para>
-   			Now if you want to perform this test. Use the <xref linkend="How_to_run"/> to setup a PROOF cluster.
-        As soon as you get required number of workers you can execute the following commands:
+        <para>
+   			Now if you want to perform TProofBench tests. Use the <xref linkend="How_to_run"/> to setup your dynamic PROOF cluster.
+            As soon as you get required number of workers you can execute the following commands:
 <screen>
-<prompt>$ </prompt><command>cd $ROOTSYS/tutorials/proof</command>
 <prompt>$ </prompt><command>root</command>
-<prompt>root[] </prompt><command>.L runProof.C+</command>
-<prompt>root[] </prompt><command>runProof("simple", "master.domain")</command>
-<prompt>root[] </prompt><command>runProof("event(nevt=1000000)", "master.domain")</command>
+<prompt>root[] </prompt><command>TProofBench pb(gSystem->GetFromPipe("pod-info -c"))</command>
+<prompt>root[] </prompt><command>pb.RunCPU()</command>
 </screen>
-        <para>
-        The second argument to runProof function is an URL of your cluster - a PROOF connection string.
-        Usually it looks something like "proof://HostWhereYouStartedPoDServer:XPD_PORT" or just "HostWhereYouStartedPoDServer:XPD_PORT".
-        </para>
-        <para>
-        So, the "HostWhereYouStartedPoDServer" is the host name of the machine where you started a PoD server. If it is the same machine,
-        where you run your analysis, than just use localhost.
-        </para>
-        <para>
-        A PROOF connection string you can find out in pod-console's server page or by running the following command:
+            or for ROOT v5.30 (or higher):
 <screen>
-<prompt>$ </prompt><command>pod-info -c</command>
-</screen>
-This command so far can be run only on the machine where you started a PoD server. In the future this limitation will be removed.
-<para>
-You also can call the command from you code, like the following:
-</para>
-<screen>
-gSystem->GetFromPipe("pod-info -c")
-</screen>
-So, the test could look like:
-<screen>
-<prompt>$ </prompt><command>cd $ROOTSYS/tutorials/proof</command>
 <prompt>$ </prompt><command>root</command>
-<prompt>root[] </prompt><command>.L runProof.C+</command>
-<prompt>root[] </prompt><command>runProof("simple", gSystem->GetFromPipe("pod-info -c"))</command>
-<prompt>root[] </prompt><command>runProof("event(nevt=1000000)", gSystem->GetFromPipe("pod-info -c"))</command>
+<prompt>root[] </prompt><command>TProofBench pb("pod://")</command>
+<prompt>root[] </prompt><command>pb.RunCPU()</command>
 </screen>
-
         </para>
-		   	</para>
-		</sect1>
-	</chapter>
+    </sect1>
+</chapter>
