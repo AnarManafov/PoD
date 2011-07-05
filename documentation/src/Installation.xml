@@ -105,7 +105,8 @@ Installation
 <command>make</command>
 <command>make install</command>
 </screen>
-      <note><para>
+      <note><title>Installation Prefix</title>
+         <para>
          Please note, that by default <application>PoD</application> will be installed in <envar>$HOME</envar>/PoD/X.Y.Z, where X.Y.Z is a version of
          <application>PoD</application>.
          However users can change this behavior by setting the install prefix path in the bootstrap script <filename>BuildSetup.cmake</filename>.
