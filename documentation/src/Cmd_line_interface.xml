@@ -592,6 +592,7 @@ the same from the remote PoD server:
                     <arg>--clean</arg>
                     <arg>--status</arg>
                 </group>
+                <arg><option>--logs</option></arg>
             </cmdsynopsis>
         </refsynopsisdiv>
         <refsect1>
@@ -684,8 +685,6 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     <listitem>
                         <para>
                             Clean all PoD workers according to the entries in the configuration file.
-                            This command also delivers all log files from the worker nodes. Logs are copied to
-                            PoD log directory, the path to which is configurable via PoD user defaults.
                         </para>
                     </listitem>
                 </varlistentry>
@@ -693,9 +692,80 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     <term><option>--status</option></term>
                     <listitem>
                         <para>Request status of PoD workers listed in the configuration file.</para>
+                        <para>There are could be the following values of the status:</para>
+                        <itemizedlist>
+                            <listitem>RUN - PoD jobs is running,</listitem>
+                            <listitem>DONE - PoD job is done, means PoD worker is not running on that worker node.
+                                It could be also the case that worker failed to start,</listitem>
+                            <listitem>CLEAN - PoD worker has been cleaned,</listitem>
+                            <listitem>UNKNOWN - it is not possible to retrieve the status of that worker.</listitem>
+                        </itemizedlist>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--logs</option></term>
+                    <listitem>
+                        <para>
+                            Download all log files from the worker nodes. Can be 
+                            used only together with the <option>--clean</option> option.
+                            This command delivers all log files from the worker nodes. Logs are copied to
+                            PoD log directory, the path to which is configurable via PoD user defaults.
+                        </para>
                     </listitem>
                 </varlistentry>
             </variablelist>
+        </refsect1>
+        <refsect1 id="pod-ssh_examples"><title>Examples</title>
+            
+            <example><title>Submit PoD jobs via SSH</title>
+                <para>
+<screen>
+<command>pod-ssh <option>-c <replaceable>pod_ssh_config_file</replaceable></option> <option>--submit</option></command>
+</screen>
+                </para>
+            </example>
+            
+            <example><title>Check the status of PoD jobs submitted via SSH</title>
+                <para>
+<screen>
+<command>pod-ssh <option>--status</option></command>
+</screen>
+                    Check the amount of available PROOF workers:
+<screen>
+<command>pod-info <option>-n</option></command>
+</screen>
+    or
+<screen>
+<command>pod-info <option>-l</option></command>
+</screen>                    
+                </para>
+                
+                <important><title>Remote Environment</title><para>
+                    With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
+                    If your PoD job fails, just after submission it shows DONE status.
+                    You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
+                    from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
+                    This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
+                    (login script) and there is no environment variables, like for normal login users. To solve this issue, users either can
+                    specify the full path to desired ROOT version on the worker nodes in the <filename>PoD.cfg</filename>
+                    or just use <xref linkend="users_env_script"/>. The last one is very much advisable.
+                </para></important>
+                
+            </example>
+            
+            <example><title>Clean PoD jobs submitted via SSH</title>
+                <para>
+<screen>
+<command>pod-ssh <option>--clean</option></command>
+</screen>
+                    also you can clean and download all log files from the WNs
+<screen>
+<command>pod-ssh <option>--clean</option> <option>--logs</option></command>
+</screen>
+                </para>
+                
+            </example>
+            
         </refsect1>
     </refentry>
     
@@ -871,11 +941,12 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 <para>
                     Let's say, I have two machines A and B.
                 </para>
-                <literallayout>
-                    A - is my laptop, for example.
-                    B (host: lxg0527) - is a machine standing somewhere at my work place. From this machine I can submit jobs to my batch system (LSF, for example)
-                    or use it as a server for PoD SSH plug-in.
-                </literallayout>
+<literallayout>
+A - is my laptop, for example.
+B - is a machine (host: lxg0527) standing somewhere at my work place.
+    From this machine I can submit jobs to my batch system (LSF, for example) 
+    or use it as a server for PoD SSH plug-in.
+</literallayout>
                 <para>
                     On both machines I have PoD installed.
                 </para>
@@ -885,7 +956,9 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 <para>
                     Start the remote PoD server:
 <screen>
-<command>pod-remote <option>--start</option> <option>--remote <replaceable>manafov@lxg0527.gsi.de:/misc/manafov/PoD/3.5.75.gbecd4</replaceable></option> <option>--env</option> <replaceable>../GSI_env_5_27.sh</replaceable></command>
+<command>pod-remote <option>--start</option> \
+    <option>--remote <replaceable>manafov@lxg0527.gsi.de:/home/manafov/3.6/</replaceable></option> \
+    <option>--env</option> <replaceable>../GSI_env_5_27.sh</replaceable></command>
 </screen>
                     The command above starts a remote PoD server on the host <systemitem class="fqdomainname">lxg0527.gsi.de</systemitem>
                     under the user <systemitem class="username">manafov</systemitem> and uses PoD installed in the <filename class="directory">/misc/manafov/PoD/3.5.75.gbecd4</filename> directory.

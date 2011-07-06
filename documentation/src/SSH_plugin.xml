@@ -27,7 +27,7 @@
 </screen>
             check the status of PoD workers:
 <screen>
-<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>--status</parameter></command>
 </screen>
             now check the status of your dynamic PROOF clusters. The following commands show a number/list of available PROOF workers, which
             have been already set up and are online:
@@ -35,23 +35,26 @@
 <command>pod-info <parameter class='command'>-n</parameter></command>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen>
-            <note><para>
-                With SSH it is very often a case, when PoD can't start workers, because xproof/root is not in the PATH on worker nodes.
+            <important><title>Remote Environment</title><para>
+                With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
+                If your PoD job fails, just after submission it shows DONE status.
+                You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
+                from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
                 This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
-                (login script) and there is no environment variables, like for normal login users. To solve it, a user either can
-                specify the full path to desired ROOT version of worker nodes in the <filename>PoD.cfg</filename>
+                (login script) and there is no environment variables, like for normal login users. To solve this issue, users either can
+                specify the full path to desired ROOT version on the worker nodes in the <filename>PoD.cfg</filename>
                 or just use <xref linkend="users_env_script"/>. The last one is very much advisable.
-            </para></note>
+            </para></important>
             and finally clean the PoD cluster. The cleaning needs to be performed when user is done with his/her dynamic PROOF cluster or want to
             refresh workers (in this case, you need to submit workers again, after the cleaning). BTW, no need to stop pod-server.
 <screen>
-<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--clean</parameter></command>
-<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>--clean</parameter></command>
+<command>pod-ssh <parameter class='command'>--status</parameter></command>
 </screen>
             <important><para>
                 The cleaning of the workers is very important in order to keep the remote environment safe and clean.
-                Also the cleaning procedure will deliver log files from the workers and place them in
-                <filename class="directory">$POD_LOCATION/log</filename> directory. Unfortunately SSH plug-in can't automatically decide
+                Also the cleaning procedure can deliver log files from the workers, see <xref linkend="pod-ssh_examples"/>.
+                Unfortunately SSH plug-in can't automatically decide
                 when to clean the workers, you therefor is responsible to do it.
             </para></important>
         </para>
@@ -65,7 +68,6 @@
     
     <sect1 id="SSH_CFG"><title>Configuration</title>
         <para>
-            <!-- There are LSF plug-in options in the PoD user defaults (see <xref linkend="LSF_CFG_TABLE"/>), which you can use to tune the plug-in. -->
         </para>
     </sect1>
 </chapter>
