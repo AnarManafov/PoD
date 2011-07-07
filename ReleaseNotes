@@ -1,5 +1,9 @@
 # Release Notes for PoD (PROOF on Demand)
 
+## v3.8 (not yet released)
+
+
+
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
      The command can also be used to execute arbitrary commands on the remote PoD server, such as PoD job submissions.
