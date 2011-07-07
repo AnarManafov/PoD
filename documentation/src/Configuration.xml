@@ -67,13 +67,13 @@ gui.accessibility.visual_bell=yes
                     <tbody>
                         <row>
                             <entry>server.work_dir</entry>
-                            <entry>string (default: $POD_LOCATION)</entry>
+                            <entry>string (default: $HOME/.PoD)</entry>
                             <entry>PoD's working directory. Used by PoD modules to store temporary files, like pid files, for example.
                                 A string of the value will be evaluated before it is used, it therefore can contain environment variables.</entry>
                         </row>
-                        <row>
+                        <row id="server.logfile_dir" xreflabel="server.logfile_dir">
                             <entry>server.logfile_dir</entry>
-                            <entry>string (default: $POD_LOCATION/log)</entry>
+                            <entry>string (default: $HOME/.PoD/log)</entry>
                             <entry>A path for PoD's log files. By the defined path PoD modules will place log files.</entry>
                         </row>
                         <row>
@@ -420,6 +420,15 @@ source /etc/profile_extr
             
             The default xrootd configuration, which comes with PoD should be sufficient for basic operations.
             In most of use cases it is not needed to modify the configuration.
+        </para>
+        <para>
+            If you need additional xpd configuration settings, you can add custom xpd configuration files.
+            PoD will scan for <filename>$HOME/.PoD/user_xpd.cf*</filename> and for <filename>$POD_LOCATION/etc/user_xpd.cf*</filename>
+            and append the found files to the main xpd.cf. The star symbol in the file names can be change to any other symbol.
+            For example, the following files will be appended to the main xpd.cf:
+            <filename>$POD_LOCATION/etc/user_xpd.cf0</filename>,
+            <filename>$POD_LOCATION/etc/user_xpd.cf1</filename>,
+            <filename>$POD_LOCATION/etc/user_xpd.cf2</filename>.
         </para>
         <para>
             PoD is only meant to help to setup a PROOF cluster on the fly using remote worker nodes. A data access is not

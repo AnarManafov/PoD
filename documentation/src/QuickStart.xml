@@ -35,6 +35,10 @@
 </screen>
     </para>
     
+    <important><para>
+        The current implementation of the SSH plug-in requires users to have a public key access (or password less) to destination remote hosts (worker nodes).
+    </para></important>
+    
     <para>
         Starting the cluster:
 <screen>

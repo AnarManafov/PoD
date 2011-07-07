@@ -272,12 +272,12 @@
                     <tbody>		
                         <row>
                             <entry>pod-agent.server.log</entry>
-                            <entry>$POD_LOCATION/log</entry>
+                            <entry><xref linkend="server.logfile_dir"/>/pod-agent.server.log</entry>
                             <entry>This file contains a log messages of the pod-agent, which runs on the user interface.</entry>
                         </row>
                         <row>
                             <entry>xpd.log</entry>
-                            <entry>$POD_LOCATION/log/PoDServer</entry>
+                            <entry><xref linkend="server.logfile_dir"/>/PoDServer</entry>
                             <entry>This is an XROOTD log file.</entry>
                         </row>
                     </tbody>
