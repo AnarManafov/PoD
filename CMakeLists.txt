@@ -50,7 +50,11 @@ option(BUILD_DOCUMENTATION "Build documentation" OFF)
 option(BUILD_TESTS "Build PoD unit tests" OFF)
 # modules
 option(BUILD_pod_agent "Build pod-agent" ON)
-option(BUILD_pod_console "Build pod-console" ON)
+# By default console is OFF
+# At the moment it is very much recommended to use CLI over GUI.
+# Recently PoD has gotten a number of new features and at the moment only the CLI reflects the latest changes.
+# The GUI is following new development and soon will be also heavily redesigned.
+option(BUILD_pod_console "Build pod-console" OFF)
 option(BUILD_pod_ssh "Build pod-ssh" ON)
 option(BUILD_pod_user_defaults "Build pod-user-defaults" ON)
 # plug-ins
@@ -240,6 +244,8 @@ else(Boost_FOUND)
     set(BUILD_pod_user_defaults OFF)
     set(BUILD_pod_ssh OFF)
 endif(Boost_FOUND)
+
+if(BUILD_pod_console)
 #
 # search for Qt
 #
@@ -258,6 +264,8 @@ if(QT4_FOUND)
 else(QT4_FOUND)
   set(BUILD_pod_console OFF)
 endif(QT4_FOUND)
+
+endif(BUILD_pod_console)
 
   add_subdirectory( app/MiscCommon )
 
