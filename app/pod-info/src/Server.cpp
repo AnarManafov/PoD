@@ -29,6 +29,9 @@ void CServer::getSrvHostInfo( PROOFAgent::SHostInfoCmd *_srvHostInfo ) const
     }
     inet::CSocketClient m_socket;
     m_socket.connect( m_port, m_host );
+    // TODO: Maybe we need to implement a select
+    // to avoid too many iterations when the connection is bad
+    m_socket.setNonBlock();
     BYTEVector_t data;
     processAdminConnection( &data, m_socket.getSocket(), Req_Host_Info );
 
@@ -43,6 +46,9 @@ void CServer::getListOfWNs( PROOFAgent::SWnListCmd *_lst ) const
     }
     inet::CSocketClient m_socket;
     m_socket.connect( m_port, m_host );
+    // TODO: Maybe we need to implement a select
+    // to avoid too many iterations when the connection is bad
+    m_socket.setNonBlock();
     BYTEVector_t data;
     processAdminConnection( &data, m_socket.getSocket(), Req_WNs_List );
 
