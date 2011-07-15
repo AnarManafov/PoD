@@ -11,7 +11,7 @@
 ##                           2010-03-12
 ##        last changed by:   $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+##         Copyright (c) 2010-2011 GSI, Scientific Computing group. All rights reserved.
 ##*************************************************************************/
 
 ######################################################
@@ -22,7 +22,9 @@
 # $POD_UI_LOG_LOCATION
 WRK_SCRIPT=$(basename "$POD_WRK_SCRIPT")
 ######################################################
-SCP=/usr/bin/scp
+#
+#  -o StrictHostKeyChecking=no - on some sites admins forget to properly configure host keys 
+SCP="scp -o StrictHostKeyChecking=no"
 UI_HOST=${PBS_O_HOST}
 # PARENT_PBS_JOBID is just a PBS_JOBID without an "-ARRAY_INDEX" part
 # We consider, that the first digits up to the first non-digit character is a parent index.
