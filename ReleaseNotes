@@ -2,6 +2,8 @@
 
 ## v3.8 (not yet released)
 pod-info: fixed: Sometimes pod-info -n or -l hangs in the read method of the protocol class.
+pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the log file name in case
+                   when an array job submission is used.
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.

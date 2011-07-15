@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-11-10
 #
-#        Copyright (c) 2010 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -49,7 +49,10 @@ fi
 eval upload_job_log=$(pod-user-defaults --key pbs_plugin.upload_job_log)
 OUTPUT_LOG=""
 if [ "$upload_job_log" = "1" ]; then
-   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
+   # For some versions of OpenPBS we must explicitly specify the log file name in case
+   # when an array job submission is used.
+   _NOW=$(date +"%b-%d-%y-%H-%M-%S")
+   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION\joblog_$NOW.oe"
 else
    OUTPUT_LOG=" -o /dev/null"
 fi
@@ -68,7 +71,7 @@ if (( $? == 0 )); then
    echo "Job ID: $jobid"
    if [ "$upload_job_log" = "1" ]; then
       PARENT_PBS_JOBID=$(echo $jobid | egrep -o '^[[:digit:]]*')
-      mkdir -p  $POD_UI_LOG_LOCATION/$PARENT_PBS_JOBID
+      mkdir -p $POD_UI_LOG_LOCATION/$PARENT_PBS_JOBID
    fi
 else
    echo "Error submitting job. $jobid"
