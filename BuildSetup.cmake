@@ -18,12 +18,6 @@
 # possible options are: None Debug Release RelWithDebInfo MinSizeRel
 set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 
-#
-# Build universal binary on Mac OS X
-# possible values: "ppc;i386;ppc64;x86_64"
-#
-SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for Mac OS X" FORCE)
-
 #set(CMAKE_VERBOSE_MAKEFILE TRUE CACHE BOOL "This is useful for debugging only." FORCE)
 
 # This is needed if you want to use gLite plug-in and have several version of BOOST installed
