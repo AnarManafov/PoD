@@ -6,7 +6,11 @@ pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the l
                    when an array job submission is used.
 pbs-plug-in: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
                     when a shared home file system is not available.
-pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
+pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support
+     all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
+pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
+         It shuts worker nodes down. It doesn't actually clean workers' directories.
+
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.

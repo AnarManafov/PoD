@@ -32,6 +32,7 @@
 #include "worker.h"
 #include "logEngine.h"
 #include "Process.h"
+#include "local_types.h"
 
 using namespace std;
 using namespace MiscCommon;
@@ -60,6 +61,8 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     // TODO: we need to be able to clean only selected worker(s)
     // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
+    ( "fast-clean", "The fast version of the clean procedure."
+      " It shuts worker nodes down. It doesn't actually clean workers' directories." )
     ( "logs", "Download all log files from the worker nodes. Can be used only together with the clean option" )
     ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress" )
     ;
@@ -161,7 +164,6 @@ int main( int argc, char * argv[] )
         pipeName += g_pipeName;
         slog.start( pipeName );
 
-
         string configFile;
         if( !vm.count( "config" ) )
         {
@@ -224,7 +226,10 @@ int main( int argc, char * argv[] )
         typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
         bool dynWrk( false );
-
+        SWNOptions options;
+        options.m_debug = vm.count( "debug" );
+        options.m_logs = vm.count( "logs" );
+        options.m_fastClean = vm.count( "fast-clean" );
         workersList_t workers;
         {
             CConfig config;
@@ -235,8 +240,7 @@ int main( int argc, char * argv[] )
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-                CWorker wrk( rec, log_fun_ptr,
-                             vm.count( "debug" ), vm.count( "logs" ) );
+                CWorker wrk( rec, log_fun_ptr, options );
                 workers.push_back( wrk );
 
                 if( 0 == rec->m_nWorkers )
@@ -261,7 +265,8 @@ int main( int argc, char * argv[] )
         slog.debug_msg( ss.str() );
 
         // it's a dry run - configuration check only
-        if( !vm.count( "submit" ) && !vm.count( "clean" ) && !vm.count( "status" ) )
+        if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
+            !vm.count( "status" ) && !vm.count( "fast-clean") )
             throw runtime_error( "Running in dry mode. It's a configuration check only mode." );
 
         slog.debug_msg( "Workers list:\n" );
@@ -269,7 +274,7 @@ int main( int argc, char * argv[] )
         // start thread-pool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( nThreads );
         ETaskType task_type( task_submit );
-        if( vm.count( "clean" ) )
+        if( vm.count( "clean" ) || vm.count("fast-clean") )
         {
             task_type = task_clean;
             if( !vm.count( "debug" ) )

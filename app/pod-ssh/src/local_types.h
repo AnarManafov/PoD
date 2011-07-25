@@ -12,5 +12,16 @@
 
 typedef boost::function < void ( const std::string&, const std::string&, bool ) > log_func_t;
 
+struct SWNOptions
+{
+    SWNOptions(): m_debug( false ), m_logs( false ), m_fastClean( false )
+    {
+    }
+
+    bool m_debug;
+    bool m_logs;
+    bool m_fastClean;
+};
+
 #endif
 

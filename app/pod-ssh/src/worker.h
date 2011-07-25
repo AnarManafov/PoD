@@ -24,7 +24,7 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
         CWorker( configRecord_t _rec, log_func_t _log,
-                 bool _debug, bool _needLogs );
+                 const SWNOptions &_options );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
@@ -43,7 +43,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
         configRecord_t m_rec;
         log_func_t m_log;
         bool m_bSuccess;
-        bool m_debug;
-        bool m_NeedLogs;
+        SWNOptions m_options;
 };
 #endif

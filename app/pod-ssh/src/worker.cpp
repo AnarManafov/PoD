@@ -19,12 +19,11 @@ using namespace MiscCommon;
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
 CWorker::CWorker( configRecord_t _rec, log_func_t _log,
-                  bool _debug, bool _needLogs ):
+                  const SWNOptions &_options ):
     m_rec( _rec ),
     m_log( _log ),
     m_bSuccess( false ),
-    m_debug( _debug ),
-    m_NeedLogs( _needLogs )
+    m_options( _options )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -57,7 +56,7 @@ void CWorker::runTask( ETaskType _param )
     params.push_back( "-w" + m_rec->m_wrkDir );
     if( !m_rec->m_sshOptions.empty() )
         params.push_back( "-o" + m_rec->m_sshOptions );
-    if( m_debug )
+    if( m_options.m_debug )
         params.push_back( "-d" );
 
     string cmd;
@@ -73,8 +72,10 @@ void CWorker::runTask( ETaskType _param )
             }
         case task_clean:
             {
-                if( m_NeedLogs )
+                if( m_options.m_logs )
                     params.push_back( "-m" );
+                if( m_options.m_fastClean )
+                    params.push_back( "-f" );
 
                 cmd = "$POD_LOCATION/bin/private/pod-ssh-clean-worker";
                 break;

@@ -27,6 +27,7 @@ Usage: pod-ssh-clean-worker [OPTION]
      -o SSH_Opt			Additinal SSH parameters.
      -c arg			Start a remote cleanning (internal argument).
      -m                         Download all log files from the worker nodes.
+     -f                         The fast-clean procedure.
      -d				Verbose mode. Causes pod-ssh-clean-worker to print debugging messages about its progress.
      -h          		Show summary of options.
 
@@ -43,7 +44,8 @@ SSHOPT=""
 CLEAN=""
 DEBUG=""
 NEED_LOGS=""
-while getopts ":i:l:w:o:c:dmh" opt; do
+FAST_CLEAN=""
+while getopts ":i:l:w:o:c:dmfh" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -65,6 +67,9 @@ while getopts ":i:l:w:o:c:dmh" opt; do
     ;;
   m)
     NEED_LOGS="YES"
+    ;;
+  f)
+    FAST_CLEAN="YES"
     ;;
   h) 
     usage
@@ -230,12 +235,14 @@ fi
 
 get_log_files
 
-logMsg "$TOOL_NAME: Removing the remote working dir..."
-# remove the working directory
-$SSH_CMD "rm -rf $RDIR" 2>&1 | logMsgPipe
-if (( ${PIPESTATUS[0]} != 0 )); then
-    logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
-    exit 1
+if [ -z "$FAST_CLEAN" ]; then
+   logMsg "$TOOL_NAME: Removing remote working dir..."
+   # remove the working directory
+   $SSH_CMD "rm -rf $RDIR" 2>&1 | logMsgPipe
+   if (( ${PIPESTATUS[0]} != 0 )); then
+      logMsg "$TOOL_NAME error: failed to remove the remote working dir: $RDIR"
+      exit 1
+   fi
 fi
 
 logMsg "$TOOL_NAME: Done cleaning!"
