@@ -10,6 +10,9 @@ pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in
      all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
 pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
          It shuts worker nodes down. It doesn't actually clean workers' directories.
+pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
+         Min value is 1, max value is (Core*2). Default: 5.
+
 
 
 ## v3.6 (2011-07-07)

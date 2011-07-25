@@ -65,6 +65,10 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
       " It shuts worker nodes down. It doesn't actually clean workers' directories." )
     ( "logs", "Download all log files from the worker nodes. Can be used only together with the clean option" )
     ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress" )
+    ( "threads,t", bpo::value<size_t>()->default_value( 5 ),
+      "It defines a number of threads in pod-ssh's thread pool."
+      " Min value is 1, max value is (Core*2)."
+      " Default: 5" )
     ;
 
     // Parsing command-line
@@ -85,6 +89,9 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
 
     boost_hlp::conflicting_options( vm, "submit", "clean" );
     boost_hlp::conflicting_options( vm, "status", "clean" );
+    boost_hlp::conflicting_options( vm, "submit", "fast-clean" );
+    boost_hlp::conflicting_options( vm, "status", "fast-clean" );
+    boost_hlp::conflicting_options( vm, "clean", "fast-clean" );
     boost_hlp::conflicting_options( vm, "status", "submit" );
     boost_hlp::option_dependency( vm, "logs", "clean" );
 
@@ -150,13 +157,6 @@ int main( int argc, char * argv[] )
 
         CPoDEnvironment env;
         env.init();
-
-        // a number of threads in the thread-pool
-        // default is 4 and the maximum is 50.
-        // These are just magic numbers. We want to revise them later on...
-        size_t nThreads( env.getUD().m_server.m_agentThreads );
-        if( nThreads <= 4 || nThreads > 50 )
-            nThreads = 4;
 
         // Collect workers list
         string pipeName( env.getUD().m_server.m_common.m_workDir );
@@ -250,7 +250,16 @@ int main( int argc, char * argv[] )
             }
         }
 
-        // some controle information
+        // a number of threads in the thread-pool
+        //size_t nThreads( env.getUD().m_server.m_agentThreads );
+        size_t nThreads( vm["threads"].as<size_t>() );
+        // Protection for a number of threads
+        if( nThreads <= 0 || nThreads > ( getNCores() * 2 ) )
+        {
+            slog.debug_msg( "Warning: bad number of threads. The default will be used.\n" );
+            nThreads = 5;
+        }
+        // some control information
         ostringstream ss;
         ss << "There are " << nThreads << " threads in the tread-pool.\n";
         slog.debug_msg( ss.str() );
@@ -266,7 +275,7 @@ int main( int argc, char * argv[] )
 
         // it's a dry run - configuration check only
         if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
-            !vm.count( "status" ) && !vm.count( "fast-clean") )
+            !vm.count( "status" ) && !vm.count( "fast-clean" ) )
             throw runtime_error( "Running in dry mode. It's a configuration check only mode." );
 
         slog.debug_msg( "Workers list:\n" );
@@ -274,7 +283,7 @@ int main( int argc, char * argv[] )
         // start thread-pool and push tasks into it
         CThreadPool<CWorker, ETaskType> threadPool( nThreads );
         ETaskType task_type( task_submit );
-        if( vm.count( "clean" ) || vm.count("fast-clean") )
+        if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
         {
             task_type = task_clean;
             if( !vm.count( "debug" ) )
