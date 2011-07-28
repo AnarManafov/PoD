@@ -1,19 +1,18 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.8 (not yet released)
+pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support
+     all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
+pod: fixed: pod-ssh and pod-remote at start up could complain about missing their configuration files, when they should just ignore these cases.
 pod-info: fixed: Sometimes pod-info -n or -l hangs in the read method of the protocol class.
 pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the log file name in case
                    when an array job submission is used.
 pbs-plug-in: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
                     when a shared home file system is not available.
-pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support
-     all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
 pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
          It shuts worker nodes down. It doesn't actually clean workers' directories.
 pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
          Min value is 1, max value is (Core*2). Default: 5.
-
-
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
