@@ -13,6 +13,7 @@ pod-ssh: The command learned "--fast-clean" option. The fast version of the clea
          It shuts worker nodes down. It doesn't actually clean workers' directories.
 pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
          Min value is 1, max value is (Core*2). Default: 5.
+pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.

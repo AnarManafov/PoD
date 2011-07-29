@@ -141,7 +141,7 @@ if (( ${PIPESTATUS[0]} != 0 )); then
 fi
 
 # execute the worker script
-$SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> ssh_worker.log \" &> ssh_worker.log  < /dev/null &" 2>&1 | logMsgPipe
+$SSH_CMD "nohup bash -c \"cd $RDIR && ./$WRK_S_R &> $RDIR/ssh_worker.log \" &> $RDIR/ssh_worker.log  < /dev/null &" 2>&1 | logMsgPipe
 if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to start PoD worker"
     exit 1
