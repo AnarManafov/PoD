@@ -18,7 +18,7 @@
 #include "threadPool.h"
 #include "local_types.h"
 //=============================================================================
-enum ETaskType {task_submit, task_clean, task_status};
+enum ETaskType {task_submit, task_clean, task_status, task_exec};
 //=============================================================================
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {

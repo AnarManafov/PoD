@@ -182,6 +182,7 @@ SET(POD_BIN_PRIVATE_FILES
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-submit-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-clean-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-status-worker
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-exec-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-remote-srv-info
     )
 #

@@ -21,6 +21,7 @@ struct SWNOptions
     bool m_debug;
     bool m_logs;
     bool m_fastClean;
+    std::string m_scriptName;
 };
 
 #endif

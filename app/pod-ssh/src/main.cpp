@@ -58,6 +58,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     ( "config,c", bpo::value<string>(), "PoD's ssh plug-in configuration file" )
     ( "submit", "Submit workers" )
     ( "status", "Request status of the workers" )
+    ( "exec,e", bpo::value<string>(), "Execute a local shell script on the remote worker nodes" )
     // TODO: we need to be able to clean only selected worker(s)
     // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
@@ -87,12 +88,17 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
         return false;
     }
 
+
     boost_hlp::conflicting_options( vm, "submit", "clean" );
     boost_hlp::conflicting_options( vm, "status", "clean" );
     boost_hlp::conflicting_options( vm, "submit", "fast-clean" );
     boost_hlp::conflicting_options( vm, "status", "fast-clean" );
     boost_hlp::conflicting_options( vm, "clean", "fast-clean" );
     boost_hlp::conflicting_options( vm, "status", "submit" );
+    boost_hlp::conflicting_options( vm, "submit", "exec" );
+    boost_hlp::conflicting_options( vm, "status", "exec" );
+    boost_hlp::conflicting_options( vm, "clean", "exec" );
+    boost_hlp::conflicting_options( vm, "fast-clean", "exec" );
     boost_hlp::option_dependency( vm, "logs", "clean" );
 
     _vm->swap( vm );
@@ -230,6 +236,9 @@ int main( int argc, char * argv[] )
         options.m_debug = vm.count( "debug" );
         options.m_logs = vm.count( "logs" );
         options.m_fastClean = vm.count( "fast-clean" );
+        if( vm.count( "exec" ) )
+            options.m_scriptName = vm["exec"].as<string>();
+
         workersList_t workers;
         {
             CConfig config;
@@ -275,7 +284,8 @@ int main( int argc, char * argv[] )
 
         // it's a dry run - configuration check only
         if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
-            !vm.count( "status" ) && !vm.count( "fast-clean" ) )
+            !vm.count( "status" ) && !vm.count( "fast-clean" ) &&
+            !vm.count( "exec" ) )
             throw runtime_error( "Running in dry mode. It's a configuration check only mode." );
 
         slog.debug_msg( "Workers list:\n" );
@@ -294,6 +304,10 @@ int main( int argc, char * argv[] )
         else if( vm.count( "submit" ) && !vm.count( "debug" ) )
         {
             slog( "Submitting PoD workers...\n" );
+        }
+        else if( vm.count( "exec" ) )
+        {
+            task_type = task_exec;
         }
 
         workersList_t::iterator iter = workers.begin();

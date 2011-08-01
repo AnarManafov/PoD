@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-ssh-exec-worker
+# * @brief 
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2011-08-01
+#
+#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#*************************************************************************/
+#
+#=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility, which is used to execute a local shell script on remote PoD WNs. It's used by pod-ssh utility.
+   Copyright (C) 2011 GSI, Scientific Computing group.
+
+Usage: pod-ssh-exec-worker [OPTION]
+     -i id			ID of the worker.
+     -l ssh login@host.fqdn 	SSH connection string.
+     -w dir      		Remote working directory.
+     -n X        		Desired number or PROOF workers.
+     -o SSH_Opt			Additinal SSH parameters.
+     -e script                  The script to execute.
+     -d				Verbose mode. Causes pod-ssh-exec-worker to print debugging messages about its progress.
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+WORKER_ID=""
+SSH_CON_STR=""
+RDIR=""
+NWORKERS=1
+SSHOPT=""
+DEBUG=""
+EXEC_CMD=""
+while getopts ":i:l:w:n:o:e:dh" opt; do
+  case $opt in
+  i)
+    WORKER_ID="$OPTARG"
+    ;;
+  l)
+    SSH_CON_STR="$OPTARG"
+    ;;
+  w) 
+    RDIR="$OPTARG"
+    ;;
+  n)
+    NWORKERS=$OPTARG
+    ;;
+  o)
+    SSHOPT="$OPTARG"
+    ;;
+  e)
+    EXEC_CMD="$OPTARG"
+    ;;
+  d)
+    DEBUG="YES"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+
+if [ -z "$SSH_CON_STR" ]; then
+   usage
+   exit 1
+fi
+
+#=============================================================================
+# ***** VARS *****
+#=============================================================================
+TOOL_NAME="pod-ssh-exec-worker"
+eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
+
+SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"
+SSH_CMD="ssh $SSH_OPT_INT -q $SSH_CON_STR $SSHOPT"
+#=============================================================================
+# ***** POD-SSH NAMED PIPE *****
+#=============================================================================
+# a pod-ssh communication pipe (log engine)
+eval pipe_dir="$WORK_DIR"
+pipe="$pipe_dir/.pod_ssh_pipe"
+if [[ ! -p $pipe ]]; then
+    echo "$TOOL_NAME error: pod-ssh log engine is not running"
+    exit 1
+fi
+#=============================================================================
+# ***** LOG *****
+#=============================================================================
+# function read input from stdin and write output to the stdout
+# caller must take care about where come stdin and where go stdout
+logMsgPipe() 
+{
+  while read data
+  do
+      logMsg "$data" 
+  done
+}
+logMsg()
+{
+# date format
+#RFC-2822:
+# *    www, dd mmm yyyy hh:mm:ss +zzzz
+#
+# Don't use date -R since it's a GNU specific implementation (doesn't work on Mac, for example)
+   if [ -n "$DEBUG" ]; then
+      echo -e "$WORKER_ID\t[$(date '+%a, %d %b %Y %T %z')]\t$1" > $pipe
+   fi
+}
+#=============================================================================
+# ***** MAIN *****
+#=============================================================================
+logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, nworkers: $NWORKERS, sshopt: $SSHOPT, script: $EXEC_CMD)"
+
+# check that the script is available
+if [ ! -r $EXEC_CMD ]; then
+   logMsg "$TOOL_NAME error: can't read the given script \"$EXEC_CMD\""
+   exit 1
+fi
+
+EXEC_CMD_RMT=$(basename $EXEC_CMD)
+
+# send the script
+# use rsync since it can automatically create a remote working dir
+rsync -aq -e "ssh $SSH_OPT_INT $SSHOPT" $EXEC_CMD $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
+if (( ${PIPESTATUS[0]} != 0 )); then
+    logMsg "$TOOL_NAME error: failed to send the script"
+    exit 1
+fi
+
+# execute the worker script
+$SSH_CMD "chmod u+x $RDIR/$EXEC_CMD_RMT; $RDIR/$EXEC_CMD_RMT" 2>&1 | logMsgPipe
+logMsg "$EXEC_CMD_RMT: [${PIPESTATUS[0]}]"
+
+exit 0
+

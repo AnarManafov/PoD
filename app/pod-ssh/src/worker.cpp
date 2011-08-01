@@ -83,6 +83,10 @@ void CWorker::runTask( ETaskType _param )
         case task_status:
             cmd = "$POD_LOCATION/bin/private/pod-ssh-status-worker";
             break;
+        case task_exec:
+            params.push_back( "-e " + m_options.m_scriptName );
+            cmd = "$POD_LOCATION/bin/private/pod-ssh-exec-worker";
+            break;
         default:
             return;
     }
