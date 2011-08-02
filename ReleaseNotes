@@ -14,6 +14,8 @@ pod-ssh: The command learned "--fast-clean" option. The fast version of the clea
 pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
          Min value is 1, max value is (Core*2). Default: 5.
 pod-ssh: The command learned "--exec/-e" option. The option can be used to execute a local shell script on the remote worker nodes.
+pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean".
+         This will force to execute a custom script before starting or cleaning PoD worker nodes.
 pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes.
 
 ## v3.6 (2011-07-07)

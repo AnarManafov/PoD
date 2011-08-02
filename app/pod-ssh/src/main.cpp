@@ -40,6 +40,8 @@ namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
 const LPCSTR g_pipeName = ".pod_ssh_pipe";
+typedef list<CWorker> workersList_t;
+typedef CThreadPool<CWorker, ETaskType> threadPool_t;
 //=============================================================================
 void printVersion()
 {
@@ -95,10 +97,6 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     boost_hlp::conflicting_options( vm, "status", "fast-clean" );
     boost_hlp::conflicting_options( vm, "clean", "fast-clean" );
     boost_hlp::conflicting_options( vm, "status", "submit" );
-    boost_hlp::conflicting_options( vm, "submit", "exec" );
-    boost_hlp::conflicting_options( vm, "status", "exec" );
-    boost_hlp::conflicting_options( vm, "clean", "exec" );
-    boost_hlp::conflicting_options( vm, "fast-clean", "exec" );
     boost_hlp::option_dependency( vm, "logs", "clean" );
 
     _vm->swap( vm );
@@ -229,7 +227,6 @@ int main( int argc, char * argv[] )
                 slog.debug_msg( *iter + '\n' );
         }
 
-        typedef list<CWorker> workersList_t;
         size_t wrkCount( 0 );
         bool dynWrk( false );
         SWNOptions options;
@@ -291,24 +288,7 @@ int main( int argc, char * argv[] )
         slog.debug_msg( "Workers list:\n" );
 
         // start thread-pool and push tasks into it
-        CThreadPool<CWorker, ETaskType> threadPool( nThreads );
-        ETaskType task_type( task_submit );
-        if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
-        {
-            task_type = task_clean;
-            if( !vm.count( "debug" ) )
-                slog( "Cleaning PoD workers...\n" );
-        }
-        else if( vm.count( "status" ) )
-            task_type = task_status;
-        else if( vm.count( "submit" ) && !vm.count( "debug" ) )
-        {
-            slog( "Submitting PoD workers...\n" );
-        }
-        else if( vm.count( "exec" ) )
-        {
-            task_type = task_exec;
-        }
+        threadPool_t threadPool( nThreads );
 
         workersList_t::iterator iter = workers.begin();
         workersList_t::iterator iter_end = workers.end();
@@ -318,7 +298,26 @@ int main( int argc, char * argv[] )
             iter->printInfo( ss );
             ss << "\n";
             slog.debug_msg( ss.str().c_str() );
-            threadPool.pushTask( *iter, task_type );
+            // pash pre-tasks
+            if( vm.count( "exec" ) )
+            {
+                threadPool.pushTask( *iter, task_exec );
+            }
+
+            // push main tasks
+            if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
+            {
+                threadPool.pushTask( *iter, task_clean );
+                if( !vm.count( "debug" ) )
+                    slog( "Cleaning PoD workers...\n" );
+            }
+            else if( vm.count( "status" ) )
+                threadPool.pushTask( *iter, task_status );
+            else if( vm.count( "submit" ) && !vm.count( "debug" ) )
+            {
+                threadPool.pushTask( *iter, task_submit );
+                slog( "Submitting PoD workers...\n" );
+            }
         }
         threadPool.stop( true );
 
