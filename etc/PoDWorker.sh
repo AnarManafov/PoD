@@ -200,10 +200,10 @@ check_arch()
    wn_host_arch=$(uname -m  2>&1)
    case "$wn_host_arch" in
       i[3-9]86*|x86|x86pc|k5|k6|k6_2|k6_3|k6-2|k6-3|pentium*|athlon*|i586_i686|i586-i686)
-         host_arch=x86
+         host_arch="x86"
          ;;
       x86_64)
-         host_arch=amd64
+         host_arch="amd64"
          ;;
       *)
          logMsg "Error: unsupported architecture: $host_arch"
@@ -212,10 +212,10 @@ check_arch()
    esac
    logMsg "host's CPU/instruction set: $host_arch"
    
-   #MacOSX is using always 64bit bins
+   #MacOSX is using always universal bins
    if [ "$OS" == "Darwin" ]; then
-      host_arch=amd64
-      logMsg "Forcing 64bit arch for MacOSX bins"
+      host_arch="universal"
+      logMsg "using universal MacOSX bins"
    fi
 }
 #=============================================================================
@@ -261,8 +261,6 @@ get_default_ROOT()
    fi
    
    export PATH=$ROOTSYS/bin:$PATH
-#   export LD_LIBRARY_PATH=$ROOTSYS/lib:$LD_LIBRARY_PATH 
-#   export LD_LIBRARY_PATH=$ROOTSYS/lib/root:$LD_LIBRARY_PATH
 
    source $ROOTSYS/bin/thisroot.sh
 

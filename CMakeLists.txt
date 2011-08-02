@@ -97,7 +97,12 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
      set(TRG_ARCH amd64)
    endif( CMAKE_SIZEOF_VOID_P EQUAL 4 )
    
-   set( WN_PKG_NAME "pod-wrk-bin-${POD_VERSION}-${CMAKE_SYSTEM_NAME}-${TRG_ARCH}" )
+   if(APPLE)
+       set( WN_PKG_NAME "pod-wrk-bin-${POD_VERSION}-${CMAKE_SYSTEM_NAME}-universal" )
+   elseif(UNIX)
+        set( WN_PKG_NAME "pod-wrk-bin-${POD_VERSION}-${CMAKE_SYSTEM_NAME}-${TRG_ARCH}" )
+   endif(APPLE)
+
    set( WN_PKG_DIR "${CMAKE_BINARY_DIR}/pod-wrk-bin" )
    set( WN_PKG_NAME_ARCH "${WN_PKG_NAME}.tar.gz" )
    set( WN_PKG_REMOTE_DIR "/u/podwww/web-docs/releases/add/${POD_VERSION}" )
