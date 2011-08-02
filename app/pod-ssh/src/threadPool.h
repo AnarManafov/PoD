@@ -85,7 +85,6 @@ class CThreadPool
             boost::mutex::scoped_lock lock( m_mutex );
             task_t *task = new task_t( _task, _param );
             m_tasks.push( task );
-
             m_threadNeeded.notify_all();
         }
         void execute()

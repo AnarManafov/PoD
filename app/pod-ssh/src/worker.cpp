@@ -23,7 +23,8 @@ CWorker::CWorker( configRecord_t _rec, log_func_t _log,
     m_rec( _rec ),
     m_log( _log ),
     m_bSuccess( false ),
-    m_options( _options )
+    m_options( _options ),
+    m_mutex( mutexPtr_t( new boost::mutex() ) )
 {
     // constructing a full path of the worker for this id
     // pattern: <m_wrkDir>/<m_id>
@@ -50,6 +51,9 @@ void CWorker::printInfo( ostream &_stream ) const
 //=============================================================================
 void CWorker::runTask( ETaskType _param )
 {
+    // protection: don't execute different tasks on the same worker in the same time
+    boost::mutex::scoped_lock lck(*m_mutex);
+
     StringVector_t params;
     params.push_back( "-i" + m_rec->m_id );
     params.push_back( "-l" + m_rec->m_addr );

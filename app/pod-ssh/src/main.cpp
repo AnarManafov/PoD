@@ -298,25 +298,25 @@ int main( int argc, char * argv[] )
             iter->printInfo( ss );
             ss << "\n";
             slog.debug_msg( ss.str().c_str() );
-            // pash pre-tasks
-            if( vm.count( "exec" ) )
             {
-                threadPool.pushTask( *iter, task_exec );
+                // we need a copy, in order to avoid any
+                // conflicts in threads
+                CWorker wrk_copy( *iter );
+                // pash pre-tasks
+                if( vm.count( "exec" ) )
+                    threadPool.pushTask( wrk_copy, task_exec );
             }
-
-            // push main tasks
-            if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
             {
-                threadPool.pushTask( *iter, task_clean );
-                if( !vm.count( "debug" ) )
-                    slog( "Cleaning PoD workers...\n" );
-            }
-            else if( vm.count( "status" ) )
-                threadPool.pushTask( *iter, task_status );
-            else if( vm.count( "submit" ) && !vm.count( "debug" ) )
-            {
-                threadPool.pushTask( *iter, task_submit );
-                slog( "Submitting PoD workers...\n" );
+                // we need a copy, in order to avoid any
+                // conflicts in threads
+                CWorker wrk_copy( *iter );
+                // push main tasks
+                if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
+                    threadPool.pushTask( wrk_copy, task_clean );
+                else if( vm.count( "status" ) )
+                    threadPool.pushTask( wrk_copy, task_status );
+                else if( vm.count( "submit" ) )
+                    threadPool.pushTask( wrk_copy, task_submit );
             }
         }
         threadPool.stop( true );

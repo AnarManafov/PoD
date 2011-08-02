@@ -17,8 +17,12 @@
 #include "config.h"
 #include "threadPool.h"
 #include "local_types.h"
+// boost
+#include <boost/thread/mutex.hpp>
 //=============================================================================
 enum ETaskType {task_submit, task_clean, task_status, task_exec};
+// boost::mutex is not copyable, we therefore should wrap it
+typedef boost::shared_ptr<boost::mutex> mutexPtr_t;
 //=============================================================================
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
@@ -44,5 +48,6 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
         log_func_t m_log;
         bool m_bSuccess;
         SWNOptions m_options;
+        mutexPtr_t m_mutex;
 };
 #endif
