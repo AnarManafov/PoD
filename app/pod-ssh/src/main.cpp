@@ -157,7 +157,8 @@ int main( int argc, char * argv[] )
     {
         // convert log engine's functor to a free call-back function
         // this is needed to pass the logger further to other objects
-        log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(), &slog, _1, _2, _3 );
+        log_func_t log_fun_ptr = boost::bind( &CLogEngine::operator(),
+                                              &slog, _1, _2, _3 );
 
         CPoDEnvironment env;
         env.init();
@@ -246,7 +247,7 @@ int main( int argc, char * argv[] )
             for( ; iter != iter_end; ++iter )
             {
                 configRecord_t rec( *iter );
-                CWorker wrk( rec, log_fun_ptr, options );
+                CWorker wrk( rec, &log_fun_ptr, options );
                 workers.push_back( wrk );
 
                 if( 0 == rec->m_nWorkers )
@@ -298,26 +299,18 @@ int main( int argc, char * argv[] )
             iter->printInfo( ss );
             ss << "\n";
             slog.debug_msg( ss.str().c_str() );
-            {
-                // we need a copy, in order to avoid any
-                // conflicts in threads
-                CWorker wrk_copy( *iter );
-                // pash pre-tasks
-                if( vm.count( "exec" ) )
-                    threadPool.pushTask( wrk_copy, task_exec );
-            }
-            {
-                // we need a copy, in order to avoid any
-                // conflicts in threads
-                CWorker wrk_copy( *iter );
-                // push main tasks
-                if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
-                    threadPool.pushTask( wrk_copy, task_clean );
-                else if( vm.count( "status" ) )
-                    threadPool.pushTask( wrk_copy, task_status );
-                else if( vm.count( "submit" ) )
-                    threadPool.pushTask( wrk_copy, task_submit );
-            }
+
+            // pash pre-tasks
+            if( vm.count( "exec" ) )
+                threadPool.pushTask( *iter, task_exec );
+
+            // push main tasks
+            if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
+                threadPool.pushTask( *iter, task_clean );
+            else if( vm.count( "status" ) )
+                threadPool.pushTask( *iter, task_status );
+            else if( vm.count( "submit" ) )
+                threadPool.pushTask( *iter, task_submit );
         }
         threadPool.stop( true );
 

@@ -18,7 +18,7 @@ using namespace MiscCommon;
 //=============================================================================
 const size_t g_cmdTimeout = 35; // in sec.
 //=============================================================================
-CWorker::CWorker( configRecord_t _rec, log_func_t _log,
+CWorker::CWorker( configRecord_t _rec, log_func_t *_log,
                   const SWNOptions &_options ):
     m_rec( _rec ),
     m_log( _log ),
@@ -48,7 +48,7 @@ void CWorker::printInfo( ostream &_stream ) const
             << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
 //=============================================================================
-bool CWorker::runTask( ETaskType _param )
+bool CWorker::runTask( ETaskType _param ) const
 {
     // protection: don't execute different tasks on the same worker in the same time
     boost::mutex::scoped_lock lck( *m_mutex );
@@ -98,7 +98,7 @@ bool CWorker::runTask( ETaskType _param )
     return exec_command( cmd, params );
 }
 //=============================================================================
-bool CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
+bool CWorker::exec_command( const string &_cmd, const StringVector_t &_params ) const
 {
     string outPut;
     try
@@ -119,7 +119,7 @@ bool CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
     return true;
 }
 //=============================================================================
-void CWorker::log( const std::string &_msg )
+void CWorker::log( const std::string &_msg ) const
 {
-    m_log( _msg, m_rec->m_id, true );
+    ( *m_log )( _msg, m_rec->m_id, true );
 }

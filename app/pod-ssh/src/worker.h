@@ -27,22 +27,22 @@ typedef boost::shared_ptr<boost::mutex> mutexPtr_t;
 class CWorker: public CTaskImp<CWorker, ETaskType>
 {
     public:
-        CWorker( configRecord_t _rec, log_func_t _log,
+        CWorker( configRecord_t _rec, log_func_t *_log,
                  const SWNOptions &_options );
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
-        bool runTask( ETaskType _param );
+        bool runTask( ETaskType _param ) const;
 
     private:
         bool exec_command( const std::string &_cmd,
-                           const MiscCommon::StringVector_t &_params );
-        void log( const std::string &_msg );
+                           const MiscCommon::StringVector_t &_params ) const;
+        void log( const std::string &_msg ) const;
 
     private:
         configRecord_t m_rec;
-        log_func_t m_log;
+        log_func_t *m_log;
         SWNOptions m_options;
-        mutexPtr_t m_mutex;
+        mutable mutexPtr_t m_mutex;
 };
 #endif

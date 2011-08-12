@@ -230,7 +230,7 @@ fi
 logMsg "$TOOL_NAME: Executing the cleaner on the remote host..."
 $SSH_CMD "$RDIR/$TOOL_NAME -l $SSH_CON_STR -c clean -w $RDIR" 2>&1 | logMsgPipe
 if (( ${PIPESTATUS[0]} != 0 )); then
-   logMsg "$TOOL_NAME warning: failed to retrieve remote log files."
+   logMsg "$TOOL_NAME warning: failed to execute the cleaner."
 fi
 
 get_log_files

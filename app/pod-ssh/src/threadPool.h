@@ -28,17 +28,11 @@ template <class _T, class _P>
 class CTaskImp
 {
     public:
-        void setTaskParam( _P &_param )
-        {
-            m_taskParam = _param;
-        }
-        bool run()
+        bool run( _P &_param )
         {
             _T *pThis = reinterpret_cast<_T *>( this );
-            return pThis->runTask( m_taskParam );
+            return pThis->runTask( _param );
         }
-    private:
-        _P m_taskParam;
 };
 //=============================================================================
 template <class _T, class _P>
@@ -48,17 +42,17 @@ class CTask
         typedef CTaskImp<_T, _P> task_t;
 
     public:
-        CTask( task_t &_task, _P &_param ): m_task( _task )
+        CTask( task_t &_task, _P &_param ): m_task( _task ), m_taskParam( _param )
         {
-            m_task.setTaskParam( _param );
         }
         bool run()
         {
-            return m_task.run();
+            return m_task.run( m_taskParam );
         }
 
     private:
         task_t &m_task;
+        _P m_taskParam;
 };
 //=============================================================================
 template <class _T, class _P>
