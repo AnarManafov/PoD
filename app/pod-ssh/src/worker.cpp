@@ -22,7 +22,6 @@ CWorker::CWorker( configRecord_t _rec, log_func_t _log,
                   const SWNOptions &_options ):
     m_rec( _rec ),
     m_log( _log ),
-    m_bSuccess( false ),
     m_options( _options ),
     m_mutex( mutexPtr_t( new boost::mutex() ) )
 {
@@ -49,10 +48,10 @@ void CWorker::printInfo( ostream &_stream ) const
             << m_rec->m_addr << ":" << m_rec->m_wrkDir;
 }
 //=============================================================================
-void CWorker::runTask( ETaskType _param )
+bool CWorker::runTask( ETaskType _param )
 {
     // protection: don't execute different tasks on the same worker in the same time
-    boost::mutex::scoped_lock lck(*m_mutex);
+    boost::mutex::scoped_lock lck( *m_mutex );
 
     StringVector_t params;
     params.push_back( "-i" + m_rec->m_id );
@@ -92,17 +91,15 @@ void CWorker::runTask( ETaskType _param )
             cmd = "$POD_LOCATION/bin/private/pod-ssh-exec-worker";
             break;
         default:
-            return;
+            return false;
     }
 
     smart_path( &cmd );
-    exec_command( cmd, params );
+    return exec_command( cmd, params );
 }
 //=============================================================================
-void CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
+bool CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
 {
-    m_bSuccess = false;
-
     string outPut;
     try
     {
@@ -111,7 +108,7 @@ void CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
     catch( exception &e )
     {
         log( "Failed to process the task.\n" );
-        return;
+        return false;
     }
     if( !outPut.empty() )
     {
@@ -119,7 +116,7 @@ void CWorker::exec_command( const string &_cmd, const StringVector_t &_params )
         ss << "Cmnd Output: " << outPut << "\n";
         log( ss.str() );
     }
-    m_bSuccess = true;
+    return true;
 }
 //=============================================================================
 void CWorker::log( const std::string &_msg )

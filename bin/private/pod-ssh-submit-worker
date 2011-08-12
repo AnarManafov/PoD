@@ -87,7 +87,7 @@ eval WRK_S_L=$(pod-user-defaults --wrkscript)
 WRK_S_R="$(basename "$WRK_S_L") $NWORKERS"
 
 SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"
-SSH_CMD="ssh $SSH_OPT_INT  -n -f -q $SSH_CON_STR $SSHOPT"
+SSH_CMD="ssh $SSH_OPT_INT -q $SSH_CON_STR $SSHOPT"
 #=============================================================================
 # ***** POD-SSH NAMED PIPE *****
 #=============================================================================

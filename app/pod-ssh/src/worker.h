@@ -32,21 +32,16 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
         ~CWorker();
 
         void printInfo( std::ostream &_stream ) const;
-        void runTask( ETaskType _param );
-        bool IsLastTaskSuccess() const
-        {
-            return m_bSuccess;
-        }
+        bool runTask( ETaskType _param );
 
     private:
-        void exec_command( const std::string &_cmd,
+        bool exec_command( const std::string &_cmd,
                            const MiscCommon::StringVector_t &_params );
         void log( const std::string &_msg );
 
     private:
         configRecord_t m_rec;
         log_func_t m_log;
-        bool m_bSuccess;
         SWNOptions m_options;
         mutexPtr_t m_mutex;
 };

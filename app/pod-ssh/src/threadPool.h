@@ -32,10 +32,10 @@ class CTaskImp
         {
             m_taskParam = _param;
         }
-        void run()
+        bool run()
         {
             _T *pThis = reinterpret_cast<_T *>( this );
-            pThis->runTask( m_taskParam );
+            return pThis->runTask( m_taskParam );
         }
     private:
         _P m_taskParam;
@@ -52,9 +52,9 @@ class CTask
         {
             m_task.setTaskParam( _param );
         }
-        void run()
+        bool run()
         {
-            m_task.run();
+            return m_task.run();
         }
 
     private:
@@ -86,6 +86,7 @@ class CThreadPool
             task_t *task = new task_t( _task, _param );
             m_tasks.push( task );
             m_threadNeeded.notify_all();
+            ++m_tasksCount;
         }
         void execute()
         {
@@ -109,7 +110,11 @@ class CThreadPool
                 //Execute job
                 if( task )
                 {
-                    task->run();
+                    if( task->run() )
+                    {
+                        boost::mutex::scoped_lock lock( m_mutex );
+                        ++m_successfulTasks;
+                    }
                     delete task;
                     task = NULL;
                 }
@@ -143,6 +148,14 @@ class CThreadPool
 
             m_threads.join_all();
         }
+        size_t tasksCount() const
+        {
+            return m_tasksCount;
+        }
+        size_t successfulTasks() const
+        {
+            return m_successfulTasks;
+        }
 
     private:
         boost::thread_group m_threads;
@@ -152,6 +165,8 @@ class CThreadPool
         boost::condition m_threadAvailable;
         bool m_stopped;
         bool m_stopping;
+        size_t m_successfulTasks;
+        size_t m_tasksCount;
 };
 
 #endif

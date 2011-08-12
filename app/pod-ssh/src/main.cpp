@@ -321,36 +321,17 @@ int main( int argc, char * argv[] )
         }
         threadPool.stop( true );
 
-        // Check the status of all tasks
-        iter = workers.begin();
-        iter_end = workers.end();
-        size_t g( 0 );
-        size_t b( 0 );
-        for( ; iter != iter_end; ++iter )
-        {
-            if( iter->IsLastTaskSuccess() )
-                ++g;
-            else
-                ++b;
-        }
+        // Check the status of all tasks Failed
+        size_t badFailedCount = threadPool.tasksCount() - threadPool.successfulTasks();
         ostringstream msg;
         msg
                 << "\n*******************\n"
-                << "Successfully processed tasks: " << g << '\n'
-                << "Failed tasks: " << b << '\n'
+                << "Successfully processed tasks: " << threadPool.successfulTasks() << '\n'
+                << "Failed tasks: " << badFailedCount << '\n'
                 << "*******************\n";
         slog.debug_msg( msg.str() );
 
-        if( vm.count( "submit" ) && !vm.count( "debug" ) )
-        {
-            ostringstream s_msg;
-            s_msg
-                    << "Successfully submitted " << g
-                    << " out of " << workers.size() << " PoD workers" << '\n';
-            slog( s_msg.str() );
-        }
-
-        if( b > 0 && !vm.count( "debug" ) )
+        if( badFailedCount > 0 && !vm.count( "debug" ) )
             slog( "WARNING: some tasks have failed. Please use the \"--debug\""
                   " option to print debugging messages.\n" );
 
