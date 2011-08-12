@@ -40,10 +40,11 @@ enum EProc {start, clean};
 class CTestTask: public CTaskImp<CTestTask, EProc>
 {
     public:
-        void runTask( EProc _param )
+        bool runTask( EProc _param )
         {
             m_tid = MiscCommon::gettid();
             sleep( g_sleeptime );
+            return true;
         }
         unsigned long threadID() const
         {
