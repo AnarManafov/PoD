@@ -78,6 +78,39 @@ proof->SetParameter( "PROOF_MaxSlavesPerNode", (Long_t)100 );
                 manage it for you automatically.
             </para>
         </sect2>
+	
+        <sect2 id="gLiteEnvironmentissueAtCERNLSF">
+            <title>gLite environment issue at CERN's LSF</title>
+            <para>
+                If PoD doens't work for you out of the box at CERN on LSF, PoD jobs fail to start PoD workers, then most probably you are facing so called "gLite environment" issue.
+                Check you the logs from PoD jobs and if you see something like this in you std_XXX.out of the job, then most probably xproofd will fail to start:
+<screen>
+LD_LIBRARY_PATH=/tmp/PoD_cgmwU22625:/opt/d-cache/dcap/lib:/opt/d-cache/dcap/lib64:/opt/glite/lib:/opt/glite/lib64:/opt/globus/lib:\
+/opt/lcg/lib:/opt/lcg/lib64:/usr/lib64:/afs/cern.ch/user/m/mbellomo/PoD/3.6/lib:/afs/cern.ch/sw/lcg/external/qt/4.4.2/x86_64-slc5-gcc43-opt/lib:\
+/afs/cern.ch/sw/lcg/external/Boost/1.47.0_python2.6/x86_64-slc5-gcc43-opt//lib:/afs/cern.ch/sw/lcg/app/releases/ROOT/5.30.00/x86_64-slc5-gcc43-opt/root/lib:\
+/afs/cern.ch/sw/lcg/contrib/gcc/4.3.5/x86_64-slc5-gcc34-opt/lib64:/afs/cern.ch/sw/lcg/contrib/mpfr/2.3.1/x86_64-slc5-gcc34-opt/lib:\
+/afs/cern.ch/sw/lcg/contrib/gmp/4.2.2/x86_64-slc5-gcc34-opt/lib:/opt/classads/lib64/:/opt/c-ares/lib/
+</screen>
+                Note "glite" in the paths.
+            </para>
+            <para>
+                Just as a workaround, you can try to use <xref linkend="users_env_script"/> in this file you need just two lines
+<screen>
+#! /usr/bin/env bash
+export LD_LIBRARY_PATH=/afs/cern.ch/sw/lcg/external/qt/4.4.2/x86_64-slc5-gcc43-opt/lib:\
+/afs/cern.ch/sw/lcg/external/Boost/1.44.0_python2.6/x86_64-slc5-gcc43-opt//lib:/afs/cern.ch/sw/lcg/app/releases/ROOT/5.30.00/x86_64-slc5-gcc43-opt/root/lib:\
+/afs/cern.ch/sw/lcg/contrib/gcc/4.3.5/x86_64-slc5-gcc34-opt/lib64:/afs/cern.ch/sw/lcg/contrib/mpfr/2.3.1/x86_64-slc5-gcc34-opt/lib:\
+/afs/cern.ch/sw/lcg/contrib/gmp/4.2.2/x86_64-slc5-gcc34-opt/lib:/afs/cern.ch/alice/library/afs_volumes/vol12/geant3/lib/tgt_linuxx8664gcc:\
+/afs/cern.ch/alice/library/afs_volumes/vol12/AliRoot/lib/tgt_linuxx8664gcc
+</screen>
+                or any sutable LD_LIBRARY_PATH you like, just without gLite libs.         
+            </para>
+            <para>
+                Another solution is to check what inserts glite environemnt to your LSF jobs and get rid of it.
+            </para>
+            
+        </sect2>
+
     </sect1>
     
     
