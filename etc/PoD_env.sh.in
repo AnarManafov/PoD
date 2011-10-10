@@ -53,6 +53,10 @@ if [ -z "$POD_CFG" ]; then
    pod-user-defaults -d -c "$LOCAL_POD/PoD.cfg"
 fi
 
+# create working dir for custom locations
+WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
+create_dir "$WORK_DIR"
+
 # sourcing GAW environment, if installed
 if [[ -f $POD_LOCATION/bin/gaw_env.sh ]]; then
    source $POD_LOCATION/bin/gaw_env.sh
