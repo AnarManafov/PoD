@@ -23,7 +23,6 @@
 // /opt/local/include/boost/thread/pthread/condition_variable.hpp:53: warning: unused variable ‘res’
 // Remove it as soon as BOOST is fixed
 #include "BOOSTHelper.h"
-#include "Process.h"
 #include "SysHelper.h"
 #include "INet.h"
 #include "logEngine.h"
@@ -34,6 +33,7 @@
 #include "PoDSysFiles.h"
 #include "Options.h"
 #include "MessageParser.h"
+#include "Utils.h"
 //=============================================================================
 using namespace MiscCommon;
 using namespace std;
@@ -49,7 +49,7 @@ void signal_handler( int _SignalNumber )
 //=============================================================================
 void signal_handler_hungup( int _SignalNumber )
 {
-    cerr << PROJECT_NAME << "fatal: The remote end hung up unexpectedly" << endl;
+    cerr << PROJECT_NAME << " fatal: The remote end hung up unexpectedly" << endl;
 }
 //=============================================================================
 void version()
@@ -69,9 +69,7 @@ void send_cmd( int _handle, const string &_cmd, bool _stopSrvIfFailed = true )
     else
         cmd << "{ exit 1; }; \n";
 
-    inet::sendall( _handle,
-                   reinterpret_cast<const unsigned char*>( cmd.str().c_str() ),
-                   cmd.str().size(), 0 );
+    inet::writeall( _handle, cmd.str() );
 }
 //=============================================================================
 void monitor( int _fdIn, int _fdOut, int _fdErr )
@@ -136,6 +134,8 @@ int main( int argc, char *argv[] )
     int stdout_pipe[2];
     int stderr_pipe[2];
     SOptions options;
+    CLogEngine slog( options.m_debug );
+    CPoDEnvironment env;
     try
     {
         if( !parseCmdLine( argc, argv, &options ) )
@@ -147,6 +147,10 @@ int main( int argc, char *argv[] )
             version();
             return 0;
         }
+
+        env.init();
+        // Start the log engine only on clients (local instances)
+        slog.start( env.pipe_log_enginePipeFile() );
     }
     catch( exception& e )
     {
@@ -154,48 +158,12 @@ int main( int argc, char *argv[] )
         return 1;
     }
 
-    CLogEngine slog( options.m_debug );
-    CPoDEnvironment env;
-
     try
     {
-        env.init();
-        // Start the log engine only on clients (local instances)
-        slog.start( env.pipe_log_enginePipeFile() );
-
         if( options.m_start || options.m_restart || options.m_stop )
         {
-            // TODO: make wait for the process here to check for errors
-            const pid_t pid_to_kill = CPIDFile::GetPIDFromFile( env.pod_remotePidFile() );
-            if( pid_to_kill > 0 && IsProcessExist( pid_to_kill ) )
-            {
-                stringstream ss;
-                ss
-                        << PROJECT_NAME << ": stopping ("
-                        << pid_to_kill
-                        << ")...";
-                slog( ss.str() );
-
-                // TODO: Maybe we need more validations of the process before
-                // sending a signal. We don't want to kill someone else.
-                kill( pid_to_kill, SIGTERM );
-
-                // Waiting for the process to finish
-                size_t iter( 0 );
-                const size_t max_iter = 30;
-                while( iter <= max_iter )
-                {
-                    if( !IsProcessExist( pid_to_kill ) )
-                    {
-                        cout << endl;
-                        break;
-                    }
-                    sleep( 1 ); // sleeping for 1 second
-                    ++iter;
-                }
-                if( IsProcessExist( pid_to_kill ) )
-                    throw runtime_error( "FAILED to close the process." );
-            }
+            // send a kill signal to pod-remote daemon if running
+            kill_process( env.pod_remotePidFile(), slog );
 
             if( options.m_stop )
                 return 0; // don't need to do anything else
@@ -212,7 +180,7 @@ int main( int argc, char *argv[] )
             options.m_envScript = opt_file.m_env;
         }
 
-        // the fork stuff we need only if user wants to send a command
+        // the fork stuff we need only if a user wants to send a command
         // to a remote server
         if( !options.m_start && !options.m_stop && !options.m_restart &&
             options.m_command.empty() )
@@ -220,17 +188,28 @@ int main( int argc, char *argv[] )
 
         if( options.cleanConnectionString().empty() )
             throw runtime_error( "Please provide a connection URL.\n" );
-        // Create two pipes, which later will be used for stdout/in redirections
+
+        // Create pipes, which later will be used for stdout/in/err redirections
         // TODO: close all handles at the end
         if( -1 == pipe( stdin_pipe ) )
-            throw runtime_error( "Error: Can't create a communication stdin_pipe.\n" );
-
+            throw system_error( "Error: Can't create a communication stdin_pipe.\n" );
         if( -1 == pipe( stdout_pipe ) )
-            throw runtime_error( "Error: Can't create a communication stdout_pipe\n" );
-
+            throw system_error( "Error: Can't create a communication stdout_pipe\n" );
         if( -1 == pipe( stderr_pipe ) )
-            throw runtime_error( "Error: Can't create a communication stderr_pipe\n" );
+            throw system_error( "Error: Can't create a communication stderr_pipe\n" );
 
+        // Create a main ssh tunnel, which serves pod-remote communication.
+        // Remote port 22 is so far hard-coded
+        CSSHTunnel sshTunnelMain;
+        size_t localPortListen( 0 );
+        if( !options.m_openDomain.empty() )
+        {
+            localPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
+                                                   env.getUD().m_server.m_agentPortsRangeMax );
+            sshTunnelMain.setPidFile( env.tunnelRemotePidFile() );
+            sshTunnelMain.create( options.cleanConnectionString(), localPortListen,
+                                  22, options.m_openDomain );
+        }
         // fork a child process
         pid = fork();
 
@@ -240,6 +219,12 @@ int main( int argc, char *argv[] )
 
         if( pid == 0 )
         {
+            if( !options.m_openDomain.empty() )
+            {
+                // the current process needs to leave the tunnels open
+                sshTunnelMain.deattach();
+            }
+
             // The child replaces his stdin with stdin_pipe and his stdout with stdout_pipe
             close( stdin_pipe[1] ); // This will never be used by this fork
             close( stdout_pipe[0] ); // This will never be used by this fork
@@ -253,9 +238,27 @@ int main( int argc, char *argv[] )
             close( stderr_pipe[1] ); // close one of the file descriptors (stdout is still open)
 
             // Now, exec this child into a shell process.
-            slog.debug_msg( "child: " + options.cleanConnectionString() + '\n' );
+            stringstream ssPort;
+            ssPort << "-p" << localPortListen;
+            // tunneled connection string
+            string loginName( options.userNameFromConnectionString() );
+            string sRemoteConnectionStr;
+            if( !loginName.empty() )
+            {
+                sRemoteConnectionStr += loginName;
+                sRemoteConnectionStr += '@';
+            }
+            sRemoteConnectionStr += "localhost";
+
+            stringstream ssMsg;
+            ssMsg << "child: " << options.cleanConnectionString()
+                  << " via a local port " << localPortListen
+                  << " on local address " << sRemoteConnectionStr << '\n';
+            slog.debug_msg( ssMsg.str() );
+
             execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
-                   options.cleanConnectionString().c_str(), NULL );
+                   ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
+                   NULL );
             // we must never come to this point
             exit( 1 );
         }
@@ -280,9 +283,7 @@ int main( int argc, char *argv[] )
                 string env(( istreambuf_iterator<char>( f ) ),
                            istreambuf_iterator<char>() );
                 slog.debug_msg( "Executing custom environment script...\n" );
-                inet::sendall( stdin_pipe[1],
-                               reinterpret_cast<const unsigned char*>( env.c_str() ),
-                               env.size(), 0 );
+                inet::writeall( stdin_pipe[1], env );
             }
 
             slog.debug_msg( "Executing PoD environment script...\n" );

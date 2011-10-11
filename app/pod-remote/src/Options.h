@@ -47,6 +47,16 @@ struct SOptions
 
         return m_sshConnectionStr.substr( 0, pos );
     }
+    /// this function extracts an ssh connection string without the PoD location part
+    const std::string userNameFromConnectionString() const
+    {
+        std::string tmp( cleanConnectionString() );
+        std::string::size_type pos = tmp.find( "@" );
+        if( std::string::npos == pos )
+            return std::string();
+
+        return tmp.substr( 0, pos );
+    }
 
     bool m_version;
     bool m_debug;
@@ -80,7 +90,7 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
-    ( "env", bpo::value<std::string>(), "A full path to environment script, which will be sourced on the remote end." )
+    ( "env", bpo::value<std::string>(), "A full path to environment script (located on the local machine), which will be sourced on the remote end." )
     ;
     // Commands
     bpo::options_description commands_options( "Commands options" );
