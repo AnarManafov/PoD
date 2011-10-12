@@ -5,7 +5,8 @@
 //  Created by Anar Manafov on 11.10.11.
 //  Copyright 2011 GSI. All rights reserved.
 //
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
 #include "version.h"
 
@@ -51,3 +52,5 @@ void kill_process( const std::string &_pidFileName, _T &_logFun )
     }
 
 }
+
+#endif
