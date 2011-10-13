@@ -241,15 +241,21 @@ int main( int argc, char *argv[] )
             stringstream ssPort;
             ssPort << "-p" << localPortListen;
             // tunneled connection string
-            string loginName( options.userNameFromConnectionString() );
             string sRemoteConnectionStr;
-            if( !loginName.empty() )
+            if( !options.m_openDomain.empty() )
             {
-                sRemoteConnectionStr += loginName;
-                sRemoteConnectionStr += '@';
+                string loginName( options.userNameFromConnectionString() );
+                if( !loginName.empty() )
+                {
+                    sRemoteConnectionStr += loginName;
+                    sRemoteConnectionStr += '@';
+                }
+                sRemoteConnectionStr += "localhost";
             }
-            sRemoteConnectionStr += "localhost";
-
+            else
+            {
+                sRemoteConnectionStr = options.cleanConnectionString();
+            }
             stringstream ssMsg;
             ssMsg << "child: " << options.cleanConnectionString()
                   << " via a local port " << localPortListen
@@ -259,6 +265,8 @@ int main( int argc, char *argv[] )
             execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
                    ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
                    NULL );
+
+            slog( "Failed to start SSH communication" );
             // we must never come to this point
             exit( 1 );
         }
