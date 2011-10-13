@@ -470,7 +470,7 @@ int main( int argc, char *argv[] )
             if( !options.m_openDomain.empty() )
             {
                 // the current process needs to leave the tunnels open
-                sshTunnelMain.deattach();
+                sshTunnelMain.attach();
             }
             
             // attache to the SSH tunnels, so that we can close them when needed
