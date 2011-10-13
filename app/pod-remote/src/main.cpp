@@ -467,6 +467,12 @@ int main( int argc, char *argv[] )
             // create the pod-remote pid file
             CPIDFile pidfile( env.pod_remotePidFile(), ::getpid() );
 
+            if( !options.m_openDomain.empty() )
+            {
+                // the current process needs to leave the tunnels open
+                sshTunnelMain.deattach();
+            }
+            
             // attache to the SSH tunnels, so that we can close them when needed
             sshTunnelAgent.attach();
             sshTunnelXpd.attach();
