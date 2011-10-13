@@ -206,6 +206,7 @@ int main( int argc, char *argv[] )
         {
             localPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
                                                    env.getUD().m_server.m_agentPortsRangeMax );
+            sshTunnelMain.deattach();
             sshTunnelMain.setPidFile( env.tunnelRemotePidFile() );
             sshTunnelMain.create( options.cleanConnectionString(), localPortListen,
                                   22, options.m_openDomain );
