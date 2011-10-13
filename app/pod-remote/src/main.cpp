@@ -239,12 +239,13 @@ int main( int argc, char *argv[] )
             close( stderr_pipe[1] ); // close one of the file descriptors (stdout is still open)
 
             // Now, exec this child into a shell process.
-            stringstream ssPort;
-            ssPort << "-p" << localPortListen;
             // tunneled connection string
             string sRemoteConnectionStr;
+            // tunneled port
+            stringstream ssPort;
             if( !options.m_openDomain.empty() )
             {
+                ssPort << "-p" << localPortListen;
                 string loginName( options.userNameFromConnectionString() );
                 if( !loginName.empty() )
                 {
