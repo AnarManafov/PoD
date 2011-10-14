@@ -134,12 +134,14 @@ int main( int argc, char *argv[] )
     int stdout_pipe[2];
     int stderr_pipe[2];
     SOptions options;
-    CLogEngine slog( options.m_debug );
+    CLogEngine slog;
     CPoDEnvironment env;
     try
     {
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
+
+        slog.setDbgFlag( options.m_debug );
 
         // Show version information
         if( options.m_version )
@@ -288,7 +290,7 @@ int main( int argc, char *argv[] )
             {
                 ifstream f( options.m_envScript.c_str() );
                 if( !f.is_open() )
-                    throw runtime_error( "can't open: " + options.m_envScript );
+                    throw runtime_error( "can't open env. script on the local machine: " + options.m_envScript );
 
                 string env(( istreambuf_iterator<char>( f ) ),
                            istreambuf_iterator<char>() );
@@ -474,7 +476,7 @@ int main( int argc, char *argv[] )
                 // the current process needs to leave the tunnels open
                 sshTunnelMain.attach();
             }
-            
+
             // attache to the SSH tunnels, so that we can close them when needed
             sshTunnelAgent.attach();
             sshTunnelXpd.attach();
