@@ -188,7 +188,9 @@ int main( int argc, char *argv[] )
             options.m_command.empty() )
             throw runtime_error( "There is nothing to do.\n" );
 
-        if( options.cleanConnectionString().empty() )
+        const string remoteURL( options.cleanConnectionString() );
+
+        if( remoteURL.empty() )
             throw runtime_error( "Please provide a connection URL.\n" );
 
         // Create pipes, which later will be used for stdout/in/err redirections
@@ -202,6 +204,7 @@ int main( int argc, char *argv[] )
 
         // Create a main ssh tunnel, which serves pod-remote communication.
         // Remote port 22 is so far hard-coded
+        // TODO: move it to the options, I mean the port number
         CSSHTunnel sshTunnelMain;
         size_t localPortListen( 0 );
         if( !options.m_openDomain.empty() )
@@ -210,7 +213,7 @@ int main( int argc, char *argv[] )
                                                    env.getUD().m_server.m_agentPortsRangeMax );
             sshTunnelMain.deattach();
             sshTunnelMain.setPidFile( env.tunnelRemotePidFile() );
-            sshTunnelMain.create( options.cleanConnectionString(), localPortListen,
+            sshTunnelMain.create( remoteURL, localPortListen,
                                   22, options.m_openDomain );
         }
         // fork a child process
@@ -256,24 +259,24 @@ int main( int argc, char *argv[] )
                     sRemoteConnectionStr += '@';
                 }
                 sRemoteConnectionStr += "localhost";
-                
-                ssMsg << "child: " << options.cleanConnectionString()
-                << " via a local port " << localPortListen
-                << " on local address " << sRemoteConnectionStr << '\n';
+
+                ssMsg << "child: " << remoteURL
+                      << " via a local port " << localPortListen
+                      << " on local address " << sRemoteConnectionStr << '\n';
                 slog.debug_msg( ssMsg.str() );
-                
+
                 execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
-                      ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
-                      NULL );
+                       ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
+                       NULL );
             }
             else
             {
-                ssMsg << "child: " << options.cleanConnectionString() << '\n';
+                ssMsg << "child: " << remoteURL << '\n';
                 slog.debug_msg( ssMsg.str() );
-                
+
                 execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no",
-                      "-T", sRemoteConnectionStr.c_str(),
-                      NULL );
+                       "-T", remoteURL.c_str(),
+                       NULL );
             }
 
             slog( "Failed to start SSH communication" );
@@ -426,21 +429,21 @@ int main( int argc, char *argv[] )
             // the current process needs to leave the tunnels open
             sshTunnelAgent.deattach();
             sshTunnelAgent.setPidFile( env.tunnelAgentPidFile() );
-            sshTunnelAgent.create( options.cleanConnectionString(), agentPortListen,
+            sshTunnelAgent.create( remoteURL, agentPortListen,
                                    agentPort, options.m_openDomain );
 
             CSSHTunnel sshTunnelXpd;
             // the current process needs to leave the tunnels open
             sshTunnelXpd.deattach();
             sshTunnelXpd.setPidFile( env.tunnelXpdPidFile() );
-            sshTunnelXpd.create( options.cleanConnectionString(), xpdPortListen,
+            sshTunnelXpd.create( remoteURL, xpdPortListen,
                                  xpdPort, options.m_openDomain );
 
             // Store information about the new remote server
             // 1. write server_info.cfg, so that local services can connect to it
             // 2. write remote_server_info.cfg for other pod-remote calls
             PoD::SPoDRemoteOptions opt_file;
-            opt_file.m_connectionString = options.cleanConnectionString();
+            opt_file.m_connectionString = remoteURL;
             opt_file.m_PoDLocation = options.remotePoDLocation();
             opt_file.m_env = options.m_envScript;
             opt_file.m_localAgentPort = agentPortListen;
