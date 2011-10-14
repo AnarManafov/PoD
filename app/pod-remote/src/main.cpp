@@ -243,10 +243,11 @@ int main( int argc, char *argv[] )
             // Now, exec this child into a shell process.
             // tunneled connection string
             string sRemoteConnectionStr;
-            // tunneled port
-            stringstream ssPort;
+            stringstream ssMsg;
             if( !options.m_openDomain.empty() )
             {
+                // tunneled port
+                stringstream ssPort;
                 ssPort << "-p" << localPortListen;
                 string loginName( options.userNameFromConnectionString() );
                 if( !loginName.empty() )
@@ -255,20 +256,25 @@ int main( int argc, char *argv[] )
                     sRemoteConnectionStr += '@';
                 }
                 sRemoteConnectionStr += "localhost";
+                
+                ssMsg << "child: " << options.cleanConnectionString()
+                << " via a local port " << localPortListen
+                << " on local address " << sRemoteConnectionStr << '\n';
+                slog.debug_msg( ssMsg.str() );
+                
+                execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
+                      ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
+                      NULL );
             }
             else
             {
-                sRemoteConnectionStr = options.cleanConnectionString();
+                ssMsg << "child: " << options.cleanConnectionString() << '\n';
+                slog.debug_msg( ssMsg.str() );
+                
+                execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no",
+                      "-T", sRemoteConnectionStr.c_str(),
+                      NULL );
             }
-            stringstream ssMsg;
-            ssMsg << "child: " << options.cleanConnectionString()
-                  << " via a local port " << localPortListen
-                  << " on local address " << sRemoteConnectionStr << '\n';
-            slog.debug_msg( ssMsg.str() );
-
-            execl( "/usr/bin/ssh", "ssh", "-o StrictHostKeyChecking=no", "-T",
-                   ssPort.str().c_str(), sRemoteConnectionStr.c_str(),
-                   NULL );
 
             slog( "Failed to start SSH communication" );
             // we must never come to this point
