@@ -54,7 +54,7 @@ if [ -z "$POD_CFG" ]; then
 fi
 
 # create working dir for custom locations
-WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
+eval WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
 create_dir "$WORK_DIR"
 
 # sourcing GAW environment, if installed
