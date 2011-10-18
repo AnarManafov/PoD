@@ -17,6 +17,8 @@ pod-ssh: The command learned "--exec/-e" option. The option can be used to execu
 pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean".
          This will force to execute a custom script before starting or cleaning PoD worker nodes.
 pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes.
+pod-remote: Fixed the "--stop" option.
+pod-remote: The "--ssh_open_domain" option is implemented now. 
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
