@@ -28,6 +28,8 @@
 #include "logEngine.h"
 #include "SSHTunnel.h"
 #include "PoDUserDefaultsOptions.h"
+// BOOST
+#include <boost/thread/condition.hpp>
 // pod-remote
 #include "version.h"
 #include "PoDSysFiles.h"
@@ -41,10 +43,13 @@ using namespace pod_remote;
 namespace inet = MiscCommon::INet;
 //=============================================================================
 sig_atomic_t graceful_quit = 0;
+boost::mutex g_mutex;
+boost::condition_variable g_conditionQuit;
 //=============================================================================
 void signal_handler( int _SignalNumber )
 {
     graceful_quit = 1;
+    g_conditionQuit.notify_all();
 }
 //=============================================================================
 void signal_handler_hungup( int _SignalNumber )
@@ -76,23 +81,30 @@ void monitor( int _fdIn, int _fdOut, int _fdErr )
 {
     try
     {
+        using boost::posix_time::seconds;
         CLogEngine NullLog;
         while( true )
         {
+            if( graceful_quit )
+            {
+                send_cmd( _fdIn, "pod-server stop" );
+                return;
+            }
+                
             send_cmd( _fdIn, "pod-server status_with_code", false );
 
             SMessageParserOK msg_ok;
             CMessageParser<SMessageParserOK, CLogEngine> msg( _fdOut, _fdErr );
             msg.parse( msg_ok, NullLog );
-            if( !msg_ok.get() || graceful_quit )
+            if( !msg_ok.get() )
             {
                 if( msg_ok.get() )
                     send_cmd( _fdIn, "pod-server stop" );
 
                 return;
             }
-            // Check every 30 seconds
-            sleep( 30 );
+            boost::mutex::scoped_lock lock(g_mutex);
+            g_conditionQuit.timed_wait(lock, seconds(30));
         }
     }
     catch( ... )
