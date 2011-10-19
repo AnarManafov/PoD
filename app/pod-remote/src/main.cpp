@@ -90,7 +90,7 @@ void monitor( int _fdIn, int _fdOut, int _fdErr )
                 send_cmd( _fdIn, "pod-server stop" );
                 return;
             }
-                
+
             send_cmd( _fdIn, "pod-server status_with_code", false );
 
             SMessageParserOK msg_ok;
@@ -103,8 +103,8 @@ void monitor( int _fdIn, int _fdOut, int _fdErr )
 
                 return;
             }
-            boost::mutex::scoped_lock lock(g_mutex);
-            g_conditionQuit.timed_wait(lock, seconds(30));
+            boost::mutex::scoped_lock lock( g_mutex );
+            g_conditionQuit.timed_wait( lock, seconds( 30 ) );
         }
     }
     catch( ... )
@@ -152,6 +152,11 @@ int main( int argc, char *argv[] )
     {
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
+
+        if( options.m_debug )
+        {
+            cout << options << endl;
+        }
 
         slog.setDbgFlag( options.m_debug );
 

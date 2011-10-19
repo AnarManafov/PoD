@@ -3,7 +3,8 @@
 ## v3.8 (not yet released)
 pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support
      all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
-pod: fixed: pod-ssh and pod-remote at start up could complain about missing their configuration files, when they should just ignore these cases.
+pod: fixed: pod-ssh and pod-remote at start up could complain about missing their configuration files,
+            when they should just ignore these cases.
 pod-info: fixed: Sometimes pod-info -n or -l hangs in the read method of the protocol class.
 pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the log file name in case
                    when an array job submission is used.
@@ -18,7 +19,10 @@ pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean".
          This will force to execute a custom script before starting or cleaning PoD worker nodes.
 pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes.
 pod-remote: Fixed the "--stop" option.
-pod-remote: The "--ssh_open_domain" option is implemented now. 
+pod-remote: The "--ssh_opt" and "--ssh_open_domain" have been renamed to "--ssh-opt" and  "--ssh-open-domain" accordingly.
+pod-remote: The "--ssh-open-domain" option is implemented now.
+pod-remote: The command learned "--config/-c" option.
+            The option can be used to specify an options file with the pod-remote command line options.
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.

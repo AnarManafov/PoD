@@ -69,6 +69,16 @@ struct SOptions
     std::string m_openDomain;
     std::string m_envScript;
 };
+std::ostream& operator<< ( std::ostream &_stream, const SOptions &_options )
+{
+    _stream
+            << "Current settings:\n"
+            << "remote: " << _options.m_sshConnectionStr << "\n"
+            << "SSH args: " << _options.m_sshArgs << "\n"
+            << "SSH open domain: " << _options.m_openDomain << "\n"
+            << "Env. script: " << _options.m_envScript << "\n";
+    return _stream;
+}
 //=============================================================================
 // Command line parser
 inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( std::exception )
@@ -82,13 +92,14 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "help,h", "Produce help message" )
     ( "version,v", bpo::bool_switch( &( _options->m_version ) ), "Version information" )
     ( "debug,d", bpo::bool_switch( &( _options->m_debug ) ), "Show debug messages" )
+    ( "config,c", bpo::value<std::string>(), "Specify an options file with the pod-remote command line options" )
     ;
     // Connection options
     bpo::options_description connection_options( "Connection options" );
     connection_options.add_options()
     ( "remote", bpo::value<std::string>(), "A connection string including a remote PoD location" )
-    ( "ssh_opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
-    ( "ssh_open_domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
+    ( "ssh-opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
+    ( "ssh-open-domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
     ( "env", bpo::value<std::string>(), "A full path to environment script (located on the local machine), which will be sourced on the remote end." )
     ;
@@ -116,14 +127,27 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     bpo::options_description visible( "Allowed options" );
     visible.add( general_options ).add( connection_options ).add( commands_options );
 
+    // Config file options
+    bpo::options_description config_file_options( "Allowed options" );
+    config_file_options.add( connection_options );
+
     // Parsing command-line
     bpo::variables_map vm;
     bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( all ).run(), vm );
     bpo::notify( vm );
 
-    boost_hlp::option_dependency( vm, "ssh_opt", "remote" );
-    boost_hlp::option_dependency( vm, "remote_path", "remote" );
-    boost_hlp::option_dependency( vm, "ssh_open_domain", "remote" );
+    // Read configuration file
+    if( vm.count( "config" ) )
+    {
+        std::ifstream f( vm["config"].as<std::string>().c_str() );
+        if( !f.is_open() )
+            throw std::runtime_error( "ERROR: could not read from config file" );
+
+        bpo::store( bpo::parse_config_file( f , config_file_options, true ) , vm );
+    }
+    
+    boost_hlp::option_dependency( vm, "ssh-opt", "remote" );
+    boost_hlp::option_dependency( vm, "ssh-open-domain", "remote" );
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "restart" );
     boost_hlp::conflicting_options( vm, "restart", "stop" );
@@ -136,17 +160,20 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
         //if( _options->remotePoDLocation().empty() )
         //    throw std::runtime_error( "Bad PoD Location path in the remote url." );
 
-        if( vm.count( "ssh_opt" ) )
+        if( vm.count( "ssh-opt" ) )
         {
-            _options->m_sshArgs = vm["ssh_opt"].as<std::string>();
+            _options->m_sshArgs = vm["ssh-opt"].as<std::string>();
         }
-        if( vm.count( "ssh_open_domain" ) )
+        if( vm.count( "ssh-open-domain" ) )
         {
-            _options->m_openDomain = vm["ssh_open_domain"].as<std::string>();
+            _options->m_openDomain = vm["ssh-open-domain"].as<std::string>();
         }
 
-        _options->m_envScript = vm["env"].as<std::string>();
-        MiscCommon::smart_path( &_options->m_envScript );
+        if( vm.count("env") )
+        {
+            _options->m_envScript = vm["env"].as<std::string>();
+            MiscCommon::smart_path( &_options->m_envScript );
+        }
     }
 
     if( vm.count( "command" ) )
