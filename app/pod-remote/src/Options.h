@@ -67,7 +67,8 @@ struct SOptions
     std::string m_sshConnectionStr;
     std::string m_sshArgs;
     std::string m_openDomain;
-    std::string m_envScript;
+    std::string m_envScriptLocal;
+    std::string m_envScriptRemote;
 };
 std::ostream& operator<< ( std::ostream &_stream, const SOptions &_options )
 {
@@ -76,7 +77,8 @@ std::ostream& operator<< ( std::ostream &_stream, const SOptions &_options )
             << "remote: " << _options.m_sshConnectionStr << "\n"
             << "SSH args: " << _options.m_sshArgs << "\n"
             << "SSH open domain: " << _options.m_openDomain << "\n"
-            << "Env. script: " << _options.m_envScript << "\n";
+            << "Env. script (local): " << _options.m_envScriptLocal << "\n"
+            << "Env. script (remote): " << _options.m_envScriptRemote << "\n";
     return _stream;
 }
 //=============================================================================
@@ -101,7 +103,8 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
     ( "ssh-opt", bpo::value<std::string>(), "Additional options, which will be used in SSH commands" )
     ( "ssh-open-domain", bpo::value<std::string>(), "The name of a third party machine open to the outside world"
       " and from which direct connections to the server are possible" )
-    ( "env", bpo::value<std::string>(), "A full path to environment script (located on the local machine), which will be sourced on the remote end." )
+    ( "env-local", bpo::value<std::string>(), "A full path to environment script (located on the local machine), which will be sourced on the remote end." )
+    ( "env-remote", bpo::value<std::string>(), "A full path to environment script (located on the remote machine), which will be sourced on the remote end." )
     ;
     // Commands
     bpo::options_description commands_options( "Commands options" );
@@ -145,13 +148,14 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
 
         bpo::store( bpo::parse_config_file( f , config_file_options, true ) , vm );
     }
-    
+
     boost_hlp::option_dependency( vm, "ssh-opt", "remote" );
     boost_hlp::option_dependency( vm, "ssh-open-domain", "remote" );
     boost_hlp::conflicting_options( vm, "start", "stop" );
     boost_hlp::conflicting_options( vm, "start", "restart" );
     boost_hlp::conflicting_options( vm, "restart", "stop" );
     boost_hlp::conflicting_options( vm, "command", "stop" );
+    boost_hlp::conflicting_options( vm, "env-local", "env-remote" );
 
     if( vm.count( "remote" ) )
     {
@@ -169,10 +173,14 @@ inline bool parseCmdLine( int _Argc, char *_Argv[], SOptions *_options ) throw( 
             _options->m_openDomain = vm["ssh-open-domain"].as<std::string>();
         }
 
-        if( vm.count("env") )
+        if( vm.count( "env-local" ) )
         {
-            _options->m_envScript = vm["env"].as<std::string>();
-            MiscCommon::smart_path( &_options->m_envScript );
+            _options->m_envScriptLocal = vm["env-local"].as<std::string>();
+            MiscCommon::smart_path( &_options->m_envScriptLocal );
+        }
+        if( vm.count( "env-remote" ) )
+        {
+            _options->m_envScriptRemote = vm["env-remote"].as<std::string>();
         }
     }
 

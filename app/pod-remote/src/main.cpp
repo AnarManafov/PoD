@@ -48,6 +48,7 @@ boost::condition_variable g_conditionQuit;
 //=============================================================================
 void signal_handler( int _SignalNumber )
 {
+    boost::mutex::scoped_lock lock( g_mutex );
     graceful_quit = 1;
     g_conditionQuit.notify_all();
 }
@@ -85,25 +86,26 @@ void monitor( int _fdIn, int _fdOut, int _fdErr )
         CLogEngine NullLog;
         while( true )
         {
+            boost::mutex::scoped_lock lock( g_mutex );
             if( graceful_quit )
             {
                 send_cmd( _fdIn, "pod-server stop" );
+                // don't quit immediately! Read a response in order to
+                // keep pipe-end open to be sure, that the server side got your command.
+                SMessageParserOK msg_ok;
+                CMessageParser<SMessageParserOK, CLogEngine> msg( _fdOut, _fdErr );
+                msg.parse( msg_ok, NullLog );
                 return;
             }
 
+            // Check whether the server is still alive
             send_cmd( _fdIn, "pod-server status_with_code", false );
-
             SMessageParserOK msg_ok;
             CMessageParser<SMessageParserOK, CLogEngine> msg( _fdOut, _fdErr );
             msg.parse( msg_ok, NullLog );
             if( !msg_ok.get() )
-            {
-                if( msg_ok.get() )
-                    send_cmd( _fdIn, "pod-server stop" );
-
                 return;
-            }
-            boost::mutex::scoped_lock lock( g_mutex );
+            // For 30 sec or for a signal
             g_conditionQuit.timed_wait( lock, seconds( 30 ) );
         }
     }
@@ -153,11 +155,6 @@ int main( int argc, char *argv[] )
         if( !parseCmdLine( argc, argv, &options ) )
             return 0;
 
-        if( options.m_debug )
-        {
-            cout << options << endl;
-        }
-
         slog.setDbgFlag( options.m_debug );
 
         // Show version information
@@ -196,7 +193,14 @@ int main( int argc, char *argv[] )
             options.m_sshConnectionStr = opt_file.m_connectionString;
             options.m_sshConnectionStr += ':';
             options.m_sshConnectionStr += opt_file.m_PoDLocation;
-            options.m_envScript = opt_file.m_env;
+            options.m_envScriptLocal = opt_file.m_envLocal;
+            options.m_envScriptRemote = opt_file.m_envRemote;
+        }
+
+        // in debug mode report values of config. options
+        if( options.m_debug )
+        {
+            cout << options << endl;
         }
 
         // the fork stuff we need only if a user wants to send a command
@@ -312,16 +316,27 @@ int main( int argc, char *argv[] )
             // Write a command to the remote shell
             //
             // source a custom environment script
-            if( !options.m_envScript.empty() )
+            if( !options.m_envScriptLocal.empty() )
             {
-                ifstream f( options.m_envScript.c_str() );
+                ifstream f( options.m_envScriptLocal.c_str() );
                 if( !f.is_open() )
-                    throw runtime_error( "can't open env. script on the local machine: " + options.m_envScript );
+                    throw runtime_error( "can't open env. script on the local machine: " + options.m_envScriptLocal );
 
                 string env(( istreambuf_iterator<char>( f ) ),
                            istreambuf_iterator<char>() );
                 slog.debug_msg( "Executing custom environment script...\n" );
                 inet::writeall( stdin_pipe[1], env );
+            }
+
+            if( !options.m_envScriptRemote.empty() )
+            {
+                string env( "source " );
+                env += options.m_envScriptRemote;
+                send_cmd( stdin_pipe[1], env, false );
+                // drain the stdout in the pipes
+                SMessageParserOK msg_ok;
+                CMessageParser<SMessageParserOK, CLogEngine> msg( stdout_pipe[0], stderr_pipe[0] );
+                msg.parse( msg_ok, slog );
             }
 
             slog.debug_msg( "Executing PoD environment script...\n" );
@@ -462,7 +477,8 @@ int main( int argc, char *argv[] )
             PoD::SPoDRemoteOptions opt_file;
             opt_file.m_connectionString = remoteURL;
             opt_file.m_PoDLocation = options.remotePoDLocation();
-            opt_file.m_env = options.m_envScript;
+            opt_file.m_envLocal = options.m_envScriptLocal;
+            opt_file.m_envRemote = options.m_envScriptRemote;
             opt_file.m_localAgentPort = agentPortListen;
             opt_file.m_localXpdPort = xpdPortListen;
             opt_file.save( env.pod_remoteCfgFile() );
@@ -508,7 +524,8 @@ int main( int argc, char *argv[] )
             sshTunnelXpd.attach();
 
             // start the monitoring
-            monitor( stdin_pipe[1], stdout_pipe[0], stderr_pipe[0] );
+            boost::thread monitor_thread( boost::bind( monitor, stdin_pipe[1], stdout_pipe[0], stderr_pipe[0] ) );
+            monitor_thread.join();
         }
 
         // close the SSH terminal

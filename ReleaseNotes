@@ -21,8 +21,10 @@ pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file 
 pod-remote: Fixed the "--stop" option.
 pod-remote: The "--ssh_opt" and "--ssh_open_domain" have been renamed to "--ssh-opt" and  "--ssh-open-domain" accordingly.
 pod-remote: The "--ssh-open-domain" option is implemented now.
-pod-remote: The command learned "--config/-c" option.
+pod-remote: The command learned the "--config/-c" option.
             The option can be used to specify an options file with the pod-remote command line options.
+pod-remote: The command learned the "--env-local" and "-env-remote" options.
+pod-remote: The "--env" option has been dropped in favor to "--env-local".
 
 ## v3.6 (2011-07-07)
 pod: Implemented a new command - "pod-remote". Using the command users can start/stop/restart remote PoD servers.
