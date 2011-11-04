@@ -26,6 +26,7 @@ Usage: pod-ssh-submit-worker [OPTION]
      -w dir      		Remote working directory.
      -n X        		Desired number or PROOF workers.
      -o SSH_Opt			Additinal SSH parameters.
+     -r                         Repack worker package.
      -d				Verbose mode. Causes pod-ssh-submit-worker to print debugging messages about its progress.
      -h          		Show summary of options.
 
@@ -41,7 +42,8 @@ RDIR=""
 NWORKERS=1
 SSHOPT=""
 DEBUG=""
-while getopts ":i:l:w:n:o:dh" opt; do
+REPACK_WRK_PKG=""
+while getopts ":i:l:w:n:o:drh" opt; do
   case $opt in
   i)
     WORKER_ID="$OPTARG"
@@ -60,6 +62,9 @@ while getopts ":i:l:w:n:o:dh" opt; do
     ;;
   d)
     DEBUG="YES"
+    ;;
+  r)
+    REPACK_WRK_PKG="YES"
     ;;
   h) 
     usage
@@ -125,6 +130,12 @@ logMsg()
 # ***** MAIN *****
 #=============================================================================
 logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, nworkers: $NWORKERS, sshopt: $SSHOPT)"
+
+
+if [ -n "$REPACK_WRK_PKG" ]; then
+   logMsg "$TOOL_NAME: it was requested to repack worker package"
+   
+fi
 
 # check that the worker package is ready
 if [ ! -r $WRK_P ]; then

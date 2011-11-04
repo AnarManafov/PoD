@@ -96,9 +96,13 @@ class CConfig
     public:
         void readFrom( std::istream &_stream );
         configRecords_t getRecords();
+        std::string getBashEnvCmds()
+        {
+            return m_bashEnvCmds;
+        }
 
     private:
         configRecords_t m_records;
-
+        std::string m_bashEnvCmds;
 };
 #endif

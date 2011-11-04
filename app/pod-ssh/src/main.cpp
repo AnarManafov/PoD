@@ -238,9 +238,12 @@ int main( int argc, char * argv[] )
             options.m_scriptName = vm["exec"].as<string>();
 
         workersList_t workers;
+        string inlineShellScripCmds;
         {
             CConfig config;
             config.readFrom( f );
+            inlineShellScripCmds = config.getBashEnvCmds();
+            
             configRecords_t recs( config.getRecords() );
             configRecords_t::const_iterator iter = recs.begin();
             configRecords_t::const_iterator iter_end = recs.end();
@@ -255,6 +258,22 @@ int main( int argc, char * argv[] )
 
                 wrkCount += rec->m_nWorkers;
             }
+        }
+        
+        // Need to repack worker package
+        // in order to insert a user defined shell script
+        if ( !inlineShellScripCmds.empty() )
+        {
+            slog.debug_msg( "An inline shell script is found. Inserting it into wrk. package\n" );
+            string scriptFileName( PoD::showWrkPackageDir() );
+            scriptFileName += "user_worker_env.sh";
+            smart_path(&scriptFileName);
+
+            ofstream f_script(scriptFileName.c_str());
+            if ( !f_script.is_open() )
+                throw runtime_error("Can't open for writing: " + scriptFileName );
+                                    
+            f_script << inlineShellScripCmds;
         }
 
         // a number of threads in the thread-pool

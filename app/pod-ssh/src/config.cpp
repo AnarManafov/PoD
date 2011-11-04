@@ -14,6 +14,7 @@
 // MiscCommon
 #include "CustomIterator.h"
 #include "def.h"
+#include "MiscUtils.h"
 // pod-ssh
 #include "config.h"
 //=============================================================================
@@ -21,6 +22,8 @@ using namespace MiscCommon;
 using namespace std;
 //=============================================================================
 const char g_comment_char = '#';
+const string g_bashscript_start = "@bash_begin@";
+const string g_bashscript_end = "@bash_end@";
 //=============================================================================
 typedef boost::tokenizer<boost::escaped_list_separator<char> > Tok;
 //=============================================================================
@@ -36,19 +39,47 @@ void CConfig::readFrom( istream &_stream )
     ids_t ids;
 
     // pars the configuration using boost's tokenizer
-    StringVector_t::const_iterator iter = lines.begin();
+    StringVector_t::iterator iter = lines.begin();
     StringVector_t::const_iterator iter_end = lines.end();
+    bool bCollectScript( false );
     for( size_t i = 0; iter != iter_end; ++iter, ++i )
     {
+        // remove leading and trailing white space
+        string sLine( *iter );
+        trim<StringVector_t::value_type>( &sLine, ' ' );
+
         // ignore empty lines
-        if( iter->empty() )
+        if( sLine.empty() )
             continue;
 
         // ignore comments
-        if( g_comment_char == iter->at( 0 ) )
+        if( g_comment_char == sLine.at( 0 ) )
             continue;
 
-        Tok t( *iter );
+        // check for bash script commands
+        if( sLine.find( g_bashscript_start, 0 ) != StringVector_t::value_type::npos )
+        {
+            bCollectScript = true;
+            sLine.erase( 0, g_bashscript_start.size() );
+            m_bashEnvCmds = "#! /usr/bin/env bash\n";
+            continue;
+        }
+        else if( sLine.find( g_bashscript_end, 0 ) != StringVector_t::value_type::npos )
+        {
+            bCollectScript = false;
+            continue;
+        }
+
+        // Continue collecting the script
+        if( bCollectScript )
+        {
+            m_bashEnvCmds += sLine;
+            m_bashEnvCmds += "\n";
+            continue;
+        }
+
+
+        Tok t( sLine );
         // create config. records here. But this class is not deleting them.
         // Each CWorker is responsible to delete it's config record info.
         configRecord_t rec = configRecord_t( new SConfigRecord() );
@@ -72,6 +103,10 @@ void CConfig::readFrom( istream &_stream )
         // save a configuration record to a container
         m_records.push_back( rec );
     }
+
+    if( bCollectScript )
+        throw runtime_error( "pod-ssh configuration: syntax error. "
+                            "There is a defined inline script, but the closing tag is missing." );
 }
 //=============================================================================
 configRecords_t CConfig::getRecords()

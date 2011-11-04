@@ -63,7 +63,10 @@ class CThreadPool
     public:
         CThreadPool( size_t _threadsCount ):
             m_stopped( false ),
-            m_stopping( false )
+            m_stopping( false ),
+    m_successfulTasks(0),
+    m_tasksCount(0)
+    
         {
             for( size_t i = 0; i < _threadsCount; ++i )
                 m_threads.create_thread( boost::bind( &CThreadPool::execute, this ) );
