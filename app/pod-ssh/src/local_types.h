@@ -14,13 +14,16 @@ typedef boost::function < void ( const std::string&, const std::string&, bool ) 
 
 struct SWNOptions
 {
-    SWNOptions(): m_debug( false ), m_logs( false ), m_fastClean( false )
+    SWNOptions():
+        m_debug( false ), m_logs( false ),
+        m_fastClean( false ), m_repackWrkPkg( false )
     {
     }
 
     bool m_debug;
     bool m_logs;
     bool m_fastClean;
+    bool m_repackWrkPkg;
     std::string m_scriptName;
 };
 

@@ -134,7 +134,22 @@ logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, nworkers: $NWORKERS,
 
 if [ -n "$REPACK_WRK_PKG" ]; then
    logMsg "$TOOL_NAME: it was requested to repack worker package"
+   WRK_PKG_DIR=$(dirname $WRK_P) 
    
+   pushd $(pwd) &> /dev/null
+   cd $WRK_PKG_DIR
+   gzip -d -c pod-worker > pod-worker.tar
+   if (( $? != 0 )) ; then
+      logMsg "$TOOL_NAME: error: failed to repack worker package. The package is broken. Please restart pod-server."
+      exit 1
+   fi
+   tar -uf pod-worker.tar user_worker_env.sh
+   if (( $? != 0 )) ; then
+      logMsg "$TOOL_NAME: error: failed to update worker package."
+      exit 1
+   fi
+   gzip -9 -c pod-worker.tar > pod-worker
+   popd
 fi
 
 # check that the worker package is ready

@@ -70,6 +70,8 @@ bool CWorker::runTask( ETaskType _param ) const
                 stringstream ss;
                 ss << "-n" << m_rec->m_nWorkers;
                 params.push_back( ss.str() );
+                if( m_options.m_repackWrkPkg )
+                    params.push_back( "-r" );
                 cmd = "$POD_LOCATION/bin/private/pod-ssh-submit-worker";
                 break;
             }

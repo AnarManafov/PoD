@@ -10,6 +10,8 @@ pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the l
                    when an array job submission is used.
 pbs-plug-in: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
                     when a shared home file system is not available.
+pod-ssh: Users now can define an environment script for worker nodes in pod-ssh config file. So called inline environment script.
+pod-ssh: Usage of user_worker_env.sh in pod-ssh is deprecated now. Use inline environment script instead.
 pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
          It shuts worker nodes down. It doesn't actually clean workers' directories.
 pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.

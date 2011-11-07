@@ -206,7 +206,8 @@ int main( int argc, char * argv[] )
                 StringVector_t params;
                 params.push_back( "status_with_code" );
                 string output;
-                do_execv( cmd, params, 2, &output );
+                string errout;
+                do_execv( cmd, params, 2, &output, &errout );
             }
             catch( exception &e )
             {
@@ -243,7 +244,8 @@ int main( int argc, char * argv[] )
             CConfig config;
             config.readFrom( f );
             inlineShellScripCmds = config.getBashEnvCmds();
-            
+            options.m_repackWrkPkg = !inlineShellScripCmds.empty();
+
             configRecords_t recs( config.getRecords() );
             configRecords_t::const_iterator iter = recs.begin();
             configRecords_t::const_iterator iter_end = recs.end();
@@ -259,21 +261,39 @@ int main( int argc, char * argv[] )
                 wrkCount += rec->m_nWorkers;
             }
         }
-        
+
         // Need to repack worker package
         // in order to insert a user defined shell script
-        if ( !inlineShellScripCmds.empty() )
+        if( !inlineShellScripCmds.empty() )
         {
             slog.debug_msg( "An inline shell script is found. Inserting it into wrk. package\n" );
             string scriptFileName( PoD::showWrkPackageDir() );
             scriptFileName += "user_worker_env.sh";
-            smart_path(&scriptFileName);
+            smart_path( &scriptFileName );
 
-            ofstream f_script(scriptFileName.c_str());
-            if ( !f_script.is_open() )
-                throw runtime_error("Can't open for writing: " + scriptFileName );
-                                    
+            ofstream f_script( scriptFileName.c_str() );
+            if( !f_script.is_open() )
+                throw runtime_error( "Can't open for writing: " + scriptFileName );
+
             f_script << inlineShellScripCmds;
+        }
+        else if( vm.count( "submit" ) )
+        {
+            stringstream ssWarning;
+            ssWarning
+                    << "\n********************************************\n"
+                    << "Warning! There is no inline environment script found in "
+                    << configFile << "\n"
+                    << "Be advised, with SSH plug-in it is very often the case,\n"
+                    << "that PoD can't start workers, because xproofd/ROOT is not\n"
+                    << "in the PATH on worker nodes.\n"
+                    << "If your PoD job fails, just after submission it shows DONE status, \n"
+                    << "then you may want use inline environment script in your pod-ssh config file.\n"
+                    << "See http://pod.gsi.de/doc/pro/pod-ssh.html for more information\n"
+                    << "\n"
+                    << "Usage of user_worker_env.sh in pod-ssh is deprecated.\n"
+                    << "********************************************\n";
+            slog( ssWarning.str() );
         }
 
         // a number of threads in the thread-pool
@@ -346,6 +366,9 @@ int main( int argc, char * argv[] )
         if( badFailedCount > 0 && !vm.count( "debug" ) )
             slog( "WARNING: some tasks have failed. Please use the \"--debug\""
                   " option to print debugging messages.\n" );
+
+        if( !vm.count( "debug" ) )
+            slog( "PoD jobs have been submitted. Use \"pod-ssh --status\" to check the status.\n" );
 
 #if defined (BOOST_PROPERTY_TREE)
         PoD::SPoDSSHOptions opt_file;

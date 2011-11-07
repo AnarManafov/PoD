@@ -106,7 +106,7 @@ void CConfig::readFrom( istream &_stream )
 
     if( bCollectScript )
         throw runtime_error( "pod-ssh configuration: syntax error. "
-                            "There is a defined inline script, but the closing tag is missing." );
+                             "There is a defined inline script, but the closing tag is missing." );
 }
 //=============================================================================
 configRecords_t CConfig::getRecords()
