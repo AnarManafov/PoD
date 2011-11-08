@@ -176,6 +176,8 @@ int main( int argc, char * argv[] )
             PoD::SPoDSSHOptions opt_file;
             opt_file.load( env.pod_sshCfgFile() );
             configFile = opt_file.m_config;
+#else
+            throw runtime_error( "Error: missing argument: PoD SSH config file is not specified." );
 #endif
         }
         else
