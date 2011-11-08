@@ -21,7 +21,7 @@ Installation
     <para>
         Be advised, that in both cases PoD acts identically and always provides private clusters, one for each user.
         In case of a shared installation, users share only binaries and configurations, but each user get's its own PoD instance and can't disturb other users.
-        Each user can tune PoD by using its own PoD user defaults configuration in <filename>$HOME/.PoD/PoD.cfg</filename>.
+        Each user can tune PoD by changing the PoD user defaults configuration in <filename>$HOME/.PoD/PoD.cfg</filename>.
     </para>
     
 <sect1 id="step1"><title>Step #1: Unpack the source</title>
@@ -63,19 +63,19 @@ Installation
          </row>
       	 <row>
             <entry>BUILD_GLITE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>Switch on or off the configuration and build of GUI for PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_LSF_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>Switch on or off the configuration and build of GUI for PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_PBS_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>Switch on or off the configuration and build of GUI for PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       	 <row>
             <entry>BUILD_GE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>Switch on or off the configuration and build of GUI for PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>
       	 </row>
       </tbody>
       </tgroup>
@@ -91,8 +91,8 @@ Installation
    </para>
    
     <tip><para>
-       If for some reason, for example a missing dependency, configuration failed, after fixing the issue before starting the <command>cmake</command> command
-       it is recommended to delete everything in the build directory recursively. This will guaranty the clean configuration every time the
+       If for some reason, for example a missing dependency, configuration failed. After you get the issue fixed, right before starting the <command>cmake</command> command
+       it is recommended to delete everything in the build directory recursively. This will guaranty a clean build every time the
        source configuration is restarted.
     </para></tip>
 </sect1>
@@ -120,7 +120,7 @@ Installation
    <para>
       In order to enable PoD's environment you need to source the <filename>PoD_env.sh</filename> script. Change to your newly installed PoD directory and issue:
 <screen>
-<command>cd <replaceable>[POD INSTALLATION]</replaceable></command>
+<command>cd <replaceable>[PoD INSTALL DIRECTORY]</replaceable></command>
 <command>source PoD_env.sh</command>
 </screen>
       You need to source this script every time before using <application>PoD</application> in a new system shell.

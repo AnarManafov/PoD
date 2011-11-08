@@ -400,7 +400,11 @@ source /etc/profile_extr
         </para>
         <para>
             Be advised, that you need to recreate PoD worker package every time, when you modify the user script or if you removed it.
-            To recreate the package, just call: <command>pod-prep-worker</command>
+            To recreate the package, just call: <command><xref linkend="pod-prep-worker"/></command>
+        </para>
+        <para>
+            The <link linkend="SSH_plugin">SSH plug-in</link> has it's own machinery to setup custom environment on worker nodes. Please check the <xref linkend="pod-ssh"/> documentation
+            for more information.
         </para>
     </sect1>
     

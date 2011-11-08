@@ -436,7 +436,7 @@ the same from the remote PoD server:
     <!-- pod-prep-worker -->
     <!-- ......................................................................... -->
     
-    <refentry>
+    <refentry id="pod-prep-worker">
         <refentryinfo>
             <title>pod-prep-worker</title>
             <date>2010-01-31</date>
