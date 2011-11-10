@@ -29,22 +29,30 @@
 <screen>
 <command>pod-ssh <parameter class='command'>--status</parameter></command>
 </screen>
-            now check the status of your dynamic PROOF clusters. The following commands show a number/list of available PROOF workers, which
+            <para>There are could be the following values of the status:</para>
+            <itemizedlist>
+                <listitem>RUN - PoD jobs is running,</listitem>
+                <listitem>DONE - PoD job is done, means PoD worker is not running on that worker node.
+                    It could be also the case that worker failed to start,</listitem>
+                <listitem>CLEAN - PoD worker has been cleaned,</listitem>
+                <listitem>UNKNOWN - it is not possible to retrieve the status of that worker.</listitem>
+            </itemizedlist>
+            <important><title>Remote Environment</title><para>
+                With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
+                This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
+                (login script) and there is no environment variables, like for normal login users.
+                If your PoD job fails, just after submission it shows DONE status.
+                You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
+                from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
+                To solve this issue use <link linkend="pod-ssh_inline_bash_script">inline BASH script</link>.
+            </para></important>
+            
+            Now check the status of your dynamic PROOF clusters. The following commands show a number/list of available PROOF workers, which
             have been already set up and are online:
 <screen>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen>
-            <important><title>Remote Environment</title><para>
-                With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
-                If your PoD job fails, just after submission it shows DONE status.
-                You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
-                from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
-                This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
-                (login script) and there is no environment variables, like for normal login users. To solve this issue, users either can
-                specify the full path to desired ROOT version on the worker nodes in the <filename>PoD.cfg</filename>
-                or just use <xref linkend="users_env_script"/>. The last one is very much advisable.
-            </para></important>
             and finally clean the PoD cluster. The cleaning needs to be performed when user is done with his/her dynamic PROOF cluster or want to
             refresh workers (in this case, you need to submit workers again, after the cleaning). BTW, no need to stop pod-server.
 <screen>

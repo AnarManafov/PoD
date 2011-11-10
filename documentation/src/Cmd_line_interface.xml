@@ -586,7 +586,10 @@ the same from the remote PoD server:
                 <command>pod-ssh</command>
                 <arg><option>-h, --help</option></arg>
                 <arg><option>-v, --version</option></arg>
+                <arg><option>-d, --debug</option></arg>
                 <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
+                <arg><option>-e <replaceable>arg</replaceable>, --exec=<replaceable>arg</replaceable></option></arg>
+                <arg><option>-t <replaceable>arg</replaceable>, --threads=<replaceable>arg</replaceable></option></arg>
                 <group choice="req">
                     <arg>--submit</arg>
                     <arg>--clean</arg>
@@ -649,6 +652,47 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 the same config file, you can just call <command>pod-ssh</command> without providing the <option>--config</option> option.
                 The command will always use the latest given setting.
             </para>
+            <sect2 id="pod-ssh_ENV_WNS"><title>Environment on Worker Nodes</title>
+                <para>
+                        With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
+                        This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
+                        (login script) and there is no environment variables, like for normal login users.
+                        If your PoD job fails, just after submission it shows DONE status.
+                        You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
+                        from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
+                        To solve this issue, users either can specify the full path to desired ROOT version on the worker nodes
+                        in the <filename>PoD.cfg</filename>, in case when all WNs have the same version pf ROOT located by the same path.
+                        But more advisable solution is to use <link linkend="pod-ssh_inline_bash_script">inline bash script</link>.
+                </para>
+            </sect2>
+            <sect2 id="pod-ssh_inline_bash_script"><title>Inline BASH script</title>
+                <para>
+                    User can define remote environment for PoD SSH worker nodes via a so called inline BASH script.
+                    To define a script just use @bash_begin@ and @bash_end@ tags in your PoD SSH configuration file. For example:
+<screen>
+@bash_begin@    
+    # GSI
+    . /etc/profile.d/gsi.sh
+    . rootlogin 527-06b-xrd
+@bash_end@
+    
+r1, anar@lxg0527.gsi.de, -p24, /tmp/test, 4
+# this is a comment
+r2, user@lxi001.gsi.de,,/home/user/pod,16
+125, user2@host, , /tmp/test,
+</screen>
+                    Everything what PoD find between those tags will be considered as an environment script and 
+                    will be sourced on each worker node listed in that configuration file.
+                </para>
+                <para>
+                    Bu using this feature, users are able to define different configuration files for different clusters,
+                    each of which can define its own list of worker nodes and an environment script accordingly.
+                </para>
+                <para>
+                    Be advised, if inline BASH script is found, then PoD will not use <link linkend="users_env_script">user_worker_env.sh</link>
+                </para>
+            </sect2>            
+            
             <para>
                 The <command>pod-ssh</command> utility exits 0 on success, and >0 if an error occurs.
             </para>
@@ -669,9 +713,29 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     </listitem>
                 </varlistentry>
                 <varlistentry>
+                    <term><option>-d, --debug</option></term>
+                    <listitem>
+                        <para>Show debug messages. This option enables a debug mode and helps in some cases to understand what is going wrong.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
                     <term><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></term>
                     <listitem>
                         <para>PoD's ssh plug-in configuration file. A workers description file.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-e <replaceable>arg</replaceable>, --exec=<replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>Execute a local shell script on remote worker nodes</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>-t <replaceable>arg</replaceable>, --threads=<replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>It defines a number of threads in pod-ssh's thread 
+                            pool. Min value is 1, max value is (Core*2). 
+                            Default: 5</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -740,17 +804,6 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
 </screen>                    
                 </para>
                 
-                <important><title>Remote Environment</title><para>
-                    With SSH plug-in it is very often the case, that PoD can't start workers, because xproofd/ROOT is not in the PATH on worker nodes.
-                    If your PoD job fails, just after submission it shows DONE status.
-                    You may want to check the remote log files see <xref linkend="pod-ssh_examples"/>
-                    from the worker nodes and if it says that there are problems to start xproofd, then you need to customize environment on WNs.
-                    This could happen since with a batch SSH login in some systems you don't get your /etc/profile script called
-                    (login script) and there is no environment variables, like for normal login users. To solve this issue, users either can
-                    specify the full path to desired ROOT version on the worker nodes in the <filename>PoD.cfg</filename>
-                    or just use <xref linkend="users_env_script"/>. The last one is very much advisable.
-                </para></important>
-                
             </example>
             
             <example><title>Clean PoD jobs submitted via SSH</title>
@@ -785,8 +838,8 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
         </refmeta>
         <refnamediv>
             <refname>pod-remote</refname>
-            <refpurpose>Using the command users can start/stop/restart remote PoD servers.
-                The utility can also be used to execute arbitrary commands on the remote PoD server, such as PoD job submissions.</refpurpose>
+            <refpurpose>Using this command users can start/stop/restart remote PoD servers.
+                The utility can also be used to execute arbitrary commands on remote PoD servers, such as PoD job submissions.</refpurpose>
         </refnamediv>
         <refsynopsisdiv>
             <cmdsynopsis>
@@ -803,13 +856,15 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                 <arg><option>-h, --help</option></arg>
                 <arg><option>-v, --version</option></arg>
                 <arg><option>-d, --debug</option></arg>
+                <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
             </synopfragment>
             <sbr/>
             <synopfragment id="pod_remote_options_connection" xreflabel="connection options">
                 <arg><option>--remote <replaceable>arg</replaceable></option></arg>
-                <arg><option>--ssh_opt <replaceable>arg</replaceable></option></arg>
-                <arg><option>--ssh_open_domain <replaceable>arg</replaceable></option></arg>
-                <arg><option>--env <replaceable>arg</replaceable></option></arg>
+                <arg><option>--ssh-opt <replaceable>arg</replaceable></option></arg>
+                <arg><option>--ssh-open-domain <replaceable>arg</replaceable></option></arg>
+                <arg><option>--env-local <replaceable>arg</replaceable></option></arg>
+                <arg><option>--env-remote <replaceable>arg</replaceable></option></arg>
             </synopfragment>
             <sbr/>
             <synopfragment id="pod_remote_options_commands">
@@ -827,6 +882,9 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <para>
                 In order to use <command>pod-remote</command> <ulink url="http://www.boost.org/">BOOST</ulink> 1.41.0 (or higher) is required.
             </para>
+            <important><para>
+                The current implementation requires users to have a public key access (password less) to destination remote hosts (PoD servers).
+            </para></important>
             <para>
                 The <command>pod-remote</command> command offers a possibility to fully control remote PoD servers.
                 A PROOF cluster created using <command>pod-remote</command> is accessed via SSH tunnels, which are automatically
@@ -876,37 +934,45 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     </listitem>
                 </varlistentry>
                 <varlistentry>
+                    <term><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></term>
+                    <listitem>
+                        <para>Specify an options file with the pod-remote command line options.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
                     <term><option>--remote <replaceable>arg</replaceable></option></term>
                     <listitem>
                         <para>A connection string including a remote PoD location. For example: loginname@serverhostname:/PoD/location/pathname</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>--ssh_opt <replaceable>arg</replaceable></option></term>
+                    <term><option>--ssh-opt <replaceable>arg</replaceable></option></term>
                     <listitem>
                         <para>If needed, users can provide additional SSH options,
                             which will be used by <command>pod-remote</command> in all SSH communications.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>--ssh_open_domain <replaceable>arg</replaceable></option></term>
+                    <term><option>--ssh-open-domain <replaceable>arg</replaceable></option></term>
                     <listitem>
-                        <note><para>
-                            The <option>--ssh_open_domain</option> is in development. So far <command>pod-remote</command> can only work with remote PoD servers
-                            which are at least directly accessible via SSH.
-                        </para></note>
                         <para> The name of a third party machine open to the outside world and from which direct
                             connections to the server are possible.
                             The optional argument, can be used when PoD server machine is not directly accessible from outside via SSH.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>--env <replaceable>arg</replaceable></option></term>
+                    <term><option>--env-local <replaceable>arg</replaceable></option></term>
                     <listitem>
                         <para>A full path to a local environment script, which will be executed on the remote-end
                             before PoD starts the server. This is needed in order to get working environment on the remote host before PoD server can be started.
                             In most of the case you would need to source proper ROOT environment.
                             You can, of course, also set some other env. variables in the script, if needed.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>--env-remote <replaceable>arg</replaceable></option></term>
+                    <listitem>
+                        <para>The same as <option>--env-local</option>, but the script is located on the remote machine and will be sourced there.</para>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
@@ -958,7 +1024,7 @@ B - is a machine (host: lxg0527) standing somewhere at my work place.
 <screen>
 <command>pod-remote <option>--start</option> \
     <option>--remote <replaceable>manafov@lxg0527.gsi.de:/home/manafov/3.6/</replaceable></option> \
-    <option>--env</option> <replaceable>../GSI_env_5_27.sh</replaceable></command>
+    <option>--env-local</option> <replaceable>../GSI_env_5_27.sh</replaceable></command>
 </screen>
                     The command above starts a remote PoD server on the host <systemitem class="fqdomainname">lxg0527.gsi.de</systemitem>
                     under the user <systemitem class="username">manafov</systemitem> and uses PoD installed in the <filename class="directory">/misc/manafov/PoD/3.5.75.gbecd4</filename> directory.

@@ -5,10 +5,11 @@ pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in
      all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
 pod: fixed: pod-ssh and pod-remote at start up could complain about missing their configuration files,
             when they should just ignore these cases.
+pod: User's Manual has been updated.
 pod-info: fixed: Sometimes pod-info -n or -l hangs in the read method of the protocol class.
 pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the log file name in case
                    when an array job submission is used.
-pbs-plug-in: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
+pbs-plugin: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
                     when a shared home file system is not available.
 pod-ssh: Users now can define an environment script for worker nodes in pod-ssh config file. So called inline environment script.
 pod-ssh: Usage of user_worker_env.sh in pod-ssh is deprecated now. Use inline environment script instead.
