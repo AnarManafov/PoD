@@ -52,8 +52,8 @@ void CConfig::readFrom( istream &_stream )
         if( sLine.empty() )
             continue;
 
-        // ignore comments
-        if( g_comment_char == sLine.at( 0 ) )
+        // ignore comments only outside of inline bash script
+        if( !bCollectScript && g_comment_char == sLine.at( 0 ) )
             continue;
 
         // check for bash script commands
