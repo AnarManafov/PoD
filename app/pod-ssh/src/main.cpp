@@ -385,7 +385,7 @@ int main( int argc, char * argv[] )
             slog( "WARNING: some tasks have failed. Please use the \"--debug\""
                   " option to print debugging messages.\n" );
 
-        if( !vm.count( "debug" ) )
+        if( !vm.count( "debug" ) && vm.count( "submit" ) )
             slog( "PoD jobs have been submitted. Use \"pod-ssh --status\" to check the status.\n" );
 
 #if defined (BOOST_PROPERTY_TREE)
