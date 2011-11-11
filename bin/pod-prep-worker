@@ -18,10 +18,45 @@
 #    The worker package is saved to PoD server working directory.
 #
 #=============================================================================
+# ***** USAGE *****
+#=============================================================================
+usage() {
+    cat <<EOF
+PoD command line utility,  which prepares a worker package - all elements of PoD which need to be uploaded to a worker
+   Copyright (C) 2010-2011 GSI, Scientific Computing group.
+
+Usage: pod-ssh-submit-worker [OPTION]
+     -i 			Re-pack user_worker_env.sh (for internal use only).
+     -h          		Show summary of options.
+
+Report bugs to http://pod.gsi.de
+EOF
+}
+#=============================================================================
+# ***** OPTARG *****
+#=============================================================================
+REPACK_WRK_PKG=""
+while getopts ":ih" opt; do
+  case $opt in
+  i)
+    REPACK_WRK_PKG="YES"
+    ;;
+  h) 
+    usage
+    exit 0
+    ;;
+  \?)
+    echo "Invalid option: -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+done
+#=============================================================================
 # ***** vars  *****
 #=============================================================================
-echo "preparing PoD worker package..."
+TOOL_NAME="pod-prep-worker"
 
+echo "preparing PoD worker package..."
 POD_CFG=$(pod-user-defaults -p)
 if [ -z "$POD_CFG" ]; then
    echo "error: can't find PoD user defaults"
@@ -46,6 +81,30 @@ COMPONENTS_ETC=( "$XPD_CFG"
                  "$SERVER_INFO_FILE" )
 
 COMPONENTS=( "${COMPONENTS_ETC[@]}" )
+
+#------------- re-pack inline BASH script
+if [ -n "$REPACK_WRK_PKG" ]; then
+   echo "$TOOL_NAME: it was requested to repack worker package"
+   WRK_PKG_DIR=$(dirname $ARC_NAME) 
+   
+   pushd $(pwd) &> /dev/null
+   cd $WRK_PKG_DIR
+   gzip -d -c pod-worker > pod-worker.tar
+   if (( $? != 0 )) ; then
+      echo "$TOOL_NAME: error: failed to repack worker package. The package is broken. Please restart pod-server."
+      exit 1
+   fi
+   tar -uf pod-worker.tar user_worker_env.sh
+   if (( $? != 0 )) ; then
+      echo "$TOOL_NAME: error: failed to update worker package."
+      exit 1
+   fi
+   gzip -9 -c pod-worker.tar > pod-worker
+   popd
+   exit 0
+fi
+#-------------------------------------------------
+
 
 # add user's script if present
 if [ -r "$USER_SCRIPT" ]; then

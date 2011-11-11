@@ -16,14 +16,13 @@ struct SWNOptions
 {
     SWNOptions():
         m_debug( false ), m_logs( false ),
-        m_fastClean( false ), m_repackWrkPkg( false )
+        m_fastClean( false )
     {
     }
 
     bool m_debug;
     bool m_logs;
     bool m_fastClean;
-    bool m_repackWrkPkg;
     std::string m_scriptName;
 };
 

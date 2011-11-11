@@ -103,7 +103,7 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     return true;
 }
 //=============================================================================
-void repackPkg( string *_cmdOutput )
+void repackPkg( string *_cmdOutput, bool _needInlineBashScript = false )
 {
     // re-create the worker package if needed
     string out;
@@ -114,15 +114,15 @@ void repackPkg( string *_cmdOutput )
         string cmd_env( "$POD_LOCATION/PoD_env.sh" );
         smart_path( &cmd_env );
         string cmd( "$POD_LOCATION/bin/pod-prep-worker" );
+        if(_needInlineBashScript)
+            cmd += " -i";
         smart_path( &cmd );
         string arg( "source " );
         arg += cmd_env;
         arg += " ; ";
         arg += cmd;
-//       execl( "/bin/bash", "bash", "-c", arg.c_str(), NULL );
 
         StringVector_t params;
-        //     params.push_back( "bash" );
         params.push_back( "-c" );
         params.push_back( arg );
         // 10 sec time-out for this command
@@ -217,8 +217,9 @@ int main( int argc, char * argv[] )
             }
 
             // re-pack PoD worker package if needed
+            // We will call repack once again if there is an inline bash script
             string cmdOutput;
-            repackPkg( &cmdOutput );
+            repackPkg( &cmdOutput);
             stringstream ss( cmdOutput );
             // send the output line by line to the log
             StringVector_t vec;
@@ -246,7 +247,6 @@ int main( int argc, char * argv[] )
             CConfig config;
             config.readFrom( f );
             inlineShellScripCmds = config.getBashEnvCmds();
-            options.m_repackWrkPkg = !inlineShellScripCmds.empty();
 
             configRecords_t recs( config.getRecords() );
             configRecords_t::const_iterator iter = recs.begin();
@@ -278,6 +278,22 @@ int main( int argc, char * argv[] )
                 throw runtime_error( "Can't open for writing: " + scriptFileName );
 
             f_script << inlineShellScripCmds;
+            f_script.close();
+            
+            // re-pack PoD worker package if needed
+            string cmdOutput;
+            repackPkg( &cmdOutput, !inlineShellScripCmds.empty() );
+            stringstream ss( cmdOutput );
+            // send the output line by line to the log
+            StringVector_t vec;
+            std::copy( custom_istream_iterator<std::string>( ss ),
+                      custom_istream_iterator<std::string>(),
+                      std::back_inserter( vec ) );
+            StringVector_t::const_iterator iter = vec.begin();
+            StringVector_t::const_iterator iter_end = vec.end();
+            for( ; iter != iter_end; ++iter )
+                slog.debug_msg( *iter + '\n' );
+
         }
         else if( vm.count( "submit" ) )
         {
