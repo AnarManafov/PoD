@@ -1,32 +1,29 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## v3.8 (not yet released)
-pod: Build (in buildbot) WN pre-compiled bins as universal binaries on MacOSX in order to support
-     all x86 machines and older OSXs (the minimum supported MacOSX is 10.5).
-pod: fixed: pod-ssh and pod-remote at start up could complain about missing their configuration files,
-            when they should just ignore these cases.
+pod: MacOSX WN pre-compiled binaries are now build as universal in order to support all x86 machines and
+     older MacOSX versions (the minimum supported MacOSX is 10.5).
+pod: fixed: pod-ssh and pod-remote sometimes at start up erroneously complained about missing configuration files.
 pod: User's Manual has been updated.
-pod-info: fixed: Sometimes pod-info -n or -l hangs in the read method of the protocol class.
-pbs-plugin: fixed: For some versions of OpenPBS we must explicitly specify the log file name in case
-                   when an array job submission is used.
-pbs-plugin: fixed: On some sites admins forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
+pod-info: fixed: Sometimes pod-info with "-n" or "-l" options hangs in the read method of the protocol class.
+pbs-plugin: fixed: Some versions of OpenPBS require an explicit specification of the log file name, when an array job submission is used.
+pbs-plugin: fixed: Sites admins can forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
                     when a shared home file system is not available.
-pod-ssh: Users now can define an environment script for worker nodes in pod-ssh config file. So called inline environment script.
+pod-ssh: Users now can define an environment script for worker nodes in pod-ssh config file. It's so called inline environment script.
 pod-ssh: Usage of user_worker_env.sh in pod-ssh is deprecated now. Use inline environment script instead.
 pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
          It shuts worker nodes down. It doesn't actually clean workers' directories.
 pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
          Min value is 1, max value is (Core*2). Default: 5.
-pod-ssh: The command learned "--exec/-e" option. The option can be used to execute a local shell script on the remote worker nodes.
+pod-ssh: learned a "--exec/-e" option. The option can be used to execute a local shell script on the remote worker nodes.
 pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean".
          This will force to execute a custom script before starting or cleaning PoD worker nodes.
 pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes.
 pod-remote: Fixed the "--stop" option.
-pod-remote: The "--ssh_opt" and "--ssh_open_domain" have been renamed to "--ssh-opt" and  "--ssh-open-domain" accordingly.
-pod-remote: The "--ssh-open-domain" option is implemented now.
-pod-remote: The command learned the "--config/-c" option.
-            The option can be used to specify an options file with the pod-remote command line options.
-pod-remote: The command learned the "--env-local" and "-env-remote" options.
+pod-remote: The "--ssh_opt" and "--ssh_open_domain" options have been renamed to "--ssh-opt" and  "--ssh-open-domain" accordingly.
+pod-remote: The "--ssh-open-domain" option is fully implemented now.
+pod-remote: learned a "--config/-c" option. The option can be used to specify an options file with the pod-remote command line options.
+pod-remote: learned a "--env-local" and a "-env-remote" options.
 pod-remote: The "--env" option has been dropped in favor to "--env-local".
 
 ## v3.6 (2011-07-07)
