@@ -10,7 +10,7 @@
 #                           2010-01-19
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************
 project( PoD )
 

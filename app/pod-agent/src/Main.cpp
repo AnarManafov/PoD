@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2011 GSI, Scientific Computing devision. All rights reserved.
+        Copyright (c) 2007-2011 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 // API
 #include <sys/wait.h>

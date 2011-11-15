@@ -10,7 +10,7 @@
 #                           2011-02-25
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2011 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************
 project( pod-remote )
 

@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-01-28
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing devision. All rights reserved.
+#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 # PoD environment variables used by the script:
@@ -30,7 +30,7 @@ PLUG_DIR="$POD_LOCATION/plugins/cli"
 usage() {
     cat <<EOF
 PoD command line utility, which can be used to manually submit PoD jobs using a supported RMS.
-   Copyright (C) 2010-2011 GSI, Scientific Computing devision. All rights reserved..
+   Copyright (C) 2010-2011 GSI, Scientific Computing division. All rights reserved..
 
 Usage: pod-info [OPTION]
      -l          Show all available RMS plug-ins.

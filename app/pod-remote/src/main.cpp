@@ -10,7 +10,7 @@
                             2011-01-17
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2011 GSI, Scientific Computing devision. All rights reserved.
+        Copyright (c) 2011 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 // STD
 #include <stdexcept>
