@@ -1,28 +1,25 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## v3.8 (not yet released)
-pod: MacOSX WN pre-compiled binaries are now build as universal in order to support all x86 machines and
+## v3.8 (2011-11-15)
+pod: WN pre-compiled binaries for MacOSX are now build as universal in order to support all x86 machines and
      older MacOSX versions (the minimum supported MacOSX is 10.5).
-pod: fixed: pod-ssh and pod-remote sometimes at start up erroneously complained about missing configuration files.
+pod: fixed: pod-ssh and pod-remote sometimes at start up erroneously complain about missing configuration files.
 pod: User's Manual has been updated.
 pod-info: fixed: Sometimes pod-info with "-n" or "-l" options hangs in the read method of the protocol class.
 pbs-plugin: fixed: Some versions of OpenPBS require an explicit specification of the log file name, when an array job submission is used.
-pbs-plugin: fixed: Sites admins can forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
-                    when a shared home file system is not available.
-pod-ssh: Users now can define an environment script for worker nodes in pod-ssh config file. It's so called inline environment script.
-pod-ssh: Usage of user_worker_env.sh in pod-ssh is deprecated now. Use inline environment script instead.
-pod-ssh: The command learned "--fast-clean" option. The fast version of the clean procedure.
-         It shuts worker nodes down. It doesn't actually clean workers' directories.
-pod-ssh: The command learned "--threads/-t" option. It defines a number of threads in pod-ssh's thread pool.
-         Min value is 1, max value is (Core*2). Default: 5.
-pod-ssh: learned a "--exec/-e" option. The option can be used to execute a local shell script on the remote worker nodes.
-pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean".
-         This will force to execute a custom script before starting or cleaning PoD worker nodes.
-pod-ssh: fixed: "pod-ssh --submit" was wrongly creating the ssh_worker.log file in user's home on the worker nodes.
+pbs-plugin: fixed: Site admins can forget to properly configure host keys, we therefor don't use StrictHostKeyChecking
+                   when a shared home file system is not available.
+pod-ssh: Users can now define an environment script for WNs in pod-ssh config files. It's so called an inline environment script.
+pod-ssh: Usage of "user_worker_env.sh" in "pod-ssh" is deprecated now. Use inline environment scripts instead.
+pod-ssh: learned a "--fast-clean" option to fast clean of WNs. It just shuts WNs down, but doesn't actually clean work directories.
+pod-ssh: learned a "--threads/-t" option to define a number of threads in the "pod-ssh" thread pool (min is 1, max is (Cores*2). Default: 5).
+pod-ssh: learned a "--exec/-e" option to execute a local shell script on the remote worker nodes.
+pod-ssh: Now "--exec" can be used together with either "--submit" or "--clean" to force execution of a custom script before starting/cleaning PoD WNs.
+pod-ssh: Fixed the "--submit" option. It was wrongly creating the "ssh_worker.log" file in user's home on WNs.
 pod-remote: Fixed the "--stop" option.
-pod-remote: The "--ssh_opt" and "--ssh_open_domain" options have been renamed to "--ssh-opt" and  "--ssh-open-domain" accordingly.
+pod-remote: The "--ssh_opt" and "--ssh_open_domain" options have been renamed to "--ssh-opt" and "--ssh-open-domain" accordingly.
 pod-remote: The "--ssh-open-domain" option is fully implemented now.
-pod-remote: learned a "--config/-c" option. The option can be used to specify an options file with the pod-remote command line options.
+pod-remote: learned a "--config/-c" option to specify an options file with the "pod-remote" command line options.
 pod-remote: learned a "--env-local" and a "-env-remote" options.
 pod-remote: The "--env" option has been dropped in favor to "--env-local".
 
