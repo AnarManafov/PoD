@@ -251,6 +251,10 @@ else(Boost_FOUND)
     set(BUILD_pod_ssh OFF)
 endif(Boost_FOUND)
 
+if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
+   message( FATAL_ERROR " Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
+endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
+
 if(BUILD_pod_console)
 #
 # search for Qt
@@ -310,9 +314,6 @@ endif(BUILD_pod_console)
     message(STATUS "Build pod-console - NO")
   endif(BUILD_pod_console)
 
-  if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
-    message( FATAL_ERROR " Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
-  endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
 #
 # configure files
 # 
