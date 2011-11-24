@@ -33,24 +33,3 @@ set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build" FORCE )
 #
 #set( BUILD_TESTS ON CACHE BOOL "Build PoD tests" FORCE )
 
-#
-# gLite plug-in
-#
-#set( BUILD_GLITE_PLUGIN OFF CACHE BOOL "Build gLite plug-in" FORCE )
-
-#
-# LSF plug-in
-#
-#set( BUILD_LSF_PLUGIN OFF CACHE BOOL "Build LSF plug-in" FORCE )
-#set( LSF_PREFIX "/home/anar/LSF" CACHE STRING "LSF prefix" FORCE)
-
-#
-# PBS plug-in
-#
-#set( BUILD_PBS_PLUGIN OFF CACHE BOOL "Build PBS plug-in" FORCE )
-
-#
-# Grid Engine (SGE/OGE) plug-in
-#
-#set( BUILD_GE_PLUGIN OFF CACHE BOOL "Build Grid Engine plug-in" FORCE )
-

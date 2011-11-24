@@ -50,18 +50,8 @@ option(BUILD_DOCUMENTATION "Build documentation" OFF)
 option(BUILD_TESTS "Build PoD unit tests" OFF)
 # modules
 option(BUILD_pod_agent "Build pod-agent" ON)
-# By default console is OFF
-# At the moment it is very much recommended to use CLI over GUI.
-# Recently PoD has gotten a number of new features and at the moment only the CLI reflects the latest changes.
-# The GUI is following new development and soon will be also heavily redesigned.
-option(BUILD_pod_console "Build pod-console" OFF)
 option(BUILD_pod_ssh "Build pod-ssh" ON)
 option(BUILD_pod_user_defaults "Build pod-user-defaults" ON)
-# plug-ins
-option(BUILD_GLITE_PLUGIN "Build gLite plug-in" ON)
-option(BUILD_LSF_PLUGIN "Build LSF plug-in" ON)
-option(BUILD_PBS_PLUGIN "Build PBS plug-in" ON)
-option(BUILD_GE_PLUGIN "Build Grid Engine plug-in" ON)
 #
 # Documentation output directory
 #
@@ -79,7 +69,6 @@ if(DOXYGEN_FOUND)
                      MiscCommon-api-docs
                      pod-ssh-api-docs
                      pod-agent-api-docs
-                     pod-console-api-docs
                      pod-info-api-docs
                      pod-remote-api-docs )
 
@@ -217,7 +206,6 @@ SET(POD_ETC_FILES
 #
 # boost needed by
 # pod_agent: thread program_options filesystem (system)
-# pod-console: threads serialization (+ some Header-Only libraries)
 # pod-user-defaults: program_options
 # unit tests: unit_test_framework
 #
@@ -225,7 +213,7 @@ find_package(Boost 1.33.1 REQUIRED)
 if(Boost_FOUND)
   set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
 
-  set(Boost_Components thread program_options filesystem serialization)
+  set(Boost_Components thread program_options filesystem)
   if(local_boost_version VERSION_GREATER "1.33.1")
       set(Boost_Components ${Boost_Components} system)
   endif(local_boost_version VERSION_GREATER "1.33.1")
@@ -246,7 +234,6 @@ if(Boost_FOUND)
   endif(local_boost_version VERSION_GREATER "1.40")
 else(Boost_FOUND)
     set(BUILD_pod_agent OFF)
-    set(BUILD_pod_console OFF)
     set(BUILD_pod_user_defaults OFF)
     set(BUILD_pod_ssh OFF)
 endif(Boost_FOUND)
@@ -255,31 +242,9 @@ if( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
    message( FATAL_ERROR " Can't continue the build, since your environment doesn't meet the minimal requarements of PoD." )
 endif( NOT BUILD_pod_agent OR NOT BUILD_pod_user_defaults )
 
-if(BUILD_pod_console)
-#
-# search for Qt
-#
-# Qt is needed by
-# pod_console
-#
-find_package( Qt4 )
-#The QT_USE_FILE macro is defined by FIND_PACKAGE that contains a path to the CMake script
-include( ${QT_USE_FILE} )
-if(QT4_FOUND)
-  set(local_qt_version "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
-  if(local_qt_version VERSION_LESS "4.4.2")
-     message(WARNING " The version of Qt is too low. You will be not able to use PoD's GUI")
-     set(BUILD_pod_console OFF)
-  endif(local_qt_version VERSION_LESS "4.4.2")
-else(QT4_FOUND)
-  set(BUILD_pod_console OFF)
-endif(QT4_FOUND)
+add_subdirectory( app/MiscCommon )
 
-endif(BUILD_pod_console)
-
-  add_subdirectory( app/MiscCommon )
-
-  if(BUILD_pod_agent)
+if(BUILD_pod_agent)
     message(STATUS "Build pod-agent - YES")
     add_subdirectory ( app/pod-agent )
     message(STATUS "Build pod-info - YES")
@@ -291,28 +256,21 @@ endif(BUILD_pod_console)
     endif(local_boost_version VERSION_GREATER "1.40")
   else(BUILD_pod_agent)
     message(STATUS "Build pod-agent - NO")
-  endif(BUILD_pod_agent)
+endif(BUILD_pod_agent)
 
-  if(BUILD_pod_user_defaults)
+if(BUILD_pod_user_defaults)
     message(STATUS "Build pod-user-defaults - YES")
     add_subdirectory ( app/pod-user-defaults )
-  else(BUILD_pod_user_defaults)
+else(BUILD_pod_user_defaults)
     message(STATUS "Build pod-user-defaults - NO")
-  endif(BUILD_pod_user_defaults)
+endif(BUILD_pod_user_defaults)
 
-  if(BUILD_pod_ssh)
+if(BUILD_pod_ssh)
     message(STATUS "Build pod-ssh - YES")
     add_subdirectory ( app/pod-ssh )
-  else(BUILD_pod_ssh)
+else(BUILD_pod_ssh)
     message(STATUS "Build pod-ssh - NO")
-  endif(BUILD_pod_ssh)
-
-  if(BUILD_pod_console)
-    message(STATUS "Build pod-console - YES")
-    add_subdirectory ( app/pod-console )
-  else(BUILD_pod_console)
-    message(STATUS "Build pod-console - NO")
-  endif(BUILD_pod_console)
+endif(BUILD_pod_ssh)
 
 #
 # configure files
