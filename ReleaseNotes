@@ -2,6 +2,8 @@
 
 ## v3.10 (is not yet released) 
 pod: GUI support is discontinued. (Bug 25)
+pod: User's Manual has been updated.
+pod: Remove tmp directories on server and WNs when cleaning. (Bug 22)
 
 ## v3.8 (2011-11-15)
 pod: WN pre-compiled binaries for MacOSX are now build as universal in order to support all x86 machines and

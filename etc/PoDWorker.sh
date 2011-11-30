@@ -73,6 +73,19 @@ wait_and_kill()
       sleep 1
    done
 }
+#=============================================================================
+# ***** delete_tmp_dir  *****
+#=============================================================================
+delete_tmp_dir()
+{
+   if [ -L "$_TMP_DIR" ]; then
+      logMsg "Security Error: tmp directory of the previous session is a symbolic link."
+      return 1
+   fi
+   if [ -d "$_TMP_DIR" ]; then
+      rm -rf "$_TMP_DIR"
+   fi
+}
 # ************************************************************************
 # ***** detects pid and port of XPROOFD *****
 # ************************************************************************
@@ -155,6 +168,9 @@ clean_up()
  #   if (( $? == 0 )) ; then
  #      rm -vf $to_delete
  #   fi
+
+    # delete tmp directory
+    delete_tmp_dir
 
     # remove lock file
     rm -f $LOCK_FILE
