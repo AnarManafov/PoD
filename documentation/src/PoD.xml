@@ -53,17 +53,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude" />
     <xi:include href="How_to_run.xml" parse="xml"
       xmlns:xi="http://www.w3.org/2001/XInclude" />
-    <xi:include href="gLite_plugin.xml" parse="xml"
-      xmlns:xi="http://www.w3.org/2001/XInclude" />
-    <xi:include href="LSF_plugin.xml" parse="xml"
-      xmlns:xi="http://www.w3.org/2001/XInclude" />
-    <xi:include href="PBS_plugin.xml" parse="xml"
-      xmlns:xi="http://www.w3.org/2001/XInclude" />
-    <xi:include href="GridEngine_plugin.xml" parse="xml"
-      xmlns:xi="http://www.w3.org/2001/XInclude" />
     <xi:include href="SSH_plugin.xml" parse="xml"
-      xmlns:xi="http://www.w3.org/2001/XInclude" />
-    <xi:include href="Condor_plugin.xml" parse="xml"
       xmlns:xi="http://www.w3.org/2001/XInclude" />
     <xi:include href="How_to_test.xml" parse="xml"
       xmlns:xi="http://www.w3.org/2001/XInclude" />

@@ -7,12 +7,7 @@ SRC=\
 	Configuration.xml\
 	Download.xml\
 	How_to_run.xml\
-	gLite_plugin.xml\
-	LSF_plugin.xml\
-        PBS_plugin.xml\
         SSH_plugin.xml\
-        GridEngine_plugin.xml\
-        Condor_plugin.xml\
 	How_to_test.xml\
 	Known_Issues.xml\
 	Support.xml\
@@ -30,18 +25,7 @@ IMGS= \
 	important.png\
 	tip.png\
 	warning.png\
-	note.png\
-	PAConsole_Server_snapshot.png\
-	PAConsole_Grid0.png\
-	PAConsole_Grid1.png\
-	PAConsole_Grid2.png\
-	PAConsole_Grid3.png\
-	PAConsole_LSF_plugin_snapshot.png\
-	PAConsole_Workers_LSF_snapshot.png\
-        PAConsole_PBS_plugin_snapshot.png\
-        PAConsole_OGE_plugin_snapshot.png\
-	PAConsole_Preferences.png\
-	PAConsole_LogInfo.png
+	note.png
 
 IMG_DIR = img
 
@@ -58,11 +42,7 @@ HTML_OUT= \
 	Installation.html\
 	Requirements.html\
         Cmd_line_interface.html\
-        LSF_plugin.html\
-        PBS_plugin.html\
-        SSH_plugin.html\
-        GridEngine_plugin.html\
-        Condor_plugin.html
+        SSH_plugin.html
 
 CSS_FILES=docbook.css
 

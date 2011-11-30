@@ -62,20 +62,12 @@ Installation
             <entry>Set cmake build type. Possible options are: None, Debug, Release, RelWithDebInfo, MinSizeRel (default Release)</entry>
          </row>
       	 <row>
-            <entry>BUILD_GLITE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of GUI for PoD gLite plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>BUILD_DOCUMENTATION</entry>
+            <entry>Build source code documentation. Possible options are: ON/OFF (default OFF)</entry>
       	 </row>
       	 <row>
-            <entry>BUILD_LSF_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of GUI for PoD LSF plug-in. Possible options are: ON/OFF (default ON)</entry>
-      	 </row>
-      	 <row>
-            <entry>BUILD_PBS_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of GUI for PoD PBS plug-in. Possible options are: ON/OFF (default ON)</entry>
-      	 </row>
-      	 <row>
-            <entry>BUILD_GE_PLUGIN</entry>
-            <entry>Switch on or off the configuration and build of GUI for PoD Grid Engine plug-in. Possible options are: ON/OFF (default ON)</entry>
+            <entry>BUILD_TESTS</entry>
+            <entry>Build PoD tests. Possible options are: ON/OFF (default OFF)</entry>
       	 </row>
       </tbody>
       </tgroup>

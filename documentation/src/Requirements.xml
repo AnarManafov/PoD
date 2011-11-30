@@ -22,20 +22,9 @@
                 <listitem>gLite UI 3.2</listitem>
                 <listitem>gLite WMS (WMProxy endpoint)</listitem>
             </itemizedlist>
-            <!--itemizedlist><title>Additional requirements for LSF plug-in ():</title>
-                <listitem>LSF 6.x API (headers and libraries).
-                    <footnote id="RMS_API"><para>Needed ONLY for GUI. There will be no PoD job manager plug-ins' GUI if resource management system's API is missing. Then
-                        only PoD command line interface can be used to submit PoD jobs to an according resource management system.</para></footnote></listitem>
-            </itemizedlist>
-            <itemizedlist><title>Additional requirements for PBS plug-in:</title>
-                <listitem>PBSPro/Torque API (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
-            </itemizedlist-->
             <itemizedlist><title>Additional requirements for SSH plug-in: </title>
                 <listitem>A public key access (or password less, via ssh-agend, for example) to destination worker nodes.</listitem>
             </itemizedlist>
-            <!--itemizedlist><title>Additional requirements for OGE plug-in: </title>
-                <listitem>OGE DRMAA v1 (headers and libraries).<footnoteref linkend="RMS_API" /></listitem>
-            </itemizedlist-->
         </para>
     </sect1>
     

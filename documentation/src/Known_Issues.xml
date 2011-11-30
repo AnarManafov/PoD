@@ -114,6 +114,26 @@ export LD_LIBRARY_PATH=/afs/cern.ch/sw/lcg/external/qt/4.4.2/x86_64-slc5-gcc43-o
     </sect1>
     
     
+    <sect1 id="kb_condor_issues"><title>Condor Issues</title>
+        
+        <sect2 id="Condor_AFS"><title>Condor and AFS</title>
+            <para>
+                If your home is on AFS, than you need to give permissions to Condor to access
+                some of your PoD directories. Namely, Condor needs to have full access to the following folders:
+                <filename class="directory">$HOME/.PoD/wrk</filename> and <filename class="directory">$HOME/.PoD/log</filename>. The last path is the default path for PoD logs.
+                If you changed this path in PoD user defaults settings and a new log directory is also on AFS, than you need to open it accordingly.
+            </para>
+            <para>
+                You can do that by issuing the following commands:
+<screen>
+<command>fs setacl -dir $HOME/.PoD/wrk -acl system:anyuser rlidwk</command>
+<command>fs setacl -dir $HOME/.PoD/log -acl system:anyuser rlidwk</command>
+</screen>
+            </para>
+        </sect2>
+    </sect1>
+    
+    
     <sect1 id="kb_grid"><title>Grid Issues</title>
         
         <sect2 id="ClassAdsNamespace">

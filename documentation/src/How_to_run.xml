@@ -5,12 +5,6 @@
     <title>How to run</title>
     <chapterinfo>
     </chapterinfo>
-    <note><title>Prefer CLI over GUI</title>
-        <para>PoD provides both, GUI and CLI. Never the less, it is very much
-        recommended to use CLI over GUI. Recently PoD has gotten a number of new features
-        and at the moment only the CLI reflects the latest changes.
-        The GUI is following new development and soon will be also heavily redesigned.
-    </para></note>
     <sect1 id="Environment">
         <title>Environment</title>
         <para>
@@ -34,47 +28,12 @@
             <para>
             Further in this chapter are the instructions on how to use a local PoD server.
         </para></note>
-        <sect2>
-            <title>CLI</title>
             <para>
-                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+                Use the <link linkend="pod-server">pod-server</link> command to start/stop/status PoD servers.
 <screen>
 <command>pod-server <parameter class='command'>start</parameter></command>
 </screen>
             </para>
-        </sect2>
-        <sect2>
-            <title>GUI</title>
-            <para>
-                Start pod-console, a GUI application, which automates and helps to manage most of the operations.
-<screen>
-<command>pod-console&amp;</command>
-</screen>
-                The <xref linkend="pod_console_Server"/> shows a screen shot of pod-console's Server page. Currently PoD
-                requires two services: xproofd and pod-agent.
-                
-                <para><figure float="0" id="pod_console_Server">
-                    <title>pod-console: Server page</title>
-                    <screenshot><mediaobject>
-                        <imageobject>
-                            <imagedata fileref="PAConsole_Server_snapshot.png" format="PNG" depth="10cm" scalefit="1"/>
-                        </imageobject>
-                        <textobject>
-                            <phrase></phrase>
-                        </textobject>
-                    </mediaobject></screenshot>
-                </figure></para>
-                
-                Click the <guibutton>Start</guibutton> button in order to start PoD server. To stop PoD
-                the <guibutton>Stop</guibutton> button should be pressed. Status of the PoD server is retrieved automatically
-                by a timer event.
-            </para>
-            
-            <para>
-                The <xref linkend="pod_console_Server"/> shows the interface after the <guibutton>Start</guibutton> button has
-                been pressed and PoD services are up - PoD Server is up and running.
-            </para>
-        </sect2>
     </sect1>
     
     <sect1 id="JobManager">
@@ -87,32 +46,27 @@
             It also possible to use a combination of plug-ins to get PROOF workers on Grid worker nodes and local batch machines in the same time.
         </para>
         <para>
-            How to submit PoD jobs using:
-            <para>
-                <emphasis role="bold">gLite plug-in</emphasis>, please, see <xref linkend="gLite_plugin"/>.
-            </para>
-            <para>
-                <emphasis role="bold">LSF plug-in</emphasis>, please, see <xref linkend="LSF_plugin"/>.
-            </para>
-            <para>
-                <emphasis role="bold">PBS plug-in</emphasis>, please, see <xref linkend="PBS_plugin"/>.
-            </para>
-            <para>
-                <emphasis role="bold">Grid Engine plug-in</emphasis>, please, see <xref linkend="OGE_plugin"/>.
-            </para>
-            <para>
-                <emphasis role="bold">SSH plug-in</emphasis>, please, see <xref linkend="SSH_plugin"/>.
-            </para>
-            <para>
-                <emphasis role="bold">Condor plug-in</emphasis>, please, see <xref linkend="Condor_plugin"/>.
-            </para>
+            In order to setup a dynamic PROOF cluster on RMS such as gLite, LSF, PBS, Condor, LoadLeveler or (Oracle/Sun)GridEngine,
+            use the <link linkend="pod_submit">pod-submit</link> command.
+        </para>
+        <para>
+            The following simple example illustrates a submission of 15 workers to an LSF farm using the "proof" queue.
+<screen>
+<command>pod-submit <parameter class='command'>-r</parameter> lsf <parameter class='command'>-q</parameter> proof <parameter class='command'>-n</parameter> 15</command>
+</screen>
+        </para>
+        <para>
+            Use PoD user defaults to tune individual settings of plug-ins: 
+            gLite, <link linkend="LSF_CFG_TABLE">LSF</link>, <link linkend="PBS_CFG_TABLE">PBS</link>,
+            <link linkend="Condor_CFG_TABLE">Condor</link>, LoadLeveler or <link linkend="OGE_CFG_TABLE">(Oracle/Sun)GridEngine</link>.
+        </para>
+        <para>
+            If there is no RMS available, you can use PoD's SSH plug-in. Please see <xref linkend="SSH_plugin"/> for more details.
         </para>
     </sect1>
     
     <sect1 id="PROOF_workers">
         <title>PROOF workers</title>
-        <sect2>
-            <title>General</title>
             <para>
                 As soon as a single job reaches remote worker node (WN), it tries to connect to PoD server to transfer information
                 about itself and environment of WN. When negotiations are done and PoD server accepts WNs, it became a normal
@@ -130,75 +84,30 @@
                 reconnection with its worker nodes automatically. Worker nodes will be on-line until the pod-agent service is on-line or
                 until s Grid and/or batch queue time is over.
             </para></tip>
-            
-        </sect2>
-        <sect2>
-            <title>CLI</title>
             <para>
-                Use the <xref linkend="pod-info"/> command to find out a number
+                Use the <link linkend="pod-info">pod-info</link> command to find out a number
 <screen>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 </screen>
-                or a list
+                or to list
 <screen>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen>
-                of available PROOF workers.
+                available PROOF workers.
             </para>
             <para>
-                Using <command>pod-info <parameter class='command'>-l</parameter></command> you can also check, whether a direct connection (preferable) or
-                a packet forwarded connection is used to connect PROOF server to workers. PoD y default automatically chooses the type of connections.
+                The <command>pod-info <parameter class='command'>-l</parameter></command> command can be also used to check,
+                whether a direct connection (preferable) or
+                a packet forwarded connection is used to connect PROOF server to workers.
+                PoD y default automatically chooses the type of connections.
             </para>
             <para>
                 If PoD server can't directly connect to its workers on xpd port, then the packet forwarded connection is used. With this type of connection,
                 some PROOF functions will be limited. For example, workers can't be used as parallel sub-mergers, since a direct connection between workers will be required.
                 We therefore recommend to open an xpd port range (PoD user defaults: worker.xproof_ports_range_(min/max)) for incoming connections on the worker nodes. This will help PoD to set up the most efficient type of connection.
-            </para>
-        </sect2>
-        <sect2>
-            <title>GUI</title>
-            <para>
-                A list of accepted workers could be checked on Workers page of pod-console
-                (see the <xref linkend="pod_console_Workers"/>).
-                <para><figure float="0" id="pod_console_Workers">
-                    <title>pod-console: Workers</title>
-                    <screenshot><mediaobject>
-                        <imageobject>
-                            <imagedata fileref="PAConsole_Workers_LSF_snapshot.png" format="PNG" depth="10cm" scalefit="1"/>
-                        </imageobject>
-                        <textobject>
-                            <phrase></phrase>
-                        </textobject>
-                    </mediaobject></screenshot>
-                </figure></para>
-            </para>
-        </sect2>
+            </para>        
+    </sect1>
         
-    </sect1>
-    
-    
-    <sect1 id="pod_console_preferences">
-        <title>Preferences</title>
-        <para>
-            
-            Using a preferences page (see <xref linkend="pod_console_Preferences"/>) users are able to change updated interval of
-            the remote jobs monitoring and the available
-            PROOF workers monitoring. When many jobs are submitted it is useful to increase the update intervals,
-            otherwise system might be overloaded. But this settings depend on user preferences and available system resources.
-            <para><figure float="0" id="pod_console_Preferences">
-                <title>pod-console: Preferences</title>
-                <screenshot><mediaobject>
-                    <imageobject>
-                        <imagedata fileref="PAConsole_Preferences.png" format="PNG" depth="10cm" scalefit="1"/>
-                    </imageobject>
-                    <textobject>
-                        <phrase></phrase>
-                    </textobject>
-                </mediaobject></screenshot>
-            </figure></para>
-        </para>
-    </sect1>
-    
     
     <sect1 id="PROOF_Connection_String">
         <title>PROOF Connection String</title>
@@ -230,31 +139,12 @@
     
     <sect1 id="How_to_shut_down_PoD">
         <title>How to shut down PoD</title>
-        <sect2>
-            <title>General</title>
             <para>
-                In order to shut down PoD the PoD server should be stopped.
-            </para>
-        </sect2>
-        <sect2>
-            <title>GUI</title>
-            <para>
-                On the Server page, click the
-                <guibutton>Stop</guibutton> button. After that all remote workers will be stopped automatically and
-                remote (Grid or batch) job slots will be freed. If you continue to monitor your remote jobs status on a job manager's
-                plug-in page, after some time statuses of jobs should be equal to "Done".
-            </para>
-        </sect2>
-        <sect2>
-            <title>CLI</title>
-            <para>
-                Using the <xref linkend="pod-server"/> command users can start/stop/status the PoD server.
+                In order to shut down PoD, a PoD server should be stopped.
 <screen>
 <command>pod-server <parameter class='command'>stop</parameter></command>
 </screen>
             </para>
-        </sect2>
-        
     </sect1>
     <sect1><title>if something is wrong</title>
         <para>
