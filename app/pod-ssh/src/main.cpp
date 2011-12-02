@@ -61,12 +61,13 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     ( "submit", "Submit workers" )
     ( "status", "Request status of the workers" )
     ( "exec,e", bpo::value<string>(), "Execute a local shell script on the remote worker nodes" )
-    // TODO: we need to be able to clean only selected worker(s)
-    // At this moment we clean all workers.
     ( "clean", "Clean all workers" )
     ( "fast-clean", "The fast version of the clean procedure."
       " It shuts worker nodes down. It doesn't actually clean workers' directories." )
     ( "logs", "Download all log files from the worker nodes. Can be used only together with the clean option" )
+    ( "for-worker",  bpo::value< vector<string> >()->multitoken(),
+      "Perform an action on defined worker nodes. (arg is a space separated list of WN names)"
+      " Can only be used in connection with \"submit\", \"clean\", \"fast-clean\", \"exec\"." )
     ( "debug,d", "Verbose mode. Causes pod-ssh to print debugging messages about its progress" )
     ( "threads,t", bpo::value<size_t>()->default_value( 5 ),
       "It defines a number of threads in pod-ssh's thread pool."
@@ -99,6 +100,16 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     boost_hlp::conflicting_options( vm, "status", "submit" );
     boost_hlp::option_dependency( vm, "logs", "clean" );
 
+    if( vm.count( "for-worker" ) )
+    {
+        if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
+            !vm.count( "fast-clean" ) && !vm.count( "exec" ) )
+        {
+            cout << PROJECT_NAME << ": Nothing to do\n\n";
+            cout << visible << endl;
+            return false;
+        }
+    }
     _vm->swap( vm );
     return true;
 }
@@ -114,7 +125,7 @@ void repackPkg( string *_cmdOutput, bool _needInlineBashScript = false )
         string cmd_env( "$POD_LOCATION/PoD_env.sh" );
         smart_path( &cmd_env );
         string cmd( "$POD_LOCATION/bin/pod-prep-worker" );
-        if(_needInlineBashScript)
+        if( _needInlineBashScript )
             cmd += " -i";
         smart_path( &cmd );
         string arg( "source " );
@@ -219,7 +230,7 @@ int main( int argc, char * argv[] )
             // re-pack PoD worker package if needed
             // We will call repack once again if there is an inline bash script
             string cmdOutput;
-            repackPkg( &cmdOutput);
+            repackPkg( &cmdOutput );
             stringstream ss( cmdOutput );
             // send the output line by line to the log
             StringVector_t vec;
@@ -279,7 +290,7 @@ int main( int argc, char * argv[] )
 
             f_script << inlineShellScripCmds;
             f_script.close();
-            
+
             // re-pack PoD worker package if needed
             string cmdOutput;
             repackPkg( &cmdOutput, !inlineShellScripCmds.empty() );
@@ -287,8 +298,8 @@ int main( int argc, char * argv[] )
             // send the output line by line to the log
             StringVector_t vec;
             std::copy( custom_istream_iterator<std::string>( ss ),
-                      custom_istream_iterator<std::string>(),
-                      std::back_inserter( vec ) );
+                       custom_istream_iterator<std::string>(),
+                       std::back_inserter( vec ) );
             StringVector_t::const_iterator iter = vec.begin();
             StringVector_t::const_iterator iter_end = vec.end();
             for( ; iter != iter_end; ++iter )
@@ -348,10 +359,23 @@ int main( int argc, char * argv[] )
         // start thread-pool and push tasks into it
         threadPool_t threadPool( nThreads );
 
+        // Did user requested some specific worker nodes
+        StringVector_t defined_wns;
+        if( vm.count("for-worker") )
+            defined_wns = vm["for-worker"].as<vector<string> >();
+
         workersList_t::iterator iter = workers.begin();
         workersList_t::iterator iter_end = workers.end();
         for( ; iter != iter_end; ++iter )
         {
+            if( !defined_wns.empty() )
+            {
+                StringVector_t::const_iterator found_id =
+                    find( defined_wns.begin(), defined_wns.end(), iter->getID() );
+                if( found_id == defined_wns.end() )
+                    continue;
+            }
+
             ostringstream ss;
             iter->printInfo( ss );
             ss << "\n";

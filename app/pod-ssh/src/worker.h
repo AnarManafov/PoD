@@ -33,6 +33,10 @@ class CWorker: public CTaskImp<CWorker, ETaskType>
 
         void printInfo( std::ostream &_stream ) const;
         bool runTask( ETaskType _param ) const;
+        std::string getID() const
+        {
+            return m_rec->m_id;
+        }
 
     private:
         bool exec_command( const std::string &_cmd,
