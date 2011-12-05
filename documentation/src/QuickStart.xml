@@ -44,8 +44,8 @@
 <screen>
 <command>pod-server <parameter class='command'>start</parameter></command>
 <command>pod-server <parameter class='command'>status</parameter></command>
-<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--submit</parameter></command>
-<command>pod-ssh <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>submit</parameter></command>
+<command>pod-ssh <parameter class='command'>status</parameter></command>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 <command>pod-info <parameter class='command'>-l</parameter></command>
 </screen>
@@ -66,9 +66,9 @@
     <para>
         If needed we can restart it:
 <screen>
-<command>pod-ssh <parameter class='command'>--clean</parameter></command>
-<command>pod-ssh <parameter class='command'>--submit</parameter></command>
-<command>pod-ssh <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>clean</parameter></command>
+<command>pod-ssh <parameter class='command'>submit</parameter></command>
+<command>pod-ssh <parameter class='command'>status</parameter></command>
 <command>pod-info <parameter class='command'>-n</parameter></command>
 </screen>
     </para>
@@ -77,8 +77,8 @@
         And finally, lets shut down out PoD(PROOF) cluster:
 <screen>
 <command>pod-server <parameter class='command'>stop</parameter></command>
-<command>pod-ssh <parameter class='command'>--clean</parameter></command>
-<command>pod-ssh <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>clean</parameter></command>
+<command>pod-ssh <parameter class='command'>status</parameter></command>
 </screen>
     </para>
     

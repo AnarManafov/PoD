@@ -10,7 +10,7 @@
                             2010-05-17
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+        Copyright (c) 2010-2011 GSI, Scientific Computing group. All rights reserved.
 *************************************************************************/
 // BOOST
 #include <boost/program_options/parsers.hpp>
@@ -49,6 +49,21 @@ void printVersion()
          << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 //=============================================================================
+enum ECommands {cmd_unknown, cmd_submit, cmd_status, cmd_clean, cmd_fast_clean};
+ECommands getCommandByName( const string &_name )
+{
+    if( "submit" == _name )
+        return cmd_submit;
+    if( "status" == _name )
+        return cmd_status;
+    if( "clean" == _name )
+        return cmd_clean;
+    if( "fast-clean" == _name )
+        return cmd_fast_clean;
+
+    return cmd_unknown;
+}
+//=============================================================================
 // Command line parser
 bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
 {
@@ -57,13 +72,18 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
     visible.add_options()
     ( "help,h", "Produce help message" )
     ( "version,v", "Version information" )
+    ( "command", bpo::value<string>(), "The command is a name of pod-ssh command."
+      " Can be one of the following: submit, status, clean, fast-clean.\n"
+      "For user's convenience it is allowed to call pod-ssh without \"--command\" option"
+      " by just specifying the command name directly, like:\npod-ssh submit or pod-ssh clean.\n\n"
+      "Commands:\n"
+      "   submit: \tSubmit workers\n"
+      "   status: \tRequest status of the workers\n"
+      "   clean: \tClean all workers\n"
+      "   fast-clean: \tThe fast version of the clean procedure."
+      " It shuts worker nodes down. It doesn't actually clean workers' directories.\n\n" )
     ( "config,c", bpo::value<string>(), "PoD's ssh plug-in configuration file" )
-    ( "submit", "Submit workers" )
-    ( "status", "Request status of the workers" )
     ( "exec,e", bpo::value<string>(), "Execute a local shell script on the remote worker nodes" )
-    ( "clean", "Clean all workers" )
-    ( "fast-clean", "The fast version of the clean procedure."
-      " It shuts worker nodes down. It doesn't actually clean workers' directories." )
     ( "logs", "Download all log files from the worker nodes. Can be used only together with the clean option" )
     ( "for-worker",  bpo::value< vector<string> >()->multitoken(),
       "Perform an action on defined worker nodes. (arg is a space separated list of WN names)"
@@ -75,9 +95,13 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
       " Default: 5" )
     ;
 
+    //...positional
+    bpo::positional_options_description pd;
+    pd.add( "command", 1 );
+
     // Parsing command-line
     bpo::variables_map vm;
-    bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).run(), vm );
+    bpo::store( bpo::command_line_parser( _Argc, _Argv ).options( visible ).positional( pd ).run(), vm );
     bpo::notify( vm );
 
     if( vm.count( "help" ) || vm.empty() )
@@ -91,25 +115,29 @@ bool parseCmdLine( int _Argc, char *_Argv[], bpo::variables_map *_vm )
         return false;
     }
 
-
-    boost_hlp::conflicting_options( vm, "submit", "clean" );
-    boost_hlp::conflicting_options( vm, "status", "clean" );
-    boost_hlp::conflicting_options( vm, "submit", "fast-clean" );
-    boost_hlp::conflicting_options( vm, "status", "fast-clean" );
-    boost_hlp::conflicting_options( vm, "clean", "fast-clean" );
-    boost_hlp::conflicting_options( vm, "status", "submit" );
-    boost_hlp::option_dependency( vm, "logs", "clean" );
-
-    if( vm.count( "for-worker" ) )
+    // Command
+    if( vm.count( "command" ) )
     {
-        if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
-            !vm.count( "fast-clean" ) && !vm.count( "exec" ) )
+        if( getCommandByName( vm["command"].as<string>() ) == cmd_unknown )
         {
-            cout << PROJECT_NAME << ": Nothing to do\n\n";
-            cout << visible << endl;
+            cout << PROJECT_NAME << " error: unknown command: "
+                 << vm["command"].as<string>() << "\n\n"
+                 << visible << endl;
             return false;
         }
     }
+    else
+    {
+        cout << PROJECT_NAME << ": Nothing to do\n\n"
+             << visible << endl;
+        return false;
+    }
+
+    ECommands command = getCommandByName( vm["command"].as<string>() );
+
+    if( vm.count( "logs" ) && cmd_clean != command && cmd_fast_clean != command )
+        throw runtime_error( "The option \"--logs\" can be used only together with \"--clean\" or \"--fast-clean\"" );
+
     _vm->swap( vm );
     return true;
 }
@@ -209,8 +237,10 @@ int main( int argc, char * argv[] )
             throw runtime_error( msg );
         }
 
+        ECommands command = getCommandByName( vm["command"].as<string>() );
+
         // Check that PoD server is running
-        if( vm.count( "submit" ) )
+        if( cmd_submit == command )
         {
             try
             {
@@ -306,7 +336,7 @@ int main( int argc, char * argv[] )
                 slog.debug_msg( *iter + '\n' );
 
         }
-        else if( vm.count( "submit" ) )
+        else if( cmd_submit == command )
         {
             stringstream ssWarning;
             ssWarning
@@ -348,12 +378,6 @@ int main( int argc, char * argv[] )
             ss << "Number of PROOF workers: " << wrkCount << "\n";
         slog.debug_msg( ss.str() );
 
-        // it's a dry run - configuration check only
-        if( !vm.count( "submit" ) && !vm.count( "clean" ) &&
-            !vm.count( "status" ) && !vm.count( "fast-clean" ) &&
-            !vm.count( "exec" ) )
-            throw runtime_error( "Running in dry mode. It's a configuration check only mode." );
-
         slog.debug_msg( "Workers list:\n" );
 
         // start thread-pool and push tasks into it
@@ -361,7 +385,7 @@ int main( int argc, char * argv[] )
 
         // Did user requested some specific worker nodes
         StringVector_t defined_wns;
-        if( vm.count("for-worker") )
+        if( vm.count( "for-worker" ) )
             defined_wns = vm["for-worker"].as<vector<string> >();
 
         workersList_t::iterator iter = workers.begin();
@@ -386,12 +410,21 @@ int main( int argc, char * argv[] )
                 threadPool.pushTask( *iter, task_exec );
 
             // push main tasks
-            if( vm.count( "clean" ) || vm.count( "fast-clean" ) )
-                threadPool.pushTask( *iter, task_clean );
-            else if( vm.count( "status" ) )
-                threadPool.pushTask( *iter, task_status );
-            else if( vm.count( "submit" ) )
-                threadPool.pushTask( *iter, task_submit );
+            switch( command )
+            {
+                case cmd_clean:
+                case cmd_fast_clean:
+                    threadPool.pushTask( *iter, task_clean );
+                    break;
+                case cmd_status:
+                    threadPool.pushTask( *iter, task_status );
+                    break;
+                case cmd_submit:
+                    threadPool.pushTask( *iter, task_submit );
+                    break;
+                default:
+                    throw runtime_error( "Unknown command was specified." );
+            }
         }
         threadPool.stop( true );
 
@@ -409,8 +442,8 @@ int main( int argc, char * argv[] )
             slog( "WARNING: some tasks have failed. Please use the \"--debug\""
                   " option to print debugging messages.\n" );
 
-        if( !vm.count( "debug" ) && vm.count( "submit" ) )
-            slog( "PoD jobs have been submitted. Use \"pod-ssh --status\" to check the status.\n" );
+        if( !vm.count( "debug" ) && cmd_submit == command )
+            slog( "PoD jobs have been submitted. Use \"pod-ssh status\" to check the status.\n" );
 
 #if defined (BOOST_PROPERTY_TREE)
         PoD::SPoDSSHOptions opt_file;

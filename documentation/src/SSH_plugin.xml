@@ -4,13 +4,7 @@
 <chapter id="SSH_plugin"><title>SSH plug-in</title>
     <chapterinfo>
     </chapterinfo>
-    
-    <sect1><title>GUI</title>
-        <para>
-            GUI is not implemented yet.
-        </para>
-    </sect1>
-    
+
     <sect1 id="SSH_CLI"><title>CLI</title>
         <para>
             For users convenience PoD provides a command line interface. One can also use PoD CLI to submit PoD jobs, instead of using GUI.
@@ -23,11 +17,11 @@
             The following simple example illustrates a submission of a number of PoD workers (described in the <filename>pod_ssh.cfg</filename>
             configuration file) to a bunch of the machines via SSH.
 <screen>
-<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>--submit</parameter></command>
+<command>pod-ssh <parameter class='command'>-c</parameter> pod_ssh.cfg <parameter class='command'>submit</parameter></command>
 </screen>
             check the status of PoD workers:
 <screen>
-<command>pod-ssh <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>status</parameter></command>
 </screen>
             <para>There are could be the following values of the status:</para>
             <itemizedlist>
@@ -56,8 +50,8 @@
             and finally clean the PoD cluster. The cleaning needs to be performed when user is done with his/her dynamic PROOF cluster or want to
             refresh workers (in this case, you need to submit workers again, after the cleaning). BTW, no need to stop pod-server.
 <screen>
-<command>pod-ssh <parameter class='command'>--clean</parameter></command>
-<command>pod-ssh <parameter class='command'>--status</parameter></command>
+<command>pod-ssh <parameter class='command'>clean</parameter></command>
+<command>pod-ssh <parameter class='command'>status</parameter></command>
 </screen>
             <important><para>
                 The cleaning of the workers is very important in order to keep the remote environment safe and clean.

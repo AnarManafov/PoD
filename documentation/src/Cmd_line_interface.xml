@@ -590,14 +590,14 @@ the same from the remote PoD server:
                 <arg><option>-c <replaceable>file</replaceable>, --config=<replaceable>file</replaceable></option></arg>
                 <arg><option>-e <replaceable>arg</replaceable>, --exec=<replaceable>arg</replaceable></option></arg>
                 <arg><option>-t <replaceable>arg</replaceable>, --threads=<replaceable>arg</replaceable></option></arg>
-                <group choice="req">
-                    <arg>--submit</arg>
-                    <arg>--clean</arg>
-                    <arg>--fast-clean</arg>
-                    <arg>--status</arg>
-                </group>
                 <arg><option>--logs</option></arg>
                 <arg><option>--for-worker <replaceable>arg</replaceable></option></arg>
+                <group choice="req">
+                    <arg>submit</arg>
+                    <arg>clean</arg>
+                    <arg>fast-clean</arg>
+                    <arg>status</arg>
+                </group>
             </cmdsynopsis>
         </refsynopsisdiv>
         <refsect1>
@@ -741,44 +741,6 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>--submit</option></term>
-                    <listitem>
-                        <para>Submit PoD workers according to the entries in the configuration file.</para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>--clean</option></term>
-                    <listitem>
-                        <para>
-                            Clean all PoD workers according to the entries in the configuration file.
-                        </para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>--fast-clean</option></term>
-                    <listitem>
-                        <para>
-                            The fast version of the clean procedure. It only shuts 
-                            worker nodes down. It doesn't actually clean 
-                            workers' directories.
-                        </para>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
-                    <term><option>--status</option></term>
-                    <listitem>
-                        <para>Request status of PoD workers listed in the configuration file.</para>
-                        <para>There are could be the following values of the status:</para>
-                        <itemizedlist>
-                            <listitem>RUN - PoD jobs is running,</listitem>
-                            <listitem>DONE - PoD job is done, means PoD worker is not running on that worker node.
-                                It could be also the case that worker failed to start,</listitem>
-                            <listitem>CLEAN - PoD worker has been cleaned,</listitem>
-                            <listitem>UNKNOWN - it is not possible to retrieve the status of that worker.</listitem>
-                        </itemizedlist>
-                    </listitem>
-                </varlistentry>
-                <varlistentry>
                     <term><option>--logs</option></term>
                     <listitem>
                         <para>
@@ -799,7 +761,45 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                             "fast-clean", "exec".
                         </para>
                     </listitem>
-                </varlistentry>                
+                </varlistentry>
+                <varlistentry>
+                    <term><option>submit</option></term>
+                    <listitem>
+                        <para>Submit PoD workers according to the entries in the configuration file.</para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>clean</option></term>
+                    <listitem>
+                        <para>
+                            Clean all PoD workers according to the entries in the configuration file.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>fast-clean</option></term>
+                    <listitem>
+                        <para>
+                            The fast version of the clean procedure. It only shuts 
+                            worker nodes down. It doesn't actually clean 
+                            workers' directories.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term><option>status</option></term>
+                    <listitem>
+                        <para>Request status of PoD workers listed in the configuration file.</para>
+                        <para>There are could be the following values of the status:</para>
+                        <itemizedlist>
+                            <listitem>RUN - PoD jobs is running,</listitem>
+                            <listitem>DONE - PoD job is done, means PoD worker is not running on that worker node.
+                                It could be also the case that worker failed to start,</listitem>
+                            <listitem>CLEAN - PoD worker has been cleaned,</listitem>
+                            <listitem>UNKNOWN - it is not possible to retrieve the status of that worker.</listitem>
+                        </itemizedlist>
+                    </listitem>
+                </varlistentry>              
             </variablelist>
         </refsect1>
         <refsect1 id="pod-ssh_examples"><title>Examples</title>
@@ -807,7 +807,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <example><title>Submit PoD jobs via SSH</title>
                 <para>
 <screen>
-<command>pod-ssh <option>-c <replaceable>pod_ssh_config_file</replaceable></option> <option>--submit</option></command>
+<command>pod-ssh <option>-c <replaceable>pod_ssh_config_file</replaceable></option> <option>submit</option></command>
 </screen>
                 </para>
             </example>
@@ -815,7 +815,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <example><title>Check the status of PoD jobs submitted via SSH</title>
                 <para>
 <screen>
-<command>pod-ssh <option>--status</option></command>
+<command>pod-ssh <option>status</option></command>
 </screen>
                     Check the amount of available PROOF workers:
 <screen>
@@ -832,11 +832,11 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <example><title>Clean PoD jobs submitted via SSH</title>
                 <para>
 <screen>
-<command>pod-ssh <option>--clean</option></command>
+<command>pod-ssh <option>clean</option></command>
 </screen>
                     also you can clean and download all log files from the WNs
 <screen>
-<command>pod-ssh <option>--clean</option> <option>--logs</option></command>
+<command>pod-ssh <option>clean</option> <option>--logs</option></command>
 </screen>
                 </para>
                 
@@ -844,7 +844,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <example><title>Clean only specific worker nodes</title>
                 <para>
 <screen>
-<command>pod-ssh <option>--for-worker <replaceable>r1</replaceable> <replaceable>r2</replaceable> </option> <option>--clean</option></command>
+<command>pod-ssh <option>--for-worker <replaceable>r1</replaceable> <replaceable>r2</replaceable> </option> <option>clean</option></command>
 </screen>
                 </para>
             </example>
@@ -1071,7 +1071,7 @@ B - is a machine (host: lxg0527) standing somewhere at my work place.
 </screen>
                         or in case of the SSH plug-in
 <screen>
-<command>pod-remote <option>--command <replaceable>"pod-ssh -c --submit"</replaceable></option></command>
+<command>pod-remote <option>--command <replaceable>"pod-ssh -c pod_ssh.cfg submit"</replaceable></option></command>
 </screen>
                         
                         Using <option>--command</option>, you can execute any command vie SSH on the remote server.
