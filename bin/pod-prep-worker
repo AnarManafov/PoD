@@ -85,7 +85,7 @@ COMPONENTS=( "${COMPONENTS_ETC[@]}" )
 #------------- re-pack inline BASH script
 if [ -n "$REPACK_WRK_PKG" ]; then
    echo "$TOOL_NAME: it was requested to repack worker package"
-   WRK_PKG_DIR=$(dirname $ARC_NAME) 
+   WRK_PKG_DIR=$(dirname $ARC_NAME)
    
    pushd $(pwd) &> /dev/null
    cd $WRK_PKG_DIR
@@ -105,6 +105,9 @@ if [ -n "$REPACK_WRK_PKG" ]; then
 fi
 #-------------------------------------------------
 
+# clean before create
+# delete wrk pkg
+rm -f pod-worker
 
 # add user's script if present
 if [ -r "$USER_SCRIPT" ]; then

@@ -324,6 +324,8 @@ PKG_VERSION=$(cat $WD/version)
 if [ -r $USER_SCRIPT ]; then
    logMsg "Sourcing a user defined environment script..."
    source $USER_SCRIPT
+   logMsg "Current environment: "
+   env
 fi
 
 # host's CPU/instruction set
@@ -381,7 +383,8 @@ user_defaults="$WD/pod-user-defaults"
 pod_agent="$WD/pod-agent"
 
 # check binary
-$pod_agent --version > /dev/null 2>&1
+#$pod_agent --version > /dev/null 2>&1
+$pod_agent --version
 if (( $? != 0 )) ; then
    logMsg "Error: Can't find a suitable pre-compiled binary for this system."
    clean_up 1
