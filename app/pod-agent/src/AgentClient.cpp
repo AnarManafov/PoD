@@ -423,7 +423,8 @@ void CAgentClient::mainSelect( CNode *_node )
             //int numread( 0 );
             //  do
             //  {
-            /*numread = */read( m_fdSignalPipe, buf, read_size );
+            /*numread = */
+            read( m_fdSignalPipe, buf, read_size );
             //  }
             //   while ( numread > 0 );
 

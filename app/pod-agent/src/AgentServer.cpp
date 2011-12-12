@@ -401,7 +401,8 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         const int read_size = 64;
         char buf[read_size];
         //int numread( 0 );
-        /*numread = */read( m_fdSignalPipe, buf, read_size );
+        /*numread = */
+        read( m_fdSignalPipe, buf, read_size );
     }
 }
 //=============================================================================
