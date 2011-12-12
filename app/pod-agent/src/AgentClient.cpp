@@ -269,7 +269,6 @@ void CAgentClient::monitor()
 {
     while( true )
     {
-        // TODO: we need to check real PROOF port here (from cfg)
         if( !IsPROOFReady() )
         {
             FaultLog( erError, "Can't connect to PROOF service." );
@@ -403,7 +402,7 @@ void CAgentClient::mainSelect( CNode *_node )
 
         // must actually never happen
         if( 0 == retval )
-            throw system_error( "The main select has timeout." );
+            throw system_error( "The main select has timed out." );
 
         if( FD_ISSET( fd_first, &readset ) )
         {
@@ -421,10 +420,10 @@ void CAgentClient::mainSelect( CNode *_node )
         {
             const int read_size = 20;
             char buf[read_size];
-            int numread( 0 );
+            //int numread( 0 );
             //  do
             //  {
-            numread = read( m_fdSignalPipe, buf, read_size );
+            /*numread = */read( m_fdSignalPipe, buf, read_size );
             //  }
             //   while ( numread > 0 );
 

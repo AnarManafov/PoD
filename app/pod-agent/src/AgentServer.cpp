@@ -253,10 +253,7 @@ int CAgentServer::prepareFDSet( fd_set *_readset )
 
     // Updating nodes list and proof.cfg
     if( need_update )
-    {
-        need_update = false;
         updatePROOFCfg();
-    }
 
     return fd_max;
 }
@@ -403,8 +400,8 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     {
         const int read_size = 64;
         char buf[read_size];
-        int numread( 0 );
-        numread = read( m_fdSignalPipe, buf, read_size );
+        //int numread( 0 );
+        /*numread = */read( m_fdSignalPipe, buf, read_size );
     }
 }
 //=============================================================================
