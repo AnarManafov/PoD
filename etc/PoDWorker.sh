@@ -422,68 +422,82 @@ touch $POD_PROOFCFG_FILE
 XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_min)
 XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_max)
 
-# we try for 10 times to detect/start xpd
-# it is needed in case when several PoD workers are started in the same time on one machine
-COUNT=0
-MAX_COUNT=10
-while [ "$COUNT" -lt "$MAX_COUNT" ]
-  do
-    logMsg "Attempt #$COUNT"
-    # choose xpd port
-    POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
+# if xproofd goes down or is crashed, we will try to restart pod-agent and xproofd AGENT_MAX_RESTART_COUNT times
+AGENT_RESTART_COUNT=0
+AGENT_MAX_RESTART_COUNT=3
+while [ "$AGENT_RESTART_COUNT" -lt "$AGENT_MAX_RESTART_COUNT" ]
+do
+   # we try for 10 times to detect/start xpd
+   # it is needed in case when several PoD workers are started in the same time on one machine
+   COUNT=0
+   MAX_COUNT=10
+   while [ "$COUNT" -lt "$MAX_COUNT" ]
+   do
+      logMsg "Attempt to start and detect xproofd: #$COUNT"
+      # choose xpd port
+      POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
 
-    logMsg "trying to use XPROOF port: "$POD_XPROOF_PORT_TOSET
+      logMsg "trying to use XPROOF port: "$POD_XPROOF_PORT_TOSET
   
-    # updating XPD configuration file.
-    regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
-    sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
-    mv $WD/xpd.cf.temp $WD/xpd.cf
+      # updating XPD configuration file.
+      regexp_xpd_port="s/\(xpd.port[[:space:]]*\)[0-9]*/\1$POD_XPROOF_PORT_TOSET/g"
+      sed -e "$regexp_xpd_port" -e "$regexp_xproof_port" $WD/xpd.cf > $WD/xpd.cf.temp
+      mv $WD/xpd.cf.temp $WD/xpd.cf
 
-    # Start xproofd
-    # each PoD worker starts its own xproofd daemon
-    # in this case we can control and handle each PoD worker individually.
-    # Only the SSH plug-in is allowed to start several PROOF workers per PoD worker - for the sake of performance.
-    logMsg "starting xproofd..."
-    xproofd -c $WD/xpd.cf -b -l $WD/xpd.log
-    if (( $? != 0 )); then
-       echo "Error: can't start xproofd."
-       continue;
-    fi
-    # wait for xproofd to start
-    WAIT_TIME=50
-    cnt=0
-    while true; do
-       xproofd_info
-       if [ -n "$xpd_port" ]; then
-          logMsg "xproofd is running. pid=[$xpd_pid] port=[$xpd_port]"
-          break;
-       fi
-       cnt=$(expr $cnt + 1)
-       if [ $cnt -gt $WAIT_TIME ]; then
-          echo "WARNING: Can't detect whether xproofd has started or not..."
-          break;
-       fi
-    done
-    xproofd_info
-    if [ -n "$xpd_port" ]; then
-       break;
-    fi
+      # Start xproofd
+      # each PoD worker starts its own xproofd daemon
+      # in this case we can control and handle each PoD worker individually.
+      # Only the SSH plug-in is allowed to start several PROOF workers per PoD worker - for the sake of performance.
+      logMsg "starting xproofd..."
+      xproofd -c $WD/xpd.cf -b -l $WD/xpd.log
+      if (( $? != 0 )); then
+         echo "Error: can't start xproofd."
+         continue;
+      fi
+      # wait for xproofd to start
+      WAIT_TIME=50
+      cnt=0
+      while true; do
+         xproofd_info
+         if [ -n "$xpd_port" ]; then
+            logMsg "xproofd is running. pid=[$xpd_pid] port=[$xpd_port]"
+            break;
+         fi
+         cnt=$(expr $cnt + 1)
+         if [ $cnt -gt $WAIT_TIME ]; then
+            echo "WARNING: Can't detect whether xproofd has started or not..."
+            break;
+         fi
+      done
+      xproofd_info
+      if [ -n "$xpd_port" ]; then
+         break;
+      fi
 
-    # loop counter
-    COUNT=$(expr $COUNT + 1)
+      # loop counter
+      COUNT=$(expr $COUNT + 1)
+   done
+
+   logMsg "starting pod-agent..."
+   # start pod-agent
+   if [ -n "$1" ]; then
+      $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --workers $1 &
+   else
+      $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg &
+   fi
+   # wait for pod-agent's process
+   PODAGENT_PID=$!
+   wait $PODAGENT_PID
+   pod_exit_code=$?
+   logMsg "pod-agent is done, exit code: $pod_exit_code"
+   if (( $pod_exit_code == 100 )) ; then
+      logMsg "looks like xproofd has gone or has crashed. Trying to restart... ($AGENT_RESTART_COUNT out of $AGENT_MAX_RESTART_COUNT)"
+      AGENT_RESTART_COUNT=$(expr $AGENT_RESTART_COUNT + 1)
+      continue;
+   else
+      break;
+   fi
 done
-
-logMsg "starting pod-agent..."
-# start pod-agent
-if [ -n "$1" ]; then
-   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg --workers $1 &
-else
-   $pod_agent -c $POD_CFG -m worker --serverinfo $WD/server_info.cfg &
-fi
-# wait for pod-agent's process
-PODAGENT_PID=$!
-wait $PODAGENT_PID
-logMsg "pod-agent is done, exit code: $?"
 logMsg "--- DONE ---"
 
 # Exit

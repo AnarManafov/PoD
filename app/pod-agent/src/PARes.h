@@ -24,9 +24,10 @@ namespace PROOFAgent
 
     typedef enum { Unknown, Server, Client } EAgentMode_t;
 
+    // exit codes must be an integer in the 0 - 255 range
     typedef enum { exitCode_OK = 0,
                    exitCode_GENERAL_ERROR = 1,
-                   exitCode_CANT_FIND_XPROOFD = 400
+                   exitCode_CANT_FIND_XPROOFD = 100
                  } EExitCodes_t;
 
 };
