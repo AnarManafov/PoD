@@ -222,11 +222,57 @@ void CAgentClient::run()
             inet::CSocketClient client;
             client.connect( m_agentServerListenPort, m_agentServerHost );
             InfoLog( "Connection to the server established. Entering to admin channel." );
+            client.setNonBlock();
 
             try
             {
                 // Starting a server communication
-                processAdminConnection( client.getSocket() );
+                while( true )
+                {
+                    // Checking whether signal has arrived
+                    if( graceful_quit )
+                    {
+                        InfoLog( erOK, "STOP signal received." );
+                        return;
+                    }
+
+                    fd_set readset;
+                    FD_ZERO( &readset );
+
+                    FD_SET( client.getSocket(), &readset );
+                    // setting a signal pipe as well
+                    // we want to be interrupted
+                    FD_SET( m_fdSignalPipe, &readset );
+                    int fd_max = client.getSocket() > m_fdSignalPipe ? client.getSocket() : m_fdSignalPipe;
+
+                    int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
+                    if( retval < 0 )
+                        throw system_error( "Error occurred while in the main select:" );
+
+                    // must actually never happen
+                    if( 0 == retval )
+                        throw system_error( "The main select has timed out." );
+
+                    if( FD_ISSET( client.getSocket(), &readset ) )
+                        processAdminConnection( client.getSocket() );
+
+                    // we got a signal for update
+                    // reading everything from the pipe and exiting from the function
+                    if( FD_ISSET( m_fdSignalPipe, &readset ) )
+                    {
+                        const int read_size = 20;
+                        char buf[read_size];
+                        //int numread( 0 );
+                        //  do
+                        //  {
+                        /*numread = */
+                        read( m_fdSignalPipe, buf, read_size );
+                        //  }
+                        //   while ( numread > 0 );
+
+                        throw system_error( "Got a wake up signal from the signal pipe." );
+                    }
+                }
             }
             catch( exception & e )
             {
@@ -234,11 +280,10 @@ void CAgentClient::run()
                 continue;
             }
 
-
+            // We come to this point only in the Packet-Forwarding mode
             InfoLog( "Entering into the main \"select\" loop..." );
             try
             {
-                client.setNonBlock();
                 // waiting until Agent server sends something
                 // that would mean that a user initializes a PROOF session
                 waitForServerToConnect( client.getSocket() );
@@ -248,7 +293,8 @@ void CAgentClient::run()
                 CNode node( client.detach(), proof_socket,
                             "", m_Data.m_common.m_agentNodeReadBuffer );
 
-                // now we are ready to proxy all packages
+                // now we are ready to proxy all packages - Packet-Forwarding
+                // TODO: We need to keep Admin channel open for PF
                 mainSelect( &node );
             }
             catch( exception & e )
@@ -272,6 +318,7 @@ void CAgentClient::monitor()
         if( !IsPROOFReady() )
         {
             FaultLog( erError, "Can't connect to PROOF service." );
+            m_exitCode = exitCode_CANT_FIND_XPROOFD;
             graceful_quit = 1;
         }
 
@@ -430,7 +477,6 @@ void CAgentClient::mainSelect( CNode *_node )
 
             throw system_error( "Got a wake up signal from the signal pipe." );
         }
-
     }
 }
 //=============================================================================

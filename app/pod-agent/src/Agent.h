@@ -49,6 +49,10 @@ namespace PROOFAgent
             {
                 return m_Mode;
             }
+            EExitCodes_t getExitCode() const
+            {
+                return m_Agent->getExitCode();
+            }
 
         private:
             void RefreshAgent( const SOptions_t &_data )

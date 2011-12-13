@@ -283,14 +283,14 @@ int main( int argc, char *argv[] )
     catch( exception &e )
     {
         agent.FaultLog( erError, e.what() );
-        return 1;
+        return exitCode_GENERAL_ERROR;
     }
     catch( ... )
     {
         string errMsg( "Unexpected Exception occurred." );
         agent.FaultLog( erXMLInit, errMsg );
-        return 1;
+        return exitCode_GENERAL_ERROR;
     }
 
-    return 0;
+    return agent.getExitCode();
 }

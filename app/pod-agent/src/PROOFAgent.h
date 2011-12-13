@@ -45,6 +45,10 @@ namespace PROOFAgent
         public:
             void setConfiguration( const SOptions_t &_data );
             void Start() throw( std::exception );
+            EExitCodes_t getExitCode() const
+            {
+                return m_Agent.getExitCode();
+            }
 
         private:
             void initLogEngine();

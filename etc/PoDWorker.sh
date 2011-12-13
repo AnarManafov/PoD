@@ -441,7 +441,8 @@ while [ "$COUNT" -lt "$MAX_COUNT" ]
 
     # Start xproofd
     # each PoD worker starts its own xproofd daemon
-    # in this case we can control and handle each PoD worker individually
+    # in this case we can control and handle each PoD worker individually.
+    # Only the SSH plug-in is allowed to start several PROOF workers per PoD worker - for the sake of performance.
     logMsg "starting xproofd..."
     xproofd -c $WD/xpd.cf -b -l $WD/xpd.log
     if (( $? != 0 )); then
@@ -482,7 +483,7 @@ fi
 # wait for pod-agent's process
 PODAGENT_PID=$!
 wait $PODAGENT_PID
-
+logMsg "pod-agent is done, exit code: $?"
 logMsg "--- DONE ---"
 
 # Exit

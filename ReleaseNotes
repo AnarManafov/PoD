@@ -4,6 +4,7 @@
 pod: GUI support is discontinued. (Bug 25)
 pod: User's Manual has been updated.
 pod: Remove tmp directories on server and WNs when cleaning. (Bug 22)
+pod: fixed: PoD WNs can now properly detect and react when xproofd is going down or has crashed on WNs.
 pod-ssh: learned a "--for-worker" option to perform an action on defined worker nodes. (Bug 17)
 pod-ssh: The following options were dropped: "--submit", "--status", "--clean", and "--fast-clean".
 pod-ssh: For user's convenience it's possible now to use commands without the "--" sign, e.g.: "pod-ssh submit" or "pod-ssh clean".

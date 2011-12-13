@@ -73,7 +73,8 @@ namespace PROOFAgent
      */
     CAgentBase::CAgentBase( const SCommonOptions_t &_common ) :
         m_commonOptions( _common ),
-        m_fdSignalPipe( 0 )
+        m_fdSignalPipe( 0 ),
+        m_exitCode( exitCode_OK )
     {
         // Registering signals handlers
         struct sigaction sa;
@@ -88,9 +89,9 @@ namespace PROOFAgent
         sigaction( SIGTERM, &sa, 0 );
 
         // create a named pipe (our signal pipe)
-        // it's use to interrupt "select" and give a chance to new sockets to be added
+        // it's used to interrupt "select" and give a chance to new sockets to be added
         // to the "select"
-        // using a fixed name ".signal_pipe" and server.work_dir as a path
+        // using a fixed name ".signal_pipe" and (XXXX).work_dir as a path
         m_signalPipeName = _common.m_workDir;
         smart_path( &m_signalPipeName );
         smart_append( &m_signalPipeName, '/' );

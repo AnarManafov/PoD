@@ -24,6 +24,11 @@ namespace PROOFAgent
 
     typedef enum { Unknown, Server, Client } EAgentMode_t;
 
+    typedef enum { exitCode_OK = 0,
+                   exitCode_GENERAL_ERROR = 1,
+                   exitCode_CANT_FIND_XPROOFD = 400
+                 } EExitCodes_t;
+
 };
 
 #endif /*PARES_H_*/

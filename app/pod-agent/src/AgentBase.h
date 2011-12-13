@@ -20,6 +20,7 @@
 #include "Options.h"
 #include "IdleWatch.h"
 #include "ProofStatusFile.h"
+#include "PARes.h"
 
 namespace PROOFAgent
 {
@@ -47,6 +48,10 @@ namespace PROOFAgent
             void Start();
             virtual EAgentMode_t GetMode() const = 0;
             bool IsPROOFReady() const;
+            EExitCodes_t getExitCode() const
+            {
+                return m_exitCode;
+            }
 
         protected:
             virtual void run() = 0;
@@ -65,6 +70,7 @@ namespace PROOFAgent
             CProofStatusFile m_proofStatus;
             unsigned int m_xpdPort;
             pid_t m_xpdPid;
+            EExitCodes_t m_exitCode;
     };
 
 }
