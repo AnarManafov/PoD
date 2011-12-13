@@ -427,13 +427,14 @@ AGENT_RESTART_COUNT=0
 AGENT_MAX_RESTART_COUNT=3
 while [ "$AGENT_RESTART_COUNT" -lt "$AGENT_MAX_RESTART_COUNT" ]
 do
+   logMsg "Attempt to start pod-agent ($(expr $AGENT_RESTART_COUNT + 1) out of $AGENT_MAX_RESTART_COUNT)"
    # we try for 10 times to detect/start xpd
    # it is needed in case when several PoD workers are started in the same time on one machine
    COUNT=0
    MAX_COUNT=10
    while [ "$COUNT" -lt "$MAX_COUNT" ]
    do
-      logMsg "Attempt to start and detect xproofd: #$COUNT"
+      logMsg "Attempt to start and detect xproofd ($(expr $COUNT + 1) out of $MAX_COUNT"
       # choose xpd port
       POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
 
@@ -490,9 +491,16 @@ do
    wait $PODAGENT_PID
    pod_exit_code=$?
    logMsg "pod-agent is done, exit code: $pod_exit_code"
+   # code == 100 --- can't connect to xproofd or xproofd has dropped the connection
    if (( $pod_exit_code == 100 )) ; then
-      logMsg "looks like xproofd has gone or has crashed. Trying to restart... ($AGENT_RESTART_COUNT out of $AGENT_MAX_RESTART_COUNT)"
+      logMsg "looks like xproofd has gone or has crashed..."
       AGENT_RESTART_COUNT=$(expr $AGENT_RESTART_COUNT + 1)
+      if (( $AGENT_RESTART_COUNT <  $AGENT_MAX_RESTART_COUNT )) ; then
+         logMsg "preparing to restart all PoD WN process..."
+         # kill xproofd just in case it is still there
+         kill $xpd_pid &>/dev/null
+         wait_and_kill $xpd_pid
+      fi
       continue;
    else
       break;
