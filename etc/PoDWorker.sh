@@ -434,7 +434,7 @@ do
    MAX_COUNT=10
    while [ "$COUNT" -lt "$MAX_COUNT" ]
    do
-      logMsg "Attempt to start and detect xproofd ($(expr $COUNT + 1) out of $MAX_COUNT"
+      logMsg "Attempt to start and detect xproofd ($(expr $COUNT + 1) out of $MAX_COUNT)"
       # choose xpd port
       POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
 
