@@ -69,32 +69,22 @@ CAgentClient::~CAgentClient()
 //=============================================================================
 void CAgentClient::processAdminConnection( int _serverSock )
 {
+    InfoLog( "receiving server commands" );
     CProtocol protocol;
-    SVersionCmd v;
-    BYTEVector_t ver;
-    v.convertToData( &ver );
-    protocol.write( _serverSock, static_cast<uint16_t>( cmdVERSION ), ver );
-    bool bProcessNoMore( false );
-    while( !bProcessNoMore )
+    CProtocol::EStatus_t ret = protocol.read( _serverSock );
+    switch( ret )
     {
-        InfoLog( "waiting for server commands" );
-        CProtocol::EStatus_t ret = protocol.read( _serverSock );
-        switch( ret )
-        {
-            case CProtocol::stDISCONNECT:
-                throw runtime_error( "a disconnect has been detected on the adminChannel" );
-            case CProtocol::stAGAIN:
-            case CProtocol::stOK:
+        case CProtocol::stDISCONNECT:
+            throw runtime_error( "a disconnect has been detected on the adminChannel" );
+        case CProtocol::stAGAIN:
+        case CProtocol::stOK:
+            {
+                while( protocol.checkoutNextMsg() )
                 {
-                    while( protocol.checkoutNextMsg() )
-                    {
-                        bProcessNoMore = ( processProtocolMsgs( _serverSock, &protocol ) > 0 );
-                        if( bProcessNoMore )
-                            break;
-                    }
+                    processProtocolMsgs( _serverSock, &protocol );
                 }
-                break;
-        }
+            }
+            break;
     }
 }
 //=============================================================================
@@ -226,6 +216,14 @@ void CAgentClient::run()
 
             try
             {
+                int fdServerSock = client.getSocket();
+                // Handshake with the server
+                CProtocol protocol;
+                SVersionCmd v;
+                BYTEVector_t ver;
+                v.convertToData( &ver );
+                protocol.write( fdServerSock, static_cast<uint16_t>( cmdVERSION ), ver );
+
                 // Starting a server communication
                 while( true )
                 {
@@ -239,11 +237,11 @@ void CAgentClient::run()
                     fd_set readset;
                     FD_ZERO( &readset );
 
-                    FD_SET( client.getSocket(), &readset );
+                    FD_SET( fdServerSock, &readset );
                     // setting a signal pipe as well
                     // we want to be interrupted
                     FD_SET( m_fdSignalPipe, &readset );
-                    int fd_max = client.getSocket() > m_fdSignalPipe ? client.getSocket() : m_fdSignalPipe;
+                    int fd_max = fdServerSock > m_fdSignalPipe ? fdServerSock : m_fdSignalPipe;
 
                     int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
                     if( retval < 0 )
@@ -253,8 +251,8 @@ void CAgentClient::run()
                     if( 0 == retval )
                         throw system_error( "The main select has timed out." );
 
-                    if( FD_ISSET( client.getSocket(), &readset ) )
-                        processAdminConnection( client.getSocket() );
+                    if( FD_ISSET( fdServerSock, &readset ) )
+                        processAdminConnection( fdServerSock );
 
                     // we got a signal for update
                     // reading everything from the pipe and exiting from the function
