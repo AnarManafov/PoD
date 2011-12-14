@@ -423,6 +423,7 @@ XPROOF_PORTS_RANGE_MIN=$($user_defaults -c $POD_CFG --key worker.xproof_ports_ra
 XPROOF_PORTS_RANGE_MAX=$($user_defaults -c $POD_CFG --key worker.xproof_ports_range_max)
 
 # if xproofd goes down or is crashed, we will try to restart pod-agent and xproofd AGENT_MAX_RESTART_COUNT times
+start_time=$((date +%s) 2>/dev/null)
 AGENT_RESTART_COUNT=0
 AGENT_MAX_RESTART_COUNT=3
 while [ "$AGENT_RESTART_COUNT" -lt "$AGENT_MAX_RESTART_COUNT" ]
@@ -494,7 +495,20 @@ do
    # code == 100 --- can't connect to xproofd or xproofd has dropped the connection
    if (( $pod_exit_code == 100 )) ; then
       logMsg "looks like xproofd has gone or has crashed..."
-      AGENT_RESTART_COUNT=$(expr $AGENT_RESTART_COUNT + 1)
+      # Reset the agent restart counter after 10 min
+      AGENTCOUNTER_RESET_TIMEOUT=10
+      stop_time=$((date +%s) 2>/dev/null)
+      duration_s=$((expr $stop_time - $start_time) 2>/dev/null)
+      duration_m=$((expr $duration_s / 60) 2>/dev/null)
+      if (( $duration_m > $AGENTCOUNTER_RESET_TIMEOUT )) ; then
+         logMsg "There were more than $AGENTCOUNTER_RESET_TIMEOUT min. since the last restart. Resetting the agent restart counter..."
+         AGENT_RESTART_COUNT=0
+      else
+         AGENT_RESTART_COUNT=$(expr $AGENT_RESTART_COUNT + 1)
+      fi
+
+      start_time=$((date +%s) 2>/dev/null)
+
       if (( $AGENT_RESTART_COUNT <  $AGENT_MAX_RESTART_COUNT )) ; then
          logMsg "preparing to restart all PoD WN process..."
          # kill xproofd just in case it is still there
