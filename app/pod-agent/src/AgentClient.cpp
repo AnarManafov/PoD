@@ -260,11 +260,10 @@ void CAgentClient::run()
                     {
                         const int read_size = 20;
                         char buf[read_size];
-                        //int numread( 0 );
+                        int numread( 0 );
                         //  do
                         //  {
-                        /*numread = */
-                        read( m_fdSignalPipe, buf, read_size );
+                        numread = read( m_fdSignalPipe, buf, read_size );
                         //  }
                         //   while ( numread > 0 );
 
@@ -465,11 +464,10 @@ void CAgentClient::mainSelect( CNode *_node )
         {
             const int read_size = 20;
             char buf[read_size];
-            //int numread( 0 );
+            int numread( 0 );
             //  do
             //  {
-            /*numread = */
-            read( m_fdSignalPipe, buf, read_size );
+            numread = read( m_fdSignalPipe, buf, read_size );
             //  }
             //   while ( numread > 0 );
 

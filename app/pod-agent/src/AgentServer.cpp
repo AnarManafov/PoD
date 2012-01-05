@@ -400,9 +400,12 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
     {
         const int read_size = 64;
         char buf[read_size];
-        //int numread( 0 );
-        /*numread = */
-        read( m_fdSignalPipe, buf, read_size );
+        // we don't care about numread - it is just to silence a warning
+        const int numread = read( m_fdSignalPipe, buf, read_size );
+        if( numread < 0 )
+        {
+          // an error. so-far we can ignore it
+        }
     }
 }
 //=============================================================================
