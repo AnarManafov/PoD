@@ -90,8 +90,6 @@ bool CWorker::runTask( ETaskType _param ) const
             params.push_back( "-e " + m_options.m_scriptName );
             cmd = "$POD_LOCATION/bin/private/pod-ssh-exec-worker";
             break;
-        default:
-            return false;
     }
 
     smart_path( &cmd );

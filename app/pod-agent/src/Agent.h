@@ -69,7 +69,6 @@ namespace PROOFAgent
                     case Client:
                         return new CAgentClient( _data );
                     case Unknown:
-                    default:
                         return NULL;
                 }
             }
