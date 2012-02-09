@@ -188,13 +188,13 @@ SET(POD_CLI_PLUGINS_FILES
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-ge-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-condor-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-loadleveler-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-glite-submit
     )
 #
 # "etc" files
 #
 SET(POD_ETC_FILES
-     ${CMAKE_SOURCE_DIR}/etc/gLitePROOF.jdl
-     ${CMAKE_SOURCE_DIR}/etc/gLitePROOF_FZK.jdl
+     ${CMAKE_SOURCE_DIR}/etc/gLite.jdl
      ${POD_VERSION_FILE}
    )
 #

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2012-02-09
+#
+#        Copyright (c) 2012 GSI, Scientific Computing division. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+QUEUE=""
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
+# LOG
+#eval upload_job_log=$(pod-user-defaults --key glite_plugin.upload_job_log)
+#OUTPUT_LOG=""
+#if [ "$upload_job_log" = "1" ]; then
+#   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION"
+#else
+#   OUTPUT_LOG=" -o /dev/null"
+#fi
+
+#jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $POD_LOCATION/etc/Job.ge)
+# we need to create a logs output dir
+#stat=$?
+# extract a job id only, without an array indexes
+#jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
+#if (( $stat == 0 )); then
+#   echo "Job ID: $jobid"
+#   if [ "$upload_job_log" = "1" ]; then
+#      mkdir -p  $POD_UI_LOG_LOCATION/$jobid
+#   fi
+#else
+#   echo "Error submitting job. $jobid"
+#fi
+

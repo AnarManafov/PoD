@@ -71,6 +71,7 @@ namespace PROOFAgent
                     case Unknown:
                         return NULL;
                 }
+                return NULL;
             }
 
         private:
