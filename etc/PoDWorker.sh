@@ -436,6 +436,8 @@ do
    while [ "$COUNT" -lt "$MAX_COUNT" ]
    do
       logMsg "Attempt to start and detect xproofd ($(expr $COUNT + 1) out of $MAX_COUNT)"
+      # loop counter
+      COUNT=$(expr $COUNT + 1)
       # choose xpd port
       POD_XPROOF_PORT_TOSET=$(get_freeport $XPROOF_PORTS_RANGE_MIN $XPROOF_PORTS_RANGE_MAX)
 
@@ -475,9 +477,6 @@ do
       if [ -n "$xpd_port" ]; then
          break;
       fi
-
-      # loop counter
-      COUNT=$(expr $COUNT + 1)
    done
 
    logMsg "starting pod-agent..."
