@@ -54,17 +54,34 @@ fi
 #   OUTPUT_LOG=" -o /dev/null"
 #fi
 
-#jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $POD_LOCATION/etc/Job.ge)
-# we need to create a logs output dir
-#stat=$?
-# extract a job id only, without an array indexes
-#jobid=$(echo $jobid | cut -f3 -d" " | cut -f1 -d.)
-#if (( $stat == 0 )); then
-#   echo "Job ID: $jobid"
+WORK_DIR=$(pod-user-defaults --key server.work_dir)
+eval WORK_DIR="$WORK_DIR"
+local_GLITE_JOBID="$WORK_DIR/.glite_jobid"
+local_GLITE_JDL="$WORK_DIR/glite.jdl"
+
+# generate jdl file
+cp -f "$POD_LOCATION/etc/gLite.jdl" $local_GLITE_JDL
+
+echo "Parameters=$NUM_WRK;" >> $local_GLITE_JDL
+echo "InputSandbox = { \"$POD_WRK_PKG\",\"$POD_WRK_SCRIPT\" };" >> $local_GLITE_JDL
+echo "Requirements=(other.GlueCEUniqueID==\"$QUEUE\");" >> $local_GLITE_JDL 
+
+
+# submit a WMS job to a CREAM CE
+glite-wms-job-submit --output $local_GLITE_JOBID --autm-delegation $local_GLITE_JDL # 1>/dev/null
+stat=$?
+jobid=$(tail -1 glite_jobid)
+# delete jobid file, otherwise gLite will append other jobids to it.
+if [ -f $local_GLITE_JOBID ]; then
+   rm $local_GLITE_JOBID
+fi
+
+if (( $stat == 0 )); then
+   echo "Job ID: $jobid"
 #   if [ "$upload_job_log" = "1" ]; then
 #      mkdir -p  $POD_UI_LOG_LOCATION/$jobid
 #   fi
-#else
-#   echo "Error submitting job. $jobid"
-#fi
+else
+   echo "Error submitting job. $jobid"
+fi
 
