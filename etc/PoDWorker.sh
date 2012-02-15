@@ -281,7 +281,7 @@ get_default_ROOT()
    source $ROOTSYS/bin/thisroot.sh
 
    # check binary
-   xproofd -h > /dev/null 2>&1
+   xproofd -h #> /dev/null 2>&1
    if (( $? != 0 )) ; then
       logMsg "Error: can't execute xproofd. Check your ROOT installation."
       clean_up 1

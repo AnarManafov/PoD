@@ -7,10 +7,7 @@
   ParameterStart = 0;
   ShallowRetryCount = 0;
   OutputSandbox = { "PoDJob_glite.out","PoDJob_glite.err","xpd.log","pod-agent.client.log","proof_log.tgz" };
- # Outputsandboxbasedesturi="gsiftp://localhost";
- 
  # Requirements = other.GlueCEStateStatus == "Production"; 
  # VirtualOrganisation = "dech"; 
  # Rank = 0; 
- # Type = "job"; 
 
