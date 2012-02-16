@@ -56,7 +56,7 @@ fi
 
 WORK_DIR=$(pod-user-defaults --key server.work_dir)
 eval WORK_DIR="$WORK_DIR"
-local_GLITE_JOBID="$WORK_DIR/.glite_jobid"
+local_GLITE_JDL="$WORK_DIR/glite.jdl"
 
 # generate jdl file
 cp -f "$POD_LOCATION/etc/gLite.jdl" $local_GLITE_JDL
