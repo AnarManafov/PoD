@@ -195,6 +195,7 @@ int main( int argc, char *argv[] )
             options.m_sshConnectionStr += opt_file.m_PoDLocation;
             options.m_envScriptLocal = opt_file.m_envLocal;
             options.m_envScriptRemote = opt_file.m_envRemote;
+            options.m_openDomain = opt_file.m_envSSHOpenDomain;
         }
 
         // in debug mode report values of config. options
@@ -479,6 +480,7 @@ int main( int argc, char *argv[] )
             opt_file.m_PoDLocation = options.remotePoDLocation();
             opt_file.m_envLocal = options.m_envScriptLocal;
             opt_file.m_envRemote = options.m_envScriptRemote;
+            opt_file.m_envSSHOpenDomain = options.m_openDomain;
             opt_file.m_localAgentPort = agentPortListen;
             opt_file.m_localXpdPort = xpdPortListen;
             opt_file.save( env.pod_remoteCfgFile() );
