@@ -150,6 +150,7 @@ int main( int argc, char *argv[] )
     SOptions options;
     CLogEngine slog;
     CPoDEnvironment env;
+    size_t localMainTunnelPort(0);
     try
     {
         if( !parseCmdLine( argc, argv, &options ) )
@@ -196,6 +197,7 @@ int main( int argc, char *argv[] )
             options.m_envScriptLocal = opt_file.m_envLocal;
             options.m_envScriptRemote = opt_file.m_envRemote;
             options.m_openDomain = opt_file.m_envSSHOpenDomain;
+            localMainTunnelPort = opt_file.m_localMainTunnelPort;
         }
 
         // in debug mode report values of config. options
@@ -228,16 +230,15 @@ int main( int argc, char *argv[] )
         // Remote port 22 is so far hard-coded
         // TODO: move it to the options, I mean the port number
         CSSHTunnel sshTunnelMain;
-        size_t localPortListen( 0 );
         // create the tunnel only once when starting the server
         if( !options.m_openDomain.empty() &&
            (options.m_start || options.m_restart) )
         {
-            localPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
+            localMainTunnelPort = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
                                                    env.getUD().m_server.m_agentPortsRangeMax );
             sshTunnelMain.deattach();
             sshTunnelMain.setPidFile( env.tunnelRemotePidFile() );
-            sshTunnelMain.create( remoteURL, localPortListen,
+            sshTunnelMain.create( remoteURL, localMainTunnelPort,
                                   22, options.m_openDomain );
         }
         // fork a child process
@@ -276,7 +277,7 @@ int main( int argc, char *argv[] )
             {
                 // tunneled port
                 stringstream ssPort;
-                ssPort << "-p" << localPortListen;
+                ssPort << "-p" << localMainTunnelPort;
                 string loginName( options.userNameFromConnectionString() );
                 if( !loginName.empty() )
                 {
@@ -286,7 +287,7 @@ int main( int argc, char *argv[] )
                 sRemoteConnectionStr += "localhost";
 
                 ssMsg << "child: " << remoteURL
-                      << " via a local port " << localPortListen
+                      << " via a local port " << localMainTunnelPort
                       << " on local address " << sRemoteConnectionStr << '\n';
                 slog.debug_msg( ssMsg.str() );
 
@@ -486,6 +487,7 @@ int main( int argc, char *argv[] )
             opt_file.m_envSSHOpenDomain = options.m_openDomain;
             opt_file.m_localAgentPort = agentPortListen;
             opt_file.m_localXpdPort = xpdPortListen;
+            opt_file.m_localMainTunnelPort = localMainTunnelPort;
             opt_file.save( env.pod_remoteCfgFile() );
 
             slog( "Server is started. Use \"pod-info -sd\" to check the status of the server.\n" );
