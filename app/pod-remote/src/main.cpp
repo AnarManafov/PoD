@@ -229,7 +229,9 @@ int main( int argc, char *argv[] )
         // TODO: move it to the options, I mean the port number
         CSSHTunnel sshTunnelMain;
         size_t localPortListen( 0 );
-        if( !options.m_openDomain.empty() )
+        // create the tunnel only once when starting the server
+        if( !options.m_openDomain.empty() &&
+           (options.m_start || options.m_restart) )
         {
             localPortListen = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
                                                    env.getUD().m_server.m_agentPortsRangeMax );
@@ -247,7 +249,8 @@ int main( int argc, char *argv[] )
 
         if( pid == 0 )
         {
-            if( !options.m_openDomain.empty() )
+            if( !options.m_openDomain.empty() &&
+               (options.m_start || options.m_restart) )
             {
                 // the current process needs to leave the tunnels open
                 sshTunnelMain.deattach();
