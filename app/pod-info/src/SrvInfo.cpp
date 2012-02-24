@@ -157,6 +157,16 @@ void CSrvInfo::printInfo( ostream &_stream ) const
             {
                 printXpd( _stream );
                 printAgent( _stream );
+                // pod-remote servers need to be treated differently
+#if defined (BOOST_PROPERTY_TREE)
+                PoD::SPoDRemoteOptions opt_file;
+                if( processPoDRemoteCfg( &opt_file ) )
+                {
+                    _stream
+                            << "PoD agent port is forwarded via local port: " << opt_file.m_localAgentPort << "\n"
+                            << "XPROOFD port is forwarded via local port: " << opt_file.m_localXpdPort << endl;
+                }
+#endif
             }
             break;
     }
@@ -166,7 +176,16 @@ void CSrvInfo::printConnectionString( ostream &_stream ) const
 {
     if( getStatus() == srvStatus_OK )
     {
+        // pod-remote servers need to be treated differently
+#if defined (BOOST_PROPERTY_TREE)
+        PoD::SPoDRemoteOptions opt_file;
+        if( processPoDRemoteCfg( &opt_file ) )
+            _stream << m_serverUsername << "@" << m_srvHost << ":" << opt_file.m_localXpdPort << endl;
+        else
+            _stream << m_serverUsername << "@" << m_srvHost << ":" << m_xpdPort << endl;
+#else
         _stream << m_serverUsername << "@" << m_srvHost << ":" << m_xpdPort << endl;
+#endif
     }
 }
 //=============================================================================
@@ -199,4 +218,18 @@ bool CSrvInfo::processServerInfoCfg( const string *_cfg )
 
     return true;
 }
-
+//=============================================================================
+#if defined (BOOST_PROPERTY_TREE)
+bool CSrvInfo::processPoDRemoteCfg( PoD::SPoDRemoteOptions *_opt_file ) const
+{
+    if( !m_env || !_opt_file )
+        return false;
+    pid_t podRemotePid = CPIDFile::GetPIDFromFile( m_env->pod_remotePidFile() );
+    if( podRemotePid > 0 && IsProcessExist( podRemotePid ) )
+    {
+        _opt_file->load( m_env->pod_remoteCfgFile() );
+        return true;
+    }
+    return false;
+}
+#endif

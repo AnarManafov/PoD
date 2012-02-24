@@ -404,7 +404,7 @@ void CAgentServer::mainSelect( const inet::CSocketServer &_server )
         const int numread = read( m_fdSignalPipe, buf, read_size );
         if( numread < 0 )
         {
-          // an error. so-far we can ignore it
+            // an error. so-far we can ignore it
         }
     }
 }

@@ -10,12 +10,26 @@
 //=============================================================================
 #include <stdint.h>
 #include <iostream>
+// PoD
+#include "PoDUserDefaultsOptions.h"
 //=============================================================================
 class CPoDEnvironment;
 namespace pod_info
 {
     class CServer;
 }
+//=============================================================================
+enum EPoDServerType
+{
+    // PoD Server can't be found
+    SrvType_Unknown,
+    // a local PoD server.
+    SrvType_Local,
+    // a remote PoD server
+    SrvType_Remote,
+    // a remote PoD server, start by pod-remote
+    SrvType_RemoteManaged
+};
 //=============================================================================
 class CSrvInfo
 {
@@ -30,6 +44,9 @@ class CSrvInfo
         void printInfo( std::ostream &_stream ) const;
         void printConnectionString( std::ostream &_stream ) const;
         bool processServerInfoCfg( const std::string *_cfg = NULL );
+#if defined (BOOST_PROPERTY_TREE)
+        bool processPoDRemoteCfg( PoD::SPoDRemoteOptions *_opt_file ) const;
+#endif
         ESrvStatus getStatus() const
         {
             if( 0 == m_agentPid && 0 == m_xpdPid )

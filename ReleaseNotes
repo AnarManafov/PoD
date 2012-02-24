@@ -13,6 +13,7 @@ pod-ssh: learned a "--for-worker" option to perform an action on defined worker 
 pod-ssh: The following options were dropped: "--submit", "--status", "--clean", and "--fast-clean".
 pod-ssh: For user's convenience it's possible now to use commands without the "--" sign, e.g.: "pod-ssh submit" or "pod-ssh clean".
 pod-remote: fixed: The command could forget to use an ssh open domain.
+pod-info: fixed: A wrong PROOF connection string is shown when pod-remote is used to setup a server.
 
 ## v3.8 (2011-11-15)
 pod: WN pre-compiled binaries for MacOSX are now build as universal in order to support all x86 machines and

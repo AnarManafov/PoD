@@ -150,7 +150,7 @@ int main( int argc, char *argv[] )
     SOptions options;
     CLogEngine slog;
     CPoDEnvironment env;
-    size_t localMainTunnelPort(0);
+    size_t localMainTunnelPort( 0 );
     try
     {
         if( !parseCmdLine( argc, argv, &options ) )
@@ -232,10 +232,10 @@ int main( int argc, char *argv[] )
         CSSHTunnel sshTunnelMain;
         // create the tunnel only once when starting the server
         if( !options.m_openDomain.empty() &&
-           (options.m_start || options.m_restart) )
+            ( options.m_start || options.m_restart ) )
         {
             localMainTunnelPort = inet::get_free_port( env.getUD().m_server.m_agentPortsRangeMin,
-                                                   env.getUD().m_server.m_agentPortsRangeMax );
+                                                       env.getUD().m_server.m_agentPortsRangeMax );
             sshTunnelMain.deattach();
             sshTunnelMain.setPidFile( env.tunnelRemotePidFile() );
             sshTunnelMain.create( remoteURL, localMainTunnelPort,
@@ -251,7 +251,7 @@ int main( int argc, char *argv[] )
         if( pid == 0 )
         {
             if( !options.m_openDomain.empty() &&
-               (options.m_start || options.m_restart) )
+                ( options.m_start || options.m_restart ) )
             {
                 // the current process needs to leave the tunnels open
                 sshTunnelMain.deattach();

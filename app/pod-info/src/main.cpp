@@ -32,18 +32,6 @@ using namespace std;
 namespace bpo = boost::program_options;
 namespace boost_hlp = MiscCommon::BOOSTHelper;
 //=============================================================================
-enum EPoDServerType
-{
-    // PoD Server can't be found
-    SrvType_Unknown,
-    // a local PoD server.
-    SrvType_Local,
-    // a remote PoD server
-    SrvType_Remote,
-    // a remote PoD server, start by pod-remote
-    SrvType_RemoteManaged
-};
-//=============================================================================
 string version( const CPoDEnvironment &_env, const pod_info::CServer &_srv )
 {
     bool noServer( false );
@@ -226,13 +214,11 @@ int main( int argc, char *argv[] )
             // >>> REMOTE MANAGED SERVER <<<
             // Check for pod-remote daemons
 #if defined (BOOST_PROPERTY_TREE)
-            pid_t podRemotePid = CPIDFile::GetPIDFromFile( env.pod_remotePidFile() );
-            if( podRemotePid > 0 && IsProcessExist( podRemotePid ) )
+            PoD::SPoDRemoteOptions opt_file;
+            if( srvInfo.processPoDRemoteCfg( &opt_file ) )
             {
                 srvType = SrvType_RemoteManaged;
                 srvHost = "localhost";
-                PoD::SPoDRemoteOptions opt_file;
-                opt_file.load( env.pod_remoteCfgFile() );
                 agentPort = opt_file.m_localAgentPort;
             }
 #endif
