@@ -67,11 +67,11 @@ echo "Requirements=(other.GlueCEUniqueID==\"$QUEUE\");" >> $local_GLITE_JDL
 
 
 # submit a WMS job to a CREAM CE
-glite-wms-job-submit --endpoint "https://wms301.cern.ch:7443/glite_wms_wmproxy_server" --autm-delegation $local_GLITE_JDL # 1>/dev/null
+glite-wms-job-submit --autm-delegation $local_GLITE_JDL # 1>/dev/null
 stat=$?
 
 if (( $stat == 0 )); then
-   echo "Job ID: $jobid"
+#   echo "Job ID: $jobid"
 #   if [ "$upload_job_log" = "1" ]; then
 #      mkdir -p  $POD_UI_LOG_LOCATION/$jobid
 #   fi
