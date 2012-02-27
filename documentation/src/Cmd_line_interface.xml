@@ -491,7 +491,7 @@ the same from the remote PoD server:
                 <command>pod-submit</command>
                 <arg><option>-h</option></arg>
                 <arg><option>-l</option></arg>
-                <arg><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs</replaceable></option></arg>
+                <arg><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs|glite</replaceable></option></arg>
                 <arg><option>-q <replaceable>queue</replaceable></option></arg>
                 <arg><option>-n <replaceable>X</replaceable></option></arg>
             </cmdsynopsis>
@@ -506,7 +506,8 @@ the same from the remote PoD server:
                     <listitem><para>PBS Pro/OpenPBS/Torque (Portable Batch System),</para></listitem>
                     <listitem><para>Grid Engine (Oracle/Sun Grid Engine),</para></listitem>
                     <listitem><para>Condor,</para></listitem>
-                    <listitem><para>LoadLeveler (IBM Tivoli Workload Scheduler LoadLeveler).</para></listitem>
+                    <listitem><para>LoadLeveler (IBM Tivoli Workload Scheduler LoadLeveler),</para></listitem>
+                    <listitem><para>gLite.</para></listitem>
                 </itemizedlist>
             </para>
             <para>
@@ -542,7 +543,7 @@ the same from the remote PoD server:
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs</replaceable></option></term>
+                    <term><option>-r <replaceable>condor|ge|loadleveler|lsf|pbs|glite</replaceable></option></term>
                     <listitem>
                         <para>A name of the resource management system to use.</para>
                     </listitem>
@@ -551,6 +552,10 @@ the same from the remote PoD server:
                     <term><option>-q <replaceable>queue</replaceable></option></term>
                     <listitem>
                         <para>Submit the jobs to specified <option>queue</option>. (default: "proof" if the value of <envar>$POD_RMS_DEFAULT_QUEUE</envar> is empty )</para>
+                        <para>In case of gLite plug-in, queue parametr must define a CREAM CE including a desired queue, for example:</para>
+<screen>
+pod-submit -r glite -q atlasce2.lnf.infn.it:8443/cream-pbs-atlas_short -n 30
+</screen>
                     </listitem>
                 </varlistentry>
                 <varlistentry>
