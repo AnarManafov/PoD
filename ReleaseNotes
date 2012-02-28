@@ -1,5 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
+## 3.12 (is not yet released)
+
+
 ## v3.10 (2012-02-28) 
 pod: fixed: PoD WNs can now properly detect and react when xproofd is going down or has crashed on WNs.
 pod: fixed: PoD WN could hang forever if failed to start xproofd.
