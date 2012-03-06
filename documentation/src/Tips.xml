@@ -1,0 +1,16 @@
+<!--
+ Tips
+ -->
+<chapter id="Tips">
+    <title>Tips</title>
+    <chapterinfo>
+    </chapterinfo>
+    <sect1 id="Handling_large_outputs_via_ROOT_files">
+        <title>Handling large outputs via ROOT files</title>
+        <para>There is <ulink url="http://root.cern.ch/drupal/content/handling-large-outputs-root-files">a great feature</ulink> in PROOF to help merging big output objects. To enable this feature in your dynamic PROOF cluster managed by PoD, you need to use an automatic rootd transport instead of the default one (xrootd), because by default PoD doesn't use xrootd. The rootd transport was implemented in ROOT 5.28 (<ulink url="http://root.cern.ch/viewvc?view=rev&amp;revision=38227">see the patch</ulink>).</para>
+         <para>
+	 In order to switch on the rootd transport you need to add "<command>xpd.rootd allow</command>" to <link linkend="XROOTD">your custom XPD configuration file.</link>
+	 </para>
+    </sect1>
+    
+</chapter>
