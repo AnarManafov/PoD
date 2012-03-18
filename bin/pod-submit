@@ -15,7 +15,6 @@
 # PoD environment variables used by the script:
 #    POD_RMS_DEFAULT_QUEUE   : the name of the RMS queue,
 #                              which PoD should use if the -q parameter is not provided.
-#			       If empty or not set, PoD will use "proof" as a queue name.
 # 
 #
 # PoD environment variables exported to the workers:
@@ -67,7 +66,7 @@ RMS=""
 if [ -n "$POD_RMS_DEFAULT_QUEUE" ]; then
    QUEUE="$POD_RMS_DEFAULT_QUEUE"
 else
-   QUEUE="proof"
+   QUEUE=""
 fi
 
 NUM_WRK=10
@@ -124,5 +123,7 @@ if (( $? != 0 )); then
    echo "Check errors by executing: pod-prep-worker"
 fi
 # execute the selected plug-in
-$PLUG_CMD -q $QUEUE -n $NUM_WRK
-
+if [ -n "$QUEUE" ]; then
+   QUEUE="-q $QUEUE"
+fi   
+$PLUG_CMD -n $NUM_WRK

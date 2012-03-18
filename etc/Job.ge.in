@@ -23,6 +23,24 @@ WRK_SCRIPT=$(basename "$POD_WRK_SCRIPT")
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$JOB_ID
 ###############################################################
 #
+#    Function: Untar payload content
+#
+###############################################################
+payload_uuencode=1
+payload_binary=0
+function untar_payload()
+{
+	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+	payload_start=$((match + 1))
+	if [[ $payload_binary -ne 0 ]]; then
+		tail -n +$payload_start $0 | tar -xzvf -
+	fi
+	if [[ $payload_uuencode -ne 0 ]]; then
+		tail -n +$payload_start $0 | uudecode | tar -xzvf -
+	fi
+}
+###############################################################
+#
 #    Function: Transfer files from WN to UI.                  
 #
 ###############################################################
@@ -59,11 +77,13 @@ export PATH=$WRK_DIR:$PATH
 export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
 ################################################################
 #
-# POD WORKER
+# Untar payload
 #
-# Here you can specify your own version of ROOT
-# or you can delete -r <ROOTSYS> parameter and 
-# PoDWorker will use its own settings
+###############################################################
+untar_payload
+################################################################
+#
+# POD WORKER
 #
 ###############################################################
 $WRK_DIR/$WRK_SCRIPT

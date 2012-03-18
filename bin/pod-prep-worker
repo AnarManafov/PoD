@@ -144,6 +144,11 @@ done
 #=============================================================================
 need_update()
 {
+   # TODO: rewrite this algorithms using checksums
+   ##
+     return 1
+   ##
+   ##
    if [ -n "$REPACK_WRK_PKG" ]; then
       echo "$TOOL_NAME: it was requested to repack worker package"
       return 1
@@ -223,7 +228,6 @@ done
 gzip -9 $ARC_NAME
 # remove the .gz suffix
 mv "$ARC_NAME.gz" $ARC_NAME
-echo "PoD worker package: "$ARC_NAME
 
 # add payload to the wrk script
 $PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$POD_LOCATION/etc/PoDWorker.sh"
@@ -235,6 +239,8 @@ fi
 # copy worker script to the sandbox directory
 cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }
 chmod u+wx "$WRK_SCRIPT"
+
+echo "PoD worker package: "$WRK_SCRIPT
 
 # remove artifacts
 rm -f $ARC_NAME $ARC_NAME.tar $ARC_NAME.tgz

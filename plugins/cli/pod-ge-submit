@@ -21,7 +21,7 @@ PRIVATE_TOOLS="$POD_LOCATION/bin/private"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
-QUEUE="proof"
+QUEUE=""
 NUM_WRK=10
 while getopts "q:n:h" opt; do
    case $opt in
@@ -72,11 +72,25 @@ fi
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
 eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
 INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.ge.in"
-JOB_SCRIPT="$(WRK_DIR)/Job.ge"
-$PRIVATE_TOOLS/pod-addpayload --binary $WRK_SCRIPT $INPUT_JOB_SCRIPT $JOB_SCRIPT
+JOB_SCRIPT="$WRK_DIR/Job.ge"
+WRK_SCRIPT_NAME=$(basename $WRK_SCRIPT)
+TMP_WRK_SCRIPT=$WRK_DIR/$WRK_SCRIPT_NAME
+pushd $(pwd) &> /dev/null
+cp $WRK_SCRIPT $TMP_WRK_SCRIPT
+cd $WRK_DIR
+tar -czvf $WRK_SCRIPT_NAME.tgz $WRK_SCRIPT_NAME
+pop 
+$PRIVATE_TOOLS/pod-addpayload --binary $TMP_WRK_SCRIPT.tgz $INPUT_JOB_SCRIPT $JOB_SCRIPT
+if (( 0 != $? )); then
+   echo "error: failed to add payload to the job script."
+   exit 1
+fi
 
 # submit
-jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $JOB_SCRIPT)
+if [ -n "$QUEUE" ]; then
+   QUEUE="-q $QUEUE"
+fi
+jobid=$(qsub -b yes -j yes -V -N $job_name -terse $ge_job_array_param $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $JOB_SCRIPT)
 # we need to create a logs output dir
 stat=$?
 # extract a job id only, without an array indexes
