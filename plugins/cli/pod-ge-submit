@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-11-10
 #
-#        Copyright (c) 2010 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -17,6 +17,7 @@
 # POD_UI_LOCATION
 #
 #
+PRIVATE_TOOLS="$POD_LOCATION/bin/private"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
@@ -66,7 +67,16 @@ job_name="PoD_GE_Job"
 if [ -r $GE_OPTION_FILE ]; then
    GE_USE_OPTION_FILE=" -@ $GE_OPTION_FILE"
 fi
-jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $POD_LOCATION/etc/Job.ge)
+
+# add PoD worker script as a payload to the job script
+eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
+INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.ge.in"
+JOB_SCRIPT="$(WRK_DIR)/Job.ge"
+$PRIVATE_TOOLS/pod-addpayload --binary $WRK_SCRIPT $INPUT_JOB_SCRIPT $JOB_SCRIPT
+
+# submit
+jobid=$(qsub -j yes -V -N $job_name -terse $ge_job_array_param -q $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $JOB_SCRIPT)
 # we need to create a logs output dir
 stat=$?
 # extract a job id only, without an array indexes

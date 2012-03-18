@@ -11,57 +11,16 @@
 ##                           2010-10-03
 ##        last changed by:   $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2010 GSI, Scientific Computing group. All rights reserved.
+##         Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 ##*************************************************************************/
 
 ######################################################
 # The following variables are expected to set:
-# $POD_WRK_PKG
 # $POD_WRK_SCRIPT
 # $POD_UI_LOCATION
 # $POD_UI_LOG_LOCATION
 WRK_SCRIPT=$(basename "$POD_WRK_SCRIPT")
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$JOB_ID
-###############################################################
-#
-#    Function: Transfer files from UI to WN, using shared home
-#    This function checks, whether SH FS is present.                
-#
-###############################################################
-try_shared_home()
-{
-   cp ${POD_WRK_PKG} ${WRK_DIR}/
-   ret1=$?
-   cp ${POD_WRK_SCRIPT} ${WRK_DIR}/
-   ret2=$?
-   
-   if (( $ret1 == 0 && $ret2 == 0 )); then
-      export POD_SHARED_HOME="YES"
-      echo "PoD has detected a shared home file system."
-   fi
-}
-###############################################################
-#
-#    Function: Transfer files from UI to WN.                  
-#
-###############################################################
-stagein()
-{
- echo ""
- echo "Transferring files from the server to the compute node"
- echo "Writing files in node's directory  ${WRK_DIR}"
- 
- try_shared_home
-
- if [ -z "$POD_SHARED_HOME" ]; then
-    echo "Error: can't detect a shared home file system." 
-    echo "This version of SGE/OGE plug-in supports only shared home file systems."
-    exit 1
- fi
-
- echo "Files in node work directory are as follows:"
- ls -l
-}
 ###############################################################
 #
 #    Function: Transfer files from WN to UI.                  
@@ -98,12 +57,6 @@ cd $WRK_DIR || exit 1
 # we need to define lib path to ensure that we use proper libraries
 export PATH=$WRK_DIR:$PATH 
 export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
-###############################################################
-#
-# input files.
-#
-###############################################################
-stagein
 ################################################################
 #
 # POD WORKER
@@ -130,3 +83,4 @@ if [[ -d $WRK_DIR ]]; then
 fi
 
 exit 0
+

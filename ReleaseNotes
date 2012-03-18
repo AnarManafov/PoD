@@ -2,6 +2,8 @@
 
 ## 3.12 (is not yet released)
 pod: User's Manual has been updated.
+pod: Worker packages are now added as a payload to the worker script.
+pod-ssh: fixed: re-pack worker package only when submitting.
 
 ## v3.10 (2012-02-28) 
 pod: fixed: PoD WNs can now properly detect and react when xproofd is going down or has crashed on WNs.

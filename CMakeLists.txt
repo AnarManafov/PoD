@@ -286,7 +286,7 @@ install(PROGRAMS ${CMAKE_BINARY_DIR}/etc/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor.option DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh.in DESTINATION etc)

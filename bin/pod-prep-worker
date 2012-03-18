@@ -226,7 +226,7 @@ mv "$ARC_NAME.gz" $ARC_NAME
 echo "PoD worker package: "$ARC_NAME
 
 # add payload to the wrk script
-$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME
+$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$POD_LOCATION/etc/PoDWorker.sh"
 if (( 0 != $? )); then
    echo "$TOOL_NAME: error: failed to add payload to the wrk script."
    return 1 
