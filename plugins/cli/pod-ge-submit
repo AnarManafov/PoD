@@ -86,11 +86,13 @@ if (( 0 != $? )); then
    exit 1
 fi
 
+chmod +x $JOB_SCRIPT
+
 # submit
 if [ -n "$QUEUE" ]; then
    QUEUE="-q $QUEUE"
 fi
-jobid=$(qsub -b yes -j yes -V -N $job_name -terse $ge_job_array_param $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $JOB_SCRIPT)
+jobid=$(qsub -wd /tmp/ -b yes -j yes -V -N $job_name -terse $ge_job_array_param $QUEUE $OUTPUT_LOG $GE_USE_OPTION_FILE $JOB_SCRIPT)
 # we need to create a logs output dir
 stat=$?
 # extract a job id only, without an array indexes
