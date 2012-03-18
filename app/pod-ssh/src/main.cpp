@@ -307,7 +307,7 @@ int main( int argc, char * argv[] )
 
         // Need to repack worker package
         // in order to insert a user defined shell script
-        if( !inlineShellScripCmds.empty() )
+        if( cmd_submit == command && !inlineShellScripCmds.empty() )
         {
             slog.debug_msg( "An inline shell script is found. Inserting it into wrk. package\n" );
             string scriptFileName( PoD::showWrkPackageDir() );
