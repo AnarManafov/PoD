@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-01-28
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 # Usage: pod-prep-worker 
@@ -54,7 +54,9 @@ done
 #=============================================================================
 # ***** vars  *****
 #=============================================================================
-TOOL_NAME="pod-prep-worker"
+TOOL_NAME="$0"
+
+PRIVATE_TOOLS="$POD_LOCATION/bin/private"
 
 echo "preparing PoD worker package..."
 POD_CFG=$(pod-user-defaults -p)
@@ -81,33 +83,40 @@ COMPONENTS_ETC=( "$XPD_CFG"
                  "$SERVER_INFO_FILE" )
 
 COMPONENTS=( "${COMPONENTS_ETC[@]}" )
+#=============================================================================
+# ***** clean_up *****
+#=============================================================================
+clean_up()
+{
+  rm -f $ARC_NAME $ARC_NAME.tar $ARC_NAME.tgz
+  rm -f $WRK_SCRIPT
+}
 
-#------------- re-pack inline BASH script
-if [ -n "$REPACK_WRK_PKG" ]; then
-   echo "$TOOL_NAME: it was requested to repack worker package"
-   WRK_PKG_DIR=$(dirname $ARC_NAME)
+##------------- re-pack inline BASH script
+#if [ -n "$REPACK_WRK_PKG" ]; then
+#   echo "$TOOL_NAME: it was requested to repack worker package"
+#   WRK_PKG_DIR=$(dirname $ARC_NAME)
    
-   pushd $(pwd) &> /dev/null
-   cd $WRK_PKG_DIR
-   gzip -d -c pod-worker > pod-worker.tar
-   if (( $? != 0 )) ; then
-      echo "$TOOL_NAME: error: failed to repack worker package. The package is broken. Please restart pod-server."
-      exit 1
-   fi
-   tar -uf pod-worker.tar user_worker_env.sh
-   if (( $? != 0 )) ; then
-      echo "$TOOL_NAME: error: failed to update worker package."
-      exit 1
-   fi
-   gzip -9 -c pod-worker.tar > pod-worker
-   popd
-   exit 0
-fi
+#   pushd $(pwd) &> /dev/null
+#   cd $WRK_PKG_DIR
+#   gzip -d -c pod-worker > pod-worker.tar
+#   if (( $? != 0 )) ; then
+#      echo "$TOOL_NAME: error: failed to repack worker package. The package is broken. Please restart pod-server."
+#      exit 1
+#   fi
+#   tar -uf pod-worker.tar user_worker_env.sh
+#   if (( $? != 0 )) ; then
+#      echo "$TOOL_NAME: error: failed to update worker package."
+#      exit 1
+#   fi
+#   gzip -9 -c pod-worker.tar > pod-worker
+#   popd
+#   exit 0
+#fi
 #-------------------------------------------------
 
 # clean before create
-# delete wrk pkg
-rm -f pod-worker
+clean_up
 
 # add user's script if present
 if [ -r "$USER_SCRIPT" ]; then
@@ -135,6 +144,11 @@ done
 #=============================================================================
 need_update()
 {
+   if [ -n "$REPACK_WRK_PKG" ]; then
+      echo "$TOOL_NAME: it was requested to repack worker package"
+      return 1
+   fi
+
    local _os=$(uname -s 2>&1)
    local pkg_time=0
    if [ -f $ARC_NAME ]; then
@@ -176,7 +190,7 @@ if (( 0 == $? )); then
    echo "PoD worker package: "$ARC_NAME
    exit 0
 else
-   rm -rf $ARC_NAME
+   clean_up
 fi
 
 # create an empty archive first
@@ -199,7 +213,7 @@ do
       fi
    else
       echo "Error: missing component: $i" >&2
-      rm -rf $ARC_NAME
+      clean_up
       exit 1
    fi
 done
@@ -211,9 +225,19 @@ gzip -9 $ARC_NAME
 mv "$ARC_NAME.gz" $ARC_NAME
 echo "PoD worker package: "$ARC_NAME
 
+# add payload to the wrk script
+$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME
+if (( 0 != $? )); then
+   echo "$TOOL_NAME: error: failed to add payload to the wrk script."
+   return 1 
+fi
+
 # copy worker script to the sandbox directory
 cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }
-chmod u+w "$WRK_SCRIPT"
+chmod u+wx "$WRK_SCRIPT"
+
+# remove artifacts
+rm -f $ARC_NAME $ARC_NAME.tar $ARC_NAME.tgz
 
 exit 0
 

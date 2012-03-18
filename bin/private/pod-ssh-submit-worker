@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-06-10
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 #=============================================================================
@@ -82,7 +82,6 @@ fi
 #=============================================================================
 TOOL_NAME="pod-ssh-submit-worker"
 eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
-eval WRK_P=$(pod-user-defaults --wrkpkg)
 eval WRK_S_L=$(pod-user-defaults --wrkscript)
 WRK_S_R="$(basename "$WRK_S_L") $NWORKERS"
 
@@ -127,14 +126,14 @@ logMsg()
 logMsg "$TOOL_NAME is started for $SSH_CON_STR (dir: $RDIR, nworkers: $NWORKERS, sshopt: $SSHOPT)"
 
 # check that the worker package is ready
-if [ ! -r $WRK_P ]; then
-   logMsg "$TOOL_NAME error: can't read a PoD worker package \"$WRK_P\""
+if [ ! -r $WRK_S_L ]; then
+   logMsg "$TOOL_NAME error: can't find PoD worker package \"$WRK_S_L\""
    exit 1
 fi
 
 # send a worker package and worker's script
 # use rsync since it can automatically create a remote working dir
-rsync -aq -e "ssh $SSH_OPT_INT $SSHOPT" $WRK_P $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
+rsync -aq -e "ssh $SSH_OPT_INT $SSHOPT" $WRK_S_L $SSH_CON_STR:$RDIR/ 2>&1 | logMsgPipe
 if (( ${PIPESTATUS[0]} != 0 )); then
     logMsg "$TOOL_NAME error: failed to send worker's package"
     exit 1

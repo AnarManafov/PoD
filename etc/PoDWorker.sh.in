@@ -11,7 +11,7 @@
 #                           2007-05-15
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2007-2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2007-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 # Arguments:
@@ -291,26 +291,19 @@ get_default_ROOT()
 # ***** untar_payload *****
 #
 #=============================================================================
-#uuencode=1
-#binary=0
-#
-#function untar_payload()
-#{
-#	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
-#	payload_start=$((match + 1))
-#	if [[ $binary -ne 0 ]]; then
-#		tail -n +$payload_start $0 | tar -tzvf -
-#	fi
-#	if [[ $uuencode -ne 0 ]]; then
-#		tail -n +$payload_start $0 | uudecode | tar -tzvf -
-#	fi
-#}
-#
-#read -p "Install files? " ans
-#if [[ "${ans:0:1}"  ||  "${ans:0:1}" ]]; then
-#	untar_payload
-#	# Do remainder of install steps.
-#fi
+payload_uuencode=1
+payload_binary=0
+function untar_payload()
+{
+	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+	payload_start=$((match + 1))
+	if [[ $payload_binary -ne 0 ]]; then
+		tail -n +$payload_start $0 | tar -xzvf -
+	fi
+	if [[ $payload_uuencode -ne 0 ]]; then
+		tail -n +$payload_start $0 | uudecode | tar -xzvf -
+	fi
+}
 # ************************************************************************
 #
 # 				M A I N
@@ -334,9 +327,11 @@ env
 logMsg "+++ PoD Worker START +++"
 logMsg "Current working directory: $WD"
 
-# extract PoD worker package
-logMsg "Content of the worker package:"
-tar -xzvf pod-worker
+# **********************************************************************
+# *** untar payload
+# **********************************************************************
+logMsg "Untar payload..."
+untar_payload
 
 #Exporting PoD location
 export POD_LOCATION=$WD
@@ -356,7 +351,7 @@ fi
 check_arch
 
 # **********************************************************************
-# ***** try to use pre-compiled bins from PoD Server *****
+# *** try to use pre-compiled bins from PoD Server *****
 logMsg "PoD worker runs on $OS-$wn_host_arch"
 # check first whether we can use binaries from the PoD server directly.
 # Using these bins is more preferable, than using generic bins from the worker package.

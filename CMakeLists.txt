@@ -178,6 +178,7 @@ SET(POD_BIN_PRIVATE_FILES
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-status-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-exec-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-remote-srv-info
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-addpayload
     )
 #
 # "plugins" files
@@ -288,7 +289,7 @@ install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor.option DESTINATION etc)
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh.in DESTINATION etc)
 # install bin files
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
 install(PROGRAMS ${POD_BIN_PRIVATE_FILES} DESTINATION bin/private)

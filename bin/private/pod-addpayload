@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-addpayload
+# * @brief
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        version number:    $LastChangedRevision$
+#        created by:        Anar Manafov
+#                           2012-03-01
+#        last changed by:   $LastChangedBy$ $LastChangedDate$
+#
+#        Copyright (c) 2012 GSI, Scientific Computing division. All rights reserved.
+#*************************************************************************/
+# Check for payload format option (default is uuencode).
+payload_uuencode=1
+if [[ "$1" == '--binary' ]]; then
+	payload_binary=1
+	payload_uuencode=0
+	shift
+fi
+if [[ "$1" == '--uuencode' ]]; then
+	payload_binary=0
+	payload_uuencode=1
+	shift
+fi
+
+if [[ ! "$1" ]]; then
+	echo "Usage: $0 [--binary | --uuencode] PAYLOAD_FILE"
+	exit 1
+fi
+
+WRK_SCR=${POD_LOCATION}/etc/PoDWorker.sh
+WRK_SCR_IN=$WRK_SCR.in
+
+if [ ! -f "$WRK_SCR_IN" ]; then
+	echo "Can't find WRK script: $WRK_SCR_IN"
+	exit 1
+fi
+
+if [[ $payload_binary -ne 0 ]]; then
+	# Append binary data.
+	sed \
+		-e 's/payload_uuencode=./payload_uuencode=0/' \
+		-e 's/payload_binary=./payload_binary=1/' \
+			 $WRK_SCR_IN >$WRK_SCR
+	echo "PAYLOAD:" >> $WRK_SCR
+
+	cat $1 >>$WRK_SCR
+fi
+
+if [[ $uuencode -ne 0 ]]; then
+	# Append uuencoded data.
+	sed \
+		-e 's/payload_uuencode=./payload_uuencode=1/' \
+		-e 's/payload_binary=./payload_binary=0/' \
+			 $WRK_SCR_IN >$WRK_SCR
+	echo "PAYLOAD:" >> $WRK_SCR
+
+	cat $1 | uuencode - >>$WRK_SCR
+fi
+
