@@ -62,7 +62,7 @@ local_GLITE_JDL="$WORK_DIR/glite.jdl"
 cp -f "$POD_LOCATION/etc/gLite.jdl" $local_GLITE_JDL
 
 echo "Parameters=$NUM_WRK;" >> $local_GLITE_JDL
-echo "InputSandbox = { \"$POD_WRK_PKG\",\"$POD_WRK_SCRIPT\" };" >> $local_GLITE_JDL
+echo "InputSandbox = { \"$POD_WRK_SCRIPT\" };" >> $local_GLITE_JDL
 echo "Requirements=(other.GlueCEUniqueID==\"$QUEUE\");" >> $local_GLITE_JDL 
 
 
