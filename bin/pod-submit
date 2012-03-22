@@ -126,4 +126,5 @@ fi
 if [ -n "$QUEUE" ]; then
    QUEUE="-q $QUEUE"
 fi   
-$PLUG_CMD -n $NUM_WRK
+$PLUG_CMD $QUEUE -n $NUM_WRK
+
