@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-11-10
 #
-#        Copyright (c) 2010 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -52,5 +52,26 @@ OUTPUT=""
 if [ $EMAIL_JOB_OUTPUT -eq 0 ]; then
    OUTPUT=" -o $POD_UI_LOG_LOCATION/%J/std_%I.out -e $POD_UI_LOG_LOCATION/%J/std_%I.err"
 fi
-bsub -q $QUEUE -J $JOB_NAME $OUTPUT $POD_LOCATION/etc/Job.lsf
+
+# add PoD worker script as a payload to the job script
+eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
+INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.lsf.in"
+JOB_SCRIPT="$WRK_DIR/Job.ge"
+WRK_SCRIPT_NAME=$(basename $WRK_SCRIPT)
+TMP_WRK_SCRIPT=$WRK_DIR/$WRK_SCRIPT_NAME
+pushd $(pwd) &> /dev/null
+cp $WRK_SCRIPT $TMP_WRK_SCRIPT
+cd $WRK_DIR
+tar -czvf $WRK_SCRIPT_NAME.tgz $WRK_SCRIPT_NAME
+pop 
+$PRIVATE_TOOLS/pod-addpayload --binary $TMP_WRK_SCRIPT.tgz $INPUT_JOB_SCRIPT $JOB_SCRIPT
+if (( 0 != $? )); then
+   echo "error: failed to add payload to the job script."
+   exit 1
+fi
+
+chmod +x $JOB_SCRIPT
+
+bsub -q $QUEUE -J $JOB_NAME $OUTPUT $JOB_SCRIPT
 

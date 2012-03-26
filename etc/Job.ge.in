@@ -14,6 +14,10 @@
 ##         Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 ##*************************************************************************/
 
+##
+## Important: To retrieve log file a shared file system must be available of WNs.
+##
+
 ######################################################
 # The following variables are expected to set:
 # $POD_WRK_SCRIPT
@@ -99,7 +103,7 @@ stageout
 #
 ###############################################################
 if [[ -d $WRK_DIR ]]; then
-	rm -rf $WRK_DIR
+   rm -rf $WRK_DIR
 fi
 
 exit 0
