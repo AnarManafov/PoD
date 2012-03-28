@@ -58,7 +58,7 @@ fi
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
 eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
 INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.lsf.in"
-JOB_SCRIPT="$WRK_DIR/Job.ge"
+JOB_SCRIPT="$WRK_DIR/Job.lsf"
 WRK_SCRIPT_NAME=$(basename $WRK_SCRIPT)
 TMP_WRK_SCRIPT=$WRK_DIR/$WRK_SCRIPT_NAME
 pushd $(pwd) &> /dev/null
