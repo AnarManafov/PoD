@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2011-08-01
 #
-#        Copyright (c) 2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2011-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 #=============================================================================
@@ -18,9 +18,9 @@
 usage() {
     cat <<EOF
 PoD command line utility, which is used to execute a local shell script on remote PoD WNs. It's used by pod-ssh utility.
-   Copyright (C) 2011 GSI, Scientific Computing group.
+   Copyright (C) 2011-2012 GSI, Scientific Computing division.
 
-Usage: pod-ssh-exec-worker [OPTION]
+Usage: $(basename $0) [OPTION]
      -i id			ID of the worker.
      -l ssh login@host.fqdn 	SSH connection string.
      -w dir      		Remote working directory.
@@ -85,7 +85,7 @@ fi
 #=============================================================================
 # ***** VARS *****
 #=============================================================================
-TOOL_NAME="pod-ssh-exec-worker"
+TOOL_NAME="$(basename $0)"
 eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
 
 SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"

@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-06-10
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 #=============================================================================
@@ -18,9 +18,9 @@
 usage() {
     cat <<EOF
 PoD command line utility, which is used to clean a PoD worker via ssh. It's used by pod-ssh utility.
-   Copyright (C) 2010 GSI, Scientific Computing group.
+   Copyright (C) 2010-2012 GSI, Scientific Computing division.
 
-Usage: pod-ssh-clean-worker [OPTION]
+Usage: $(basename $0) [OPTION]
      -i id			ID of the worker.
      -l ssh login@host.fqdn 	SSH connection string.
      -w dir      		Remote working directory.
@@ -89,7 +89,7 @@ fi
 #=============================================================================
 # ***** VARS *****
 #=============================================================================
-TOOL_NAME="pod-ssh-clean-worker"
+TOOL_NAME="$(basename $0)"
 WRK_PID=PoDWorker.pid
 
 SSH_OPT_INT="-o BatchMode=yes -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o FallBackToRsh=no -o PasswordAuthentication=no"

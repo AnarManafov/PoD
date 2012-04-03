@@ -18,9 +18,9 @@
 usage() {
     cat <<EOF
 PoD command line utility, which is used to submit a PoD worker via ssh. It's used by pod-ssh utility.
-   Copyright (C) 2010 GSI, Scientific Computing group.
+   Copyright (C) 2010-2012 GSI, Scientific Computing division.
 
-Usage: pod-ssh-submit-worker [OPTION]
+Usage: $(basename $0) [OPTION]
      -i id			ID of the worker.
      -l ssh login@host.fqdn 	SSH connection string.
      -w dir      		Remote working directory.
@@ -80,7 +80,7 @@ fi
 #=============================================================================
 # ***** VARS *****
 #=============================================================================
-TOOL_NAME="pod-ssh-submit-worker"
+TOOL_NAME="$(basename $0)"
 eval WORK_DIR=$(pod-user-defaults --key server.work_dir)
 eval WRK_S_L=$(pod-user-defaults --wrkscript)
 WRK_S_R="$(basename "$WRK_S_L") $NWORKERS"

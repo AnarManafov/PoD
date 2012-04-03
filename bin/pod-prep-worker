@@ -23,9 +23,9 @@
 usage() {
     cat <<EOF
 PoD command line utility,  which prepares a worker package - all elements of PoD which need to be uploaded to a worker
-   Copyright (C) 2010-2011 GSI, Scientific Computing group.
+   Copyright (C) 2010-2012 GSI, Scientific Computing division.
 
-Usage: pod-ssh-submit-worker [OPTION]
+Usage: $(basename $0) [OPTION]
      -i 			Re-pack user_worker_env.sh (for internal use only).
      -h          		Show summary of options.
 
@@ -54,7 +54,7 @@ done
 #=============================================================================
 # ***** vars  *****
 #=============================================================================
-TOOL_NAME="$0"
+TOOL_NAME="$(basename $0)"
 
 PRIVATE_TOOLS="$POD_LOCATION/bin/private"
 

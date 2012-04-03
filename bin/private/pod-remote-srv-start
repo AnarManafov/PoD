@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #/************************************************************************/
 #/**
-# * @file pod-srv-info
+# * @file pod-remote-srv-start
 # * @brief 
 # * @author Anar Manafov A.Manafov@gsi.de
 # *//*
@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2011-03-24
 #
-#        Copyright (c) 2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2011-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 #
 #=============================================================================
@@ -18,9 +18,9 @@
 usage() {
     cat <<EOF
 A private PoD command line utility, which is used to start a remote PoD server.
-   Copyright (C) 2011 GSI, Scientific Computing group.
+   Copyright (C) 2011-2012 GSI, Scientific Computing division.
 
-Usage: pod-srv-info [OPTION]
+Usage: $(basename $0) [OPTION]
      -l login@host.fqdn 	SSH connection string.
      -o SSH_Opt			Additinal SSH parameters.
      -p path			The PoD location path on the given remote server.
