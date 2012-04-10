@@ -123,8 +123,11 @@ clean_up()
 # clean before create
 clean_up
 
-# add user's script if present
-if [ -r "$USER_SCRIPT" ]; then
+# prefer inline shell script over user environment script
+if [ -r "$INLINEBASH_SCRIPT" ]; then # inline bash script (SSH plug-in)
+    echo "inline shell script is found and will be added to the package..."
+    COMPONENTS=( "${COMPONENTS[@]}" "$INLINEBASH_SCRIPT" )
+elif [ -r "$USER_SCRIPT" ]; then # add user's script if present
    echo "select user defined environment script to be added to worker package..."
    COMPONENTS=( "${COMPONENTS[@]}" "$USER_SCRIPT" )
 fi
@@ -135,12 +138,6 @@ for i in ${WN_BINS[@]}
 do
    COMPONENTS=( "${COMPONENTS[@]}" "$i" )
 done
-
-# inline bash script (SSH plug-in)
-if [ -r "$INLINEBASH_SCRIPT" ]; then
-    echo "inline shell script is found and will be added to the package..."
-    COMPONENTS=( "${COMPONENTS[@]}" "$INLINEBASH_SCRIPT" )
-fi
 
 # check that all components are exists
 for i in "${COMPONENTS[@]}"
