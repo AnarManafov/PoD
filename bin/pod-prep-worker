@@ -69,6 +69,7 @@ eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
 eval ARC_NAME=$(pod-user-defaults --wrkpkg)
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
 eval USER_SCRIPT=$(pod-user-defaults --userenvscript)
+eval INLINEBASH_SCRIPT="$(dirname $(pod-user-defaults --wrkscript))/$(basename $(pod-user-defaults --userenvscript))"
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 SERVER_INFO_FILE="$WRK_DIR/etc/server_info.cfg"
 XPD_CFG="$WRK_DIR/etc/xpd.cf"
@@ -90,6 +91,10 @@ clean_up()
 {
   rm -f $ARC_NAME $ARC_NAME.tar $ARC_NAME.tgz
   rm -f $WRK_SCRIPT
+  # don't remove inline script if internal re-pack is called
+  if [ -z "$REPACK_WRK_PKG" ]; then
+     rm -f $INLINEBASH_SCRIPT
+  fi
 }
 
 ##------------- re-pack inline BASH script
@@ -130,6 +135,12 @@ for i in ${WN_BINS[@]}
 do
    COMPONENTS=( "${COMPONENTS[@]}" "$i" )
 done
+
+# inline bash script (SSH plug-in)
+if [ -r "$INLINEBASH_SCRIPT" ]; then
+    echo "inline shell script is found and will be added to the package..."
+    COMPONENTS=( "${COMPONENTS[@]}" "$INLINEBASH_SCRIPT" )
+fi
 
 # check that all components are exists
 for i in "${COMPONENTS[@]}"
@@ -209,6 +220,7 @@ do
       RET_VAL=$?
       if [ "X$RET_VAL" = "X0" ]; then
          # copy the file to cache
+         # TODO: revise the algorithm of the cache using md5
          cp $i $CACHE_DIR/
          chmod u+w "$CACHE_DIR/$(basename $i)"
 	 continue

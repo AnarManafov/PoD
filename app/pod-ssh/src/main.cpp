@@ -309,7 +309,7 @@ int main( int argc, char * argv[] )
         // in order to insert a user defined shell script
         if( cmd_submit == command && !inlineShellScripCmds.empty() )
         {
-            slog.debug_msg( "An inline shell script is found. Inserting it into wrk. package\n" );
+            slog.debug_msg( "pod-ssh config contains an inline shell script. It will be injected it into wrk. package\n" );
             string scriptFileName( PoD::showWrkPackageDir() );
             scriptFileName += "user_worker_env.sh";
             smart_path( &scriptFileName );

@@ -38,3 +38,7 @@ comment:
 
 location: <server.work_dir>/pod-agent.pid
 comment: a pid file of pod-agent
+
+
+## PoD SSH - inline bash script
+if needed, the script is created in <server.shared_fs>/wrk/ and named the same as $(pod-user-defaults --userenvscript)
