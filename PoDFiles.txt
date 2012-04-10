@@ -1,4 +1,13 @@
 
+## Job Scripts of plug-ins
+location: <server.shared_fs>/wrk/<job script>
+comment: PoDWorker.sh is automatically attached to RMS's job script as a payload before any PoD job is submitted
+
+## PoD Worker Script and worker package
+location: <server.shared_fs>/wrk/(PoDWorker.sh, pod-worker)
+comment: pod-worker is automatically attached to PoDworker.sh as a payload before any PoD job is submitted
+
+
 ## server_info.cfg
 
 location: <server.work_dir>/etc/server_info.cfg

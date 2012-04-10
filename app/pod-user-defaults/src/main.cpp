@@ -95,16 +95,6 @@ bool parseCmdLine( int _Argc, char *_Argv[],
         cout << val << endl;
         return false;
     }
-    if( vm.count( "wrkpkg" ) )
-    {
-        cout << showWrkPackage() << endl;
-        return false;
-    }
-    if( vm.count( "wrkscript" ) )
-    {
-        cout << showWrkScript() << endl;
-        return false;
-    }
 
     CPoDUserDefaults user_defaults;
 
@@ -172,6 +162,17 @@ bool parseCmdLine( int _Argc, char *_Argv[],
                 << config_file << "\" is illformed: "
                 << _e.what();
         throw runtime_error( ss.str() );
+    }
+
+    if( vm.count( "wrkpkg" ) )
+    {
+        cout << showWrkPackage( &user_defaults ) << endl;
+        return false;
+    }
+    if( vm.count( "wrkscript" ) )
+    {
+        cout << showWrkScript( &user_defaults ) << endl;
+        return false;
     }
 
     if( vm.count( "key" ) )
