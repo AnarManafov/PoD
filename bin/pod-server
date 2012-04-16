@@ -295,7 +295,7 @@ _start()
    ####
    echo "starting PoD agent..."
    $POD_LOCATION/bin/pod-agent -d -m server -c "$POD_CFG" --serverinfo "$SERVERINFO_FILE" --start
-      if (( $? != 0 )); then
+   if (( $? != 0 )); then
       echo "Error: can't start pod-agent."
       return 1
    fi
@@ -304,16 +304,14 @@ _start()
    # We need to be sure, that agent is started, since it creates a server info file,
    # which is than used by pod-prep-worker
    cnt=0
-   while true; do
-      if [ -f "$SERVERINFO_FILE" ]; then
-         break;
-      fi
+   while [ ! -f "$SERVERINFO_FILE" ]; do
       cnt=$(expr $cnt + 1)
       if [ $cnt -gt $WAIT_TIME ]; then
          echo "WARNING: Can't detect whether pod-agent has started or not..."
          break;
       fi
-     # sleep 1
+      # sleep to give pod-agent time to create the file
+      sleep 1
    done
 
    # Prepare the worker package
