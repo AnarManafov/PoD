@@ -657,7 +657,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
             <para>
                 The <command>pod-ssh</command> command remembers last entered config-file pathname and next time you want to use <command>pod-ssh</command> with
                 the same config file, you can just call <command>pod-ssh</command> without providing the <option>--config</option> option.
-                The command will always use the latest given setting.
+                The command will always use the latest given setting. In order to use feature <ulink url="http://www.boost.org/">BOOST</ulink> 1.41.0 (or higher) is required.
             </para>
             <sect2 id="pod-ssh_ENV_WNS"><title>Environment on Worker Nodes</title>
                 <para>
@@ -797,7 +797,7 @@ r2, user@lxi001.gsi.de,,/home/user/pod,16
                         <para>Request status of PoD workers listed in the configuration file.</para>
                         <para>There are could be the following values of the status:</para>
                         <itemizedlist>
-                            <listitem>RUN - PoD jobs is running,</listitem>
+                            <listitem>RUN - PoD job is running,</listitem>
                             <listitem>DONE - PoD job is done, means PoD worker is not running on that worker node.
                                 It could be also the case that worker failed to start,</listitem>
                             <listitem>CLEAN - PoD worker has been cleaned,</listitem>
