@@ -70,7 +70,7 @@ fi
 
 # add PoD worker script as a payload to the job script
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
-eval WRK_DIR=$(pod-user-defaults --key server.work_dir)
+eval WRK_DIR=$(pod-user-defaults --wn-sandbox-dir)
 INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.ge.in"
 JOB_SCRIPT="$WRK_DIR/Job.ge"
 WRK_SCRIPT_NAME=$(basename $WRK_SCRIPT)

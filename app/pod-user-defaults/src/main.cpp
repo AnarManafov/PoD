@@ -35,7 +35,7 @@ void printVersion()
 {
     cout
             << PROJECT_NAME << " v" << PROJECT_VERSION_STRING << "\n"
-            << "PoD configuration" << " v." << USER_DEFAULTS_CFG_VERSION  << "\n"
+            << "PoD configuration" << " v" << USER_DEFAULTS_CFG_VERSION  << "\n"
             << "Report bugs/comments to A.Manafov@gsi.de" << endl;
 }
 
@@ -56,9 +56,10 @@ bool parseCmdLine( int _Argc, char *_Argv[],
     ( "key", bpo::value<string>(), "Get a value for the given key" )
     ( "default,d", "Generate a default PoD configuration file" )
     ( "force,f", "If the destination file exists, remove it and create a new file, without prompting for confirmation" )
-    ( "userenvscript", "Show the full path of user's environment script of workers (if present). The path must be evaluated before use" )
+    ( "userenvscript", "Show the full path of user's environment script for workers (if present). The path must be evaluated before use" )
     ( "wrkpkg", "Show the full path of the worker package. The path must be evaluated before use" )
     ( "wrkscript", "Show the full path of the worker script. The path must be evaluated before use" )
+    ( "wn-sandbox-dir", "Show the full path of the sandbox directory. The path must be evaluated before use" )
     ( "verbose,V", "Cause pod-user-defaults to be verbose in case of an error" )
     ;
 
@@ -174,7 +175,14 @@ bool parseCmdLine( int _Argc, char *_Argv[],
         cout << showWrkScript( &user_defaults ) << endl;
         return false;
     }
-
+    if( vm.count( "wn-sandbox-dir" ) )
+    {
+        string sandbox( user_defaults.getValueForKey( "server.sandbox_dir" ) );
+        if( sandbox.empty() )
+            sandbox = user_defaults.getValueForKey( "server.work_dir" );
+        cout << sandbox << endl;
+        return false;
+    }
     if( vm.count( "key" ) )
     {
         cout << user_defaults.getValueForKey( vm["key"].as<string>() ) << endl;
