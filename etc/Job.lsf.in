@@ -11,7 +11,7 @@
 ##                           2008-10-13
 ##        last changed by:   $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2008-2012 GSI, Scientific Computing group. All rights reserved.
+##         Copyright (c) 2008-2012 GSI, Scientific Computing division. All rights reserved.
 ##*************************************************************************/
 
 ##
@@ -94,10 +94,6 @@ untar_payload
 ################################################################
 #
 # POD WORKER
-#
-# Here you can specify your own version of ROOT
-# or you can delete -r <ROOTSYS> parameter and 
-# PoDWorker will use its own settings
 #
 ###############################################################
 $WRK_DIR/$WRK_SCRIPT

@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-11-10
 #
-#        Copyright (c) 2010-2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -17,6 +17,7 @@
 # POD_UI_LOCATION
 #
 #
+PRIVATE_TOOLS="$POD_LOCATION/bin/private"
 #=============================================================================
 # ***** MAIN  *****
 #=============================================================================
@@ -57,6 +58,27 @@ else
    OUTPUT_LOG=" -o /dev/null"
 fi
 
+# add PoD worker script as a payload to the job script
+eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+eval WRK_DIR=$(pod-user-defaults --wn-sandbox-dir)
+INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.pbs.in"
+JOB_SCRIPT="$WRK_DIR/Job.pbs"
+WRK_SCRIPT_NAME=$(basename $WRK_SCRIPT)
+TMP_WRK_SCRIPT=$WRK_DIR/$WRK_SCRIPT_NAME
+pushd $(pwd) &> /dev/null
+cp $WRK_SCRIPT $TMP_WRK_SCRIPT
+cd $WRK_DIR
+tar -czvf $WRK_SCRIPT_NAME.tgz $WRK_SCRIPT_NAME
+popd 
+$PRIVATE_TOOLS/pod-addpayload --binary $TMP_WRK_SCRIPT.tgz $INPUT_JOB_SCRIPT $JOB_SCRIPT
+if (( 0 != $? )); then
+   echo "error: failed to add payload to the job script."
+   exit 1
+fi
+
+chmod +x $JOB_SCRIPT
+
+
 # A job array parameter is different in PBS (torque) and PBS pro, it is -t and -J accordingly
 # We try to check a version of PBS to figure out, what to use
 pbs_pro=$(pbsnodes --version 2>&1 | grep -o PBSPro)
@@ -65,7 +87,7 @@ if [ -z $pbs_pro ]; then
    pbs_job_array_param="-t 1-$NUM_WRK"
 fi
 
-jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe $OUTPUT_LOG -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$POD_UI_LOG_LOCATION" $POD_LOCATION/etc/Job.pbs)
+jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe $OUTPUT_LOG -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$POD_UI_LOG_LOCATION" $JOB_SCRIPT)
 # we need to create a logs output dir
 if (( $? == 0 )); then
    echo "Job ID: $jobid"

@@ -11,12 +11,11 @@
 ##                           2010-03-12
 ##        last changed by:   $LastChangedBy$ $LastChangedDate$
 ##
-##         Copyright (c) 2010-2011 GSI, Scientific Computing group. All rights reserved.
+##         Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 ##*************************************************************************/
 
 ######################################################
 # The following variables are expected to set:
-# $POD_WRK_PKG
 # $POD_WRK_SCRIPT
 # $POD_UI_LOCATION
 # $POD_UI_LOG_LOCATION
@@ -38,7 +37,24 @@ ARRAYID=$PBS_ARRAYID
 if [ -z  $ARRAYID ]; then
    ARRAYID=$PBS_ARRAY_INDEX
 fi
-
+###############################################################
+#
+#    Function: Untar payload content
+#
+###############################################################
+payload_uuencode=1
+payload_binary=0
+function untar_payload()
+{
+	match=$(grep --text --line-number '^PAYLOAD:$' $0 | cut -d ':' -f 1)
+	payload_start=$((match + 1))
+	if [[ $payload_binary -ne 0 ]]; then
+		tail -n +$payload_start $0 | tar -xzvf -
+	fi
+	if [[ $payload_uuencode -ne 0 ]]; then
+		tail -n +$payload_start $0 | uudecode | tar -xzvf -
+	fi
+}
 ###############################################################
 #
 #    Function: Transfer files from UI to WN, using shared home
@@ -65,18 +81,9 @@ try_shared_home()
 stagein()
 {
    echo ""
-   echo "Transferring files from the server to the compute node"
    echo "Writing files in node's directory  ${WRK_DIR}"
  
    try_shared_home
-
-   if [ -z "$POD_SHARED_HOME" ]; then
-      ${SCP} ${UI_HOST}:${POD_WRK_PKG} ${WRK_DIR}/
-      ${SCP} ${UI_HOST}:${POD_WRK_SCRIPT} ${WRK_DIR}/
-   fi
-
-   echo "Files in node work directory are as follows:"
-   ls -l
 }
 ###############################################################
 #
@@ -127,11 +134,13 @@ export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
 stagein
 ################################################################
 #
-# POD WORKER
+# Untar payload
 #
-# Here you can specify your own version of ROOT
-# or you can delete -r <ROOTSYS> parameter and 
-# PoDWorker will use its own settings
+###############################################################
+untar_payload
+################################################################
+#
+# POD WORKER
 #
 ###############################################################
 $WRK_DIR/$WRK_SCRIPT

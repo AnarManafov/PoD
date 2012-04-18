@@ -283,7 +283,7 @@ install(FILES ${POD_ADD_FILES} DESTINATION .)
 install(FILES ${CMAKE_SOURCE_DIR}/etc/xpd.cf.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_BINARY_DIR}/etc/PoD_env.sh DESTINATION .)
 # special files, these needs to be executables
-install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.pbs.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor DESTINATION etc)
