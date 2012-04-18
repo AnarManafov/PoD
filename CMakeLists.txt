@@ -58,7 +58,6 @@ option(BUILD_pod_user_defaults "Build pod-user-defaults" ON)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
    set(DOC_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/documentation/api-docs)
-   
 endif(DOXYGEN_FOUND)
 #
 # Custom targets
