@@ -3,9 +3,6 @@ universe=vanilla
 # PoD worker script
 executable=$ENV(POD_WRK_SCRIPT)
 
-# PoD worker package
-transfer_input_files=$ENV(POD_WRK_PKG)
-
 # Don't send annoying email notifications
 Notification = Never
 

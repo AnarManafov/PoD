@@ -9,7 +9,7 @@
 #        created by:        Anar Manafov
 #                           2010-11-10
 #
-#        Copyright (c) 2010 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -54,7 +54,7 @@ OUTPUT_LOG=""
 #fi
 
 # create a job description files
-eval wrk_dir=$(pod-user-defaults --key server.work_dir)
+eval wrk_dir=$(pod-user-defaults --wn-sandbox-dir)
 eval options_file=$(pod-user-defaults --key condor_plugin.options_file)
 TEMPLATE="$POD_LOCATION/etc/Job.condor"
 POD_JDL="$wrk_dir/Job.condor"
@@ -69,7 +69,7 @@ fi
 echo "queue $NUM_WRK" >> $POD_JDL
 
 # submit PoD jobs
-jobid=$(condor_submit $POD_JDL | grep "submitted to cluster"| cut -d " " -f 6 | cut -d "." -f 1)
+jobid=$(condor_submit $POD_JDL | grep "submitted to cluster" | cut -d " " -f 6 | cut -d "." -f 1)
 # we need to create a logs output dir
 if (( ${PIPESTATUS[0]} == 0 )); then
    echo "Job ID: $jobid"
