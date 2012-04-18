@@ -10,7 +10,7 @@
 #        created by:        Anar Manafov and Simon Heisterkamp
 #                           2011-05-25
 #
-#        Copyright (c) 2011 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2011-2012 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************/
 # 
 # The following variables guarantied to be exported by our parent:
@@ -19,7 +19,8 @@
 #
 #
 LL_SUBMIT=llsubmit
-eval LL_JOBFILE=$POD_LOCATION/etc/Job.loadleveler
+eval WRK_DIR=$(pod-user-defaults --wn-sandbox-dir)
+eval LL_JOBFILE=$WRK_DIR/etc/Job.loadleveler
 
 t=$($LL_SUBMIT -? &>/dev/null)
 if (( $? != 0 )); then
@@ -93,7 +94,6 @@ echo "workdir=/tmp/PoDmain_\$RANDOM" >> $LL_JOBFILE
 echo "echo \"working in \$workdir\"" >> $LL_JOBFILE
 echo "mkdir -p \$workdir || exit 1" >> $LL_JOBFILE
 echo "cd \$workdir || exit 1" >> $LL_JOBFILE
-echo "cp $POD_WRK_PKG ." >> $LL_JOBFILE
 echo "$POD_WRK_SCRIPT" >> $LL_JOBFILE
 #<<<<<<<<<
 
