@@ -125,8 +125,8 @@ clean_up
 
 # prefer inline shell script over user environment script
 if [ -r "$INLINEBASH_SCRIPT" ]; then # inline bash script (SSH plug-in)
-    echo "inline shell script is found and will be added to the package..."
-    COMPONENTS=( "${COMPONENTS[@]}" "$INLINEBASH_SCRIPT" )
+   echo "inline shell script is found and will be added to the package..."
+   COMPONENTS=( "${COMPONENTS[@]}" "$INLINEBASH_SCRIPT" )
 elif [ -r "$USER_SCRIPT" ]; then # add user's script if present
    echo "select user defined environment script to be added to worker package..."
    COMPONENTS=( "${COMPONENTS[@]}" "$USER_SCRIPT" )
@@ -244,6 +244,11 @@ if (( 0 != $? )); then
    echo "$TOOL_NAME: error: failed to add payload to the wrk script."
    return 1 
 fi
+
+# update WN submit timestampt
+regexpr_wn_submit_time="s/\(export[[:space:]]*POD_WN_SUBMIT_TIMESTAMP=\)[0-9]*/\1$(date +%s)/g"
+sed -e "$regexpr_wn_submit_time" "$POD_LOCATION/etc/PoDWorker.sh" > "$POD_LOCATION/etc/PoDWorker.sh.temp"
+mv "$POD_LOCATION/etc/PoDWorker.sh.temp" "$POD_LOCATION/etc/PoDWorker.sh" 
 
 # copy worker script to the sandbox directory
 cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }

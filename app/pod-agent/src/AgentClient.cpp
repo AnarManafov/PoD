@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2011 GSI, Scientific Computing division. All rights reserved.
+        Copyright (c) 2007-2012 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 #include "AgentClient.h"
 // STD
@@ -106,6 +106,15 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
                 get_cuser_name( &h.m_username );
                 get_hostname( &h.m_host );
                 h.m_xpdPort = m_xpdPort;
+                // retrieve submit time
+                string sSubmitTime;
+                get_env("POD_WN_SUBMIT_TIMESTAMP", &sSubmitTime);
+                if( !sSubmitTime.empty() )
+                {
+                    stringstream ssBuf(sSubmitTime);
+                    ssBuf >> h.m_timeStamp; 
+                }
+                
                 BYTEVector_t data_to_send;
                 h.convertToData( &data_to_send );
                 _protocol->write( _serverSock, static_cast<uint16_t>( cmdHOST_INFO ), data_to_send );

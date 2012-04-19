@@ -116,7 +116,7 @@ export POD_WRK_SCRIPT
 export POD_UI_LOG_LOCATION=$LOG_DIR
 export POD_UI_LOCATION=$POD_LOCATION
 
-# repack the worker package if needed
+# repack the worker package
 $POD_LOCATION/bin/pod-prep-worker &>/dev/null
 if (( $? != 0 )); then
    echo "Error: Can't create PoD worker package."
