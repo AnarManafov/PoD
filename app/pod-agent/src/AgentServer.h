@@ -33,7 +33,8 @@ namespace PROOFAgent
             m_removeMe( false ),
             m_id( 0 ),
             m_numberOfPROOFWorkers( 1 ),
-            m_bupInfoString( _infoString )
+            m_bupInfoString( _infoString ),
+            m_timeStamp(0, 0)
         {
         }
         std::string string() const
@@ -62,6 +63,7 @@ namespace PROOFAgent
         requests_t m_requests;
         unsigned int m_numberOfPROOFWorkers;
         std::string m_bupInfoString;
+        std::pair<time_t, time_t> m_timeStamp;// submit timestamp / start timestamp
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;
@@ -128,6 +130,7 @@ namespace PROOFAgent
                                                    unsigned short _Port,
                                                    const std::string &_RealWrkHost,
                                                    bool usePF,
+                                                   time_t _startupTime = 0,
                                                    unsigned int _numberOfPROOFWorkers = 1 );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );
