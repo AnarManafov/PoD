@@ -655,7 +655,8 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 _wrk.second.m_user = h.m_username;
                 _wrk.second.m_xpdPort = h.m_xpdPort;
                 _wrk.second.m_timeStamp.first = h.m_timeStamp;
-                _wrk.second.m_timeStamp.second = time(NULL);
+                // a timestamp of acceptance
+                _wrk.second.m_timeStamp.second = time( NULL );
 
                 stringstream ss;
                 ss << "Server received client's host info: " << h;
@@ -718,11 +719,16 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
     // using a direct connection to xproof
     _wrk.second.m_requests.push( cmdUSE_DIRECT_PROOF );
 
+    // HACK: Assuming time_t is integral.
+    // time_t: Arithmetic type capable of representing times.
+    // Although not defined, this is almost always a integral value.
+    time_t difft = difftime( _wrk.second.m_timeStamp.second,
+                             _wrk.second.m_timeStamp.first );
     // Update proof.cfg with active workers
     _wrk.second.m_proofCfgEntry =
         createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_xpdPort,
                                    _wrk.second.m_host, false,
-                                   (_wrk.second.m_timeStamp.second - _wrk.second.m_timeStamp.first),
+                                   difft,
                                    _wrk.second.m_numberOfPROOFWorkers );
     // Update proof.cfg according to a current number of active workers
     updatePROOFCfg();
@@ -754,12 +760,17 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     string strRealWrkHost;
     inet::peer2string( _wrk.first, &strRealWrkHost );
 
+    // HACK: Assuming time_t is integral.
+    // time_t: Arithmetic type capable of representing times.
+    // Although not defined, this is almost always a integral value.
+    time_t difft = difftime( _wrk.second.m_timeStamp.second,
+                             _wrk.second.m_timeStamp.first );
     // Update proof.cfg with active workers
-    string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user, 
-                                                        port, 
-                                                        strRealWrkHost, 
-                                                        true, 
-                                                        (_wrk.second.m_timeStamp.second - _wrk.second.m_timeStamp.first) ) );
+    string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user,
+                                                         port,
+                                                         strRealWrkHost,
+                                                         true,
+                                                         difft ) );
 
     // Now when we got a connection from our worker, we need to create a local server (for that worker)
     // which actually will emulate a local worker node for a proof server
@@ -820,21 +831,44 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
     string entryTmpl( m_Data.m_proofCfgEntryPattern );
     stringstream ss_port;
     ss_port << _Port;
-    
-    // Peretty print for startup time
+
+    // Pretty print for startup time
+    //
+    const int HOURS_IN_DAY = 24;
+    const int MINUTES_IN_HOUR = 60;
+    const int SECONDS_IN_MINUTE = 60;
+    // compute seconds
+    const int seconds = _startupTime % SECONDS_IN_MINUTE;
+    const long InMinutes = _startupTime / SECONDS_IN_MINUTE;
+    // compute  minutes
+    const int minutes = InMinutes % MINUTES_IN_HOUR;
+    const int InHours = InMinutes / MINUTES_IN_HOUR;
+    // compute hours
+    const int hours = InHours % HOURS_IN_DAY;
+    const int days = InHours / HOURS_IN_DAY;
     stringstream ssStartupTime;
+    ssStartupTime << " startup: " << _startupTime << "s";
     if( _startupTime > 60 )
     {
-       // ssStartupTime << " startup: " << _startupTime << "s ("<< << ":" << << ") 
+        ssStartupTime << " (";
+        if( days > 0 )
+            ssStartupTime << days << " days " ;
+        if( hours > 0 )
+            ssStartupTime << hours << " hours " ;
+        if( minutes > 0 )
+            ssStartupTime << minutes << " minutes " ;
+        if( seconds > 0 )
+            ssStartupTime << seconds << " seconds " ;
+        ssStartupTime << ")";
     }
-    
+
     stringstream ss;
     if( _usePF )
     {
         ss
-                << "#worker " << _UsrName << "@" << _RealWrkHost 
+                << "#worker " << _UsrName << "@" << _RealWrkHost
                 << " (packet forwarder: localhost:" << _Port << ")"
-                << " startup: " << _startupTime << "s.\n";
+                << ssStartupTime << "\n";
 
         replace<string>( &entryTmpl, "%user%", _UsrName );
         replace<string>( &entryTmpl, "%host%", "localhost" );
@@ -855,7 +889,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
             ss
                     << "#worker " << _UsrName << "@" << _RealWrkHost
                     << ":" << _Port << " (direct connection)"
-                    << " startup: " << _startupTime << "s.\n"
+                    << ssStartupTime << "\n"
                     << entryTmpl;
         }
     }

@@ -34,7 +34,7 @@ namespace PROOFAgent
             m_id( 0 ),
             m_numberOfPROOFWorkers( 1 ),
             m_bupInfoString( _infoString ),
-            m_timeStamp(0, 0)
+            m_timeStamp( 0, 0 )
         {
         }
         std::string string() const
