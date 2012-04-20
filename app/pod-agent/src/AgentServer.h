@@ -130,7 +130,7 @@ namespace PROOFAgent
                                                    unsigned short _Port,
                                                    const std::string &_RealWrkHost,
                                                    bool usePF,
-                                                   time_t _startupTime = 0,
+                                                   long _startupTime = 0,
                                                    unsigned int _numberOfPROOFWorkers = 1 );
             void updatePROOFCfg();
             void processAdminConnection( workersMap_t::value_type &_wrk );

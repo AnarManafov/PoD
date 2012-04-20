@@ -722,13 +722,13 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
     // HACK: Assuming time_t is integral.
     // time_t: Arithmetic type capable of representing times.
     // Although not defined, this is almost always a integral value.
-    time_t difft = difftime( _wrk.second.m_timeStamp.second,
+    double difft = difftime( _wrk.second.m_timeStamp.second,
                              _wrk.second.m_timeStamp.first );
     // Update proof.cfg with active workers
     _wrk.second.m_proofCfgEntry =
         createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_xpdPort,
                                    _wrk.second.m_host, false,
-                                   difft,
+                                   (long)difft,
                                    _wrk.second.m_numberOfPROOFWorkers );
     // Update proof.cfg according to a current number of active workers
     updatePROOFCfg();
@@ -763,14 +763,14 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     // HACK: Assuming time_t is integral.
     // time_t: Arithmetic type capable of representing times.
     // Although not defined, this is almost always a integral value.
-    time_t difft = difftime( _wrk.second.m_timeStamp.second,
+    double difft = difftime( _wrk.second.m_timeStamp.second,
                              _wrk.second.m_timeStamp.first );
     // Update proof.cfg with active workers
     string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user,
                                                          port,
                                                          strRealWrkHost,
                                                          true,
-                                                         difft ) );
+                                                         (long)difft ) );
 
     // Now when we got a connection from our worker, we need to create a local server (for that worker)
     // which actually will emulate a local worker node for a proof server
@@ -825,7 +825,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
                                                 unsigned short _Port,
                                                 const string &_RealWrkHost,
                                                 bool _usePF,
-                                                time_t _startupTime,
+                                                long _startupTime,
                                                 unsigned int _numberOfPROOFWorkers )
 {
     string entryTmpl( m_Data.m_proofCfgEntryPattern );
