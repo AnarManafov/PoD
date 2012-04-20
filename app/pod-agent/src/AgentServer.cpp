@@ -850,7 +850,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
     ssStartupTime << " startup: " << _startupTime << "s";
     if( _startupTime > 60 )
     {
-        ssStartupTime << " (";
+        ssStartupTime << " ( ";
         if( days > 0 )
             ssStartupTime << days << " days " ;
         if( hours > 0 )
@@ -868,7 +868,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
         ss
                 << "#worker " << _UsrName << "@" << _RealWrkHost
                 << " (packet forwarder: localhost:" << _Port << ")"
-                << ssStartupTime << "\n";
+                << ssStartupTime.str() << "\n";
 
         replace<string>( &entryTmpl, "%user%", _UsrName );
         replace<string>( &entryTmpl, "%host%", "localhost" );
@@ -889,7 +889,7 @@ string CAgentServer::createPROOFCfgEntryString( const string &_UsrName,
             ss
                     << "#worker " << _UsrName << "@" << _RealWrkHost
                     << ":" << _Port << " (direct connection)"
-                    << ssStartupTime << "\n"
+                    << ssStartupTime.str() << "\n"
                     << entryTmpl;
         }
     }
