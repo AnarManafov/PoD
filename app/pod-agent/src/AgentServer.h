@@ -33,8 +33,7 @@ namespace PROOFAgent
             m_removeMe( false ),
             m_id( 0 ),
             m_numberOfPROOFWorkers( 1 ),
-            m_bupInfoString( _infoString ),
-            m_timeStamp( 0, 0 )
+            m_bupInfoString( _infoString )
         {
         }
         std::string string() const
@@ -63,11 +62,34 @@ namespace PROOFAgent
         requests_t m_requests;
         unsigned int m_numberOfPROOFWorkers;
         std::string m_bupInfoString;
-        std::pair<time_t, time_t> m_timeStamp;// submit timestamp / start timestamp
     };
 
     typedef std::pair<int, SWorkerInfo> wrkValue_t;
     typedef std::list<wrkValue_t> workersMap_t;
+//=============================================================================
+    // WN Statistics information
+    struct SWorkerStats
+    {
+        SWorkerStats(): m_id( 0 ),
+            m_startupTime( 0 ),
+            m_status( WrkStUnknown ),
+            m_reconnections( 0 )
+        {}
+        enum EWrkStatus { WrkStOnline, WrkStOffline, WrkStUnknown };
+        uint32_t m_id;
+        uint32_t m_startupTime;
+        EWrkStatus m_status;
+        uint32_t m_reconnections;
+    };
+    typedef std::map<uint32_t, SWorkerStats> wnStatsMap_t;
+    inline std::ostream &operator<<( std::ostream &_stream, const SWorkerStats &_stats )
+    {
+        _stream << "WN #" << _stats.m_id
+                << "; startup time: " << _stats.m_startupTime
+                << "; reconnections count: " << _stats.m_reconnections
+                << "; status: " << ( _stats.m_status == SWorkerStats::WrkStOnline ? "Online" : "Offline" );
+        return _stream;
+    }
 //=============================================================================
     /**
      *
@@ -151,6 +173,7 @@ namespace PROOFAgent
             workersMap_t m_adminConnections; // the map of workers, which are connected to admin channel
             uint32_t m_workerMaxID;
             unsigned int m_agentServerListenPort;
+            wnStatsMap_t m_wnStatsMap;
     };
 
 }

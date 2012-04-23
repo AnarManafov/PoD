@@ -439,7 +439,7 @@ void CAgentServer::sendServerRequest( workersMap_t::value_type &_wrk )
                 _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_PACKETFORWARDING_PROOF ) );
                 break;
             case cmdUSE_DIRECT_PROOF:
-                ss << "[use a direct proof connection]";
+                ss << "[use direct proof connection]";
                 _wrk.second.m_protocol.writeSimpleCmd( _wrk.first, static_cast<uint16_t>( cmdUSE_DIRECT_PROOF ) );
                 break;
             case cmdGET_WRK_NUM:
@@ -637,6 +637,20 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                     _wrk.second.m_protocol.write( _wrk.first, static_cast<uint16_t>( cmdSET_ID ), data );
                 }
                 _wrk.second.m_id = id.m_id;
+
+                // add stats info
+                wnStatsMap_t::iterator iter = m_wnStatsMap.find( _wrk.second.m_id );
+                if( m_wnStatsMap.end() == iter )
+                {
+                    SWorkerStats wnStats;
+                    wnStats.m_id = _wrk.second.m_id;
+                    m_wnStatsMap.insert( wnStatsMap_t::value_type( _wrk.second.m_id,
+                                                                   SWorkerStats() ) );
+                }
+                else
+                {
+                    ++iter->second.m_reconnections;
+                }
             }
             break;
         case cmdWRK_NUM:
@@ -654,10 +668,29 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                 _wrk.second.m_host = h.m_host;
                 _wrk.second.m_user = h.m_username;
                 _wrk.second.m_xpdPort = h.m_xpdPort;
-                _wrk.second.m_timeStamp.first = h.m_timeStamp;
-                // a timestamp of acceptance
-                _wrk.second.m_timeStamp.second = time( NULL );
 
+                // add stats info
+                wnStatsMap_t::iterator iter = m_wnStatsMap.find( _wrk.second.m_id );
+                // Consistency check
+                if( m_wnStatsMap.end() == iter )
+                {
+                    stringstream ss;
+                    ss << "Warning: no stats info for WN#" << _wrk.second.m_id;
+                    InfoLog( ss.str() );
+                }
+                else
+                {
+                    if( h.m_timeStamp > 0 && iter->second.m_startupTime == 0 )
+                    {
+                        // HACK: Assuming time_t is integral.
+                        // time_t: Arithmetic type capable of representing times.
+                        // Although not defined, this is almost always a integral value.
+                        double difft = difftime( time( NULL ), (time_t)h.m_timeStamp );
+                        // a timestamp of a submit and of an acceptance
+                        iter->second.m_startupTime = static_cast<uint32_t>( difft );
+                    }
+                    iter->second.m_status = SWorkerStats::WrkStOnline;
+                }
                 stringstream ss;
                 ss << "Server received client's host info: " << h;
                 DebugLog( 0, ss.str() );
@@ -705,7 +738,7 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
             ss
                     << "Shutting the worker down: "
                     << _wrk.second.string()
-                    << ". User requested a direct PROOF connection, which is not possible for this host.";
+                    << ". User requested direct PROOF connection, which is not possible for this host.";
             InfoLog( ss.str() );
             _wrk.second.m_requests.push( cmdSHUTDOWN );
             return;
@@ -716,26 +749,27 @@ void CAgentServer::setupPROOFWorker( workersMap_t::value_type &_wrk )
         return;
     }
 
-    // using a direct connection to xproof
+    // using direct connection to xproof
     _wrk.second.m_requests.push( cmdUSE_DIRECT_PROOF );
 
-    // HACK: Assuming time_t is integral.
-    // time_t: Arithmetic type capable of representing times.
-    // Although not defined, this is almost always a integral value.
-    double difft = difftime( _wrk.second.m_timeStamp.second,
-                             _wrk.second.m_timeStamp.first );
+    // add stats info
+    wnStatsMap_t::const_iterator iter = m_wnStatsMap.find( _wrk.second.m_id );
+    long startup( 0 );
+    if( m_wnStatsMap.end() != iter )
+        startup = iter->second.m_startupTime;
+
     // Update proof.cfg with active workers
     _wrk.second.m_proofCfgEntry =
         createPROOFCfgEntryString( _wrk.second.m_user, _wrk.second.m_xpdPort,
                                    _wrk.second.m_host, false,
-                                   (long)difft,
+                                   startup,
                                    _wrk.second.m_numberOfPROOFWorkers );
     // Update proof.cfg according to a current number of active workers
     updatePROOFCfg();
 
     stringstream ss;
     ss
-            << "Using a direct connection to xproof for: "
+            << "Using direct connection to xproof for: "
             << _wrk.second.string();
     InfoLog( ss.str() );
 }
@@ -748,7 +782,7 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
 
     stringstream ss;
     ss
-            << "Using a packet forwarding for the worker: "
+            << "Using packet forwarding for the worker: "
             << _wrk.second.string();
     InfoLog( erOK, ss.str() );
 
@@ -760,17 +794,17 @@ void CAgentServer::createClientNode( workersMap_t::value_type &_wrk )
     string strRealWrkHost;
     inet::peer2string( _wrk.first, &strRealWrkHost );
 
-    // HACK: Assuming time_t is integral.
-    // time_t: Arithmetic type capable of representing times.
-    // Although not defined, this is almost always a integral value.
-    double difft = difftime( _wrk.second.m_timeStamp.second,
-                             _wrk.second.m_timeStamp.first );
+    wnStatsMap_t::const_iterator iter = m_wnStatsMap.find( _wrk.second.m_id );
+    long startup( 0 );
+    if( m_wnStatsMap.end() != iter )
+        startup = iter->second.m_startupTime;
+
     // Update proof.cfg with active workers
     string strPROOFCfgString( createPROOFCfgEntryString( _wrk.second.m_user,
                                                          port,
                                                          strRealWrkHost,
                                                          true,
-                                                         (long)difft ) );
+                                                         startup ) );
 
     // Now when we got a connection from our worker, we need to create a local server (for that worker)
     // which actually will emulate a local worker node for a proof server
