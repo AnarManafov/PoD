@@ -157,6 +157,8 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
                 ofstream f( id_file.c_str() );
                 if( !f.is_open() )
                     FaultLog( 1, "Can't write to id file: " + id_file );
+                else
+                    f << m_id;
 
                 stringstream ss;
                 ss << "Server has assigned ID = " << m_id << " to this worker.";
