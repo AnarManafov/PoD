@@ -30,6 +30,7 @@ namespace po = boost::program_options;
 const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
 const char *const g_xpdCFG = "$POD_LOCATION/xpd.cf";
+const char *const g_wnIDFile = "$POD_LOCATION/pod-agent.client.id";
 //=============================================================================
 CAgentClient::CAgentClient( const SOptions_t &_data ):
     CAgentBase( _data.m_podOptions.m_worker.m_common ),
@@ -60,6 +61,22 @@ CAgentClient::CAgentClient( const SOptions_t &_data ):
     stringstream ss;
     ss << "Detected xpd [" << m_xpdPid << "] on port " << m_xpdPort;
     InfoLog( ss.str() );
+
+    // check for ID file.
+    // if file exists, that means pod-agent client was restarted.
+    // pod-agent ID file is removed by PoD worker script during clean-up procedures
+    string id_file( g_wnIDFile );
+    smart_path( &id_file );
+    ifstream f( id_file.c_str() );
+    if( f.is_open() )
+    {
+        f >> m_id;
+        stringstream ssMsg;
+        ssMsg
+                << "Looks like the agent has been restarted. Using ID of the previous session: "
+                << m_id;
+        InfoLog( ssMsg.str() );
+    }
 }
 
 //=============================================================================

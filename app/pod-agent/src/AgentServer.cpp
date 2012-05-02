@@ -685,7 +685,7 @@ void CAgentServer::processProtocolMsgs( workersMap_t::value_type &_wrk )
                         // HACK: Assuming time_t is integral.
                         // time_t: Arithmetic type capable of representing times.
                         // Although not defined, this is almost always a integral value.
-                        double difft = difftime( time( NULL ), (time_t)h.m_timeStamp );
+                        double difft = difftime( time( NULL ), ( time_t )h.m_timeStamp );
                         // a timestamp of a submit and of an acceptance
                         iter->second.m_startupTime = static_cast<uint32_t>( difft );
                     }
