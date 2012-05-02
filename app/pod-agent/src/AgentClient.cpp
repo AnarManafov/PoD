@@ -151,6 +151,13 @@ int CAgentClient::processProtocolMsgs( int _serverSock, CProtocol * _protocol )
                 SIdCmd id;
                 id.convertFromData( data );
                 m_id = id.m_id;
+                // saving ID to the ID file
+                string id_file( g_wnIDFile );
+                smart_path( &id_file );
+                ofstream f( id_file.c_str() );
+                if( !f.is_open() )
+                    FaultLog( 1, "Can't write to id file: " + id_file );
+
                 stringstream ss;
                 ss << "Server has assigned ID = " << m_id << " to this worker.";
                 InfoLog( ss.str() );
