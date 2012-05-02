@@ -35,6 +35,7 @@ WD=$(pwd)
 #
 eval LOCK_FILE="$WD/PoDWorker.lock"
 eval PID_FILE="$WD/PoDWorker.pid"
+eval POD_AGENT_ID_FILE="$WD/pod-agent.client.id"
 eval POD_CFG="$WD/PoD.cfg"
 eval USER_SCRIPT="$WD/user_worker_env.sh"
 eval XPD_CFG="$WD/xpd.cf"
@@ -175,6 +176,8 @@ clean_up()
     # remove lock file
     rm -f $LOCK_FILE
     rm -f $PID_FILE
+    # remove pod-agent ID file
+    rm -f $POD_AGENT_ID_FILE
 
     logMsg "done cleaning up."
     exit $1
