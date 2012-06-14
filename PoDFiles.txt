@@ -3,6 +3,10 @@
 location: <server.shared_fs>/wrk/<job script>
 comment: PoDWorker.sh is automatically attached to RMS's job script as a payload before any PoD job is submitted
 
+## Generated worker script
+location: <server.work_dir>/etc/PoDWorker.sh
+
+
 ## PoD Worker Script and worker package
 location: <server.shared_fs>/wrk/(PoDWorker.sh, pod-worker)
 comment: pod-worker is automatically attached to PoDworker.sh as a payload before any PoD job is submitted

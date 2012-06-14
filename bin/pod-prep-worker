@@ -239,7 +239,7 @@ gzip -9 $ARC_NAME
 mv "$ARC_NAME.gz" $ARC_NAME
 
 # add payload to the wrk script
-$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$POD_LOCATION/etc/PoDWorker.sh"
+$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$WRK_DIR/etc/PoDWorker.sh"
 if (( 0 != $? )); then
    echo "$TOOL_NAME: error: failed to add payload to the wrk script."
    return 1 
@@ -247,11 +247,11 @@ fi
 
 # update WN submit timestampt
 regexpr_wn_submit_time="s/\(export[[:space:]]*POD_WN_SUBMIT_TIMESTAMP=\)[0-9]*/\1$(date +%s)/g"
-sed -e "$regexpr_wn_submit_time" "$POD_LOCATION/etc/PoDWorker.sh" > "$POD_LOCATION/etc/PoDWorker.sh.temp"
-mv "$POD_LOCATION/etc/PoDWorker.sh.temp" "$POD_LOCATION/etc/PoDWorker.sh" 
+sed -e "$regexpr_wn_submit_time" "$WRK_DIR/etc/PoDWorker.sh" > "$WRK_DIR/etc/PoDWorker.sh.temp"
+mv "$WRK_DIR/etc/PoDWorker.sh.temp" "$WRK_DIR/etc/PoDWorker.sh" 
 
 # copy worker script to the sandbox directory
-cp "$POD_LOCATION/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }
+cp "$WRK_DIR/etc/PoDWorker.sh" "$WRK_SCRIPT" || { echo "error: Can't copy the worker script to the sandbox." >&2 ; exit 1; }
 chmod u+wx "$WRK_SCRIPT"
 
 echo "PoD worker package: "$WRK_SCRIPT
