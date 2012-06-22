@@ -309,7 +309,6 @@ set(CPACK_SOURCE_GENERATOR "TGZ")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_SOURCE_IGNORE_FILES
     "inst_tmp"
-    "PoD_env.sh$"
     "etc/xpd.cf$"
     "documentation/Diagrams"
     "documentation/html_help/.*\\\\.html$"
