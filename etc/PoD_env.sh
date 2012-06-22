@@ -23,7 +23,19 @@ create_dir()
 # ***** MAIN  *****
 #=============================================================================
 # PoD Variables
-export POD_LOCATION=@CMAKE_INSTALL_PREFIX@
+if [ "x${BASH_ARGV[0]}" = "x" ]; then
+    if [ ! -f PoD_env.sh ]; then
+        echo ERROR: must "cd where/PoD/is" before calling ". PoD_env.sh" for this version of bash!
+        POD_LOCATION=; export POD_LOCATION
+        return 1
+    fi
+    POD_LOCATION="$PWD"; export POD_LOCATION
+else
+    # get param to "."
+    THIS=$(dirname ${BASH_ARGV[0]})
+    POD_LOCATION=$(cd ${THIS};pwd); export POD_LOCATION
+fi
+
 export PATH=$POD_LOCATION/bin:$PATH
 
 if [ -z "${LD_LIBRARY_PATH}" ]; then
