@@ -11,6 +11,7 @@
 //STD
 #include <string>
 // API
+#include <unistd.h>
 #include <sys/select.h>
 #include <errno.h>
 // MiscCommon
