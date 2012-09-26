@@ -27,7 +27,14 @@ configure_file( ${pod-user-defaults_SOURCE_DIR}/src/version.h.in ${pod-user-defa
 set( SOURCE_FILES
     ./src/main.cpp
 )
-									
+
+set(Boost_filesystem_libs ${Boost_FILESYSTEM_LIBRARY})
+if(local_boost_version VERSION_GREATER "1.33.1")
+  set(Boost_filesystem_libs ${Boost_filesystem_libs} ${Boost_SYSTEM_LIBRARY})
+endif(local_boost_version VERSION_GREATER "1.33.1")
+
+set(Boost_libs_for_UD  ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_filesystem_libs})
+								
 #
 ## pod-user-defaults executable
 #
@@ -41,7 +48,7 @@ add_executable(pod-user-defaults ${SOURCE_FILES})
 
 target_link_libraries (
     pod-user-defaults
-    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${Boost_libs_for_UD}
 )
 
 install(TARGETS pod-user-defaults DESTINATION bin)

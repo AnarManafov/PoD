@@ -225,8 +225,14 @@ if(Boost_FOUND)
   find_package( Boost 1.33.1 REQUIRED COMPONENTS  ${Boost_Components} )
   # force to use the version 2 of the filesystem library, since
   # we must support boost 1.33.1.
-  # TODO: implement support of the version 3
-  add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
+  if(local_boost_version VERSION_EQUAL "1.44" OR local_boost_version VERSION_GREATER "1.44")
+     # Filesystem v3 is included since Boost 1.44 
+     # v2 is deprecated since 1.46 and removed entirely in 1.50 
+     add_definitions(-DBOOST_FILESYSTEM_VERSION=3)
+  else(local_boost_version VERSION_EQUAL "1.44" OR local_boost_version VERSION_GREATER "1.44")
+     add_definitions(-DBOOST_FILESYSTEM_VERSION=2)
+  endif(local_boost_version VERSION_EQUAL "1.44" OR local_boost_version VERSION_GREATER "1.44")
+  
   
   # pod-remote uses boost property tree and needs at least boost 1.41.0
   if(local_boost_version VERSION_GREATER "1.40")
