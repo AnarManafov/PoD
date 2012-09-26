@@ -29,6 +29,7 @@ add_executable(pod-ssh_test_threadpool test_threadpool.cpp )
 
 target_link_libraries (
     pod-ssh_test_threadpool
+    ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
 )
 
