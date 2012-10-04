@@ -1,6 +1,6 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## 3.12 ()
+## 3.12 (2012-10-04)
 pod: User's Manual has been updated.
 pod: *** Worker packages are now added as a payload to the worker script. ***
 pod: PoD installations are relocatable now. The POD_LOCATION variable is set automatically according to the location of PoD_env.sh. 

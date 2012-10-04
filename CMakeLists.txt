@@ -204,7 +204,7 @@ SET(POD_ETC_FILES
 #
 # search for Boost
 #
-# boost needed by
+# boost is needed by
 # pod_agent: thread program_options filesystem (system)
 # pod-user-defaults: program_options
 # unit tests: unit_test_framework
