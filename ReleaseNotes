@@ -1,6 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## 3.14 ()
+pod-user-defaults: updated user defaults configuration file - v0.9.
+pod-user-defaults: added the pbs_plugin.options_file option.
 
 ## 3.12 (2012-10-04)
 pod: User's Manual has been updated.

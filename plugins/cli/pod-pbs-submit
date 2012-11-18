@@ -87,7 +87,13 @@ if [ -z $pbs_pro ]; then
    pbs_job_array_param="-t 1-$NUM_WRK"
 fi
 
-jobid=$(qsub -N pod -q $QUEUE $pbs_job_array_param -j oe $OUTPUT_LOG -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$POD_UI_LOG_LOCATION" $JOB_SCRIPT)
+# Additional PBS options
+eval options_file=$(pod-user-defaults --key pbs_plugin.options_file)
+if [ -f $options_file ]; then
+   EXTRA_PBS_OPTIONS=$(cat $options_file) 
+fi
+
+jobid=$(qsub $EXTRA_PBS_OPTIONS -N pod -q $QUEUE $pbs_job_array_param -j oe $OUTPUT_LOG -V -v "POD_UI_LOCATION=$POD_LOCATION, POD_UI_LOG_LOCATION=$POD_UI_LOG_LOCATION" $JOB_SCRIPT)
 # we need to create a logs output dir
 if (( $? == 0 )); then
    echo "Job ID: $jobid"

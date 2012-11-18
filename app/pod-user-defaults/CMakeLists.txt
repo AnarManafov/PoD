@@ -10,11 +10,11 @@
 #                           2009-06-30
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2009-2010 GSI GridTeam. All rights reserved.
+#        Copyright (c) 2009-2012 GSI GridTeam. All rights reserved.
 #*************************************************************************
 project( pod-user-defaults )
 
-set(USER_DEFAULTS_CFG_VERSION "0.8")
+set(USER_DEFAULTS_CFG_VERSION "0.9")
 
 # Where to lookup modules
 set (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
