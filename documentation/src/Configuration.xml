@@ -292,6 +292,18 @@ gui.accessibility.visual_bell=yes
                             <entry>The parameter specifies whether to upload jobs log files from workers when PoD jobs are completed.
                                 Jobs log files include a full log of PROOF, XROOTD and pod-agent's log files.</entry>
                         </row>
+                        <row id="pbs_plugin.options_file" xreflabel="pbs_plugin.options_file">
+                            <entry>pbs_plugin.options_file</entry>
+                            <entry>string (default: $POD_LOCATION/etc/Job.pbs.option)</entry>
+                            <entry>
+                                This options can be used to provide addirtional PBS (qsub) options. 
+                                Just create a file and set its path in <xref linkend="pbs_plugin.options_file"/>. Write valid qsub options in one line, 
+				like if you would write them in a command line when calling qsub.
+                                PoD will automatically use it (if exists) while submitting PBS jobs.
+				Be advised, that the following options are reserved and are set by PoD, if you want to adjust them in anyway, then, please,
+				contact PoD support and we will find a way. The reserved options are: -N, -q, -j, -V, -v. 
+                            </entry>
+                        </row>
                     </tbody>
                 </tgroup>
             </table>
