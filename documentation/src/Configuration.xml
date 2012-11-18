@@ -296,7 +296,7 @@ gui.accessibility.visual_bell=yes
                             <entry>pbs_plugin.options_file</entry>
                             <entry>string (default: $POD_LOCATION/etc/Job.pbs.option)</entry>
                             <entry>
-                                This options can be used to provide addirtional PBS (qsub) options. 
+                                This file can be used to provide addirtional PBS (qsub) options. 
                                 Just create a file and set its path in <xref linkend="pbs_plugin.options_file"/>. Write valid qsub options in one line, 
 				like if you would write them in a command line when calling qsub.
                                 PoD will automatically use it (if exists) while submitting PBS jobs.
