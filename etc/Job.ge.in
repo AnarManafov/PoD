@@ -15,7 +15,7 @@
 ##*************************************************************************/
 
 ##
-## Important: To retrieve log file a shared file system must be available of WNs.
+## Important: To retrieve log file a shared file system must be available on WNs.
 ##
 
 ######################################################
