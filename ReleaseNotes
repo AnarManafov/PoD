@@ -1,7 +1,7 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## 3.14 ()
-pod: Implemented a Condor plug-in for PoD. 
+pod: Implemented a PanDa plug-in for PoD. 
 pod-user-defaults: updated user defaults configuration file - v0.9.
 pod-user-defaults: added the pbs_plugin.options_file option.
 
