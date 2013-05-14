@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-slurm-submit
+# * @brief a script, which can be used to manually submit PoD jobs using a defined RMS
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        created by:        Anar Manafov
+#                           2013-05-01
+#
+#        Copyright (c) 2013 GSI, Scientific Computing division. All rights reserved.
+#*************************************************************************/
+# 
+# The following variables guarantied to be exported by our parent:
+# POD_UI_LOG_LOCATION
+# POD_UI_LOCATION
+#
+#
+PRIVATE_TOOLS="$POD_LOCATION/bin/private"
+_NOW=$(date +"%b-%d-%y-%H-%M-%S")
+#=============================================================================
+# ***** MAIN  *****
+#=============================================================================
+QUEUE=""
+NUM_WRK=10
+while getopts "q:n:h" opt; do
+   case $opt in
+      q)
+       QUEUE="$OPTARG"
+       ;;
+      n)
+       NUM_WRK=$OPTARG
+       ;;
+      h) 
+       usage
+       exit 0
+       ;;
+     \?)
+       echo "Invalid option: -$OPTARG" >&2
+       exit 1
+       ;;
+   esac
+done
+
+if [ -z "$POD_UI_LOG_LOCATION" ]; then
+   echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
+fi
+
+# LOG
+#eval upload_job_log=$(pod-user-defaults --key slurm_plugin.upload_job_log)
+#OUTPUT_LOG=""
+#if [ "$upload_job_log" = "1" ]; then
+#   _NOW=$(date +"%b-%d-%y-%H-%M-%S")
+#   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION\joblog_$NOW.oe"
+#else
+#   OUTPUT_LOG=" -o /dev/null"
+#fi
+
+# add PoD worker script as a payload to the job script
+eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
+eval WRK_DIR=$(pod-user-defaults --wn-sandbox-dir)
+INPUT_JOB_SCRIPT="$POD_LOCATION/etc/Job.slurm"
+JOB_SCRIPT="$WRK_DIR/Job.slurm"
+cp $INPUT_JOB_SCRIPT $JOB_SCRIPT
+
+chmod +x $JOB_SCRIPT
+
+# Additional SLURM options
+#eval options_file=$(pod-user-defaults --key pbs_plugin.options_file)
+#if [ -f $options_file ]; then
+#   EXTRA_PBS_OPTIONS=$(cat $options_file) 
+#fi
+
+_LOG_DIR=$POD_UI_LOG_LOCATION/$_NOW
+#if [ "$upload_job_log" = "1" ]; then
+      mkdir -p $_LOG_DIR
+#fi
+
+# Submit jobs.
+# TODO: currently we support SLURM 2.5. When SLURM 2.6 gets stable we could use array job submission
+for (( i=1; i<=$NUM_WRK; i++ ))
+do
+   echo "submitting PoD workers ($i out of $NUM_WRK): "$(sbatch --job-name PoD --output=$_LOG_DIR/PoD-%j.out --error=$_LOG_DIR/PoD-%j.out  $JOB_SCRIPT)
+done

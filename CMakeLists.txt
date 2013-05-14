@@ -190,6 +190,7 @@ SET(POD_CLI_PLUGINS_FILES
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-loadleveler-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-glite-submit
     ${CMAKE_SOURCE_DIR}/plugins/cli/pod-panda-submit
+    ${CMAKE_SOURCE_DIR}/plugins/cli/pod-slurm-submit
     )
 #
 # "etc" files
@@ -291,6 +292,7 @@ install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.lsf.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.ge.in DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.condor.option DESTINATION etc)
+install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/Job.slurm DESTINATION etc)
 install(PROGRAMS ${CMAKE_SOURCE_DIR}/etc/PoDWorker.sh.in DESTINATION etc)
 # install bin files
 install(PROGRAMS ${POD_BIN_FILES} DESTINATION bin)
