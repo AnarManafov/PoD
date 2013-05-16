@@ -295,7 +295,7 @@ void CAgentClient::run()
                     {
                         const int read_size = 20;
                         char buf[read_size];
-                        int __attribute__((__unused__)) numread( 0 );
+                        int __attribute__(( __unused__ ) ) numread( 0 );
                         //  do
                         //  {
                         numread = read( m_fdSignalPipe, buf, read_size );
@@ -499,7 +499,7 @@ void CAgentClient::mainSelect( CNode *_node )
         {
             const int read_size = 20;
             char buf[read_size];
-            int __attribute__((__unused__)) numread( 0 );
+            int __attribute__(( __unused__ ) ) numread( 0 );
             //  do
             //  {
             numread = read( m_fdSignalPipe, buf, read_size );
