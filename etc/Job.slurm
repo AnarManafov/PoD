@@ -20,9 +20,6 @@
 # $POD_UI_LOCATION
 # $POD_UI_LOG_LOCATION
 WRK_SCRIPT=$(basename "$POD_WRK_SCRIPT")
-# PARENT_PBS_JOBID is just a PBS_JOBID without an "-ARRAY_INDEX" part
-# We consider, that the first digits up to the first non-digit character is a parent index.
-PARENT_PBS_JOBID=$(echo $PBS_JOBID | egrep -o '^[[:digit:]]*')
 UI_LOG_DIR=$POD_UI_LOG_LOCATION/$PARENT_PBS_JOBID
 ###############################################################
 #
@@ -65,12 +62,6 @@ export LD_LIBRARY_PATH=$WRK_DIR:$LD_LIBRARY_PATH
 #
 ###############################################################
 $POD_WRK_SCRIPT
-################################################################
-#
-# POD WORKER
-#
-###############################################################
-$WRK_DIR/$WRK_SCRIPT
 ###############################################################
 #
 # get all logs

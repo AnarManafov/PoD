@@ -47,16 +47,6 @@ if [ -z "$POD_UI_LOG_LOCATION" ]; then
    echo "Error: PoD UI Log directory is not defined. Please, check you configuration."
 fi
 
-# LOG
-#eval upload_job_log=$(pod-user-defaults --key slurm_plugin.upload_job_log)
-#OUTPUT_LOG=""
-#if [ "$upload_job_log" = "1" ]; then
-#   _NOW=$(date +"%b-%d-%y-%H-%M-%S")
-#   OUTPUT_LOG=" -o $POD_UI_LOG_LOCATION\joblog_$NOW.oe"
-#else
-#   OUTPUT_LOG=" -o /dev/null"
-#fi
-
 # add PoD worker script as a payload to the job script
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
 eval WRK_DIR=$(pod-user-defaults --wn-sandbox-dir)
@@ -66,16 +56,13 @@ cp $INPUT_JOB_SCRIPT $JOB_SCRIPT
 
 chmod +x $JOB_SCRIPT
 
-# Additional SLURM options
-#eval options_file=$(pod-user-defaults --key pbs_plugin.options_file)
-#if [ -f $options_file ]; then
-#   EXTRA_PBS_OPTIONS=$(cat $options_file) 
-#fi
-
+# LOG
+# if the directory is not created, SLURM will not store job's output
+eval upload_job_log=$(pod-user-defaults --key slurm_plugin.upload_job_log)
 _LOG_DIR=$POD_UI_LOG_LOCATION/$_NOW
-#if [ "$upload_job_log" = "1" ]; then
+if [ "$upload_job_log" = "1" ]; then
       mkdir -p $_LOG_DIR
-#fi
+fi
 
 # Submit jobs.
 # TODO: currently we support SLURM 2.5. When SLURM 2.6 gets stable we could use array job submission
