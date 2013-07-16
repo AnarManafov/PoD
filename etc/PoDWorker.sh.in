@@ -336,19 +336,6 @@ logMsg "Current working directory: $WD"
 logMsg "Untar payload..."
 untar_payload
 
-# copy ssh-tunnel to a private directory
-# TODO: remove this code when CSSHTunnel learns to find ssh-tunnel on WNs
-mkdir -p $WD/bin/private; mv $WD/ssh-tunnel $WD/bin/private 
-
-# setup temp ssh keys if needed
-NEED_KEYS=$($user_defaults -V --key server.gen_temp_ssh_keys)
-if (( $NEED_KEYS == 1 )); then
-   eval KEYFILE_BASENAME=$WD/pod_wn_key
-   eval KEYFILE_BASENAME_PUB=$WD/$KEYFILE_BASENAME.pub
-
-  #umask 077; test -d ~/.ssh || mkdir ~/.ssh; cp $KEYFILE_BASENAME $KEYFILE_BASENAME_PUB ~/.ssh;
-fi
-
 #Exporting PoD location
 export POD_LOCATION=$WD
 
@@ -436,6 +423,20 @@ fi
 
 # Use a default ROOT distr. if needed
 get_default_ROOT $host_arch
+
+# **********************************************************************
+# copy ssh-tunnel to a private directory
+# TODO: remove this code when CSSHTunnel learns to find ssh-tunnel on WNs
+mkdir -p $WD/bin/private; mv $WD/ssh-tunnel $WD/bin/private 
+
+# setup temp ssh keys if needed
+NEED_KEYS=$($user_defaults -V --key server.gen_temp_ssh_keys)
+if (( $NEED_KEYS == 1 )); then
+   eval KEYFILE_BASENAME=$WD/pod_wn_key
+   eval KEYFILE_BASENAME_PUB=$WD/$KEYFILE_BASENAME.pub
+
+  #umask 077; test -d ~/.ssh || mkdir ~/.ssh; cp $KEYFILE_BASENAME $KEYFILE_BASENAME_PUB ~/.ssh;
+fi
 
 # **********************************************************************
 # export the location of the proof.conf file
