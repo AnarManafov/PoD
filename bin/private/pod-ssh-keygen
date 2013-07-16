@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#/************************************************************************/
+#/**
+# * @file pod-ssh-keygen
+# * @brief
+# * @author Anar Manafov A.Manafov@gsi.de
+# *//*
+#
+#        version number:    $LastChangedRevision$
+#        created by:        Anar Manafov
+#                           2013-06-01
+#        last changed by:   $LastChangedBy$ $LastChangedDate$
+#
+#        Copyright (c) 2013 GSI, Scientific Computing division. All rights reserved.
+#*************************************************************************/
+
+
+eval WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
+eval KEYFILE_BASENAME=$WORK_DIR/pod_wn_key
+eval KEYFILE_BASENAME_PUB=$KEYFILE_BASENAME.pub
+eval AUTH_FILE=~/.ssh/authorized_keys
+BUP_AUTH_FILE=$AUTH_FILE_pod.bup
+POD_KEY_WORD="%PoD WN temp. key%"
+
+remove_key()
+{
+   if [ -f $KEYFILE_BASENAME_PUB ]; then
+      # delete only the last known key
+      #grep -v "$(cat $KEYFILE_BASENAME_PUB)" $AUTH_FILE >> $BUP_AUTH_FILE
+      # delete all PoD WN keys
+      grep -v "$POD_KEY_WORD" $AUTH_FILE >> $BUP_AUTH_FILE
+      mv $BUP_AUTH_FILE $AUTH_FILE
+   else
+      return 1
+   fi
+   
+   if [ -f $KEYFILE_BASENAME ]; then
+      rm $KEYFILE_BASENAME
+   fi
+   if [ -f $KEYFILE_BASENAME_PUB ]; then
+      rm $KEYFILE_BASENAME_PUB
+   fi
+}
+
+case "$1" in
+    only-remove)
+        remove_key
+	exit $?
+	;;
+esac
+
+
+remove_key
+
+
+# gen temporary keys pair
+ssh-keygen -t rsa -C "$POD_KEY_WORD" -N "" -f $KEYFILE_BASENAME  -q
+
+
+# add temp key to authorized_keys
+umask 077; test -d ~/.ssh || mkdir ~/.ssh ; cat $KEYFILE_BASENAME_PUB  >> $AUTH_FILE
+
+
