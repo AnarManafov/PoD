@@ -92,6 +92,7 @@ class CSrvInfo
         const CPoDEnvironment *m_env;
         std::string m_serverUsername;
         std::string m_srvHost;
+        std::string m_srvUser;
 };
 
 #endif

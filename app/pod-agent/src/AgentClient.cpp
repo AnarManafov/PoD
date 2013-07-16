@@ -30,7 +30,7 @@ namespace po = boost::program_options;
 const size_t g_monitorTimeout = 10; // in seconds
 extern sig_atomic_t graceful_quit;
 const char *const g_xpdCFG = "$POD_LOCATION/xpd.cf";
-const char *const g_wnIDFile = "$POD_LOCATION/pod-agent.client.id"; 
+const char *const g_wnIDFile = "$POD_LOCATION/pod-agent.client.id";
 //=============================================================================
 CAgentClient::CAgentClient( const SOptions_t &_data ):
     CAgentBase( _data.m_podOptions.m_worker.m_common ),
@@ -208,7 +208,7 @@ void CAgentClient::readServerInfoFile( const string &_filename )
     // HACK: Don't make a long add_options, otherwise Eclipse 3.5's CDT indexer can't handle it
     options.add_options()
     ( "server.host", po::value<string>(), "" )
-    ( "server.user", po::value<string>(), "")
+    ( "server.user", po::value<string>(), "" )
     ( "server.port", po::value<unsigned int>(), "" )
     ;
 
@@ -235,22 +235,22 @@ void CAgentClient::run()
     try
     {
         // Create ssh tunnel to the server, if neede
-        if(m_ServerData.m_genTempSSHKeys)
+        if( m_ServerData.m_genTempSSHKeys )
         {
             // TODO: We reuse server.agentPortsRange here. Think to intorduce a common option for all local ports rages.
             const int localAgentTunnelPort = inet::get_free_port( m_ServerData.m_agentPortsRangeMin,
-                                                            m_ServerData.m_agentPortsRangeMax );
+                                                                  m_ServerData.m_agentPortsRangeMax );
             m_sshTunnelAgent.deattach();
             string pidfile( "$POD_LOCATION/ssh-tunnel-agent.pid" );
             smart_path( &pidfile );
-            m_sshTunnelAgent.setPidFile(pidfile);
-            string remoteURL(m_agentServerUser +"@"+ m_agentServerHost);
+            m_sshTunnelAgent.setPidFile( pidfile );
+            string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
             m_sshTunnelAgent.create( remoteURL, localAgentTunnelPort, 22 /*, m_openDomain*/ );
             m_agentServerHost = "localhost";
             m_agentServerListenPort = localAgentTunnelPort;
         }
-            
-        
+
+
         createPROOFCfg();
 
         while( true )

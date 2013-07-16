@@ -205,6 +205,7 @@ bool CSrvInfo::processServerInfoCfg( const string *_cfg )
         "Agent's server info config" );
     options.add_options()
     ( "server.host", bpo::value<string>(), "" )
+    ( "server.user", bpo::value<string>(), "" )
     ( "server.port", bpo::value<unsigned int>(), "" )
     ;
 
@@ -213,6 +214,8 @@ bool CSrvInfo::processServerInfoCfg( const string *_cfg )
     bpo::notify( keys );
     if( keys.count( "server.host" ) )
         m_srvHost = keys["server.host"].as<string> ();
+    if( keys.count( "server.user" ) )
+        m_srvUser = keys["server.user"].as<string> ();
     if( keys.count( "server.port" ) )
         m_agentPort = keys["server.port"].as<unsigned int> ();
 

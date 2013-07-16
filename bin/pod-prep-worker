@@ -144,7 +144,7 @@ done
 
 # add temp ssh keys if needed
 if (( $NEED_KEYS == 1 )); then
-   eval KEYFILE_BASENAME=$WORK_DIR/pod_wn_key
+   eval KEYFILE_BASENAME=$WRK_DIR/pod_wn_key
    eval KEYFILE_BASENAME_PUB=$KEYFILE_BASENAME.pub
 
    COMPONENTS=( "${COMPONENTS[@]}" "$KEYFILE_BASENAME" )

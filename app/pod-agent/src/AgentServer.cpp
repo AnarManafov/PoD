@@ -979,7 +979,7 @@ void CAgentServer::createServerInfoFile()
     string srvHost;
     get_hostname( &srvHost );
     string srvUser;
-    get_cuser_name(&srvUser);
+    get_cuser_name( &srvUser );
 
     f
             << "[server]\n"
