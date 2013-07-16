@@ -338,15 +338,15 @@ untar_payload
 
 # copy ssh-tunnel to a private directory
 # TODO: remove this code when CSSHTunnel learns to find ssh-tunnel on WNs
-mkdir -p $WD/bin/private; cp ssh-tunnel $WD/bin/private 
+mkdir -p $WD/bin/private; mv $WD/ssh-tunnel $WD/bin/private 
 
 # setup temp ssh keys if needed
-NEED_KEYS=$(pod-user-defaults -V --key server.gen_temp_ssh_keys)
+NEED_KEYS=$($user_defaults -V --key server.gen_temp_ssh_keys)
 if (( $NEED_KEYS == 1 )); then
-   eval KEYFILE_BASENAME=pod_wn_key
-   eval KEYFILE_BASENAME_PUB=$KEYFILE_BASENAME.pub
+   eval KEYFILE_BASENAME=$WD/pod_wn_key
+   eval KEYFILE_BASENAME_PUB=$WD/$KEYFILE_BASENAME.pub
 
-  umask 077; test -d ~/.ssh || mkdir ~/.ssh; cp $KEYFILE_BASENAME $KEYFILE_BASENAME_PUB ~/.ssh;
+  #umask 077; test -d ~/.ssh || mkdir ~/.ssh; cp $KEYFILE_BASENAME $KEYFILE_BASENAME_PUB ~/.ssh;
 fi
 
 #Exporting PoD location

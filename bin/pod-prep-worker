@@ -260,6 +260,7 @@ fi
 
 # update WN submit timestampt
 regexpr_wn_submit_time="s/\(export[[:space:]]*POD_WN_SUBMIT_TIMESTAMP=\)[0-9]*/\1$(date +%s)/g"
+LANG=C # to silence: "sed: RE error: illegal byte sequence"
 sed -e "$regexpr_wn_submit_time" "$WRK_DIR/etc/PoDWorker.sh" > "$WRK_DIR/etc/PoDWorker.sh.temp"
 mv "$WRK_DIR/etc/PoDWorker.sh.temp" "$WRK_DIR/etc/PoDWorker.sh" 
 
