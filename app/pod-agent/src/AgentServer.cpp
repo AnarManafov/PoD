@@ -978,10 +978,13 @@ void CAgentServer::createServerInfoFile()
 
     string srvHost;
     get_hostname( &srvHost );
+    string srvUser;
+    get_cuser_name(&srvUser);
 
     f
             << "[server]\n"
             << "host=" << srvHost << "\n"
+            << "user=" << srvUser << "\n"
             << "port=" << m_agentServerListenPort << "\n"
             << endl;
 }

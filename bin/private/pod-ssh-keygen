@@ -16,6 +16,7 @@
 
 
 eval WORK_DIR=$(pod-user-defaults -V --key server.work_dir)
+NEED_KEYS=$(pod-user-defaults -V --key server.gen_temp_ssh_keys)
 eval KEYFILE_BASENAME=$WORK_DIR/pod_wn_key
 eval KEYFILE_BASENAME_PUB=$KEYFILE_BASENAME.pub
 eval AUTH_FILE=~/.ssh/authorized_keys
@@ -52,6 +53,9 @@ esac
 
 remove_key
 
+if (( $NEED_KEYS == 0 )); then
+   exit 0
+fi
 
 # gen temporary keys pair
 ssh-keygen -t rsa -C "$POD_KEY_WORD" -N "" -f $KEYFILE_BASENAME  -q

@@ -4,8 +4,9 @@
 pod: Implemented a PanDa plug-in for PoD. 
 pod: Implemented a SLURM plug-in for PoD.
 pod-user-defaults: updated user defaults configuration file - v0.9.
-pod-user-defaults: added the pbs_plugin.options_file option.
-pod-user-defaults: added the slurm_plugin.upload_job_log option.
+pod-user-defaults: learned a "pbs_plugin.options_file" option.
+pod-user-defaults: learned a "slurm_plugin.upload_job_log" option.
+pod-user-defaults: learned a "server.gen_temp_ssh_keys" option.  
 
 ## 3.12 (2012-10-04)
 pod: User's Manual has been updated.

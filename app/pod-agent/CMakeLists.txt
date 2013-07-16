@@ -83,6 +83,7 @@ target_link_libraries (
     pod-agent
     pod_protocol
     proof_status_file
+    SSHTunnel
     ${Boost_libs_for_agent}
 )
 

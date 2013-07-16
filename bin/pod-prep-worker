@@ -70,6 +70,9 @@ eval ARC_NAME=$(pod-user-defaults --wrkpkg)
 eval WRK_SCRIPT=$(pod-user-defaults --wrkscript)
 eval USER_SCRIPT=$(pod-user-defaults --userenvscript)
 eval INLINEBASH_SCRIPT="$(dirname $(pod-user-defaults --wrkscript))/user_worker_env.sh"
+NEED_KEYS=$(pod-user-defaults -V --key server.gen_temp_ssh_keys)
+
+
 WN_BINS="$POD_LOCATION/bin/wn_bins/*"
 SERVER_INFO_FILE="$WRK_DIR/etc/server_info.cfg"
 XPD_CFG="$WRK_DIR/etc/xpd.cf"
@@ -138,6 +141,16 @@ for i in ${WN_BINS[@]}
 do
    COMPONENTS=( "${COMPONENTS[@]}" "$i" )
 done
+
+# add temp ssh keys if needed
+if (( $NEED_KEYS == 1 )); then
+   eval KEYFILE_BASENAME=$WORK_DIR/pod_wn_key
+   eval KEYFILE_BASENAME_PUB=$KEYFILE_BASENAME.pub
+
+   COMPONENTS=( "${COMPONENTS[@]}" "$KEYFILE_BASENAME" )
+   COMPONENTS=( "${COMPONENTS[@]}" "$KEYFILE_BASENAME_PUB" )
+fi
+
 
 # check that all components are exists
 for i in "${COMPONENTS[@]}"

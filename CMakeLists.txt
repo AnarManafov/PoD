@@ -10,7 +10,7 @@
 #                           2010-01-19
 #        last changed by:   $LastChangedBy$ $LastChangedDate$
 #
-#        Copyright (c) 2010-2012 GSI, Scientific Computing division. All rights reserved.
+#        Copyright (c) 2010-2013 GSI, Scientific Computing division. All rights reserved.
 #*************************************************************************
 project( PoD )
 
@@ -76,7 +76,7 @@ if(DOXYGEN_FOUND)
        COMMENT "Upload API documentation to PoD's web server")
    add_dependencies( upload-api-docs api-docs )
 endif(DOXYGEN_FOUND)
-# a wn bin package custom target
+# WN bin package custom target
 # Because of $<TARGET_FILE:tgt> it works only in cmake 2.8.4
 if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
    if( CMAKE_SIZEOF_VOID_P EQUAL 4 )
@@ -109,7 +109,11 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod-user-defaults> "${WN_PKG_DIR}"
 		      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pod_protocol> "${WN_PKG_DIR}"
                       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:proof_status_file> "${WN_PKG_DIR}"
-                      COMMAND ${lib_cmd} ${lib_cmd_args}
+		      # >>>>> only needed if we want to support ssh tunnels on WNs (see temp ssh keys)
+                      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SSHTunnel> "${WN_PKG_DIR}"
+	              COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/app/MiscCommon/SSHTunnel/ssh-tunnel" "${WN_PKG_DIR}"
+                      ####### <<<<<<
+		      COMMAND ${lib_cmd} ${lib_cmd_args}
                       COMMAND ${CMAKE_COMMAND} -E tar czf ${WN_PKG_NAME_ARCH} "${WN_PKG_DIR}"
                       COMMAND -chmod go+xr ${WN_PKG_NAME_ARCH}
                       COMMENT "Generate WN binary package" 
@@ -121,9 +125,9 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
    add_custom_target( wn_bin_upload
 		      COMMAND ssh podwww@lxi001 "mkdir -p ${WN_PKG_REMOTE_DIR} && chmod go+xr ${WN_PKG_REMOTE_DIR}"                      
                       COMMAND scp -p ${WN_PKG_NAME_ARCH} podwww@lxi001:${WN_PKG_REMOTE_DIR}
-                      
                       COMMENT "Uploading WN binary package to PoD repository" 
                       VERBATIM )
+
    add_dependencies( wn_bin_upload
                      wn_bin )
 
@@ -176,6 +180,7 @@ SET(POD_BIN_PRIVATE_FILES
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-clean-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-status-worker
     ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-exec-worker
+    ${CMAKE_SOURCE_DIR}/bin/private/pod-ssh-keygen
     ${CMAKE_SOURCE_DIR}/bin/private/pod-remote-srv-info
     ${CMAKE_SOURCE_DIR}/bin/private/pod-addpayload
     )
