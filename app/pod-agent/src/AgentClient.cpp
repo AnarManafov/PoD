@@ -20,6 +20,7 @@
 #include "PARes.h"
 #include "Protocol.h"
 #include "ProtocolCommands.h"
+#include "SSHTunnel.h"
 //=============================================================================
 using namespace std;
 using namespace MiscCommon;
@@ -234,29 +235,6 @@ void CAgentClient::run()
 {
     try
     {
-        // Create ssh tunnel to the server, if neede
-        if( m_ServerData.m_genTempSSHKeys )
-        {
-            InfoLog( "User wants to setup an ssh tunnel to the server." );
-            InfoLog( "Setting up the tunnel..." );
-            readServerInfoFile( m_serverInfoFile );
-            // TODO: We reuse server.agentPortsRange here. Think to intorduce a common option for all local ports rages.
-            const int localAgentTunnelPort = inet::get_free_port( m_ServerData.m_agentPortsRangeMin,
-                                                                  m_ServerData.m_agentPortsRangeMax );
-            m_sshTunnelAgent.deattach();
-            string pidfile( "$POD_LOCATION/ssh-tunnel-agent.pid" );
-            smart_path( &pidfile );
-            m_sshTunnelAgent.setPidFile( pidfile );
-            string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
-
-            m_sshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
-            m_sshTunnelAgent.create( remoteURL, localAgentTunnelPort, m_agentServerListenPort /*, m_openDomain*/ );
-
-            m_agentServerHost = "localhost";
-            m_agentServerListenPort = localAgentTunnelPort;
-        }
-
-
         createPROOFCfg();
 
         while( true )
@@ -267,7 +245,29 @@ void CAgentClient::run()
                 return;
             }
 
+            // Create ssh tunnel to the server, if neede
             readServerInfoFile( m_serverInfoFile );
+            CSSHTunnel sshTunnelAgent;
+            if( m_ServerData.m_genTempSSHKeys )
+            {
+                InfoLog( "User wants to setup an ssh tunnel to the server." );
+                InfoLog( "Setting up the tunnel..." );
+                // TODO: We reuse server.agentPortsRange here. Think to intorduce a common option for all local ports rages.
+                const int localAgentTunnelPort = inet::get_free_port( m_ServerData.m_agentPortsRangeMin,
+                                                                     m_ServerData.m_agentPortsRangeMax );
+                sshTunnelAgent.deattach();
+                string pidfile( "$POD_LOCATION/ssh-tunnel-agent.pid" );
+                smart_path( &pidfile );
+                ssshTunnelAgent.setPidFile( pidfile );
+                string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
+                
+                ssshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
+                ssshTunnelAgent.create( remoteURL, localAgentTunnelPort, m_agentServerListenPort /*, m_openDomain*/ );
+                
+                m_agentServerHost = "localhost";
+                m_agentServerListenPort = localAgentTunnelPort;
+            }
+            
 
             InfoLog( "looking for PROOFAgent server to connect..." );
             // a connection to a Agent's server

@@ -17,7 +17,6 @@
 // MiscCommon
 #include "LogImp.h"
 #include "INet.h"
-#include "SSHTunnel.h"
 // PROOFAgent
 #include "AgentBase.h"
 //=============================================================================
@@ -74,7 +73,6 @@ namespace PROOFAgent
             unsigned int m_agentServerListenPort;
             std::string m_agentServerHost;
             std::string m_agentServerUser;
-            CSSHTunnel m_sshTunnelAgent;
     };
 
 }
