@@ -258,11 +258,11 @@ void CAgentClient::run()
                 sshTunnelAgent.deattach();
                 string pidfile( "$POD_LOCATION/ssh-tunnel-agent.pid" );
                 smart_path( &pidfile );
-                ssshTunnelAgent.setPidFile( pidfile );
+                sshTunnelAgent.setPidFile( pidfile );
                 string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
                 
-                ssshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
-                ssshTunnelAgent.create( remoteURL, localAgentTunnelPort, m_agentServerListenPort /*, m_openDomain*/ );
+                sshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
+                sshTunnelAgent.create( remoteURL, localAgentTunnelPort, m_agentServerListenPort /*, m_openDomain*/ );
                 
                 m_agentServerHost = "localhost";
                 m_agentServerListenPort = localAgentTunnelPort;
