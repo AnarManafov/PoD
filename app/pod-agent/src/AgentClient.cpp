@@ -250,7 +250,7 @@ void CAgentClient::run()
             string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
 
             m_sshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
-            m_sshTunnelAgent.create( remoteURL, localAgentTunnelPort, 22 /*, m_openDomain*/ );
+            m_sshTunnelAgent.create( remoteURL, localAgentTunnelPort, m_agentServerListenPort /*, m_openDomain*/ );
 
             m_agentServerHost = "localhost";
             m_agentServerListenPort = localAgentTunnelPort;
