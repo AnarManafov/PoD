@@ -239,6 +239,7 @@ void CAgentClient::run()
         {
             InfoLog( "User wants to setup an ssh tunnel to the server." );
             InfoLog( "Setting up the tunnel..." );
+            readServerInfoFile( m_serverInfoFile );
             // TODO: We reuse server.agentPortsRange here. Think to intorduce a common option for all local ports rages.
             const int localAgentTunnelPort = inet::get_free_port( m_ServerData.m_agentPortsRangeMin,
                                                                   m_ServerData.m_agentPortsRangeMax );
