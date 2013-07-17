@@ -237,8 +237,8 @@ void CAgentClient::run()
         // Create ssh tunnel to the server, if neede
         if( m_ServerData.m_genTempSSHKeys )
         {
-            InfoLog("User wants to setup an ssh tunnel to the server.");
-            InfoLog("Setting up the tunnel...");
+            InfoLog( "User wants to setup an ssh tunnel to the server." );
+            InfoLog( "Setting up the tunnel..." );
             // TODO: We reuse server.agentPortsRange here. Think to intorduce a common option for all local ports rages.
             const int localAgentTunnelPort = inet::get_free_port( m_ServerData.m_agentPortsRangeMin,
                                                                   m_ServerData.m_agentPortsRangeMax );
@@ -247,10 +247,10 @@ void CAgentClient::run()
             smart_path( &pidfile );
             m_sshTunnelAgent.setPidFile( pidfile );
             string remoteURL( m_agentServerUser + "@" + m_agentServerHost );
-            
-            m_sshTunnelAgent.useIdentityFile("$POD_LOCATION/pod_wn_key");
+
+            m_sshTunnelAgent.useIdentityFile( "$POD_LOCATION/pod_wn_key" );
             m_sshTunnelAgent.create( remoteURL, localAgentTunnelPort, 22 /*, m_openDomain*/ );
-            
+
             m_agentServerHost = "localhost";
             m_agentServerListenPort = localAgentTunnelPort;
         }
