@@ -12,7 +12,7 @@
 
         Copyright (c) 2009 GSI GridTeam. All rights reserved.
 *************************************************************************/
-#ifndef THREADPOOL_H
+#ifndef THREADPOOL_H_
 #define THREADPOOL_H_
 // STD
 #include <queue>
