@@ -10,7 +10,7 @@
                             2007-03-01
         last changed by:    $LastChangedBy$ $LastChangedDate$
 
-        Copyright (c) 2007-2012 GSI, Scientific Computing division. All rights reserved.
+        Copyright (c) 2007-2013 GSI, Scientific Computing division. All rights reserved.
 *************************************************************************/
 #include "AgentClient.h"
 // STD
@@ -266,6 +266,9 @@ void CAgentClient::run()
                 
                 m_agentServerHost = "localhost";
                 m_agentServerListenPort = localAgentTunnelPort;
+                stringstream ss;
+                ss << "Agent will connect to server via localhost:" << m_agentServerListenPort;
+                InfoLog( ss.str() );
             }
             
 
