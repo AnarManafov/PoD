@@ -1,8 +1,9 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## 3.14 ()
+## 3.14 (2013-09-20)
 pod: Implemented a PanDa plug-in for PoD. 
 pod: Implemented a SLURM plug-in for PoD.
+pod: !!!Experimental feature!!! Use identity file in ssh tunnels to connect back from WN behind FireWalls.
 pod-user-defaults: updated user defaults configuration file - v0.9.
 pod-user-defaults: learned a "pbs_plugin.options_file" option.
 pod-user-defaults: learned a "slurm_plugin.upload_job_log" option.
