@@ -1,6 +1,3 @@
 [submodule "app/MiscCommon"]
 	path = app/MiscCommon
-	url = ssh://anar@demac012.gsi.de/Users/anar/GitRepository/PROOFonDemand/MiscCommon
-[submodule "app/pod-console/plugins/gLitePlugin/glite-api-wrapper"]
-	path = app/pod-console/plugins/gLitePlugin/glite-api-wrapper
-	url = ssh://anar@demac012.gsi.de/Users/anar/GitRepository/PROOFonDemand/glite-api-wrapper
+	url = https://github.com/AnarManafov/MiscCommon
