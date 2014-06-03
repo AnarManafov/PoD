@@ -425,20 +425,6 @@ fi
 get_default_ROOT $host_arch
 
 # **********************************************************************
-# copy ssh-tunnel to a private directory
-# TODO: remove this code when CSSHTunnel learns to find ssh-tunnel on WNs
-mkdir -p $WD/bin/private; mv $WD/ssh-tunnel $WD/bin/private 
-
-# setup temp ssh keys if needed
-NEED_KEYS=$($user_defaults -V --key server.gen_temp_ssh_keys)
-if (( $NEED_KEYS == 1 )); then
-   eval KEYFILE_BASENAME=$WD/pod_wn_key
-   eval KEYFILE_BASENAME_PUB=$WD/$KEYFILE_BASENAME.pub
-
-  #umask 077; test -d ~/.ssh || mkdir ~/.ssh; cp $KEYFILE_BASENAME $KEYFILE_BASENAME_PUB ~/.ssh;
-fi
-
-# **********************************************************************
 # export the location of the proof.conf file
 eval POD_PROOFCFG_FILE="$WD/proof.conf"
 export POD_PROOFCFG_FILE
@@ -451,9 +437,12 @@ export POD_WN_SUBMIT_TIMESTAMP=0000
 
 # Using eval to force variable substitution
 # changing _G_WRK_DIR to a working directory in the following files:
-eval sed -i.bup 's%_G_WRK_DIR%$WD%g' $XPD_CFG
+#eval sed -i.bup 's%_G_WRK_DIR%$WD%g' $XPD_CFG
+_G_DIR=$(mktemp -d  $TMPDIR/PoDWorker_XXXXXXXXXX)
+eval sed -i.bup 's%_G_WRK_DIR%$_G_DIR%g' $XPD_CFG
 # populating the tmp dir.
-_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
+#_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
+_TMP_DIR=$(mktemp -d $TMPDIR/PoDWorker_XXXXXXXXXX)
 chmod 777 $_TMP_DIR
 eval sed -i.bup 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' $XPD_CFG
 
