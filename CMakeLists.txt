@@ -347,7 +347,9 @@ set(CPACK_SOURCE_IGNORE_FILES
     "CPack"
     "\\\\.svn/"
     "Makefile$"
-    "PoDFiles.txt$")
+    "PoDFiles.txt$"
+    "master.cfg$"
+)
 
 set( CPACK_SOURCE_PACKAGE_FILE_NAME "PoD-${POD_VERSION}-Source")
 
