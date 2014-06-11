@@ -103,7 +103,7 @@ namespace PROOFAgent
             ss
                     << "Can't create a named pipe: "
                     << m_signalPipeName;
-            throw system_error( ss.str() );
+            throw MiscCommon::system_error( ss.str() );
             graceful_quit = 1;
         }
 
@@ -115,7 +115,7 @@ namespace PROOFAgent
             ss
                     << "Can't open a named pipe: "
                     << m_signalPipeName;
-            throw system_error( ss.str() );
+            throw MiscCommon::system_error( ss.str() );
             graceful_quit = 1;
         }
     }

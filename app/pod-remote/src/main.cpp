@@ -220,11 +220,11 @@ int main( int argc, char *argv[] )
         // Create pipes, which later will be used for stdout/in/err redirections
         // TODO: close all handles at the end
         if( -1 == pipe( stdin_pipe ) )
-            throw system_error( "Error: Can't create a communication stdin_pipe.\n" );
+            throw MiscCommon::system_error( "Error: Can't create a communication stdin_pipe.\n" );
         if( -1 == pipe( stdout_pipe ) )
-            throw system_error( "Error: Can't create a communication stdout_pipe\n" );
+            throw MiscCommon::system_error( "Error: Can't create a communication stdout_pipe\n" );
         if( -1 == pipe( stderr_pipe ) )
-            throw system_error( "Error: Can't create a communication stderr_pipe\n" );
+            throw MiscCommon::system_error( "Error: Can't create a communication stderr_pipe\n" );
 
         // Create a main ssh tunnel, which serves pod-remote communication.
         // Remote port 22 is so far hard-coded

@@ -271,10 +271,10 @@ int main( int argc, char *argv[] )
             int fd = open( "/dev/null", O_RDWR ); // stdin - file handle 0.
             // stdout - file handle 1.
             if( dup( fd ) < 0 )
-                throw system_error( "Error occurred while duplicating stdout descriptor" );
+                throw MiscCommon::system_error( "Error occurred while duplicating stdout descriptor" );
             // stderr - file handle 2.
             if( dup( fd ) < 0 )
-                throw system_error( "Error occurred while duplicating stderr descriptor" );
+                throw MiscCommon::system_error( "Error occurred while duplicating stderr descriptor" );
         }
 
         // Starting Agent

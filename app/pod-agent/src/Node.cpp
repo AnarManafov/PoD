@@ -82,7 +82,7 @@ namespace PROOFAgent
             {
                 m_bytesToSend = read_from_socket( *input, &( *buf ) );
             }
-            catch( const system_error &e )
+            catch( const MiscCommon::system_error &e )
             {
                 setInUse( false, _which );
                 // since the socket is non-blocking, we don't

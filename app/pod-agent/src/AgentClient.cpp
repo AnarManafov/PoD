@@ -310,11 +310,11 @@ void CAgentClient::run()
 
                     int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
                     if( retval < 0 )
-                        throw system_error( "Error occurred while in the main select:" );
+                        throw MiscCommon::system_error( "Error occurred while in the main select:" );
 
                     // must actually never happen
                     if( 0 == retval )
-                        throw system_error( "The main select has timed out." );
+                        throw MiscCommon::system_error( "The main select has timed out." );
 
                     if( FD_ISSET( fdServerSock, &readset ) )
                         processAdminConnection( fdServerSock );
@@ -332,7 +332,7 @@ void CAgentClient::run()
                         //  }
                         //   while ( numread > 0 );
 
-                        throw system_error( "Got a wake up signal from the signal pipe." );
+                        throw MiscCommon::system_error( "Got a wake up signal from the signal pipe." );
                     }
                 }
             }
@@ -431,11 +431,11 @@ void CAgentClient::waitForServerToConnect( MiscCommon::INet::Socket_t _sockToWai
     int retval = ::select(( _sockToWait > m_fdSignalPipe ? _sockToWait : m_fdSignalPipe ) + 1,
                           &readset, NULL, NULL, NULL );
     if( retval < 0 )
-        throw system_error( "Error occurred while waiting for Agent server:" );
+        throw MiscCommon::system_error( "Error occurred while waiting for Agent server:" );
 
     // must actually never happen
     if( 0 == retval )
-        throw system_error( "Select has timeout while waiting for an Agent server." );
+        throw MiscCommon::system_error( "Select has timeout while waiting for an Agent server." );
 
     // we got a signal for update
     // reading everything from the pipe and exiting from the function
@@ -507,11 +507,11 @@ void CAgentClient::mainSelect( CNode *_node )
 
         int retval = ::select( fd_max + 1, &readset, NULL, NULL, NULL );
         if( retval < 0 )
-            throw system_error( "Error occurred while in the main select:" );
+            throw MiscCommon::system_error( "Error occurred while in the main select:" );
 
         // must actually never happen
         if( 0 == retval )
-            throw system_error( "The main select has timed out." );
+            throw MiscCommon::system_error( "The main select has timed out." );
 
         if( FD_ISSET( fd_first, &readset ) )
         {
@@ -536,7 +536,7 @@ void CAgentClient::mainSelect( CNode *_node )
             //  }
             //   while ( numread > 0 );
 
-            throw system_error( "Got a wake up signal from the signal pipe." );
+            throw MiscCommon::system_error( "Got a wake up signal from the signal pipe." );
         }
     }
 }
