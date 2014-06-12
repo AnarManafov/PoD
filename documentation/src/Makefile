@@ -87,8 +87,6 @@ print-docs:
 	$(XSLTPROC) $(XSLTPROC_FLAGS) -o $(HTML_OUT_DIR)/index.fo config_print.xsl $(DOCBOOK) && \
         (cd $(HTML_OUT_DIR) && \
          $(FOP) index.fo $(POD_PDF) &> $(LOGFILE) < /dev/null && \
-         echo "Generating PS file: $(HTML_OUT_DIR)/PoD.ps ..." && \
-         pdftops $(POD_PDF) && \
          rm -f *.log *.aux *.fo *.out)
 
 
