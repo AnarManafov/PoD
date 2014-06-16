@@ -19,6 +19,9 @@ xpd.port 000
 ## Up to 32 characters are needed to define actual socket files;
 ## leaving 76 characters that may be specified as the path." (from xrootd documentation)
 ## comment if you want to help the WN pools
+## Workaround for the above issue is to use xpd.sockpathdir,
+## which should in anyway point to tmp to keep the path shorter than 108 chars.
+# 
 #
 # !!! DON'T REMOVE/CHANGE THE FOLLOWING COMMENTS
 # * * * * * * * * * *
@@ -29,7 +32,9 @@ if named PoDServer
  xrd.adminpath _POD_TMP_DIR
 else
  xrd.adminpath _G_WORKER_TMP_DIR
+ xpd.sockpathdir _G_WORKER_TMP_SOCK_DIR
 fi
+
 #
 ## logging
 #

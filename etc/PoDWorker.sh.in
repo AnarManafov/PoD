@@ -86,6 +86,9 @@ delete_tmp_dir()
    if [ -d "$_TMP_DIR" ]; then
       rm -rf "$_TMP_DIR"
    fi
+   if [ -d "$_G_SOCK_DIR" ]; then
+      rm -rf "$_G_SOCK_DIR"
+   fi
 }
 # ************************************************************************
 # ***** detects pid and port of XPROOFD *****
@@ -441,10 +444,12 @@ export POD_WN_SUBMIT_TIMESTAMP=0000
 _G_DIR=$(mktemp -d  $TMPDIR/PoDWorker_XXXXXXXXXX)
 eval sed -i.bup 's%_G_WRK_DIR%$_G_DIR%g' $XPD_CFG
 # populating the tmp dir.
-#_TMP_DIR=$(mktemp -d /tmp/PoDWorker_XXXXXXXXXX)
 _TMP_DIR=$(mktemp -d $TMPDIR/PoDWorker_XXXXXXXXXX)
+_G_SOCK_DIR=$(mktemp -d  /tmp/PoDWorkerSockets_XXXXXXXXXX)
 chmod 777 $_TMP_DIR
+chmod 777 $_G_SOCK_DIR
 eval sed -i.bup 's%_G_WORKER_TMP_DIR%$_TMP_DIR%g' $XPD_CFG
+eval sed -i.bup 's%_G_WORKER_TMP_SOCK_DIR%$_G_SOCK_DIR%g' $XPD_CFG
 
 # creating an empty proof.conf, so that xproof will be happy
 touch $POD_PROOFCFG_FILE
