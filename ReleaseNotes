@@ -1,7 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
 ## 3.16 ()
-
+pod: Using $TMPDIR on WNs instead of /tmp.
+pod: SL6 and OS X 10.9 is now the minimum required system on WNs.
 
 ## 3.14 (2013-09-20)
 pod: Implemented a PanDa plug-in for PoD. 
