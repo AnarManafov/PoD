@@ -1,8 +1,10 @@
 # Release Notes for PoD (PROOF on Demand)
 
-## 3.16 ()
-pod: Using $TMPDIR on WNs instead of /tmp.
-pod: SL6 and OS X 10.9 is now the minimum required system on WNs.
+## 3.16 (2014-06-18)
+pod: The whole solution is hosted on github now.
+pod: Using $TMPDIR on WNs instead of /tmp to host temporary pod and proof files.
+pod: SL6 and OS X 10.9 are now the minimum required systems on WNs.
+pod: fixed: build errors against boost 1.55.
 
 ## 3.14 (2013-09-20)
 pod: Implemented a PanDa plug-in for PoD. 
