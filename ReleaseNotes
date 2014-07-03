@@ -1,5 +1,8 @@
 # Release Notes for PoD (PROOF on Demand)
 
+## 3.18 (NOT YET RELEASED)
+pod: Encode the binary payload attachment using uuencode to use RMS that do not support other than simple ASCII scripts. (Fixes #1).
+
 ## 3.16 (2014-06-18)
 pod: The whole solution is hosted on github now.
 pod: Using $TMPDIR on WNs instead of /tmp to host temporary pod and proof files.
