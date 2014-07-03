@@ -252,7 +252,7 @@ gzip -9 $ARC_NAME
 mv "$ARC_NAME.gz" $ARC_NAME
 
 # add payload to the wrk script
-$PRIVATE_TOOLS/pod-addpayload --binary $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$WRK_DIR/etc/PoDWorker.sh"
+$PRIVATE_TOOLS/pod-addpayload --uuencode $ARC_NAME "$POD_LOCATION/etc/PoDWorker.sh.in" "$WRK_DIR/etc/PoDWorker.sh"
 if (( 0 != $? )); then
    echo "$TOOL_NAME: error: failed to add payload to the wrk script."
    return 1 

@@ -52,9 +52,9 @@ if [[ $payload_binary -ne 0 ]]; then
 	cat $1 >>$OUTPUT_FILE
 fi
 
-if [[ $uuencode -ne 0 ]]; then
+if [[ $payload_uuencode -ne 0 ]]; then
 	# Append uuencoded data.
-	sed \
+        sed \
 		-e 's/payload_uuencode=./payload_uuencode=1/' \
 		-e 's/payload_binary=./payload_binary=0/' \
 			 $INPUT_FILE >$OUTPUT_FILE

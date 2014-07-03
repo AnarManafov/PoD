@@ -66,7 +66,7 @@ cp $WRK_SCRIPT $TMP_WRK_SCRIPT
 cd $WRK_DIR
 tar -czvf $WRK_SCRIPT_NAME.tgz $WRK_SCRIPT_NAME
 popd
-$PRIVATE_TOOLS/pod-addpayload --binary $TMP_WRK_SCRIPT.tgz $INPUT_JOB_SCRIPT $JOB_SCRIPT
+$PRIVATE_TOOLS/pod-addpayload --uuencode $TMP_WRK_SCRIPT.tgz $INPUT_JOB_SCRIPT $JOB_SCRIPT
 if (( 0 != $? )); then
    echo "error: failed to add payload to the job script."
    exit 1
