@@ -307,7 +307,7 @@ function untar_payload()
 		tail -n +$payload_start $0 | tar -xzvf -
 	fi
 	if [[ $payload_uuencode -ne 0 ]]; then
-		tail -n +$payload_start $0 | uudecode | tar -xzvf -
+		tail -n +$payload_start $0 | uudecode && tar -xzvf pod_payload.tgz
 	fi
 }
 # ************************************************************************

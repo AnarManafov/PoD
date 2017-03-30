@@ -60,5 +60,5 @@ if [[ $payload_uuencode -ne 0 ]]; then
 			 $INPUT_FILE >$OUTPUT_FILE
 	echo "PAYLOAD:" >> $OUTPUT_FILE
 
-	cat $1 | uuencode - >>$OUTPUT_FILE
+	cat $1 | uuencode pod_payload.tgz >>$OUTPUT_FILE
 fi
