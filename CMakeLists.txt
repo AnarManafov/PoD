@@ -94,13 +94,32 @@ if( ${CMAKE_VERSION} VERSION_GREATER 2.8.3 )
    set( WN_PKG_DIR "${CMAKE_BINARY_DIR}/pod-wrk-bin" )
    set( WN_PKG_NAME_ARCH "${WN_PKG_NAME}.tar.gz" )
    set( WN_PKG_REMOTE_DIR "/u/podwww/web-docs/releases/add/${POD_VERSION}" )
+   
+   set(DDS_BOOST_LIB_DIR ${Boost_LIBRARY_DIR})
+   if("${DDS_BOOST_LIB_DIR}" STREQUAL "")
+     set(DDS_BOOST_LIB_DIR ${Boost_LIBRARY_DIR_RELEASE})
+   endif()
+   message( STATUS "Using BOOST Library dir: " ${DDS_BOOST_LIB_DIR})
 
    if(APPLE)
      set( lib_cmd "bash" )
-     set( lib_cmd_args "-c"; "otool -L ${WN_PKG_DIR}/pod-agent  | grep boost | awk '{ system( \"cp \" $1 \" ${WN_PKG_DIR}\") }'" )
+	 set( lib_cmd_args "-c" "otool -L ${WN_PKG_DIR}/pod-agent  | grep boost | awk '{gsub(\"@rpath\", \"${DDS_BOOST_LIB_DIR}\", $1) \; print}' | awk '{ ret=system( \"install -m 644 \" $1 \" ${WN_PKG_DIR}\") \; if (ret != 0) { print \"ERROR: Can not build PoD worker package. Missing dependency.\" \; exit 1} }'" )
+	 
+	 # In response to CMake 3.0 generating warnings regarding policy CMP0042,
+	 # the OSX RPATH settings have been updated per recommendations found
+	 # in the CMake Wiki: http://www.cmake.org/Wiki/CMake_RPATH_handling#Mac_OS_X_and_the_RPATH
+	 set(CMAKE_MACOSX_RPATH ON)
+	 set(CMAKE_SKIP_BUILD_RPATH FALSE)
+	 set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+	 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+	 list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+	 if("${isSystemDir}" STREQUAL "-1")
+	 	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+	 endif()
    elseif(UNIX)
      set( lib_cmd "bash" )
-     set( lib_cmd_args "-c"; "ldd ${WN_PKG_DIR}/pod-agent | grep boost | awk '{ system( \"cp \" $3 \" ${WN_PKG_DIR}\") }'" )
+     set( lib_cmd_args "-c" "ldd ${WN_PKG_DIR}/pod-agent | grep boost | awk '{ system( \"cp \" $3 \" ${WN_PKG_DIR}\") }'" )
    endif(APPLE)
    
    add_custom_target( wn_bin
